@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { IModelConnection, ScreenViewport, IModelApp, Viewport, SpatialViewState, DrawingViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ScreenViewport, IModelApp, Viewport, SpatialViewState, DrawingViewState, SelectionSet } from "@bentley/imodeljs-frontend";
 import { Id64String, Id64 } from "@bentley/bentleyjs-core";
 import { ViewportAndNavigation } from "../Viewport/ViewportAndNavigation";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
@@ -135,6 +135,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         if (undefined !== oldSample && oldSample.teardown)
             oldSample.teardown();
 
+        this.props.imodel.selectionSet.emptyAll();
         this.setupNewSample(name);
     }
 
