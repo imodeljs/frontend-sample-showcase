@@ -67,6 +67,10 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
     this.setState({ pointCount: Number(event.target.value) }, () => this.notifyChange());
   }
 
+  public componentDidMount() {
+    this.notifyChange();
+  }
+
   public componentDidUpdate(prevProps: PointSelectorProps) {
     if (undefined !== this.props.range && this.props.range !== prevProps.range) {
       this.notifyChange();

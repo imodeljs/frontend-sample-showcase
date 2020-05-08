@@ -195,12 +195,14 @@ export default class HeatmapDecorator implements Decorator {
       mode: ThematicGradientMode.Smooth,
       stepCount: 0,
       marginColor,
+      customKeys: [
+        { value: 0.0, color: marginColor },
+        { value: 0.5, color: ColorDef.computeTbgrFromComponents(0, 255, 0, 150) },
+        { value: 0.75, color: ColorDef.computeTbgrFromComponents(255, 255, 0, 100) },
+        { value: 1.0, color: ColorDef.computeTbgrFromComponents(255, 0, 0, 50) },
+      ],
     });
     const gradient = Gradient.Symb.createThematic(thematicSettings);
-    gradient.keys.push(new Gradient.KeyColor({ value: 0.0, color: marginColor }));
-    gradient.keys.push(new Gradient.KeyColor({ value: 0.5, color: ColorDef.computeTbgrFromComponents(0, 255, 0, 150) }));
-    gradient.keys.push(new Gradient.KeyColor({ value: 0.75, color: ColorDef.computeTbgrFromComponents(255, 255, 0, 100) }));
-    gradient.keys.push(new Gradient.KeyColor({ value: 1.0, color: ColorDef.computeTbgrFromComponents(255, 0, 0, 50) }));
 
     /* Form the image here.  For each grid point, map the intensity to a colorDef and then extract the r,g,b,a values. */
     const imageArray = new Uint8Array(4 * gridSize * gridSize);

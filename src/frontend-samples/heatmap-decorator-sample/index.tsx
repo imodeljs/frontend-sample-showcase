@@ -33,27 +33,27 @@ class HeatmapDecoratorApp {
   public static range?: Range2d;
   public static height?: number;
 
-  public static setup(_iModel: IModelConnection, vp: Viewport): React.ReactNode {
+  public static async setup(_iModel: IModelConnection, vp: Viewport): Promise<React.ReactNode> {
+    if (vp.view.is3d()) {
+      // To make the heatmap look better, lock the view to a top orientation with camera turned off.
+      vp.view.setAllow3dManipulations(false);
+      vp.view.turnCameraOff();
+      vp.setStandardRotation(StandardViewId.Top);
+    }
 
-    // To make the heatmap look better, we want a top view, with a white background, etc.
-    vp.setStandardRotation(StandardViewId.Top);
-
+    // We'll draw the heatmap as an overlay in the center of the view's Z extents.
     const range = vp.view.computeFitRange();
+    HeatmapDecoratorApp.height = range.high.interpolate(0.5, range.low).z;
 
-    // Grab the unadjusted max Z for the view contents.  We'll use this as the plane of the heatmap. */
-    HeatmapDecoratorApp.height = range.zHigh;
-
-    const aspect = vp.viewRect.aspect;
-    range.expandInPlace(1);
-
-    vp.view.lookAtVolume(range, aspect);
+    vp.view.lookAtVolume(range, vp.viewRect.aspect);
     vp.synchWithView(false);
 
+    // The heatmap looks better against a white background.
     const style = vp.displayStyle.clone();
     style.backgroundColor = ColorDef.white;
     vp.displayStyle = style;
 
-    /* Grab the range of the contents of the view.  We'll use this to size the heatmap. */
+    // Grab the range of the contents of the view. We'll use this to size the heatmap.
     HeatmapDecoratorApp.range = Range2d.createFrom(range);
 
     return <HeatmapDecoratorUIComponent range={HeatmapDecoratorApp.range} />;

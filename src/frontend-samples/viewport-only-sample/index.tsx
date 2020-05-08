@@ -15,7 +15,7 @@ export function getViewportOnlySpec(): SampleSpec {
     name: "viewport-only-sample",
     label: "Viewport Only",
     image: "viewport-only-thumbnail.png",
-    setup: () => { return <ViewportOnly /> },
+    setup: async () => { return <ViewportOnly /> },
   });
 }
 

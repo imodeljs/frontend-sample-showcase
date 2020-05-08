@@ -14,6 +14,8 @@ import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-s
 import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
 import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample";
 import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
+import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
+import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
 
 // cSpell:ignore imodels
 
@@ -22,7 +24,7 @@ export interface SampleSpec {
     label: string;
     image: string;
     handlesViewSetup?: boolean;
-    setup?: (imodel: IModelConnection, vp: Viewport) => React.ReactNode;
+    setup?: (imodel: IModelConnection, vp: Viewport) => Promise<React.ReactNode>;
     teardown?: () => void;
 }
 
@@ -46,10 +48,10 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this._samples.push(getViewportOnlySpec());
         this._samples.push(getEmphasizeElementsSpec());
         this._samples.push(getHeatmapDecoratorSpec());
-        this._samples.push({ name: "marker-pin-sample", label: "Marker Pins", image: "marker-pin-thumbnail.png" });
+        this._samples.push(getMarkerPinSpec());
         this._samples.push({ name: "tooltip-customize-sample", label: "Tooltip Customize", image: "tooltip-customize-thumbnail.png" });
         this._samples.push(getViewAttributesSpec());
-        this._samples.push({ name: "view-clip-sample", label: "View Clip", image: "view-clip-thumbnail.png" });
+        this._samples.push(getViewClipSpec());
         this._samples.push(getZoomToElementsSpec());
         this.state = {};
     }
@@ -110,7 +112,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this.state.viewport!.changeView(viewState, { animateFrustumChange: false });
     }
 
-    private setupNewSample(name: string) {
+    private async setupNewSample(name: string) {
         const newSampleSpec = this.getSampleByName(name);
 
         if (undefined === newSampleSpec) {
@@ -123,7 +125,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
 
         let sampleUI: React.ReactNode;
         if (newSampleSpec && newSampleSpec.setup)
-            sampleUI = newSampleSpec.setup(this.props.imodel, this.state.viewport!);
+            sampleUI = await newSampleSpec.setup(this.props.imodel, this.state.viewport!);
 
         this.setState({ activeSampleSpec: newSampleSpec, sampleUI });
     }

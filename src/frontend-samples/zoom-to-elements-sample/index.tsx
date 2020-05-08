@@ -17,7 +17,7 @@ export function getZoomToElementsSpec(): SampleSpec {
     name: "zoom-to-elements-sample",
     label: "Zoom to Elements",
     image: "zoom-to-elements-thumbnail.png",
-    setup: (imodel: IModelConnection) => {
+    setup: async (imodel: IModelConnection) => {
       return <ZoomToElementsUI imodel={imodel} />;
     },
   });

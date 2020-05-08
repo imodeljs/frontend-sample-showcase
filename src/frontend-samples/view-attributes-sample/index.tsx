@@ -43,7 +43,7 @@ interface AttrValues {
 class ViewAttributesApp {
   private static initialState: AttrValues;
 
-  public static setup(): React.ReactNode {
+  public static async setup(): Promise<React.ReactNode> {
     ViewAttributesApp.initialState = ViewAttributesApp.getAttrValues();
     return <ViewAttributesUI />;
   }

@@ -4,35 +4,42 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "./SampleGallery.scss";
+import "./RadioCard.scss";
 
-export interface SampleGalleryEntry {
+export interface RadioCardEntry {
   image: string;
   value: string;
-  label: string;
 }
 
-interface SampleGalleryProps {
-  entries: SampleGalleryEntry[];
+interface RadioCardProps {
+  entries: RadioCardEntry[];
   selected: string;
   onChange: ((value: string) => void);
 }
 
-export class SampleGallery extends React.Component<SampleGalleryProps, {}> {
+/** A React component that renders the UI specific for this component */
+export class RadioCard extends React.Component<RadioCardProps, {}> {
 
   private _onCardSelected = (event: any) => {
     this.props.onChange(event.target.id);
   }
 
-  private createElementsForCard(entry: SampleGalleryEntry) {
+  private createElementsForCard(entry: RadioCardEntry, index: number, entries: RadioCardEntry[]) {
+    let divClass = "card card-body";
+
+    if (0 === index) {
+      divClass += " card-first";
+    } else if (entries.length - 1 === index) {
+      divClass += " card-last";
+    }
+
     const isChecked = this.props.selected === entry.value;
 
     return (
       <>
         <label className="card-radio-btn">
-          {entry.label}
-          <input type="radio" name="sample-gallery" className="card-input-element d-none" id={entry.value} checked={isChecked} onChange={this._onCardSelected} />
-          <div className="card card-body">
+          <input type="radio" name="marker-types" className="card-input-element d-none" id={entry.value} checked={isChecked} onChange={this._onCardSelected} />
+          <div className={divClass}>
             <img src={entry.image} alt={entry.value} />
           </div>
         </label>
@@ -44,10 +51,8 @@ export class SampleGallery extends React.Component<SampleGalleryProps, {}> {
   public render() {
     return (
       <>
-        <div className="sample-gallery">
-          <div className="card-radio">
-            {this.props.entries.map((entry: SampleGalleryEntry) => this.createElementsForCard(entry))}
-          </div>
+        <div className="card-radio">
+          {this.props.entries.map((entry: RadioCardEntry, index, entries) => this.createElementsForCard(entry, index, entries))}
         </div>
       </>
     );
