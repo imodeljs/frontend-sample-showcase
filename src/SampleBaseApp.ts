@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Config, Id64String } from "@bentley/bentleyjs-core";
+import { ClientRequestContext, Config, Id64String } from "@bentley/bentleyjs-core";
 import { BrowserAuthorizationClientConfiguration, BrowserAuthorizationClient, BrowserAuthorizationCallbackHandler } from "@bentley/frontend-authorization-client";
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
 import { IModelApp, FrontendRequestContext, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
@@ -82,5 +82,9 @@ export class SampleBaseApp {
 
     // Setup the IModelApp authorization client
     IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig);
+
+    try {
+      await SampleBaseApp.oidcClient.signInSilent(new ClientRequestContext());
+    } catch (err) { }
   }
 }
