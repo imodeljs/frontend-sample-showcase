@@ -17,6 +17,7 @@ import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sa
 import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
 import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
 import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
+import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
 
 // cSpell:ignore imodels
 
@@ -53,6 +54,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this._samples.push(getTooltipCustomizeSpec());
         this._samples.push(getViewAttributesSpec());
         this._samples.push(getViewClipSpec());
+        this._samples.push(getViewerOnly2dSpec());
         this._samples.push(getZoomToElementsSpec());
         this.state = {};
     }
