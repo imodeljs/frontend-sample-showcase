@@ -182,10 +182,6 @@ export class ViewAttributesUI extends React.Component<{}, AttrValues> {
     this.state = ViewAttributesApp.getAttrValues();
   }
 
-  public static getIModelAppOptions(): IModelAppOptions {
-    return {};
-  }
-
   // Update the state of the sample react component by querying the API.
   private updateState() {
     const vp = IModelApp.viewManager.selectedView;

@@ -11,6 +11,8 @@ import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import { UiComponents } from "@bentley/ui-components";
 import { UiCore } from "@bentley/ui-core";
+import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
+import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 
 // Boiler plate code
 export interface SampleContext {
@@ -21,13 +23,13 @@ export interface SampleContext {
 export class SampleBaseApp {
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
 
-  public static async startup(optsIn?: IModelAppOptions) {
+  public static async startup() {
 
-    let opts: IModelAppOptions = {};
-    if (optsIn)
-      opts = optsIn;
-
-    opts.tileAdmin = TileAdmin.create({ useProjectExtents: false });
+    const opts: IModelAppOptions = {
+      tileAdmin: TileAdmin.create({ useProjectExtents: false }),
+      notifications: new ShowcaseNotificationManager(),
+      toolAdmin: ShowcaseToolAdmin.initialize(),
+    };
 
     await IModelApp.startup(opts);
 

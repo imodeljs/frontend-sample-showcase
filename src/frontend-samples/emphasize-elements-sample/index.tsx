@@ -164,14 +164,6 @@ export class EmphasizeElementsUI extends React.Component<{}, EmphasizeElementsSt
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
   }
 
-  /** This method is called as the app initializes.  This gives us a chance to supply options to
-   * be passed to IModelApp.startup.
-   */
-  public static getIModelAppOptions(): IModelAppOptions {
-    // This sample doesn't supply any special options.
-    return {};
-  }
-
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     this.setState({ selectionIsEmpty: selection.isEmpty });

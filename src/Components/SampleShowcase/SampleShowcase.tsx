@@ -16,6 +16,7 @@ import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-eleme
 import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
 import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
 import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
+import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
 
 // cSpell:ignore imodels
 
@@ -49,7 +50,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this._samples.push(getEmphasizeElementsSpec());
         this._samples.push(getHeatmapDecoratorSpec());
         this._samples.push(getMarkerPinSpec());
-        this._samples.push({ name: "tooltip-customize-sample", label: "Tooltip Customize", image: "tooltip-customize-thumbnail.png" });
+        this._samples.push(getTooltipCustomizeSpec());
         this._samples.push(getViewAttributesSpec());
         this._samples.push(getViewClipSpec());
         this._samples.push(getZoomToElementsSpec());
