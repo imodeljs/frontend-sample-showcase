@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
@@ -14,12 +13,14 @@ import { Range2d, Point3d } from "@bentley/geometry-core";
 import HeatmapDecorator from "./HeatmapDecorator";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
+import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 
 export function getHeatmapDecoratorSpec(): SampleSpec {
   return ({
     name: "heatmap-decorator-sample",
     label: "Heatmap Decorator",
     image: "heatmap-decorator-thumbnail.png",
+    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     handlesViewSetup: true,
     setup: HeatmapDecoratorApp.setup,
     teardown: HeatmapDecoratorApp.teardown,

@@ -8,7 +8,7 @@ import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { Range2d, Point3d } from "@bentley/geometry-core";
-import { IModelConnection, IModelAppOptions, IModelApp, StandardViewId, Viewport, imageElementFromUrl, ToolRegistry } from "@bentley/imodeljs-frontend";
+import { IModelConnection, IModelApp, StandardViewId, Viewport, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
@@ -16,7 +16,6 @@ import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { PopupMenu } from "./PopupMenu";
 import { RadioCard, RadioCardEntry } from "./RadioCard/RadioCard";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
-import { ToolSelectionSyncHandler } from "@bentley/presentation-frontend/lib/presentation-frontend/selection/SelectionManager";
 
 export function getMarkerPinSpec(): SampleSpec {
   return ({
