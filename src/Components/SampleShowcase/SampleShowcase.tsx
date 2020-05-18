@@ -4,8 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { IModelConnection, ScreenViewport, IModelApp, Viewport, SpatialViewState, DrawingViewState, SelectionSet } from "@bentley/imodeljs-frontend";
-import { Id64String, Id64 } from "@bentley/bentleyjs-core";
+import { IModelConnection, ScreenViewport, IModelApp, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "../Viewport/ViewportAndNavigation";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
 import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
@@ -18,6 +17,9 @@ import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
 import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
 import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
 import { getThematicDisplaySpec } from "../../frontend-samples/thematic-display-sample";
+import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
+import { ViewSetup } from "../../api/viewSetup";
+import { IModelSelector } from "../IModelSelector/IModelSelector";
 
 // cSpell:ignore imodels
 
@@ -25,6 +27,7 @@ export interface SampleSpec {
     name: string;
     label: string;
     image: string;
+    modelList?: string[];
     handlesViewSetup?: boolean;
     setup?: (imodel: IModelConnection, vp: Viewport) => Promise<React.ReactNode>;
     teardown?: () => void;
@@ -32,7 +35,8 @@ export interface SampleSpec {
 
 interface ShowcaseProps {
     imodel: IModelConnection;
-    viewDefinitionId: Id64String;
+    viewState: ViewState;
+    onIModelChange: (imodel: IModelConnection) => void;
 }
 
 interface ShowcaseState {
@@ -54,6 +58,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this._samples.push(getTooltipCustomizeSpec());
         this._samples.push(getViewAttributesSpec());
         this._samples.push(getViewClipSpec());
+        this._samples.push(getViewerOnly2dSpec());
         this._samples.push(getZoomToElementsSpec());
         this._samples.push(getThematicDisplaySpec());
         this.state = {};
@@ -83,36 +88,11 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         IModelApp.viewManager.onViewOpen.removeListener(this._onViewOpen);
     }
 
-    /* NEEDSWORK: I dislike this way of initializing the view, but it does look good for the Retail Building Sample.
-                  - JS 4/1/2020 */
-    /** Pick the first available spatial view definition in the imodel */
-    private async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
-        // Return default view definition (if any)
-        const defaultViewId = await imodel.views.queryDefaultViewId();
-        if (Id64.isValid(defaultViewId))
-            return defaultViewId;
-
-        // Return first spatial view definition (if any)
-        const spatialViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: SpatialViewState.classFullName });
-        if (spatialViews.length > 0)
-            return spatialViews[0].id!;
-
-        // Return first drawing view definition (if any)
-        const drawingViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: DrawingViewState.classFullName });
-        if (drawingViews.length > 0)
-            return drawingViews[0].id!;
-
-        throw new Error("No valid view definitions in imodel");
-    }
-
-    private async setupDefaultView() {
-        const viewId = await this.getFirstViewDefinitionId(this.props.imodel);
-
-        // Load the view state using the viewSpec's ID
-        const viewState = await this.props.imodel.views.load(viewId);
-
-        // Change viewport state
-        this.state.viewport!.changeView(viewState, { animateFrustumChange: false });
+    public componentDidUpdate(prevProps: ShowcaseProps, _prevState: ShowcaseState) {
+        if (prevProps.imodel !== this.props.imodel &&
+            this.state.activeSampleSpec) {
+            this._onActiveSampleChange(this.state.activeSampleSpec.name)
+        }
     }
 
     private async setupNewSample(name: string) {
@@ -124,7 +104,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         }
 
         if (!newSampleSpec.handlesViewSetup)
-            this.setupDefaultView();
+            ViewSetup.applyDefaultView(this.props.imodel, this.state.viewport!);
 
         let sampleUI: React.ReactNode;
         if (newSampleSpec && newSampleSpec.setup)
@@ -149,15 +129,21 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
     /** The sample's render method */
     public render() {
         const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
+        const modelList = this.state.activeSampleSpec ? this.state.activeSampleSpec.modelList : null;
 
         return (
             <>
                 <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-                    <ViewportAndNavigation imodel={this.props.imodel} viewDefinitionId={this.props.viewDefinitionId} />
+                    <ViewportAndNavigation imodel={this.props.imodel} viewState={this.props.viewState} />
                     <div style={{ overflowX: "scroll", overflowY: "hidden" }}>
                         <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
                     </div>
                     {this.state.sampleUI}
+                    {modelList &&
+                        <div className="model-selector">
+                            <IModelSelector iModelNames={modelList} onIModelChange={this.props.onIModelChange} iModel={this.props.imodel} vp={this.state.viewport!} />
+                        </div>
+                    }
                 </div>
             </>
         );

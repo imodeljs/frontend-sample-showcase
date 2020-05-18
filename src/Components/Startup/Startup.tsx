@@ -6,7 +6,6 @@ import * as React from "react";
 import { Config, Id64, Id64String, OpenMode } from "@bentley/bentleyjs-core";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelQuery } from "@bentley/imodelhub-client";
-import { AccessToken } from "@bentley/itwin-client";
 import { AuthorizedFrontendRequestContext, RemoteBriefcaseConnection, DrawingViewState, FrontendRequestContext, IModelApp, IModelConnection, SpatialViewState } from "@bentley/imodeljs-frontend";
 import { SignIn } from "@bentley/ui-components";
 import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize } from "@bentley/ui-core";
