@@ -5,7 +5,7 @@
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplay, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
-import { IModelApp, IModelAppOptions, IModelConnection, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelAppOptions, IModelConnection, Viewport, ViewState3d, StandardViewId } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { GithubLink } from "../../Components/GithubLink";
@@ -98,6 +98,14 @@ export class ThematicDisplaySampleApp {
     this.viewport = vp;
     this.originalProps = API.getThematicDisplayProps(vp);
     this.originalFlag = API.isThematicDisplayOn(vp);
+
+    // Setup the view from the front.
+    if (vp.view.is3d()) {
+      vp.setStandardRotation(StandardViewId.Front);
+      const range = vp.view.computeFitRange();
+      vp.view.lookAtVolume(range, vp.viewRect.aspect);
+      vp.synchWithView(false);
+    }
 
     // Set the default props for the thematic display sample.
     ThematicDisplaySampleUIComponent.init(vp);
