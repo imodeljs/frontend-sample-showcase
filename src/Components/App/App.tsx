@@ -3,17 +3,17 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { StartupComponent } from "../Startup/Startup";
 
 import "./App.css";
 import { SampleShowcase } from "../SampleShowcase/SampleShowcase";
+import { ViewSetup } from "../../api/viewSetup";
 
 /** React state for App component */
 interface AppState {
   imodel?: IModelConnection;
-  viewDefinitionId?: Id64String;
+  viewState?: ViewState;
 }
 
 export class App extends React.Component<{}, AppState> {
@@ -24,17 +24,23 @@ export class App extends React.Component<{}, AppState> {
     this.state = {};
   }
 
-  private _onIModelReady = async (imodel: IModelConnection, viewDefinitionId: Id64String) => {
-    this.setState({ imodel, viewDefinitionId });
+  private _onIModelReady = async (imodel: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+    this.setState({ imodel, viewState });
+  }
+
+  private _onIModelChange = async (imodel: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+    this.setState({ imodel, viewState })
   }
 
   public render() {
     let ui: React.ReactNode;
 
-    if (!this.state.imodel || !this.state.viewDefinitionId)
+    if (!this.state.imodel || !this.state.viewState)
       ui = <StartupComponent onIModelReady={this._onIModelReady} />;
     else
-      ui = <SampleShowcase imodel={this.state.imodel} viewDefinitionId={this.state.viewDefinitionId} />;
+      ui = <SampleShowcase imodel={this.state.imodel} viewState={this.state.viewState} onIModelChange={this._onIModelChange} />;
 
     return (
       <div>

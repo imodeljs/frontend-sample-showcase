@@ -20,6 +20,7 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     teardown: TooltipCustomizeApp.teardown,
   });
 }
+
 enum ElemProperty {
   Origin = "Origin",
   LastModified = "LastMod",
@@ -59,7 +60,7 @@ class TooltipCustomizeApp {
 
 // SampleToolAdmin would typically extend ToolAdmin
 //  See Notes on use of ProxyToolAdmin at the bottom of this file.
-//  class YourToolAdmin extends ToolAdmin
+//  Do this: "class YourToolAdmin extends ToolAdmin"
 class SampleToolAdmin extends ProxyToolAdmin {
   public settings: TooltipCustomizeSettings = {
     showImage: true,
@@ -262,6 +263,6 @@ export class TooltipCustomizeUI extends React.Component<{}, TooltipCustomizeSett
 *           public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {
 *             // custom logic here
 *           }
-*      4. You can access your tool admin through the IModelApp global as follows:
-*            IModelApp.toolAdmin as YourToolAdmin
+*     4. You can access your tool admin through the IModelApp global as follows:
+*           IModelApp.toolAdmin as YourToolAdmin
 */

@@ -5,10 +5,9 @@
 import * as React from "react";
 import {
   IModelApp, IModelConnection,
-  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool,
+  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool, ViewState,
 } from "@bentley/imodeljs-frontend";
 
-import { Id64String } from "@bentley/bentleyjs-core";
 import { ViewportComponent } from "@bentley/ui-components";
 import { viewWithUnifiedSelection } from "@bentley/presentation-components";
 import "./Toolbar.scss";
@@ -21,8 +20,8 @@ const SimpleViewport = viewWithUnifiedSelection(ViewportComponent);
 export interface ViewportAndNavigationProps {
   /** iModel whose contents should be displayed in the viewport */
   imodel: IModelConnection;
-  /** View definition to use when the viewport is first loaded */
-  viewDefinitionId: Id64String;
+  /** View state to use when the viewport is first loaded */
+  viewState: ViewState;
 }
 
 /** Renders viewport, toolbar, and associated elements */
@@ -33,7 +32,7 @@ export class ViewportAndNavigation extends React.PureComponent<ViewportAndNaviga
         <SimpleViewport
           style={{ flexGrow: 1 }}
           imodel={this.props.imodel}
-          viewDefinitionId={this.props.viewDefinitionId}
+          viewState={this.props.viewState}
         />
         {toolbar()}
       </>
