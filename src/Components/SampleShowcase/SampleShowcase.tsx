@@ -18,6 +18,8 @@ import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
 import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
 import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
 import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
+import { getButtonSpec } from "../../frontend-samples/button-sample";
+
 import { ViewSetup } from "../../api/viewSetup";
 import { IModelSelector } from "../IModelSelector/IModelSelector";
 
@@ -61,6 +63,7 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this._samples.push(getViewerOnly2dSpec());
         this._samples.push(getZoomToElementsSpec());
         this._samples.push(getShadowStudySpec());
+        this._samples.push(getButtonSpec());
 
         this.state = {};
     }
