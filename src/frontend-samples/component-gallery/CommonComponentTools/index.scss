@@ -1,0 +1,21 @@
+.component-container {
+
+    .component-example-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0px;
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            flex:  1;
+        }
+
+        .right-panel {
+            flex: 1;
+        }
+    }
+
+}

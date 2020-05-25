@@ -4,18 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { GithubLink } from "../../Components/GithubLink";
-import "../../common/samples-common.scss";
-import { IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
+import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
+import { GithubLink } from "../../../Components/GithubLink";
+import "../../../common/samples-common.scss";
+
+import "../CommonComponentTools/index.scss";
+import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+
+import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { Button, ButtonType, ButtonSize, UnderlinedButton } from "@bentley/ui-core"
-import { ViewportOnlyUI } from "../viewport-only-sample";
-import { setupMaster } from "cluster";
-import "./index.scss";
 
 
-// cSpell:ignore imodels
 
 export function getButtonSpec(): SampleSpec {
   return ({
@@ -28,8 +27,6 @@ export function getButtonSpec(): SampleSpec {
 }
 
 
-
-/** Creates a Component Example */
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
@@ -56,23 +53,14 @@ export class ButtonList extends React.Component<{}> {
         return <ButtonList></ButtonList>
     }
 
-    /** The sample's render method */
     public render() {
-        const buttonData = ButtonList.getButtonData()
         return (
             <>
-            { /* This is the ui specific for this sample.*/}
             <div className="sample-ui">
                 <div>
-                <span>Use the toolbar at the right to navigate the model.</span>
+                <span>Different Styles of Buttons</span>
                 <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                <div className = "sample-options">
-                    {buttonData.map((exampleProps: ComponentExampleProps, index: number) => {
-                        return (
-                            <ComponentExample key={index.toString()} title={exampleProps.title} description={exampleProps.description} content={exampleProps.content} />
-                        );
-                        })}
-                </div>
+                    <ComponentContainer data = {ButtonList.getButtonData()}></ComponentContainer>
                 </div>
             </div>
             </>
@@ -80,27 +68,3 @@ export class ButtonList extends React.Component<{}> {
     }
   
 }
-
-export interface ComponentExampleProps {
-    title: string;
-    description?: string;
-    content: React.ReactNode;
-  }
-  
-  /** Component Example component */
-  // tslint:disable-next-line:variable-name
-  export const ComponentExample: React.FC<ComponentExampleProps> = (props: ComponentExampleProps) => {
-    const { title, description, content } = props;
-    return (
-      <div className="component-example-container">
-        <div className="panel left-panel">
-          <span className="title">{title}</span>
-          <span className="description">{description}</span>
-        </div>
-        <div className="panel right-panel">
-          {content}
-        </div>
-      </div>
-    );
-  };
-
