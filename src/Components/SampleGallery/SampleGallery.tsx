@@ -40,7 +40,6 @@ export class SampleGallery extends React.Component<SampleGalleryProps, {}> {
     );
   }
 
-  /** The sample's render method */
   public render() {
     return (
       <>

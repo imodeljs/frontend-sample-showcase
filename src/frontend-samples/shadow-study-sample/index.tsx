@@ -7,7 +7,10 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewState, IModelApp} from "@bentley/imodeljs-frontend";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "../../api/viewSetup";
+
 
 
 export function getShadowStudySpec(): SampleSpec {
@@ -15,7 +18,6 @@ export function getShadowStudySpec(): SampleSpec {
     name: "shadow-study-sample",
     label: "Shadow Study",
     image: "shadow-study-thumbnail.png",
-    handlesViewSetup: true,
 
     setup: ShadowStudyApp.setup,
   });
@@ -23,7 +25,8 @@ export function getShadowStudySpec(): SampleSpec {
 
 class ShadowStudyApp {
 
-  public static async setup(iModel: IModelConnection, vp: Viewport) {
+  public static async setup(iModelName: string) {
+    const vp = IModelApp.viewManager.selectedView;
 
     //Enable shadows for the current view
     if (vp && vp.view.is3d()) {
@@ -33,7 +36,7 @@ class ShadowStudyApp {
       vp.synchWithView()
     }
 
-    return <ShadowStudyUI />;
+    return <ShadowStudyUI iModelName = {iModelName} />;
   }
 
   //Updates the sun time for the current model
@@ -56,7 +59,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export class ShadowStudyUI extends React.Component<{}, ShadowStudyState> {
+export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -64,7 +67,7 @@ export class ShadowStudyUI extends React.Component<{}, ShadowStudyState> {
 
     //Get date object for current time of day
     const today = new Date()
-
+  
     this.state = {
       date: today
     };
@@ -133,6 +136,7 @@ export class ShadowStudyUI extends React.Component<{}, ShadowStudyState> {
     this.setState({ date: new_date });
 
     var dateLabel = document.getElementById('date')
+    
     if (dateLabel)
       dateLabel.textContent = event.target.value
 
@@ -150,28 +154,52 @@ export class ShadowStudyUI extends React.Component<{}, ShadowStudyState> {
     return String(hour) + ":" + minString
   }
 
+  //Initialize the data view when a new iModel is loaded
+  //It is possible a time is already selected, at which point we should initialize it to this time as opposed to the current time
+  public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+    if (viewState.is3d()) {
+      const viewStyle = viewState.getDisplayStyle3d()
+      if(!this.state)
+        viewStyle.setSunTime(new Date().getTime())
+      else
+        viewStyle.setSunTime(this.state.date.getTime() )
+      viewState.displayStyle = viewStyle
+    }
+    return viewState
+  }
+
+  public getControlPane() {
+    return (
+      <>
+        <div className="sample-ui">
+            <div className="sample-instructions">
+              <span>Select a date and time.</span>
+              <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
+            </div>
+            <hr></hr>
+            <div className="sample-options-3col">
+              <div>Time of Day</div>
+              <input type ="range" min = "0" max = "1439" value = {this.state.date.getHours()*60 + this.state.date.getMinutes()} onChange = {this.updateTime} ></input>
+              <div id = "time">{this.convertMinToTime()}</div>
+            </div>
+            <div className="sample-options-3col">
+              <div>Date</div>
+              <input type ="date" id = "date_picker" onChange = {this.updateDate}></input>
+            <div id = "date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear() }</div>
+            </div>
+            <div id = "date_invalid" ></div>
+          </div>
+        </>
+    )
+  }
+
   /** The sample's render method */
   public render() {
     return (
       <>
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Select a date and time.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
-          </div>
-          <hr></hr>
-          <div className="sample-options-3col">
-            <div>Time of Day</div>
-            <input type ="range" min = "0" max = "1439" value = {this.state.date.getHours()*60 + this.state.date.getMinutes()} onChange = {this.updateTime} ></input>
-            <div id = "time">{this.convertMinToTime()}</div>
-          </div>
-          <div className="sample-options-3col">
-            <div>Date</div>
-            <input type ="date" id = "date_picker" onChange = {this.updateDate}></input>
-          <div id = "date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear() }</div>
-          </div>
-          <div id = "date_invalid" ></div>
-        </div>
+        <ReloadableViewport getCustomViewState = {this.getInitialView} iModelName={this.props.iModelName} />
+        {this.getControlPane()}
       </>
     );
   }
