@@ -136,6 +136,7 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
     this.setState({ date: new_date });
 
     var dateLabel = document.getElementById('date')
+    
     if (dateLabel)
       dateLabel.textContent = event.target.value
 
@@ -166,7 +167,6 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
       viewState.displayStyle = viewStyle
     }
     return viewState
-    
   }
 
   public getControlPane() {
@@ -200,7 +200,6 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
       <>
         <ReloadableViewport getCustomViewState = {this.getInitialView} iModelName={this.props.iModelName} />
         {this.getControlPane()}
-
       </>
     );
   }
