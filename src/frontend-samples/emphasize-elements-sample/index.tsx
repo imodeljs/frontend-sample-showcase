@@ -7,11 +7,12 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelAppOptions, IModelApp, EmphasizeElements, ScreenViewport, FeatureOverrideType } from "@bentley/imodeljs-frontend";
+import { IModelApp, EmphasizeElements, ScreenViewport, FeatureOverrideType } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 export function getEmphasizeElementsSpec(): SampleSpec {
   return ({
@@ -24,8 +25,8 @@ export function getEmphasizeElementsSpec(): SampleSpec {
 }
 
 class EmphasizeElementsApp {
-  public static async setup() {
-    return <EmphasizeElementsUI />;
+  public static async setup(iModelName: string) {
+    return <EmphasizeElementsUI iModelName={iModelName} />;
   }
 
   public static teardown() {
@@ -145,7 +146,7 @@ interface EmphasizeElementsState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class EmphasizeElementsUI extends React.Component<{}, EmphasizeElementsState> {
+export class EmphasizeElementsUI extends React.Component<{ iModelName: string }, EmphasizeElementsState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -229,8 +230,8 @@ export class EmphasizeElementsUI extends React.Component<{}, EmphasizeElementsSt
     this.setState({ colorValue });
   }
 
-  /** The sample's render method */
-  public render() {
+  /** Components for rendering the sample's instructions and controls */
+  private getControlPane() {
     return (
       <>
         <div className="sample-ui">
@@ -258,6 +259,17 @@ export class EmphasizeElementsUI extends React.Component<{}, EmphasizeElementsSt
             <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Override)} disabled={!this.state.overrideIsActive}>Clear</Button>
           </div>
         </div>
+
+      </>
+    );
+  }
+
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} />
+        {this.getControlPane()}
       </>
     );
   }
