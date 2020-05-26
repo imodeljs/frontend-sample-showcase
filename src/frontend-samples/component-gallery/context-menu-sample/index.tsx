@@ -22,7 +22,6 @@ export function getContextMenuSpec(): SampleSpec {
     name: "context-menu-sample",
     label: "ContextMenu",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: ContextMenuList.setup ,
   });
 }

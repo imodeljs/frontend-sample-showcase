@@ -19,9 +19,10 @@ import { Button, ButtonType, ButtonSize, UnderlinedButton } from "@bentley/ui-co
 export function getButtonSpec(): SampleSpec {
   return ({
     name: "button-sample",
-    label: "Button",
-    image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
+    label: "UI-Buttons",
+    image: "ui-button-thumbnail.png",
+    customModelList: [],
+
     setup: ButtonList.setup ,
   });
 }
@@ -56,13 +57,13 @@ export class ButtonList extends React.Component<{}> {
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
+            <div className="sample-ui  component-ui">
+                <div className="sample-instructions">
+                <span>Different styles of buttons that can be used in iModel.js applications</span>
                 <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {ButtonList.getButtonData()}></ComponentContainer>
                 </div>
             </div>
+             <ComponentContainer data = {ButtonList.getButtonData()}></ComponentContainer>
             </>
         );
     }

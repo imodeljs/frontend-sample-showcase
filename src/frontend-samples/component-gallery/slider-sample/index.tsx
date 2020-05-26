@@ -21,7 +21,6 @@ export function getSliderSpec(): SampleSpec {
     name: "slider-sample",
     label: "Slider",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: SliderList.setup ,
   });
 }

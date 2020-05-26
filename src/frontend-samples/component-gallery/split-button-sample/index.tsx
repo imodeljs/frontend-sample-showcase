@@ -21,7 +21,6 @@ export function getSplitButtonSpec(): SampleSpec {
     name: "split-button-sample",
     label: "SplitButton",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: SplitButtonList.setup ,
   });
 }
@@ -63,7 +62,7 @@ export class SplitButtonList extends React.Component<{}> {
         return (
             <>
             <div className="sample-ui">
-                <div>
+                <div max-width="20%">
                 <span>Different Styles of Buttons</span>
                 <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
                     <ComponentContainer data = {SplitButtonList.getSplitButtonData()}></ComponentContainer>

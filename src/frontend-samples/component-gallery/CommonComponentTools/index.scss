@@ -4,7 +4,15 @@
 $component-examples-leftpanel-width: 225px;
 $component-examples-rightpanel-width: 200px;
 
+.component-ui {
+    width: 25%;
+}
+
 .component-container {
+    overflow-y: scroll;
+    //These two things below are probably not ideal for long term use
+    max-height: 500px;
+    padding-left: 30%;
 
     .component-example-container {
         display: flex;

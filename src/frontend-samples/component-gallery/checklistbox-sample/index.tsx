@@ -21,7 +21,6 @@ export function getCheckListBoxSpec(): SampleSpec {
     name: "checklistbox-sample",
     label: "CheckListBox",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: CheckListBoxList.setup ,
   });
 }

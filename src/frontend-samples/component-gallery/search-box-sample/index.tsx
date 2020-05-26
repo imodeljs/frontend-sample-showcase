@@ -21,7 +21,6 @@ export function getSearchBoxSpec(): SampleSpec {
     name: "search-box-sample",
     label: "SearchBox",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: SearchBoxList.setup ,
   });
 }

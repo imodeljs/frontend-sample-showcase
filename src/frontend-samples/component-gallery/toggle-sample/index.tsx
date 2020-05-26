@@ -21,7 +21,6 @@ export function getToggleSpec(): SampleSpec {
     name: "toggle-sample",
     label: "Toggle",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: ToggleList.setup ,
   });
 }

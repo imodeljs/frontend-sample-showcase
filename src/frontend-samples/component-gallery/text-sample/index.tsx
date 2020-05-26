@@ -21,7 +21,6 @@ export function getTextSpec(): SampleSpec {
     name: "text-sample",
     label: "Text",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: TextList.setup ,
   });
 }

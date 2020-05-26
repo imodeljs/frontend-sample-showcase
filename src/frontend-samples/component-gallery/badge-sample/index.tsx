@@ -21,7 +21,6 @@ export function getBadgeSpec(): SampleSpec {
     name: "badge-sample",
     label: "Badge",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: BadgeList.setup ,
   });
 }

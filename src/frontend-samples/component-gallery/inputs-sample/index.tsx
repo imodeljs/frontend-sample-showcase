@@ -25,7 +25,6 @@ export function getInputsSpec(): SampleSpec {
     name: "inputs-sample",
     label: "Inputs",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: InputsList.setup ,
   });
 }

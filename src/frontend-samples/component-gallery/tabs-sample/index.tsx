@@ -21,7 +21,6 @@ export function getTabsSpec(): SampleSpec {
     name: "tabs-sample",
     label: "Tabs",
     image: "viewport-only-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: TabsList.setup ,
   });
 }
