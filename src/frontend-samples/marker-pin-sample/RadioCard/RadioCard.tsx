@@ -47,7 +47,6 @@ export class RadioCard extends React.Component<RadioCardProps, {}> {
     );
   }
 
-  /** The sample's render method */
   public render() {
     return (
       <>

@@ -10,23 +10,25 @@ import "../../common/samples-common.scss";
 import { IModelConnection, IModelApp, ViewClipDecorationProvider, ScreenViewport, ViewClipClearTool, Viewport, EditManipulator } from "@bentley/imodeljs-frontend";
 import { Toggle, Button, ButtonType } from "@bentley/ui-core";
 import { ClipVector, Range3d, ClipShape, ClipMaskXYZRangePlanes, Plane3dByOriginAndUnitNormal, ConvexClipPlaneSet, ClipPlane, Vector3d, Point3d, ClipPrimitive } from "@bentley/geometry-core";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 export function getViewClipSpec(): SampleSpec {
   return ({
     name: "view-clip-sample",
     label: "View Clipping",
     image: "view-clip-thumbnail.png",
-    setup: async (imodel: IModelConnection) => {
-      return <ViewClipUI imodel={imodel} />;
+    setup: async (iModelName: string) => {
+      return <ViewClipUI iModelName={iModelName} />;
     },
   });
 }
 
 interface ViewClipUIProps {
-  imodel: IModelConnection;
+  iModelName: string;
 }
 
 interface ViewClipUIState {
+  imodel?: IModelConnection;
   showClipBlock: boolean;
   clipPlane: string;
 }
@@ -63,7 +65,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
   /* Method for adding a new clip range around the model's extents */
   private _addExtentsClipRange = (vp: ScreenViewport) => {
     // Get the displayed extents of the model.
-    const range: Range3d = this.props.imodel.displayedExtents;
+    const range: Range3d = this.state.imodel!.displayedExtents;
     // Create a block for the ClipVector.
     const block: ClipShape = ClipShape.createBlock(range, range.isAlmostZeroZ ? ClipMaskXYZRangePlanes.XAndY : ClipMaskXYZRangePlanes.All, false, false);
     // Create the ClipVector
@@ -125,7 +127,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     }
 
     // Get the center point of the displayed extents as a starting point for the clip plane
-    const point: Point3d = this.props.imodel.displayedExtents.center;
+    const point: Point3d = this.state.imodel!.displayedExtents.center;
     const normal: Vector3d | undefined = this._getPlaneInwardNormal(rotationType, vp);
     const plane: Plane3dByOriginAndUnitNormal | undefined = Plane3dByOriginAndUnitNormal.create(point, normal!);
     if (undefined === plane)
@@ -173,8 +175,12 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     return true;
   }
 
-  /** The sample's render method */
-  public render() {
+  private onIModelReady = (imodel: IModelConnection) => {
+    this.setState({ imodel });
+  }
+
+  /** Components for rendering the sample's instructions and controls */
+  public getControlPane() {
     return (
       <>
         <div className="sample-ui">
@@ -197,6 +203,16 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
             <Button buttonType={ButtonType.Primary} onClick={() => this._handleFlipButton()} disabled={this.state.clipPlane === "None"}>Flip</Button>
           </div>
         </div>
+      </>
+    );
+  }
+
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        {this.getControlPane()}
       </>
     );
   }
