@@ -7,8 +7,9 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewState, IModelApp} from "@bentley/imodeljs-frontend";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "../../api/viewSetup";
 
 
 
@@ -152,11 +153,27 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
     return String(hour) + ":" + minString
   }
 
+  //Initialize the data view when a new iModel is loaded
+  //It is possible a time is already selected, at which point we should initialize it to this time as opposed to the current time
+  public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+    if (viewState.is3d()) {
+      const viewStyle = viewState.getDisplayStyle3d()
+      if(!this.state)
+        viewStyle.setSunTime(new Date().getTime())
+      else
+        viewStyle.setSunTime(this.state.date.getTime() )
+      viewState.displayStyle = viewStyle
+    }
+    return viewState
+    
+  }
+
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} />
+        <ReloadableViewport getCustomViewState = {this.getInitialView} iModelName={this.props.iModelName} />
 
 
         <div className="sample-ui">
