@@ -8,6 +8,8 @@ import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+
 
 
 export function getShadowStudySpec(): SampleSpec {
@@ -15,7 +17,6 @@ export function getShadowStudySpec(): SampleSpec {
     name: "shadow-study-sample",
     label: "Shadow Study",
     image: "shadow-study-thumbnail.png",
-    handlesViewSetup: true,
 
     setup: ShadowStudyApp.setup,
   });
@@ -23,7 +24,8 @@ export function getShadowStudySpec(): SampleSpec {
 
 class ShadowStudyApp {
 
-  public static async setup(iModel: IModelConnection, vp: Viewport) {
+  public static async setup(iModelName: string) {
+    const vp = IModelApp.viewManager.selectedView;
 
     //Enable shadows for the current view
     if (vp && vp.view.is3d()) {
@@ -33,7 +35,7 @@ class ShadowStudyApp {
       vp.synchWithView()
     }
 
-    return <ShadowStudyUI />;
+    return <ShadowStudyUI iModelName = {iModelName} />;
   }
 
   //Updates the sun time for the current model
@@ -56,7 +58,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export class ShadowStudyUI extends React.Component<{}, ShadowStudyState> {
+export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -64,7 +66,7 @@ export class ShadowStudyUI extends React.Component<{}, ShadowStudyState> {
 
     //Get date object for current time of day
     const today = new Date()
-
+  
     this.state = {
       date: today
     };
@@ -154,6 +156,9 @@ export class ShadowStudyUI extends React.Component<{}, ShadowStudyState> {
   public render() {
     return (
       <>
+        <ReloadableViewport iModelName={this.props.iModelName} />
+
+
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Select a date and time.</span>
