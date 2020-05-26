@@ -1,0 +1,18 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+.showcase {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sample-content {
+  flex: 1; 
+}
+
+.sample-gallery {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}

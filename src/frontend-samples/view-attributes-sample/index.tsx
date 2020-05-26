@@ -10,6 +10,7 @@ import "../../common/samples-common.scss";
 import { IModelApp, Viewport, ViewState3d, Environment } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 // cSpell:ignore imodels
 
@@ -18,8 +19,9 @@ export function getViewAttributesSpec(): SampleSpec {
     name: "view-attributes-sample",
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
-    setup: ViewAttributesApp.setup,
-    teardown: ViewAttributesApp.teardown,
+    setup: async (iModelName: string) => {
+      return <ViewAttributesUI iModelName={iModelName} />;
+    },
   });
 }
 
@@ -41,27 +43,6 @@ interface AttrValues {
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 class ViewAttributesApp {
-  private static initialState: AttrValues;
-
-  public static async setup(): Promise<React.ReactNode> {
-    ViewAttributesApp.initialState = ViewAttributesApp.getAttrValues();
-    return <ViewAttributesUI />;
-  }
-
-  public static teardown() {
-    const vp = IModelApp.viewManager.selectedView!;
-
-    ViewAttributesApp.setRenderMode(vp, ViewAttributesApp.initialState.renderMode);
-    ViewAttributesApp.setViewFlag(vp, ViewFlag.ACS, ViewAttributesApp.initialState.acs);
-    ViewAttributesApp.setCameraOnOff(vp, ViewAttributesApp.initialState.cameraOn);
-    ViewAttributesApp.setViewFlag(vp, ViewFlag.Grid, ViewAttributesApp.initialState.grid);
-    ViewAttributesApp.setViewFlag(vp, ViewFlag.HiddenEdges, ViewAttributesApp.initialState.hiddenEdges);
-    ViewAttributesApp.setViewFlag(vp, ViewFlag.Monochrome, ViewAttributesApp.initialState.monochrome);
-    ViewAttributesApp.setViewFlag(vp, ViewFlag.Shadows, ViewAttributesApp.initialState.shadows);
-    ViewAttributesApp.setSkyboxOnOff(vp, ViewAttributesApp.initialState.skybox);
-    ViewAttributesApp.setViewFlag(vp, ViewFlag.VisibleEdges, ViewAttributesApp.initialState.visibleEdges);
-
-  }
 
   public static getAttrValues(): AttrValues {
     const vp = IModelApp.viewManager.selectedView!;
@@ -174,7 +155,7 @@ class ViewAttributesApp {
  *********************************************************************************************/
 
 /** A React component that renders the UI specific for this sample */
-export class ViewAttributesUI extends React.Component<{}, AttrValues> {
+export class ViewAttributesUI extends React.Component<{ iModelName: string }, AttrValues> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -296,11 +277,10 @@ export class ViewAttributesUI extends React.Component<{}, AttrValues> {
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  /** The sample's render method */
-  public render() {
+  /** Components for rendering the sample's instructions and controls */
+  private getControlPane() {
     return (
       <>
-        { /* This is the ui specific for this sample.*/}
         < div className="sample-ui" >
           <div>
             <span>Use the controls below to change the view attributes.</span>
@@ -319,6 +299,16 @@ export class ViewAttributesUI extends React.Component<{}, AttrValues> {
             {this.createViewFlagToggle(ViewFlag.HiddenEdges, "Hidden Edges", "Turn on to see hidden edges.  Does not apply to wireframe.  For smooth shade render mode, does not apply when visible edges are off.")}
           </div>
         </div >
+      </>
+    );
+  }
+
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} />
+        {this.getControlPane()}
       </>
     );
   }

@@ -5,16 +5,13 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelConnection, ScreenViewport, IModelApp, Viewport, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewportAndNavigation } from "../Viewport/ViewportAndNavigation";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
-import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
+import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
-import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
-import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
+import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
 import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample";
-import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
+import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
 import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
-import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
 import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
 import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
 import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
@@ -33,8 +30,10 @@ import { getTextSpec } from "../../frontend-samples/component-gallery/text-sampl
 import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
 import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
 
-import { ViewSetup } from "../../api/viewSetup";
-import { IModelSelector } from "../IModelSelector/IModelSelector";
+import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
+import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
+import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
+import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
 
 // cSpell:ignore imodels
 
@@ -42,26 +41,19 @@ export interface SampleSpec {
     name: string;
     label: string;
     image: string;
-    modelList?: string[];
-    handlesViewSetup?: boolean;
-    setup?: (imodel: IModelConnection, vp: Viewport) => Promise<React.ReactNode>;
+    customModelList?: string[];
+    setup?: (iModelName: string) => Promise<React.ReactNode>;
     teardown?: () => void;
 }
 
-interface ShowcaseProps {
-    imodel: IModelConnection;
-    viewState: ViewState;
-    onIModelChange: (imodel: IModelConnection) => void;
-}
-
 interface ShowcaseState {
+    iModelName: string;
     activeSampleSpec?: SampleSpec;
-    viewport?: ScreenViewport;
     sampleUI?: React.ReactNode;
 }
 
 /** A React component that renders the UI for the showcase */
-export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState> {
+export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     private _samples: SampleSpec[] = [];
 
     constructor(props?: any, context?: any) {
@@ -91,7 +83,14 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this._samples.push(getTilesSpec());
         this._samples.push(getToggleSpec());
 
-        this.state = {};
+        this.state = {
+            iModelName: SampleIModels.RetailBuilding
+        };
+    }
+
+    public componentDidMount() {
+        const defaultSampleSpec = getViewportOnlySpec();
+        this.setupNewSample(defaultSampleSpec.name);
     }
 
     private getSampleByName(name?: string): SampleSpec | undefined {
@@ -101,28 +100,10 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         return this._samples.find((entry: SampleSpec) => entry.name === name)!;
     }
 
-    private _onViewOpen = (vp: ScreenViewport) => {
-        // if no activeSample has been set yet, set it now to the default sample
-        if (!this.state.activeSampleSpec) {
-            const defaultSampleSpec = getViewportOnlySpec();
-            this.setState({ viewport: vp }, () => this.setupNewSample(defaultSampleSpec.name));
-        }
-    }
+    private getIModelList(sampleSpec: SampleSpec): string[] {
+        const customModelList = sampleSpec.customModelList;
 
-    // before rendering any example make sure the ViewManager is set up with a view.
-    public componentDidMount() {
-        IModelApp.viewManager.onViewOpen.addListener(this._onViewOpen);
-    }
-
-    public componentWillUnmount() {
-        IModelApp.viewManager.onViewOpen.removeListener(this._onViewOpen);
-    }
-
-    public componentDidUpdate(prevProps: ShowcaseProps, _prevState: ShowcaseState) {
-        if (prevProps.imodel !== this.props.imodel &&
-            this.state.activeSampleSpec) {
-            this._onActiveSampleChange(this.state.activeSampleSpec.name)
-        }
+        return customModelList ? customModelList : IModelSelector.defaultModelList;
     }
 
     private async setupNewSample(name: string) {
@@ -133,14 +114,19 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
             return;
         }
 
-        if (!newSampleSpec.handlesViewSetup)
-            ViewSetup.applyDefaultView(this.props.imodel, this.state.viewport!);
-
         let sampleUI: React.ReactNode;
-        if (newSampleSpec && newSampleSpec.setup)
-            sampleUI = await newSampleSpec.setup(this.props.imodel, this.state.viewport!);
+        let iModelName = this.state.iModelName;
 
-        this.setState({ activeSampleSpec: newSampleSpec, sampleUI });
+        if (newSampleSpec && newSampleSpec.setup) {
+
+            if (newSampleSpec !== this.state.activeSampleSpec) {
+                iModelName = this.getIModelList(newSampleSpec)[0];
+            }
+
+            sampleUI = await newSampleSpec.setup(iModelName);
+        }
+
+        this.setState({ activeSampleSpec: newSampleSpec, sampleUI, iModelName });
     }
 
     private _onActiveSampleChange = (name: string) => {
@@ -148,7 +134,6 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         if (undefined !== oldSample && oldSample.teardown)
             oldSample.teardown();
 
-        this.props.imodel.selectionSet.emptyAll();
         this.setupNewSample(name);
     }
 
@@ -156,22 +141,26 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         return this._samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
     }
 
-    /** The sample's render method */
+    private onIModelChange = (iModelName: string) => {
+        this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleSpec!.name));
+    }
+
     public render() {
         const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
-        const modelList = this.state.activeSampleSpec ? this.state.activeSampleSpec.modelList : null;
+        const modelList = this.state.activeSampleSpec ? this.getIModelList(this.state.activeSampleSpec) : null;
 
         return (
             <>
-                <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-                    <ViewportAndNavigation imodel={this.props.imodel} viewState={this.props.viewState} />
-                    <div style={{ overflowX: "scroll", overflowY: "hidden" }}>
+                <div className="showcase">
+                    <div id="sample-container" className="sample-content">
+                        {this.state.sampleUI}
+                    </div>
+                    <div className="sample-gallery">
                         <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
                     </div>
-                    {this.state.sampleUI}
-                    {modelList &&
+                    {modelList && 1 < modelList.length &&
                         <div className="model-selector">
-                            <IModelSelector iModelNames={modelList} onIModelChange={this.props.onIModelChange} iModel={this.props.imodel} vp={this.state.viewport!} />
+                            <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this.onIModelChange} />
                         </div>
                     }
                 </div>
