@@ -6,7 +6,7 @@ import "./index.scss";
 export class ComponentContainer extends React.Component<{data: ComponentExampleProps[]}> {
     public render() {
         return (
-            <div className = "component-container">
+            <div id = "component-container" className = "component-container">
                 {this.props.data.map((exampleProps: ComponentExampleProps, index: number) => {
                     return (
                         <ComponentExample key={index.toString()} title={exampleProps.title} description={exampleProps.description} content={exampleProps.content} />

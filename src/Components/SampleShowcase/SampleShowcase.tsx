@@ -15,6 +15,7 @@ import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
 import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
 import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
 import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
+
 import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample";
 import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
 import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
@@ -62,6 +63,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._samples.push(getEmphasizeElementsSpec());
         this._samples.push(getHeatmapDecoratorSpec());
         this._samples.push(getMarkerPinSpec());
+        this._samples.push(getShadowStudySpec());
         this._samples.push(getTooltipCustomizeSpec());
         this._samples.push(getViewAttributesSpec());
         this._samples.push(getViewClipSpec());
