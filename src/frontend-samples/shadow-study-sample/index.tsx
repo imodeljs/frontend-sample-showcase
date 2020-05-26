@@ -169,31 +169,38 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
     
   }
 
+  public getControlPane() {
+    return (
+      <>
+        <div className="sample-ui">
+            <div className="sample-instructions">
+              <span>Select a date and time.</span>
+              <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
+            </div>
+            <hr></hr>
+            <div className="sample-options-3col">
+              <div>Time of Day</div>
+              <input type ="range" min = "0" max = "1439" value = {this.state.date.getHours()*60 + this.state.date.getMinutes()} onChange = {this.updateTime} ></input>
+              <div id = "time">{this.convertMinToTime()}</div>
+            </div>
+            <div className="sample-options-3col">
+              <div>Date</div>
+              <input type ="date" id = "date_picker" onChange = {this.updateDate}></input>
+            <div id = "date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear() }</div>
+            </div>
+            <div id = "date_invalid" ></div>
+          </div>
+        </>
+    )
+  }
+
   /** The sample's render method */
   public render() {
     return (
       <>
         <ReloadableViewport getCustomViewState = {this.getInitialView} iModelName={this.props.iModelName} />
+        {this.getControlPane()}
 
-
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Select a date and time.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
-          </div>
-          <hr></hr>
-          <div className="sample-options-3col">
-            <div>Time of Day</div>
-            <input type ="range" min = "0" max = "1439" value = {this.state.date.getHours()*60 + this.state.date.getMinutes()} onChange = {this.updateTime} ></input>
-            <div id = "time">{this.convertMinToTime()}</div>
-          </div>
-          <div className="sample-options-3col">
-            <div>Date</div>
-            <input type ="date" id = "date_picker" onChange = {this.updateDate}></input>
-          <div id = "date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear() }</div>
-          </div>
-          <div id = "date_invalid" ></div>
-        </div>
       </>
     );
   }

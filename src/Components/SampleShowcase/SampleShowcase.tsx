@@ -47,12 +47,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._samples.push(getEmphasizeElementsSpec());
         this._samples.push(getHeatmapDecoratorSpec());
         this._samples.push(getMarkerPinSpec());
+        this._samples.push(getShadowStudySpec());
         this._samples.push(getTooltipCustomizeSpec());
         this._samples.push(getViewAttributesSpec());
         this._samples.push(getViewClipSpec());
         this._samples.push(getViewerOnly2dSpec());
         this._samples.push(getZoomToElementsSpec());
-        this._samples.push(getShadowStudySpec());
 
         this.state = {
             iModelName: SampleIModels.RetailBuilding
