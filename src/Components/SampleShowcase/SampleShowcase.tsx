@@ -13,6 +13,7 @@ import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-eleme
 import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
 import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
 import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
+import { getThematicDisplaySpec } from "../../frontend-samples/thematic-display-sample";
 import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
 import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
 
@@ -69,6 +70,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._samples.push(getViewClipSpec());
         this._samples.push(getViewerOnly2dSpec());
         this._samples.push(getZoomToElementsSpec());
+        this._samples.push(getThematicDisplaySpec());
         //this._samples.push(getShadowStudySpec());
         //this._samples.push(getBadgeSpec());
         this._samples.push(getButtonSpec());
