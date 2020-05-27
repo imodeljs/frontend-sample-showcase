@@ -7,10 +7,7 @@ trigger:
 - master
 
 pool:
-  name: Azure Pipelines
-  demands:
-  - msbuild
-  - visualstudio
+  vmImage: 'windows-latest'
 
 steps:
 - task: NodeTool@0
