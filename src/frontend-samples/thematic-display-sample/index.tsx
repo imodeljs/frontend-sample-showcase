@@ -142,21 +142,6 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
     };
   }
 
-  /** Returns a ViewState where the camera is looking at the whole model from the front */
-  private _initCamera = async (iModel: IModelConnection): Promise<ViewState> => {
-    const view = await ViewSetup.getDefaultView(iModel);
-
-    if (view.is3d()) {
-      view.setStandardRotation(StandardViewId.Front);
-    }
-
-    const range = view.computeFitRange();
-    const aspect = view.getAspectRatio();
-    view.lookAtVolume(range, aspect);
-
-    return view;
-  }
-
   /** This method is called when the iModel is loaded by the react component */
   private _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
@@ -323,7 +308,7 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
   public render() {
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this._initCamera} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         {this.getControlPane()}
       </>
     );
