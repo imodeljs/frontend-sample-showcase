@@ -142,12 +142,6 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
     };
   }
 
-  /** Once mounted, */
-  public componentDidMount = () => {
-    // Insure the state of the iModel and component are synced
-    this.updateState();
-  }
-
   /** Returns a ViewState where the camera is looking at the whole model from the front */
   private _initCamera = async (iModel: IModelConnection): Promise<ViewState> => {
     const view = await ViewSetup.getDefaultView(iModel);
