@@ -5,11 +5,13 @@
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplay, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
-import { IModelApp, IModelAppOptions, IModelConnection, Viewport, ViewState3d, StandardViewId } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelAppOptions, IModelConnection, Viewport, ViewState3d, StandardViewId, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { GithubLink } from "../../Components/GithubLink";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "../../api/viewSetup";
 
 // cSpell:ignore imodels
 export function getThematicDisplaySpec(): SampleSpec {
@@ -17,7 +19,6 @@ export function getThematicDisplaySpec(): SampleSpec {
     name: "thematic-display-sample",
     label: "Thematic Display",
     image: "thematic-display-thumbnail.png",
-    handlesViewSetup: true,
     setup: ThematicDisplaySampleApp.setup,
     teardown: ThematicDisplaySampleApp.teardown,
   });
@@ -94,23 +95,8 @@ export class ThematicDisplaySampleApp {
   public static viewport?: Viewport;
 
   /** Called by the showcase before the sample is started. */
-  public static async setup(_iModel: IModelConnection, vp: Viewport): Promise<React.ReactNode> {
-    this.viewport = vp;
-    this.originalProps = API.getThematicDisplayProps(vp);
-    this.originalFlag = API.isThematicDisplayOn(vp);
-
-    // Setup the view from the front.
-    if (vp.view.is3d()) {
-      vp.setStandardRotation(StandardViewId.Front);
-      const range = vp.view.computeFitRange();
-      vp.view.lookAtVolume(range, vp.viewRect.aspect);
-      vp.synchWithView(false);
-    }
-
-    // Set the default props for the thematic display sample.
-    ThematicDisplaySampleUIComponent.init(vp);
-
-    return <ThematicDisplaySampleUIComponent/>;
+  public static async setup(iModelName: string): Promise<React.ReactNode> {
+    return <ThematicDisplaySampleUIComponent iModelName={iModelName} />;
   }
 
   /** Called by the showcase before swapping to another sample. */
@@ -119,7 +105,6 @@ export class ThematicDisplaySampleApp {
     API.setThematicDisplayProps(this.viewport, this.originalProps);
     API.setThematicDisplayOnOff(this.viewport, this.originalFlag);
   }
-
 }
 
 /** React state of the Sample component */
@@ -130,8 +115,13 @@ interface SampleState {
   colorScheme: ThematicGradientColorScheme;
 }
 
+/** React props for the Sample component */
+interface ThematicDisplaySampleUIProps {
+  iModelName: string;
+}
+
 /** A React component that renders the UI specific for this sample */
-export class ThematicDisplaySampleUIComponent extends React.Component<{}, SampleState> {
+export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
 
   // defining the Thematic Display Props values that are not what is need at default,
   private static readonly _defaultProps: ThematicDisplayProps = {
@@ -158,10 +148,33 @@ export class ThematicDisplaySampleUIComponent extends React.Component<{}, Sample
     this.updateState();
   }
 
-  /** This method is called as the when the view is loaded to set default settings in the 
+  /** Returns a ViewState where the camera is looking at the whole model from the front */
+  private _initCamera = async (iModel: IModelConnection): Promise<ViewState> => {
+    const view = await ViewSetup.getDefaultView(iModel);
+
+    if (view.is3d()) {
+      view.setStandardRotation(StandardViewId.Front);
+    }
+
+    const range = view.computeFitRange();
+    const aspect = view.getAspectRatio();
+    view.lookAtVolume(range, aspect);
+
+    return view;
+  }
+
+  /** This method is called when the iModel is loaded by the react component */
+  private _onIModelReady = (_iModel: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
+      ThematicDisplaySampleUIComponent.init(vp);
+      this.updateState();
+    });
+  }
+
+  /** This method should be called when the iModel is loaded to set default settings in the 
    * viewport settings to enable thematic display.
    */
-   public static init(vp: Viewport): void {
+  public static init(vp: Viewport) {
     // Test that view is compatible with thematic display.
     if (undefined === vp || !API.isThematicDisplaySupported(vp)) {
       alert("iModel is not compatible with thematic display, please use an iModel with a 3d view.");
@@ -181,7 +194,7 @@ export class ThematicDisplaySampleUIComponent extends React.Component<{}, Sample
     // Turn on
     // Note: Since this function is modifying the view flags, the view does not need to be synced to see the changes.
     API.setThematicDisplayOnOff(vp, true);
-   }
+  }
 
   /** This method is called as the app initializes.  This gives us a chance to supply options to
    * be passed to IModelApp.startup.
@@ -298,8 +311,8 @@ export class ThematicDisplaySampleUIComponent extends React.Component<{}, Sample
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  /** The sample's render method */
-  public render() {
+  /** Components for rendering the sample's instructions and controls */
+  public getControlPane() {
     return (
       <>
         { /* This is the ui specific for this sample.*/}
@@ -315,6 +328,16 @@ export class ThematicDisplaySampleUIComponent extends React.Component<{}, Sample
             {this.createThematicDisplayRangeSlider("Change Range", "Control the effective area of the thematic display.")}
           </div>
         </div>
+      </>
+    );
+  }
+
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this._initCamera} />
+        {this.getControlPane()}
       </>
     );
   }
