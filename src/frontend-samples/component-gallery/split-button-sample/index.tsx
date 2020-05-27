@@ -19,15 +19,10 @@ import { SplitButton, ContextMenuItem } from "@bentley/ui-core"
 export function getSplitButtonSpec(): SampleSpec {
   return ({
     name: "split-button-sample",
-<<<<<<< HEAD
     label: "UI-Split Buttons",
     image: "viewport-only-thumbnail.png",
     customModelList: [],
 
-=======
-    label: "SplitButton",
-    image: "viewport-only-thumbnail.png",
->>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
     setup: SplitButtonList.setup ,
   });
 }
@@ -65,7 +60,6 @@ export class SplitButtonList extends React.Component<{}> {
         return <SplitButtonList></SplitButtonList>
     }
 
-<<<<<<< HEAD
     public getControlPlane() {
       return (
           <>
@@ -85,19 +79,6 @@ export class SplitButtonList extends React.Component<{}> {
           {this.getControlPlane()}
            <ComponentContainer data = {SplitButtonList.getSplitButtonData()}></ComponentContainer>
           </>
-=======
-    public render() {
-        return (
-            <>
-            <div className="sample-ui">
-                <div max-width="20%">
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {SplitButtonList.getSplitButtonData()}></ComponentContainer>
-                </div>
-            </div>
-            </>
->>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
         );
     }
   
