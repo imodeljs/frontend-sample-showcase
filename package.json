@@ -17,7 +17,7 @@
     "@bentley/presentation-common": "2.0.0",
     "@bentley/presentation-components": "2.0.0",
     "@bentley/presentation-frontend": "2.0.0",
-    "@bentley/react-scripts": "3.4.1-dev.35",
+    "@bentley/react-scripts": "3.4.1",
     "@bentley/ui-components": "2.0.0",
     "@bentley/ui-abstract": "2.0.0",
     "@bentley/ui-core": "2.0.0",
