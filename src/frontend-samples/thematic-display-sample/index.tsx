@@ -190,13 +190,6 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
     API.setThematicDisplayOnOff(vp, true);
   }
 
-  /** This method is called as the app initializes.  This gives us a chance to supply options to
-   * be passed to IModelApp.startup.
-   */
-  public static getIModelAppOptions(): IModelAppOptions {
-    return {};
-  }
-
   /** Update the state of the sample react component by querying the API. */
   public updateState() {
     const vp = IModelApp.viewManager.selectedView;
