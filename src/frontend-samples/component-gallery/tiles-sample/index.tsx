@@ -19,10 +19,15 @@ import { Tile, MinimalTile, FeaturedTile, MinimalFeaturedTile} from "@bentley/ui
 export function getTilesSpec(): SampleSpec {
   return ({
     name: "tiles-sample",
+<<<<<<< HEAD
     label: "UI-Tiles",
     image: "viewport-only-thumbnail.png",
     customModelList: [],
 
+=======
+    label: "Tiles",
+    image: "viewport-only-thumbnail.png",
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
     setup: TilesList.setup ,
   });
 }
@@ -61,6 +66,7 @@ export class TilesList extends React.Component<{}> {
         return <TilesList></TilesList>
     }
 
+<<<<<<< HEAD
     public getControlPlane() {
       return (
           <>
@@ -80,6 +86,19 @@ export class TilesList extends React.Component<{}> {
           {this.getControlPlane()}
            <ComponentContainer data = {TilesList.getTilesData()}></ComponentContainer>
           </>
+=======
+    public render() {
+        return (
+            <>
+            <div className="sample-ui">
+                <div>
+                <span>Different Styles of Buttons</span>
+                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    <ComponentContainer data = {TilesList.getTilesData()}></ComponentContainer>
+                </div>
+            </div>
+            </>
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
         );
     }
   

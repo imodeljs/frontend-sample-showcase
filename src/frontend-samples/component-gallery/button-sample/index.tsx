@@ -54,6 +54,7 @@ export class ButtonList extends React.Component<{}> {
         return <ButtonList></ButtonList>
     }
 
+<<<<<<< HEAD
     public getControlPlane() {
         return (
             <>
@@ -71,6 +72,17 @@ export class ButtonList extends React.Component<{}> {
         return (
             <>
             {this.getControlPlane()}
+=======
+    public render() {
+        return (
+            <>
+            <div className="sample-ui  component-ui">
+                <div className="sample-instructions">
+                <span>Different styles of buttons that can be used in iModel.js applications</span>
+                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                </div>
+            </div>
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
              <ComponentContainer data = {ButtonList.getButtonData()}></ComponentContainer>
             </>
         );

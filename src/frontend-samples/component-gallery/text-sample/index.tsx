@@ -19,10 +19,15 @@ import { BodyText, BlockText, DisabledText, Headline, LeadingText, MutedText, Sm
 export function getTextSpec(): SampleSpec {
   return ({
     name: "text-sample",
+<<<<<<< HEAD
     label: "UI-Text",
     image: "viewport-only-thumbnail.png",
     customModelList: [],
 
+=======
+    label: "Text",
+    image: "viewport-only-thumbnail.png",
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
     setup: TextList.setup ,
   });
 }
@@ -54,6 +59,7 @@ export class TextList extends React.Component<{}> {
         return <TextList></TextList>
     }
 
+<<<<<<< HEAD
     public getControlPlane() {
         return (
             <>
@@ -72,6 +78,18 @@ export class TextList extends React.Component<{}> {
             <>
             {this.getControlPlane()}
              <ComponentContainer data = {TextList.getTextData()}></ComponentContainer>
+=======
+    public render() {
+        return (
+            <>
+            <div className="sample-ui">
+                <div>
+                <span>Different Styles of Buttons</span>
+                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    <ComponentContainer data = {TextList.getTextData()}></ComponentContainer>
+                </div>
+            </div>
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
             </>
         );
     }

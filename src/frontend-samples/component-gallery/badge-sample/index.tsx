@@ -19,10 +19,15 @@ import { BetaBadge, NewBadge } from "@bentley/ui-core"
 export function getBadgeSpec(): SampleSpec {
   return ({
     name: "badge-sample",
+<<<<<<< HEAD
     label: "UI-Badges",
     image: "viewport-only-thumbnail.png",
     customModelList: [],
 
+=======
+    label: "Badge",
+    image: "viewport-only-thumbnail.png",
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
     setup: BadgeList.setup ,
   });
 }
@@ -47,6 +52,7 @@ export class BadgeList extends React.Component<{}> {
         return <BadgeList></BadgeList>
     }
 
+<<<<<<< HEAD
     public getControlPlane() {
         return (
             <>
@@ -65,6 +71,18 @@ export class BadgeList extends React.Component<{}> {
             <>
             {this.getControlPlane()}
              <ComponentContainer data = {BadgeList.getBadgeData()}></ComponentContainer>
+=======
+    public render() {
+        return (
+            <>
+            <div className="sample-ui">
+                <div>
+                <span>Different Styles of Buttons</span>
+                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    <ComponentContainer data = {BadgeList.getBadgeData()}></ComponentContainer>
+                </div>
+            </div>
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
             </>
         );
     }

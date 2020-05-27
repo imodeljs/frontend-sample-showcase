@@ -20,10 +20,15 @@ import { SampleExpandableBlock } from "./SampleExpandableBlock";
 export function getExpandableListSpec(): SampleSpec {
   return ({
     name: "expandable-list-sample",
+<<<<<<< HEAD
     label: "UI-Expandable Lists",
     image: "viewport-only-thumbnail.png",
     customModelList: [],
 
+=======
+    label: "ExpandableList",
+    image: "viewport-only-thumbnail.png",
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
     setup: ExpandableListList.setup ,
   });
 }
@@ -61,6 +66,7 @@ export class ExpandableListList extends React.Component<{}> {
         return <ExpandableListList></ExpandableListList>
     }
 
+<<<<<<< HEAD
     public getControlPlane() {
       return (
           <>
@@ -80,6 +86,19 @@ export class ExpandableListList extends React.Component<{}> {
           {this.getControlPlane()}
            <ComponentContainer data = {ExpandableListList.getExpandableListData()}></ComponentContainer>
           </>
+=======
+    public render() {
+        return (
+            <>
+            <div className="sample-ui">
+                <div>
+                <span>Different Styles of Buttons</span>
+                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    <ComponentContainer data = {ExpandableListList.getExpandableListData()}></ComponentContainer>
+                </div>
+            </div>
+            </>
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
         );
     }
   

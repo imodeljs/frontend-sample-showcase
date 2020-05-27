@@ -19,10 +19,15 @@ import { Toggle, LabeledToggle, ToggleButtonType } from "@bentley/ui-core"
 export function getToggleSpec(): SampleSpec {
   return ({
     name: "toggle-sample",
+<<<<<<< HEAD
     label: "UI-Toggles",
     image: "viewport-only-thumbnail.png",
     customModelList: [],
 
+=======
+    label: "Toggle",
+    image: "viewport-only-thumbnail.png",
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
     setup: ToggleList.setup ,
   });
 }
@@ -51,6 +56,7 @@ export class ToggleList extends React.Component<{}> {
         return <ToggleList></ToggleList>
     }
 
+<<<<<<< HEAD
     public getControlPlane() {
         return (
             <>
@@ -69,6 +75,18 @@ export class ToggleList extends React.Component<{}> {
             <>
             {this.getControlPlane()}
              <ComponentContainer data = {ToggleList.getToggleData()}></ComponentContainer>
+=======
+    public render() {
+        return (
+            <>
+            <div className="sample-ui">
+                <div>
+                <span>Different Styles of Buttons</span>
+                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    <ComponentContainer data = {ToggleList.getToggleData()}></ComponentContainer>
+                </div>
+            </div>
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
             </>
         );
     }

@@ -19,10 +19,15 @@ import { Spinner, LoadingSpinner, SpinnerSize, LoadingStatus, LoadingPrompt } fr
 export function getLoadingSpec(): SampleSpec {
   return ({
     name: "loading-sample",
+<<<<<<< HEAD
     label: "UI-Loading Icons",
     image: "viewport-only-thumbnail.png",
     customModelList: [],
 
+=======
+    label: "Loading",
+    image: "viewport-only-thumbnail.png",
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
     setup: LoadingList.setup ,
   });
 }
@@ -63,6 +68,7 @@ export class LoadingList extends React.Component<{}> {
         return <LoadingList></LoadingList>
     }
 
+<<<<<<< HEAD
 
     public getControlPlane() {
       return (
@@ -82,6 +88,19 @@ export class LoadingList extends React.Component<{}> {
           {this.getControlPlane()}
            <ComponentContainer data = {LoadingList.getLoadingData()}></ComponentContainer>
           </>
+=======
+    public render() {
+        return (
+            <>
+            <div className="sample-ui">
+                <div>
+                <span>Different Styles of Buttons</span>
+                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    <ComponentContainer data = {LoadingList.getLoadingData()}></ComponentContainer>
+                </div>
+            </div>
+            </>
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
         );
     }
   

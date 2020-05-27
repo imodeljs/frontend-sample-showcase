@@ -5,6 +5,7 @@ $component-examples-leftpanel-width: 225px;
 $component-examples-rightpanel-width: 200px;
 
 .component-ui {
+<<<<<<< HEAD
     width: 20%;
 }
 
@@ -14,6 +15,16 @@ $component-examples-rightpanel-width: 200px;
     //max-height: 500px;
     padding-left: 25%;
     padding-right: 25%;
+=======
+    width: 25%;
+}
+
+.component-container {
+    overflow-y: scroll;
+    //These two things below are probably not ideal for long term use
+    max-height: 500px;
+    padding-left: 30%;
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
 
     .component-example-container {
         display: flex;
@@ -41,7 +52,11 @@ $component-examples-rightpanel-width: 200px;
         }
 
         .right-panel {
+<<<<<<< HEAD
             //flex: 1;
+=======
+            flex: 1;
+>>>>>>> ae033e4822ddc188c3382966a775ffa54a36dcda
             width: $component-examples-rightpanel-width;
 
         }
