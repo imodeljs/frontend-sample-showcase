@@ -20,8 +20,10 @@ import { SampleContextMenu } from "./SampleContextMenu";
 export function getContextMenuSpec(): SampleSpec {
   return ({
     name: "context-menu-sample",
-    label: "ContextMenu",
+    label: "UI-Context Menus",
     image: "viewport-only-thumbnail.png",
+    customModelList: [],
+
     setup: ContextMenuList.setup ,
   });
 }
@@ -45,16 +47,24 @@ export class ContextMenuList extends React.Component<{}> {
         return <ContextMenuList></ContextMenuList>
     }
 
+    public getControlPlane() {
+        return (
+            <>
+                <div className="sample-ui  component-ui">
+                    <div className="sample-instructions">
+                        <span>Different styles of context menus that can be used in iModel.js applications</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {ContextMenuList.getContextMenuData()}></ComponentContainer>
-                </div>
-            </div>
+            {this.getControlPlane()}
+             <ComponentContainer data = {ContextMenuList.getContextMenuData()}></ComponentContainer>
             </>
         );
     }

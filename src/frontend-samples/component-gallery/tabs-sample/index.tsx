@@ -19,8 +19,10 @@ import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core"
 export function getTabsSpec(): SampleSpec {
   return ({
     name: "tabs-sample",
-    label: "Tabs",
+    label: "UI-Tabs",
     image: "viewport-only-thumbnail.png",
+    customModelList: [],
+
     setup: TabsList.setup ,
   });
 }
@@ -47,16 +49,24 @@ export class TabsList extends React.Component<{}> {
         return <TabsList></TabsList>
     }
 
+    public getControlPlane() {
+        return (
+            <>
+                <div className="sample-ui  component-ui">
+                    <div className="sample-instructions">
+                        <span>Different styles of tabs that can be used in iModel.js applications</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {TabsList.getTabsData()}></ComponentContainer>
-                </div>
-            </div>
+            {this.getControlPlane()}
+             <ComponentContainer data = {TabsList.getTabsData()}></ComponentContainer>
             </>
         );
     }

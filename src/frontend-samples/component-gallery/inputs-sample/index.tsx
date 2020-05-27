@@ -23,8 +23,10 @@ import { SampleImageCheckBox } from "./SampleImageCheckBox";
 export function getInputsSpec(): SampleSpec {
   return ({
     name: "inputs-sample",
-    label: "Inputs",
+    label: "UI-Inputs",
     image: "viewport-only-thumbnail.png",
+    customModelList: [],
+
     setup: InputsList.setup ,
   });
 }
@@ -71,16 +73,24 @@ export class InputsList extends React.Component<{}> {
         return <InputsList></InputsList>
     }
 
+    public getControlPlane() {
+        return (
+            <>
+                <div className="sample-ui  component-ui">
+                    <div className="sample-instructions">
+                        <span>Different styles of inputs that can be used in iModel.js applications</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {InputsList.getInputsData()}></ComponentContainer>
-                </div>
-            </div>
+            {this.getControlPlane()}
+             <ComponentContainer data = {InputsList.getInputsData()}></ComponentContainer>
             </>
         );
     }

@@ -19,9 +19,12 @@ import { CheckListBox, CheckListBoxItem, CheckListBoxSeparator } from "@bentley/
 export function getCheckListBoxSpec(): SampleSpec {
   return ({
     name: "checklistbox-sample",
-    label: "CheckListBox",
+    label: "UI-CheckListBoxes",
     image: "viewport-only-thumbnail.png",
+    customModelList: [],
+
     setup: CheckListBoxList.setup ,
+    
   });
 }
 
@@ -56,17 +59,25 @@ export class CheckListBoxList extends React.Component<{}> {
         return <CheckListBoxList></CheckListBoxList>
     }
 
+    public getControlPlane() {
+      return (
+          <>
+              <div className="sample-ui  component-ui">
+                  <div className="sample-instructions">
+                      <span>Different styles of checklistboxes that can be used in iModel.js applications</span>
+                      <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                  </div>
+              </div>
+          </>
+      )
+  }
+
     public render() {
         return (
-            <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {CheckListBoxList.getCheckListBoxData()}></ComponentContainer>
-                </div>
-            </div>
-            </>
+          <>
+          {this.getControlPlane()}
+           <ComponentContainer data = {CheckListBoxList.getCheckListBoxData()}></ComponentContainer>
+          </>
         );
     }
   

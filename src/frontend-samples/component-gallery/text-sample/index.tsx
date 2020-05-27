@@ -19,8 +19,10 @@ import { BodyText, BlockText, DisabledText, Headline, LeadingText, MutedText, Sm
 export function getTextSpec(): SampleSpec {
   return ({
     name: "text-sample",
-    label: "Text",
+    label: "UI-Text",
     image: "viewport-only-thumbnail.png",
+    customModelList: [],
+
     setup: TextList.setup ,
   });
 }
@@ -52,16 +54,24 @@ export class TextList extends React.Component<{}> {
         return <TextList></TextList>
     }
 
+    public getControlPlane() {
+        return (
+            <>
+                <div className="sample-ui  component-ui">
+                    <div className="sample-instructions">
+                        <span>Different styles of text that can be used in iModel.js applications</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {TextList.getTextData()}></ComponentContainer>
-                </div>
-            </div>
+            {this.getControlPlane()}
+             <ComponentContainer data = {TextList.getTextData()}></ComponentContainer>
             </>
         );
     }

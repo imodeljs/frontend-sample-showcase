@@ -19,8 +19,10 @@ import { Slider, Icon } from "@bentley/ui-core"
 export function getSliderSpec(): SampleSpec {
   return ({
     name: "slider-sample",
-    label: "Slider",
+    label: "UI-Sliders",
     image: "viewport-only-thumbnail.png",
+    customModelList: [],
+
     setup: SliderList.setup ,
   });
 }
@@ -64,17 +66,25 @@ export class SliderList extends React.Component<{}> {
         return <SliderList></SliderList>
     }
 
+    public getControlPlane() {
+      return (
+          <>
+              <div className="sample-ui  component-ui">
+                  <div className="sample-instructions">
+                      <span>Different styles of sliders that can be used in iModel.js applications</span>
+                      <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                  </div>
+              </div>
+          </>
+      )
+  }
+
     public render() {
         return (
-            <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {SliderList.getSliderData()}></ComponentContainer>
-                </div>
-            </div>
-            </>
+          <>
+          {this.getControlPlane()}
+           <ComponentContainer data = {SliderList.getSliderData()}></ComponentContainer>
+          </>
         );
     }
   
