@@ -9,6 +9,7 @@ import "../../common/samples-common.scss";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { ShowcaseToolAdmin, ProxyToolAdmin } from "../../api/showcasetooladmin";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 enum ElemProperty {
   Origin = "Origin",
@@ -35,11 +36,11 @@ export class TooltipCustomizeApp {
     elemProperty: ElemProperty.Origin,
   };
 
-  public static async setup() {
+  public static async setup(iModelName: string) {
     // ToolAdmin is typically initialized at application start.
     // See Notes at bottom of this file.
     ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin);
-    return <TooltipCustomizeUI />;
+    return <TooltipCustomizeUI iModelName={iModelName} />;
   }
 
   public static teardown() {
@@ -137,7 +138,7 @@ class SampleToolAdmin extends ProxyToolAdmin {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class TooltipCustomizeUI extends React.Component<{}, TooltipCustomizeSettings> {
+export class TooltipCustomizeUI extends React.Component<{ iModelName: string }, TooltipCustomizeSettings> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -197,11 +198,10 @@ export class TooltipCustomizeUI extends React.Component<{}, TooltipCustomizeSett
     });
   }
 
-  /** The sample's render method */
-  public render() {
+  /** Components for rendering the sample's instructions and controls */
+  private getControlPane() {
     return (
       <>
-        { /* This is the ui specific for this sample.*/}
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.</span>
@@ -227,6 +227,16 @@ export class TooltipCustomizeUI extends React.Component<{}, TooltipCustomizeSett
             <span></span>
           </div>
         </div>
+      </>
+    );
+  }
+
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} />
+        {this.getControlPane()}
       </>
     );
   }

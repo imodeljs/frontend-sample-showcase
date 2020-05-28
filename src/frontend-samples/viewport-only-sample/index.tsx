@@ -3,20 +3,22 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { GithubLink } from "../../Components/GithubLink";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import "../../common/samples-common.scss";
-import { IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 
 // cSpell:ignore imodels
 
-export class ViewportOnlyUI extends React.Component<{ iModel: IModelConnection, vp: Viewport }, {}> {
+export class ViewportOnlyUI extends React.Component<{ iModelName: string }, {}> {
 
   /** The sample's render method */
   public render() {
     return (
       <>
-        { /* This is the ui specific for this sample.*/}
+        { /* Viewport to display the iModel */}
+        <ReloadableViewport iModelName={this.props.iModelName} />
+
+        { /* The instructions */}
         <div className="sample-ui">
           <div>
             <span>Use the toolbar at the right to navigate the model.</span>
@@ -27,5 +29,3 @@ export class ViewportOnlyUI extends React.Component<{ iModel: IModelConnection, 
     );
   }
 }
-
-

@@ -6,18 +6,31 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelConnection, IModelAppOptions, IModelApp, ViewChangeOptions, MarginPercent, StandardViewId, Viewport, ZoomToOptions } from "@bentley/imodeljs-frontend";
+import { IModelConnection, IModelApp, ViewChangeOptions, MarginPercent, StandardViewId, ZoomToOptions, Viewport } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+
+class ZoomToElementsAPI {
+  public static async zoomToElements(elementIds: string[], viewChangeOpts: ViewChangeOptions, zoomToOpts: ZoomToOptions, vp: Viewport, imodel: IModelConnection) {
+
+    // Set the view to point at a volume containing the list of elements
+    await vp.zoomToElements(elementIds, { ...viewChangeOpts, ...zoomToOpts });
+
+    // Select the elements.  This is not necessary, but it makes them easier to see.
+    imodel.selectionSet.replace(elementIds);
+  }
+}
 
 /** React props */
 interface ZoomToProps {
-  imodel: IModelConnection;
+  iModelName: string;
 }
 
 /** React state */
 interface ZoomToState {
+  imodel?: IModelConnection;
   elementsAreSelected: boolean;
   elementList: string[];
   selectedList: string[];
@@ -75,19 +88,19 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
     if (this.state.standardViewEnable)
       zoomToOpts.standardViewId = this.state.standardViewVal;
 
-    await IModelApp.viewManager.selectedView!.zoomToElements(this.state.elementList, { ...viewChangeOpts, ...zoomToOpts });
-    this.props.imodel.selectionSet.replace(this.state.elementList);
+    const vp = IModelApp.viewManager.selectedView!;
+    ZoomToElementsAPI.zoomToElements(this.state.elementList, viewChangeOpts, zoomToOpts, vp, this.state.imodel!);
   }
 
   private _handleCaptureIdsButton = () => {
     const toAdd: string[] = [];
-    for (const e of this.props.imodel.selectionSet.elements) {
+    for (const e of this.state.imodel!.selectionSet.elements) {
       if (this.state.elementList.indexOf(e) < 0) {
         toAdd.push(e);
       }
     }
     this.setState((prevState) => ({ elementList: [...prevState.elementList, ...toAdd] }));
-    this.props.imodel.selectionSet.emptyAll();
+    this.state.imodel!.selectionSet.emptyAll();
   }
 
   private _handleRemoveIdsButton = () => {
@@ -105,7 +118,7 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
     this._ignoreSelectionChanged = false;
 
     this.setState({ elementList: filteredList, selectedList: [] });
-    this.props.imodel.selectionSet.emptyAll();
+    this.state.imodel!.selectionSet.emptyAll();
   }
 
   private _handleSelectorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -117,7 +130,7 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
       selectedList.push(option.value);
     }
     this.setState({ selectedList });
-    this.props.imodel.selectionSet.replace(selectedList);
+    this.state.imodel!.selectionSet.replace(selectedList);
   }
 
   /** Selector for list of elementIds */
@@ -129,8 +142,12 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
     );
   }
 
-  /** The sample's render method */
-  public render() {
+  private onIModelReady = (imodel: IModelConnection) => {
+    this.setState({ imodel });
+  }
+
+  /** Components for rendering the sample's instructions and controls */
+  private getControlPane() {
     return (
       <>
         <div className="sample-ui">
@@ -167,6 +184,16 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
             <Button buttonType={ButtonType.Primary} onClick={() => this._handleZoomToElementsButton()} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
           </div>
         </div>
+      </>
+    );
+  }
+
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        {this.getControlPane()}
       </>
     );
   }

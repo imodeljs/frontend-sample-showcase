@@ -6,38 +6,28 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelConnection, IModelApp, Viewport } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ViewCreator2d } from "./ViewCreator2d";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 // The Props and State for this sample component
 interface ViewerOnly2dProps {
-  imodel: IModelConnection;
+  iModelName: string;
 }
 
 interface ViewerOnly2dState {
+  imodel?: IModelConnection;
   models?: ModelProps[];
 }
 
 /** A React component that renders the UI specific for this sample */
 export class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnly2dState> {
 
-  private _viewCreator: ViewCreator2d;
-
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {};
-    this._viewCreator = new ViewCreator2d(this.props.imodel);
-  }
-
-  public async componentDidMount() {
-    // Get all 2D models once view opens.
-    const models = await this.props.imodel.models.queryProps({ from: "BisCore.GeometricModel2d" })
-    if (models)
-      this.setState({ models });
-    else
-      alert("No 2D models found in iModel!");
   }
 
   /** Create a UI component with all 2D models listed */
@@ -70,22 +60,23 @@ export class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnl
     );
   }
 
-  /** When model selected in above list, get its view and switch to it.  */
+  /** When a model is selected in above list, get its view and switch to it.  */
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.selectedOptions[0].value, undefined);
     const vp = IModelApp.viewManager.selectedView;
 
     if (vp) {
       const vpAspect = vp.vpDiv.clientHeight / vp.vpDiv.clientWidth;
-      const targetView = await this._viewCreator.getViewForModel(this.state.models![index], vpAspect);
+      const viewCreator = new ViewCreator2d(this.state.imodel!);
+      const targetView = await viewCreator.getViewForModel(this.state.models![index], vpAspect);
 
       if (targetView && vp) vp.changeView(targetView);
       else alert("Invalid View Detected!");
     }
   }
 
-  /** The sample's render method */
-  public render() {
+  /** Components for rendering the sample's instructions and controls */
+  public getControlPane() {
 
     // create list when 2D models found in iModel.
     const modelSelector = this.state.models ? this._modelSelector() : null;
@@ -101,6 +92,28 @@ export class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnl
             {modelSelector}
           </div>
         </div>
+      </>
+    );
+  }
+
+  private onIModelReady = (imodel: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (vp: Viewport) => {
+      this.setState({ imodel });
+
+      // Get all 2D models once view opens.
+      const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" })
+      if (models)
+        this.setState({ models });
+      else
+        alert("No 2D models found in iModel!");
+    })
+  }
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        {this.getControlPane()}
       </>
     );
   }
