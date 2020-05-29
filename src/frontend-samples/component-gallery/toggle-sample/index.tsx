@@ -11,10 +11,7 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
-import { Toggle, LabeledToggle, ToggleButtonType } from "@bentley/ui-core"
-
-
+import { LabeledToggle, Toggle, ToggleButtonType } from "@bentley/ui-core";
 
 export function getToggleSpec(): SampleSpec {
   return ({
@@ -25,12 +22,9 @@ export function getToggleSpec(): SampleSpec {
   });
 }
 
-
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class ToggleList extends React.Component<{}> {
 
@@ -42,11 +36,11 @@ export class ToggleList extends React.Component<{}> {
             createComponentExample("Square Toggle", "Toggle with rounded={false}", <Toggle isOn={true} rounded={false} />),
             createComponentExample("Toggle with Checkmark", "Toggle with showCheckmark prop", <Toggle isOn={true} showCheckmark={true} />),
             createComponentExample("LabeledToggle", undefined, <LabeledToggle isOn={true} label="Toggle label" />),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <ToggleList></ToggleList>
+        return <ToggleList></ToggleList>;
     }
 
     public render() {
@@ -62,5 +56,4 @@ export class ToggleList extends React.Component<{}> {
             </>
         );
     }
-  
 }

@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ToolAdmin, HitDetail } from "@bentley/imodeljs-frontend";
+import { HitDetail, ToolAdmin } from "@bentley/imodeljs-frontend";
 
 type GetToolTipFunc = (hit: HitDetail) => Promise<HTMLElement | string>;
 
@@ -17,40 +17,40 @@ export class ProxyToolAdmin {
 }
 
 export class ShowcaseToolAdmin extends ToolAdmin {
-  private static singleton: ShowcaseToolAdmin;
-  private proxy: ProxyToolAdmin | null;
+  private static _singleton: ShowcaseToolAdmin;
+  private _proxy: ProxyToolAdmin | null;
 
   public static initialize(): ShowcaseToolAdmin {
-    ShowcaseToolAdmin.singleton = new ShowcaseToolAdmin;
-    return ShowcaseToolAdmin.singleton;
+    ShowcaseToolAdmin._singleton = new ShowcaseToolAdmin();
+    return ShowcaseToolAdmin._singleton;
   }
 
   public static get(): ShowcaseToolAdmin {
-    return ShowcaseToolAdmin.singleton;
+    return ShowcaseToolAdmin._singleton;
   }
 
   private constructor() {
     super();
-    this.proxy = null;
+    this._proxy = null;
   }
 
   public setProxyToolAdmin(proxy: ProxyToolAdmin) {
-    this.proxy = proxy;
+    this._proxy = proxy;
   }
 
   public clearProxyToolAdmin() {
-    const oldProxy = this.proxy;
-    this.proxy = null;
+    const oldProxy = this._proxy;
+    this._proxy = null;
     return oldProxy;
   }
 
   public getProxyToolAdmin(): ProxyToolAdmin | null {
-    return this.proxy;
+    return this._proxy;
   }
 
   public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {
-    if (null != this.proxy)
-      return this.proxy.getToolTip(hit);
+    if (null != this._proxy)
+      return this._proxy.getToolTip(hit);
 
     return super.getToolTip(hit);
   }

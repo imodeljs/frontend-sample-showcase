@@ -9,7 +9,7 @@ import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
-import { ShowcaseToolAdmin, ProxyToolAdmin } from "../../api/showcasetooladmin";
+import { ProxyToolAdmin, ShowcaseToolAdmin } from "../../api/showcasetooladmin";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 export function getTooltipCustomizeSpec(): SampleSpec {
@@ -50,7 +50,7 @@ class TooltipCustomizeApp {
   public static async setup(iModelName: string) {
     // ToolAdmin is typically initialized at application start.
     // See Notes at bottom of this file.
-    ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin);
+    ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin());
     return <TooltipCustomizeUI iModelName={iModelName} />;
   }
 

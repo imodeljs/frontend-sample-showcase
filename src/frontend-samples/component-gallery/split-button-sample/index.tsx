@@ -11,10 +11,7 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
-import { SplitButton, ContextMenuItem } from "@bentley/ui-core"
-
-
+import { ContextMenuItem, SplitButton } from "@bentley/ui-core";
 
 export function getSplitButtonSpec(): SampleSpec {
   return ({
@@ -25,12 +22,9 @@ export function getSplitButtonSpec(): SampleSpec {
   });
 }
 
-
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class SplitButtonList extends React.Component<{}> {
 
@@ -51,11 +45,11 @@ export class SplitButtonList extends React.Component<{}> {
               <SplitButton label="Split Button" drawBorder icon="icon-placeholder" onClick={() => { }}>
                 {this.splitButtonMenuItems.map((node) => node)}
               </SplitButton>),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <SplitButtonList></SplitButtonList>
+      return <SplitButtonList></SplitButtonList>;
     }
 
     public render() {
@@ -71,5 +65,4 @@ export class SplitButtonList extends React.Component<{}> {
             </>
         );
     }
-  
 }

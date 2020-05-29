@@ -11,10 +11,7 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
-import { Tile, MinimalTile, FeaturedTile, MinimalFeaturedTile} from "@bentley/ui-core"
-
-
+import { Tile, MinimalTile, FeaturedTile, MinimalFeaturedTile} from "@bentley/ui-core";
 
 export function getTilesSpec(): SampleSpec {
   return ({
@@ -25,12 +22,9 @@ export function getTilesSpec(): SampleSpec {
   });
 }
 
-
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class TilesList extends React.Component<{}> {
 
@@ -56,7 +50,7 @@ export class TilesList extends React.Component<{}> {
     }
 
     public static async setup() {
-        return <TilesList></TilesList>
+        return <TilesList></TilesList>;
     }
 
     public render() {
@@ -72,5 +66,4 @@ export class TilesList extends React.Component<{}> {
             </>
         );
     }
-  
 }

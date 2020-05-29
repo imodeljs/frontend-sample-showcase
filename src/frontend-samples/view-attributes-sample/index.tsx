@@ -7,7 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelApp, Viewport, ViewState3d, Environment } from "@bentley/imodeljs-frontend";
+import { Environment, IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";

@@ -5,13 +5,12 @@
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplay, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
-import { IModelApp, IModelAppOptions, IModelConnection, Viewport, ViewState3d, StandardViewId, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { GithubLink } from "../../Components/GithubLink";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
 
 // cSpell:ignore imodels
 export function getThematicDisplaySpec(): SampleSpec {
@@ -61,8 +60,8 @@ class API {
   }
 
   /** Overwrite the settings using the Viewport API.  Any props not set will be set to default value by iModel.js.
-  * Note: changes to the settings will not be seen until the view is updated.  Use the 'syncViewport' method to do this.
-  * While it would be simplest to call syncViewport here, I will be calling it in the controls to optimize setting multiple props.
+   * Note: changes to the settings will not be seen until the view is updated.  Use the 'syncViewport' method to do this.
+   * While it would be simplest to call syncViewport here, I will be calling it in the controls to optimize setting multiple props.
    */
   public static setThematicDisplayProps(vp: Viewport, props?: ThematicDisplayProps): void {
     const displaySettings = (vp.view as ViewState3d).getDisplayStyle3d().settings;
@@ -101,7 +100,7 @@ export class ThematicDisplaySampleApp {
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
-    if (undefined === this.viewport) return
+    if (undefined === this.viewport) return;
     API.setThematicDisplayProps(this.viewport, this.originalProps);
     API.setThematicDisplayOnOff(this.viewport, this.originalFlag);
   }
@@ -150,7 +149,7 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
     });
   }
 
-  /** This method should be called when the iModel is loaded to set default settings in the 
+  /** This method should be called when the iModel is loaded to set default settings in the
    * viewport settings to enable thematic display.
    */
   public static init(vp: Viewport) {

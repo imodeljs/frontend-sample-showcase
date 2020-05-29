@@ -2,9 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Decorator, DecorateContext, GraphicBranch, IModelApp, GraphicType, RenderGraphic } from "@bentley/imodeljs-frontend";
-import { Geometry, Point3d, Range3d, Transform, Range2d } from "@bentley/geometry-core";
-import { ColorDef, Gradient, ImageBuffer, ImageBufferFormat, RenderTexture, RenderMaterial, TextureMapping, GraphicParams, ColorDefProps, ThematicGradientSettings, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
+import { Geometry, Point3d, Range2d, Range3d, Transform } from "@bentley/geometry-core";
+import { ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping,
+  ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings } from "@bentley/imodeljs-common";
 import { dispose } from "@bentley/bentleyjs-core";
 
 /** This file contains the code that implements the heatmap decorator including

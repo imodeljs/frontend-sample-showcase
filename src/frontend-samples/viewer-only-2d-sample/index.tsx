@@ -7,7 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelConnection, IModelApp, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ViewCreator2d } from "./ViewCreator2d";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
@@ -114,12 +114,12 @@ export class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnl
       this.setState({ imodel });
 
       // Get all 2D models once view opens.
-      const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" })
+      const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
       if (models)
         this.setState({ models });
       else
         alert("No 2D models found in iModel!");
-    })
+    });
   }
   /** The sample's render method */
   public render() {

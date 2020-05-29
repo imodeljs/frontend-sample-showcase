@@ -5,7 +5,6 @@
 import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import "../../common/samples-common.scss";
 
@@ -16,7 +15,7 @@ export function getViewportOnlySpec(): SampleSpec {
     name: "viewport-only-sample",
     label: "Viewport Only",
     image: "viewport-only-thumbnail.png",
-    setup: async (iModelName: string) => { return <ViewportOnlyUI iModelName={iModelName} /> },
+    setup: async (iModelName: string) => <ViewportOnlyUI iModelName={iModelName} />,
   });
 }
 
@@ -40,5 +39,3 @@ export class ViewportOnlyUI extends React.Component<{ iModelName: string }, {}> 
     );
   }
 }
-
-

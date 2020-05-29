@@ -11,10 +11,7 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
-import { BodyText, BlockText, DisabledText, Headline, LeadingText, MutedText, SmallText, Subheading, Title } from "@bentley/ui-core"
-
-
+import { BlockText, BodyText, DisabledText, Headline, LeadingText, MutedText, SmallText, Subheading, Title } from "@bentley/ui-core";
 
 export function getTextSpec(): SampleSpec {
   return ({
@@ -25,12 +22,9 @@ export function getTextSpec(): SampleSpec {
   });
 }
 
-
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class TextList extends React.Component<{}> {
 
@@ -45,11 +39,11 @@ export class TextList extends React.Component<{}> {
             createComponentExample("SmallText", undefined, <SmallText>This is Small Text</SmallText>),
             createComponentExample("Subheading", undefined, <Subheading>This is Subheading Text</Subheading>),
             createComponentExample("Title", undefined, <Title>This is Title Text</Title>),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <TextList></TextList>
+        return <TextList></TextList>;
     }
 
     public render() {
@@ -65,5 +59,4 @@ export class TextList extends React.Component<{}> {
             </>
         );
     }
-  
 }

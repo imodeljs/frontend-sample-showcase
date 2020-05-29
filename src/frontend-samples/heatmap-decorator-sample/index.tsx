@@ -6,14 +6,13 @@ import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelApp, Viewport, StandardViewId, IModelConnection, ViewState, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { Range2d, Point3d } from "@bentley/geometry-core";
+import { Point3d, Range2d } from "@bentley/geometry-core";
 import HeatmapDecorator from "./HeatmapDecorator";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 import { ViewSetup } from "../../api/viewSetup";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
@@ -26,7 +25,6 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
     teardown: HeatmapDecoratorApp.teardown,
   });
 }
-
 
 /*
 NEEDSWORK: split into three files
@@ -150,7 +148,7 @@ class HeatmapDecoratorUIComponent extends React.Component<HeatmapDecoratorUIProp
       HeatmapDecoratorApp.height = range.high.interpolate(0.5, range.low).z;
 
       this.setState({ imodel, vp });
-    })
+    });
   }
 
   /** Components for rendering the sample's instructions and controls */

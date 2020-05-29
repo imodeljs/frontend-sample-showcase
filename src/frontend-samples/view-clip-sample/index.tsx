@@ -7,9 +7,9 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelConnection, IModelApp, ViewClipDecorationProvider, ScreenViewport, ViewClipClearTool, Viewport, EditManipulator, ViewState, StandardViewId } from "@bentley/imodeljs-frontend";
-import { Toggle, Button, ButtonType } from "@bentley/ui-core";
-import { ClipVector, Range3d, ClipShape, ClipMaskXYZRangePlanes, Plane3dByOriginAndUnitNormal, ConvexClipPlaneSet, ClipPlane, Vector3d, Point3d, ClipPrimitive } from "@bentley/geometry-core";
+import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { Button, ButtonType, Toggle } from "@bentley/ui-core";
+import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "../../api/viewSetup";
 
@@ -198,7 +198,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     this.setState({ imodel });
 
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
-      this.setState({ imodel, showClipBlock: true }, () => { this._onToggleRangeClip(true) });
+      this.setState({ imodel, showClipBlock: true }, () => { this._onToggleRangeClip(true); });
     });
   }
 
