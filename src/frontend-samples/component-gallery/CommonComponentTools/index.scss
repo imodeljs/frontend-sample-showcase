@@ -2,7 +2,7 @@
 
 
 $component-examples-leftpanel-width: 225px;
-$component-examples-rightpanel-width: 200px;
+$component-examples-rightpanel-width: 235px;
 
 .component-ui {
     width: 20%;
@@ -41,7 +41,7 @@ $component-examples-rightpanel-width: 200px;
         }
 
         .right-panel {
-            //flex: 1;
+            display: flex;
             width: $component-examples-rightpanel-width;
 
         }

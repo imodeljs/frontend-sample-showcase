@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { Toggle, LabeledToggle, ToggleButtonType } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getToggleSpec(): SampleSpec {
   return ({
     name: "toggle-sample",
     label: "UI-Toggles",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-toggle-thumbnail.png",
     customModelList: [],
 
     setup: ToggleList.setup ,

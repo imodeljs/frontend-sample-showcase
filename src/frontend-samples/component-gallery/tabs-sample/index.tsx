@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getTabsSpec(): SampleSpec {
   return ({
     name: "tabs-sample",
     label: "UI-Tabs",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-tabs-thumbnail.png",
     customModelList: [],
 
     setup: TabsList.setup ,

@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { Tile, MinimalTile, FeaturedTile, MinimalFeaturedTile} from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getTilesSpec(): SampleSpec {
   return ({
     name: "tiles-sample",
     label: "UI-Tiles",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-tile-thumbnail.png",
     customModelList: [],
 
     setup: TilesList.setup ,

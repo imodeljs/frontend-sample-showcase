@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { Spinner, LoadingSpinner, SpinnerSize, LoadingStatus, LoadingPrompt } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getLoadingSpec(): SampleSpec {
   return ({
     name: "loading-sample",
     label: "UI-Loading Icons",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-loading-thumbnail.png",
     customModelList: [],
 
     setup: LoadingList.setup ,

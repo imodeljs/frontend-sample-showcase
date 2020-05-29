@@ -13,7 +13,6 @@ import { Range2d, Point3d } from "@bentley/geometry-core";
 import HeatmapDecorator from "./HeatmapDecorator";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 import { ViewSetup } from "../../api/viewSetup";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 

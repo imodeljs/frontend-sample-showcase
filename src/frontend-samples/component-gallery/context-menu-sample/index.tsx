@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { UnderlinedButton } from "@bentley/ui-core"
 import { SampleContextMenu } from "./SampleContextMenu";
 
@@ -21,7 +20,7 @@ export function getContextMenuSpec(): SampleSpec {
   return ({
     name: "context-menu-sample",
     label: "UI-Context Menus",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-context-menu-thumbnail.png",
     customModelList: [],
 
     setup: ContextMenuList.setup ,

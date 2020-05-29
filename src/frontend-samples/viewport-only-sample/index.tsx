@@ -5,7 +5,6 @@
 import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import "../../common/samples-common.scss";
 

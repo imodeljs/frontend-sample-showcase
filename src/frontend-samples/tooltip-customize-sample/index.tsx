@@ -50,7 +50,7 @@ class TooltipCustomizeApp {
   public static async setup(iModelName: string) {
     // ToolAdmin is typically initialized at application start.
     // See Notes at bottom of this file.
-    ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin);
+    ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin());
     return <TooltipCustomizeUI iModelName={iModelName} />;
   }
 

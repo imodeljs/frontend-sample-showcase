@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { SplitButton, ContextMenuItem } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getSplitButtonSpec(): SampleSpec {
   return ({
     name: "split-button-sample",
     label: "UI-Split Buttons",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-split-button-thumbnail.png",
     customModelList: [],
 
     setup: SplitButtonList.setup ,

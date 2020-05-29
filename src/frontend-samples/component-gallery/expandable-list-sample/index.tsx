@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { ExpandableList, ExpandableBlock } from "@bentley/ui-core"
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
 
@@ -21,7 +20,7 @@ export function getExpandableListSpec(): SampleSpec {
   return ({
     name: "expandable-list-sample",
     label: "UI-Expandable Lists",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-expandable-list-thumbnail.png",
     customModelList: [],
 
     setup: ExpandableListList.setup ,

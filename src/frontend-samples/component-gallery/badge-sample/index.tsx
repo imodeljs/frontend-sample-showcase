@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { BetaBadge, NewBadge } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getBadgeSpec(): SampleSpec {
   return ({
     name: "badge-sample",
     label: "UI-Badges",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-badge-thumbnail.png",
     customModelList: [],
 
     setup: BadgeList.setup ,

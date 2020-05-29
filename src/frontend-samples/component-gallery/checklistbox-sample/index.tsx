@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { CheckListBox, CheckListBoxItem, CheckListBoxSeparator } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getCheckListBoxSpec(): SampleSpec {
   return ({
     name: "checklistbox-sample",
     label: "UI-CheckListBoxes",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-checklistbox-thumbnail.png",
     customModelList: [],
 
     setup: CheckListBoxList.setup ,

@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { SearchBox } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getSearchBoxSpec(): SampleSpec {
   return ({
     name: "search-box-sample",
     label: "UI-Search Boxes",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-search-boxes-thumbnail.png",
     customModelList: [],
 
     setup: SearchBoxList.setup ,

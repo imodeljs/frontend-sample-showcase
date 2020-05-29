@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { BodyText, BlockText, DisabledText, Headline, LeadingText, MutedText, SmallText, Subheading, Title } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getTextSpec(): SampleSpec {
   return ({
     name: "text-sample",
     label: "UI-Text",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-text-thumbnail.png",
     customModelList: [],
 
     setup: TextList.setup ,

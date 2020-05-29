@@ -9,7 +9,7 @@ import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelConnection, IModelApp, ViewClipDecorationProvider, ScreenViewport, ViewClipClearTool, Viewport, EditManipulator, ViewState, StandardViewId } from "@bentley/imodeljs-frontend";
 import { Toggle, Button, ButtonType } from "@bentley/ui-core";
-import { ClipVector, Range3d, ClipShape, ClipMaskXYZRangePlanes, Plane3dByOriginAndUnitNormal, ConvexClipPlaneSet, ClipPlane, Vector3d, Point3d, ClipPrimitive } from "@bentley/geometry-core";
+import { ClipVector, ClipShape, ClipMaskXYZRangePlanes, Plane3dByOriginAndUnitNormal, ConvexClipPlaneSet, ClipPlane, Vector3d, Point3d, ClipPrimitive } from "@bentley/geometry-core";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "../../api/viewSetup";
 
@@ -52,7 +52,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     ViewClipDecorationProvider.create().toggleDecoration(vp);
   }
 
-  /* Method for adding decorators to the veiwport */
+  /* Method for adding decorators to the viewport */
   private _addDecorators(vp: ScreenViewport) {
     // Create a clip decorator. Selecting the clip decoration to immediately show the handles is the default.
     const vcdp: ViewClipDecorationProvider = ViewClipDecorationProvider.create();

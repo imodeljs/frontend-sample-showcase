@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { Slider, Icon } from "@bentley/ui-core"
 
 
@@ -20,7 +19,7 @@ export function getSliderSpec(): SampleSpec {
   return ({
     name: "slider-sample",
     label: "UI-Sliders",
-    image: "viewport-only-thumbnail.png",
+    image: "ui-sliders-thumbnail.png",
     customModelList: [],
 
     setup: SliderList.setup ,
