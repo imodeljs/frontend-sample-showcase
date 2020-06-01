@@ -194,10 +194,11 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     return viewState;
   }
 
-  private onIModelReady = (imodel: IModelConnection) => {
+  private _onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
 
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
+      // tslint:disable-next-line no-floating-promises
       this.setState({ imodel, showClipBlock: true }, () => { this._onToggleRangeClip(true); });
     });
   }
@@ -234,7 +235,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
   public render() {
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getIsoView} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
         {this.getControlPane()}
       </>
     );

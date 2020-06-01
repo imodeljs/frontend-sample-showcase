@@ -23,7 +23,7 @@ export class SampleContextMenu {
   ];
 
   public static showContextMenu() {
-    const container = document.getElementById('component-container')
+    const container = document.getElementById("component-container");
     if (container)
       console.log(IModelApp.uiAdmin.showContextMenu(this._myMenuItems, IModelApp.uiAdmin.cursorPosition));
   }

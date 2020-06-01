@@ -3,4 +3,5 @@
     "files.associations": {
       ".nycrc": "json",
     },
+    "editor.formatOnSave": true,
   }

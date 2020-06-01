@@ -9,9 +9,9 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { Input, Checkbox, Radio, Select, Textarea, NumericInput, IconInput, LabeledInput, LabeledTextarea, LabeledSelect, Icon} from "@bentley/ui-core"
+import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 
 export function getInputsSpec(): SampleSpec {
@@ -64,13 +64,13 @@ export class InputsList extends React.Component<{}> {
   public render() {
     return (
       <>
-      <div className="sample-ui">
-        <div>
-        <span>Different Styles of Buttons</span>
-        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-          <ComponentContainer data = {InputsList.getInputsData()} />
+        <div className="sample-ui">
+          <div>
+            <span>Different Styles of Buttons</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+            <ComponentContainer data={InputsList.getInputsData()} />
+          </div>
         </div>
-      </div>
       </>
     );
   }

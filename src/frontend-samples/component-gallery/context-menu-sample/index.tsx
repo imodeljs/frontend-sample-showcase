@@ -9,54 +9,47 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { UnderlinedButton } from "@bentley/ui-core"
 import { SampleContextMenu } from "./SampleContextMenu";
 
-
-
 export function getContextMenuSpec(): SampleSpec {
-  return ({
-    name: "context-menu-sample",
-    label: "ContextMenu",
-    image: "viewport-only-thumbnail.png",
-    setup: ContextMenuList.setup ,
-  });
+    return ({
+        name: "context-menu-sample",
+        label: "ContextMenu",
+        image: "viewport-only-thumbnail.png",
+        setup: ContextMenuList.setup,
+    });
 }
-
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class ContextMenuList extends React.Component<{}> {
 
     public static getContextMenuData(): ComponentExampleProps[] {
         return [
             createComponentExample("ContextMenu", undefined, <UnderlinedButton onClick={() => SampleContextMenu.showContextMenu()}> Open ContextMenu</UnderlinedButton>),
-          ]
+        ]
     }
 
     public static async setup() {
-        return <ContextMenuList></ContextMenuList>
+        return <ContextMenuList></ContextMenuList>;
     }
 
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {ContextMenuList.getContextMenuData()}></ComponentContainer>
+                <div className="sample-ui">
+                    <div>
+                        <span>Different Styles of Buttons</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                        <ComponentContainer data={ContextMenuList.getContextMenuData()}></ComponentContainer>
+                    </div>
                 </div>
-            </div>
             </>
         );
     }
-  
 }

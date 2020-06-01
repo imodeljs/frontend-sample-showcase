@@ -101,7 +101,7 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
       zoomToOpts.standardViewId = this.state.standardViewVal;
 
     const vp = IModelApp.viewManager.selectedView!;
-    // tslint:disable-line 
+    // tslint:disable-next-line no-floating-promises
     ZoomToElementsAPI.zoomToElements(this.state.elementList, viewChangeOpts, zoomToOpts, vp, this.state.imodel!);
   }
 

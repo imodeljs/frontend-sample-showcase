@@ -9,28 +9,22 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
-import { BetaBadge, NewBadge } from "@bentley/ui-core"
-
-
+import { BetaBadge, NewBadge } from "@bentley/ui-core";
 
 export function getBadgeSpec(): SampleSpec {
-  return ({
-    name: "badge-sample",
-    label: "Badge",
-    image: "viewport-only-thumbnail.png",
-    setup: BadgeList.setup ,
-  });
+    return ({
+        name: "badge-sample",
+        label: "Badge",
+        image: "viewport-only-thumbnail.png",
+        setup: BadgeList.setup,
+    });
 }
-
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class BadgeList extends React.Component<{}> {
 
@@ -38,25 +32,24 @@ export class BadgeList extends React.Component<{}> {
         return [
             createComponentExample("BetaBadge", undefined, <BetaBadge />),
             createComponentExample("NewBadge", undefined, <NewBadge />),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <BadgeList></BadgeList>
+        return <BadgeList></BadgeList>;
     }
 
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {BadgeList.getBadgeData()}></ComponentContainer>
+                <div className="sample-ui">
+                    <div>
+                        <span>Different Styles of Buttons</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                        <ComponentContainer data={BadgeList.getBadgeData()}></ComponentContainer>
+                    </div>
                 </div>
-            </div>
             </>
         );
     }
-  
 }
