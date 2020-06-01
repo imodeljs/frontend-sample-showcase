@@ -18,7 +18,6 @@ import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sampl
 import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample";
 import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
 import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
-import { getContextMenuSpec } from "../../frontend-samples/component-gallery/context-menu-sample";
 import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample";
 import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample";
 import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample";
@@ -74,7 +73,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._samples.push(getBadgeSpec());
         this._samples.push(getButtonSpec());
         this._samples.push(getCheckListBoxSpec());
-        this._samples.push(getContextMenuSpec());
         this._samples.push(getExpandableListSpec());
         this._samples.push(getInputsSpec());
         this._samples.push(getLoadingSpec());
