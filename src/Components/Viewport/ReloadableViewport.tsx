@@ -53,6 +53,6 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
 
   private _onIModelReady = async (imodel: IModelConnection) => {
     const viewState = (this.props.getCustomViewState) ? await this.props.getCustomViewState(imodel) : await ViewSetup.getDefaultView(imodel);
-    this.setState({ imodel, viewState }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel) });
+    this.setState({ imodel, viewState }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel); });
   }
 }

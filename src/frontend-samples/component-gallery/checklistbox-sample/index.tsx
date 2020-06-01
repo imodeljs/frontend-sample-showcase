@@ -43,7 +43,7 @@ export class CheckListBoxList extends React.Component<{}> {
           <CheckListBoxItem label="Item 3" />
           <CheckListBoxItem label="Item 4" />
         </CheckListBox>),
-    ]
+    ];
   }
 
   public static async setup() {

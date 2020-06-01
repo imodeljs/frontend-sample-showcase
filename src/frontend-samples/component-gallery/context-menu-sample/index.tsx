@@ -11,7 +11,7 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { UnderlinedButton } from "@bentley/ui-core"
+import { UnderlinedButton } from "@bentley/ui-core";
 import { SampleContextMenu } from "./SampleContextMenu";
 
 export function getContextMenuSpec(): SampleSpec {
@@ -32,7 +32,7 @@ export class ContextMenuList extends React.Component<{}> {
     public static getContextMenuData(): ComponentExampleProps[] {
         return [
             createComponentExample("ContextMenu", undefined, <UnderlinedButton onClick={() => SampleContextMenu.showContextMenu()}> Open ContextMenu</UnderlinedButton>),
-        ]
+        ];
     }
 
     public static async setup() {

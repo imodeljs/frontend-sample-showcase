@@ -65,6 +65,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   public componentDidMount() {
     const defaultSampleSpec = getViewportOnlySpec();
+    // tslint:disable-next-line no-floating-promises
     this.setupNewSample(defaultSampleSpec.name);
   }
 
@@ -107,6 +108,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
+    // tslint:disable-next-line no-floating-promises
     this.setupNewSample(name);
   }
 
@@ -114,7 +116,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return this._samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
   }
 
-  private onIModelChange = (iModelName: string) => {
+  private _onIModelChange = (iModelName: string) => {
     this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleSpec!.name));
   }
 
@@ -133,7 +135,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
           </div>
           {modelList && 1 < modelList.length &&
             <div className="model-selector">
-              <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this.onIModelChange} />
+              <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this._onIModelChange} />
             </div>
           }
         </div>

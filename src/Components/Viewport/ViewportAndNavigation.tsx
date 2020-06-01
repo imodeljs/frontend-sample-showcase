@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import {
-  IModelApp, IModelConnection,
-  PanViewTool, RotateViewTool, SelectionTool, FitViewTool, ViewState, ZoomViewTool,
+  FitViewTool, IModelApp, IModelConnection,
+  PanViewTool, RotateViewTool, SelectionTool, ViewState, ZoomViewTool,
 } from "@bentley/imodeljs-frontend";
 
 import { ViewportComponent } from "@bentley/ui-components";

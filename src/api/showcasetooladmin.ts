@@ -4,8 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import { HitDetail, ToolAdmin } from "@bentley/imodeljs-frontend";
 
-type GetToolTipFunc = (hit: HitDetail) => Promise<HTMLElement | string>;
-
 export class ProxyToolAdmin {
   public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {
     const suspendProxy = ShowcaseToolAdmin.get().clearProxyToolAdmin();
