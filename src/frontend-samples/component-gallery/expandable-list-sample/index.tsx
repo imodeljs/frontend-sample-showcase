@@ -33,37 +33,46 @@ export class ExpandableListList extends React.Component<{}> {
     return [
       createComponentExample("ExpandableList", "ExpandableList with one ExpandableBlock",
         <ExpandableList className="uicore-full-width">
-          ampleExpandableBlock title="Test" isExpanded={true} onClick={() => { }}>
+          <SampleExpandableBlock title="Test" isExpanded={true} onClick={() => { }}>
             Hello World!
-                </SampleExpandableBlock>
-        </ExpandableList >),
+              </SampleExpandableBlock>
+        </ExpandableList>),
       createComponentExample("ExpandableList w/ singleExpandOnly", "ExpandableList with singleExpandOnly prop",
         <ExpandableList className="uicore-full-width" singleExpandOnly={true} defaultActiveBlock={0}>
-          xpandableBlock title="Test1" isExpanded={false} onClick={() => { }}>
+          <ExpandableBlock title="Test1" isExpanded={false} onClick={() => { }}>
             Hello World 1
-                </ExpandableBlock>
-            xpandableBlock title = "Test2" isExpanded = { false} onClick = {() => {}}>
-  Hello World 2 
-                </Expand ableBlock >
-        </ExpandableList >),
-    ];
+              </ExpandableBlock>
+          <ExpandableBlock title="Test2" isExpanded={false} onClick={() => { }}>
+            Hello World 2
+              </ExpandableBlock>
+        </ExpandableList>),
+    ]
   }
 
-blic static async setup() {
-  return <ExpandableListList></ExpandableListList>;
-}
-
-blic render() {
-  turn(
-
-    iv className = "sample-ui" >
-    iv >
-    <span>Different Styles of Buttons</span>
-    <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-    <ComponentContainer data={ExpandableListList.getExpandableListData()}></ComponentContainer>
-        </div >
-      </div >
-    </>
-  );
+  public static async setup() {
+    return <ExpandableListList></ExpandableListList>
   }
+
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of expandable lists that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  public render() {
+    return (
+      <>
+        {this.getControlPlane()}
+        <ComponentContainer data={ExpandableListList.getExpandableListData()}></ComponentContainer>
+      </>
+    );
+  }
+
 }
