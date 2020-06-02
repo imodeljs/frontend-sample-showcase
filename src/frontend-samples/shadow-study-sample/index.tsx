@@ -34,7 +34,7 @@ class ShadowStudyApp {
       vp.synchWithView();
     }
 
-    return <ShadowStudyUI iModelName = {iModelName} />;
+    return <ShadowStudyUI iModelName={iModelName} />;
   }
 
   // Updates the sun time for the current model
@@ -57,7 +57,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowStudyState> {
+export class ShadowStudyUI extends React.Component<{ iModelName: string }, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -99,24 +99,24 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
   // Update the state date with the newly selected day of the year
   private updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Extract date information from string returned by date picker
-    const date_string = event.target.value;
-    const date_info = date_string.split("-");
+    const dateString = event.target.value;
+    const dateInfo = dateString.split("-");
 
-    const year = Number(date_info[0]);
+    const year = Number(dateInfo[0]);
     // We subtract a 1 here because date objects have the index for months starting at 0
-    const month = Number(date_info[1]) - 1;
-    const day = Number(date_info[2]);
+    const month = Number(dateInfo[1]) - 1;
+    const day = Number(dateInfo[2]);
 
     // Construct a new date object based on the extracted date information
-    const new_date = new Date(year, month, day);
+    const newDate = new Date(year, month, day);
 
-    const old_date = this.state.date;
-    new_date.setMinutes(old_date.getMinutes());
-    new_date.setHours(old_date.getHours());
+    const oldDate = this.state.date;
+    newDate.setMinutes(oldDate.getMinutes());
+    newDate.setHours(oldDate.getHours());
 
     // Illegal dates (ex: Feb 30th), do not have a corresponding time, and need to be rejected
     // We also display a message to the user for clarity if an invalid time is entered
-    if (Number.isNaN(new_date.getTime())) {
+    if (Number.isNaN(newDate.getTime())) {
       const invalidDateLabel = document.getElementById("date_invalid");
       if (invalidDateLabel)
         invalidDateLabel.textContent = "Invalid Date Entered. Please Select a Different Date.";
@@ -128,14 +128,14 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
     }
 
     // If date is valid, update the state, date label, and the sun time
-    this.setState({ date: new_date });
+    this.setState({ date: newDate });
 
     const dateLabel = document.getElementById("date");
 
     if (dateLabel)
       dateLabel.textContent = event.target.value;
 
-    ShadowStudyApp.updateSunTime(new_date.getTime());
+    ShadowStudyApp.updateSunTime(newDate.getTime());
   }
 
   // Formats the time from the state date into 24 hour time
@@ -145,7 +145,7 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
     if (minute < 10)
       minString = "0" + String(minute);
     else
-      minString =  String(minute);
+      minString = String(minute);
     const hour = this.state.date.getHours();
     return String(hour) + ":" + minString;
   }
@@ -169,24 +169,24 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
     return (
       <>
         <div className="sample-ui">
-            <div className="sample-instructions">
-              <span>Select a date and time.</span>
-              <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
-            </div>
-            <hr></hr>
-            <div className="sample-options-3col">
-              <div>Time of Day</div>
-              <input type ="range" min = "0" max = "1439" value = {this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange = {this.updateTime} ></input>
-              <div id = "time">{this.convertMinToTime()}</div>
-            </div>
-            <div className="sample-options-3col">
-              <div>Date</div>
-              <input type ="date" id = "date_picker" onChange = {this.updateDate}></input>
-            <div id = "date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear() }</div>
-            </div>
-            <div id = "date_invalid" ></div>
+          <div className="sample-instructions">
+            <span>Select a date and time.</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
           </div>
-        </>
+          <hr></hr>
+          <div className="sample-options-3col">
+            <div>Time of Day</div>
+            <input type="range" min="0" max="1439" value={this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange={this.updateTime} ></input>
+            <div id="time">{this.convertMinToTime()}</div>
+          </div>
+          <div className="sample-options-3col">
+            <div>Date</div>
+            <input type="date" id="date_picker" onChange={this.updateDate}></input>
+            <div id="date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear()}</div>
+          </div>
+          <div id="date_invalid" ></div>
+        </div>
+      </>
     );
   }
 
@@ -194,7 +194,7 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
   public render() {
     return (
       <>
-        <ReloadableViewport getCustomViewState = {this.getInitialView} iModelName={this.props.iModelName} />
+        <ReloadableViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />
         {this.getControlPane()}
       </>
     );

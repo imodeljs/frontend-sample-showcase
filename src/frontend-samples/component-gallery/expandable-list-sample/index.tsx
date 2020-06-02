@@ -46,11 +46,11 @@ export class ExpandableListList extends React.Component<{}> {
             Hello World 2
               </ExpandableBlock>
         </ExpandableList>),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <ExpandableListList></ExpandableListList>
+    return <ExpandableListList></ExpandableListList>;
   }
 
   public getControlPlane() {
@@ -63,7 +63,7 @@ export class ExpandableListList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   public render() {
