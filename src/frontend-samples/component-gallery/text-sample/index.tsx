@@ -9,17 +9,19 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
 import { BlockText, BodyText, DisabledText, Headline, LeadingText, MutedText, SmallText, Subheading, Title } from "@bentley/ui-core";
 
 export function getTextSpec(): SampleSpec {
-  return ({
-    name: "text-sample",
-    label: "Text",
-    image: "viewport-only-thumbnail.png",
-    setup: TextList.setup ,
-  });
+    return ({
+        name: "text-sample",
+        label: "UI-Text",
+        image: "ui-text-thumbnail.png",
+        customModelList: [],
+
+        setup: TextList.setup,
+    });
 }
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
@@ -46,16 +48,24 @@ export class TextList extends React.Component<{}> {
         return <TextList></TextList>;
     }
 
+    public getControlPlane() {
+        return (
+            <>
+                <div className="sample-ui  component-ui">
+                    <div className="sample-instructions">
+                        <span>Different styles of text that can be used in iModel.js applications</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {TextList.getTextData()}></ComponentContainer>
-                </div>
-            </div>
+                {this.getControlPlane()}
+                <ComponentContainer data={TextList.getTextData()}></ComponentContainer>
             </>
         );
     }

@@ -9,16 +9,18 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
 import { Icon, Slider } from "@bentley/ui-core";
 
 export function getSliderSpec(): SampleSpec {
   return ({
     name: "slider-sample",
-    label: "Slider",
-    image: "viewport-only-thumbnail.png",
-    setup: SliderList.setup ,
+    label: "UI-Sliders",
+    image: "ui-sliders-thumbnail.png",
+    customModelList: [],
+
+    setup: SliderList.setup,
   });
 }
 
@@ -61,15 +63,29 @@ export class SliderList extends React.Component<{}> {
   public render() {
     return (
       <>
-      <div className="sample-ui">
-        <div>
-          <span>Different Styles of Buttons</span>
-          <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-          <ComponentContainer data = {SliderList.getSliderData()} />
+        <div className="sample-ui">
+          <div>
+            <span>Different Styles of Buttons</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+            <ComponentContainer data={SliderList.getSliderData()} />
+          </div>
         </div>
-      </div>
       </>
     );
   }
+
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of sliders that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    )
+  }
+
 
 }

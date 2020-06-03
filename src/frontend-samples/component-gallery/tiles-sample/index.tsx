@@ -9,16 +9,18 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
 import { FeaturedTile, MinimalFeaturedTile, MinimalTile, Tile } from "@bentley/ui-core";
 
 export function getTilesSpec(): SampleSpec {
   return ({
     name: "tiles-sample",
-    label: "Tiles",
-    image: "viewport-only-thumbnail.png",
-    setup: TilesList.setup ,
+    label: "UI-Tiles",
+    image: "ui-tile-thumbnail.png",
+    customModelList: [],
+
+    setup: TilesList.setup,
   });
 }
 
@@ -29,7 +31,7 @@ export const createComponentExample = (title: string, description: string | unde
 export class TilesList extends React.Component<{}> {
 
   public static getTilesData(): ComponentExampleProps[] {
-    return  [
+    return [
       createComponentExample("Normal Tile", undefined,
         <Tile title="Normal Tile" icon="icon-placeholder">
           <a>Link 1</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
@@ -53,17 +55,26 @@ export class TilesList extends React.Component<{}> {
     return <TilesList></TilesList>;
   }
 
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of tiles that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    )
+  }
+
   public render() {
     return (
       <>
-      <div className="sample-ui">
-        <div>
-        <span>Different Styles of Buttons</span>
-        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-          <ComponentContainer data = {TilesList.getTilesData()}></ComponentContainer>
-        </div>
-      </div>
+        {this.getControlPlane()}
+        <ComponentContainer data={TilesList.getTilesData()}></ComponentContainer>
       </>
     );
   }
+
 }
