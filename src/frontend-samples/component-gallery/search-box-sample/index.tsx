@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { SearchBox } from "@bentley/ui-core"
 
 
@@ -19,8 +18,10 @@ import { SearchBox } from "@bentley/ui-core"
 export function getSearchBoxSpec(): SampleSpec {
   return ({
     name: "search-box-sample",
-    label: "SearchBox",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Search Boxes",
+    image: "ui-search-boxes-thumbnail.png",
+    customModelList: [],
+
     setup: SearchBoxList.setup ,
   });
 }
@@ -46,16 +47,24 @@ export class SearchBoxList extends React.Component<{}> {
         return <SearchBoxList></SearchBoxList>
     }
 
+    public getControlPlane() {
+        return (
+            <>
+                <div className="sample-ui  component-ui">
+                    <div className="sample-instructions">
+                        <span>Different styles of search boxes that can be used in iModel.js applications</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {SearchBoxList.getSearchBoxData()}></ComponentContainer>
-                </div>
-            </div>
+            {this.getControlPlane()}
+             <ComponentContainer data = {SearchBoxList.getSearchBoxData()}></ComponentContainer>
             </>
         );
     }

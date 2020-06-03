@@ -7,10 +7,11 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelConnection, IModelApp, ViewClipDecorationProvider, ScreenViewport, ViewClipClearTool, Viewport, EditManipulator } from "@bentley/imodeljs-frontend";
+import { IModelConnection, IModelApp, ViewClipDecorationProvider, ScreenViewport, ViewClipClearTool, Viewport, EditManipulator, ViewState, StandardViewId } from "@bentley/imodeljs-frontend";
 import { Toggle, Button, ButtonType } from "@bentley/ui-core";
-import { ClipVector, Range3d, ClipShape, ClipMaskXYZRangePlanes, Plane3dByOriginAndUnitNormal, ConvexClipPlaneSet, ClipPlane, Vector3d, Point3d, ClipPrimitive } from "@bentley/geometry-core";
+import { ClipVector, ClipShape, ClipMaskXYZRangePlanes, Plane3dByOriginAndUnitNormal, ConvexClipPlaneSet, ClipPlane, Vector3d, Point3d, ClipPrimitive } from "@bentley/geometry-core";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "../../api/viewSetup";
 
 export function getViewClipSpec(): SampleSpec {
   return ({
@@ -51,7 +52,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     ViewClipDecorationProvider.create().toggleDecoration(vp);
   }
 
-  /* Method for adding decorators to the veiwport */
+  /* Method for adding decorators to the viewport */
   private _addDecorators(vp: ScreenViewport) {
     // Create a clip decorator. Selecting the clip decoration to immediately show the handles is the default.
     const vcdp: ViewClipDecorationProvider = ViewClipDecorationProvider.create();
@@ -64,8 +65,10 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
 
   /* Method for adding a new clip range around the model's extents */
   private _addExtentsClipRange = (vp: ScreenViewport) => {
-    // Get the displayed extents of the model.
-    const range: Range3d = this.state.imodel!.displayedExtents;
+    // Get the range of the model contents.
+    const range = vp.view.computeFitRange();
+    // Remove the top half of the z-range so we have something clipped by default
+    range.high.z = (range.high.z + range.low.z) / 2.0;
     // Create a block for the ClipVector.
     const block: ClipShape = ClipShape.createBlock(range, range.isAlmostZeroZ ? ClipMaskXYZRangePlanes.XAndY : ClipMaskXYZRangePlanes.All, false, false);
     // Create the ClipVector
@@ -175,8 +178,28 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     return true;
   }
 
+  public getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+
+    if (viewState.is3d()) {
+      // Rotate the view to make the view clip look better.
+      viewState.setStandardRotation(StandardViewId.RightIso);
+
+      const range = viewState.computeFitRange();
+      const aspect = ViewSetup.getAspectRatio();
+
+      viewState.lookAtVolume(range, aspect);
+    }
+
+    return viewState;
+  }
+
   private onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
+
+    IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
+      this.setState({ imodel, showClipBlock: true }, () => { this._onToggleRangeClip(true) });
+    });
   }
 
   /** Components for rendering the sample's instructions and controls */
@@ -211,7 +234,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
   public render() {
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getIsoView} />
         {this.getControlPane()}
       </>
     );

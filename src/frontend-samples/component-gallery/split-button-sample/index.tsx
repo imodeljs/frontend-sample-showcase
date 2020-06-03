@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { SplitButton, ContextMenuItem } from "@bentley/ui-core"
 
 
@@ -19,8 +18,10 @@ import { SplitButton, ContextMenuItem } from "@bentley/ui-core"
 export function getSplitButtonSpec(): SampleSpec {
   return ({
     name: "split-button-sample",
-    label: "SplitButton",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Split Buttons",
+    image: "ui-split-button-thumbnail.png",
+    customModelList: [],
+
     setup: SplitButtonList.setup ,
   });
 }
@@ -58,17 +59,25 @@ export class SplitButtonList extends React.Component<{}> {
         return <SplitButtonList></SplitButtonList>
     }
 
+    public getControlPlane() {
+      return (
+          <>
+              <div className="sample-ui  component-ui">
+                  <div className="sample-instructions">
+                      <span>Different styles of split buttons that can be used in iModel.js applications</span>
+                      <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                  </div>
+              </div>
+          </>
+      )
+  }
+
     public render() {
         return (
-            <>
-            <div className="sample-ui">
-                <div max-width="20%">
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {SplitButtonList.getSplitButtonData()}></ComponentContainer>
-                </div>
-            </div>
-            </>
+          <>
+          {this.getControlPlane()}
+           <ComponentContainer data = {SplitButtonList.getSplitButtonData()}></ComponentContainer>
+          </>
         );
     }
   

@@ -21,7 +21,7 @@ export class ShowcaseToolAdmin extends ToolAdmin {
   private proxy: ProxyToolAdmin | null;
 
   public static initialize(): ShowcaseToolAdmin {
-    ShowcaseToolAdmin.singleton = new ShowcaseToolAdmin;
+    ShowcaseToolAdmin.singleton = new ShowcaseToolAdmin();
     return ShowcaseToolAdmin.singleton;
   }
 

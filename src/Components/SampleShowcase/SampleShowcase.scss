@@ -10,9 +10,10 @@
 
 .sample-content {
   flex: 1; 
+  overflow-y: scroll;
+
 }
 
 .sample-gallery {
   overflow-x: scroll;
-  overflow-y: hidden;
 }

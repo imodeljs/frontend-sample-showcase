@@ -120,14 +120,14 @@ export class ShadowStudyUI extends React.Component<{iModelName: string}, ShadowS
 
     //Illegal dates (ex: Feb 30th), do not have a corresponding time, and need to be rejected
     //We also display a message to the user for clarity if an invalid time is entered
+    const invalidDateLabel = document.getElementById('date_invalid')
+
     if (Number.isNaN(new_date.getTime())) {
-      var invalidDateLabel = document.getElementById('date_invalid')
       if (invalidDateLabel)
         invalidDateLabel.textContent = "Invalid Date Entered. Please Select a Different Date." 
       return 
     }
     else {
-      var invalidDateLabel = document.getElementById('date_invalid')
       if (invalidDateLabel)
         invalidDateLabel.textContent = ""  
     }

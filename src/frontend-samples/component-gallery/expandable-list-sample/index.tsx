@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { ExpandableList, ExpandableBlock } from "@bentley/ui-core"
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
 
@@ -20,8 +19,10 @@ import { SampleExpandableBlock } from "./SampleExpandableBlock";
 export function getExpandableListSpec(): SampleSpec {
   return ({
     name: "expandable-list-sample",
-    label: "ExpandableList",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Expandable Lists",
+    image: "ui-expandable-list-thumbnail.png",
+    customModelList: [],
+
     setup: ExpandableListList.setup ,
   });
 }
@@ -59,17 +60,25 @@ export class ExpandableListList extends React.Component<{}> {
         return <ExpandableListList></ExpandableListList>
     }
 
+    public getControlPlane() {
+      return (
+          <>
+              <div className="sample-ui  component-ui">
+                  <div className="sample-instructions">
+                      <span>Different styles of expandable lists that can be used in iModel.js applications</span>
+                      <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                  </div>
+              </div>
+          </>
+      )
+  }
+
     public render() {
         return (
-            <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {ExpandableListList.getExpandableListData()}></ComponentContainer>
-                </div>
-            </div>
-            </>
+          <>
+          {this.getControlPlane()}
+           <ComponentContainer data = {ExpandableListList.getExpandableListData()}></ComponentContainer>
+          </>
         );
     }
   
