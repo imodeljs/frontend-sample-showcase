@@ -3,6 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 .sample-gallery {
+  display: flex;
+  flex-direction: column;
+
+  .sample-group-tabs {
+    width: max-content;
+  }
 
   .card-radio {
     width: max-content;

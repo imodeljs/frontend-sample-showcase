@@ -14,6 +14,7 @@ export interface SampleGalleryEntry {
 
 interface SampleGalleryProps {
   entries: SampleGalleryEntry[];
+  group: string;
   selected: string;
   onChange: ((value: string) => void);
 }
@@ -44,6 +45,9 @@ export class SampleGallery extends React.Component<SampleGalleryProps, {}> {
     return (
       <>
         <div className="sample-gallery">
+          <div className="sample-group-tabs">
+            <span>Groups Here</span>
+          </div>
           <div className="card-radio">
             {this.props.entries.map((entry: SampleGalleryEntry) => this.createElementsForCard(entry))}
           </div>

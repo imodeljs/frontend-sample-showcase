@@ -7,31 +7,8 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
+import { sampleManifest, SampleSpecGroup } from "../../sampleManifest";
 import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
-import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample";
-import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
-import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
-import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
-import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
-import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
-
-import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample";
-import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
-import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
-import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample";
-import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample";
-import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample";
-import { getSearchBoxSpec } from "../../frontend-samples/component-gallery/search-box-sample";
-import { getSliderSpec } from "../../frontend-samples/component-gallery/slider-sample";
-import { getSplitButtonSpec } from "../../frontend-samples/component-gallery/split-button-sample";
-import { getTabsSpec } from "../../frontend-samples/component-gallery/tabs-sample";
-import { getTextSpec } from "../../frontend-samples/component-gallery/text-sample";
-import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
-import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
-
-import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
-import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
-import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
 
 // cSpell:ignore imodels
@@ -47,45 +24,21 @@ export interface SampleSpec {
 
 interface ShowcaseState {
     iModelName: string;
+    activeSampleGroup: string;
     activeSampleSpec?: SampleSpec;
     sampleUI?: React.ReactNode;
 }
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
-    private _samples: SampleSpec[] = [];
+    private _samples = sampleManifest;
 
     constructor(props?: any, context?: any) {
         super(props, context);
-        //IModel Samples
-        this._samples.push(getViewportOnlySpec());
-        this._samples.push(getEmphasizeElementsSpec());
-        this._samples.push(getHeatmapDecoratorSpec());
-        this._samples.push(getMarkerPinSpec());
-        this._samples.push(getShadowStudySpec());
-        this._samples.push(getTooltipCustomizeSpec());
-        this._samples.push(getViewAttributesSpec());
-        this._samples.push(getViewClipSpec());
-        this._samples.push(getViewerOnly2dSpec());
-        this._samples.push(getZoomToElementsSpec());
-
-        //UI Samples
-        this._samples.push(getBadgeSpec());
-        this._samples.push(getButtonSpec());
-        this._samples.push(getCheckListBoxSpec());
-        this._samples.push(getExpandableListSpec());
-        this._samples.push(getInputsSpec());
-        this._samples.push(getLoadingSpec());
-        this._samples.push(getSearchBoxSpec());
-        this._samples.push(getSliderSpec());
-        this._samples.push(getSplitButtonSpec());
-        this._samples.push(getTabsSpec());
-        this._samples.push(getTextSpec());
-        this._samples.push(getTilesSpec());
-        this._samples.push(getToggleSpec());
 
         this.state = {
-            iModelName: SampleIModels.RetailBuilding
+            iModelName: SampleIModels.RetailBuilding,
+            activeSampleGroup: this._samples[0].groupName
         };
     }
 
@@ -94,11 +47,17 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this.setupNewSample(defaultSampleSpec.name);
     }
 
+    private getActiveSampleGroup(): SampleSpecGroup {
+        return this._samples.find((entry: SampleSpecGroup) => entry.groupName === this.state.activeSampleGroup)!;
+    }
+
     private getSampleByName(name?: string): SampleSpec | undefined {
         if (!name)
             return undefined;
 
-        return this._samples.find((entry: SampleSpec) => entry.name === name)!;
+        const group = this.getActiveSampleGroup();
+
+        return group.samples.find((entry: SampleSpec) => entry.name === name)!;
     }
 
     private getIModelList(sampleSpec: SampleSpec): string[] {
@@ -139,7 +98,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
 
     private getGalleryList(): SampleGalleryEntry[] {
-        return this._samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
+        const group = this.getActiveSampleGroup();
+
+        return group.samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
     }
 
     private onIModelChange = (iModelName: string) => {
@@ -156,9 +117,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
                     <div id="sample-container" className="sample-content">
                         {this.state.sampleUI}
                     </div>
-                    <div className="sample-gallery">
-                        <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
-                    </div>
+                    <SampleGallery entries={this.getGalleryList()} group={this.state.activeSampleGroup} selected={activeSampleName} onChange={this._onActiveSampleChange} />
                     {modelList && 1 < modelList.length &&
                         <div className="model-selector">
                             <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this.onIModelChange} />
