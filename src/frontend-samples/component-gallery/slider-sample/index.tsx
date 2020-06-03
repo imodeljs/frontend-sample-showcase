@@ -63,13 +63,8 @@ export class SliderList extends React.Component<{}> {
   public render() {
     return (
       <>
-        <div className="sample-ui">
-          <div>
-            <span>Different Styles of Buttons</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-            <ComponentContainer data={SliderList.getSliderData()} />
-          </div>
-        </div>
+        {this.getControlPlane()}
+        <ComponentContainer data={SliderList.getSliderData()}></ComponentContainer>
       </>
     );
   }
