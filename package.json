@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+
     "@bentley/bentleyjs-core": "2.0.0",
     "@bentley/context-registry-client": "2.0.0",
     "@bentley/frontend-authorization-client": "2.0.0",
@@ -33,8 +34,8 @@
     "@types/react-dom": "^16.9.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "typescript": "^3.8.3",
-    "tooltip.js": "^1.2.0"
+    "tooltip.js": "^1.2.0",
+    "typescript": "^3.8.3"
   },
   "devDependencies": {
     "node-sass": "^4.0.0"

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { IModelConnection, ScreenViewport, IModelApp, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
@@ -13,24 +12,22 @@ import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-eleme
 import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
 import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
 import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
-import { getThematicDisplaySpec } from "../../frontend-samples/thematic-display-sample";
 import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
 import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
 
 import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample";
-//import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
-//import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
-//import { getContextMenuSpec } from "../../frontend-samples/component-gallery/context-menu-sample";
-//import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample";
-//import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample";
-//import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample";
-//import { getSearchBoxSpec } from "../../frontend-samples/component-gallery/search-box-sample";
-//import { getSliderSpec } from "../../frontend-samples/component-gallery/slider-sample";
-//import { getSplitButtonSpec } from "../../frontend-samples/component-gallery/split-button-sample";
-//import { getTabsSpec } from "../../frontend-samples/component-gallery/tabs-sample";
-//import { getTextSpec } from "../../frontend-samples/component-gallery/text-sample";
-//import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
-//import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
+import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
+import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
+import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample";
+import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample";
+import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample";
+import { getSearchBoxSpec } from "../../frontend-samples/component-gallery/search-box-sample";
+import { getSliderSpec } from "../../frontend-samples/component-gallery/slider-sample";
+import { getSplitButtonSpec } from "../../frontend-samples/component-gallery/split-button-sample";
+import { getTabsSpec } from "../../frontend-samples/component-gallery/tabs-sample";
+import { getTextSpec } from "../../frontend-samples/component-gallery/text-sample";
+import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
+import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
 
 import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
 import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
@@ -60,6 +57,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     constructor(props?: any, context?: any) {
         super(props, context);
+        //IModel Samples
         this._samples.push(getViewportOnlySpec());
         this._samples.push(getEmphasizeElementsSpec());
         this._samples.push(getHeatmapDecoratorSpec());
@@ -70,22 +68,21 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._samples.push(getViewClipSpec());
         this._samples.push(getViewerOnly2dSpec());
         this._samples.push(getZoomToElementsSpec());
-        this._samples.push(getThematicDisplaySpec());
-        //this._samples.push(getShadowStudySpec());
-        //this._samples.push(getBadgeSpec());
+
+        //UI Samples
+        this._samples.push(getBadgeSpec());
         this._samples.push(getButtonSpec());
-        //this._samples.push(getCheckListBoxSpec());
-        ////this._samples.push(getContextMenuSpec());
-        //this._samples.push(getExpandableListSpec());
-        //this._samples.push(getInputsSpec());
-        //this._samples.push(getLoadingSpec());
-        //this._samples.push(getSearchBoxSpec());
-        //this._samples.push(getSliderSpec());
-        //this._samples.push(getSplitButtonSpec());
-        //this._samples.push(getTabsSpec());
-        //this._samples.push(getTextSpec());
-        //this._samples.push(getTilesSpec());
-        //this._samples.push(getToggleSpec());
+        this._samples.push(getCheckListBoxSpec());
+        this._samples.push(getExpandableListSpec());
+        this._samples.push(getInputsSpec());
+        this._samples.push(getLoadingSpec());
+        this._samples.push(getSearchBoxSpec());
+        this._samples.push(getSliderSpec());
+        this._samples.push(getSplitButtonSpec());
+        this._samples.push(getTabsSpec());
+        this._samples.push(getTextSpec());
+        this._samples.push(getTilesSpec());
+        this._samples.push(getToggleSpec());
 
         this.state = {
             iModelName: SampleIModels.RetailBuilding

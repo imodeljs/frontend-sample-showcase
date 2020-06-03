@@ -10,7 +10,6 @@ import { BentleyCloudRpcManager, BentleyCloudRpcParams, IModelReadRpcInterface, 
 import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import { UiComponents } from "@bentley/ui-components";
-import { UiCore } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 

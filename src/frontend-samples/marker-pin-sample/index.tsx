@@ -8,7 +8,7 @@ import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { Range2d, Point3d } from "@bentley/geometry-core";
-import { IModelConnection, IModelApp, StandardViewId, Viewport, imageElementFromUrl, ViewState, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelConnection, IModelApp, StandardViewId, imageElementFromUrl, ViewState, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";

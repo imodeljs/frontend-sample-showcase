@@ -11,7 +11,6 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { Tile, MinimalTile, FeaturedTile, MinimalFeaturedTile} from "@bentley/ui-core"
 
 
@@ -19,8 +18,10 @@ import { Tile, MinimalTile, FeaturedTile, MinimalFeaturedTile} from "@bentley/ui
 export function getTilesSpec(): SampleSpec {
   return ({
     name: "tiles-sample",
-    label: "Tiles",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Tiles",
+    image: "ui-tile-thumbnail.png",
+    customModelList: [],
+
     setup: TilesList.setup ,
   });
 }
@@ -59,17 +60,25 @@ export class TilesList extends React.Component<{}> {
         return <TilesList></TilesList>
     }
 
+    public getControlPlane() {
+      return (
+          <>
+              <div className="sample-ui  component-ui">
+                  <div className="sample-instructions">
+                      <span>Different styles of tiles that can be used in iModel.js applications</span>
+                      <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                  </div>
+              </div>
+          </>
+      )
+  }
+
     public render() {
         return (
-            <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {TilesList.getTilesData()}></ComponentContainer>
-                </div>
-            </div>
-            </>
+          <>
+          {this.getControlPlane()}
+           <ComponentContainer data = {TilesList.getTilesData()}></ComponentContainer>
+          </>
         );
     }
   
