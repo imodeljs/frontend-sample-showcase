@@ -26,6 +26,7 @@ export interface ComponentExampleProps {
   content: React.ReactNode;
 }
 
+// tslint:disable-next-line:variable-name
 export const ComponentExample: React.FC<ComponentExampleProps> = (props: ComponentExampleProps) => {
   const { title, description, content } = props;
   return (
