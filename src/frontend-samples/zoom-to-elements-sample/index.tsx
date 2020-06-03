@@ -7,8 +7,8 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelConnection, IModelApp, ViewChangeOptions, MarginPercent, StandardViewId, ZoomToOptions, Viewport } from "@bentley/imodeljs-frontend";
-import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
+import { IModelApp, IModelConnection, MarginPercent, StandardViewId, ViewChangeOptions, Viewport, ZoomToOptions } from "@bentley/imodeljs-frontend";
+import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
@@ -101,6 +101,7 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
       zoomToOpts.standardViewId = this.state.standardViewVal;
 
     const vp = IModelApp.viewManager.selectedView!;
+    // tslint:disable-next-line no-floating-promises
     ZoomToElementsAPI.zoomToElements(this.state.elementList, viewChangeOpts, zoomToOpts, vp, this.state.imodel!);
   }
 

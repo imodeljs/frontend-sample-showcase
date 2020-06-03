@@ -15,7 +15,11 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+- script: npm ci
+  displayName: npm install
+
+- script: npm run lint
+  displayName: npm lint
+
+- script: npm run build
+  displayName: npm build

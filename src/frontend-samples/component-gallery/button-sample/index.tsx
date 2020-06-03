@@ -9,29 +9,24 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { Button, ButtonType, ButtonSize, UnderlinedButton } from "@bentley/ui-core"
-
-
+import { Button, ButtonSize, ButtonType, UnderlinedButton } from "@bentley/ui-core";
 
 export function getButtonSpec(): SampleSpec {
-  return ({
-    name: "button-sample",
-    label: "UI-Buttons",
-    image: "ui-button-thumbnail.png",
-    customModelList: [],
+    return ({
+        name: "button-sample",
+        label: "UI-Buttons",
+        image: "ui-button-thumbnail.png",
+        customModelList: [],
 
-    setup: ButtonList.setup ,
-  });
+        setup: ButtonList.setup,
+    });
 }
-
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class ButtonList extends React.Component<{}> {
 
@@ -46,11 +41,11 @@ export class ButtonList extends React.Component<{}> {
             createComponentExample("Large Blue Button", "Button with ButtonType.Blue and size={ButtonSize.Large}", <Button buttonType={ButtonType.Blue} size={ButtonSize.Large}>Blue Button</Button>),
             createComponentExample("Large Hollow Button", "Button with ButtonType.Hollow and size={ButtonSize.Large}", <Button buttonType={ButtonType.Hollow} size={ButtonSize.Large}>Hollow Button</Button>),
             createComponentExample("Underlined Button", "UnderlinedButton component", <UnderlinedButton>Underlined Button</UnderlinedButton>),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <ButtonList></ButtonList>
+        return <ButtonList></ButtonList>;
     }
 
     public getControlPlane() {
@@ -63,16 +58,15 @@ export class ButtonList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {
         return (
             <>
-            {this.getControlPlane()}
-             <ComponentContainer data = {ButtonList.getButtonData()}></ComponentContainer>
+                {this.getControlPlane()}
+                <ComponentContainer data={ButtonList.getButtonData()}></ComponentContainer>
             </>
         );
     }
-  
 }

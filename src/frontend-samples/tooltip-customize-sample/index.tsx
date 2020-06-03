@@ -9,7 +9,7 @@ import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
-import { ShowcaseToolAdmin, ProxyToolAdmin } from "../../api/showcasetooladmin";
+import { ProxyToolAdmin, ShowcaseToolAdmin } from "../../api/showcasetooladmin";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 export function getTooltipCustomizeSpec(): SampleSpec {
