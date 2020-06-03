@@ -98,35 +98,33 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
 
   // Update the state date with the newly selected day of the year
   private updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //Extract date information from string returned by date picker
-    const date_string = event.target.value
-    var date_info = date_string.split('-')
+    // Extract date information from string returned by date picker
+    const dateString = event.target.value;
+    const dateInfo = dateString.split("-");
 
-    const year = Number(date_info[0])
-    //We subtract a 1 here because date objects have the index for months starting at 0
-    const month = Number(date_info[1]) - 1
-    const day = Number(date_info[2])
+    const year = Number(dateInfo[0]);
+    // We subtract a 1 here because date objects have the index for months starting at 0
+    const month = Number(dateInfo[1]) - 1;
+    const day = Number(dateInfo[2]);
 
-    //Construct a new date object based on the extracted date information
-    var new_date = new Date(year, month, day)
+    // Construct a new date object based on the extracted date information
+    const newDate = new Date(year, month, day);
 
-    var old_date = this.state.date
-    new_date.setMinutes(old_date.getMinutes())
-    new_date.setHours(old_date.getHours())
+    const oldDate = this.state.date;
+    newDate.setMinutes(oldDate.getMinutes());
+    newDate.setHours(oldDate.getHours());
 
-    //Illegal dates (ex: Feb 30th), do not have a corresponding time, and need to be rejected
-    //We also display a message to the user for clarity if an invalid time is entered
-    const invalidDateLabel = document.getElementById('date_invalid')
+    // Illegal dates (ex: Feb 30th), do not have a corresponding time, and need to be rejected
+    // We also display a message to the user for clarity if an invalid time is entered
+    const invalidDateLabel = document.getElementById("date_invalid");
 
-    if (Number.isNaN(new_date.getTime())) {
+    if (Number.isNaN(newDate.getTime())) {
       if (invalidDateLabel)
-        invalidDateLabel.textContent = "Invalid Date Entered. Please Select a Different Date."
-      return
+        invalidDateLabel.textContent = "Invalid Date Entered. Please Select a Different Date.";
+      return;
     }
-    else {
-      if (invalidDateLabel)
-        invalidDateLabel.textContent = "";
-    }
+    if (invalidDateLabel)
+      invalidDateLabel.textContent = "";
 
     // If date is valid, update the state, date label, and the sun time
     this.setState({ date: newDate });

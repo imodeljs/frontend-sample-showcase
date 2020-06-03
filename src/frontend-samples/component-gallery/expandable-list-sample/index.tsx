@@ -11,7 +11,7 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { ExpandableList, ExpandableBlock } from "@bentley/ui-core"
+import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
 
 export function getExpandableListSpec(): SampleSpec {
@@ -65,7 +65,7 @@ export class ExpandableListList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   public render() {

@@ -57,7 +57,6 @@ export class LoadingList extends React.Component<{}> {
     return <LoadingList></LoadingList>;
   }
 
-
   public getControlPlane() {
     return (
       <>
@@ -68,7 +67,7 @@ export class LoadingList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
   public render() {
     return (

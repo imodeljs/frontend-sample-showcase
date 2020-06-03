@@ -4,4 +4,5 @@
     ".nycrc": "json",
   },
   "editor.formatOnSave": true,
+  "editor.detectIndentation": false,
 }

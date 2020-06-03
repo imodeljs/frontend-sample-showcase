@@ -35,11 +35,11 @@ export class SearchBoxList extends React.Component<{}> {
       createComponentExample("SearchBox", undefined,
         // tslint:disable-next-line: no-console
         <SearchBox placeholder="Search" onValueChanged={(value: string) => console.log(`Search text: ${value}`)} />),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <SearchBoxList></SearchBoxList>
+    return <SearchBoxList></SearchBoxList>;
   }
 
   public getControlPlane() {
@@ -52,7 +52,7 @@ export class SearchBoxList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   public render() {

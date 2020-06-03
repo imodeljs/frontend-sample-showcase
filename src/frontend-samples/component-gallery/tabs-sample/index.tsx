@@ -53,7 +53,7 @@ export class TabsList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {

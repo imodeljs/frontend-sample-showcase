@@ -51,7 +51,7 @@ export class BadgeList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {

@@ -11,15 +11,11 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { Input, Checkbox, Radio, Select, Textarea, NumericInput, IconInput, LabeledInput, LabeledTextarea, LabeledSelect, Icon } from "@bentley/ui-core"
+import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 
-
-
-//import moreSvg from "@bentley/icons-generic/icons/more-circular.svg?sprite";
-//import moreVerticalSvg from "@bentley/icons-generic/icons/more-vertical-circular.svg";
-
-
+// import moreSvg from "@bentley/icons-generic/icons/more-circular.svg?sprite";
+// import moreVerticalSvg from "@bentley/icons-generic/icons/more-vertical-circular.svg";
 
 export function getInputsSpec(): SampleSpec {
   return ({
@@ -66,6 +62,10 @@ export class InputsList extends React.Component<{}> {
     ];
   }
 
+  public static async setup() {
+    return <InputsList></InputsList>;
+  }
+
   public getControlPlane() {
     return (
       <>
@@ -76,7 +76,7 @@ export class InputsList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   public render() {

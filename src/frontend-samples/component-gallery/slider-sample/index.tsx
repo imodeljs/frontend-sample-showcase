@@ -84,8 +84,6 @@ export class SliderList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
-
-
 }

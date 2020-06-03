@@ -64,7 +64,7 @@ export class SplitButtonList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   public render() {

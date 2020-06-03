@@ -63,7 +63,7 @@ export class CheckListBoxList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   public render() {

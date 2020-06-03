@@ -65,7 +65,7 @@ export class TilesList extends React.Component<{}> {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   public render() {

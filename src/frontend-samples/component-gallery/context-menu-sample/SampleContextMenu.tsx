@@ -23,7 +23,7 @@ export class SampleContextMenu {
   ];
 
   public static showContextMenu() {
-    console.log(IModelApp.uiAdmin.showContextMenu(this._myMenuItems, IModelApp.uiAdmin.createXAndY(0, 0)));
+    IModelApp.uiAdmin.showContextMenu(this._myMenuItems, IModelApp.uiAdmin.createXAndY(0, 0));
   }
 
 }

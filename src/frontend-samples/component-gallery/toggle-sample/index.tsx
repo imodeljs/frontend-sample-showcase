@@ -41,11 +41,11 @@ export class ToggleList extends React.Component<{}> {
             createComponentExample("Square Toggle", "Toggle with rounded={false}", <Toggle isOn={true} rounded={false} />),
             createComponentExample("Toggle with Checkmark", "Toggle with showCheckmark prop", <Toggle isOn={true} showCheckmark={true} />),
             createComponentExample("LabeledToggle", undefined, <LabeledToggle isOn={true} label="Toggle label" />),
-        ]
+        ];
     }
 
     public static async setup() {
-        return <ToggleList></ToggleList>
+        return <ToggleList></ToggleList>;
     }
 
     public getControlPlane() {
@@ -58,7 +58,7 @@ export class ToggleList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {
