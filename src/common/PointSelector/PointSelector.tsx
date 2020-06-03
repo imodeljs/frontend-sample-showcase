@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Point3d, Range2d } from "@bentley/geometry-core";
-import { BasePointGenerator, RandomPointGenerator, CirclePointGenerator, CrossPointGenerator } from "./PointGenerators";
+import { BasePointGenerator, CirclePointGenerator, CrossPointGenerator, RandomPointGenerator } from "./PointGenerators";
 
 export enum PointMode {
   Random = "1",

@@ -36,7 +36,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     if (!this.state.imodel || !this.state.viewState)
       ui = <StartupComponent iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />;
     else
-      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} />
+      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} />;
 
     return (
       <>
@@ -53,7 +53,6 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
 
   private _onIModelReady = async (imodel: IModelConnection) => {
     const viewState = (this.props.getCustomViewState) ? await this.props.getCustomViewState(imodel) : await ViewSetup.getDefaultView(imodel);
-    this.setState({ imodel, viewState }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel) });
+    this.setState({ imodel, viewState }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel); });
   }
 }
-

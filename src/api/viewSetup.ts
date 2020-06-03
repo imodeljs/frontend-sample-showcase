@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { IModelConnection, SpatialViewState, DrawingViewState, ViewState } from "@bentley/imodeljs-frontend";
-import { Id64String, Id64 } from "@bentley/bentleyjs-core";
+import { DrawingViewState, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
+import { Id64, Id64String } from "@bentley/bentleyjs-core";
 
 export class ViewSetup {
 

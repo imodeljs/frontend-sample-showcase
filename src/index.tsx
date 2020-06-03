@@ -1,9 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import { App } from './Components/App/App';
-import * as serviceWorker from './serviceWorker';
-import { SampleBaseApp } from './SampleBaseApp';
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import { App } from "./Components/App/App";
+import * as serviceWorker from "./serviceWorker";
+import { SampleBaseApp } from "./SampleBaseApp";
 
 (async () => {
   await SampleBaseApp.startup();
@@ -12,7 +17,7 @@ import { SampleBaseApp } from './SampleBaseApp';
     <React.StrictMode>
       <App />
     </React.StrictMode>,
-    document.getElementById('root')
+    document.getElementById("root"),
   );
 })(); // tslint:disable-line:no-floating-promises
 

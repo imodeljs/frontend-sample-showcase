@@ -9,29 +9,24 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core"
-
-
+import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core";
 
 export function getTabsSpec(): SampleSpec {
-  return ({
-    name: "tabs-sample",
-    label: "UI-Tabs",
-    image: "ui-tabs-thumbnail.png",
-    customModelList: [],
+    return ({
+        name: "tabs-sample",
+        label: "UI-Tabs",
+        image: "ui-tabs-thumbnail.png",
+        customModelList: [],
 
-    setup: TabsList.setup ,
-  });
+        setup: TabsList.setup,
+    });
 }
-
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class TabsList extends React.Component<{}> {
 
@@ -41,11 +36,11 @@ export class TabsList extends React.Component<{}> {
             createComponentExample("Green Horizontal Tabs", "with green prop", <HorizontalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} green />),
             createComponentExample("Vertical Tabs", undefined, <VerticalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} />),
             createComponentExample("Green Vertical Tabs", "with green prop", <VerticalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} green />),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <TabsList></TabsList>
+        return <TabsList></TabsList>;
     }
 
     public getControlPlane() {
@@ -58,16 +53,15 @@ export class TabsList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {
         return (
             <>
-            {this.getControlPlane()}
-             <ComponentContainer data = {TabsList.getTabsData()}></ComponentContainer>
+                {this.getControlPlane()}
+                <ComponentContainer data={TabsList.getTabsData()}></ComponentContainer>
             </>
         );
     }
-  
 }
