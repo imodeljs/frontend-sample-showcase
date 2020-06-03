@@ -69,7 +69,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._samples.push(getViewerOnly2dSpec());
     this._samples.push(getZoomToElementsSpec());
     this._samples.push(getThematicDisplaySpec());
-    this._samples.push(getButtonSpec());
 
     // UI Samples
     this._samples.push(getBadgeSpec());
