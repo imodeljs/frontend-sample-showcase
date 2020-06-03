@@ -9,41 +9,36 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { UnderlinedButton } from "@bentley/ui-core"
+import { UnderlinedButton } from "@bentley/ui-core";
 import { SampleContextMenu } from "./SampleContextMenu";
 
-
-
 export function getContextMenuSpec(): SampleSpec {
-  return ({
-    name: "context-menu-sample",
-    label: "UI-Context Menus",
-    image: "ui-context-menu-thumbnail.png",
-    customModelList: [],
+    return ({
+        name: "context-menu-sample",
+        label: "UI-Context Menus",
+        image: "ui-context-menu-thumbnail.png",
+        customModelList: [],
 
-    setup: ContextMenuList.setup ,
-  });
+        setup: ContextMenuList.setup,
+    });
 }
-
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class ContextMenuList extends React.Component<{}> {
 
     public static getContextMenuData(): ComponentExampleProps[] {
         return [
             createComponentExample("ContextMenu", undefined, <UnderlinedButton onClick={() => SampleContextMenu.showContextMenu()}> Open ContextMenu</UnderlinedButton>),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <ContextMenuList></ContextMenuList>
+        return <ContextMenuList></ContextMenuList>;
     }
 
     public getControlPlane() {
@@ -56,16 +51,15 @@ export class ContextMenuList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {
         return (
             <>
-            {this.getControlPlane()}
-             <ComponentContainer data = {ContextMenuList.getContextMenuData()}></ComponentContainer>
+                {this.getControlPlane()}
+                <ComponentContainer data={ContextMenuList.getContextMenuData()}></ComponentContainer>
             </>
         );
     }
-  
 }

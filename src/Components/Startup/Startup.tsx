@@ -6,7 +6,7 @@ import * as React from "react";
 import { OpenMode } from "@bentley/bentleyjs-core";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext, RemoteBriefcaseConnection, FrontendRequestContext, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, FrontendRequestContext, IModelApp, IModelConnection, RemoteBriefcaseConnection } from "@bentley/imodeljs-frontend";
 import { SignIn } from "@bentley/ui-components";
 import { SampleBaseApp } from "../../SampleBaseApp";
 import { LoadingSpinner, SpinnerSize } from "@bentley/ui-core";
@@ -47,7 +47,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
         SampleBaseApp.oidcClient.onUserStateChanged.addListener(this._onUserStateChanged);
         if (SampleBaseApp.oidcClient.isAuthorized)
             this.setState((prev) => ({ user: { ...prev.user, isLoading: false } }), () => {
-                this.openIModel()
+                this.openIModel(); // tslint:disable-line no-floating-promises
             });
     }
 
@@ -63,7 +63,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
 
     private _onUserStateChanged = () => {
         this.setState((prev) => ({ user: { ...prev.user, isLoading: false, isAuthorized: SampleBaseApp.oidcClient.isAuthorized } }),
-            () => { if (this.state.user.isAuthorized) { this.openIModel() } });
+            () => { if (this.state.user.isAuthorized) { this.openIModel(); } }); // tslint:disable-line no-floating-promises
     }
 
     private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
@@ -73,7 +73,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
         const iModelName = this.props.iModelName;
         const projectName = this.props.iModelName;
 
-        //const connectClient = new ConnectClient();
+        // const connectClient = new ConnectClient();
         const connectClient = new ContextRegistryClient();
         let project: Project;
         try {
@@ -102,7 +102,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
 
         this.setState({ imodel }, () => {
             if (imodel)
-                this.props.onIModelReady(imodel)
+                this.props.onIModelReady(imodel);
         });
     }
 
@@ -130,11 +130,10 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
                 height: "100%",
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
             }}>
                 {ui}
             </div >
         );
     }
 }
-

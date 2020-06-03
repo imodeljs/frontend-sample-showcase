@@ -2,36 +2,34 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+// cSpell:ignore webfont
+// cSpell:ignore Checkmark
+
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+// import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { Toggle, LabeledToggle, ToggleButtonType } from "@bentley/ui-core"
-
-
+import { LabeledToggle, Toggle, ToggleButtonType } from "@bentley/ui-core";
 
 export function getToggleSpec(): SampleSpec {
-  return ({
-    name: "toggle-sample",
-    label: "UI-Toggles",
-    image: "ui-toggle-thumbnail.png",
-    customModelList: [],
+    return ({
+        name: "toggle-sample",
+        label: "UI-Toggles",
+        image: "ui-toggle-thumbnail.png",
+        customModelList: [],
 
-    setup: ToggleList.setup ,
-  });
+        setup: ToggleList.setup,
+    });
 }
-
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class ToggleList extends React.Component<{}> {
 
@@ -43,11 +41,11 @@ export class ToggleList extends React.Component<{}> {
             createComponentExample("Square Toggle", "Toggle with rounded={false}", <Toggle isOn={true} rounded={false} />),
             createComponentExample("Toggle with Checkmark", "Toggle with showCheckmark prop", <Toggle isOn={true} showCheckmark={true} />),
             createComponentExample("LabeledToggle", undefined, <LabeledToggle isOn={true} label="Toggle label" />),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <ToggleList></ToggleList>
+        return <ToggleList></ToggleList>;
     }
 
     public getControlPlane() {
@@ -60,16 +58,16 @@ export class ToggleList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {
         return (
             <>
-            {this.getControlPlane()}
-             <ComponentContainer data = {ToggleList.getToggleData()}></ComponentContainer>
+                {this.getControlPlane()}
+                <ComponentContainer data={ToggleList.getToggleData()}></ComponentContainer>
             </>
         );
     }
-  
+
 }

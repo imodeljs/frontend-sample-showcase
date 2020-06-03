@@ -9,29 +9,24 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { BodyText, BlockText, DisabledText, Headline, LeadingText, MutedText, SmallText, Subheading, Title } from "@bentley/ui-core"
-
-
+import { BlockText, BodyText, DisabledText, Headline, LeadingText, MutedText, SmallText, Subheading, Title } from "@bentley/ui-core";
 
 export function getTextSpec(): SampleSpec {
-  return ({
-    name: "text-sample",
-    label: "UI-Text",
-    image: "ui-text-thumbnail.png",
-    customModelList: [],
+    return ({
+        name: "text-sample",
+        label: "UI-Text",
+        image: "ui-text-thumbnail.png",
+        customModelList: [],
 
-    setup: TextList.setup ,
-  });
+        setup: TextList.setup,
+    });
 }
-
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
     return { title, description, content };
 };
-
-
 
 export class TextList extends React.Component<{}> {
 
@@ -46,11 +41,11 @@ export class TextList extends React.Component<{}> {
             createComponentExample("SmallText", undefined, <SmallText>This is Small Text</SmallText>),
             createComponentExample("Subheading", undefined, <Subheading>This is Subheading Text</Subheading>),
             createComponentExample("Title", undefined, <Title>This is Title Text</Title>),
-          ]
+        ];
     }
 
     public static async setup() {
-        return <TextList></TextList>
+        return <TextList></TextList>;
     }
 
     public getControlPlane() {
@@ -63,16 +58,15 @@ export class TextList extends React.Component<{}> {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 
     public render() {
         return (
             <>
-            {this.getControlPlane()}
-             <ComponentContainer data = {TextList.getTextData()}></ComponentContainer>
+                {this.getControlPlane()}
+                <ComponentContainer data={TextList.getTextData()}></ComponentContainer>
             </>
         );
     }
-  
 }

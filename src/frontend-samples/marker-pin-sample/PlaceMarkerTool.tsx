@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { PrimitiveTool, Viewport, BeButtonEvent, IModelApp, EventHandled } from "@bentley/imodeljs-frontend";
+import { BeButtonEvent, EventHandled, IModelApp, PrimitiveTool, Viewport } from "@bentley/imodeljs-frontend";
 import { Point3d } from "@bentley/geometry-core";
 
 /** This class defines the user's interaction while placing a new marker. It is launched by a button in the UI.

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { GlobalContextMenu, ContextMenuItem, UiEvent } from "@bentley/ui-core";
+import { ContextMenuItem, GlobalContextMenu, UiEvent } from "@bentley/ui-core";
 
 export interface PopupMenuEntry {
   label: string;
