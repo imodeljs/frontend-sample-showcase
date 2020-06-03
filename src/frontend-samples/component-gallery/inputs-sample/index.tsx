@@ -11,20 +11,23 @@ import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
 
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
 import { Input, Checkbox, Radio, Select, Textarea, NumericInput, IconInput, LabeledInput, LabeledTextarea, LabeledSelect, Icon} from "@bentley/ui-core"
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 
+
+
 //import moreSvg from "@bentley/icons-generic/icons/more-circular.svg?sprite";
-//import moreVerticalSvg from "@bentley/icons-generic/icons/more-vertical-circular.svg?sprite";
+//import moreVerticalSvg from "@bentley/icons-generic/icons/more-vertical-circular.svg";
 
 
 
 export function getInputsSpec(): SampleSpec {
   return ({
     name: "inputs-sample",
-    label: "Inputs",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Inputs",
+    image: "ui-inputs-thumbnail.png",
+    customModelList: [],
+
     setup: InputsList.setup ,
   });
 }
@@ -63,7 +66,6 @@ export class InputsList extends React.Component<{}> {
             createComponentExample("Labeled Select", "Labeled Select component", <LabeledSelect label="Labeled Select" options={["Option 1", "Option 2", "Option 3", "Option 4"]} />),
     
             createComponentExample("Image Checkbox", "ImageCheckbox with WebFonts", <SampleImageCheckBox imageOn="icon-more-circular" imageOff="icon-more-vertical-circular" />),
-            //createComponentExample("Image Checkbox", "ImageCheckbox with SVG fonts", <SampleImageCheckBox imageOn={IconSpecUtilities.createSvgIconSpec(moreSvg)} imageOff={IconSpecUtilities.createSvgIconSpec(moreVerticalSvg)} />),
           ]
     }
 
@@ -71,16 +73,24 @@ export class InputsList extends React.Component<{}> {
         return <InputsList></InputsList>
     }
 
+    public getControlPlane() {
+        return (
+            <>
+                <div className="sample-ui  component-ui">
+                    <div className="sample-instructions">
+                        <span>Different styles of inputs that can be used in iModel.js applications</span>
+                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     public render() {
         return (
             <>
-            <div className="sample-ui">
-                <div>
-                <span>Different Styles of Buttons</span>
-                <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    <ComponentContainer data = {InputsList.getInputsData()}></ComponentContainer>
-                </div>
-            </div>
+            {this.getControlPlane()}
+             <ComponentContainer data = {InputsList.getInputsData()}></ComponentContainer>
             </>
         );
     }

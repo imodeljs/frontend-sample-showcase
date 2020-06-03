@@ -3,8 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { StartupComponent } from "../Startup/Startup";
 
 import "./App.css";
 import { SampleShowcase } from "../SampleShowcase/SampleShowcase";
