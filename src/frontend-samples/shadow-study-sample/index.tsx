@@ -170,7 +170,7 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Select a date and time.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/shadow-study-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-3col">
