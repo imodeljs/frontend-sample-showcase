@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 import { HeatmapDecoratorApp } from ".";
 
 export function getHeatmapDecoratorSpec(): SampleSpec {
@@ -19,8 +18,6 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
       { name: "PointSelector.tsx", import: import("!!raw-loader!../../common/PointSelector/PointSelector") },
       { name: "PointGenerators.tsx", import: import("!!raw-loader!../../common/PointSelector/PointGenerators") },
     ],
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
-    handlesViewSetup: true,
     setup: HeatmapDecoratorApp.setup,
     teardown: HeatmapDecoratorApp.teardown,
   });

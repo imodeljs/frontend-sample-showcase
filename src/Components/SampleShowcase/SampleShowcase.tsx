@@ -44,9 +44,7 @@ export interface SampleSpec {
     name: string;
     label: string;
     image: string;
-    modelList?: string[];
     files?: InternalFile[],
-    handlesViewSetup?: boolean;
     customModelList?: string[];
     setup?: (iModelName: string) => Promise<React.ReactNode>;
     teardown?: () => void;
@@ -162,7 +160,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     public render() {
         const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
-        const modelList = this.state.activeSampleSpec ? this.state.activeSampleSpec.modelList : undefined;
+        const modelList = this.state.activeSampleSpec ? this.getIModelList(this.state.activeSampleSpec) : null;
         const files = this.state.activeSampleSpec ? this.state.activeSampleSpec.files : undefined;
 
         return (
