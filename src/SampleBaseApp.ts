@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { ClientRequestContext, /* Config */ Id64String } from "@bentley/bentleyjs-core";
-import { /* BrowserAuthorizationCallbackHandler */ BrowserAuthorizationClient, /* BrowserAuthorizationClientConfiguration */ } from "@bentley/frontend-authorization-client";
+import { /* BrowserAuthorizationCallbackHandler */ BrowserAuthorizationClient /* BrowserAuthorizationClientConfiguration */ } from "@bentley/frontend-authorization-client";
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
 import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
 import { BentleyCloudRpcManager, BentleyCloudRpcParams, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
