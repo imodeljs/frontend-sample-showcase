@@ -44,7 +44,7 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
       requestContext.enter();
     }
 
-    const response = await fetch(userURL)
+    const response = await fetch(userURL);
     const tokenJson = {
       ...await response.json(),
       _userInfo: { id: "MockId" },
