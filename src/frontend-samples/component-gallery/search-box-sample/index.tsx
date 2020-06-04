@@ -11,35 +11,43 @@ import { ComponentContainer, ComponentExampleProps } from "../CommonComponentToo
 import { SearchBox } from "@bentley/ui-core"
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
-    return { title, description, content };
+  return { title, description, content };
 };
 
 export class SearchBoxList extends React.Component<{}> {
 
-    public static getSearchBoxData(): ComponentExampleProps[] {
-        return [
-            createComponentExample("SearchBox", undefined,
-                // tslint:disable-next-line: no-console
-                <SearchBox placeholder="Search" onValueChanged={(value: string) => console.log(`Search text: ${value}`)} />),
-        ]
-    }
+  public static getSearchBoxData(): ComponentExampleProps[] {
+    return [
+      createComponentExample("SearchBox", undefined,
+        // tslint:disable-next-line: no-console
+        <SearchBox placeholder="Search" onValueChanged={(value: string) => console.log(`Search text: ${value}`)} />),
+    ];
+  }
 
-    public static async setup() {
-        return <SearchBoxList></SearchBoxList>
-    }
+  public static async setup() {
+    return <SearchBoxList></SearchBoxList>;
+  }
 
-    public render() {
-        return (
-            <>
-                <div className="sample-ui">
-                    <div>
-                        <span>Different Styles of Buttons</span>
-                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                        <ComponentContainer data={SearchBoxList.getSearchBoxData()}></ComponentContainer>
-                    </div>
-                </div>
-            </>
-        );
-    }
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of search boxes that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  public render() {
+    return (
+      <>
+        {this.getControlPlane()}
+        <ComponentContainer data={SearchBoxList.getSearchBoxData()}></ComponentContainer>
+      </>
+    );
+  }
 
 }

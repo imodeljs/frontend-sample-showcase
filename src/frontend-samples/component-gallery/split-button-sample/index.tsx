@@ -33,25 +33,32 @@ export class SplitButtonList extends React.Component<{}> {
         <SplitButton label="Split Button" drawBorder icon="icon-placeholder" onClick={() => { }}>
           {this.splitButtonMenuItems.map((node) => node)}
         </SplitButton>),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <SplitButtonList></SplitButtonList>
+    return <SplitButtonList></SplitButtonList>;
   }
 
-  public render() {
+  public getControlPlane() {
     return (
       <>
-        <div className="sample-ui">
-          <div max-width="20%">
-            <span>Different Styles of Buttons</span>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of split buttons that can be used in iModel.js applications</span>
             <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-            <ComponentContainer data={SplitButtonList.getSplitButtonData()}></ComponentContainer>
           </div>
         </div>
       </>
     );
   }
 
+  public render() {
+    return (
+      <>
+        {this.getControlPlane()}
+        <ComponentContainer data={SplitButtonList.getSplitButtonData()}></ComponentContainer>
+      </>
+    );
+  }
 }

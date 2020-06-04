@@ -12,36 +12,43 @@ import { ComponentContainer, ComponentExampleProps } from "../CommonComponentToo
 import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core"
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
-    return { title, description, content };
+  return { title, description, content };
 };
 
 export class TabsList extends React.Component<{}> {
 
-    public static getTabsData(): ComponentExampleProps[] {
-        return [
-            createComponentExample("Horizontal Tabs", undefined, <HorizontalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} />),
-            createComponentExample("Green Horizontal Tabs", "with green prop", <HorizontalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} green />),
-            createComponentExample("Vertical Tabs", undefined, <VerticalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} />),
-            createComponentExample("Green Vertical Tabs", "with green prop", <VerticalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} green />),
-        ]
-    }
+  public static getTabsData(): ComponentExampleProps[] {
+    return [
+      createComponentExample("Horizontal Tabs", undefined, <HorizontalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} />),
+      createComponentExample("Green Horizontal Tabs", "with green prop", <HorizontalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} green />),
+      createComponentExample("Vertical Tabs", undefined, <VerticalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} />),
+      createComponentExample("Green Vertical Tabs", "with green prop", <VerticalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} activeIndex={0} green />),
+    ];
+  }
 
-    public static async setup() {
-        return <TabsList></TabsList>
-    }
+  public static async setup() {
+    return <TabsList></TabsList>;
+  }
 
-    public render() {
-        return (
-            <>
-                <div className="sample-ui">
-                    <div>
-                        <span>Different Styles of Buttons</span>
-                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                        <ComponentContainer data={TabsList.getTabsData()}></ComponentContainer>
-                    </div>
-                </div>
-            </>
-        );
-    }
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of tabs that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
+  }
 
+  public render() {
+    return (
+      <>
+        {this.getControlPlane()}
+        <ComponentContainer data={TabsList.getTabsData()}></ComponentContainer>
+      </>
+    );
+  }
 }

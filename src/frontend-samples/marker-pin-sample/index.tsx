@@ -6,8 +6,8 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { Range2d, Point3d } from "@bentley/geometry-core";
-import { IModelConnection, IModelApp, StandardViewId, Viewport, imageElementFromUrl, ViewState, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { Point3d, Range2d } from "@bentley/geometry-core";
+import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
@@ -183,7 +183,7 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string }, Marker
       MarkerPinsApp.height = range.zHigh;
 
       this.setState({ imodel });
-    })
+    });
   }
 
   /** Components for rendering the sample's instructions and controls */

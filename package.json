@@ -28,10 +28,6 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.37",
-    "@types/react": "^16.9.34",
-    "@types/react-dom": "^16.9.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "tooltip.js": "^1.2.0",
@@ -43,13 +39,23 @@
     "node-sass": "^4.0.0",
     "raw-loader": "^4.0.1",
     "react-app-rewired": "^2.1.6",
-    "worker-loader": "^2.0.0"
+    "worker-loader": "^2.0.0",
+    "@bentley/build-tools": "^2.0.0",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.12.37",
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.7",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.20.1",
+    "tslint-etc": "^1.5.2"
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version @bentley/react-scripts",
     "build": "react-app-rewired build --scripts-version @bentley/react-scripts",
     "test": "react-app-rewired test --scripts-version @bentley/react-scripts",
-    "eject": "react-app-rewired eject --scripts-version @bentley/react-scripts"
+    "eject": "react-app-rewired eject --scripts-version @bentley/react-scripts",
+    "lint": "tslint -p . 1>&2",
+    "clean": "rimraf build"
   },
   "eslintConfig": {
     "extends": "react-app"

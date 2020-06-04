@@ -3,14 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { ClientRequestContext, Config, Id64String } from "@bentley/bentleyjs-core";
-import { BrowserAuthorizationClientConfiguration, BrowserAuthorizationClient, BrowserAuthorizationCallbackHandler } from "@bentley/frontend-authorization-client";
+import { BrowserAuthorizationCallbackHandler, BrowserAuthorizationClient, BrowserAuthorizationClientConfiguration } from "@bentley/frontend-authorization-client";
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
-import { IModelApp, FrontendRequestContext, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
+import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
 import { BentleyCloudRpcManager, BentleyCloudRpcParams, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
 import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import { UiComponents } from "@bentley/ui-components";
-import { UiCore } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 

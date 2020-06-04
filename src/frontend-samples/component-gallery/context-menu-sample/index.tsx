@@ -12,33 +12,40 @@ import { UnderlinedButton } from "@bentley/ui-core"
 import { SampleContextMenu } from "./SampleContextMenu";
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
-    return { title, description, content };
+  return { title, description, content };
 };
 
 export class ContextMenuList extends React.Component<{}> {
 
-    public static getContextMenuData(): ComponentExampleProps[] {
-        return [
-            createComponentExample("ContextMenu", undefined, <UnderlinedButton onClick={() => SampleContextMenu.showContextMenu()}> Open ContextMenu</UnderlinedButton>),
-        ]
-    }
+  public static getContextMenuData(): ComponentExampleProps[] {
+    return [
+      createComponentExample("ContextMenu", undefined, <UnderlinedButton onClick={() => SampleContextMenu.showContextMenu()}> Open ContextMenu</UnderlinedButton>),
+    ];
+  }
 
-    public static async setup() {
-        return <ContextMenuList></ContextMenuList>
-    }
+  public static async setup() {
+    return <ContextMenuList></ContextMenuList>;
+  }
 
-    public render() {
-        return (
-            <>
-                <div className="sample-ui">
-                    <div>
-                        <span>Different Styles of Buttons</span>
-                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                        <ComponentContainer data={ContextMenuList.getContextMenuData()}></ComponentContainer>
-                    </div>
-                </div>
-            </>
-        );
-    }
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of context menus that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
+  }
 
+  public render() {
+    return (
+      <>
+        {this.getControlPlane()}
+        <ComponentContainer data={ContextMenuList.getContextMenuData()}></ComponentContainer>
+      </>
+    );
+  }
 }

@@ -15,8 +15,6 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 
-
-
 export class ExpandableListList extends React.Component<{}> {
 
   public static getExpandableListData(): ComponentExampleProps[] {
@@ -25,34 +23,42 @@ export class ExpandableListList extends React.Component<{}> {
         <ExpandableList className="uicore-full-width">
           <SampleExpandableBlock title="Test" isExpanded={true} onClick={() => { }}>
             Hello World!
-                </SampleExpandableBlock>
+              </SampleExpandableBlock>
         </ExpandableList>),
       createComponentExample("ExpandableList w/ singleExpandOnly", "ExpandableList with singleExpandOnly prop",
         <ExpandableList className="uicore-full-width" singleExpandOnly={true} defaultActiveBlock={0}>
           <ExpandableBlock title="Test1" isExpanded={false} onClick={() => { }}>
             Hello World 1
-                </ExpandableBlock>
+              </ExpandableBlock>
           <ExpandableBlock title="Test2" isExpanded={false} onClick={() => { }}>
             Hello World 2
-                </ExpandableBlock>
+              </ExpandableBlock>
         </ExpandableList>),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <ExpandableListList></ExpandableListList>
+    return <ExpandableListList></ExpandableListList>;
+  }
+
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of expandable lists that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
   }
 
   public render() {
     return (
       <>
-        <div className="sample-ui">
-          <div>
-            <span>Different Styles of Buttons</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-            <ComponentContainer data={ExpandableListList.getExpandableListData()}></ComponentContainer>
-          </div>
-        </div>
+        {this.getControlPlane()}
+        <ComponentContainer data={ExpandableListList.getExpandableListData()}></ComponentContainer>
       </>
     );
   }

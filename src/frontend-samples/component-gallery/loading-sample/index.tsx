@@ -36,23 +36,30 @@ export class LoadingList extends React.Component<{}> {
         <LoadingPrompt title="Title" message="This is the message" isDeterminate={true} percent={50} showCancel={true} />),
       createComponentExample("Determinate LoadingPrompt with status", undefined,
         <LoadingPrompt title="Title" message="This is the message" isDeterminate={true} showStatus={true} percent={50} status="Updating..." />),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <LoadingList></LoadingList>
+    return <LoadingList></LoadingList>;
   }
 
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of loading icons that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
+  }
   public render() {
     return (
       <>
-        <div className="sample-ui">
-          <div>
-            <span>Different Styles of Buttons</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-            <ComponentContainer data={LoadingList.getLoadingData()}></ComponentContainer>
-          </div>
-        </div>
+        {this.getControlPlane()}
+        <ComponentContainer data={LoadingList.getLoadingData()}></ComponentContainer>
       </>
     );
   }

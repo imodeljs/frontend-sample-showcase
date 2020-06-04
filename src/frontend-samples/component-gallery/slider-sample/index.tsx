@@ -39,25 +39,32 @@ export class SliderList extends React.Component<{}> {
       createComponentExample("Slider w/ tick labels", "Slider with showTickLabels prop",
         <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax showTickLabels
           showTicks getTickCount={() => 10} />),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <SliderList></SliderList>
+    return <SliderList></SliderList>;
   }
 
   public render() {
     return (
       <>
-        <div className="sample-ui">
-          <div>
-            <span>Different Styles of Buttons</span>
+        {this.getControlPlane()}
+        <ComponentContainer data={SliderList.getSliderData()}></ComponentContainer>
+      </>
+    );
+  }
+
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of sliders that can be used in iModel.js applications</span>
             <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-            <ComponentContainer data={SliderList.getSliderData()}></ComponentContainer>
           </div>
         </div>
       </>
     );
   }
-
 }

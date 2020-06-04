@@ -34,23 +34,31 @@ export class TilesList extends React.Component<{}> {
       createComponentExample("Tile stepNum={6}", undefined, <MinimalFeaturedTile stepNum={6} title="Tile stepNum={6}" icon="icon-placeholder" />),
       createComponentExample("Tile stepNum={9}", undefined, <MinimalFeaturedTile stepNum={9} title="Tile stepNum={9}" icon="icon-placeholder" />),
       createComponentExample("Tile stepNum={15}", undefined, <MinimalFeaturedTile stepNum={15} title="Tile stepNum={15}" icon="icon-placeholder" />),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <TilesList></TilesList>
+    return <TilesList></TilesList>;
+  }
+
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of tiles that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
   }
 
   public render() {
     return (
       <>
-        <div className="sample-ui">
-          <div>
-            <span>Different Styles of Buttons</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-            <ComponentContainer data={TilesList.getTilesData()}></ComponentContainer>
-          </div>
-        </div>
+        {this.getControlPlane()}
+        <ComponentContainer data={TilesList.getTilesData()}></ComponentContainer>
       </>
     );
   }

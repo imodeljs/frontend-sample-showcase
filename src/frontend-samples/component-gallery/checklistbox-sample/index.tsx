@@ -31,23 +31,31 @@ export class CheckListBoxList extends React.Component<{}> {
           <CheckListBoxItem label="Item 3" />
           <CheckListBoxItem label="Item 4" />
         </CheckListBox>),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <CheckListBoxList></CheckListBoxList>
+    return <CheckListBoxList></CheckListBoxList>;
+  }
+
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of checklistboxes that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
   }
 
   public render() {
     return (
       <>
-        <div className="sample-ui">
-          <div>
-            <span>Different Styles of Buttons</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-            <ComponentContainer data={CheckListBoxList.getCheckListBoxData()}></ComponentContainer>
-          </div>
-        </div>
+        {this.getControlPlane()}
+        <ComponentContainer data={CheckListBoxList.getCheckListBoxData()}></ComponentContainer>
       </>
     );
   }
