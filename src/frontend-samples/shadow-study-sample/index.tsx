@@ -4,26 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelConnection, ViewState, IModelApp} from "@bentley/imodeljs-frontend";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "../../api/viewSetup";
 
-
-
-export function getShadowStudySpec(): SampleSpec {
-  return ({
-    name: "shadow-study-sample",
-    label: "Shadow Study",
-    image: "shadow-study-thumbnail.png",
-
-    setup: ShadowStudyApp.setup,
-  });
-}
-
-class ShadowStudyApp {
+export class ShadowStudyApp {
 
   public static async setup(iModelName: string) {
     const vp = IModelApp.viewManager.selectedView;

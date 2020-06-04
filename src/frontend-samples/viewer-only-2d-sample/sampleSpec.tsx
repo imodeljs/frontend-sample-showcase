@@ -2,6 +2,7 @@ import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { IModelConnection, } from "@bentley/imodeljs-frontend";
 import React from "react";
 import { ViewerOnly2dUI } from ".";
+import * as React from "react";
 
 export function getViewerOnly2dSpec(): SampleSpec {
   return ({
