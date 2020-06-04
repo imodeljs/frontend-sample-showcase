@@ -12,9 +12,9 @@ import "./icons/codicon.css";
 export interface SampleEditorProps {
   /** Files to inject into the component, can be any type of file (External, Navigation, etc.) */
   files?: File[];
-  /** The height to be passed to the wrapped component. */
+  /** The height to be passed to the editor component. */
   height?: string;
-  /** The width to be passed to the wrapped component. */
+  /** The width to be passed to the editor component. */
   width?: string;
 }
 
@@ -78,6 +78,7 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
 
   public componentDidUpdate(prevProps: SampleEditorProps) {
     if (prevProps.files !== this.props.files) {
+      this.setState({ files: undefined, currentFile: undefined })
       this.props.files && this.getData(this.props.files);
     }
   }
