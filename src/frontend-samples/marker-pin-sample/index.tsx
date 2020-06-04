@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { Range2d, Point3d } from "@bentley/geometry-core";
@@ -17,23 +16,12 @@ import { PopupMenu } from "./PopupMenu";
 import { RadioCard, RadioCardEntry } from "./RadioCard/RadioCard";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
 
-export function getMarkerPinSpec(): SampleSpec {
-  return ({
-    name: "marker-pin-sample",
-    label: "Marker Pins",
-    image: "marker-pin-thumbnail.png",
-    handlesViewSetup: true,
-    setup: MarkerPinsApp.setup,
-    teardown: MarkerPinsApp.teardown,
-  });
-}
-
 interface ManualPinSelection {
   name: string;
   image: string;
 }
 
-class MarkerPinsApp {
+export class MarkerPinsApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
   public static range?: Range2d;

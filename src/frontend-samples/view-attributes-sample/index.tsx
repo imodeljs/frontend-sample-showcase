@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, Viewport, ViewState3d, Environment } from "@bentley/imodeljs-frontend";
@@ -12,16 +11,6 @@ import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 
 // cSpell:ignore imodels
-
-export function getViewAttributesSpec(): SampleSpec {
-  return ({
-    name: "view-attributes-sample",
-    label: "View Attributes",
-    image: "view-attributes-thumbnail.png",
-    setup: ViewAttributesApp.setup,
-    teardown: ViewAttributesApp.teardown,
-  });
-}
 
 enum ViewFlag {
   ACS, Grid, HiddenEdges, Monochrome, VisibleEdges, Shadows,
@@ -40,7 +29,7 @@ interface AttrValues {
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-class ViewAttributesApp {
+export class ViewAttributesApp {
   private static initialState: AttrValues;
 
   public static async setup(): Promise<React.ReactNode> {

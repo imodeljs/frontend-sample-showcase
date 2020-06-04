@@ -4,23 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelConnection, IModelApp, ViewClipDecorationProvider, ScreenViewport, ViewClipClearTool, Viewport, EditManipulator } from "@bentley/imodeljs-frontend";
 import { Toggle, Button, ButtonType } from "@bentley/ui-core";
 import { ClipVector, Range3d, ClipShape, ClipMaskXYZRangePlanes, Plane3dByOriginAndUnitNormal, ConvexClipPlaneSet, ClipPlane, Vector3d, Point3d, ClipPrimitive } from "@bentley/geometry-core";
-
-export function getViewClipSpec(): SampleSpec {
-  return ({
-    name: "view-clip-sample",
-    label: "View Clipping",
-    image: "view-clip-thumbnail.png",
-    setup: async (imodel: IModelConnection) => {
-      return <ViewClipUI imodel={imodel} />;
-    },
-  });
-}
 
 interface ViewClipUIProps {
   imodel: IModelConnection;

@@ -7,18 +7,19 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelConnection, ScreenViewport, IModelApp, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "../Viewport/ViewportAndNavigation";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
-import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
+import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
 import "../../common/samples-common.scss";
-import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
-import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
-import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample";
-import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
-import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
-import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
-import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
-import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
+import { getViewClipSpec } from "../../frontend-samples/view-clip-sample/sampleSpec";
 import { ViewSetup } from "../../api/viewSetup";
 import { IModelSelector } from "../IModelSelector/IModelSelector";
+import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample/sampleSpec";
+import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample/sampleSpec";
+import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample/sampleSpec";
+import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample/sampleSpec";
+import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample/sampleSpec";
+import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample/sampleSpec";
+import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample/sampleSpec";
+import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample/sampleSpec";
 
 // cSpell:ignore imodels
 
@@ -27,6 +28,7 @@ export interface SampleSpec {
     label: string;
     image: string;
     modelList?: string[];
+    files?: InternalFile[],
     handlesViewSetup?: boolean;
     setup?: (imodel: IModelConnection, vp: Viewport) => Promise<React.ReactNode>;
     teardown?: () => void;

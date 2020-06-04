@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelAppOptions, IModelApp, EmphasizeElements, ScreenViewport, FeatureOverrideType } from "@bentley/imodeljs-frontend";
@@ -13,17 +12,7 @@ import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 
-export function getEmphasizeElementsSpec(): SampleSpec {
-  return ({
-    name: "emphasize-elements-sample",
-    label: "Emphasize Elements",
-    image: "emphasize-elements-thumbnail.png",
-    setup: EmphasizeElementsApp.setup,
-    teardown: EmphasizeElementsApp.teardown,
-  });
-}
-
-class EmphasizeElementsApp {
+export class EmphasizeElementsApp {
   public static async setup() {
     return <EmphasizeElementsUI />;
   }

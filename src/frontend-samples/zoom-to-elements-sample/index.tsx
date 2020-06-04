@@ -4,24 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelConnection, IModelAppOptions, IModelApp, ViewChangeOptions, MarginPercent, StandardViewId, Viewport, ZoomToOptions } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangeEventArgs, ISelectionProvider } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
-
-export function getZoomToElementsSpec(): SampleSpec {
-  return ({
-    name: "zoom-to-elements-sample",
-    label: "Zoom to Elements",
-    image: "zoom-to-elements-thumbnail.png",
-    setup: async (imodel: IModelConnection) => {
-      return <ZoomToElementsUI imodel={imodel} />;
-    },
-  });
-}
 
 /** React props */
 interface ZoomToProps {
