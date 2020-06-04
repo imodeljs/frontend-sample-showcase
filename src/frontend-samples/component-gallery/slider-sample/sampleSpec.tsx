@@ -8,8 +8,9 @@ import { SliderList } from ".";
 export function getSliderSpec(): SampleSpec {
   return ({
     name: "slider-sample",
-    label: "Slider",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Sliders",
+    image: "ui-sliders-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "SliderListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

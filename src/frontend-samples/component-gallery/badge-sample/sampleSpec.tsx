@@ -8,8 +8,9 @@ import { BadgeList } from ".";
 export function getBadgeSpec(): SampleSpec {
   return ({
     name: "badge-sample",
-    label: "Badge",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Badges",
+    image: "ui-badge-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "BadgeSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

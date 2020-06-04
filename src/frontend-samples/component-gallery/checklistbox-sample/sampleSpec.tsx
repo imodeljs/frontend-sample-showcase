@@ -8,8 +8,9 @@ import { CheckListBoxList } from ".";
 export function getCheckListBoxSpec(): SampleSpec {
   return ({
     name: "checklistbox-sample",
-    label: "CheckListBox",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-CheckListBoxes",
+    image: "ui-checklistbox-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "CheckListBoxListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },
@@ -17,6 +18,6 @@ export function getCheckListBoxSpec(): SampleSpec {
       { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
       { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
     ],
-    setup: CheckListBoxList.setup ,
+    setup: CheckListBoxList.setup,
   });
 }

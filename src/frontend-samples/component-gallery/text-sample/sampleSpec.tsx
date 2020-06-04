@@ -8,8 +8,9 @@ import { TextList } from ".";
 export function getTextSpec(): SampleSpec {
   return ({
     name: "text-sample",
-    label: "Text",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Text",
+    image: "ui-text-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "TextListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

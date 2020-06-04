@@ -8,8 +8,9 @@ import { LoadingList } from ".";
 export function getLoadingSpec(): SampleSpec {
   return ({
     name: "loading-sample",
-    label: "Loading",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Loading Icons",
+    image: "ui-loading-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "LoadingListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

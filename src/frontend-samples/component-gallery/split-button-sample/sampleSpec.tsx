@@ -8,8 +8,9 @@ import { SplitButtonList } from ".";
 export function getSplitButtonSpec(): SampleSpec {
   return ({
     name: "split-button-sample",
-    label: "SplitButton",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Split Buttons",
+    image: "ui-split-button-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "SplitButtonListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

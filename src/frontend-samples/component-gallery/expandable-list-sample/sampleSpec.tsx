@@ -8,8 +8,9 @@ import { ExpandableListList } from ".";
 export function getExpandableListSpec(): SampleSpec {
   return ({
     name: "expandable-list-sample",
-    label: "ExpandableList",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Expandable Lists",
+    image: "ui-expandable-list-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "ExpandableListListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

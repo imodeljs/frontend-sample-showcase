@@ -8,8 +8,9 @@ import { TabsList } from ".";
 export function getTabsSpec(): SampleSpec {
   return ({
     name: "tabs-sample",
-    label: "Tabs",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Tabs",
+    image: "ui-tabs-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "TabsListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

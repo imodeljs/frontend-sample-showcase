@@ -8,8 +8,9 @@ import { ToggleList } from ".";
 export function getToggleSpec(): SampleSpec {
   return ({
     name: "toggle-sample",
-    label: "Toggle",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Toggles",
+    image: "ui-toggle-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "TilesListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

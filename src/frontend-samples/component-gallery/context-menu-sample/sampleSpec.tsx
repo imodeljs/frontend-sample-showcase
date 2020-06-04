@@ -8,8 +8,9 @@ import { ContextMenuList } from ".";
 export function getContextMenuSpec(): SampleSpec {
   return ({
     name: "context-menu-sample",
-    label: "ContextMenu",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Context Menus",
+    image: "ui-context-menu-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "ContextMenuListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },

@@ -8,8 +8,9 @@ import { InputsList } from ".";
 export function getInputsSpec(): SampleSpec {
   return ({
     name: "inputs-sample",
-    label: "Inputs",
-    image: "viewport-only-thumbnail.png",
+    label: "UI-Inputs",
+    image: "ui-inputs-thumbnail.png",
+    customModelList: [],
     files: [
       { name: "InputsListSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },
