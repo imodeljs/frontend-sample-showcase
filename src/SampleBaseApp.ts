@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ClientRequestContext, /* Config */ Id64String } from "@bentley/bentleyjs-core";
+import { ClientRequestContext, Config, Id64String } from "@bentley/bentleyjs-core";
 import { /* BrowserAuthorizationCallbackHandler */ BrowserAuthorizationClient /* BrowserAuthorizationClientConfiguration */ } from "@bentley/frontend-authorization-client";
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
 import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
@@ -87,9 +87,10 @@ export class SampleBaseApp {
     IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig); ..
     */
 
-    // Comment next three lines to disable no-signin.
+    // Comment this block to disable no-signin.
     const authClient = new NoSignInIAuthClient();
-    await authClient.generateTokenString(new ClientRequestContext());
+    const userURL = Config.App.get("imjs_sample_showcase_user", "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser");
+    await authClient.generateTokenString(userURL, new ClientRequestContext());
     IModelApp.authorizationClient = authClient;
 
     try {

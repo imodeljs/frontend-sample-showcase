@@ -39,12 +39,12 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
     return !!this._accessToken;
   }
 
-  public async generateTokenString(requestContext?: ClientRequestContext) {
+  public async generateTokenString(userURL: string, requestContext?: ClientRequestContext) {
     if (requestContext) {
       requestContext.enter();
     }
 
-    const response = await fetch(`https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser`);
+    const response = await fetch(userURL)
     const tokenJson = {
       ...await response.json(),
       _userInfo: { id: "MockId" },
