@@ -2,7 +2,6 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const {
   override,
   addWebpackPlugin,
-  addWebpackAlias,
 } = require("customize-cra");
 
 /* config-overrides.js */
@@ -13,7 +12,5 @@ module.exports = function (config, env) {
     addWebpackPlugin(new MonacoWebpackPlugin({
       languages: ["typescript"]
     })),
-    addWebpackAlias()
   )(config, env))
-
 }
