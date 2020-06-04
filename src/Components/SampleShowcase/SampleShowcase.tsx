@@ -20,6 +20,7 @@ import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customiz
 import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample/sampleSpec";
 import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample/sampleSpec";
+import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
 
 // cSpell:ignore imodels
 
@@ -44,6 +45,7 @@ interface ShowcaseState {
     activeSampleSpec?: SampleSpec;
     viewport?: ScreenViewport;
     sampleUI?: React.ReactNode;
+    showEditor: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
@@ -61,7 +63,11 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         this._samples.push(getViewClipSpec());
         this._samples.push(getViewerOnly2dSpec());
         this._samples.push(getZoomToElementsSpec());
-        this.state = {};
+        this.state = {
+            showEditor: false,
+        };
+
+        this.onEditorButtonClick = this.onEditorButtonClick.bind(this);
     }
 
     private getSampleByName(name?: string): SampleSpec | undefined {
@@ -126,26 +132,43 @@ export class SampleShowcase extends React.Component<ShowcaseProps, ShowcaseState
         return this._samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
     }
 
+    private onEditorButtonClick() {
+        this.setState((prevState) => ({ showEditor: !prevState.showEditor }))
+    }
+
     /** The sample's render method */
     public render() {
         const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
-        const modelList = this.state.activeSampleSpec ? this.state.activeSampleSpec.modelList : null;
+        const modelList = this.state.activeSampleSpec ? this.state.activeSampleSpec.modelList : undefined;
+        const files = this.state.activeSampleSpec ? this.state.activeSampleSpec.files : undefined;
 
         return (
-            <>
-                <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-                    <ViewportAndNavigation imodel={this.props.imodel} viewState={this.props.viewState} />
+            <div style={{ display: "flex", flexDirection: "row" }}>
+                <div style={{ height: "100vh", width: "100vw", display: "flex", flexDirection: "column" }}>
+                    <SplitScreen style={{ position: "relative" }} size={48} allowResize={false} resizerStyle={{ cursor: "default" }} pane1Style={{ display: "flex" }}>
+                        <ActivityBar>
+                            <ActivityBarItem onClick={this.onEditorButtonClick} active={this.state.showEditor}>
+                                <div className="codicon codicon-json" style={{ fontSize: "24px" }} />
+                            </ActivityBarItem>
+                        </ActivityBar>
+                        <SplitScreen style={{ position: "relative" }} minSize={500} pane1Style={this.state.showEditor ? undefined : { width: 0 }}>
+                            <SampleEditor files={files} />
+                            <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                                <ViewportAndNavigation imodel={this.props.imodel} viewState={this.props.viewState} />
+                                {this.state.sampleUI}
+                                {modelList &&
+                                    <div className="model-selector">
+                                        <IModelSelector iModelNames={modelList} onIModelChange={this.props.onIModelChange} iModel={this.props.imodel} vp={this.state.viewport!} />
+                                    </div>
+                                }
+                            </div>
+                        </SplitScreen>
+                    </SplitScreen>
                     <div style={{ overflowX: "scroll", overflowY: "hidden" }}>
                         <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
                     </div>
-                    {this.state.sampleUI}
-                    {modelList &&
-                        <div className="model-selector">
-                            <IModelSelector iModelNames={modelList} onIModelChange={this.props.onIModelChange} iModel={this.props.imodel} vp={this.state.viewport!} />
-                        </div>
-                    }
                 </div>
-            </>
+            </div>
         );
     }
 }
