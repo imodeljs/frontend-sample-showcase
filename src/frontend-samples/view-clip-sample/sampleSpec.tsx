@@ -1,10 +1,9 @@
 /*---------------------------------------------------------------------------------------------
-|  $Copyright: (c) 2020 Bentley Systems, Incorporated. All rights reserved. $
- *--------------------------------------------------------------------------------------------*/
-
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewClipUI } from ".";
 
 export function getViewClipSpec(): SampleSpec {

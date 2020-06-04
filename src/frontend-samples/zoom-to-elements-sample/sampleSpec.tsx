@@ -1,6 +1,9 @@
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import React from "react";
+import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { ZoomToElementsUI } from ".";
 
 export function getZoomToElementsSpec(): SampleSpec {

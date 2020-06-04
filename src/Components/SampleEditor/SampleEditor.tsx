@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------------------
-|  $Copyright: (c) 2020 Bentley Systems, Incorporated. All rights reserved. $
- *--------------------------------------------------------------------------------------------*/
-
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "./SampleEditor.scss";
 import { MonacoEditorFile, File, MonacoEditor, MonacoEditorProps, NavigationFile, TabNavigation, Module } from "@bentley/monaco-editor";
