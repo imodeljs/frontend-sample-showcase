@@ -8,7 +8,7 @@ export function getMarkerPinSpec(): SampleSpec {
     image: "marker-pin-thumbnail.png",
     handlesViewSetup: true,
     files: [
-      { name: "index.tsx", import: import("!!raw-loader!./index") },
+      { name: "MarkerPinSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
       { name: "MarkerPinDecorator.tsx", import: import("!!raw-loader!./MarkerPinDecorator") },

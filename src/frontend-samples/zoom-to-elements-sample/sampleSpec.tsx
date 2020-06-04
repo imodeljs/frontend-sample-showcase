@@ -9,7 +9,7 @@ export function getZoomToElementsSpec(): SampleSpec {
     label: "Zoom to Elements",
     image: "zoom-to-elements-thumbnail.png",
     files: [
-      { name: "index.tsx", import: import("!!raw-loader!./index") },
+      { name: "ZoomToElementsSample.tsx", import: import("!!raw-loader!./index") },
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
