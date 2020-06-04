@@ -4,13 +4,14 @@
 
 import * as React from "react";
 import "./SampleEditor.scss";
-import { MonacoEditorFile, File, MonacoEditor, MonacoEditorProps, NavigationFile, TabNavigation } from "@bentley/monaco-editor";
+import { MonacoEditorFile, File, MonacoEditor, MonacoEditorProps, NavigationFile, TabNavigation, Module } from "@bentley/monaco-editor";
 import ts, { ImportDeclaration, TextChangeRange } from "typescript";
 import path from "path";
+import "./icons/codicon.css";
 
 export interface SampleEditorProps {
   /** Files to inject into the component, can be any type of file (External, Navigation, etc.) */
-  files: File[];
+  files?: File[];
   /** The height to be passed to the wrapped component. */
   height?: string;
   /** The width to be passed to the wrapped component. */
@@ -18,6 +19,11 @@ export interface SampleEditorProps {
 }
 
 export interface SampleEditorState {
+  files?: (MonacoEditorFile & NavigationFile)[];
+  currentFile?: string;
+}
+
+interface SampleEditorReplacementProps {
   files?: (MonacoEditorFile & NavigationFile)[];
   currentFile?: string;
 }
@@ -30,7 +36,32 @@ type Sub<T extends T1, T1 extends object> = Pick<T, SetComplement<keyof T, keyof
 type SetComplement<A, A1 extends A> = SetDifference<A, A1>;
 type SetDifference<A, B> = A extends B ? never : A;
 
-export default class SampleEditor extends React.Component<Sub<MonacoEditorProps, SampleEditorState> & SampleEditorProps, SampleEditorState> {
+const modules = [
+  { name: "react" },
+  { name: "react-dom" },
+  { name: "@bentley/bentleyjs-core" },
+  { name: "@bentley/context-registry-client" },
+  { name: "@bentley/frontend-authorization-client" },
+  { name: "@bentley/geometry-core" },
+  { name: "@bentley/icons-generic-webfont" },
+  { name: "@bentley/imodelhub-client" },
+  { name: "@bentley/imodeljs-common" },
+  { name: "@bentley/imodeljs-frontend" },
+  { name: "@bentley/imodeljs-i18n" },
+  { name: "@bentley/imodeljs-quantity" },
+  { name: "@bentley/itwin-client" },
+  { name: "@bentley/orbitgt-core" },
+  { name: "@bentley/presentation-common" },
+  { name: "@bentley/presentation-components" },
+  { name: "@bentley/presentation-frontend" },
+  { name: "@bentley/product-settings-client" },
+  { name: "@bentley/ui-abstract" },
+  { name: "@bentley/ui-components" },
+  { name: "@bentley/ui-core" },
+  { name: "@bentley/webgl-compatibility" }
+] as Module[]
+
+export default class SampleEditor extends React.Component<Sub<MonacoEditorProps, SampleEditorReplacementProps> & SampleEditorProps, SampleEditorState> {
 
   constructor(props: any) {
     super(props);
@@ -39,17 +70,15 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
       currentFile: undefined,
     };
     this.onTabClick = this.onTabClick.bind(this);
-
   }
 
   public componentDidMount() {
-    this.getData(this.props.files);
+    this.props.files && this.getData(this.props.files);
   }
 
   public componentDidUpdate(prevProps: SampleEditorProps) {
     if (prevProps.files !== this.props.files) {
-      this.setState({ files: undefined, currentFile: undefined })
-      this.getData(this.props.files);
+      this.props.files && this.getData(this.props.files);
     }
   }
 
@@ -110,7 +139,6 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
     const newImportValue = importValue[importValue.length - 1] + "./" + path.basename(importValue);
 
     const sourceText = source.text;
-    //substr(0, index) + replacement + this.substr(index + replacement.length);
     const newSourceText = sourceText.substr(0, relativeImport.moduleSpecifier.pos + 1) + newImportValue + sourceText.substr(relativeImport.moduleSpecifier.end);
 
     let newSource = source.update(newSourceText,
@@ -134,7 +162,7 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
     return ts.forEachChild(value, node => {
       if (node.kind === ts.SyntaxKind.ImportDeclaration) {
         const importValue = (node as ImportDeclaration).moduleSpecifier.getText();
-        if (importValue.startsWith("\"..")) {
+        if (importValue.match(/\.\.\/|\.\/(.+)\//)) {
           return (node as ImportDeclaration);
         }
       }
@@ -157,18 +185,20 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
   }
 
   public render() {
+    const { files, ...editorProps } = this.props;
     return (
-      <React.Fragment>
-        <TabNavigation currentFile={this.state.currentFile} files={(this.state.files as NavigationFile[]) || []} onTabClick={this.onTabClick} showClose={false} />
+      <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "100%" }}>
+        <TabNavigation currentFile={this.state.currentFile} files={(this.state.files || []).filter((file) => !file.name.match(/s?css$/gi)) as NavigationFile[]} onTabClick={this.onTabClick} showClose={false} >
+        </TabNavigation>
         <div style={{ height: this.props.height || "100%", width: this.props.width || "100%", display: this.state.files ? undefined : "none" }}>
-          <MonacoEditor {...this.props as MonacoEditorProps} files={this.state.files as MonacoEditorFile[]} currentFile={this.state.currentFile} />
+          <MonacoEditor {...editorProps} readonly={true} files={this.state.files} currentFile={this.state.currentFile} modules={modules} />
         </div>
         <div className="loading-content" style={{ height: this.props.height || "100%", width: this.props.width || "100%", display: !this.state.files ? undefined : "none" }}>
           <div className="spinner-container">
             <div className="spinner codicon codicon-loading"></div>
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }
