@@ -9,10 +9,11 @@ import { IModelApp, FrontendRequestContext, IModelAppOptions, IModelConnection, 
 import { BentleyCloudRpcManager, BentleyCloudRpcParams, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
 import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
-import { UiComponents } from "@bentley/ui-components";
-import { UiCore } from "@bentley/ui-core";
+import { UiFramework } from "@bentley/ui-framework";
 import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
+import { AppState, AppStore } from "./AppState";
+import { AppUi } from "./Components/App/AppUi";
 
 // Boiler plate code
 export interface SampleContext {
@@ -22,6 +23,8 @@ export interface SampleContext {
 
 export class SampleBaseApp {
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
+  private static _appState: AppState;
+  public static get store(): AppStore { return this._appState.store; }
 
   public static async startup() {
 
@@ -30,6 +33,8 @@ export class SampleBaseApp {
       notifications: new ShowcaseNotificationManager(),
       toolAdmin: ShowcaseToolAdmin.initialize(),
     };
+
+    this._appState = new AppState();
 
     await IModelApp.startup(opts);
 
@@ -43,11 +48,8 @@ export class SampleBaseApp {
     // initialize RPC communication
     initPromises.push(SampleBaseApp.initializeRpc());
 
-    // initialize UiCore
-    // initPromises.push(UiCore.initialize(IModelApp.i18n));
-
-    // initialize UiComponents
-    initPromises.push(UiComponents.initialize(IModelApp.i18n));
+    // initialize UiFramework
+    initPromises.push(UiFramework.initialize(this.store, IModelApp.i18n));
 
     // initialize Presentation
     initPromises.push(Presentation.initialize({
@@ -56,6 +58,8 @@ export class SampleBaseApp {
 
     // the app is ready when all initialization promises are fulfilled
     await Promise.all(initPromises);
+    AppUi.initialize();
+
   }
 
   private static async initializeRpc(): Promise<void> {
