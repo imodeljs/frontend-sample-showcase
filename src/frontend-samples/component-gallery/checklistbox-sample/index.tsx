@@ -10,19 +10,6 @@ import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { CheckListBox, CheckListBoxItem, CheckListBoxSeparator } from "@bentley/ui-core";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getCheckListBoxSpec(): SampleSpec {
-  return ({
-    name: "checklistbox-sample",
-    label: "UI-CheckListBoxes",
-    image: "ui-checklistbox-thumbnail.png",
-    customModelList: [],
-
-    setup: CheckListBoxList.setup,
-
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

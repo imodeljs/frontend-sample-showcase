@@ -10,18 +10,6 @@ import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { BlockText, BodyText, DisabledText, Headline, LeadingText, MutedText, SmallText, Subheading, Title } from "@bentley/ui-core";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getTextSpec(): SampleSpec {
-  return ({
-    name: "text-sample",
-    label: "UI-Text",
-    image: "ui-text-thumbnail.png",
-    customModelList: [],
-
-    setup: TextList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

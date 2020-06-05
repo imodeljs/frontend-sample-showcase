@@ -10,18 +10,6 @@ import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { Icon, Slider } from "@bentley/ui-core";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getSliderSpec(): SampleSpec {
-  return ({
-    name: "slider-sample",
-    label: "UI-Sliders",
-    image: "ui-sliders-thumbnail.png",
-    customModelList: [],
-
-    setup: SliderList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

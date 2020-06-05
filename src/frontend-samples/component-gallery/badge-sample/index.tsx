@@ -8,20 +8,7 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
-
 import { BetaBadge, NewBadge } from "@bentley/ui-core";
-
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getBadgeSpec(): SampleSpec {
-  return ({
-    name: "badge-sample",
-    label: "UI-Badges",
-    image: "ui-badge-thumbnail.png",
-    customModelList: [],
-
-    setup: BadgeList.setup,
-  });
-}
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {

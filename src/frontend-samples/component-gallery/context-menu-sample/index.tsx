@@ -11,18 +11,6 @@ import { ComponentContainer, ComponentExampleProps } from "../CommonComponentToo
 import { UnderlinedButton } from "@bentley/ui-core";
 import { SampleContextMenu } from "./SampleContextMenu";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getContextMenuSpec(): SampleSpec {
-  return ({
-    name: "context-menu-sample",
-    label: "UI-Context Menus",
-    image: "ui-context-menu-thumbnail.png",
-    customModelList: [],
-
-    setup: ContextMenuList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

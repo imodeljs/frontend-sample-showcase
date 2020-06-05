@@ -11,18 +11,6 @@ import { ComponentContainer, ComponentExampleProps } from "../CommonComponentToo
 import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 
-// Provide the information about the sample, passing no iModels since this sample does not utilize any
-export function getInputsSpec(): SampleSpec {
-  return ({
-    name: "inputs-sample",
-    label: "UI-Inputs",
-    image: "ui-inputs-thumbnail.png",
-    customModelList: [],
-
-    setup: InputsList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

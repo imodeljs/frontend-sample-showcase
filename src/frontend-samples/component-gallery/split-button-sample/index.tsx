@@ -10,18 +10,6 @@ import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { ContextMenuItem, SplitButton } from "@bentley/ui-core";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getSplitButtonSpec(): SampleSpec {
-  return ({
-    name: "split-button-sample",
-    label: "UI-Split Buttons",
-    image: "ui-split-button-thumbnail.png",
-    customModelList: [],
-
-    setup: SplitButtonList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

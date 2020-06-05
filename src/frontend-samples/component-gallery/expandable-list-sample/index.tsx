@@ -11,18 +11,6 @@ import { ComponentContainer, ComponentExampleProps } from "../CommonComponentToo
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getExpandableListSpec(): SampleSpec {
-  return ({
-    name: "expandable-list-sample",
-    label: "UI-Expandable Lists",
-    image: "ui-expandable-list-thumbnail.png",
-    customModelList: [],
-
-    setup: ExpandableListList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

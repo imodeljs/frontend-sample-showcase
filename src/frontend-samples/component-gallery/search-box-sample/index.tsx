@@ -10,18 +10,6 @@ import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { SearchBox } from "@bentley/ui-core";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getSearchBoxSpec(): SampleSpec {
-  return ({
-    name: "search-box-sample",
-    label: "UI-Search Boxes",
-    image: "ui-search-boxes-thumbnail.png",
-    customModelList: [],
-
-    setup: SearchBoxList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };

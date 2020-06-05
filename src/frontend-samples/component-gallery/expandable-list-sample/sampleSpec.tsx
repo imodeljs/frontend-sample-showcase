@@ -5,6 +5,7 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { ExpandableListList } from ".";
 
+// Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getExpandableListSpec(): SampleSpec {
   return ({
     name: "expandable-list-sample",

@@ -5,6 +5,7 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { SearchBoxList } from ".";
 
+// Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getSearchBoxSpec(): SampleSpec {
   return ({
     name: "search-box-sample",

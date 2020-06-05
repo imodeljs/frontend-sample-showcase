@@ -5,6 +5,7 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { TextList } from ".";
 
+// Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getTextSpec(): SampleSpec {
   return ({
     name: "text-sample",

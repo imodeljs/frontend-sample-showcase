@@ -5,6 +5,7 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { LoadingList } from ".";
 
+// Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getLoadingSpec(): SampleSpec {
   return ({
     name: "loading-sample",

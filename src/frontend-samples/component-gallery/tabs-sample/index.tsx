@@ -10,18 +10,6 @@ import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core";
 
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getTabsSpec(): SampleSpec {
-  return ({
-    name: "tabs-sample",
-    label: "UI-Tabs",
-    image: "ui-tabs-thumbnail.png",
-    customModelList: [],
-
-    setup: TabsList.setup,
-  });
-}
-
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
