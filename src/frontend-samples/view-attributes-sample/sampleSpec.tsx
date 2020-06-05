@@ -3,7 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { ViewAttributesApp } from ".";
+import React from "react";
+import { ViewAttributesUI } from ".";
 
 export function getViewAttributesSpec(): SampleSpec {
   return ({
@@ -15,7 +16,8 @@ export function getViewAttributesSpec(): SampleSpec {
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: ViewAttributesApp.setup,
-    teardown: ViewAttributesApp.teardown,
+    setup: async (iModelName: string) => {
+      return <ViewAttributesUI iModelName={iModelName} />;
+    },
   });
 }

@@ -17,8 +17,8 @@ export function getZoomToElementsSpec(): SampleSpec {
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
-    setup: async (imodel: IModelConnection) => {
-      return <ZoomToElementsUI imodel={imodel} />;
+    setup: async (iModelName: string) => {
+      return <ZoomToElementsUI iModelName={iModelName} />;
     },
   });
 }

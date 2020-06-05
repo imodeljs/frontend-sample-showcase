@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { IModelConnection, } from "@bentley/imodeljs-frontend";
 import React from "react";
 import { ViewerOnly2dUI } from ".";
-import * as React from "react";
+import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 
 export function getViewerOnly2dSpec(): SampleSpec {
   return ({
@@ -19,8 +18,9 @@ export function getViewerOnly2dSpec(): SampleSpec {
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: async (imodel: IModelConnection) => {
-      return <ViewerOnly2dUI imodel={imodel} />;
+    customModelList: [SampleIModels.House],
+    setup: async (iModelName: string) => {
+      return <ViewerOnly2dUI iModelName={iModelName} />;
     },
   });
 }

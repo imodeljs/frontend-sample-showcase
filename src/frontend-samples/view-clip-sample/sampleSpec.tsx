@@ -16,8 +16,8 @@ export function getViewClipSpec(): SampleSpec {
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: async (imodel: IModelConnection) => {
-      return <ViewClipUI imodel={imodel} />;
+    setup: async (iModelName: string) => {
+      return <ViewClipUI iModelName={iModelName} />;
     },
   });
 }
