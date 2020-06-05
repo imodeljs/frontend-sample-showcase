@@ -106,10 +106,10 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
     const dateString = event.target.value;
     const dateInfo = dateString.split("-");
 
-    const year = Number(date_info[0])
+    const year = Number(dateInfo[0])
     //We subtract a 1 here because date objects have the index for months starting at 0
-    const month = Number(date_info[1]) - 1
-    const day = Number(date_info[2])
+    const month = Number(dateInfo[1]) - 1
+    const day = Number(dateInfo[2])
 
     //Construct a new date object based on the extracted date information
     var new_date = new Date(year, month, day)

@@ -87,14 +87,4 @@ export class SliderList extends React.Component<{}> {
       </>
     )
   }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPlane()}
-        <ComponentContainer data={SliderList.getSliderData()}></ComponentContainer>
-      </>
-    );
-  }
-
 }
