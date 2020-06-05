@@ -10,6 +10,7 @@ import { ExpandableBlock, ExpandableBlockProps } from "@bentley/ui-core";
 export const SampleExpandableBlock: React.FC<ExpandableBlockProps> = (props: ExpandableBlockProps) => {
   const [expanded, setExpanded] = React.useState(true);
 
+  // Inverts the expandable block's current state
   const _handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
     setExpanded(!expanded);
 

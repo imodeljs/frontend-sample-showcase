@@ -9,7 +9,7 @@ import { ImageCheckBox, ImageCheckBoxProps } from "@bentley/ui-core";
 // tslint:disable-next-line:variable-name
 export const SampleImageCheckBox: React.FC<ImageCheckBoxProps> = (props: ImageCheckBoxProps) => {
   const [checked, setChecked] = React.useState(false);
-
+  // Inverts the current state of the image check box
   const _handleClick = (targetChecked: boolean): any => {
     setChecked(targetChecked);
 
