@@ -194,7 +194,7 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string }, Marker
       MarkerPinsApp.height = range.zHigh;
 
       this.setState({ imodel });
-    })
+    });
   }
 
   /** Components for rendering the sample's instructions and controls */
@@ -242,4 +242,3 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string }, Marker
     );
   }
 }
-

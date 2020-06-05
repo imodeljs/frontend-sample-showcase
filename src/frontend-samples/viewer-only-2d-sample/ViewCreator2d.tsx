@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Id64String, Id64Array } from "@bentley/bentleyjs-core";
-import { Code, IModel, ModelProps, ColorDef, ViewStateProps, ViewDefinition2dProps, SheetProps } from "@bentley/imodeljs-common";
-import { ViewState, ViewState2d, IModelConnection, DrawingViewState, DrawingModelState, SectionDrawingModelState, SheetModelState, SheetViewState } from "@bentley/imodeljs-frontend";
+import { Id64Array, Id64String } from "@bentley/bentleyjs-core";
+import { Code, ColorDef, IModel, ModelProps, SheetProps, ViewDefinition2dProps, ViewStateProps } from "@bentley/imodeljs-common";
+import { DrawingModelState, DrawingViewState, IModelConnection, SectionDrawingModelState, SheetModelState, SheetViewState, ViewState, ViewState2d } from "@bentley/imodeljs-frontend";
 
 /** API for creating a 2D view from a model */
 export class ViewCreator2d {

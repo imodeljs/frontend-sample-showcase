@@ -9,7 +9,7 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
 import { Slider, Icon } from "@bentley/ui-core"
 
@@ -22,69 +22,69 @@ export function getSliderSpec(): SampleSpec {
     image: "ui-sliders-thumbnail.png",
     customModelList: [],
 
-    setup: SliderList.setup ,
+    setup: SliderList.setup,
   });
 }
 
 
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
-    return { title, description, content };
+  return { title, description, content };
 };
 
 
 
 export class SliderList extends React.Component<{}> {
 
-    public static getSliderData(): ComponentExampleProps[] {
-        return [
-            createComponentExample("Slider", "Basic Slider",
-              <Slider min={0} max={100} values={[50]} step={1} showTooltip />),
-            createComponentExample("Slider w/ tooltipBelow", "Slider with Tooltip Below",
-              <Slider min={0} max={100} values={[50]} step={1} showTooltip tooltipBelow />),
-            createComponentExample("Slider w/ min/max", "Slider with showMinMax prop",
-              <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax />),
-            createComponentExample("Slider w/ min/max images", "Slider with minImage and maxImage props",
-              <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax
-                minImage={<Icon iconSpec="icon-placeholder" />} maxImage={<Icon iconSpec="icon-placeholder" />} />),
-            createComponentExample("Slider w/ tick marks", "Slider with showTicks and getTickCount props",
-              <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax
-                showTicks getTickCount={() => 10} />),
-            createComponentExample("Slider w/ multiple values", "Slider with array of values",
-              <Slider min={0} max={100} values={[30, 70]} step={5} mode={2} showTooltip showMinMax
-                showTicks getTickCount={() => 10} />),
-            createComponentExample("Slider multiple values tooltipBelow", "Slider with multiple values & tooltip below",
-              <Slider min={0} max={100} values={[20, 80]} step={5} mode={2} showTooltip tooltipBelow showMinMax
-                showTicks getTickCount={() => 10} />),
-            createComponentExample("Slider w/ tick labels", "Slider with showTickLabels prop",
-              <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax showTickLabels
-                showTicks getTickCount={() => 10} />),
-          ]
-    }
-
-    public static async setup() {
-        return <SliderList></SliderList>
-    }
-
-    public getControlPlane() {
-      return (
-          <>
-              <div className="sample-ui  component-ui">
-                  <div className="sample-instructions">
-                      <span>Different styles of sliders that can be used in iModel.js applications</span>
-                      <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                  </div>
-              </div>
-          </>
-      )
+  public static getSliderData(): ComponentExampleProps[] {
+    return [
+      createComponentExample("Slider", "Basic Slider",
+        <Slider min={0} max={100} values={[50]} step={1} showTooltip />),
+      createComponentExample("Slider w/ tooltipBelow", "Slider with Tooltip Below",
+        <Slider min={0} max={100} values={[50]} step={1} showTooltip tooltipBelow />),
+      createComponentExample("Slider w/ min/max", "Slider with showMinMax prop",
+        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax />),
+      createComponentExample("Slider w/ min/max images", "Slider with minImage and maxImage props",
+        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax
+          minImage={<Icon iconSpec="icon-placeholder" />} maxImage={<Icon iconSpec="icon-placeholder" />} />),
+      createComponentExample("Slider w/ tick marks", "Slider with showTicks and getTickCount props",
+        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax
+          showTicks getTickCount={() => 10} />),
+      createComponentExample("Slider w/ multiple values", "Slider with array of values",
+        <Slider min={0} max={100} values={[30, 70]} step={5} mode={2} showTooltip showMinMax
+          showTicks getTickCount={() => 10} />),
+      createComponentExample("Slider multiple values tooltipBelow", "Slider with multiple values & tooltip below",
+        <Slider min={0} max={100} values={[20, 80]} step={5} mode={2} showTooltip tooltipBelow showMinMax
+          showTicks getTickCount={() => 10} />),
+      createComponentExample("Slider w/ tick labels", "Slider with showTickLabels prop",
+        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax showTickLabels
+          showTicks getTickCount={() => 10} />),
+    ]
   }
 
-    public render() {
-        return (
-          <>
-          {this.getControlPlane()}
-           <ComponentContainer data = {SliderList.getSliderData()}></ComponentContainer>
-          </>
-        );
-    }
-  
+  public static async setup() {
+    return <SliderList></SliderList>
+  }
+
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of sliders that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  public render() {
+    return (
+      <>
+        {this.getControlPlane()}
+        <ComponentContainer data={SliderList.getSliderData()}></ComponentContainer>
+      </>
+    );
+  }
+
 }

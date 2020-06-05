@@ -50,7 +50,7 @@ class API {
   /** Query project extents using the Viewport API. */
   public static getProjectExtents(vp: Viewport): Range1dProps {
     const extents = vp.iModel.projectExtents;
-    return {low: extents.zLow, high: extents.zHigh};
+    return { low: extents.zLow, high: extents.zHigh };
   }
 
   /** Modify the view flags using the Viewport API. */
@@ -91,7 +91,7 @@ class API {
 /** Handles the setup and teardown of the thematic display sample */
 export class ThematicDisplaySampleApp {
   public static originalProps?: ThematicDisplayProps;
-  public static originalFlag: boolean  = false;
+  public static originalFlag: boolean = false;
   public static viewport?: Viewport;
 
   /** Called by the showcase before the sample is started. */
@@ -247,7 +247,7 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
 
     const step = 1;
     const element = <Slider min={extents.low} max={extents.high} step={step}
-      values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider}/>;
+      values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />;
 
     return this.createJSXElementForAttribute(label, info, element);
   }

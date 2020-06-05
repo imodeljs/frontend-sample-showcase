@@ -9,11 +9,9 @@ import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 
 import "../CommonComponentTools/index.scss";
-import {ComponentContainer, ComponentExampleProps} from "../CommonComponentTools/ComponentContainer";
+import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 
-import { BetaBadge, NewBadge } from "@bentley/ui-core"
-
-
+import { BetaBadge, NewBadge } from "@bentley/ui-core";
 
 export function getBadgeSpec(): SampleSpec {
   return ({
@@ -22,50 +20,46 @@ export function getBadgeSpec(): SampleSpec {
     image: "ui-badge-thumbnail.png",
     customModelList: [],
 
-    setup: BadgeList.setup ,
+    setup: BadgeList.setup,
   });
 }
 
-
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
-    return { title, description, content };
+  return { title, description, content };
 };
-
-
 
 export class BadgeList extends React.Component<{}> {
 
-    public static getBadgeData(): ComponentExampleProps[] {
-        return [
-            createComponentExample("BetaBadge", undefined, <BetaBadge />),
-            createComponentExample("NewBadge", undefined, <NewBadge />),
-          ]
-    }
+  public static getBadgeData(): ComponentExampleProps[] {
+    return [
+      createComponentExample("BetaBadge", undefined, <BetaBadge />),
+      createComponentExample("NewBadge", undefined, <NewBadge />),
+    ];
+  }
 
-    public static async setup() {
-        return <BadgeList></BadgeList>
-    }
+  public static async setup() {
+    return <BadgeList></BadgeList>;
+  }
 
-    public getControlPlane() {
-        return (
-            <>
-                <div className="sample-ui  component-ui">
-                    <div className="sample-instructions">
-                        <span>Different styles of badges that can be used in iModel.js applications</span>
-                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    </div>
-                </div>
-            </>
-        )
-    }
+  public getControlPlane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of badges that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+          </div>
+        </div>
+      </>
+    );
+  }
 
-    public render() {
-        return (
-            <>
-            {this.getControlPlane()}
-             <ComponentContainer data = {BadgeList.getBadgeData()}></ComponentContainer>
-            </>
-        );
-    }
-  
+  public render() {
+    return (
+      <>
+        {this.getControlPlane()}
+        <ComponentContainer data={BadgeList.getBadgeData()}></ComponentContainer>
+      </>
+    );
+  }
 }
