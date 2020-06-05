@@ -6,9 +6,9 @@
 import * as React from "react";
 import "./index.scss";
 
-// These react components are used for to organize each of the component examples, as well as their names and descriptions
+// These react components are used to organize each of the component examples, as well as their names and descriptions
 
-// The component container takes in a several sets of example properties(component title, description, and actual component), and displays all of them as a list
+// The component container takes in several sets of example properties(component title, description, and actual component), and displays all of them as a list
 export class ComponentContainer extends React.Component<{ data: ComponentExampleProps[] }> {
   public render() {
     return (
@@ -30,7 +30,7 @@ export interface ComponentExampleProps {
   content: React.ReactNode;
 }
 
-// This stores and formats a single component, along with the corresponding title and description
+// This formats a single component, along with its corresponding title and description, and adds them to the DOM
 // tslint:disable-next-line:variable-name
 export const ComponentExample: React.FC<ComponentExampleProps> = (props: ComponentExampleProps) => {
   const { title, description, content } = props;

@@ -64,7 +64,7 @@ export class InputsList extends React.Component<{}> {
   }
 
   // Creates the side panel featuring a description of the component type, as well as providing a github link to the sample code
-  public getControlPlane() {
+  public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
@@ -77,12 +77,12 @@ export class InputsList extends React.Component<{}> {
     );
   }
 
-  // Combines the control plane and the component container to create the final display
+  // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
     return (
       <>
-        {this.getControlPlane()}
+        {this.getControlPane()}
         <ComponentContainer data={InputsList.getInputsData()}></ComponentContainer>
       </>
     );
