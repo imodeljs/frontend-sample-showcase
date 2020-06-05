@@ -7,14 +7,11 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
-
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
+import { Button, ButtonSize, ButtonType, UnderlinedButton } from "@bentley/ui-core";
 
-import { Button, ButtonType, ButtonSize, UnderlinedButton } from "@bentley/ui-core"
-
-
-
+// Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getButtonSpec(): SampleSpec {
   return ({
     name: "button-sample",
@@ -26,7 +23,7 @@ export function getButtonSpec(): SampleSpec {
   });
 }
 
-
+// Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
@@ -35,6 +32,7 @@ export const createComponentExample = (title: string, description: string | unde
 
 export class ButtonList extends React.Component<{}> {
 
+  // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getButtonData(): ComponentExampleProps[] {
     return [
       createComponentExample("Basic Button", "Primary Button", <Button>Primary Button</Button>),
@@ -46,33 +44,35 @@ export class ButtonList extends React.Component<{}> {
       createComponentExample("Large Blue Button", "Button with ButtonType.Blue and size={ButtonSize.Large}", <Button buttonType={ButtonType.Blue} size={ButtonSize.Large}>Blue Button</Button>),
       createComponentExample("Large Hollow Button", "Button with ButtonType.Hollow and size={ButtonSize.Large}", <Button buttonType={ButtonType.Hollow} size={ButtonSize.Large}>Hollow Button</Button>),
       createComponentExample("Underlined Button", "UnderlinedButton component", <UnderlinedButton>Underlined Button</UnderlinedButton>),
-    ]
+    ];
   }
 
   public static async setup() {
-    return <ButtonList></ButtonList>
+    return <ButtonList></ButtonList>;
   }
 
-  public getControlPlane() {
+  // Creates the side panel featuring a description of the component type, as well as providing a github link to the sample code
+  public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Different styles of buttons that can be used in iModel.js applications</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/component-gallery/button-sample" />
           </div>
         </div>
-      </>
-    )
-  }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPlane()}
-        <ComponentContainer data={ButtonList.getButtonData()}></ComponentContainer>
       </>
     );
   }
 
+  // Combines the control pane and the component container to create the final display
+  // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
+  public render() {
+    return (
+      <>
+        {this.getControlPane()}
+        <ComponentContainer data={ButtonList.getButtonData()}></ComponentContainer>
+      </>
+    );
+  }
 }

@@ -7,20 +7,12 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
-
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
-
-import { Input, Checkbox, Radio, Select, Textarea, NumericInput, IconInput, LabeledInput, LabeledTextarea, LabeledSelect, Icon } from "@bentley/ui-core"
+import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 
-
-
-//import moreSvg from "@bentley/icons-generic/icons/more-circular.svg?sprite";
-//import moreVerticalSvg from "@bentley/icons-generic/icons/more-vertical-circular.svg";
-
-
-
+// Provide the information about the sample, passing no iModels since this sample does not utilize any
 export function getInputsSpec(): SampleSpec {
   return ({
     name: "inputs-sample",
@@ -32,7 +24,7 @@ export function getInputsSpec(): SampleSpec {
   });
 }
 
-
+// Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
@@ -41,6 +33,7 @@ export const createComponentExample = (title: string, description: string | unde
 
 export class InputsList extends React.Component<{}> {
 
+  // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getInputsData(): ComponentExampleProps[] {
     return [
       createComponentExample("Basic Input", "Input with placeholder", <Input placeholder="Basic Input" />),
@@ -66,30 +59,33 @@ export class InputsList extends React.Component<{}> {
       createComponentExample("Labeled Select", "Labeled Select component", <LabeledSelect label="Labeled Select" options={["Option 1", "Option 2", "Option 3", "Option 4"]} />),
 
       createComponentExample("Image Checkbox", "ImageCheckbox with WebFonts", <SampleImageCheckBox imageOn="icon-more-circular" imageOff="icon-more-vertical-circular" />),
-    ]
+    ];
   }
 
   public static async setup() {
     return <InputsList></InputsList>
   }
 
-  public getControlPlane() {
+  // Creates the side panel featuring a description of the component type, as well as providing a github link to the sample code
+  public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Different styles of inputs that can be used in iModel.js applications</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/component-gallery/inputs-sample" />
           </div>
         </div>
       </>
     )
   }
 
+  // Combines the control pane and the component container to create the final display
+  // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
     return (
       <>
-        {this.getControlPlane()}
+        {this.getControlPane()}
         <ComponentContainer data={InputsList.getInputsData()}></ComponentContainer>
       </>
     );

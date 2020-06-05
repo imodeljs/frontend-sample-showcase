@@ -78,9 +78,9 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
 
   }
 
-  //Update the date state with the newly selected minute of the day
-  private updateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
-    var date = this.state.date
+  // Update the date state with the newly selected minute of the day
+  private _updateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const date = this.state.date;
 
     //Time slider represents time of day as a number from 0-1439, one for each minute of the day
     //So we need to modulo by 60 to get the min of the hour
@@ -100,11 +100,11 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
     ShadowStudyApp.updateSunTime(date.getTime())
   }
 
-  //Update the state date with the newly selected day of the year
-  private updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //Extract date information from string returned by date picker
-    const date_string = event.target.value
-    var date_info = date_string.split('-')
+  // Update the state date with the newly selected day of the year
+  private _updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Extract date information from string returned by date picker
+    const dateString = event.target.value;
+    const dateInfo = dateString.split("-");
 
     const year = Number(date_info[0])
     //We subtract a 1 here because date objects have the index for months starting at 0
@@ -176,17 +176,17 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Select a date and time.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/shadow-study-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-3col">
             <div>Time of Day</div>
-            <input type="range" min="0" max="1439" value={this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange={this.updateTime} ></input>
+            <input type="range" min="0" max="1439" value={this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange={this._updateTime} ></input>
             <div id="time">{this.convertMinToTime()}</div>
           </div>
           <div className="sample-options-3col">
             <div>Date</div>
-            <input type="date" id="date_picker" onChange={this.updateDate}></input>
+            <input type="date" id="date_picker" onChange={this._updateDate}></input>
             <div id="date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear()}</div>
           </div>
           <div id="date_invalid" ></div>
