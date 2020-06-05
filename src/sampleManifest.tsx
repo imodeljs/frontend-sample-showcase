@@ -6,8 +6,9 @@ import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample";
-import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample";
+import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample";
+import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample";
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample";
@@ -28,45 +29,46 @@ import { getTilesSpec } from "./frontend-samples/component-gallery/tiles-sample"
 import { getToggleSpec } from "./frontend-samples/component-gallery/toggle-sample";
 
 export interface SampleSpec {
-    name: string;
-    label: string;
-    image: string;
-    customModelList?: string[];
-    setup?: (iModelName: string) => Promise<React.ReactNode>;
-    teardown?: () => void;
+  name: string;
+  label: string;
+  image: string;
+  customModelList?: string[];
+  setup?: (iModelName: string) => Promise<React.ReactNode>;
+  teardown?: () => void;
 }
 
 export type SampleSpecGroup = { groupName: string, samples: SampleSpec[] };
 
 export var sampleManifest: SampleSpecGroup[] = [{
-    groupName: "Viewing", samples: [
-        getViewportOnlySpec(),
-        getEmphasizeElementsSpec(),
-        getHeatmapDecoratorSpec(),
-        getMarkerPinSpec(),
-        getShadowStudySpec(),
-        getTooltipCustomizeSpec(),
-        getViewAttributesSpec(),
-        getViewClipSpec(),
-        getViewerOnly2dSpec(),
-        getZoomToElementsSpec()
-    ]
+  groupName: "Viewing", samples: [
+    getViewportOnlySpec(),
+    getEmphasizeElementsSpec(),
+    getHeatmapDecoratorSpec(),
+    getMarkerPinSpec(),
+    getShadowStudySpec(),
+    getThematicDisplaySpec(),
+    getTooltipCustomizeSpec(),
+    getViewAttributesSpec(),
+    getViewClipSpec(),
+    getViewerOnly2dSpec(),
+    getZoomToElementsSpec()
+  ]
 }, {
-    groupName: "UI Components", samples: [
-        getBadgeSpec(),
-        getButtonSpec(),
-        getCheckListBoxSpec(),
-        getExpandableListSpec(),
-        getInputsSpec(),
-        getLoadingSpec(),
-        getSearchBoxSpec(),
-        getSliderSpec(),
-        getSplitButtonSpec(),
-        getTabsSpec(),
-        getTextSpec(),
-        getTilesSpec(),
-        getToggleSpec(),
-    ]
+  groupName: "UI Components", samples: [
+    getBadgeSpec(),
+    getButtonSpec(),
+    getCheckListBoxSpec(),
+    getExpandableListSpec(),
+    getInputsSpec(),
+    getLoadingSpec(),
+    getSearchBoxSpec(),
+    getSliderSpec(),
+    getSplitButtonSpec(),
+    getTabsSpec(),
+    getTextSpec(),
+    getTilesSpec(),
+    getToggleSpec(),
+  ]
 }];
 
 
