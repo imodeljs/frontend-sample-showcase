@@ -39,7 +39,7 @@ export interface SampleSpec {
 export type SampleSpecGroup = { groupName: string, samples: SampleSpec[] };
 
 export var sampleManifest: SampleSpecGroup[] = [{
-    groupName: "Group 1", samples: [
+    groupName: "Viewing", samples: [
         getViewportOnlySpec(),
         getEmphasizeElementsSpec(),
         getHeatmapDecoratorSpec(),
@@ -52,7 +52,7 @@ export var sampleManifest: SampleSpecGroup[] = [{
         getZoomToElementsSpec()
     ]
 }, {
-    groupName: "Group 2", samples: [
+    groupName: "UI Components", samples: [
         getBadgeSpec(),
         getButtonSpec(),
         getCheckListBoxSpec(),

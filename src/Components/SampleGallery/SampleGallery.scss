@@ -4,14 +4,21 @@
 *--------------------------------------------------------------------------------------------*/
 .sample-gallery {
   display: flex;
-  flex-direction: column;
+  border-top: solid #008be1;
 
   .sample-group-tabs {
-    width: max-content;
+    min-width: 10rem;
+    background-color: #eef0f3;
+
+    .uicore-tabs-vertical > li > a {
+      padding: 2px 2px 2px 10px;
+    }
   }
 
   .card-radio {
-    width: max-content;
+    width: 100%;
+    overflow-x: scroll;
+    display: flex;
     margin: 10px;
   }
 

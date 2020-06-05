@@ -97,6 +97,15 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this.setupNewSample(name);
     }
 
+    private _onActiveGroupChange = (name: string) => {
+        const group = sampleManifest.find((e: SampleSpecGroup) => e.groupName === name);
+
+        if (undefined === group)
+            return;
+
+        this.setState({ activeSampleGroup: group.groupName }, () => this._onActiveSampleChange(group.samples[0].name));
+    }
+
     private getGalleryList(): SampleGalleryEntry[] {
         const group = this.getActiveSampleGroup();
 
@@ -117,7 +126,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
                     <div id="sample-container" className="sample-content">
                         {this.state.sampleUI}
                     </div>
-                    <SampleGallery entries={this.getGalleryList()} group={this.state.activeSampleGroup} selected={activeSampleName} onChange={this._onActiveSampleChange} />
+                    <SampleGallery entries={this.getGalleryList()} group={this.state.activeSampleGroup} selected={activeSampleName} onChange={this._onActiveSampleChange} onGroupChange={this._onActiveGroupChange} />
                     {modelList && 1 < modelList.length &&
                         <div className="model-selector">
                             <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this.onIModelChange} />
