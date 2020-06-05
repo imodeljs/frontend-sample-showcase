@@ -13,6 +13,7 @@ import { ComponentContainer, ComponentExampleProps } from "../CommonComponentToo
 
 import { FeaturedTile, MinimalFeaturedTile, MinimalTile, Tile } from "@bentley/ui-core";
 
+// Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getTilesSpec(): SampleSpec {
   return ({
     name: "tiles-sample",
@@ -24,12 +25,14 @@ export function getTilesSpec(): SampleSpec {
   });
 }
 
+// Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
 export class TilesList extends React.Component<{}> {
 
+  // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getTilesData(): ComponentExampleProps[] {
     return [
       createComponentExample("Normal Tile", undefined,
@@ -55,23 +58,26 @@ export class TilesList extends React.Component<{}> {
     return <TilesList></TilesList>;
   }
 
-  public getControlPlane() {
+  // Creates the side panel featuring a description of the component type, as well as providing a github link to the sample code
+  public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Different styles of tiles that can be used in iModel.js applications</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/component-gallery/tiles-sample" />
           </div>
         </div>
       </>
     );
   }
 
+  // Combines the control pane and the component container to create the final display
+  // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
     return (
       <>
-        {this.getControlPlane()}
+        {this.getControlPane()}
         <ComponentContainer data={TilesList.getTilesData()}></ComponentContainer>
       </>
     );

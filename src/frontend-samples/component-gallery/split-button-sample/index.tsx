@@ -7,12 +7,11 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
-
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
-
 import { ContextMenuItem, SplitButton } from "@bentley/ui-core";
 
+// Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getSplitButtonSpec(): SampleSpec {
   return ({
     name: "split-button-sample",
@@ -24,12 +23,14 @@ export function getSplitButtonSpec(): SampleSpec {
   });
 }
 
+// Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
 export class SplitButtonList extends React.Component<{}> {
 
+  // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   private static get splitButtonMenuItems(): React.ReactNode[] {
     return [
       <ContextMenuItem key="item1" icon="icon-placeholder">Item 1</ContextMenuItem>,
@@ -54,23 +55,26 @@ export class SplitButtonList extends React.Component<{}> {
     return <SplitButtonList></SplitButtonList>;
   }
 
-  public getControlPlane() {
+  // Creates the side panel featuring a description of the component type, as well as providing a github link to the sample code
+  public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Different styles of split buttons that can be used in iModel.js applications</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/component-gallery/split-button-sample" />
           </div>
         </div>
       </>
     );
   }
 
+  // Combines the control pane and the component container to create the final display
+  // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
     return (
       <>
-        {this.getControlPlane()}
+        {this.getControlPane()}
         <ComponentContainer data={SplitButtonList.getSplitButtonData()}></ComponentContainer>
       </>
     );
