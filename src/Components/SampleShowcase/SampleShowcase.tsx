@@ -42,8 +42,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     };
   }
 
-  public async componentDidMount() {
+  public componentDidMount() {
     const defaultSampleSpec = getViewportOnlySpec();
+    // tslint:disable-next-line no-floating-promises
     this.setupNewSample(defaultSampleSpec.name);
   }
 
@@ -88,11 +89,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ activeSampleSpec: newSampleSpec, sampleUI, iModelName });
   }
 
-  private _onActiveSampleChange = async (name: string) => {
+  private _onActiveSampleChange = (name: string) => {
     const oldSample = this.state.activeSampleSpec;
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
+    // tslint:disable-next-line no-floating-promises
     this.setupNewSample(name);
   }
 

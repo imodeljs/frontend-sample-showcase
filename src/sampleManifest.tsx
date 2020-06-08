@@ -37,7 +37,10 @@ export interface SampleSpec {
   teardown?: () => void;
 }
 
-export interface SampleSpecGroup { groupName: string, samples: SampleSpec[] };
+export interface SampleSpecGroup {
+  groupName: string;
+  samples: SampleSpec[];
+}
 
 export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "Viewing", samples: [
