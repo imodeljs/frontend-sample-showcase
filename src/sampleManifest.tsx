@@ -55,7 +55,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getViewClipSpec(),
     getViewerOnly2dSpec(),
     getZoomToElementsSpec(),
-  ]
+  ],
 }, {
   groupName: "UI Components", samples: [
     getBadgeSpec(),
@@ -71,6 +71,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getTextSpec(),
     getTilesSpec(),
     getToggleSpec(),
-  ]
+  ],
 },
 ];
