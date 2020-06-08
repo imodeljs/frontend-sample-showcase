@@ -34,6 +34,7 @@ import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sa
 import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
 import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
+import { getPropertyFormattingSpec } from "../../frontend-samples/property-formatting-sample";
 
 // cSpell:ignore imodels
 
@@ -59,6 +60,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   constructor(props?: any, context?: any) {
     super(props, context);
     this._samples.push(getViewportOnlySpec());
+    this._samples.push(getPropertyFormattingSpec());
     this._samples.push(getEmphasizeElementsSpec());
     this._samples.push(getHeatmapDecoratorSpec());
     this._samples.push(getMarkerPinSpec());
