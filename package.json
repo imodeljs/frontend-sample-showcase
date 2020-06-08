@@ -52,6 +52,7 @@
     "lint": "tslint -p . 1>&2",
     "clean": "rimraf build"
   },
+  "homepage": "./",
   "eslintConfig": {
     "extends": "react-app"
   },
