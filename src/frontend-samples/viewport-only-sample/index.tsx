@@ -15,7 +15,7 @@ export function getViewportOnlySpec(): SampleSpec {
     name: "viewport-only-sample",
     label: "Viewport Only",
     image: "viewport-only-thumbnail.png",
-    setup: async (iModelName: string) => { return <ViewportOnlyUI iModelName={iModelName} /> },
+    setup: async (iModelName: string) => <ViewportOnlyUI iModelName={iModelName} />,
   });
 }
 
@@ -39,5 +39,3 @@ export class ViewportOnlyUI extends React.Component<{ iModelName: string }, {}> 
     );
   }
 }
-
-

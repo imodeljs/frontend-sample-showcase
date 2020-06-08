@@ -6,6 +6,7 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { AbstractMenuItemProps } from "@bentley/ui-abstract";
 
 export class SampleContextMenu {
+  // Formatting of the default menu and sub-menus of context menu
   private static _myMenuItems: AbstractMenuItemProps[] = [
     {
       id: "Item1", label: "Item ~1", icon: "icon-placeholder",
@@ -22,8 +23,9 @@ export class SampleContextMenu {
     },
   ];
 
+  // Places the context menu where the cursor is located
   public static showContextMenu() {
-    console.log(IModelApp.uiAdmin.showContextMenu(this._myMenuItems, IModelApp.uiAdmin.createXAndY(0,0)));
+    IModelApp.uiAdmin.showContextMenu(this._myMenuItems, IModelApp.uiAdmin.cursorPosition);
   }
 
 }
