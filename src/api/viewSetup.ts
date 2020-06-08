@@ -44,8 +44,11 @@ export class ViewSetup {
 
     const aspect = ViewSetup.getAspectRatio();
     if (undefined !== aspect) {
-      // NEEDSWORK: This doesn't seem to do anything.  It works for heatmap!
-      viewState.fixAspectRatio(aspect);
+      const extents = viewState.getExtents();
+      const origin = viewState.getOrigin();
+      viewState.adjustViewDelta(extents, origin, viewState.getRotation(), aspect);
+      viewState.setExtents(extents);
+      viewState.setOrigin(origin);
     }
 
     return viewState;
