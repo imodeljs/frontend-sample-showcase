@@ -38,11 +38,11 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     this.state = {
       iModelName: SampleIModels.RetailBuilding,
-      activeSampleGroup: this._samples[0].groupName
+      activeSampleGroup: this._samples[0].groupName,
     };
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
     const defaultSampleSpec = getViewportOnlySpec();
     this.setupNewSample(defaultSampleSpec.name);
   }
@@ -88,7 +88,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ activeSampleSpec: newSampleSpec, sampleUI, iModelName });
   }
 
-  private _onActiveSampleChange = (name: string) => {
+  private _onActiveSampleChange = async (name: string) => {
     const oldSample = this.state.activeSampleSpec;
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();

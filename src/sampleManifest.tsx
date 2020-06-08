@@ -37,9 +37,9 @@ export interface SampleSpec {
   teardown?: () => void;
 }
 
-export type SampleSpecGroup = { groupName: string, samples: SampleSpec[] };
+export interface SampleSpecGroup { groupName: string, samples: SampleSpec[] };
 
-export var sampleManifest: SampleSpecGroup[] = [{
+export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "Viewing", samples: [
     getViewportOnlySpec(),
     getEmphasizeElementsSpec(),
@@ -51,7 +51,7 @@ export var sampleManifest: SampleSpecGroup[] = [{
     getViewAttributesSpec(),
     getViewClipSpec(),
     getViewerOnly2dSpec(),
-    getZoomToElementsSpec()
+    getZoomToElementsSpec(),
   ]
 }, {
   groupName: "UI Components", samples: [
@@ -69,6 +69,5 @@ export var sampleManifest: SampleSpecGroup[] = [{
     getTilesSpec(),
     getToggleSpec(),
   ]
-}];
-
-
+},
+];
