@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import {
-  IModelApp, IModelConnection,
-  ZoomViewTool, PanViewTool, RotateViewTool, SelectionTool, FitViewTool, ViewState,
+  FitViewTool, IModelApp, IModelConnection,
+  PanViewTool, RotateViewTool, SelectionTool, ViewState, ZoomViewTool,
 } from "@bentley/imodeljs-frontend";
 
 import { ViewportComponent } from "@bentley/ui-components";
@@ -44,11 +44,11 @@ export class ViewportAndNavigation extends React.PureComponent<ViewportAndNaviga
 const toolbar = () => {
   return (
     <div className="toolbar">
-      <a href="#" title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
-      <a href="#" title={FitViewTool.flyover} onClick={fitView}><span className="icon icon-fit-to-view"></span></a>
-      <a href="#" title={RotateViewTool.flyover} onClick={rotate}><span className="icon icon-gyroscope"></span></a>
-      <a href="#" title={PanViewTool.flyover} onClick={pan}><span className="icon icon-hand-2"></span></a>
-      <a href="#" title={ZoomViewTool.flyover} onClick={zoom}><span className="icon icon-zoom"></span></a>
+      <a href="/#" title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
+      <a href="/#" title={FitViewTool.flyover} onClick={fitView}><span className="icon icon-fit-to-view"></span></a>
+      <a href="/#" title={RotateViewTool.flyover} onClick={rotate}><span className="icon icon-gyroscope"></span></a>
+      <a href="/#" title={PanViewTool.flyover} onClick={pan}><span className="icon icon-hand-2"></span></a>
+      <a href="/#" title={ZoomViewTool.flyover} onClick={zoom}><span className="icon icon-zoom"></span></a>
     </div>
   );
 };

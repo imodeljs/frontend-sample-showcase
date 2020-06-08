@@ -15,14 +15,14 @@ export function getViewerOnly2dSpec(): SampleSpec {
     name: "toolbar-button-sample",
     label: "Toolbar Button Sample",
     image: "viewer-only-2d-thumbnail.png",
-    setup: async (imodel: IModelConnection) => {
-      return <ToolbarButtonAppUI imodel={imodel} />;
+    setup: async (iModelName: string) => {
+      return <ToolbarButtonAppUI iModelName={iModelName} />;
     },
   });
 }
 // The Props and State for this sample component
 interface ToolbarButtonAppProps {
-  imodel: IModelConnection;
+  iModelName: string;
 }
 
 interface ToolbarButtonAppState {

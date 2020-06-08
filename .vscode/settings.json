@@ -1,0 +1,8 @@
+{
+  "editor.tabSize": 2,
+  "files.associations": {
+    ".nycrc": "json",
+  },
+  "editor.formatOnSave": true,
+  "editor.detectIndentation": false,
+}

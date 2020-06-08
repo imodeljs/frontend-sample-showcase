@@ -7,8 +7,8 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { Range2d, Point3d } from "@bentley/geometry-core";
-import { IModelConnection, IModelApp, StandardViewId, Viewport, imageElementFromUrl } from "@bentley/imodeljs-frontend";
+import { Point3d, Range2d } from "@bentley/geometry-core";
+import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
@@ -16,13 +16,14 @@ import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { PopupMenu } from "./PopupMenu";
 import { RadioCard, RadioCardEntry } from "./RadioCard/RadioCard";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "../../api/viewSetup";
 
 export function getMarkerPinSpec(): SampleSpec {
   return ({
     name: "marker-pin-sample",
     label: "Marker Pins",
     image: "marker-pin-thumbnail.png",
-    handlesViewSetup: true,
     setup: MarkerPinsApp.setup,
     teardown: MarkerPinsApp.teardown,
   });
@@ -40,7 +41,7 @@ class MarkerPinsApp {
   public static height?: number;
   public static _images: Map<string, HTMLImageElement>;
 
-  public static async setup(_iModel: IModelConnection, vp: Viewport): Promise<React.ReactNode> {
+  public static async setup(iModelName: string): Promise<React.ReactNode> {
 
     this._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
 
@@ -51,30 +52,20 @@ class MarkerPinsApp {
     MarkerPinsApp._images.set("pin_celery.svg", await imageElementFromUrl(".\\pin_celery.svg"));
     MarkerPinsApp._images.set("pin_poloblue.svg", await imageElementFromUrl(".\\pin_poloblue.svg"));
 
-    // The markers look better from a top view.
-    MarkerPinsApp.setToTopView(vp);
-
-    return <MarkerPinsUI />;
+    return <MarkerPinsUI iModelName={iModelName} />;
   }
 
-  private static setToTopView(vp: Viewport) {
+  public static async getTopView(imodel: IModelConnection): Promise<ViewState> {
+    const viewState = await ViewSetup.getDefaultView(imodel);
 
-    vp.setStandardRotation(StandardViewId.Top);
+    viewState.setStandardRotation(StandardViewId.Top);
 
-    const range = vp.view.computeFitRange();
+    const range = viewState.computeFitRange();
+    const aspect = viewState.getAspectRatio();
 
-    // Grab the unadjusted max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
-    MarkerPinsApp.height = range.zHigh;
+    viewState.lookAtVolume(range, aspect);
 
-    const aspect = vp.viewRect.aspect;
-    range.expandInPlace(1);
-
-    vp.view.lookAtVolume(range, aspect);
-    vp.synchWithView(false);
-
-    /* Grab the range of the contents of the view.  We'll use this to position the markers. */
-    const range2d = Range2d.createFrom(range);
-    MarkerPinsApp.range = range2d;
+    return viewState;
   }
 
   public static teardown() {
@@ -122,11 +113,12 @@ class MarkerPinsApp {
 }
 
 interface MarkerPinsUIState {
+  imodel?: IModelConnection;
   showDecorator: boolean;
   manualPin: ManualPinSelection;
 }
 
-export class MarkerPinsUI extends React.Component<{}, MarkerPinsUIState> {
+export class MarkerPinsUI extends React.Component<{ iModelName: string }, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -191,8 +183,22 @@ export class MarkerPinsUI extends React.Component<{}, MarkerPinsUIState> {
     IModelApp.tools.run(PlaceMarkerTool.toolId, this._manuallyAddMarker);
   }
 
-  /** The sample's render method */
-  public render() {
+  private onIModelReady = (imodel: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
+
+      // Grab range of the contents of the view. We'll use this to position the random markers.
+      const range = vp.view.computeFitRange();
+      MarkerPinsApp.range = Range2d.createFrom(range);
+
+      // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
+      MarkerPinsApp.height = range.zHigh;
+
+      this.setState({ imodel });
+    });
+  }
+
+  /** Components for rendering the sample's instructions and controls */
+  public getControlPane() {
     return (
       <>
         <PopupMenu />
@@ -225,5 +231,14 @@ export class MarkerPinsUI extends React.Component<{}, MarkerPinsUIState> {
       </>
     );
   }
-}
 
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsApp.getTopView} />
+        {this.getControlPane()}
+      </>
+    );
+  }
+}

@@ -6,26 +6,32 @@ import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelApp, Viewport, StandardViewId, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { Range2d, Point3d } from "@bentley/geometry-core";
+import { Point3d, Range2d } from "@bentley/geometry-core";
 import HeatmapDecorator from "./HeatmapDecorator";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
+import { ViewSetup } from "../../api/viewSetup";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 export function getHeatmapDecoratorSpec(): SampleSpec {
   return ({
     name: "heatmap-decorator-sample",
     label: "Heatmap Decorator",
     image: "heatmap-decorator-thumbnail.png",
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
-    handlesViewSetup: true,
     setup: HeatmapDecoratorApp.setup,
     teardown: HeatmapDecoratorApp.teardown,
   });
 }
+
+/*
+NEEDSWORK: split into three files
+  setup.tsx
+  sample-ui.tsx
+  sample-api.ts
+*/
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 class HeatmapDecoratorApp {
@@ -34,35 +40,34 @@ class HeatmapDecoratorApp {
   public static range?: Range2d;
   public static height?: number;
 
-  public static async setup(_iModel: IModelConnection, vp: Viewport): Promise<React.ReactNode> {
-    if (vp.view.is3d()) {
-      // To make the heatmap look better, lock the view to a top orientation with camera turned off.
-      vp.view.setAllow3dManipulations(false);
-      vp.view.turnCameraOff();
-      vp.setStandardRotation(StandardViewId.Top);
-    }
-
-    // We'll draw the heatmap as an overlay in the center of the view's Z extents.
-    const range = vp.view.computeFitRange();
-    HeatmapDecoratorApp.height = range.high.interpolate(0.5, range.low).z;
-
-    vp.view.lookAtVolume(range, vp.viewRect.aspect);
-    vp.synchWithView(false);
-
-    // The heatmap looks better against a white background.
-    const style = vp.displayStyle.clone();
-    style.backgroundColor = ColorDef.white;
-    vp.displayStyle = style;
-
-    // Grab the range of the contents of the view. We'll use this to size the heatmap.
-    HeatmapDecoratorApp.range = Range2d.createFrom(range);
-
-    return <HeatmapDecoratorUIComponent range={HeatmapDecoratorApp.range} />;
+  public static async setup(iModelName: string): Promise<React.ReactNode> {
+    return <HeatmapDecoratorUIComponent iModelName={iModelName} />;
   }
 
   public static teardown() {
     HeatmapDecoratorApp.disableDecorations();
     HeatmapDecoratorApp.decorator = undefined;
+  }
+
+  public static getTopView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+
+    if (viewState.is3d()) {
+      // To make the heatmap look better, lock the view to a top orientation with camera turned off.
+      viewState.setAllow3dManipulations(false);
+      viewState.turnCameraOff();
+      viewState.setStandardRotation(StandardViewId.Top);
+    }
+
+    const range = viewState.computeFitRange();
+    const aspect = ViewSetup.getAspectRatio();
+
+    viewState.lookAtVolume(range, aspect);
+
+    // The heatmap looks better against a white background.
+    viewState.displayStyle.backgroundColor = ColorDef.white;
+
+    return viewState;
   }
 
   public static setupDecorator(points: Point3d[], spreadFactor: number) {
@@ -85,14 +90,19 @@ class HeatmapDecoratorApp {
 }
 
 /** React state of the Sample component */
+interface HeatmapDecoratorUIProps {
+  iModelName: string;
+}
+
 interface HeatmapDecoratorUIState {
+  imodel?: IModelConnection;
+  vp?: Viewport;
   showDecorator: boolean;
   spreadFactor: number;
 }
 
 /** A React component that renders the UI specific for this sample */
-class HeatmapDecoratorUIComponent extends React.Component<{ range?: Range2d }, HeatmapDecoratorUIState> {
-  private _height?: number;
+class HeatmapDecoratorUIComponent extends React.Component<HeatmapDecoratorUIProps, HeatmapDecoratorUIState> {
 
   /** Creates an HeatmapDecoratorUIComponent instance */
   constructor(props?: any, context?: any) {
@@ -127,12 +137,25 @@ class HeatmapDecoratorUIComponent extends React.Component<{ range?: Range2d }, H
     }
   }
 
-  /** The sample's render method */
-  public render() {
+  private onIModelReady = (imodel: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
+
+      // Grab range of the contents of the view. We'll use this to size the heatmap.
+      const range = vp.view.computeFitRange();
+      HeatmapDecoratorApp.range = Range2d.createFrom(range);
+
+      // We'll draw the heatmap as an overlay in the center of the view's Z extents.
+      HeatmapDecoratorApp.height = range.high.interpolate(0.5, range.low).z;
+
+      this.setState({ imodel, vp });
+    });
+  }
+
+  /** Components for rendering the sample's instructions and controls */
+  public getControlPane() {
     return (
       <>
-        { /* This is the ui specific for this sample.*/}
-        < div className="sample-ui" >
+        <div className="sample-ui" >
           <div className="sample-instructions">
             <span>Use the options below to control the heatmap visualization.</span>
             <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/heatmap-decorator-sample" />
@@ -141,11 +164,21 @@ class HeatmapDecoratorUIComponent extends React.Component<{ range?: Range2d }, H
           <div className="sample-options-2col">
             <span>Show Heatmap</span>
             <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowHeatmap} />
-            <PointSelector onPointsChanged={this._onPointsChanged} range={this.props.range} />
+            <PointSelector onPointsChanged={this._onPointsChanged} range={HeatmapDecoratorApp.range} />
             <span>Spread Factor</span>
             <input type="range" min="1" max="100" value={this.state.spreadFactor} onChange={this._onChangeSpreadFactor}></input>
           </div>
         </div >
+      </>
+    );
+  }
+
+  /** The sample's render method */
+  public render() {
+    return (
+      <>
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={HeatmapDecoratorApp.getTopView} />
+        {this.getControlPane()}
       </>
     );
   }
