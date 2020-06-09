@@ -10,6 +10,8 @@ import "../../common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider";
+import { KeySet } from "@bentley/presentation-common";
 
 export function getPropertyFormattingSpec(): SampleSpec {
   return ({
@@ -21,6 +23,30 @@ export function getPropertyFormattingSpec(): SampleSpec {
     },
   });
 }
+
+/*
+These are instructions on how to use the PresentationManager API to essentially duplicate the property display
+from DesignReview.  Doing this yourself gives you lots of flexibility to customize the display and to use your
+own UI controls.
+
+There are three major steps. First is to compute the set of related elements from which to source the
+properties, second is to extract the properties, and third is to get something presentable to the user
+(includes formatting, grouping, etc.) In all, it’s a pretty big job once you consider all the complexity
+surrounding all the different types of primitive properties, array properties, and nested structures, not
+to mention grouping, sorting, and filtering.
+1.	Use PresentationManager.getSelectionScopes to get a list of available scopes. Pick a scope and pass
+    it to PresentationManager.computeSelection along with a list of elementIds. This will give you a KeySet.
+2.	Pass the keyset to PresentationManager.getContent. You will need to supply a ruleset. For properties,
+    usually this ruleset is what you want.
+3.	Using logic like this, build a set of PropertyRecords that are appropriate to display to the user.
+
+For step 2, you will need a content descriptor, which you can get by calling PresentationManager.getContentDescriptor.
+For that method, the tricky argument is ‘Display Type’ for which I suggest you start with DefaultContentDisplayTypes.PropertyPane.
+
+At each of these steps there are lots of options to control the process.  Also, all the backend methods require
+you to supply a ClientRequestContext. You should have one of these that you used to call IModelDb.open.
+
+*/
 
 class PropertyFormattingAPI {
   public static async formatProperties(elementIds: string[], imodel: IModelConnection) {
@@ -52,9 +78,20 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
   }
 
-  private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
+  private _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     this.setState({ elementsAreSelected: !selection.isEmpty });
+
+    const keys = selection as KeySet;
+    const requestContext = { imodel: this.state.imodel!, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
+    const descriptor = await Presentation.presentation.getContentDescriptor(requestContext, "Grid", keys, undefined);
+
+    if (undefined === descriptor)
+      return;
+
+    const content = await Presentation.presentation.getContent(requestContext, descriptor, keys);
+
+    console.log(content);
   }
 
   private onIModelReady = (imodel: IModelConnection) => {
