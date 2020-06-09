@@ -4,23 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { ProxyToolAdmin, ShowcaseToolAdmin } from "../../api/showcasetooladmin";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-
-export function getTooltipCustomizeSpec(): SampleSpec {
-  return ({
-    name: "tooltip-customize-sample",
-    label: "Tooltip Customize",
-    image: "tooltip-customize-thumbnail.png",
-    setup: TooltipCustomizeApp.setup,
-    teardown: TooltipCustomizeApp.teardown,
-  });
-}
 
 enum ElemProperty {
   Origin = "Origin",
@@ -37,7 +26,7 @@ interface TooltipCustomizeSettings {
   elemProperty: ElemProperty;
 }
 
-class TooltipCustomizeApp {
+export class TooltipCustomizeApp {
   public static settings: TooltipCustomizeSettings = {
     showImage: true,
     showCustomText: false,

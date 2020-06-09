@@ -9,19 +9,9 @@ import { IModelApp, IModelConnection, ScreenViewport, Viewport, ViewState3d } fr
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { GithubLink } from "../../Components/GithubLink";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 // cSpell:ignore imodels
-export function getThematicDisplaySpec(): SampleSpec {
-  return ({
-    name: "thematic-display-sample",
-    label: "Thematic Display",
-    image: "thematic-display-thumbnail.png",
-    setup: ThematicDisplaySampleApp.setup,
-    teardown: ThematicDisplaySampleApp.teardown,
-  });
-}
 
 /** This file contains the user interface and main logic that is specific to this sample. */
 class API {

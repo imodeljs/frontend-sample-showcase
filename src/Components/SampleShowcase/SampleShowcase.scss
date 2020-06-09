@@ -9,11 +9,22 @@
 }
 
 .sample-content {
-  flex: 1; 
-  overflow-y: scroll;
-
+  flex: 1;
 }
 
 .sample-gallery {
   overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.SplitPane {
+  background-color: unset !important;
+
+  .Pane {
+    overflow: hidden;
+
+    .Pane1 {
+      background-color: #1E1E1E;
+    }
+  }
 }

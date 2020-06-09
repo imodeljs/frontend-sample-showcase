@@ -7,33 +7,35 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
-import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
-import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample";
-import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
-import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
-import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
-import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
-import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
-import { getThematicDisplaySpec } from "../../frontend-samples/thematic-display-sample";
+import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample/sampleSpec";
+import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample/sampleSpec";
+import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample/sampleSpec";
+import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample/sampleSpec";
+import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample/sampleSpec";
+import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample/sampleSpec";
+import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample/sampleSpec";
+import { getThematicDisplaySpec } from "../../frontend-samples/thematic-display-sample/sampleSpec";
 
-import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample";
-import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
-import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
-import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample";
-import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample";
-import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample";
-import { getSearchBoxSpec } from "../../frontend-samples/component-gallery/search-box-sample";
-import { getSliderSpec } from "../../frontend-samples/component-gallery/slider-sample";
-import { getSplitButtonSpec } from "../../frontend-samples/component-gallery/split-button-sample";
-import { getTabsSpec } from "../../frontend-samples/component-gallery/tabs-sample";
-import { getTextSpec } from "../../frontend-samples/component-gallery/text-sample";
-import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
-import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
+import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample/sampleSpec";
+import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample/sampleSpec";
+import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample/sampleSpec";
+import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample/sampleSpec";
+import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample/sampleSpec";
+import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample/sampleSpec";
+import { getSearchBoxSpec } from "../../frontend-samples/component-gallery/search-box-sample/sampleSpec";
+import { getSliderSpec } from "../../frontend-samples/component-gallery/slider-sample/sampleSpec";
+import { getSplitButtonSpec } from "../../frontend-samples/component-gallery/split-button-sample/sampleSpec";
+import { getTabsSpec } from "../../frontend-samples/component-gallery/tabs-sample/sampleSpec";
+import { getTextSpec } from "../../frontend-samples/component-gallery/text-sample/sampleSpec";
+import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample/sampleSpec";
+import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample/sampleSpec";
 
-import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
-import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
-import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
+import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample/sampleSpec";
+import { getViewClipSpec } from "../../frontend-samples/view-clip-sample/sampleSpec";
+import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample/sampleSpec";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
+import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
+import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
 
 // cSpell:ignore imodels
 
@@ -41,6 +43,7 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
+  files?: InternalFile[];
   customModelList?: string[];
   setup?: (iModelName: string) => Promise<React.ReactNode>;
   teardown?: () => void;
@@ -50,6 +53,7 @@ interface ShowcaseState {
   iModelName: string;
   activeSampleSpec?: SampleSpec;
   sampleUI?: React.ReactNode;
+  showEditor: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
@@ -87,7 +91,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     this.state = {
       iModelName: SampleIModels.RetailBuilding,
+      showEditor: false,
     };
+    this.onEditorButtonClick = this.onEditorButtonClick.bind(this);
   }
 
   public componentDidMount() {
@@ -147,26 +153,39 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleSpec!.name));
   }
 
+  private onEditorButtonClick() {
+    this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
+  }
+
   public render() {
     const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
     const modelList = this.state.activeSampleSpec ? this.getIModelList(this.state.activeSampleSpec) : null;
+    const files = this.state.activeSampleSpec ? this.state.activeSampleSpec.files : undefined;
 
     return (
-      <>
-        <div className="showcase">
-          <div id="sample-container" className="sample-content">
-            {this.state.sampleUI}
-          </div>
-          <div className="sample-gallery">
-            <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
-          </div>
-          {modelList && 1 < modelList.length &&
-            <div className="model-selector">
-              <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this._onIModelChange} />
+      <div className="showcase">
+        <SplitScreen style={{ position: "relative" }} size={48} allowResize={false} resizerStyle={{ cursor: "default" }} pane1Style={{ display: "flex" }}>
+          <ActivityBar>
+            <ActivityBarItem onClick={this.onEditorButtonClick} active={this.state.showEditor}>
+              <div className="codicon codicon-json" style={{ fontSize: "24px" }} />
+            </ActivityBarItem>
+          </ActivityBar>
+          <SplitScreen style={{ position: "relative" }} minSize={500} pane1Style={this.state.showEditor ? undefined : { width: 0 }}>
+            <SampleEditor files={files} />
+            <div style={{ height: "100%" }}>
+              <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
+                {this.state.sampleUI}
+              </div>
+              {modelList && 1 < modelList.length &&
+                <div className="model-selector">
+                  <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this._onIModelChange} />
+                </div>
+              }
             </div>
-          }
-        </div>
-      </>
+          </SplitScreen>
+        </SplitScreen>
+        <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
+      </div>
     );
   }
 }
