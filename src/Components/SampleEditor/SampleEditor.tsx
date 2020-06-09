@@ -5,7 +5,7 @@
 import { File, Module, MonacoEditor, MonacoEditorFile, MonacoEditorProps, NavigationFile, TabNavigation } from "@bentley/monaco-editor";
 import path from "path";
 import * as React from "react";
-import ts, { ImportDeclaration, TextChangeRange } from "typescript";
+import { createSourceFile, forEachChild, ImportDeclaration, ScriptKind, ScriptTarget, SourceFile, SyntaxKind, TextChangeRange } from "typescript";
 import "./icons/codicon.css";
 import "./SampleEditor.scss";
 
@@ -114,12 +114,12 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
 
   private async modifyImports(importedFiles: Array<MonacoEditorFile & NavigationFile>) {
     return Promise.all(importedFiles.map((file) => {
-      const sourceFile = ts.createSourceFile(
+      const sourceFile = createSourceFile(
         "",
         file.code,
-        ts.ScriptTarget.Latest,
+        ScriptTarget.Latest,
         true,
-        ts.ScriptKind.TS,
+        ScriptKind.TS,
       );
 
       const relativeImport = this.extractRelativeImport(sourceFile);
@@ -134,7 +134,7 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
     }));
   }
 
-  public modifyRelativeImports(source: ts.SourceFile, relativeImport: ImportDeclaration) {
+  public modifyRelativeImports(source: SourceFile, relativeImport: ImportDeclaration) {
     const importValue = relativeImport.moduleSpecifier.getText();
     const newImportValue = importValue[importValue.length - 1] + "./" + path.basename(importValue);
 
@@ -157,10 +157,10 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
     return newSource;
   }
 
-  private extractRelativeImport(value: ts.SourceFile) {
+  private extractRelativeImport(value: SourceFile) {
 
-    return ts.forEachChild(value, (node) => {
-      if (node.kind === ts.SyntaxKind.ImportDeclaration) {
+    return forEachChild(value, (node) => {
+      if (node.kind === SyntaxKind.ImportDeclaration) {
         const importValue = (node as ImportDeclaration).moduleSpecifier.getText();
         if (importValue.match(/\.\.\/|\.\/(.+)\//)) {
           return (node as ImportDeclaration);
