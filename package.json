@@ -51,7 +51,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version @bentley/react-scripts",
-    "build": "react-app-rewired build --scripts-version @bentley/react-scripts",
+    "build": "react-app-rewired --max_old_space_size=4096 build --scripts-version @bentley/react-scripts",
     "test": "react-app-rewired test --scripts-version @bentley/react-scripts",
     "eject": "react-app-rewired eject --scripts-version @bentley/react-scripts",
     "lint": "tslint -p . 1>&2",
