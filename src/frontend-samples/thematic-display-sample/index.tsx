@@ -5,7 +5,7 @@
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplay, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, Viewport, ViewState3d, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { GithubLink } from "../../Components/GithubLink";

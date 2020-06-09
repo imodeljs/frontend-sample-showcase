@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
-import { IModelConnection, ViewState, IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "../../api/viewSetup";
 

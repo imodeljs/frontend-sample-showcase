@@ -35,7 +35,7 @@ import { getViewClipSpec } from "../../frontend-samples/view-clip-sample/sampleS
 import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample/sampleSpec";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
 import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
-import { SplitScreen, ActivityBar, ActivityBarItem } from "@bentley/monaco-editor";
+import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
 
 // cSpell:ignore imodels
 
@@ -43,7 +43,7 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
-  files?: InternalFile[],
+  files?: InternalFile[];
   customModelList?: string[];
   setup?: (iModelName: string) => Promise<React.ReactNode>;
   teardown?: () => void;
@@ -154,7 +154,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   private onEditorButtonClick() {
-    this.setState((prevState) => ({ showEditor: !prevState.showEditor }))
+    this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
   }
 
   public render() {

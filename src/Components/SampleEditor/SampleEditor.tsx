@@ -2,12 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "./SampleEditor.scss";
-import { MonacoEditorFile, File, MonacoEditor, MonacoEditorProps, NavigationFile, TabNavigation, Module } from "@bentley/monaco-editor";
-import ts, { ImportDeclaration, TextChangeRange } from "typescript";
+import { File, Module, MonacoEditor, MonacoEditorFile, MonacoEditorProps, NavigationFile, TabNavigation } from "@bentley/monaco-editor";
 import path from "path";
+import * as React from "react";
+import ts, { ImportDeclaration, TextChangeRange } from "typescript";
 import "./icons/codicon.css";
+import "./SampleEditor.scss";
 
 export interface SampleEditorProps {
   /** Files to inject into the component, can be any type of file (External, Navigation, etc.) */
@@ -19,12 +19,12 @@ export interface SampleEditorProps {
 }
 
 export interface SampleEditorState {
-  files?: (MonacoEditorFile & NavigationFile)[];
+  files?: Array<MonacoEditorFile & NavigationFile>;
   currentFile?: string;
 }
 
 interface SampleEditorReplacementProps {
-  files?: (MonacoEditorFile & NavigationFile)[];
+  files?: Array<MonacoEditorFile & NavigationFile>;
   currentFile?: string;
 }
 
@@ -58,8 +58,8 @@ const modules = [
   { name: "@bentley/ui-abstract" },
   { name: "@bentley/ui-components" },
   { name: "@bentley/ui-core" },
-  { name: "@bentley/webgl-compatibility" }
-] as Module[]
+  { name: "@bentley/webgl-compatibility" },
+] as Module[];
 
 export default class SampleEditor extends React.Component<Sub<MonacoEditorProps, SampleEditorReplacementProps> & SampleEditorProps, SampleEditorState> {
 
@@ -78,7 +78,7 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
 
   public componentDidUpdate(prevProps: SampleEditorProps) {
     if (prevProps.files !== this.props.files) {
-      this.setState({ files: undefined, currentFile: undefined })
+      this.setState({ files: undefined, currentFile: undefined });
       this.props.files && this.getData(this.props.files);
     }
   }
@@ -91,7 +91,7 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
       .catch((err) => console.error(err));
   }
 
-  public async getInternalData(files: File[]): Promise<(MonacoEditorFile & NavigationFile)[]> {
+  public async getInternalData(files: File[]): Promise<Array<MonacoEditorFile & NavigationFile>> {
     return Promise.all(files.map(async (file: File) => {
       if ((file as InternalFile).import) {
         const internalFile = file as InternalFile;
@@ -100,8 +100,7 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
           code: await this.importInternalData(internalFile.import),
         };
         // If the file has code, just return it as is.
-      }
-      else if ((file as MonacoEditorFile).code) {
+      } else if ((file as MonacoEditorFile).code) {
         return file as MonacoEditorFile;
       } else {
         // Otherwise, it's an empty file.
@@ -113,22 +112,22 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
     }));
   }
 
-  private modifyImports(importedFiles: (MonacoEditorFile & NavigationFile)[]) {
+  private async modifyImports(importedFiles: Array<MonacoEditorFile & NavigationFile>) {
     return Promise.all(importedFiles.map((file) => {
       const sourceFile = ts.createSourceFile(
         "",
         file.code,
         ts.ScriptTarget.Latest,
         true,
-        ts.ScriptKind.TS
+        ts.ScriptKind.TS,
       );
 
       const relativeImport = this.extractRelativeImport(sourceFile);
       if (relativeImport) {
         return {
           ...file,
-          code: this.modifyRelativeImports(sourceFile, relativeImport).text
-        }
+          code: this.modifyRelativeImports(sourceFile, relativeImport).text,
+        };
       } else {
         return file;
       }
@@ -136,7 +135,7 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
   }
 
   public modifyRelativeImports(source: ts.SourceFile, relativeImport: ImportDeclaration) {
-    const importValue = relativeImport.moduleSpecifier.getText()
+    const importValue = relativeImport.moduleSpecifier.getText();
     const newImportValue = importValue[importValue.length - 1] + "./" + path.basename(importValue);
 
     const sourceText = source.text;
@@ -148,19 +147,19 @@ export default class SampleEditor extends React.Component<Sub<MonacoEditorProps,
           start: 0,
           length: sourceText.length,
         },
-        newLength: newSourceText.length
+        newLength: newSourceText.length,
       } as TextChangeRange);
 
     const nextRelativeImport = this.extractRelativeImport(newSource);
     if (nextRelativeImport) {
-      newSource = this.modifyRelativeImports(newSource, nextRelativeImport)
+      newSource = this.modifyRelativeImports(newSource, nextRelativeImport);
     }
-    return newSource
+    return newSource;
   }
 
   private extractRelativeImport(value: ts.SourceFile) {
 
-    return ts.forEachChild(value, node => {
+    return ts.forEachChild(value, (node) => {
       if (node.kind === ts.SyntaxKind.ImportDeclaration) {
         const importValue = (node as ImportDeclaration).moduleSpecifier.getText();
         if (importValue.match(/\.\.\/|\.\/(.+)\//)) {

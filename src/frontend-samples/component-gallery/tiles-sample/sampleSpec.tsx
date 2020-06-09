@@ -19,6 +19,6 @@ export function getTilesSpec(): SampleSpec {
       { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
       { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
     ],
-    setup: TilesList.setup
+    setup: TilesList.setup,
   });
 }

@@ -16,6 +16,6 @@ export function getViewportOnlySpec(): SampleSpec {
       { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: async (iModelName: string) => { return <ViewportOnlyUI iModelName={iModelName} /> },
+    setup: async (iModelName: string) => <ViewportOnlyUI iModelName={iModelName} />,
   });
 }
