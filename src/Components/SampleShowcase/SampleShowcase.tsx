@@ -30,6 +30,8 @@ import { getTextSpec } from "../../frontend-samples/component-gallery/text-sampl
 import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
 import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
 
+import { getBasicTreeSpec } from "../../frontend-samples/tree-samples/basic-tree";
+
 import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
 import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
 import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
@@ -84,6 +86,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._samples.push(getTextSpec());
     this._samples.push(getTilesSpec());
     this._samples.push(getToggleSpec());
+
+    this._samples.push(getBasicTreeSpec());
+
 
     this.state = {
       iModelName: SampleIModels.RetailBuilding,
