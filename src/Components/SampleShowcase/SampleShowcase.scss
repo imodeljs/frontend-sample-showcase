@@ -9,12 +9,8 @@
 }
 
 .sample-content {
-  flex: 1;
-}
-
-.sample-gallery {
-  overflow-x: scroll;
-  overflow-y: hidden;
+  flex: 1; 
+  overflow-y: scroll;
 }
 
 .SplitPane {
