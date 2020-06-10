@@ -8,7 +8,7 @@ import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGaller
 import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
 import { sampleManifest, SampleSpecGroup } from "../../sampleManifest";
-import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
+import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample/sampleSpec";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
 import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
 import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
