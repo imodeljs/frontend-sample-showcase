@@ -4,26 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ViewCreator2d } from "./ViewCreator2d";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 
-export function getViewerOnly2dSpec(): SampleSpec {
-  return ({
-    name: "viewer-only-2d-sample",
-    label: "Viewer Only 2d",
-    image: "viewer-only-2d-thumbnail.png",
-    customModelList: [SampleIModels.House],
-    setup: async (iModelName: string) => {
-      return <ViewerOnly2dUI iModelName={iModelName} />;
-    },
-  });
-}
 // The Props and State for this sample component
 interface ViewerOnly2dProps {
   iModelName: string;

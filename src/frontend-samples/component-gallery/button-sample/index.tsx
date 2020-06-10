@@ -4,24 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { Button, ButtonSize, ButtonType, UnderlinedButton } from "@bentley/ui-core";
-
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getButtonSpec(): SampleSpec {
-  return ({
-    name: "button-sample",
-    label: "UI-Buttons",
-    image: "ui-button-thumbnail.png",
-    customModelList: [],
-
-    setup: ButtonList.setup,
-  });
-}
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {

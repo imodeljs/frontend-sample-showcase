@@ -12,3 +12,15 @@
   flex: 1; 
   overflow-y: scroll;
 }
+
+.SplitPane {
+  background-color: unset !important;
+
+  .Pane {
+    overflow: hidden;
+
+    .Pane1 {
+      background-color: #1E1E1E;
+    }
+  }
+}

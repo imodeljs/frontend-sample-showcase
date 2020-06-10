@@ -4,25 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
-
-// Provide the information about the sample, passing no iModels since this sample does not utilize any
-export function getInputsSpec(): SampleSpec {
-  return ({
-    name: "inputs-sample",
-    label: "UI-Inputs",
-    image: "ui-inputs-thumbnail.png",
-    customModelList: [],
-
-    setup: InputsList.setup,
-  });
-}
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {

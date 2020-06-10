@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { Environment, IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
@@ -13,17 +12,6 @@ import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 // cSpell:ignore imodels
-
-export function getViewAttributesSpec(): SampleSpec {
-  return ({
-    name: "view-attributes-sample",
-    label: "View Attributes",
-    image: "view-attributes-thumbnail.png",
-    setup: async (iModelName: string) => {
-      return <ViewAttributesUI iModelName={iModelName} />;
-    },
-  });
-}
 
 enum ViewFlag {
   ACS, Grid, HiddenEdges, Monochrome, VisibleEdges, Shadows,
