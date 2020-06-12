@@ -84,5 +84,5 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getCustomEventHandlerTreeSpec(),
     getCustomTableNodeTreeSpec(),
   ],
-}
+},
 ];

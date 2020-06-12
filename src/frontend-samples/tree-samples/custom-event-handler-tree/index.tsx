@@ -16,8 +16,6 @@ import { CheckBoxState, useDisposable } from "@bentley/ui-core";
 
 import { SampleDataProvider } from "../Common";
 
-
-
 export class CustomEventHandlerTreeSample extends React.Component<{}> {
 
   public getControlPane() {
