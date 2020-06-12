@@ -13,16 +13,6 @@ import { ViewSetup } from "../../api/viewSetup";
 export class ShadowStudyApp {
 
   public static async setup(iModelName: string) {
-    const vp = IModelApp.viewManager.selectedView;
-
-    // Enable shadows for the current view
-    if (vp && vp.view.is3d()) {
-      const viewFlags = vp.viewFlags.clone();
-      viewFlags.shadows = true;
-      vp.viewFlags = viewFlags;
-      vp.synchWithView();
-    }
-
     return <ShadowStudyUI iModelName={iModelName} />;
   }
 
@@ -150,6 +140,10 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
         viewStyle.setSunTime(this.state.date.getTime());
       viewState.displayStyle = viewStyle;
     }
+
+    // We always want shadows
+    viewState.viewFlags.shadows = true;
+
     return viewState;
   }
 
