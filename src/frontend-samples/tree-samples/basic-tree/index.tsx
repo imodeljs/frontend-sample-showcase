@@ -3,23 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import "../index.scss";
 import { GithubLink } from "../../../Components/GithubLink";
 
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
 import { SampleDataProvider } from "../Common";
-
-export function getBasicTreeSpec(): SampleSpec {
-  return ({
-    name: "basic-tree-sample",
-    label: "Basic Tree",
-    image: "basic-tree-thumbnail.png",
-    customModelList: [],
-
-    setup: BasicTreeSample.setup,
-  });
-}
 
 export class BasicTreeSample extends React.Component<{}> {
 

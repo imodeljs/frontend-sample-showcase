@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import "../index.scss";
 
 import { GithubLink } from "../../../Components/GithubLink";
@@ -17,17 +16,6 @@ import { SampleDataProvider } from "../Common";
 
 import { ImageCheckBox, NodeCheckboxRenderProps } from "@bentley/ui-core";
 
-export function getCustomCheckboxesTreeSpec(): SampleSpec {
-  return ({
-    name: "custom-checkboxes-sample",
-    label: "Custom Checkboxes Tree",
-    image: "custom-checkboxes-tree-thumbnail.png",
-    customModelList: [],
-
-    setup: CustomCheckboxesTreeSample.setup,
-  });
-}
-
 export class CustomCheckboxesTreeSample extends React.Component<{}> {
 
   public getControlPane() {
@@ -36,7 +24,7 @@ export class CustomCheckboxesTreeSample extends React.Component<{}> {
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Checkbox for each node in this tree is rendered as an eye positioned at the left side.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/basic-tree" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/custom-checkboxes-tree" />
           </div>
         </div>
       </>

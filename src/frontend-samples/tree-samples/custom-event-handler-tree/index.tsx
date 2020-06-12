@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import "../index.scss";
 import { GithubLink } from "../../../Components/GithubLink";
 
@@ -17,16 +16,7 @@ import { CheckBoxState, useDisposable } from "@bentley/ui-core";
 
 import { SampleDataProvider } from "../Common";
 
-export function getCustomEventHandlerTreeSpec(): SampleSpec {
-  return ({
-    name: "custom-event-handler-tree-sample",
-    label: "Custom Event Handler Tree",
-    image: "custom-event-handler-tree-thumbnail.png",
-    customModelList: [],
 
-    setup: CustomEventHandlerTreeSample.setup,
-  });
-}
 
 export class CustomEventHandlerTreeSample extends React.Component<{}> {
 

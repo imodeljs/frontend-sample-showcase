@@ -28,6 +28,11 @@ import { getTextSpec } from "./frontend-samples/component-gallery/text-sample/sa
 import { getTilesSpec } from "./frontend-samples/component-gallery/tiles-sample/sampleSpec";
 import { getToggleSpec } from "./frontend-samples/component-gallery/toggle-sample/sampleSpec";
 
+import { getBasicTreeSpec } from "./frontend-samples/tree-samples/basic-tree/sampleSpec";
+import { getCustomCheckboxesTreeSpec } from "./frontend-samples/tree-samples/custom-checkboxes-tree/sampleSpec";
+import { getCustomEventHandlerTreeSpec } from "./frontend-samples/tree-samples/custom-event-handler-tree/sampleSpec";
+import { getCustomTableNodeTreeSpec } from "./frontend-samples/tree-samples/custom-table-node-tree/sampleSpec";
+
 export interface SampleSpec {
   name: string;
   label: string;
@@ -72,5 +77,12 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getTilesSpec(),
     getToggleSpec(),
   ],
-},
+}, {
+  groupName: "UI Trees", samples: [
+    getBasicTreeSpec(),
+    getCustomCheckboxesTreeSpec(),
+    getCustomEventHandlerTreeSpec(),
+    getCustomTableNodeTreeSpec(),
+  ],
+}
 ];

@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import "../index.scss";
 
 import {
@@ -16,17 +15,6 @@ import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import "./TableNodeTree.scss";
 import { GithubLink } from "../../../Components/GithubLink";
-
-export function getCustomTableNodeTreeSpec(): SampleSpec {
-  return ({
-    name: "custom-table-node-tree-sample",
-    label: "Custom Table Node Tree",
-    image: "custom-table-node-tree-thumbnail.png",
-    customModelList: [],
-
-    setup: TableNodeTreeSample.setup,
-  });
-}
 
 export class TableNodeTreeSample extends React.Component<{}> {
 
