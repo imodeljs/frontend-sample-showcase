@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import { DrawingViewState, IModelConnection, SpatialViewState, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Id64, Id64String } from "@bentley/bentleyjs-core";
-import { BackgroundMapSettings } from "@bentley/imodeljs-common";
 
 export class ViewSetup {
 
