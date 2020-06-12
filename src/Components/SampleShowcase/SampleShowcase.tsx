@@ -31,6 +31,9 @@ import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sam
 import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
 
 import { getBasicTreeSpec } from "../../frontend-samples/tree-samples/basic-tree";
+import { getCustomCheckboxesTreeSpec } from "../../frontend-samples/tree-samples/custom-checkboxes-tree";
+import { getCustomEventHandlerTreeSpec } from "../../frontend-samples/tree-samples/custom-event-handler-tree";
+import { getCustomTableNodeTreeSpec } from "../../frontend-samples/tree-samples/custom-table-node-tree";
 
 import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
 import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
@@ -88,7 +91,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._samples.push(getToggleSpec());
 
     this._samples.push(getBasicTreeSpec());
-
+    this._samples.push(getCustomCheckboxesTreeSpec());
+    this._samples.push(getCustomEventHandlerTreeSpec());
+    this._samples.push(getCustomTableNodeTreeSpec());
 
     this.state = {
       iModelName: SampleIModels.RetailBuilding,

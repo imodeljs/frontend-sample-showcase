@@ -5,27 +5,52 @@
 import * as React from "react";
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import "../index.scss";
+import { GithubLink } from "../../../Components/GithubLink";
 
-import { useVisibleTreeNodes, ControlledTree, SelectionMode, useTreeEventsHandler, useTreeNodeLoader, useTreeModelSource } from "@bentley/ui-components";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
 import { SampleDataProvider } from "../Common";
 
 export function getBasicTreeSpec(): SampleSpec {
   return ({
     name: "basic-tree-sample",
     label: "Basic Tree",
-    image: "tooltip-customize-thumbnail.png",
+    image: "basic-tree-thumbnail.png",
     customModelList: [],
 
-    setup: setupTree,
+    setup: BasicTreeSample.setup,
   });
 }
 
-async function setupTree() {
-  return (
-    <div className="sample-tree">
-      <Tree></Tree>
-    </div>
-  );
+export class BasicTreeSample extends React.Component<{}> {
+
+  public getControlPane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>This is the default tree.</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/basic-tree" />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  public static async setup() {
+    return <BasicTreeSample></BasicTreeSample>;
+  }
+
+  public render() {
+    return (
+      <>
+        {this.getControlPane()}
+        <div className="sample-tree">
+          <Tree></Tree>
+        </div>
+      </>
+    );
+  }
+
 }
 
 function Tree() {
@@ -59,9 +84,6 @@ function Tree() {
   const visibleNodes = useVisibleTreeNodes(modelSource);
 
   return <>
-    <div className="instructions">
-      This is the default tree.
-    </div>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
