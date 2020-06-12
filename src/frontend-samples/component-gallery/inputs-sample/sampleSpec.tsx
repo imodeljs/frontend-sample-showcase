@@ -14,7 +14,6 @@ export function getInputsSpec(): SampleSpec {
     customModelList: [],
     files: [
       { name: "InputsListSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },
       { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
       { name: "SampleImageCheckBox.tsx", import: import("!!raw-loader!./SampleImageCheckBox") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },

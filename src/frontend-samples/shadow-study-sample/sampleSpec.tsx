@@ -12,10 +12,7 @@ export function getShadowStudySpec(): SampleSpec {
     image: "shadow-study-thumbnail.png",
     files: [
       { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./index") },
-      { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
-      { name: "ReloadableViewport.tsx", import: import("!!raw-loader!../../Components/Viewport/ReloadableViewport") },
-      { name: "viewSetup.ts", import: import("!!raw-loader!../../api/viewSetup") },
     ],
     setup: ShadowStudyApp.setup,
   });

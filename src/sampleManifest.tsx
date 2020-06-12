@@ -43,17 +43,19 @@ export interface SampleSpecGroup {
 }
 
 export const sampleManifest: SampleSpecGroup[] = [{
-  groupName: "Viewing", samples: [
+  groupName: "Viewer", samples: [
     getViewportOnlySpec(),
+    getViewerOnly2dSpec(),
+    getViewAttributesSpec(),
+  ],
+}, {
+  groupName: "Viewer Features", samples: [
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
     getMarkerPinSpec(),
     getShadowStudySpec(),
-    getTooltipCustomizeSpec(),
     getThematicDisplaySpec(),
-    getViewAttributesSpec(),
     getViewClipSpec(),
-    getViewerOnly2dSpec(),
     getZoomToElementsSpec(),
   ],
 }, {
