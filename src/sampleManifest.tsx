@@ -55,6 +55,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMarkerPinSpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
+    getTooltipCustomizeSpec(),
     getViewClipSpec(),
     getZoomToElementsSpec(),
   ],
