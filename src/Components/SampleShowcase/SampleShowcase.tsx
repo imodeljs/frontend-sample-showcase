@@ -7,38 +7,11 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
-import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
-import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample";
-import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
-import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
-import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
-import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
-import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
-import { getThematicDisplaySpec } from "../../frontend-samples/thematic-display-sample";
-
-import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample";
-import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
-import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
-import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample";
-import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample";
-import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample";
-import { getSearchBoxSpec } from "../../frontend-samples/component-gallery/search-box-sample";
-import { getSliderSpec } from "../../frontend-samples/component-gallery/slider-sample";
-import { getSplitButtonSpec } from "../../frontend-samples/component-gallery/split-button-sample";
-import { getTabsSpec } from "../../frontend-samples/component-gallery/tabs-sample";
-import { getTextSpec } from "../../frontend-samples/component-gallery/text-sample";
-import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
-import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
-
-import { getBasicTreeSpec } from "../../frontend-samples/tree-samples/basic-tree";
-import { getCustomCheckboxesTreeSpec } from "../../frontend-samples/tree-samples/custom-checkboxes-tree";
-import { getCustomEventHandlerTreeSpec } from "../../frontend-samples/tree-samples/custom-event-handler-tree";
-import { getCustomTableNodeTreeSpec } from "../../frontend-samples/tree-samples/custom-table-node-tree";
-
-import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
-import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
-import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
+import { sampleManifest, SampleSpecGroup } from "../../sampleManifest";
+import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample/sampleSpec";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
+import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
+import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
 
 // cSpell:ignore imodels
 
@@ -46,6 +19,7 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
+  files?: InternalFile[];
   customModelList?: string[];
   setup?: (iModelName: string) => Promise<React.ReactNode>;
   teardown?: () => void;
@@ -53,51 +27,25 @@ export interface SampleSpec {
 
 interface ShowcaseState {
   iModelName: string;
+  activeSampleGroup: string;
   activeSampleSpec?: SampleSpec;
   sampleUI?: React.ReactNode;
+  showEditor: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
-  private _samples: SampleSpec[] = [];
+  private _samples = sampleManifest;
 
   constructor(props?: any, context?: any) {
     super(props, context);
-    this._samples.push(getViewportOnlySpec());
-    this._samples.push(getEmphasizeElementsSpec());
-    this._samples.push(getHeatmapDecoratorSpec());
-    this._samples.push(getMarkerPinSpec());
-    this._samples.push(getShadowStudySpec());
-    this._samples.push(getTooltipCustomizeSpec());
-    this._samples.push(getViewAttributesSpec());
-    this._samples.push(getViewClipSpec());
-    this._samples.push(getViewerOnly2dSpec());
-    this._samples.push(getZoomToElementsSpec());
-    this._samples.push(getThematicDisplaySpec());
-
-    // UI Samples
-    this._samples.push(getBadgeSpec());
-    this._samples.push(getButtonSpec());
-    this._samples.push(getCheckListBoxSpec());
-    this._samples.push(getExpandableListSpec());
-    this._samples.push(getInputsSpec());
-    this._samples.push(getLoadingSpec());
-    this._samples.push(getSearchBoxSpec());
-    this._samples.push(getSliderSpec());
-    this._samples.push(getSplitButtonSpec());
-    this._samples.push(getTabsSpec());
-    this._samples.push(getTextSpec());
-    this._samples.push(getTilesSpec());
-    this._samples.push(getToggleSpec());
-
-    this._samples.push(getBasicTreeSpec());
-    this._samples.push(getCustomCheckboxesTreeSpec());
-    this._samples.push(getCustomEventHandlerTreeSpec());
-    this._samples.push(getCustomTableNodeTreeSpec());
 
     this.state = {
       iModelName: SampleIModels.RetailBuilding,
+      activeSampleGroup: this._samples[0].groupName,
+      showEditor: false,
     };
+    this.onEditorButtonClick = this.onEditorButtonClick.bind(this);
   }
 
   public componentDidMount() {
@@ -106,11 +54,17 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setupNewSample(defaultSampleSpec.name);
   }
 
+  private getActiveSampleGroup(): SampleSpecGroup {
+    return this._samples.find((entry: SampleSpecGroup) => entry.groupName === this.state.activeSampleGroup)!;
+  }
+
   private getSampleByName(name?: string): SampleSpec | undefined {
     if (!name)
       return undefined;
 
-    return this._samples.find((entry: SampleSpec) => entry.name === name)!;
+    const group = this.getActiveSampleGroup();
+
+    return group.samples.find((entry: SampleSpec) => entry.name === name)!;
   }
 
   private getIModelList(sampleSpec: SampleSpec): string[] {
@@ -130,6 +84,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     let iModelName = this.state.iModelName;
 
     if (newSampleSpec && newSampleSpec.setup) {
+
       if (newSampleSpec !== this.state.activeSampleSpec) {
         iModelName = this.getIModelList(newSampleSpec)[0];
       }
@@ -149,34 +104,58 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setupNewSample(name);
   }
 
-  private getGalleryList(): SampleGalleryEntry[] {
-    return this._samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
+  private _onActiveGroupChange = (name: string) => {
+    const group = sampleManifest.find((e: SampleSpecGroup) => e.groupName === name);
+
+    if (undefined === group)
+      return;
+
+    this.setState({ activeSampleGroup: group.groupName }, () => this._onActiveSampleChange(group.samples[0].name));
   }
 
-  private _onIModelChange = (iModelName: string) => {
+  private getGalleryList(): SampleGalleryEntry[] {
+    const group = this.getActiveSampleGroup();
+
+    return group.samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
+  }
+
+  private onIModelChange = (iModelName: string) => {
     this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleSpec!.name));
+  }
+
+  private onEditorButtonClick() {
+    this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
   }
 
   public render() {
     const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
     const modelList = this.state.activeSampleSpec ? this.getIModelList(this.state.activeSampleSpec) : null;
+    const files = this.state.activeSampleSpec ? this.state.activeSampleSpec.files : undefined;
 
     return (
-      <>
-        <div className="showcase">
-          <div id="sample-container" className="sample-content">
-            {this.state.sampleUI}
-          </div>
-          <div className="sample-gallery">
-            <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
-          </div>
-          {modelList && 1 < modelList.length &&
-            <div className="model-selector">
-              <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this._onIModelChange} />
+      <div className="showcase">
+        <SplitScreen style={{ position: "relative" }} size={48} allowResize={false} resizerStyle={{ cursor: "default" }} pane1Style={{ display: "flex" }}>
+          <ActivityBar>
+            <ActivityBarItem onClick={this.onEditorButtonClick} active={this.state.showEditor}>
+              <div className="codicon codicon-json" style={{ fontSize: "24px" }} />
+            </ActivityBarItem>
+          </ActivityBar>
+          <SplitScreen style={{ position: "relative" }} minSize={500} pane1Style={this.state.showEditor ? undefined : { width: 0 }}>
+            <SampleEditor files={files} />
+            <div style={{ height: "100%" }}>
+              <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
+                {this.state.sampleUI}
+              </div>
+              {modelList && 1 < modelList.length &&
+                <div className="model-selector">
+                  <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this.onIModelChange} />
+                </div>
+              }
             </div>
-          }
-        </div>
-      </>
+          </SplitScreen>
+        </SplitScreen>
+        <SampleGallery entries={this.getGalleryList()} group={this.state.activeSampleGroup} selected={activeSampleName} onChange={this._onActiveSampleChange} onGroupChange={this._onActiveGroupChange} />
+      </div>
     );
   }
 }

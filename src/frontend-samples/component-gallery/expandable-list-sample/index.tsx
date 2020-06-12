@@ -4,25 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
-
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getExpandableListSpec(): SampleSpec {
-  return ({
-    name: "expandable-list-sample",
-    label: "UI-Expandable Lists",
-    image: "ui-expandable-list-thumbnail.png",
-    customModelList: [],
-
-    setup: ExpandableListList.setup,
-  });
-}
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {

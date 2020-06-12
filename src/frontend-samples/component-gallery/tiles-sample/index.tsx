@@ -4,26 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
-
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
-
 import { FeaturedTile, MinimalFeaturedTile, MinimalTile, Tile } from "@bentley/ui-core";
-
-// Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getTilesSpec(): SampleSpec {
-  return ({
-    name: "tiles-sample",
-    label: "UI-Tiles",
-    image: "ui-tile-thumbnail.png",
-    customModelList: [],
-
-    setup: TilesList.setup,
-  });
-}
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
