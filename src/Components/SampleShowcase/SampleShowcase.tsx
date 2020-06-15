@@ -9,7 +9,7 @@ import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
 import { sampleManifest, SampleSpecGroup } from "../../sampleManifest";
 import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample/sampleSpec";
-import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
+import { IModelSelector } from "../IModelSelector/IModelSelector";
 import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
 import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
 
@@ -41,7 +41,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     super(props, context);
 
     this.state = {
-      iModelName: SampleIModels.RetailBuilding,
+      iModelName: IModelSelector.defaultIModel,
       activeSampleGroup: this._samples[0].groupName,
       showEditor: false,
     };
@@ -69,7 +69,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   private getIModelList(sampleSpec: SampleSpec): string[] {
     const customModelList = sampleSpec.customModelList;
-    return customModelList ? customModelList : IModelSelector.defaultModelList;
+    return customModelList ? customModelList : IModelSelector.defaultIModelList;
   }
 
   private async setupNewSample(name: string) {
