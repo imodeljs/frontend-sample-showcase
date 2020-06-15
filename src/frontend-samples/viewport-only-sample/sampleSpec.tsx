@@ -9,11 +9,10 @@ import { ViewportOnlyUI } from ".";
 export function getViewportOnlySpec(): SampleSpec {
   return ({
     name: "viewport-only-sample",
-    label: "Viewport Only",
+    label: "3d",
     image: "viewport-only-thumbnail.png",
     files: [
       { name: "ViewportOnlySample.tsx", import: import("!!raw-loader!./index") },
-      { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
     setup: async (iModelName: string) => <ViewportOnlyUI iModelName={iModelName} />,

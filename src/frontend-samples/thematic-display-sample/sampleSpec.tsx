@@ -12,9 +12,7 @@ export function getThematicDisplaySpec(): SampleSpec {
     image: "thematic-display-thumbnail.png",
     files: [
       { name: "TooltipSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
-      { name: "ReloadableViewport.tsx", import: import("!!raw-loader!../../Components/Viewport/ReloadableViewport") },
     ],
     setup: ThematicDisplaySampleApp.setup,
     teardown: ThematicDisplaySampleApp.teardown,

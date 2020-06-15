@@ -13,7 +13,6 @@ export function getViewClipSpec(): SampleSpec {
     image: "view-clip-thumbnail.png",
     files: [
       { name: "ViewClipSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "GithubLink.tsx", import: import("!!raw-loader!../../Components/GithubLink") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
     setup: async (iModelName: string) => {
