@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, IModelConnection, MarginPercent, StandardViewId, ViewChangeOptions, Viewport, ZoomToOptions } from "@bentley/imodeljs-frontend";
@@ -12,17 +11,6 @@ import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@ben
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-
-export function getZoomToElementsSpec(): SampleSpec {
-  return ({
-    name: "zoom-to-elements-sample",
-    label: "Zoom to Elements",
-    image: "zoom-to-elements-thumbnail.png",
-    setup: async (iModelName: string) => {
-      return <ZoomToElementsUI iModelName={iModelName} />;
-    },
-  });
-}
 
 class ZoomToElementsAPI {
   public static async zoomToElements(elementIds: string[], viewChangeOpts: ViewChangeOptions, zoomToOpts: ZoomToOptions, vp: Viewport, imodel: IModelConnection) {

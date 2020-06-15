@@ -4,36 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "../../api/viewSetup";
 
-export function getShadowStudySpec(): SampleSpec {
-  return ({
-    name: "shadow-study-sample",
-    label: "Shadow Study",
-    image: "shadow-study-thumbnail.png",
-
-    setup: ShadowStudyApp.setup,
-  });
-}
-
-class ShadowStudyApp {
+export class ShadowStudyApp {
 
   public static async setup(iModelName: string) {
-    const vp = IModelApp.viewManager.selectedView;
-
-    // Enable shadows for the current view
-    if (vp && vp.view.is3d()) {
-      const viewFlags = vp.viewFlags.clone();
-      viewFlags.shadows = true;
-      vp.viewFlags = viewFlags;
-      vp.synchWithView();
-    }
-
     return <ShadowStudyUI iModelName={iModelName} />;
   }
 
@@ -75,7 +54,7 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
   }
 
   // Update the date state with the newly selected minute of the day
-  private updateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
+  private _updateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
     const date = this.state.date;
 
     // Time slider represents time of day as a number from 0-1439, one for each minute of the day
@@ -97,7 +76,7 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
   }
 
   // Update the state date with the newly selected day of the year
-  private updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+  private _updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Extract date information from string returned by date picker
     const dateString = event.target.value;
     const dateInfo = dateString.split("-");
@@ -161,6 +140,10 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
         viewStyle.setSunTime(this.state.date.getTime());
       viewState.displayStyle = viewStyle;
     }
+
+    // We always want shadows
+    viewState.viewFlags.shadows = true;
+
     return viewState;
   }
 
@@ -170,17 +153,17 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Select a date and time.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/emphasize-elements-sample" />
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/shadow-study-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-3col">
             <div>Time of Day</div>
-            <input type="range" min="0" max="1439" value={this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange={this.updateTime} ></input>
+            <input type="range" min="0" max="1439" value={this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange={this._updateTime} ></input>
             <div id="time">{this.convertMinToTime()}</div>
           </div>
           <div className="sample-options-3col">
             <div>Date</div>
-            <input type="date" id="date_picker" onChange={this.updateDate}></input>
+            <input type="date" id="date_picker" onChange={this._updateDate}></input>
             <div id="date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear()}</div>
           </div>
           <div id="date_invalid" ></div>

@@ -6,12 +6,6 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
 
-export enum SampleIModels {
-  RetailBuilding = "Retail Building Sample",
-  BayTown = "Bay Town Process Plant",
-  House = "House Sample",
-}
-
 // The Props and State for this sample component
 interface IModelSelectorProps {
   iModelNames: string[];
@@ -19,9 +13,17 @@ interface IModelSelectorProps {
   onIModelChange: (iModelName: string) => void;
 }
 
+export enum SampleIModels {
+  MetroStation = "Metrostation Sample",
+  RetailBuilding = "Retail Building Sample",
+  BayTown = "Bay Town Process Plant",
+  House = "House Sample",
+}
+
 export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
 
-  public static defaultModelList = [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House];
+  public static defaultIModelList = [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House];
+  public static defaultIModel = SampleIModels.MetroStation;
 
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.selectedOptions[0].value, undefined);

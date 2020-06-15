@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
@@ -16,16 +15,6 @@ import { PointSelector } from "../../common/PointSelector/PointSelector";
 import { ViewSetup } from "../../api/viewSetup";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
-export function getHeatmapDecoratorSpec(): SampleSpec {
-  return ({
-    name: "heatmap-decorator-sample",
-    label: "Heatmap Decorator",
-    image: "heatmap-decorator-thumbnail.png",
-    setup: HeatmapDecoratorApp.setup,
-    teardown: HeatmapDecoratorApp.teardown,
-  });
-}
-
 /*
 NEEDSWORK: split into three files
   setup.tsx
@@ -34,7 +23,7 @@ NEEDSWORK: split into three files
 */
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-class HeatmapDecoratorApp {
+export class HeatmapDecoratorApp {
 
   public static decorator?: HeatmapDecorator;
   public static range?: Range2d;

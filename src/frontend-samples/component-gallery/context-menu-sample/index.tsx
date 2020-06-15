@@ -4,62 +4,53 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
-
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
-
 import { UnderlinedButton } from "@bentley/ui-core";
 import { SampleContextMenu } from "./SampleContextMenu";
 
-export function getContextMenuSpec(): SampleSpec {
-    return ({
-        name: "context-menu-sample",
-        label: "UI-Context Menus",
-        image: "ui-context-menu-thumbnail.png",
-        customModelList: [],
-
-        setup: ContextMenuList.setup,
-    });
-}
-
+// Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
-    return { title, description, content };
+  return { title, description, content };
 };
 
 export class ContextMenuList extends React.Component<{}> {
 
-    public static getContextMenuData(): ComponentExampleProps[] {
-        return [
-            createComponentExample("ContextMenu", undefined, <UnderlinedButton onClick={() => SampleContextMenu.showContextMenu()}> Open ContextMenu</UnderlinedButton>),
-        ];
-    }
+  // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
+  public static getContextMenuData(): ComponentExampleProps[] {
+    return [
+      createComponentExample("ContextMenu", undefined, <UnderlinedButton onClick={() => SampleContextMenu.showContextMenu()}> Open ContextMenu</UnderlinedButton>),
+    ];
+  }
 
-    public static async setup() {
-        return <ContextMenuList></ContextMenuList>;
-    }
+  public static async setup() {
+    return <ContextMenuList></ContextMenuList>;
+  }
 
-    public getControlPlane() {
-        return (
-            <>
-                <div className="sample-ui  component-ui">
-                    <div className="sample-instructions">
-                        <span>Different styles of context menus that can be used in iModel.js applications</span>
-                        <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
-                    </div>
-                </div>
-            </>
-        );
-    }
+  // Creates the side panel featuring a description of the component type, as well as providing a github link to the sample code
+  public getControlPane() {
+    return (
+      <>
+        <div className="sample-ui  component-ui">
+          <div className="sample-instructions">
+            <span>Different styles of context menus that can be used in iModel.js applications</span>
+            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/component-gallery/context-menu-sample" />
+          </div>
+        </div>
+      </>
+    );
+  }
 
-    public render() {
-        return (
-            <>
-                {this.getControlPlane()}
-                <ComponentContainer data={ContextMenuList.getContextMenuData()}></ComponentContainer>
-            </>
-        );
-    }
+  // Combines the control pane and the component container to create the final display
+  // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
+  public render() {
+    return (
+      <>
+        {this.getControlPane()}
+        <ComponentContainer data={ContextMenuList.getContextMenuData()}></ComponentContainer>
+      </>
+    );
+  }
 }
