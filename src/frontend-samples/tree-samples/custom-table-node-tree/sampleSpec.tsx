@@ -11,7 +11,6 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
       { name: "CustomTableNodeTree.tsx", import: import("!!raw-loader!./index") },
       { name: "index.scss", import: import("!!raw-loader!../index.scss") },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
-      { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },
     ],
     setup: TableNodeTreeSample.setup,
   });

@@ -11,7 +11,6 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
       { name: "CustomCheckboxesTreeSample.tsx", import: import("!!raw-loader!./index") },
       { name: "Common.tsx", import: import("!!raw-loader!../Common") },
       { name: "index.scss", import: import("!!raw-loader!../index.scss") },
-      { name: "GithubLink.tsx", import: import("!!raw-loader!../../../Components/GithubLink") },
     ],
     setup: CustomCheckboxesTreeSample.setup,
   });
