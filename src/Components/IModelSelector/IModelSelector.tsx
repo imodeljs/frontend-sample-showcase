@@ -43,7 +43,7 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
       <div>
         <span>Pick model to view it: </span>
         <select value={value} onChange={this._handleSelection}>
-          {entries};
+          {entries}
         </select>
       </div>
     );

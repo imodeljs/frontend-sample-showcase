@@ -2,7 +2,24 @@
   "editor.tabSize": 2,
   "files.associations": {
     ".nycrc": "json",
+    "certa.json": "jsonc"
   },
   "editor.formatOnSave": true,
   "editor.detectIndentation": false,
+  "cSpell.words": [
+    "Accu",
+    "Heatmap",
+    "Oidc",
+    "Reloadable",
+    "imodel",
+    "imodeljs"
+  ],
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "certa.json"
+      ],
+      "url": "./node_modules/@bentley/certa/certa.schema.json"
+    },
+  ],
 }

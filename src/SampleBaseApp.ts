@@ -23,18 +23,17 @@ export interface SampleContext {
 export class SampleBaseApp {
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
 
-  public static async startup() {
+  public static async startup(options?: IModelAppOptions) {
 
-    const opts: IModelAppOptions = {
+    const opts: IModelAppOptions = Object.assign({
       tileAdmin: TileAdmin.create({ useProjectExtents: false }),
       notifications: new ShowcaseNotificationManager(),
       toolAdmin: ShowcaseToolAdmin.initialize(),
-    };
-
-    await IModelApp.startup(opts);
+    }, options);
 
     // initialize OIDC
     await SampleBaseApp.initializeOidc();
+    await IModelApp.startup(opts);
 
     // contains various initialization promises which need
     // to be fulfilled before the app is ready

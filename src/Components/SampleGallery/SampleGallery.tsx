@@ -28,7 +28,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, {}> {
     const isChecked = this.props.selected === entry.value;
 
     return (
-      <>
+      <React.Fragment key={entry.value}>
         <label className="card-radio-btn">
           {entry.label}
           <input type="radio" name="sample-gallery" className="card-input-element d-none" id={entry.value} checked={isChecked} onChange={this._onCardSelected} />
@@ -36,7 +36,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, {}> {
             <img src={entry.image} alt={entry.value} />
           </div>
         </label>
-      </>
+      </React.Fragment>
     );
   }
 
