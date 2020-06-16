@@ -11,7 +11,7 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider";
-import { KeySet } from "@bentley/presentation-common";
+import { KeySet, Field } from "@bentley/presentation-common";
 
 export function getPropertyFormattingSpec(): SampleSpec {
   return ({
@@ -19,8 +19,12 @@ export function getPropertyFormattingSpec(): SampleSpec {
     label: "Property Formatting",
     image: "zoom-to-elements-thumbnail.png",
     setup: async (iModelName: string) => {
+      PropertyFormattingAPI.addSelectionListener();
       return <PropertyFormattingUI iModelName={iModelName} />;
     },
+    teardown: async () => {
+      PropertyFormattingAPI.removeSelectionListener();
+    }
   });
 }
 
@@ -49,6 +53,36 @@ you to supply a ClientRequestContext. You should have one of these that you used
 */
 
 class PropertyFormattingAPI {
+  public static async addSelectionListener() {
+    Presentation.selection.selectionChange.addListener(PropertyFormattingAPI._onSelectionChanged);
+  }
+
+  public static async removeSelectionListener() {
+    Presentation.selection.selectionChange.removeListener(PropertyFormattingAPI._onSelectionChanged);
+  }
+
+  private static _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
+    const selection = selectionProvider.getSelection(evt.imodel, evt.level);
+    const keys = new KeySet(selection);
+    const requestContext = { imodel: evt.imodel, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
+    const descriptor = await Presentation.presentation.getContentDescriptor(requestContext, "Grid", keys, undefined);
+
+    if (undefined === descriptor)
+      return;
+
+    const content = await Presentation.presentation.getContent(requestContext, descriptor, keys);
+
+    if (undefined === content)
+      return;
+
+    /*
+    descriptor.fields.forEach((f: Field) => {
+      content.contentSet.find()
+    });
+    */
+    console.log(content);
+  }
+
   public static async formatProperties(elementIds: string[], imodel: IModelConnection) {
   }
 }
@@ -61,7 +95,6 @@ interface PropertyFormattingProps {
 /** React state */
 interface PropertyFormattingState {
   imodel?: IModelConnection;
-  elementsAreSelected: boolean;
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -70,28 +103,6 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
     super(props, context);
-    this.state = {
-      elementsAreSelected: false,
-    };
-
-    // subscribe for unified selection changes
-    Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
-  }
-
-  private _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
-    const selection = selectionProvider.getSelection(evt.imodel, evt.level);
-    this.setState({ elementsAreSelected: !selection.isEmpty });
-
-    const keys = selection as KeySet;
-    const requestContext = { imodel: this.state.imodel!, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
-    const descriptor = await Presentation.presentation.getContentDescriptor(requestContext, "Grid", keys, undefined);
-
-    if (undefined === descriptor)
-      return;
-
-    const content = await Presentation.presentation.getContent(requestContext, descriptor, keys);
-
-    console.log(content);
   }
 
   private onIModelReady = (imodel: IModelConnection) => {
