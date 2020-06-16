@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { ViewState } from "@bentley/imodeljs-frontend";
-import { SvgPath } from "@bentley/ui-core";
 import {
   ContentGroup,
   CoreTools,
@@ -32,9 +31,11 @@ export class SampleFrontstage extends FrontstageProvider {
       {
         contents: [
           {
+            id: "primaryContent",
             classId: IModelViewportControl,
             applicationData: {
-              iModelConnection: UiFramework.getIModelConnection(),
+              viewState: UiFramework.getDefaultViewState,
+              iModelConnection: UiFramework.getIModelConnection,
             },
           },
         ],
@@ -44,6 +45,7 @@ export class SampleFrontstage extends FrontstageProvider {
 
     return (
       <Frontstage id="SampleFrontstage"
+        version={1.0}
         defaultTool={CoreTools.selectElementCommand}
         defaultLayout="SingleContent"
         contentGroup={myContentGroup}
