@@ -9,7 +9,6 @@ import {
 } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import { GithubLink } from "../../../Components/GithubLink";
 import { StartupComponent } from "../../../Components/Startup/Startup";
 
 const PAGING_SIZE = 20;
@@ -26,8 +25,7 @@ export class UnifiedSelectionTree extends React.Component<{ iModelName: string }
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>In this example tree is rendered as a multi-column tree.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/custom-table-node-tree" />
+            <span>Data in this tree is loaded using Presentation rules.</span>
           </div>
         </div>
       </>
@@ -105,9 +103,6 @@ export function PresentationTree(props: PresentationTreeProps) {
   const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
 
   return <>
-    <div className="instructions">
-      Data in this tree is loaded using Presentation rules.
-    </div>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}

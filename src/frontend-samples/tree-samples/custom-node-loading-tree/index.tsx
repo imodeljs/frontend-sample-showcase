@@ -14,7 +14,6 @@ import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
 import { SampleDataProvider } from "../Common";
-import { GithubLink } from "../../../Components/GithubLink";
 import { StartupComponent } from "../../../Components/Startup/Startup";
 
 const PAGING_SIZE = 20;
@@ -31,8 +30,8 @@ export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: s
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>In this example tree is rendered as a multi-column tree.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/custom-table-node-tree" />
+            <span>Data in this tree is loaded using two data providers: 'Presentation Hierarchy' nodes are loaded using Presentation rules
+            and 'In Memory Hierarchy' nodes are loaded from memory.</span>
           </div>
         </div>
       </>
@@ -129,10 +128,6 @@ export function CustomNodeLoadingTree(props: CustomNodeLoadingTreeProps) {
   const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
 
   return <>
-    <div className="instructions">
-      Data in this tree is loaded using two data providers: 'Presentation Hierarchy' nodes are loaded using Presentation rules
-      and 'In Memory Hierarchy' nodes are loaded from memory.
-    </div>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}

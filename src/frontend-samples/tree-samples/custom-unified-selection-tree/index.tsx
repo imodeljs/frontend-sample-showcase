@@ -10,7 +10,6 @@ import { Ruleset, KeySet, Keys, InstanceKey, Key, NodeKey } from "@bentley/prese
 import { SelectionChangeType } from "@bentley/presentation-frontend";
 import { useDisposable } from "@bentley/ui-core";
 
-import { GithubLink } from "../../../Components/GithubLink";
 import { StartupComponent } from "../../../Components/Startup/Startup";
 
 const PAGING_SIZE = 20;
@@ -27,8 +26,8 @@ export class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelNa
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>In this example tree is rendered as a multi-column tree.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/custom-table-node-tree" />
+            <span>This tree shows ECClasses and their ECProperties. Selecting an ECClass or its ECProperty puts the class to unified selection storage.
+            Also, whenever an ECClass is added to unified selection storage, the tree shows it and its properties as selected.</span>
           </div>
         </div>
       </>
@@ -107,10 +106,6 @@ export function CustomUnifiedSelectionTree(props: CustomUnifiedSelectionTreeProp
   const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
 
   return <>
-    <div className="instructions">
-      This tree shows ECClasses and their ECProperties. Selecting an ECClass or its ECProperty puts the class to unified selection storage.
-      Also, whenever an ECClass is added to unified selection storage, the tree shows it and its properties as selected.
-    </div>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}

@@ -4,7 +4,7 @@ import { UnifiedSelectionTree } from ".";
 export function getUnifiedSelectionTreeSpec(): SampleSpec {
   return ({
     name: "unified-selection-tree-sample",
-    label: "Unified Selection Tree Sample",
+    label: "Unified Selection Tree",
     image: "custom-table-node-tree-thumbnail.png",
     files: [
       { name: "CustomNodeLoading.tsx", import: import("!!raw-loader!.") },
