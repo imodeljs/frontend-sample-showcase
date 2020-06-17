@@ -8,7 +8,6 @@ import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNode
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { GithubLink } from "../../../Components/GithubLink";
 import { StartupComponent } from "../../../Components/Startup/Startup";
 
 const PAGING_SIZE = 20;
@@ -26,7 +25,6 @@ export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: 
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>In this tree an icon defined in Presentation rules is rendered for each node.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/basic-tree" />
           </div>
         </div>
       </>
