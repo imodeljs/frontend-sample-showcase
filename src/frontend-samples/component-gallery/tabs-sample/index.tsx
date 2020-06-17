@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { GithubLink } from "../../../Components/GithubLink";
 import "../../../common/samples-common.scss";
 import "../CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
@@ -38,7 +37,6 @@ export class TabsList extends React.Component<{}> {
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Different styles of tabs that can be used in iModel.js applications</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/component-gallery/tabs-sample" />
           </div>
         </div>
       </>

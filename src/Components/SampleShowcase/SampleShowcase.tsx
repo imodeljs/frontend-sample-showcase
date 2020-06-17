@@ -4,11 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
+import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
-import { sampleManifest, SampleSpecGroup } from "../../sampleManifest";
-import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample/sampleSpec";
+import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from "../IModelSelector/IModelSelector";
 import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
 import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
@@ -49,22 +48,21 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   public componentDidMount() {
-    const defaultSampleSpec = getViewportOnlySpec();
+    const defaultGroup = sampleManifest[0].groupName;
+    const defaultSample = sampleManifest[0].samples[0].name;
     // tslint:disable-next-line no-floating-promises
-    this.setupNewSample(defaultSampleSpec.name);
+    this._onActiveSampleChange(defaultGroup, defaultSample);
+
+    document.documentElement.setAttribute("data-theme", "dark");
   }
 
-  private getActiveSampleGroup(): SampleSpecGroup {
-    return this._samples.find((entry: SampleSpecGroup) => entry.groupName === this.state.activeSampleGroup)!;
-  }
+  private getSampleByName(groupName: string, sampleName: string): SampleSpec | undefined {
+    const group = sampleManifest.find((v) => v.groupName === groupName);
 
-  private getSampleByName(name?: string): SampleSpec | undefined {
-    if (!name)
+    if (!group)
       return undefined;
 
-    const group = this.getActiveSampleGroup();
-
-    return group.samples.find((entry: SampleSpec) => entry.name === name)!;
+    return group.samples.find((v) => v.name === sampleName)!;
   }
 
   private getIModelList(sampleSpec: SampleSpec): string[] {
@@ -72,9 +70,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return customModelList ? customModelList : IModelSelector.defaultIModelList;
   }
 
-  private async setupNewSample(name: string) {
-    const newSampleSpec = this.getSampleByName(name);
-
+  private async setupNewSample(newSampleSpec?: SampleSpec) {
     if (undefined === newSampleSpec) {
       this.setState({ activeSampleSpec: newSampleSpec });
       return;
@@ -95,32 +91,22 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ activeSampleSpec: newSampleSpec, sampleUI, iModelName });
   }
 
-  private _onActiveSampleChange = (name: string) => {
+  private _switchActiveSample(newSample?: SampleSpec) {
     const oldSample = this.state.activeSampleSpec;
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
     // tslint:disable-next-line no-floating-promises
-    this.setupNewSample(name);
+    this.setupNewSample(newSample);
   }
 
-  private _onActiveGroupChange = (name: string) => {
-    const group = sampleManifest.find((e: SampleSpecGroup) => e.groupName === name);
-
-    if (undefined === group)
-      return;
-
-    this.setState({ activeSampleGroup: group.groupName }, () => this._onActiveSampleChange(group.samples[0].name));
-  }
-
-  private getGalleryList(): SampleGalleryEntry[] {
-    const group = this.getActiveSampleGroup();
-
-    return group.samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
+  private _onActiveSampleChange = (groupName: string, sampleName: string) => {
+    const newSampleSpec = this.getSampleByName(groupName, sampleName);
+    this._switchActiveSample(newSampleSpec);
   }
 
   private onIModelChange = (iModelName: string) => {
-    this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleSpec!.name));
+    this.setState({ iModelName }, () => this._switchActiveSample(this.state.activeSampleSpec!));
   }
 
   private onEditorButtonClick() {
@@ -154,7 +140,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
             </div>
           </SplitScreen>
         </SplitScreen>
-        <SampleGallery entries={this.getGalleryList()} group={this.state.activeSampleGroup} selected={activeSampleName} onChange={this._onActiveSampleChange} onGroupChange={this._onActiveGroupChange} />
+        <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={activeSampleName} onChange={this._onActiveSampleChange} />
       </div>
     );
   }

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
@@ -87,7 +86,6 @@ export class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnl
         <div className="sample-ui">
           <div>
             <span>The picker below shows a list of 2D models in this iModel.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
             <hr />
             {modelSelector}
           </div>
