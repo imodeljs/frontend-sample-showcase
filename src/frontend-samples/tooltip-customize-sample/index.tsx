@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
@@ -205,7 +204,6 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string }, 
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tooltip-customize-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-3col">

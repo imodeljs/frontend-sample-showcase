@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "../index.scss";
-import { GithubLink } from "../../../Components/GithubLink";
 
 import {
   AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider,
@@ -24,7 +23,6 @@ export class CustomEventHandlerTreeSample extends React.Component<{}> {
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Selection in this tree is synchronized with checkboxes. Notice how selecting node checks checkbox and vice versa.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/custom-event-handler-tree" />
           </div>
         </div>
       </>

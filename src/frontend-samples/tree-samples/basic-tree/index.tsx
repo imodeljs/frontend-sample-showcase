@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "../index.scss";
-import { GithubLink } from "../../../Components/GithubLink";
 
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
 import { SampleDataProvider } from "../Common";
@@ -17,7 +16,6 @@ export class BasicTreeSample extends React.Component<{}> {
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>This is the default tree.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/basic-tree" />
           </div>
         </div>
       </>

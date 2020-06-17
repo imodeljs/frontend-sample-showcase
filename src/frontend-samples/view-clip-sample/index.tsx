@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
@@ -198,7 +197,6 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Use the options below to control the view clip.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/view-clip-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-3col even-3col">
