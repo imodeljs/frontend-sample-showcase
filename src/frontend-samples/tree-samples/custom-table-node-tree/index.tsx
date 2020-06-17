@@ -14,7 +14,6 @@ import { ExpansionToggle } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import "./TableNodeTree.scss";
-import { GithubLink } from "../../../Components/GithubLink";
 
 export class TableNodeTreeSample extends React.Component<{}> {
 
@@ -24,7 +23,6 @@ export class TableNodeTreeSample extends React.Component<{}> {
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>In this example tree is rendered as a multi-column tree.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/custom-table-node-tree" />
           </div>
         </div>
       </>

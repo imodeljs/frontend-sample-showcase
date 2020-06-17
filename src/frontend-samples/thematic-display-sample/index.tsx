@@ -8,7 +8,6 @@ import { ColorDef, ThematicDisplay, ThematicDisplayProps, ThematicGradientColorS
 import { IModelApp, IModelConnection, ScreenViewport, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
-import { GithubLink } from "../../Components/GithubLink";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 // cSpell:ignore imodels
@@ -280,7 +279,6 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
         <div className="sample-ui">
           <div>
             <span>Use the controls below to change the thematic display attributes.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/thematic" />
           </div>
           <hr></hr>
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>

@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
@@ -147,7 +146,6 @@ class HeatmapDecoratorUIComponent extends React.Component<HeatmapDecoratorUIProp
         <div className="sample-ui" >
           <div className="sample-instructions">
             <span>Use the options below to control the heatmap visualization.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/heatmap-decorator-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-2col">

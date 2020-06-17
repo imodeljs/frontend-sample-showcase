@@ -5,8 +5,6 @@
 import * as React from "react";
 import "../index.scss";
 
-import { GithubLink } from "../../../Components/GithubLink";
-
 import {
   ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps,
   useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes,
@@ -24,7 +22,6 @@ export class CustomCheckboxesTreeSample extends React.Component<{}> {
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
             <span>Checkbox for each node in this tree is rendered as an eye positioned at the left side.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/tree-samples/custom-checkboxes-tree" />
           </div>
         </div>
       </>
