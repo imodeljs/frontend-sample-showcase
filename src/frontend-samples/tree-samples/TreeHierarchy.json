@@ -1,0 +1,78 @@
+{
+  "$schema": "../node_modules/@bentley/presentation-common/Ruleset.schema.json",
+  "id": "TreeHierarchy",
+  "supportedSchemas": {
+    "schemaNames": [
+      "BisCore"
+    ]
+  },
+  "rules": [
+    {
+      "ruleType": "RootNodes",
+      "specifications": [
+        {
+          "specType": "InstanceNodesOfSpecificClasses",
+          "classes": [
+            {
+              "schemaName": "BisCore",
+              "classNames": [
+                "GeometricModel3d"
+              ]
+            }
+          ],
+          "arePolymorphic": true,
+          "groupByClass": false,
+          "groupByLabel": false
+        }
+      ]
+    },
+    {
+      "ruleType": "ChildNodes",
+      "condition": "ParentNode.IsOfClass(\"GeometricModel3d\", \"BisCore\")",
+      "specifications": [
+        {
+          "specType": "RelatedInstanceNodes",
+          "relationshipPaths": [
+            {
+              "relationship": {
+                "schemaName": "BisCore",
+                "className": "ModelContainsElements"
+              },
+              "direction": "Forward",
+              "targetClass": {
+                "schemaName": "BisCore",
+                "className": "GeometricElement3d"
+              }
+            }
+          ],
+          "groupByClass": false,
+          "groupByLabel": false
+        }
+      ]
+    },
+    {
+      "ruleType": "ChildNodes",
+      "condition": "ParentNode.IsOfClass(\"GeometricElement3d\", \"BisCore\")",
+      "specifications": [
+        {
+          "specType": "RelatedInstanceNodes",
+          "relationshipPaths": [
+            {
+              "relationship": {
+                "schemaName": "BisCore",
+                "className": "ElementOwnsChildElements"
+              },
+              "direction": "Forward",
+              "targetClass": {
+                "schemaName": "BisCore",
+                "className": "GeometricElement3d"
+              }
+            }
+          ],
+          "groupByClass": false,
+          "groupByLabel": false
+        }
+      ]
+    }
+  ]
+}
