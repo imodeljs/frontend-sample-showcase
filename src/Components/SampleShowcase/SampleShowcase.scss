@@ -5,12 +5,11 @@
 .showcase {
   height: 100vh;
   display: flex;
-  flex-direction: column;
 }
 
 .sample-content {
-  flex: 1; 
-  overflow-y: scroll;
+  height: 100%;
+  width: 100%;
 }
 
 .SplitPane {
