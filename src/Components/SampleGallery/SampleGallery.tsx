@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleGallery.scss";
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
-import { sampleManifest, SampleSpec, SampleSpecGroup } from "../../sampleManifest";
+import { SampleSpec, SampleSpecGroup } from "../../sampleManifest";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];
@@ -29,12 +29,23 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     super(props, context);
 
     this.state = {
-      expandedGroups: (sampleManifest.map(this.mapPred)),
+      expandedGroups: (this.props.samples.map(this.mapPred, this)),
     };
   }
 
-  private mapPred(val: SampleSpecGroup, index: number): ExpandedState {
-    return { name: val.groupName, expanded: 0 === index };
+  public componentDidUpdate() {
+    /* NEEDSWORK:
+        This is here so that the correct group is expanded when the gallery opens for the first time.
+        Need this because if the sample is specified in the url then it might not be in the first group.
+        Doing this in the constructor or in DidMount doesn't work because this.props.group === ""
+        Doing it here has a side effect that you can't close the group with the active sample
+        */
+    if (!this._groupIsExpanded(this.props.group))
+      this._toggleGroupIsExpanded(this.props.group);
+  }
+
+  private mapPred(val: SampleSpecGroup): ExpandedState {
+    return { name: val.groupName, expanded: false };
   }
 
   private _idFromNames(sample: string, group: string): string {
