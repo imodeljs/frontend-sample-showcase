@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DrawingViewState, IModelConnection, SpatialViewState, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
+import { DrawingViewState, Environment, IModelConnection, SpatialViewState, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Id64, Id64String } from "@bentley/bentleyjs-core";
 
 export class ViewSetup {
@@ -58,6 +58,11 @@ export class ViewSetup {
       const displayStyle = viewState3d.getDisplayStyle3d();
 
       displayStyle.changeBackgroundMapProps({ useDepthBuffer: true });
+
+      const environment = new Environment();
+      environment.sky.display = true;
+      environment.ground.display = false;
+      displayStyle.environment = environment;
     }
 
     return viewState;
