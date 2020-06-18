@@ -2,6 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { ColorDef } from "@bentley/imodeljs-common";
 import { DrawingViewState, Environment, IModelConnection, SpatialViewState, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Id64, Id64String } from "@bentley/bentleyjs-core";
 
@@ -59,10 +60,13 @@ export class ViewSetup {
 
       displayStyle.changeBackgroundMapProps({ useDepthBuffer: true });
 
-      const environment = new Environment();
-      environment.sky.display = true;
-      environment.ground.display = false;
-      displayStyle.environment = environment;
+      // Enable the sky-box, but override the ugly brown color.
+      displayStyle.environment = new Environment({
+        sky: {
+          display: true,
+          nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
+        },
+      });
     }
 
     return viewState;
