@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
@@ -194,7 +193,6 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string }, Marker
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Use the options below to control the marker pins.  Click a marker to open a menu of options.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/marker-pin-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-2col">

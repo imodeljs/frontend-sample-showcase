@@ -5,26 +5,25 @@
 .sample-tree {
   padding-left: 25%;
   height: 100%;
-  background-color: white;
   right: 1%;
   top: 30%;
   bottom: 3%;
   left: 60%;
-  border-color: grey;
-  border-style: solid;
-  border-width: 2px;
   display: flex;
   flex-direction: column;
-
-  .instructions {
-    background-origin: border-box;
-    background: rgb(255, 252, 216);
-    border-bottom: grey solid 2px;
-    padding: 5px;
-  }
+  color: white;
 
   .tree {
     height: 100%;
     width: 100%;
+    
+    .core-tree {
+      background-color: inherit;
+    }
+
+  }
+
+  .components-tree {
+    background-color: inherit;
   }
 }

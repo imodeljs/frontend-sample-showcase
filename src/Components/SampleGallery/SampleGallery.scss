@@ -9,7 +9,10 @@
   overflow-x: hidden;
 
   height: 100%;
-  min-width: 285px;
+
+  .uicore-expandable-blocks-block.is-expanded:before {
+    background: none;
+  }
 }
 
 .gallery-card-block {
@@ -21,6 +24,7 @@
     background-color: #333 !important;
   }
   .header {
+    width: 260px;
     background-color: #333 !important;
   }
 }

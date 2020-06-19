@@ -9,6 +9,11 @@
   height: 100%;
   width: 100%;
 
+  .core-tree {
+    height: 100%;
+    overflow-y: hidden;
+  }
+
   .tree-header {
     display: flex;
     width: 100%;
