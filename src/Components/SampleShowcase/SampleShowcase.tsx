@@ -39,34 +39,44 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   constructor(props?: any, context?: any) {
     super(props, context);
 
+    const names = this.getNamesFromURLParams();
+
     this.state = {
       iModelName: IModelSelector.defaultIModel,
-      activeSampleGroup: "",
-      activeSampleName: "",
+      activeSampleGroup: names.group,
+      activeSampleName: names.sample,
       showEditor: false,
     };
+
     this.onEditorButtonClick = this.onEditorButtonClick.bind(this);
   }
 
-  public componentDidMount() {
+  private getNamesFromURLParams(): { group: string, sample: string } {
     const urlParams = new URLSearchParams(window.location.search);
     const urlGroupName = urlParams.get("group");
     const urlSampleName = urlParams.get("sample");
+
     let namesAreValid = false;
-    let groupName = "";
-    let sampleName = "";
+    let group = "";
+    let sample = "";
+
     if (urlGroupName && urlSampleName) {
       namesAreValid = undefined !== this.getSampleByName(urlGroupName, urlSampleName);
-      groupName = urlGroupName;
-      sampleName = urlSampleName;
+      group = urlGroupName;
+      sample = urlSampleName;
     }
 
     if (!namesAreValid) {
-      groupName = this._samples[0].groupName;
-      sampleName = this._samples[0].samples[0].name;
+      group = this._samples[0].groupName;
+      sample = this._samples[0].samples[0].name;
     }
+
+    return { group, sample };
+  }
+
+  public componentDidMount() {
     // tslint:disable-next-line no-floating-promises
-    this._onActiveSampleChange(groupName, sampleName);
+    this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
 
     document.documentElement.setAttribute("data-theme", "dark");
   }

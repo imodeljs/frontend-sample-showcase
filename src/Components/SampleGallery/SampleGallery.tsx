@@ -33,19 +33,8 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     };
   }
 
-  public componentDidUpdate() {
-    /* NEEDSWORK:
-        This is here so that the correct group is expanded when the gallery opens for the first time.
-        Need this because if the sample is specified in the url then it might not be in the first group.
-        Doing this in the constructor or in DidMount doesn't work because this.props.group === ""
-        Doing it here has a side effect that you can't close the group with the active sample
-        */
-    if (!this._groupIsExpanded(this.props.group))
-      this._toggleGroupIsExpanded(this.props.group);
-  }
-
   private mapPred(val: SampleSpecGroup): ExpandedState {
-    return { name: val.groupName, expanded: false };
+    return { name: val.groupName, expanded: this.props.group === val.groupName };
   }
 
   private _idFromNames(sample: string, group: string): string {
