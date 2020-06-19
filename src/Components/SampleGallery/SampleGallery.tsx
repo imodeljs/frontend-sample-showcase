@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleGallery.scss";
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
-import { sampleManifest, SampleSpec, SampleSpecGroup } from "../../sampleManifest";
+import { SampleSpec, SampleSpecGroup } from "../../sampleManifest";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];
@@ -29,12 +29,12 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     super(props, context);
 
     this.state = {
-      expandedGroups: (sampleManifest.map(this.mapPred)),
+      expandedGroups: (this.props.samples.map(this.mapPred, this)),
     };
   }
 
-  private mapPred(val: SampleSpecGroup, index: number): ExpandedState {
-    return { name: val.groupName, expanded: 0 === index };
+  private mapPred(val: SampleSpecGroup): ExpandedState {
+    return { name: val.groupName, expanded: this.props.group === val.groupName };
   }
 
   private _idFromNames(sample: string, group: string): string {
