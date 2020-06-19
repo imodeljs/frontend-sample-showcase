@@ -10,6 +10,8 @@
 .sample-content {
   height: 100%;
   width: 100%;
+  background-color: var(--buic-background-control);
+  overflow-y: auto;
 }
 
 .SplitPane {
