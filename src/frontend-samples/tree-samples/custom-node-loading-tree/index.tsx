@@ -14,7 +14,7 @@ import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
 import { SampleDataProvider } from "../Common";
-import { StartupComponent } from "../../../Components/Startup/Startup";
+import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -49,21 +49,12 @@ export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: s
   }
 
   public render() {
-    if (this.state && this.state.iModel) {
-      return (
-        <>
-          {this.getControlPane()}
-          <div className="sample-tree">
-            <CustomNodeLoadingTree imodel={this.state.iModel}></CustomNodeLoadingTree>
-          </div>
-        </>
-      );
-    }
     return (
       <>
         {this.getControlPane()}
+        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
         <div className="sample-tree">
-          <StartupComponent iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></StartupComponent>
+          {(this.state && this.state.iModel) ? <CustomNodeLoadingTree imodel={this.state.iModel}></CustomNodeLoadingTree> : <></>}
         </div>
       </>
     );

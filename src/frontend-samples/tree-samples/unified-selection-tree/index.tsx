@@ -9,7 +9,7 @@ import {
 } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import { StartupComponent } from "../../../Components/Startup/Startup";
+import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -43,26 +43,16 @@ export class UnifiedSelectionTree extends React.Component<{ iModelName: string }
   }
 
   public render() {
-    if (this.state && this.state.iModel) {
-      return (
-        <>
-          {this.getControlPane()}
-          <div className="sample-tree">
-            <PresentationTree imodel={this.state.iModel}></PresentationTree>
-          </div>
-        </>
-      );
-    }
     return (
       <>
         {this.getControlPane()}
+        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
         <div className="sample-tree">
-          <StartupComponent iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></StartupComponent>
+          {(this.state && this.state.iModel) ? <PresentationTree imodel={this.state.iModel}></PresentationTree> : <></>}
         </div>
       </>
     );
   }
-
 }
 
 export interface PresentationTreeProps {

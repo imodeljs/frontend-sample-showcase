@@ -10,7 +10,7 @@ import { Ruleset, KeySet, Keys, InstanceKey, Key, NodeKey } from "@bentley/prese
 import { SelectionChangeType } from "@bentley/presentation-frontend";
 import { useDisposable } from "@bentley/ui-core";
 
-import { StartupComponent } from "../../../Components/Startup/Startup";
+import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
 
 const PAGING_SIZE = 20;
 const RULESET_CLASSES: Ruleset = require("./Classes.json"); // tslint:disable-line: no-var-requires
@@ -45,21 +45,12 @@ export class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelNa
   }
 
   public render() {
-    if (this.state && this.state.iModel) {
-      return (
-        <>
-          {this.getControlPane()}
-          <div className="sample-tree">
-            <CustomUnifiedSelectionTree imodel={this.state.iModel}></CustomUnifiedSelectionTree>
-          </div>
-        </>
-      );
-    }
     return (
       <>
         {this.getControlPane()}
+        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
         <div className="sample-tree">
-          <StartupComponent iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></StartupComponent>
+          {(this.state && this.state.iModel) ? <CustomUnifiedSelectionTree imodel={this.state.iModel}></CustomUnifiedSelectionTree> : <></>}
         </div>
       </>
     );
