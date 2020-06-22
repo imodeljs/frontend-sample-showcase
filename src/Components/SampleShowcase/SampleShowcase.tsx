@@ -27,7 +27,7 @@ export interface SampleSpec {
 interface ShowcaseState {
   iModelName: string;
   activeSampleGroup: string;
-  activeSampleSpec?: SampleSpec;
+  activeSampleName: string;
   sampleUI?: React.ReactNode;
   showEditor: boolean;
 }
@@ -39,19 +39,44 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   constructor(props?: any, context?: any) {
     super(props, context);
 
+    const names = this.getNamesFromURLParams();
+
     this.state = {
       iModelName: IModelSelector.defaultIModel,
-      activeSampleGroup: this._samples[0].groupName,
+      activeSampleGroup: names.group,
+      activeSampleName: names.sample,
       showEditor: false,
     };
+
     this.onEditorButtonClick = this.onEditorButtonClick.bind(this);
   }
 
+  private getNamesFromURLParams(): { group: string, sample: string } {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlGroupName = urlParams.get("group");
+    const urlSampleName = urlParams.get("sample");
+
+    let namesAreValid = false;
+    let group = "";
+    let sample = "";
+
+    if (urlGroupName && urlSampleName) {
+      namesAreValid = undefined !== this.getSampleByName(urlGroupName, urlSampleName);
+      group = urlGroupName;
+      sample = urlSampleName;
+    }
+
+    if (!namesAreValid) {
+      group = this._samples[0].groupName;
+      sample = this._samples[0].samples[0].name;
+    }
+
+    return { group, sample };
+  }
+
   public componentDidMount() {
-    const defaultGroup = sampleManifest[0].groupName;
-    const defaultSample = sampleManifest[0].samples[0].name;
     // tslint:disable-next-line no-floating-promises
-    this._onActiveSampleChange(defaultGroup, defaultSample);
+    this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
 
     document.documentElement.setAttribute("data-theme", "dark");
   }
@@ -70,9 +95,11 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return customModelList ? customModelList : IModelSelector.defaultIModelList;
   }
 
-  private async setupNewSample(newSampleSpec?: SampleSpec) {
+  private async setupNewSample(groupName: string, sampleName: string) {
+
+    const newSampleSpec = this.getSampleByName(groupName, sampleName);
     if (undefined === newSampleSpec) {
-      this.setState({ activeSampleSpec: newSampleSpec });
+      this.setState({ activeSampleGroup: "", activeSampleName: "" });
       return;
     }
 
@@ -81,32 +108,34 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     if (newSampleSpec && newSampleSpec.setup) {
 
-      if (newSampleSpec !== this.state.activeSampleSpec) {
+      if (newSampleSpec.name !== this.state.activeSampleName) {
         iModelName = this.getIModelList(newSampleSpec)[0];
       }
-
       sampleUI = await newSampleSpec.setup(iModelName);
     }
 
-    this.setState({ activeSampleSpec: newSampleSpec, sampleUI, iModelName });
+    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
+      const params = new URLSearchParams();
+      params.append("group", groupName);
+      params.append("sample", sampleName);
+
+      const url = window.location;
+      const newUrl = url.protocol + "//" + url.host + "?" + params.toString();
+      window.history.replaceState(null, "Title", newUrl);
+    });
   }
 
-  private _switchActiveSample(newSample?: SampleSpec) {
-    const oldSample = this.state.activeSampleSpec;
+  private _onActiveSampleChange = (groupName: string, sampleName: string) => {
+    const oldSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
     // tslint:disable-next-line no-floating-promises
-    this.setupNewSample(newSample);
-  }
-
-  private _onActiveSampleChange = (groupName: string, sampleName: string) => {
-    const newSampleSpec = this.getSampleByName(groupName, sampleName);
-    this._switchActiveSample(newSampleSpec);
+    this.setupNewSample(groupName, sampleName);
   }
 
   private onIModelChange = (iModelName: string) => {
-    this.setState({ iModelName }, () => this._switchActiveSample(this.state.activeSampleSpec!));
+    this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName));
   }
 
   private onEditorButtonClick() {
@@ -114,9 +143,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   public render() {
-    const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
-    const modelList = this.state.activeSampleSpec ? this.getIModelList(this.state.activeSampleSpec) : null;
-    const files = this.state.activeSampleSpec ? this.state.activeSampleSpec.files : undefined;
+    const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+    const modelList = activeSample ? this.getIModelList(activeSample) : null;
+    const files = activeSample ? activeSample.files : undefined;
 
     return (
       <div className="showcase">
@@ -140,7 +169,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
             </div>
           </SplitScreen>
         </SplitScreen>
-        <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={activeSampleName} onChange={this._onActiveSampleChange} />
+        <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onActiveSampleChange} />
       </div>
     );
   }
