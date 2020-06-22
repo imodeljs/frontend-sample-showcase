@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { useVisibleTreeNodes, ControlledTree, SelectionMode, AbstractTreeNodeLoaderWithProvider, TreeNodeItem } from "@bentley/ui-components";
-import { usePresentationTreeNodeLoader, UnifiedSelectionTreeEventHandler, IPresentationTreeDataProvider } from "@bentley/presentation-components";
-import { Ruleset, KeySet, Keys, InstanceKey, Key, NodeKey } from "@bentley/presentation-common";
+import { AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeNodeItem, useVisibleTreeNodes } from "@bentley/ui-components";
+import { IPresentationTreeDataProvider, UnifiedSelectionTreeEventHandler, usePresentationTreeNodeLoader } from "@bentley/presentation-components";
+import { InstanceKey, Key, Keys, KeySet, NodeKey, Ruleset } from "@bentley/presentation-common";
 import { SelectionChangeType } from "@bentley/presentation-frontend";
 import { useDisposable } from "@bentley/ui-core";
 
@@ -180,4 +180,3 @@ class CustomUnifiedSelectionHandler extends UnifiedSelectionTreeEventHandler {
     }, []);
   }
 }
-

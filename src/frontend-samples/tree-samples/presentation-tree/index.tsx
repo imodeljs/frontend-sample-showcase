@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import {
-  useVisibleTreeNodes, ControlledTree, SelectionMode, useTreeEventsHandler, PagedTreeNodeLoader, TreeNodeItem, TreeModelSource,
-  LoadedNodeHierarchy, TreeModelNode, TreeModelRootNode, isTreeModelNode, PageOptions, DelayLoadedTreeNodeItem, TreeDataProvider,
-} from "@bentley/ui-components";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";

@@ -5,10 +5,11 @@
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import {
-  useVisibleTreeNodes, ControlledTree, SelectionMode, useTreeEventsHandler, PagedTreeNodeLoader, TreeNodeItem, TreeModelSource,
-  LoadedNodeHierarchy, TreeModelNode, TreeModelRootNode, isTreeModelNode, PageOptions, DelayLoadedTreeNodeItem, TreeDataProvider,
+  ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions,
+  SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode,
+  TreeModelSource, TreeNodeItem, useTreeEventsHandler, useVisibleTreeNodes,
 } from "@bentley/ui-components";
-import { PresentationTreeDataProvider, IPresentationTreeDataProvider } from "@bentley/presentation-components";
+import { IPresentationTreeDataProvider, PresentationTreeDataProvider } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";

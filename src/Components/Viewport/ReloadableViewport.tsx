@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { StartupComponent } from "../Startup/Startup";
+import { ReloadableConnection } from "../ReloadableComponent/ReloadableConnection";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
 
@@ -34,7 +34,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     let ui: React.ReactNode;
 
     if (!this.state.imodel || !this.state.viewState)
-      ui = <StartupComponent iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />;
+      ui = <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />;
     else
       ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} />;
 
