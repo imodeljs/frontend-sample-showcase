@@ -5,9 +5,9 @@ export function getPresentationTreeSpec(): SampleSpec {
   return ({
     name: "presetation-tree-sample",
     label: "Presentation Tree",
-    image: "custom-table-node-tree-thumbnail.png",
+    image: "presentation-tree-thumbnail.png",
     files: [
-      { name: "CustomNodeLoading.tsx", import: import("!!raw-loader!.") },
+      { name: "PresentationTreeSample.tsx", import: import("!!raw-loader!.") },
       { name: "index.scss", import: import("!!raw-loader!../index.scss") },
     ],
     setup: PresentationTreeSample.setup,
