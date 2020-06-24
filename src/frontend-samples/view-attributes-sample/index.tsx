@@ -142,7 +142,7 @@ class ViewAttributesApp {
  *********************************************************************************************/
 
 /** A React component that renders the UI specific for this sample */
-export class ViewAttributesUI extends React.Component<{ iModelName: string }, AttrValues> {
+export class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, AttrValues> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -272,6 +272,8 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string }, At
           <div>
             <span>Use the controls below to change the view attributes.</span>
           </div>
+          <hr></hr>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
             {this.createRenderModePicker("Render Mode", "Controls the render mode.")}

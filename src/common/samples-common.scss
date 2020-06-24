@@ -3,21 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 .model-selector {
-  display: block;
-  float: left;
-  background-origin: border-box;
-  background: rgb(255, 252, 216);
-  top: 3%;
-  left: 45%;
-  position: absolute;
   -webkit-transition: all 500ms ease;
   -o-transition: all 500ms ease;
   transition: all 500ms ease;
   cursor: pointer;
-  border-radius: 5px;
-  border-color: black;
-  border-style: solid;
-  padding: 10px;
 }
 
 .sample-ui {
@@ -35,8 +24,8 @@
   cursor: pointer;
   border-radius: 5px;
   border-color: var(--buic-foreground-body);
-  border-style: solid;
   padding: 10px;
+  border-style: solid;
 }
 
 .sample-instructions {
