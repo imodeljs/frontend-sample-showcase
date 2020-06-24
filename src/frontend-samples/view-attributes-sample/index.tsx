@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { GithubLink } from "../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { Environment, IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
@@ -272,7 +271,6 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string }, At
         < div className="sample-ui" >
           <div>
             <span>Use the controls below to change the view attributes.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/view-flags-sample" />
           </div>
           <hr></hr>
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>

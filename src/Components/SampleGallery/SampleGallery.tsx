@@ -5,62 +5,105 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleGallery.scss";
-import { VerticalTabs } from "@bentley/ui-core";
-import { sampleManifest, SampleSpecGroup } from "../../sampleManifest";
-
-export interface SampleGalleryEntry {
-  image: string;
-  value: string;
-  label: string;
-}
+import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
+import { SampleSpec, SampleSpecGroup } from "../../sampleManifest";
 
 interface SampleGalleryProps {
-  entries: SampleGalleryEntry[];
+  samples: SampleSpecGroup[];
   group: string;
   selected: string;
-  onChange: ((value: string) => void);
-  onGroupChange: ((value: string) => void);
+  onChange: ((group: string, sample: string) => void);
 }
 
-export class SampleGallery extends React.Component<SampleGalleryProps, {}> {
+interface ExpandedState {
+  name: string;
+  expanded: boolean;
+}
+
+interface SampleGalleryState {
+  expandedGroups: ExpandedState[];
+}
+
+export class SampleGallery extends React.Component<SampleGalleryProps, SampleGalleryState> {
+  constructor(props?: any, context?: any) {
+    super(props, context);
+
+    this.state = {
+      expandedGroups: (this.props.samples.map(this.mapPred, this)),
+    };
+  }
+
+  private mapPred(val: SampleSpecGroup): ExpandedState {
+    return { name: val.groupName, expanded: this.props.group === val.groupName };
+  }
+
+  private _idFromNames(sample: string, group: string): string {
+    return sample + "#" + group;
+  }
+
+  private _namesFromId(idString: string): { sampleName: string, groupName: string } {
+    const subStrings = idString.split("#");
+    return { sampleName: subStrings[0], groupName: subStrings[1] };
+  }
 
   private _onCardSelected = (event: any) => {
-    this.props.onChange(event.target.id);
+    const names = this._namesFromId(event.target.id);
+    this.props.onChange(names.groupName, names.sampleName);
   }
 
-  private _onGroupSelected = (index: number) => {
-    this.props.onGroupChange(sampleManifest[index].groupName);
-  }
-
-  private createElementsForCard(entry: SampleGalleryEntry) {
-    const isChecked = this.props.selected === entry.value;
+  private createElementsForSample(sample: SampleSpec, groupName: string) {
+    const isChecked = this.props.selected === sample.name;
+    const idString = this._idFromNames(sample.name, groupName);
 
     return (
-      <React.Fragment key={entry.value}>
-        <label className="card-radio-btn">
-          {entry.label}
-          <input type="radio" name="sample-gallery" className="card-input-element d-none" id={entry.value} checked={isChecked} onChange={this._onCardSelected} />
-          <div className="card card-body">
-            <img src={entry.image} alt={entry.value} />
-          </div>
-        </label>
-      </React.Fragment>
+      <label className="gallery-card-radio-btn">
+        <span>{sample.label}</span>
+        <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
+        <div className="gallery-card gallery-card-body">
+          <img src={sample.image} alt={sample.name} />
+        </div>
+      </label>
+    );
+  }
+
+  private _groupIsExpanded(name: string): boolean {
+    const entry = this.state.expandedGroups.find((v) => name === v.name);
+
+    if (undefined === entry)
+      return false;
+
+    return entry.expanded;
+  }
+
+  private _toggleGroupIsExpanded(name: string) {
+    const newState = this.state.expandedGroups;
+    const entry = newState.find((v) => name === v.name);
+
+    if (undefined === entry)
+      return;
+
+    entry.expanded = !entry.expanded;
+
+    this.setState({ expandedGroups: newState });
+  }
+
+  private createElementsForGroup(group: SampleSpecGroup) {
+    const isExpanded = this._groupIsExpanded(group.groupName);
+    const onClick = () => { this._toggleGroupIsExpanded(group.groupName); };
+
+    return (
+      <ExpandableBlock className="gallery-card-block" title={group.groupName} isExpanded={isExpanded} onClick={onClick}>
+        {group.samples.map((sample: SampleSpec) => this.createElementsForSample(sample, group.groupName))}
+      </ExpandableBlock>
     );
   }
 
   public render() {
-    const groupIndex = sampleManifest.findIndex((e: SampleSpecGroup) => e.groupName === this.props.group);
-
     return (
       <>
-        <div className="sample-gallery">
-          <div className="sample-group-tabs">
-            <VerticalTabs labels={sampleManifest.map((e: SampleSpecGroup) => e.groupName)} activeIndex={groupIndex} onClickLabel={this._onGroupSelected} />
-          </div>
-          <div className="card-radio">
-            {this.props.entries.map((entry: SampleGalleryEntry) => this.createElementsForCard(entry))}
-          </div>
-        </div>
+        <ExpandableList className="gallery-card-radio" singleExpandOnly={false} defaultActiveBlock={0}>
+          {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
+        </ExpandableList>
       </>
     );
   }
