@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { GithubLink } from "../../Components/GithubLink";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import "../../common/samples-common.scss";
 
@@ -22,7 +21,6 @@ export class ViewportOnlyUI extends React.Component<{ iModelName: string }, {}> 
         <div className="sample-ui">
           <div>
             <span>Use the toolbar at the right to navigate the model.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/viewer-only-sample" />
           </div>
         </div>
       </>
