@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
-import { Environment, IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { Environment, IModelApp, IModelConnection, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
@@ -31,9 +31,7 @@ interface AttrValues {
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 class ViewAttributesApp {
 
-  public static getAttrValues(): AttrValues {
-    const vp = IModelApp.viewManager.selectedView!;
-
+  public static getAttrValues(vp: Viewport): AttrValues {
     return {
       renderMode: ViewAttributesApp.getRenderModel(vp),
       acs: ViewAttributesApp.getViewFlag(vp, ViewFlag.ACS),
@@ -140,24 +138,39 @@ class ViewAttributesApp {
 /*
  * From here down is the implementation of the UI for this sample.
  *********************************************************************************************/
+/** The React state for this UI component */
+interface ViewAttributesState {
+  vp?: Viewport;
+  attrValues: AttrValues;
+}
 
 /** A React component that renders the UI specific for this sample */
-export class ViewAttributesUI extends React.Component<{ iModelName: string }, AttrValues> {
+export class ViewAttributesUI extends React.Component<{ iModelName: string }, ViewAttributesState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
     super(props, context);
-    this.state = ViewAttributesApp.getAttrValues();
+    this.state = {
+      attrValues: {
+        renderMode: RenderMode.SmoothShade,
+        acs: false,
+        cameraOn: false,
+        grid: false,
+        hiddenEdges: false,
+        monochrome: false,
+        shadows: false,
+        skybox: false,
+        visibleEdges: false,
+      },
+    };
   }
 
   // Update the state of the sample react component by querying the API.
   private updateState() {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === this.state.vp)
       return;
 
-    this.setState(ViewAttributesApp.getAttrValues());
+    this.setState({ attrValues: ViewAttributesApp.getAttrValues(this.state.vp) });
   }
 
   // This common function is used to create the react components for each row of the UI.
@@ -172,9 +185,7 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string }, At
 
   // Handle changes to the render mode.
   private _onChangeRenderMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === this.state.vp)
       return;
 
     let renderMode: RenderMode;
@@ -187,7 +198,7 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string }, At
       case "Wireframe": { renderMode = RenderMode.Wireframe; break; }
     }
 
-    ViewAttributesApp.setRenderMode(vp, renderMode);
+    ViewAttributesApp.setRenderMode(this.state.vp, renderMode);
     this.updateState();
   }
 
@@ -206,44 +217,38 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string }, At
 
   // Handle changes to the skybox toggle.
   private _onChangeSkyboxToggle = (checked: boolean) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === this.state.vp)
       return;
 
-    ViewAttributesApp.setSkyboxOnOff(vp, checked);
+    ViewAttributesApp.setSkyboxOnOff(this.state.vp, checked);
   }
 
   // Create the react components for the skybox toggle row.
   private createSkyboxToggle(label: string, info: string) {
-    const element = <Toggle isOn={this.state.skybox} onChange={(checked: boolean) => this._onChangeSkyboxToggle(checked)} />;
+    const element = <Toggle isOn={this.state.attrValues.skybox} onChange={(checked: boolean) => this._onChangeSkyboxToggle(checked)} />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 
   // Handle changes to the camera toggle.
   private _onChangeCameraToggle = (checked: boolean) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === this.state.vp)
       return;
 
-    ViewAttributesApp.setCameraOnOff(vp, checked);
+    ViewAttributesApp.setCameraOnOff(this.state.vp, checked);
   }
 
   // Create the react components for the camera toggle row.
   private createCameraToggle(label: string, info: string) {
-    const element = <Toggle isOn={this.state.cameraOn} onChange={(checked: boolean) => this._onChangeCameraToggle(checked)} />;
+    const element = <Toggle isOn={this.state.attrValues.cameraOn} onChange={(checked: boolean) => this._onChangeCameraToggle(checked)} />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 
   // Handle changes to a view flag toggle.
   private _onChangeViewFlagToggle = (flag: ViewFlag, checked: boolean) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === this.state.vp)
       return;
 
-    ViewAttributesApp.setViewFlag(vp, flag, checked);
+    ViewAttributesApp.setViewFlag(this.state.vp, flag, checked);
     this.updateState();
   }
 
@@ -252,12 +257,12 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string }, At
     let flagValue: boolean;
 
     switch (flag) {
-      case ViewFlag.ACS: flagValue = this.state.acs; break;
-      case ViewFlag.Grid: flagValue = this.state.grid; break;
-      case ViewFlag.HiddenEdges: flagValue = this.state.hiddenEdges; break;
-      case ViewFlag.Monochrome: flagValue = this.state.monochrome; break;
-      case ViewFlag.Shadows: flagValue = this.state.shadows; break;
-      case ViewFlag.VisibleEdges: flagValue = this.state.visibleEdges; break;
+      case ViewFlag.ACS: flagValue = this.state.attrValues.acs; break;
+      case ViewFlag.Grid: flagValue = this.state.attrValues.grid; break;
+      case ViewFlag.HiddenEdges: flagValue = this.state.attrValues.hiddenEdges; break;
+      case ViewFlag.Monochrome: flagValue = this.state.attrValues.monochrome; break;
+      case ViewFlag.Shadows: flagValue = this.state.attrValues.shadows; break;
+      case ViewFlag.VisibleEdges: flagValue = this.state.attrValues.visibleEdges; break;
     }
 
     const element = <Toggle isOn={flagValue} onChange={(checked: boolean) => this._onChangeViewFlagToggle(flag, checked)} />;
@@ -289,11 +294,18 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string }, At
     );
   }
 
+  private onIModelReady = (imodel: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
+      const attrValues = ViewAttributesApp.getAttrValues(vp);
+      this.setState({ vp, attrValues });
+    });
+  }
+
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
         {this.getControlPane()}
       </>
     );
