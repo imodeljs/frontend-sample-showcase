@@ -7,14 +7,13 @@ import { /* BrowserAuthorizationCallbackHandler */ BrowserAuthorizationClient /*
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
 import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
 import { BentleyCloudRpcManager, BentleyCloudRpcParams, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
+import { MarkupApp } from "@bentley/imodeljs-markup";
 import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
-import { UiFramework } from "@bentley/ui-framework";
 import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
-import { AppState, AppStore } from "./AppState";
-import { AppUi } from "./Components/App/AppUi";
 import { NoSignInIAuthClient } from "./NoSignInIAuthClient";
+import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
 
 // Boiler plate code
 export interface SampleContext {
@@ -23,10 +22,9 @@ export interface SampleContext {
 }
 
 export class SampleBaseApp {
-  public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
-  private static _appState: AppState;
-  public static get store(): AppStore { return this._appState.store; }
+  private static _appStateManager: StateManager | undefined;
 
+  public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
   public static async startup() {
 
     const opts: IModelAppOptions = {
@@ -35,12 +33,17 @@ export class SampleBaseApp {
       toolAdmin: ShowcaseToolAdmin.initialize(),
     };
 
-    this._appState = new AppState();
-
     await IModelApp.startup(opts);
 
     // initialize OIDC
     await SampleBaseApp.initializeOidc();
+
+    // use new state manager that allows dynamic additions from extensions and snippets
+    if (!this._appStateManager) {
+      this._appStateManager = new StateManager({
+        frameworkState: FrameworkReducer,
+      });
+    }
 
     // contains various initialization promises which need
     // to be fulfilled before the app is ready
@@ -50,16 +53,18 @@ export class SampleBaseApp {
     initPromises.push(SampleBaseApp.initializeRpc());
 
     // initialize UiFramework
-    initPromises.push(UiFramework.initialize(this.store, IModelApp.i18n));
+    initPromises.push (UiFramework.initialize(undefined));
 
     // initialize Presentation
     initPromises.push(Presentation.initialize({
       activeLocale: IModelApp.i18n.languageList()[0],
     }));
 
+    // initialize Markup
+    initPromises.push(MarkupApp.initialize());
+
     // the app is ready when all initialization promises are fulfilled
     await Promise.all(initPromises);
-    AppUi.initialize();
 
   }
 

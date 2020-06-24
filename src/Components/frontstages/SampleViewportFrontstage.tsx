@@ -29,25 +29,11 @@ export class SampleFrontstage extends FrontstageProvider {
         version={1.0}
         defaultTool={CoreTools.selectElementCommand}
         defaultLayout="SingleContent"
-        contentGroup="CubeContentGroup"
+        contentGroup="singleIModelViewport"
         isInFooterMode={true}
         usage={StageUsage.General}
         applicationData={{ key: "value" }}
 
-        contentManipulationTools={
-          <Zone
-            widgets={[
-              <Widget isFreeform={true} element={this.getToolWidget()} />,
-            ]}
-          />
-        }
-        toolSettings={
-          <Zone
-            widgets={[
-              <Widget isToolSettings={true} />,
-            ]}
-          />
-        }
         viewNavigationTools={
           <Zone
             widgets={[
@@ -56,12 +42,6 @@ export class SampleFrontstage extends FrontstageProvider {
           />
         }
       />
-    );
-  }
-  /** Define a ToolWidget with Buttons to display in the TopLeft zone. */
-  private getToolWidget(): React.ReactNode {
-    return (
-      <BasicToolWidget/>
     );
   }
 

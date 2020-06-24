@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { GithubLink } from "../../Components/GithubLink";
+import "../viewport-frontstage-sample/node_modules/@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
+import { GithubLink } from "../../../Components/GithubLink";
 import "../../common/samples-common.scss";
 import { IModelConnection, IModelApp } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
