@@ -277,7 +277,6 @@ export class ViewAttributesUI extends React.Component<{ iModelName: string, iMod
           <div>
             <span>Use the controls below to change the view attributes.</span>
           </div>
-          <hr></hr>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>

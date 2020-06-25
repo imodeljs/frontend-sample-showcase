@@ -28,8 +28,8 @@ export class HeatmapDecoratorApp {
   public static range?: Range2d;
   public static height?: number;
 
-  public static async setup(iModelName: string): Promise<React.ReactNode> {
-    return <HeatmapDecoratorUIComponent iModelName={iModelName} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
+    return <HeatmapDecoratorUIComponent iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {
@@ -80,6 +80,7 @@ export class HeatmapDecoratorApp {
 /** React state of the Sample component */
 interface HeatmapDecoratorUIProps {
   iModelName: string;
+  iModelSelector: React.ReactNode;
 }
 
 interface HeatmapDecoratorUIState {
@@ -147,6 +148,7 @@ class HeatmapDecoratorUIComponent extends React.Component<HeatmapDecoratorUIProp
           <div className="sample-instructions">
             <span>Use the options below to control the heatmap visualization.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col">
             <span>Show Heatmap</span>

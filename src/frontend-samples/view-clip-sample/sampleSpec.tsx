@@ -15,8 +15,8 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipSample.tsx", import: import("!!raw-loader!./index") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: async (iModelName: string) => {
-      return <ViewClipUI iModelName={iModelName} />;
+    setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
+      return <ViewClipUI iModelName={iModelName} iModelSelector={iModelSelector} />;
     },
   });
 }

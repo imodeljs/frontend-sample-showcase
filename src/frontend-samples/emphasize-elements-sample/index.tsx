@@ -13,8 +13,8 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 export class EmphasizeElementsApp {
-  public static async setup(iModelName: string) {
-    return <EmphasizeElementsUI iModelName={iModelName} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <EmphasizeElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {
@@ -134,7 +134,7 @@ interface EmphasizeElementsState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class EmphasizeElementsUI extends React.Component<{ iModelName: string }, EmphasizeElementsState> {
+export class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -226,6 +226,7 @@ export class EmphasizeElementsUI extends React.Component<{ iModelName: string },
           <div className="sample-instructions">
             <span>Select one or more elements.  Click one of the Apply buttons.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-4col">
             <span>Emphasize</span>

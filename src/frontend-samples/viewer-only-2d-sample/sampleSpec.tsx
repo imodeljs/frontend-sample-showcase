@@ -18,8 +18,8 @@ export function getViewerOnly2dSpec(): SampleSpec {
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
     customModelList: [SampleIModels.House],
-    setup: async (iModelName: string) => {
-      return <ViewerOnly2dUI iModelName={iModelName} />;
+    setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
+      return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
     },
   });
 }

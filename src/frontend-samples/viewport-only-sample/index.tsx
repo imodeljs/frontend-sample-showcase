@@ -23,7 +23,6 @@ export class ViewportOnlyUI extends React.Component<{ iModelName: string, iModel
             { /* The instructions */}
             <span>Use the toolbar at the right to navigate the model.</span>
           </div>
-          <hr></hr>
           { /* The iModel selector */}
           {this.props.iModelSelector}
         </div>
