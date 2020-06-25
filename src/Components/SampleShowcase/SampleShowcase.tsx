@@ -127,7 +127,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
           this.setState({ sampleUI });
         }
       });
-      //sampleUI = await newSampleSpec.setup(iModelName);
     }
 
     this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, iModelName }, () => {
