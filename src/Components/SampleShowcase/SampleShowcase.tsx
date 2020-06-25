@@ -127,9 +127,10 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
           this.setState({ sampleUI });
         }
       });
+      //sampleUI = await newSampleSpec.setup(iModelName);
     }
 
-    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
+    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, iModelName }, () => {
       const params = new URLSearchParams();
       params.append("group", groupName);
       params.append("sample", sampleName);
