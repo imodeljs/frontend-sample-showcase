@@ -95,8 +95,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return customModelList ? customModelList : IModelSelector.defaultIModelList;
   }
 
-  private getIModelSelector(): React.ReactNode {
-    const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+  private getIModelSelector(sampleGroup: string, sampleName: string): React.ReactNode {
+    const activeSample = this.getSampleByName(sampleGroup, sampleName);
     const modelList = activeSample ? this.getIModelList(activeSample) : null;
     if (modelList && 1 < modelList.length)
       return (<div className="model-selector">
@@ -119,17 +119,11 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
       if (newSampleSpec.name !== this.state.activeSampleName) {
         iModelName = this.getIModelList(newSampleSpec)[0];
-
       }
-      this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName }, async () => {
-        if (newSampleSpec && newSampleSpec.setup) {
-          sampleUI = await newSampleSpec.setup(iModelName, this.getIModelSelector());
-          this.setState({ sampleUI });
-        }
-      });
+      sampleUI = await newSampleSpec.setup(iModelName, this.getIModelSelector(groupName, sampleName));
     }
 
-    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, iModelName }, () => {
+    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
       const params = new URLSearchParams();
       params.append("group", groupName);
       params.append("sample", sampleName);
