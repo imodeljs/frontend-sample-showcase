@@ -38,7 +38,7 @@ export interface SampleSpec {
   label: string;
   image: string;
   customModelList?: string[];
-  setup?: (iModelName: string) => Promise<React.ReactNode>;
+  setup?: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 

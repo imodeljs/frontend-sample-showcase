@@ -35,11 +35,11 @@ export class TooltipCustomizeApp {
     elemProperty: ElemProperty.Origin,
   };
 
-  public static async setup(iModelName: string) {
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     // ToolAdmin is typically initialized at application start.
     // See Notes at bottom of this file.
     ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin());
-    return <TooltipCustomizeUI iModelName={iModelName} />;
+    return <TooltipCustomizeUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {
@@ -137,7 +137,7 @@ class SampleToolAdmin extends ProxyToolAdmin {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class TooltipCustomizeUI extends React.Component<{ iModelName: string }, TooltipCustomizeSettings> {
+export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -205,6 +205,7 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string }, 
           <div className="sample-instructions">
             <span>Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-3col">
             <Toggle isOn={this.state.showImage} onChange={this._onChangeShowImage} />
