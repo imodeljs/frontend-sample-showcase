@@ -134,9 +134,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       params.append("group", groupName);
       params.append("sample", sampleName);
 
-      const url = window.location;
-      const newUrl = url.protocol + "//" + url.host + "?" + params.toString();
-      window.history.replaceState(null, "Title", newUrl);
+      window.history.replaceState(null, "", "?" + params.toString());
     });
   }
 
