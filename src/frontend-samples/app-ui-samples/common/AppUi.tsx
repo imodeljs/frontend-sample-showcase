@@ -2,10 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ConfigurableUiManager, ContentGroupProps, ContentLayoutProps, FrontstageManager } from "@bentley/ui-framework";
+import { ConfigurableUiManager, ContentGroupProps, ContentLayoutProps, FrontstageManager, IModelViewportControl } from "@bentley/ui-framework";
 import "./CubeContent";
 import { SampleFrontstage } from "../../../Components/frontstages/SampleFrontstage";
-import { IModelViewportControl } from "./IModelViewport";
 
 /**
  * Example Ui Configuration for an iModel.js App

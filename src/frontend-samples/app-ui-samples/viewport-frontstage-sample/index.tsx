@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { GithubLink } from "../../../Components/GithubLink";
 import { IModelApp, SelectionTool, } from "@bentley/imodeljs-frontend";
 
 import "../../../common/samples-common.scss";
@@ -19,13 +18,15 @@ export class ViewportFrontstageSample extends React.Component {
 
     return <ViewportFrontstageSample ></ViewportFrontstageSample>;
   }
+  public static teardown() {
+
+  }
   public getControlPane() {
     return (
       <>
         <div className="sample-ui">
           <div className="sample-instructions">
             <span>Press the lightbulb icon.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/Viewport-frontstage-sample" />
           </div>
           <hr></hr>
           <div>The lightbulb icon is an added tool button.</div>
@@ -40,6 +41,7 @@ export class ViewportFrontstageSample extends React.Component {
         return (
             <>
               <SampleAppUiComponent></SampleAppUiComponent>
+              {this.getControlPane()}
             </>
         );
     }
