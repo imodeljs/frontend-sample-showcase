@@ -50,6 +50,9 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
       _userInfo: { id: "MockId" },
     };
     this._accessToken = AccessToken.fromJson(tokenJson);
+
+    // Automatically renew if session exceeds 55 minutes.
+    setTimeout(() => { this.generateTokenString(userURL) }, (1000 * 60 * 55));
   }
 
   public async getAccessToken(): Promise<AccessToken> {
