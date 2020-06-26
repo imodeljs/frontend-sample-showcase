@@ -7,6 +7,7 @@ import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { StartupComponent } from "../Startup/Startup";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
+import { UiFramework } from "@bentley/ui-framework";
 
 export interface ReloadableViewportProps {
   iModelName: string;
@@ -54,5 +55,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
   private _onIModelReady = async (imodel: IModelConnection) => {
     const viewState = (this.props.getCustomViewState) ? await this.props.getCustomViewState(imodel) : await ViewSetup.getDefaultView(imodel);
     this.setState({ imodel, viewState }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel); });
+    UiFramework.setIModelConnection(imodel);
+    UiFramework.setDefaultViewState(viewState);
   }
 }

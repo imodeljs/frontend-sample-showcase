@@ -15,17 +15,18 @@ import {
 } from "@bentley/ui-framework";
 import { StageUsage } from "@bentley/ui-abstract";
 import * as React from "react";
+import { SmallStatusBarWidgetControl } from "../Widgets/SmallStatusBar";
 
 /**
  * Sample Frontstage for AppUi samples
  */
-export class SampleFrontstage extends FrontstageProvider {
+export class SampleViewportFrontstage extends FrontstageProvider {
 
   /** Define the Frontstage properties */
   public get frontstage(): React.ReactElement<FrontstageProps>  {
 
     return (
-      <Frontstage id="SampleFrontstage"
+      <Frontstage id="SampleViewportFrontstage"
         version={1.0}
         defaultTool={CoreTools.selectElementCommand}
         defaultLayout="SingleContent"
@@ -34,22 +35,36 @@ export class SampleFrontstage extends FrontstageProvider {
         usage={StageUsage.General}
         applicationData={{ key: "value" }}
 
-        viewNavigationTools={
+        contentManipulationTools={
           <Zone
             widgets={[
-              <Widget isFreeform={true} element={this.getNavigationWidget()} />,
+              <Widget isFreeform={true} element={<BasicToolWidget/>} />,
             ]}
           />
         }
+        toolSettings={
+          <Zone
+            widgets={[
+              <Widget isToolSettings={true} />,
+            ]}
+          />
+        }
+        viewNavigationTools={
+          <Zone
+            widgets={[
+              <Widget isFreeform={true} element={<BasicNavigationWidget/>} />,
+            ]}
+          />
+        }
+        statusBar={
+          < Zone
+            widgets={
+              [
+                <Widget isStatusBar={true} control={SmallStatusBarWidgetControl} />,
+              ]}
+          />
+        }
       />
-    );
-  }
-
-  /** Define a NavigationWidget with Buttons to display in the TopRight zone.
-   */
-  private getNavigationWidget(): React.ReactNode {
-    return (
-      <BasicNavigationWidget/>
     );
   }
 }

@@ -2,9 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ConfigurableUiManager, ContentGroupProps, ContentLayoutProps, FrontstageManager, IModelViewportControl } from "@bentley/ui-framework";
-import "./CubeContent";
-import { SampleFrontstage } from "../../../Components/frontstages/SampleFrontstage";
+import { ConfigurableUiManager, ContentGroupProps, ContentLayoutProps, FrontstageManager, IModelViewportControl, UiFramework } from "@bentley/ui-framework";
+import { SampleViewportFrontstage } from "../../Components/frontstages/SampleViewportFrontstage";
 
 /**
  * Example Ui Configuration for an iModel.js App
@@ -19,7 +18,7 @@ export class AppUi {
   }
   private static defineFrontstages() {
 
-    ConfigurableUiManager.addFrontstageProvider(new SampleFrontstage());
+    ConfigurableUiManager.addFrontstageProvider(new SampleViewportFrontstage());
     ConfigurableUiManager.loadContentLayouts(AppUi.getContentLayouts());
     ConfigurableUiManager.loadContentGroups(AppUi.getContentGroups());
   }
@@ -48,29 +47,18 @@ export class AppUi {
   }
 
   private static getContentGroups(): ContentGroupProps[] {
-    const cubeContentGroup: ContentGroupProps = {
-      id: "CubeContentGroup",
-      contents: [
-        {
-          classId: "CubeContent",
-          applicationData: { label: "Content 1", bgColor: "black" },
-        },
-      ],
-    };
-
     const singleIModelViewport: ContentGroupProps = {
       id: "singleIModelViewport",
       contents: [
         {
           classId: IModelViewportControl,
           id: "singleIModelView",
+          applicationData: { viewState: UiFramework.getDefaultViewState, iModelConnection: UiFramework.getIModelConnection},
         },
       ],
     };
 
-
     const contentGroups: ContentGroupProps[] = [];
-    contentGroups.push(cubeContentGroup);
     contentGroups.push(singleIModelViewport);
     return contentGroups;
   }

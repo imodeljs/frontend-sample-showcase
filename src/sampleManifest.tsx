@@ -33,8 +33,7 @@ import { getCustomCheckboxesTreeSpec } from "./frontend-samples/tree-samples/cus
 import { getCustomEventHandlerTreeSpec } from "./frontend-samples/tree-samples/custom-event-handler-tree/sampleSpec";
 import { getCustomTableNodeTreeSpec } from "./frontend-samples/tree-samples/custom-table-node-tree/sampleSpec";
 
-import { getBasicFrontstageSample } from "./frontend-samples/app-ui-samples/basic-frontstage-sample/sampleSpec";
-import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
+import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 
 export interface SampleSpec {
   name: string;
@@ -92,8 +91,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "AppUI", samples: [
-    getBasicFrontstageSample(),
-    getViewportFrontstageSample(),
+    getToolbarButtonSample(),
   ],
 },
 ];

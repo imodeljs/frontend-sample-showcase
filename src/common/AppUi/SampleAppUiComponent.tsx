@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 
-import { ColorTheme, ConfigurableUiContent, DragDropLayerRenderer, FrameworkVersion, SafeAreaContext, StateManager, ThemeManager, ToolbarDragInteractionContext } from "@bentley/ui-framework";
+import { ColorTheme, ConfigurableUiContent, DragDropLayerRenderer, FrameworkVersion, SafeAreaContext, StateManager, ThemeManager, ToolbarDragInteractionContext, UiFramework } from "@bentley/ui-framework";
 import { SafeAreaInsets } from "@bentley/ui-ninezone";
 import { Provider } from "react-redux";
 import { BeDragDropContext } from "@bentley/ui-components";
@@ -25,11 +25,12 @@ export class SampleAppUiComponent extends React.Component {
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {};
+    UiFramework.setColorTheme(ColorTheme.Dark);
   }
   public render(): JSX.Element {
     return (
       <Provider store={StateManager.store} >
-        <ThemeManager theme={ColorTheme.Dark}>
+        <ThemeManager>
           <BeDragDropContext>
             <SafeAreaContext.Provider value={SafeAreaInsets.All}>
               <ToolbarDragInteractionContext.Provider value={true}>

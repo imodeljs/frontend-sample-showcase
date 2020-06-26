@@ -6,24 +6,22 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp, SelectionTool, } from "@bentley/imodeljs-frontend";
 import { UiItemsManager } from "@bentley/ui-abstract";
-import { BasicToolbarButtonProvider } from "./BasicToolbarButtonProvider";
-import { UiFramework } from "@bentley/ui-framework";
+import { ToolbarButtonProvider } from "./ToolbarButtonProvider";
 import "../../../common/samples-common.scss";
-import { SampleAppUiComponent } from "../common/SampleAppUiComponent";
+import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
-export class BasicFrontstageSample extends React.Component {
-  public static uiProvider?: BasicToolbarButtonProvider;
+export class ToolbarButtonSample extends React.Component {
+  public static uiProvider?: ToolbarButtonProvider;
   public static async setup(_iModelName: string) {
     if (this.uiProvider === undefined)
-      this.uiProvider = new BasicToolbarButtonProvider();
+      this.uiProvider = new ToolbarButtonProvider();
     UiItemsManager.register(this.uiProvider);
 
-    await SampleAppUiComponent.initialize("SampleFrontstage");
+    await SampleAppUiComponent.initialize("SampleViewportFrontstage");
     IModelApp.toolAdmin.defaultToolId = SelectionTool.toolId;
-    UiFramework.setColorTheme("dark");
-    return <BasicFrontstageSample ></BasicFrontstageSample>;
+    return <ToolbarButtonSample ></ToolbarButtonSample>;
   }
   public static teardown() {
     if (this.uiProvider !== undefined)
@@ -33,7 +31,7 @@ export class BasicFrontstageSample extends React.Component {
     return (
       <>
         <div className="sample-ui">
-          <span>Fit View icon added to the tool bar.</span>
+          <span>Press the Lightbulb button tool at the top of the screen.</span>
         </div>
       </>
     );
