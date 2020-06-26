@@ -95,13 +95,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return customModelList ? customModelList : IModelSelector.defaultIModelList;
   }
 
-  private getIModelSelector(sampleGroup: string, sampleName: string): React.ReactNode {
-    const activeSample = this.getSampleByName(sampleGroup, sampleName);
-    const modelList = activeSample ? this.getIModelList(activeSample) : null;
-    if (modelList && 1 < modelList.length)
-      return (<div className="model-selector">
-        <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this.onIModelChange} />
-      </div>);
+  private getIModelSelector(iModelName: string, iModelList: string[]): React.ReactNode {
+    if (iModelList && 1 < iModelList.length)
+      return (
+        <div className="model-selector">
+          <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this.onIModelChange} />
+        </div>);
   }
 
   private async setupNewSample(groupName: string, sampleName: string) {
@@ -116,11 +115,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     let iModelName = this.state.iModelName;
 
     if (newSampleSpec && newSampleSpec.setup) {
+      const iModelList = this.getIModelList(newSampleSpec);
 
       if (newSampleSpec.name !== this.state.activeSampleName) {
-        iModelName = this.getIModelList(newSampleSpec)[0];
+        iModelName = iModelList[0];
       }
-      sampleUI = await newSampleSpec.setup(iModelName, this.getIModelSelector(groupName, sampleName));
+      sampleUI = await newSampleSpec.setup(iModelName, this.getIModelSelector(iModelName, iModelList));
     }
 
     this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
