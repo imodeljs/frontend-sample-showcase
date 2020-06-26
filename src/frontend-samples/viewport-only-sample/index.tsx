@@ -8,7 +8,7 @@ import "../../common/samples-common.scss";
 
 // cSpell:ignore imodels
 
-export class ViewportOnlyUI extends React.Component<{ iModelName: string }, {}> {
+export class ViewportOnlyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
 
   /** The sample's render method */
   public render() {
@@ -17,11 +17,14 @@ export class ViewportOnlyUI extends React.Component<{ iModelName: string }, {}> 
         { /* Viewport to display the iModel */}
         <ReloadableViewport iModelName={this.props.iModelName} />
 
-        { /* The instructions */}
+        { /* The control pane */}
         <div className="sample-ui">
           <div>
+            { /* The instructions */}
             <span>Use the toolbar at the right to navigate the model.</span>
           </div>
+          { /* The iModel selector */}
+          {this.props.iModelSelector}
         </div>
       </>
     );
