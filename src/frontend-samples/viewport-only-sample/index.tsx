@@ -6,8 +6,6 @@ import * as React from "react";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import "../../common/samples-common.scss";
 
-// cSpell:ignore imodels
-
 export class ViewportOnlyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
 
   /** The sample's render method */
@@ -19,11 +17,7 @@ export class ViewportOnlyUI extends React.Component<{ iModelName: string, iModel
 
         { /* The control pane */}
         <div className="sample-ui">
-          <div>
-            { /* The instructions */}
-            <span>Use the toolbar at the right to navigate the model.</span>
-          </div>
-          { /* The iModel selector */}
+          <span>Use the toolbar at the top-right to navigate the model.</span>
           {this.props.iModelSelector}
         </div>
       </>
