@@ -9,12 +9,15 @@ import { UiItemsManager } from "@bentley/ui-abstract";
 import { ToolbarButtonProvider } from "./ToolbarButtonProvider";
 import "../../../common/samples-common.scss";
 import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
+import { AppUi } from "../../../common/AppUi/AppUi";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
 export class ToolbarButtonSample extends React.Component {
   public static uiProvider?: ToolbarButtonProvider;
   public static async setup(_iModelName: string) {
+    AppUi.setIModelName(_iModelName);
+
     if (this.uiProvider === undefined)
       this.uiProvider = new ToolbarButtonProvider();
     UiItemsManager.register(this.uiProvider);

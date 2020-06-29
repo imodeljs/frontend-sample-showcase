@@ -3,27 +3,35 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { ConfigurableUiManager, ContentGroupProps, ContentLayoutProps, FrontstageManager, IModelViewportControl, UiFramework } from "@bentley/ui-framework";
+import { StartupComponentContentControl } from "./StartupComponentContentControl";
 import { SampleViewportFrontstage } from "../../Components/frontstages/SampleViewportFrontstage";
+import { StartupComponentFrontstage } from "../../Components/frontstages/StartupComponentFrontstage";
 
 /**
  * Example Ui Configuration for an iModel.js App
  */
 export class AppUi {
 
+  public static iModelName: string;
   // Initialize the ConfigurableUiManager
   public static initialize() {
     ConfigurableUiManager.initialize();
     AppUi.defineFrontstages();
-
   }
   private static defineFrontstages() {
 
+    ConfigurableUiManager.addFrontstageProvider(new StartupComponentFrontstage());
     ConfigurableUiManager.addFrontstageProvider(new SampleViewportFrontstage());
     ConfigurableUiManager.loadContentLayouts(AppUi.getContentLayouts());
     ConfigurableUiManager.loadContentGroups(AppUi.getContentGroups());
   }
 
+  public static setIModelName (iModelName: string) {
+    this.iModelName = iModelName;
+  }
   public static async setFrontstage(frontStageName: string) {
+    if (undefined === UiFramework.getIModelConnection())
+      await FrontstageManager.setActiveFrontstage("StartupComponentFrontstage");
     await FrontstageManager.setActiveFrontstage(frontStageName);
   }
 
@@ -58,8 +66,19 @@ export class AppUi {
       ],
     };
 
+    const startupComponent: ContentGroupProps = {
+      id: "startupComponent",
+      contents: [
+        {
+          classId: StartupComponentContentControl,
+          id: "SampleShowcase.StartupComponentControl",
+          applicationData: { iModelName: AppUi.iModelName},
+        },
+      ],
+    };
+
     const contentGroups: ContentGroupProps[] = [];
-    contentGroups.push(singleIModelViewport);
+    contentGroups.push(startupComponent, singleIModelViewport);
     return contentGroups;
   }
 }
