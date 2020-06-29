@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { MarkerPinsApp } from ".";
+import { MarkerPinApp } from "./MarkerPinApp";
 
 export function getMarkerPinSpec(): SampleSpec {
   return ({
@@ -17,7 +17,7 @@ export function getMarkerPinSpec(): SampleSpec {
       { name: "PlaceMarkerTool.tsx", import: import("!!raw-loader!./PlaceMarkerTool") },
       { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
     ],
-    setup: MarkerPinsApp.setup,
-    teardown: MarkerPinsApp.teardown,
+    setup: MarkerPinApp.setup,
+    teardown: MarkerPinApp.teardown,
   });
 }

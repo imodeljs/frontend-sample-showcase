@@ -14,7 +14,7 @@ import { RadioCard, RadioCardEntry } from "./RadioCard/RadioCard";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "../../api/viewSetup";
-import { MarkerPinsApp } from ".";
+import { MarkerPinApp } from "./MarkerPinApp";
 
 interface ManualPinSelection {
   name: string;
@@ -44,20 +44,20 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSe
   private _onPointsChanged = async (points: Point3d[]): Promise<void> => {
 
     for (const point of points)
-      point.z = MarkerPinsApp.height!;
+      point.z = MarkerPinApp.height!;
 
-    if (!MarkerPinsApp.decoratorIsSetup())
-      return MarkerPinsApp.setupDecorator(points);
+    if (!MarkerPinApp.decoratorIsSetup())
+      return MarkerPinApp.setupDecorator(points);
     else
-      MarkerPinsApp.setMarkerPoints(points);
+      MarkerPinApp.setMarkerPoints(points);
   }
 
   /** Called when the user changes the showMarkers toggle. */
   private _onChangeShowMarkers = (checked: boolean) => {
     if (checked) {
-      this.setState({ showDecorator: true }, () => MarkerPinsApp.enableDecorations());
+      this.setState({ showDecorator: true }, () => MarkerPinApp.enableDecorations());
     } else {
-      this.setState({ showDecorator: false }, () => MarkerPinsApp.disableDecorations());
+      this.setState({ showDecorator: false }, () => MarkerPinApp.disableDecorations());
     }
   }
 
@@ -82,7 +82,7 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSe
 
   /** This callback will be executed by the PlaceMarkerTool when it is time to create a new marker */
   private _manuallyAddMarker = (point: Point3d) => {
-    MarkerPinsApp.addMarkerPoint(point, MarkerPinsApp._images.get(this.state.manualPin.image)!);
+    MarkerPinApp.addMarkerPoint(point, MarkerPinApp._images.get(this.state.manualPin.image)!);
   }
 
   /** This callback will be executed when the user clicks the UI button.  It will start the tool which
@@ -113,10 +113,10 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSe
 
       // Grab range of the contents of the view. We'll use this to position the random markers.
       const range = vp.view.computeFitRange();
-      MarkerPinsApp.range = Range2d.createFrom(range);
+      MarkerPinApp.range = Range2d.createFrom(range);
 
       // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
-      MarkerPinsApp.height = range.zHigh;
+      MarkerPinApp.height = range.zHigh;
 
       this.setState({ imodel });
     });
@@ -142,7 +142,7 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSe
             <span>Auto-generate locations</span>
           </div>
           <div className="sample-options-2col">
-            <PointSelector onPointsChanged={this._onPointsChanged} range={MarkerPinsApp.range} />
+            <PointSelector onPointsChanged={this._onPointsChanged} range={MarkerPinApp.range} />
           </div>
           <hr></hr>
           <div className="sample-heading">

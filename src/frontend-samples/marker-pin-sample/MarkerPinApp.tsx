@@ -10,9 +10,9 @@ import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
-import { MarkerPinsUI } from "./ControlPane";
+import { MarkerPinsUI } from "./MarkerPinUI";
 
-export class MarkerPinsApp {
+export class MarkerPinApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
   public static range?: Range2d;
@@ -25,17 +25,17 @@ export class MarkerPinsApp {
 
     PlaceMarkerTool.register(this._sampleNamespace);
 
-    MarkerPinsApp._images = new Map();
-    MarkerPinsApp._images.set("Google_Maps_pin.svg", await imageElementFromUrl(".\\Google_Maps_pin.svg"));
-    MarkerPinsApp._images.set("pin_celery.svg", await imageElementFromUrl(".\\pin_celery.svg"));
-    MarkerPinsApp._images.set("pin_poloblue.svg", await imageElementFromUrl(".\\pin_poloblue.svg"));
+    MarkerPinApp._images = new Map();
+    MarkerPinApp._images.set("Google_Maps_pin.svg", await imageElementFromUrl(".\\Google_Maps_pin.svg"));
+    MarkerPinApp._images.set("pin_celery.svg", await imageElementFromUrl(".\\pin_celery.svg"));
+    MarkerPinApp._images.set("pin_poloblue.svg", await imageElementFromUrl(".\\pin_poloblue.svg"));
 
     return <MarkerPinsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {
-    MarkerPinsApp.disableDecorations();
-    MarkerPinsApp._markerDecorator = undefined;
+    MarkerPinApp.disableDecorations();
+    MarkerPinApp._markerDecorator = undefined;
 
     IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
     IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
@@ -47,7 +47,7 @@ export class MarkerPinsApp {
 
   public static setupDecorator(points: Point3d[]) {
     // If we failed to load the image, there is no point in registering the decorator
-    if (!MarkerPinsApp._images.has("Google_Maps_pin.svg"))
+    if (!MarkerPinApp._images.has("Google_Maps_pin.svg"))
       return;
 
     this._markerDecorator = new MarkerPinDecorator();
