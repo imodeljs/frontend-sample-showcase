@@ -11,7 +11,8 @@ export function getMarkerPinSpec(): SampleSpec {
     label: "Marker Pins",
     image: "marker-pin-thumbnail.png",
     files: [
-      { name: "MarkerPinSample.tsx", import: import("!!raw-loader!./index") },
+      { name: "MarkerPinApp.tsx", import: import("!!raw-loader!./MarkerPinApp.tsx") },
+      { name: "MarkerPinUI.tsx", import: import("!!raw-loader!./MarkerPinUI.tsx") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
       { name: "MarkerPinDecorator.tsx", import: import("!!raw-loader!./MarkerPinDecorator") },
       { name: "PlaceMarkerTool.tsx", import: import("!!raw-loader!./PlaceMarkerTool") },
