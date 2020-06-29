@@ -11,8 +11,8 @@ import { ViewSetup } from "../../api/viewSetup";
 
 export class ShadowStudyApp {
 
-  public static async setup(iModelName: string) {
-    return <ShadowStudyUI iModelName={iModelName} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <ShadowStudyUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   // Updates the sun time for the current model
@@ -35,7 +35,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export class ShadowStudyUI extends React.Component<{ iModelName: string }, ShadowStudyState> {
+export class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -153,6 +153,7 @@ export class ShadowStudyUI extends React.Component<{ iModelName: string }, Shado
           <div className="sample-instructions">
             <span>Select a date and time.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-3col">
             <div>Time of Day</div>

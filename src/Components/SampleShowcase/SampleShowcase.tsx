@@ -20,7 +20,7 @@ export interface SampleSpec {
   image: string;
   files?: InternalFile[];
   customModelList?: string[];
-  setup?: (iModelName: string) => Promise<React.ReactNode>;
+  setup?: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 
@@ -95,6 +95,14 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return customModelList ? customModelList : IModelSelector.defaultIModelList;
   }
 
+  private getIModelSelector(iModelName: string, iModelList: string[]): React.ReactNode {
+    if (iModelList && 1 < iModelList.length)
+      return (
+        <div className="model-selector">
+          <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this.onIModelChange} />
+        </div>);
+  }
+
   private async setupNewSample(groupName: string, sampleName: string) {
 
     const newSampleSpec = this.getSampleByName(groupName, sampleName);
@@ -107,11 +115,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     let iModelName = this.state.iModelName;
 
     if (newSampleSpec && newSampleSpec.setup) {
+      const iModelList = this.getIModelList(newSampleSpec);
 
       if (newSampleSpec.name !== this.state.activeSampleName) {
-        iModelName = this.getIModelList(newSampleSpec)[0];
+        iModelName = iModelList[0];
       }
-      sampleUI = await newSampleSpec.setup(iModelName);
+      sampleUI = await newSampleSpec.setup(iModelName, this.getIModelSelector(iModelName, iModelList));
     }
 
     this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
@@ -142,7 +151,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
-    const modelList = activeSample ? this.getIModelList(activeSample) : null;
     const files = activeSample ? activeSample.files : undefined;
 
     return (
@@ -159,11 +167,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {this.state.sampleUI}
               </div>
-              {modelList && 1 < modelList.length &&
-                <div className="model-selector">
-                  <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this.onIModelChange} />
-                </div>
-              }
             </div>
           </SplitScreen>
         </SplitScreen>

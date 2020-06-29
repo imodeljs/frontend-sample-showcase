@@ -13,6 +13,7 @@ import { ViewSetup } from "../../api/viewSetup";
 
 interface ViewClipUIProps {
   iModelName: string;
+  iModelSelector: React.ReactNode;
 }
 
 interface ViewClipUIState {
@@ -198,6 +199,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
           <div className="sample-instructions">
             <span>Use the options below to control the view clip.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-3col even-3col">
             <span>Clip Range</span>

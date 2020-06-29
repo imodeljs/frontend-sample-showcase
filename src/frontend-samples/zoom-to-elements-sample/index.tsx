@@ -25,6 +25,7 @@ class ZoomToElementsAPI {
 /** React props */
 interface ZoomToProps {
   iModelName: string;
+  iModelSelector: React.ReactNode;
 }
 
 /** React state */
@@ -154,6 +155,7 @@ export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> 
           <div className="sample-instructions">
             <span>Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="table-wrapper">
             {this._elementIdSelector()}

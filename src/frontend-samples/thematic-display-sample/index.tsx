@@ -83,8 +83,8 @@ export class ThematicDisplaySampleApp {
   public static viewport?: Viewport;
 
   /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string): Promise<React.ReactNode> {
-    return <ThematicDisplaySampleUIComponent iModelName={iModelName} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
+    return <ThematicDisplaySampleUIComponent iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   /** Called by the showcase before swapping to another sample. */
@@ -106,6 +106,7 @@ interface SampleState {
 /** React props for the Sample component */
 interface ThematicDisplaySampleUIProps {
   iModelName: string;
+  iModelSelector: React.ReactNode;
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -280,6 +281,7 @@ export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDi
           <div>
             <span>Use the controls below to change the thematic display attributes.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
             {this.createThematicDisplayToggle("Thematic Display", "Turn off to see the original model without decorations.")}

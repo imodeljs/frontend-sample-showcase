@@ -29,7 +29,7 @@ export class MarkerPinsApp {
   public static height?: number;
   public static _images: Map<string, HTMLImageElement>;
 
-  public static async setup(iModelName: string): Promise<React.ReactNode> {
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
 
     this._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
 
@@ -40,7 +40,7 @@ export class MarkerPinsApp {
     MarkerPinsApp._images.set("pin_celery.svg", await imageElementFromUrl(".\\pin_celery.svg"));
     MarkerPinsApp._images.set("pin_poloblue.svg", await imageElementFromUrl(".\\pin_poloblue.svg"));
 
-    return <MarkerPinsUI iModelName={iModelName} />;
+    return <MarkerPinsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static async getTopView(imodel: IModelConnection): Promise<ViewState> {
@@ -106,7 +106,7 @@ interface MarkerPinsUIState {
   manualPin: ManualPinSelection;
 }
 
-export class MarkerPinsUI extends React.Component<{ iModelName: string }, MarkerPinsUIState> {
+export class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -194,6 +194,7 @@ export class MarkerPinsUI extends React.Component<{ iModelName: string }, Marker
           <div className="sample-instructions">
             <span>Use the options below to control the marker pins.  Click a marker to open a menu of options.</span>
           </div>
+          {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col">
             <span>Show Markers</span>

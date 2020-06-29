@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 import { ViewClipUI } from ".";
 
 export function getViewClipSpec(): SampleSpec {
@@ -15,8 +16,9 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipSample.tsx", import: import("!!raw-loader!./index") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: async (iModelName: string) => {
-      return <ViewClipUI iModelName={iModelName} />;
+    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
+    setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
+      return <ViewClipUI iModelName={iModelName} iModelSelector={iModelSelector} />;
     },
   });
 }

@@ -15,6 +15,6 @@ export function getViewportOnlySpec(): SampleSpec {
       { name: "ViewportOnlySample.tsx", import: import("!!raw-loader!./index") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: async (iModelName: string) => <ViewportOnlyUI iModelName={iModelName} />,
+    setup: async (iModelName: string, iModelSelector: React.ReactNode) => <ViewportOnlyUI iModelName={iModelName} iModelSelector={iModelSelector} />,
   });
 }

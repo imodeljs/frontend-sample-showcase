@@ -13,6 +13,7 @@ import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport
 // The Props and State for this sample component
 interface ViewerOnly2dProps {
   iModelName: string;
+  iModelSelector: React.ReactNode;
 }
 
 interface ViewerOnly2dState {
@@ -86,6 +87,7 @@ export class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnl
         <div className="sample-ui">
           <div>
             <span>The picker below shows a list of 2D models in this iModel.</span>
+            {this.props.iModelSelector}
             <hr />
             {modelSelector}
           </div>
