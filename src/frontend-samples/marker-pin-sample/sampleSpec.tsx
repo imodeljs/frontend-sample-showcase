@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { MarkerPinsApp } from ".";
+import MarkerPinsApp from ".";
 
 export function getMarkerPinSpec(): SampleSpec {
   return ({

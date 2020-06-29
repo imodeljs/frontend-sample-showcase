@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import { EmphasizeElementsApp } from ".";
+import EmphasizeElementsApp from ".";
 
 export function getEmphasizeElementsSpec(): SampleSpec {
   return ({

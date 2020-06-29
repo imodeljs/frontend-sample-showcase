@@ -8,7 +8,7 @@ import "../index.scss";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
 import { SampleDataProvider } from "../Common";
 
-export class BasicTreeSample extends React.Component<{}> {
+export default class BasicTreeSample extends React.Component<{}> {
 
   public getControlPane() {
     return (

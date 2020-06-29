@@ -15,7 +15,7 @@ import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import "./TableNodeTree.scss";
 
-export class TableNodeTreeSample extends React.Component<{}> {
+export default class TableNodeTreeSample extends React.Component<{}> {
 
   public getControlPane() {
     return (

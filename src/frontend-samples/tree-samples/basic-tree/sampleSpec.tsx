@@ -1,6 +1,6 @@
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { BasicTreeSample } from ".";
+import BasicTreeSample from ".";
 
 export function getBasicTreeSpec(): SampleSpec {
   return ({

@@ -1,5 +1,5 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { TableNodeTreeSample } from ".";
+import TableNodeTreeSample from ".";
 
 export function getCustomTableNodeTreeSpec(): SampleSpec {
   return ({

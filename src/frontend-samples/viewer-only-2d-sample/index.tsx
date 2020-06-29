@@ -22,7 +22,7 @@ interface ViewerOnly2dState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnly2dState> {
+export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnly2dState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {

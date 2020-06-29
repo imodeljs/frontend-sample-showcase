@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { ButtonList } from ".";
+import ButtonList from ".";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getButtonSpec(): SampleSpec {

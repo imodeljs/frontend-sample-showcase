@@ -77,7 +77,7 @@ class API {
 }
 
 /** Handles the setup and teardown of the thematic display sample */
-export class ThematicDisplaySampleApp {
+export default class ThematicDisplaySampleApp {
   public static originalProps?: ThematicDisplayProps;
   public static originalFlag: boolean = false;
   public static viewport?: Viewport;
