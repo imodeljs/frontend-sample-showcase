@@ -13,11 +13,7 @@ export function getContextMenuSpec(): SampleSpec {
     image: "ui-context-menu-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "ContextMenuListSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "SampleContextMenu.tsx", import: import("!!raw-loader!./SampleContextMenu") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "ContextMenuListSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: ContextMenuList.setup,
   });

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ShadowStudyApp from ".";
+import { ShadowStudyApp } from ".";
 
 export function getShadowStudySpec(): SampleSpec {
   return ({
@@ -11,8 +11,7 @@ export function getShadowStudySpec(): SampleSpec {
     label: "Shadow Study",
     image: "shadow-study-thumbnail.png",
     files: [
-      { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./index") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: ShadowStudyApp.setup,
   });

@@ -13,8 +13,7 @@ export function getZoomToElementsSpec(): SampleSpec {
     label: "Zoom to Elements",
     image: "zoom-to-elements-thumbnail.png",
     files: [
-      { name: "ZoomToElementsSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "ZoomToElementsSample.tsx", import: import("!!raw-loader!./index"), entry: true },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],

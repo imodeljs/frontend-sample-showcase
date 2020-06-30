@@ -8,9 +8,7 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     image: "custom-event-handler-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "CustomEventHandlerTreeSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "Common.tsx", import: import("!!raw-loader!../Common") },
-      { name: "index.scss", import: import("!!raw-loader!../index.scss") },
+      { name: "CustomEventHandlerTreeSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: CustomEventHandlerTreeSample.setup,
   });

@@ -13,10 +13,7 @@ export function getSearchBoxSpec(): SampleSpec {
     image: "ui-search-boxes-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "SearchBoxListSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "SearchBoxListSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: SearchBoxList.setup,
   });

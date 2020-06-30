@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ViewCreator2d } from "./ViewCreator2d";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 // The Props and State for this sample component
 interface ViewerOnly2dProps {

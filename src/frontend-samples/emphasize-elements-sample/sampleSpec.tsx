@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import EmphasizeElementsApp from ".";
+import { EmphasizeElementsApp } from ".";
 
 export function getEmphasizeElementsSpec(): SampleSpec {
   return ({
@@ -12,8 +12,7 @@ export function getEmphasizeElementsSpec(): SampleSpec {
     label: "Emphasize Elements",
     image: "emphasize-elements-thumbnail.png",
     files: [
-      { name: "EmphasizeElementsSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "EmphasizeElementsSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     setup: EmphasizeElementsApp.setup,

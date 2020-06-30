@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../../common/samples-common.scss";
-import "../CommonComponentTools/index.scss";
-import { ComponentContainer, ComponentExampleProps } from "../CommonComponentTools/ComponentContainer";
+import "common/samples-common.scss";
+import "common/CommonComponentTools/index.scss";
+import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
 import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 

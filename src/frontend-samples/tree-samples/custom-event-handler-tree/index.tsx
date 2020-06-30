@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "../index.scss";
+import "common/DataProvider/index.scss";
 
 import {
   AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider,
@@ -13,7 +13,7 @@ import {
 
 import { CheckBoxState, useDisposable } from "@bentley/ui-core";
 
-import { SampleDataProvider } from "../Common";
+import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 
 export default class CustomEventHandlerTreeSample extends React.Component<{}> {
 
