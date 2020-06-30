@@ -25,7 +25,7 @@ interface TooltipCustomizeSettings {
   elemProperty: ElemProperty;
 }
 
-export default class TooltipCustomizeApp {
+export class TooltipCustomizeApp {
   public static settings: TooltipCustomizeSettings = {
     showImage: true,
     showCustomText: false,

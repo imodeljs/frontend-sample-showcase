@@ -22,7 +22,7 @@ NEEDSWORK: split into three files
 */
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class HeatmapDecoratorApp {
+export class HeatmapDecoratorApp {
 
   public static decorator?: HeatmapDecorator;
   public static range?: Range2d;
