@@ -9,7 +9,7 @@ import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-fronte
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
 
-export class ShadowStudyApp {
+export default class ShadowStudyApp {
 
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <ShadowStudyUI iModelName={iModelName} iModelSelector={iModelSelector} />;

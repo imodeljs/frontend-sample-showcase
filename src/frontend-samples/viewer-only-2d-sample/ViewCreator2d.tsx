@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { Id64Array, Id64String } from "@bentley/bentleyjs-core";
+import { Range3d } from "@bentley/geometry-core";
 import { Code, ColorDef, IModel, ModelProps, SheetProps, ViewDefinition2dProps, ViewStateProps } from "@bentley/imodeljs-common";
 import { DrawingModelState, DrawingViewState, IModelConnection, SectionDrawingModelState, SheetModelState, SheetViewState, ViewState, ViewState2d } from "@bentley/imodeljs-frontend";
 
@@ -46,12 +47,14 @@ export class ViewCreator2d {
     // Use dictionary model in all props
     const dictionaryId = IModel.dictionaryId;
     const categories = await this._getAllCategories();
+
     // model extents
-    const modelRange: any = (await this._imodel.models.queryModelRanges(modelId))[0];
-    let originX = modelRange.low[0];
-    let originY = modelRange.low[1];
-    let deltaX = modelRange.high[0] - originX;
-    let deltaY = modelRange.high[1] - originY;
+    const modelProps = await this._imodel.models.queryModelRanges(modelId);
+    const modelExtents = Range3d.fromJSON(modelProps[0]);
+    let originX = modelExtents.low.x;
+    let originY = modelExtents.low.y;
+    let deltaX = modelExtents.xLength();
+    let deltaY = modelExtents.yLength();
 
     // if vp aspect given, update model extents to fit view
     if (vpAspect) {
@@ -104,9 +107,14 @@ export class ViewCreator2d {
         },
       },
     };
-    const viewStateProps = { displayStyleProps, modelSelectorProps, categorySelectorProps, viewDefinitionProps };
 
-    return viewStateProps;
+    return {
+      displayStyleProps,
+      modelSelectorProps,
+      categorySelectorProps,
+      viewDefinitionProps,
+      modelExtents,
+    };
   }
 
   private async _addSheetViewProps(modelId: Id64String, props: ViewStateProps) {

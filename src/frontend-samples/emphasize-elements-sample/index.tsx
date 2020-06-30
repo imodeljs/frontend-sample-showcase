@@ -12,7 +12,7 @@ import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
-export class EmphasizeElementsApp {
+export default class EmphasizeElementsApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <EmphasizeElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
