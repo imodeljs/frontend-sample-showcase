@@ -3,24 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import React from "react";
-
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import ViewerOnly2dUI from "./ViewerOnly2dUI";
+import EmphasizeElementsApp from "./EmphasizeElementsApp";
 
-export function getViewerOnly2dSpec(): SampleSpec {
+export function getEmphasizeElementsSpec(): SampleSpec {
   return ({
-    name: "viewer-only-2d-sample",
-    label: "2d",
-    image: "viewer-only-2d-thumbnail.png",
+    name: "emphasize-elements-sample",
+    label: "Emphasize Elements",
+    image: "emphasize-elements-thumbnail.png",
     files: [
-      { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI") },
-      { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
+      { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp") },
+      { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    customModelList: [SampleIModels.House],
-    setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
-      return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-    },
+    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
+    setup: EmphasizeElementsApp.setup,
+    teardown: EmphasizeElementsApp.teardown,
   });
 }

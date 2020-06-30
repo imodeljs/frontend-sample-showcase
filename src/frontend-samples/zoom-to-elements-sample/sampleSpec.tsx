@@ -5,7 +5,7 @@
 import React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import ZoomToElementsUI from ".";
+import ZoomToElementsUI from "./ZoomToElementsUI";
 
 export function getZoomToElementsSpec(): SampleSpec {
   return ({
@@ -13,7 +13,7 @@ export function getZoomToElementsSpec(): SampleSpec {
     label: "Zoom to Elements",
     image: "zoom-to-elements-thumbnail.png",
     files: [
-      { name: "ZoomToElementsSample.tsx", import: import("!!raw-loader!./index") },
+      { name: "ZoomToElementsUI.tsx", import: import("!!raw-loader!./ZoomToElementsUI") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],

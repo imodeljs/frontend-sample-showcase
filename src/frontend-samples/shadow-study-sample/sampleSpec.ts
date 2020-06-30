@@ -2,19 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ViewportOnlyUI from "./ViewportOnlySample";
+import ShadowStudyApp from "./ShadowStudyApp";
 
-export function getViewportOnlySpec(): SampleSpec {
+export function getShadowStudySpec(): SampleSpec {
   return ({
-    name: "viewport-only-sample",
-    label: "3d",
-    image: "viewport-only-thumbnail.png",
+    name: "shadow-study-sample",
+    label: "Shadow Study",
+    image: "shadow-study-thumbnail.png",
     files: [
-      { name: "ViewportOnlySample.tsx", import: import("!!raw-loader!./ViewportOnlySample") },
+      { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp") },
+      { name: "ShadowStudyUI.tsx", import: import("!!raw-loader!./ShadowStudyUI") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
-    setup: async (iModelName: string, iModelSelector: React.ReactNode) => <ViewportOnlyUI iModelName={iModelName} iModelSelector={iModelSelector} />,
+    setup: ShadowStudyApp.setup,
   });
 }

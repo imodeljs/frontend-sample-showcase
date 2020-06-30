@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import React from "react";
-import ViewAttributesUI from ".";
+import ViewAttributesUI from "./ViewAttributesUI";
 
 export function getViewAttributesSpec(): SampleSpec {
   return ({
@@ -12,7 +12,8 @@ export function getViewAttributesSpec(): SampleSpec {
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
     files: [
-      { name: "ViewAttributesSample.tsx", import: import("!!raw-loader!./index") },
+      { name: "ViewAttributesApp.ts", import: import("!!raw-loader!./ViewAttributesApp") },
+      { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
     ],
     setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
