@@ -45,7 +45,7 @@ interface ZoomToState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> {
+export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> {
   private _ignoreSelectionChanged = false;
   private _listRef = React.createRef<HTMLSelectElement>();
 

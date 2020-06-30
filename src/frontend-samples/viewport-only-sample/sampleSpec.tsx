@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { ViewportOnlyUI } from ".";
+import ViewportOnlyUI from ".";
 
 export function getViewportOnlySpec(): SampleSpec {
   return ({

@@ -14,7 +14,7 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 
-export class SplitButtonList extends React.Component<{}> {
+export default class SplitButtonList extends React.Component<{}> {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   private static get splitButtonMenuItems(): React.ReactNode[] {

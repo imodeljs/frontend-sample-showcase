@@ -145,7 +145,7 @@ interface ViewAttributesState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
+export default class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {

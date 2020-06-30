@@ -4,8 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import React from "react";
-import { ViewerOnly2dUI } from ".";
+
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
+import ViewerOnly2dUI from ".";
 
 export function getViewerOnly2dSpec(): SampleSpec {
   return ({

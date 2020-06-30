@@ -1,5 +1,5 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomCheckboxesTreeSample } from ".";
+import CustomCheckboxesTreeSample from ".";
 
 export function getCustomCheckboxesTreeSpec(): SampleSpec {
   return ({

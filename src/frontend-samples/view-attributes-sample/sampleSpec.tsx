@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import React from "react";
-import { ViewAttributesUI } from ".";
+import ViewAttributesUI from ".";
 
 export function getViewAttributesSpec(): SampleSpec {
   return ({

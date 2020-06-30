@@ -11,7 +11,7 @@ import HeatmapDecorator from "./HeatmapDecorator";
 import { HeatmapDecoratorUIComponent } from "./ControlPane";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export class HeatmapDecoratorApp {
+export default class HeatmapDecoratorApp {
 
   public static decorator?: HeatmapDecorator;
   public static range?: Range2d;

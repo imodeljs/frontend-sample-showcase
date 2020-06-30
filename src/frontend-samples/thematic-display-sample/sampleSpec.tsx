@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import { ThematicDisplaySampleApp } from ".";
+import ThematicDisplaySampleApp from ".";
 
 export function getThematicDisplaySpec(): SampleSpec {
   return ({
