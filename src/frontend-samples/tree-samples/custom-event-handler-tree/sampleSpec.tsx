@@ -1,5 +1,5 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomEventHandlerTreeSample } from ".";
+import CustomEventHandlerTreeSample from ".";
 
 export function getCustomEventHandlerTreeSpec(): SampleSpec {
   return ({

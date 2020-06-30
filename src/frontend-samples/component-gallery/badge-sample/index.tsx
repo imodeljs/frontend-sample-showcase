@@ -13,7 +13,7 @@ import { BetaBadge, NewBadge } from "@bentley/ui-core";
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
-export class BadgeList extends React.Component<{}> {
+export default class BadgeList extends React.Component<{}> {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getBadgeData(): ComponentExampleProps[] {

@@ -6,7 +6,7 @@ import * as React from "react";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import "../../common/samples-common.scss";
 
-export class ViewportOnlyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
+export default class ViewportOnlyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
 
   /** The sample's render method */
   public render() {

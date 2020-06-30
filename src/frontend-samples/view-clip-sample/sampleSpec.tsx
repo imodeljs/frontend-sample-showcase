@@ -5,7 +5,7 @@
 import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import { ViewClipUI } from ".";
+import ViewClipUI from ".";
 
 export function getViewClipSpec(): SampleSpec {
   return ({

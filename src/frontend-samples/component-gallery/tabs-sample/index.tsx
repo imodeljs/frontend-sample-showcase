@@ -14,7 +14,7 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 
-export class TabsList extends React.Component<{}> {
+export default class TabsList extends React.Component<{}> {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getTabsData(): ComponentExampleProps[] {

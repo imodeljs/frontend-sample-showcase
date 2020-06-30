@@ -5,7 +5,7 @@
 import React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import { ZoomToElementsUI } from ".";
+import ZoomToElementsUI from ".";
 
 export function getZoomToElementsSpec(): SampleSpec {
   return ({

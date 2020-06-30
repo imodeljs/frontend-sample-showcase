@@ -22,7 +22,7 @@ interface ManualPinSelection {
   image: string;
 }
 
-export class MarkerPinsApp {
+export default class MarkerPinsApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
   public static range?: Range2d;

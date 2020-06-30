@@ -14,7 +14,7 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 
-export class LoadingList extends React.Component<{}> {
+export default class LoadingList extends React.Component<{}> {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getLoadingData(): ComponentExampleProps[] {
