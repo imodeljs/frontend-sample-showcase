@@ -10,7 +10,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { PointSelector } from "../../common/PointSelector/PointSelector";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { HeatmapDecoratorApp } from ".";
+import HeatmapDecoratorApp from ".";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ViewSetup } from "../../api/viewSetup";
 
