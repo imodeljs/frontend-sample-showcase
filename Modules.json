@@ -93,9 +93,55 @@
       "import": "@bentley/webgl-compatibility"
     },
     {
+      "name": "api/viewSetup",
+      "import": "./src/api/viewSetup",
+      "typedef": true
+    },
+    {
+      "name": "api/showcasetooladmin",
+      "import": "./src/api/showcasetooladmin",
+      "typedef": true
+    },
+    {
+      "name": "common/CommonComponentTools/ComponentContainer",
+      "import": "./src/common/CommonComponentTools/ComponentContainer",
+      "typedef": true
+    },
+    {
+      "name": "common/DataProvider/SampleDataProvider",
+      "import": "./src/common/DataProvider/SampleDataProvider",
+      "typedef": true
+    },
+    {
+      "name": "common/PointSelector/PointGenerators",
+      "import": "./src/common/PointSelector/PointGenerators",
+      "typedef": true
+    },
+    {
+      "name": "common/PointSelector/PointSelector",
+      "import": "./src/common/PointSelector/PointSelector",
+      "typedef": true
+    },
+    {
       "name": "Components/Viewport/ReloadableViewport",
       "import": "./src/Components/Viewport/ReloadableViewport",
       "typedef": true
+    },
+    {
+      "name": "common/CommonComponentTools/index.scss",
+      "import": "!!raw-loader!common/CommonComponentTools/index.scss"
+    },
+    {
+      "name": "common/DataProvider/index.scss",
+      "import": "!!raw-loader!common/DataProvider/index.scss"
+    },
+    {
+      "name": "common/samples-common.scss",
+      "import": "!!raw-loader!common/samples-common.scss"
+    },
+    {
+      "name": "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css",
+      "import": "!!raw-loader!@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css"
     }
   ]
 }
