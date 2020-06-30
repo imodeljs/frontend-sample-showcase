@@ -13,8 +13,7 @@ export function getViewClipSpec(): SampleSpec {
     label: "View Clipping",
     image: "view-clip-thumbnail.png",
     files: [
-      { name: "ViewClipSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "ViewClipSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     setup: async (iModelName: string, iModelSelector: React.ReactNode) => {

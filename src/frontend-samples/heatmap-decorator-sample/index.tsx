@@ -3,16 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import HeatmapDecorator from "./HeatmapDecorator";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { PointSelector } from "../../common/PointSelector/PointSelector";
-import { ViewSetup } from "../../api/viewSetup";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { PointSelector } from "common/PointSelector/PointSelector";
+import { ViewSetup } from "api/viewSetup";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 /*
 NEEDSWORK: split into three files
@@ -22,7 +22,7 @@ NEEDSWORK: split into three files
 */
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class HeatmapDecoratorApp {
+export class HeatmapDecoratorApp {
 
   public static decorator?: HeatmapDecorator;
   public static range?: Range2d;
@@ -91,7 +91,7 @@ interface HeatmapDecoratorUIState {
 }
 
 /** A React component that renders the UI specific for this sample */
-class HeatmapDecoratorUIComponent extends React.Component<HeatmapDecoratorUIProps, HeatmapDecoratorUIState> {
+export default class HeatmapDecoratorUIComponent extends React.Component<HeatmapDecoratorUIProps, HeatmapDecoratorUIState> {
 
   /** Creates an HeatmapDecoratorUIComponent instance */
   constructor(props?: any, context?: any) {

@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
-import { ProxyToolAdmin, ShowcaseToolAdmin } from "../../api/showcasetooladmin";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ProxyToolAdmin, ShowcaseToolAdmin } from "api/showcasetooladmin";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 enum ElemProperty {
   Origin = "Origin",
@@ -25,7 +25,7 @@ interface TooltipCustomizeSettings {
   elemProperty: ElemProperty;
 }
 
-export default class TooltipCustomizeApp {
+export class TooltipCustomizeApp {
   public static settings: TooltipCustomizeSettings = {
     showImage: true,
     showCustomText: false,
@@ -137,7 +137,7 @@ class SampleToolAdmin extends ProxyToolAdmin {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
+export default class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {

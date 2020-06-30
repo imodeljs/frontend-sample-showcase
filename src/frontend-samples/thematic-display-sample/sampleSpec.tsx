@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import ThematicDisplaySampleApp from ".";
+import { ThematicDisplaySampleApp } from ".";
 
 export function getThematicDisplaySpec(): SampleSpec {
   return ({
@@ -12,8 +12,7 @@ export function getThematicDisplaySpec(): SampleSpec {
     label: "Thematic Display",
     image: "thematic-display-thumbnail.png",
     files: [
-      { name: "TooltipSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "TooltipSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     setup: ThematicDisplaySampleApp.setup,

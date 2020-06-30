@@ -13,10 +13,7 @@ export function getBadgeSpec(): SampleSpec {
     image: "ui-badge-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "BadgeSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "BadgeSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: BadgeList.setup,
   });

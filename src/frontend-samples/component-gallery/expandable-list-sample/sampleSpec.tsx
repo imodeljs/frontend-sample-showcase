@@ -13,11 +13,8 @@ export function getExpandableListSpec(): SampleSpec {
     image: "ui-expandable-list-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "ExpandableListListSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
+      { name: "ExpandableListListSample.tsx", import: import("!!raw-loader!./index"), entry: true },
       { name: "SampleExpandableBlock.tsx", import: import("!!raw-loader!./SampleExpandableBlock") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
     ],
     setup: ExpandableListList.setup,
   });

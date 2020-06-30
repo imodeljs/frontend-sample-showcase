@@ -13,10 +13,7 @@ export function getButtonSpec(): SampleSpec {
     image: "ui-button-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "ButtonSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "ButtonSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: ButtonList.setup,
   });

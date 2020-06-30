@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "api/viewSetup";
 
-export default class ShadowStudyApp {
+export class ShadowStudyApp {
 
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <ShadowStudyUI iModelName={iModelName} iModelSelector={iModelSelector} />;
@@ -35,7 +35,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
+export default class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {

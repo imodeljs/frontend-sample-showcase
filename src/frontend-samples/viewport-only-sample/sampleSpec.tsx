@@ -12,8 +12,7 @@ export function getViewportOnlySpec(): SampleSpec {
     label: "3d",
     image: "viewport-only-thumbnail.png",
     files: [
-      { name: "ViewportOnlySample.tsx", import: import("!!raw-loader!./index") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "ViewportOnlySample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: async (iModelName: string, iModelSelector: React.ReactNode) => <ViewportOnlyUI iModelName={iModelName} iModelSelector={iModelSelector} />,
   });

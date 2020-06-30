@@ -4,15 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
-export default class EmphasizeElementsApp {
+export class EmphasizeElementsApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <EmphasizeElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
@@ -134,7 +134,7 @@ interface EmphasizeElementsState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
+export default class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {

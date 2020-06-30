@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelApp, IModelConnection, MarginPercent, StandardViewId, ViewChangeOptions, Viewport, ZoomToOptions } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 class ZoomToElementsAPI {
   public static async zoomToElements(elementIds: string[], viewChangeOpts: ViewChangeOptions, zoomToOpts: ZoomToOptions, vp: Viewport, imodel: IModelConnection) {

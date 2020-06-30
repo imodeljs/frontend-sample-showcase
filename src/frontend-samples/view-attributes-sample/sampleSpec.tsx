@@ -12,8 +12,7 @@ export function getViewAttributesSpec(): SampleSpec {
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
     files: [
-      { name: "ViewAttributesSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "ViewAttributesSample.tsx", import: import("!!raw-loader!./index"), entry: true },
     ],
     setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
       return <ViewAttributesUI iModelName={iModelName} iModelSelector={iModelSelector} />;
