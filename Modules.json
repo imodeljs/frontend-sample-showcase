@@ -1,0 +1,101 @@
+{
+  "external": [
+    {
+      "name": "react"
+    },
+    {
+      "name": "react-dom"
+    }
+  ],
+  "internal": [
+    {
+      "name": "react",
+      "import": "react"
+    },
+    {
+      "name": "react-dom",
+      "import": "react-dom"
+    },
+    {
+      "name": "@bentley/bentleyjs-core",
+      "import": "@bentley/bentleyjs-core"
+    },
+    {
+      "name": "@bentley/context-registry-client",
+      "import": "@bentley/context-registry-client"
+    },
+    {
+      "name": "@bentley/frontend-authorization-client",
+      "import": "@bentley/frontend-authorization-client"
+    },
+    {
+      "name": "@bentley/geometry-core",
+      "import": "@bentley/geometry-core"
+    },
+    {
+      "name": "@bentley/imodelhub-client",
+      "import": "@bentley/imodelhub-client"
+    },
+    {
+      "name": "@bentley/imodeljs-common",
+      "import": "@bentley/imodeljs-common"
+    },
+    {
+      "name": "@bentley/imodeljs-frontend",
+      "import": "@bentley/imodeljs-frontend"
+    },
+    {
+      "name": "@bentley/imodeljs-i18n",
+      "import": "@bentley/imodeljs-i18n"
+    },
+    {
+      "name": "@bentley/imodeljs-quantity",
+      "import": "@bentley/imodeljs-quantity"
+    },
+    {
+      "name": "@bentley/itwin-client",
+      "import": "@bentley/itwin-client"
+    },
+    {
+      "name": "@bentley/ui-abstract",
+      "import": "@bentley/ui-abstract"
+    },
+    {
+      "name": "@bentley/ui-components",
+      "import": "@bentley/ui-components"
+    },
+    {
+      "name": "@bentley/ui-core",
+      "import": "@bentley/ui-core"
+    },
+    {
+      "name": "@bentley/presentation-frontend",
+      "import": "@bentley/presentation-frontend"
+    },
+    {
+      "name": "@bentley/presentation-common",
+      "import": "@bentley/presentation-common"
+    },
+    {
+      "name": "@bentley/presentation-components",
+      "import": "@bentley/presentation-components"
+    },
+    {
+      "name": "@bentley/product-settings-client",
+      "import": "@bentley/product-settings-client"
+    },
+    {
+      "name": "@bentley/orbitgt-core",
+      "import": "@bentley/orbitgt-core"
+    },
+    {
+      "name": "@bentley/webgl-compatibility",
+      "import": "@bentley/webgl-compatibility"
+    },
+    {
+      "name": "Components/Viewport/ReloadableViewport",
+      "import": "./src/Components/Viewport/ReloadableViewport",
+      "typedef": true
+    }
+  ]
+}
