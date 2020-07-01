@@ -2,23 +2,21 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import ViewClipUI from "./ViewClipUI";
+import ZoomToElementsApp from "./ZoomToElementsApp";
 
-export function getViewClipSpec(): SampleSpec {
+export function getZoomToElementsSpec(): SampleSpec {
   return ({
-    name: "view-clip-sample",
-    label: "View Clipping",
-    image: "view-clip-thumbnail.png",
+    name: "zoom-to-elements-sample",
+    label: "Zoom to Elements",
+    image: "zoom-to-elements-thumbnail.png",
     files: [
-      { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI") },
+      { name: "ZoomToElementsUI.tsx", import: import("!!raw-loader!./ZoomToElementsUI") },
       { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
-    setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
-      return <ViewClipUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-    },
+    customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
+    setup: ZoomToElementsApp.setup,
   });
 }
