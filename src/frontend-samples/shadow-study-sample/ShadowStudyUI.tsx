@@ -3,9 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "api/viewSetup";
 import ShadowStudyApp from "./ShadowStudyApp";
 
 /** React state of the Sample component */
@@ -15,7 +17,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
+export default class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {

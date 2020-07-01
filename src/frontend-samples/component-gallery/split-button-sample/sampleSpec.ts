@@ -13,10 +13,7 @@ export function getSplitButtonSpec(): SampleSpec {
     image: "ui-split-button-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "SplitButton.tsx", import: import("!!raw-loader!./SplitButton") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "SplitButton.tsx", import: import("!!raw-loader!./SplitButton"), entry: true },
     ],
     setup: SplitButtonList.setup,
   });

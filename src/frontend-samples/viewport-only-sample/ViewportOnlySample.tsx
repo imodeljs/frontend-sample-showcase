@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import "../../common/samples-common.scss";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import "common/samples-common.scss";
 
 export default class ViewportOnlyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
 

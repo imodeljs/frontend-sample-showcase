@@ -13,10 +13,7 @@ export function getTabsSpec(): SampleSpec {
     image: "ui-tabs-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "Tabs.tsx", import: import("!!raw-loader!./Tabs") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "Tabs.tsx", import: import("!!raw-loader!./Tabs"), entry: true },
     ],
     setup: TabsList.setup,
   });

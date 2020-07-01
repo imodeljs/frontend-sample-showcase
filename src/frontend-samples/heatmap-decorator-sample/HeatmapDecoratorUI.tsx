@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
@@ -28,7 +28,7 @@ interface HeatmapDecoratorUIState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class HeatmapDecoratorUI extends React.Component<HeatmapDecoratorUIProps, HeatmapDecoratorUIState> {
+export default class HeatmapDecoratorUI extends React.Component<HeatmapDecoratorUIProps, HeatmapDecoratorUIState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);

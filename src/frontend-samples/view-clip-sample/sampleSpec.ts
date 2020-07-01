@@ -12,8 +12,9 @@ export function getViewClipSpec(): SampleSpec {
     label: "View Clipping",
     image: "view-clip-thumbnail.png",
     files: [
+      { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp"), entry: true },
       { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     setup: ViewClipApp.setup,

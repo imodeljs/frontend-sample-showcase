@@ -13,10 +13,7 @@ export function getSliderSpec(): SampleSpec {
     image: "ui-sliders-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "Slider.tsx", import: import("!!raw-loader!./Slider") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "Slider.tsx", import: import("!!raw-loader!./Slider"), entry: true },
     ],
     setup: SliderList.setup,
   });

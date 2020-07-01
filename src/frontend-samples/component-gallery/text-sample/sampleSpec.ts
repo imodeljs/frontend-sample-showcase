@@ -13,10 +13,7 @@ export function getTextSpec(): SampleSpec {
     image: "ui-text-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "Text.tsx", import: import("!!raw-loader!./Text") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "Text.tsx", import: import("!!raw-loader!./Text"), entry: true },
     ],
     setup: TextList.setup,
   });

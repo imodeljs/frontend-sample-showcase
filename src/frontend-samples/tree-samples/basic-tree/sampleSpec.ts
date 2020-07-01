@@ -9,9 +9,7 @@ export function getBasicTreeSpec(): SampleSpec {
     image: "basic-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "BasicTree.tsx", import: import("!!raw-loader!./BasicTree") },
-      { name: "Common.ts", import: import("!!raw-loader!../Common") },
-      { name: "Trees.scss", import: import("!!raw-loader!../Trees.scss") },
+      { name: "BasicTree.tsx", import: import("!!raw-loader!./BasicTree"), entry: true },
     ],
     setup: BasicTreeSample.setup,
   });

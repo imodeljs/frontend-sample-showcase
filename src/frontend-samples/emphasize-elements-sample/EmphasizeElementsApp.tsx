@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
 import { EmphasizeElements, IModelApp } from "@bentley/imodeljs-frontend";
-import { EmphasizeElementsUI } from "./EmphasizeElementsUI";
+import EmphasizeElementsUI from "./EmphasizeElementsUI";
 
 export default class EmphasizeElementsApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {

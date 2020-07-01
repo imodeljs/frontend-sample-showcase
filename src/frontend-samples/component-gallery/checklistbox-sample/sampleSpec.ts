@@ -13,10 +13,7 @@ export function getCheckListBoxSpec(): SampleSpec {
     image: "ui-checklistbox-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },
     ],
     setup: CheckListBoxList.setup,
   });

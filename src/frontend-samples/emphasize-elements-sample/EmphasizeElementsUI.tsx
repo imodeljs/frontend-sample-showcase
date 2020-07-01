@@ -115,7 +115,7 @@ class ClearOverrideAction extends EmphasizeActionBase {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
+export default class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {

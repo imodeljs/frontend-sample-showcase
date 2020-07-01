@@ -4,17 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { PopupMenu } from "./PopupMenu";
 import { RadioCard, RadioCardEntry } from "./RadioCard/RadioCard";
-import { PointSelector } from "../../common/PointSelector/PointSelector";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
-import { MarkerPinApp } from "./MarkerPinApp";
+import { PointSelector } from "common/PointSelector/PointSelector";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "api/viewSetup";
+import MarkerPinApp from "./MarkerPinApp";
 
 interface ManualPinSelection {
   name: string;

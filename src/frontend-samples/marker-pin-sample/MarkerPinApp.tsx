@@ -12,7 +12,7 @@ import { MarkerPinDecorator } from "./MarkerPinDecorator";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { MarkerPinsUI } from "./MarkerPinUI";
 
-export class MarkerPinApp {
+export default class MarkerPinApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
   public static range?: Range2d;

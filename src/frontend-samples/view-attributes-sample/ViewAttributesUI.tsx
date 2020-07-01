@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { AttrValues, ViewAttributesApp, ViewFlag } from "./ViewAttributesApp";
 
 // cSpell:ignore imodels

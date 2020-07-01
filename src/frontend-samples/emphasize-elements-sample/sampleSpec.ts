@@ -12,9 +12,9 @@ export function getEmphasizeElementsSpec(): SampleSpec {
     label: "Emphasize Elements",
     image: "emphasize-elements-thumbnail.png",
     files: [
-      { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp") },
+      { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp"), entry: true },
       { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     setup: EmphasizeElementsApp.setup,

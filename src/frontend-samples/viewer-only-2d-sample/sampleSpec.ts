@@ -14,9 +14,9 @@ export function getViewerOnly2dSpec(): SampleSpec {
     label: "2d",
     image: "viewer-only-2d-thumbnail.png",
     files: [
-      { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI") },
-      { name: "ViewCreator2d.ts", import: import("!!raw-loader!./ViewCreator2d") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
+      { name: "ViewerOnly2dApp.tsx", import: import("!!raw-loader!./ViewerOnly2dApp"), entry: true },
+      { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI"), entry: true },
+      { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
     ],
     customModelList: [SampleIModels.House],
     setup: ViewerOnly2dApp.setup,

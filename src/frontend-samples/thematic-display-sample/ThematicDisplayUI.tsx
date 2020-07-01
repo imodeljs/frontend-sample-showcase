@@ -8,7 +8,7 @@ import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme } from "@be
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ThematicDisplayAPI } from "./ThematicDisplayAPI";
 
 /** React state of the Sample component */
@@ -26,7 +26,7 @@ interface ThematicDisplaySampleUIProps {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class ThematicDisplaySampleUIComponent extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
+export default class ThematicDisplaySampleUIComponent extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
 
   // defining the Thematic Display Props values that are not what is need at default,
   private static readonly _defaultProps: ThematicDisplayProps = {

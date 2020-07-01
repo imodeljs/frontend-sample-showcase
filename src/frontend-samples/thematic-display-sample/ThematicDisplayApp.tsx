@@ -7,7 +7,7 @@ import { ThematicDisplayProps } from "@bentley/imodeljs-common";
 import { Viewport } from "@bentley/imodeljs-frontend";
 import * as React from "react";
 import { ThematicDisplayAPI } from "./ThematicDisplayAPI";
-import { ThematicDisplaySampleUIComponent } from "./ThematicDisplayUI";
+import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
 // cSpell:ignore imodels
 
@@ -19,7 +19,7 @@ export default class ThematicDisplaySampleApp {
 
   /** Called by the showcase before the sample is started. */
   public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <ThematicDisplaySampleUIComponent iModelName={iModelName} iModelSelector={iModelSelector} />;
+    return <ThematicDisplaySampleUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   /** Called by the showcase before swapping to another sample. */

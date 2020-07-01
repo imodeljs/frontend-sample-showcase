@@ -13,10 +13,7 @@ export function getTilesSpec(): SampleSpec {
     image: "ui-tile-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "Tiles.tsx", import: import("!!raw-loader!./Tiles") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "Tiles.tsx", import: import("!!raw-loader!./Tiles"), entry: true },
     ],
     setup: TilesList.setup,
   });

@@ -8,9 +8,7 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     image: "custom-checkboxes-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "CustomCheckboxesTree.tsx", import: import("!!raw-loader!./CustomCheckboxesTree") },
-      { name: "Common.ts", import: import("!!raw-loader!../Common") },
-      { name: "Trees.scss", import: import("!!raw-loader!../Trees.scss") },
+      { name: "CustomCheckboxesTree.tsx", import: import("!!raw-loader!./CustomCheckboxesTree"), entry: true },
     ],
     setup: CustomCheckboxesTreeSample.setup,
   });

@@ -13,10 +13,7 @@ export function getToggleSpec(): SampleSpec {
     image: "ui-toggle-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "Toggle.tsx", import: import("!!raw-loader!./Toggle") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
+      { name: "Toggles.tsx", import: import("!!raw-loader!./Toggles"), entry: true },
     ],
     setup: ToggleList.setup,
   });

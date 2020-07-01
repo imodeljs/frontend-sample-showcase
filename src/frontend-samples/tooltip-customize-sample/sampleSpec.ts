@@ -11,11 +11,9 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     label: "Tooltip Customize",
     image: "tooltip-customize-thumbnail.png",
     files: [
-      { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp") },
+      { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp"), entry: true },
       { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../common/samples-common.scss") },
       { name: "SampleToolAdmin.ts", import: import("!!raw-loader!./SampleToolAdmin") },
-      { name: "showcasetooladmin.tsx", import: import("!!raw-loader!../../api/showcasetooladmin") },
     ],
     setup: TooltipCustomizeApp.setup,
     teardown: TooltipCustomizeApp.teardown,

@@ -8,9 +8,7 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     image: "custom-table-node-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "CustomTableNodeTree.tsx", import: import("!!raw-loader!./CustomTableNodeTree") },
-      { name: "Trees.scss", import: import("!!raw-loader!../Trees.scss") },
-      { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
+      { name: "CustomTableNodeTree.tsx", import: import("!!raw-loader!./CustomTableNodeTree"), entry: true },
     ],
     setup: TableNodeTreeSample.setup,
   });

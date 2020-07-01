@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { ShadowStudyUI } from "./ShadowStudyUI";
+import ShadowStudyUI from "./ShadowStudyUI";
 
 export default class ShadowStudyApp {
 

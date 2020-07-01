@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "../Trees.scss";
+import "common/DataProvider/index.scss";
 
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
-import { SampleDataProvider } from "../Common";
+import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 
 export default class BasicTreeSample extends React.Component<{}> {
 

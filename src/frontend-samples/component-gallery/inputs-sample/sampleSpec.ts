@@ -13,11 +13,8 @@ export function getInputsSpec(): SampleSpec {
     image: "ui-inputs-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "Inputs.tsx", import: import("!!raw-loader!./Inputs") },
-      { name: "ComponentContainer.tsx", import: import("!!raw-loader!../CommonComponentTools/ComponentContainer") },
+      { name: "Inputs.tsx", import: import("!!raw-loader!./Inputs"), entry: true },
       { name: "SampleImageCheckBox.tsx", import: import("!!raw-loader!./SampleImageCheckBox") },
-      { name: "samples-common.scss", import: import("!!raw-loader!../../../common/samples-common.scss") },
-      { name: "common-component-tools.scss", import: import("!!raw-loader!../CommonComponentTools/index.scss") },
     ],
     setup: InputsList.setup,
   });
