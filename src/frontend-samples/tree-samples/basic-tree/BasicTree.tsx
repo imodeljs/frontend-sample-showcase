@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/DataProvider/index.scss";
+import "common/DataProvider/Trees.scss";
 
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";

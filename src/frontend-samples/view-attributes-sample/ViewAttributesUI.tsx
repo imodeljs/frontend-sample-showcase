@@ -9,7 +9,7 @@ import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-fronten
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { AttrValues, ViewAttributesApp, ViewFlag } from "./ViewAttributesApp";
+import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */

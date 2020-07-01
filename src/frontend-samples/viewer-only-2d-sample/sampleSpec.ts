@@ -3,8 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import React from "react";
-
 import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
 

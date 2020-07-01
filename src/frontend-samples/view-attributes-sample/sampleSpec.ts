@@ -3,8 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import React from "react";
-import ViewAttributesUI from "./ViewAttributesUI";
+import ViewAttributesApp from "./ViewAttributesApp";
 
 export function getViewAttributesSpec(): SampleSpec {
   return ({
@@ -15,8 +14,6 @@ export function getViewAttributesSpec(): SampleSpec {
       { name: "ViewAttributesApp.ts", import: import("!!raw-loader!./ViewAttributesApp"), entry: true },
       { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI") },
     ],
-    setup: async (iModelName: string, iModelSelector: React.ReactNode) => {
-      return <ViewAttributesUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-    },
+    setup: ViewAttributesApp.setup,
   });
 }

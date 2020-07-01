@@ -13,7 +13,7 @@ export function getToggleSpec(): SampleSpec {
     image: "ui-toggle-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "Toggles.tsx", import: import("!!raw-loader!./Toggles"), entry: true },
+      { name: "Toggle.tsx", import: import("!!raw-loader!./Toggle"), entry: true },
     ],
     setup: ToggleList.setup,
   });

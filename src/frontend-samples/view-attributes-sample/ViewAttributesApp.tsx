@@ -2,10 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
 import { Environment, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { RenderMode } from "@bentley/imodeljs-common";
+import ViewAttributesUI from "./ViewAttributesUI";
 
 // cSpell:ignore imodels
 
@@ -26,7 +28,11 @@ export interface AttrValues {
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export class ViewAttributesApp {
+export default class ViewAttributesApp {
+
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <ViewAttributesUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  }
 
   public static getAttrValues(vp: Viewport): AttrValues {
     return {

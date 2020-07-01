@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/DataProvider/index.scss";
+import "common/DataProvider/Trees.scss";
 
 import {
   ControlledTree, DelayLoadedTreeNodeItem, ITreeDataProvider, PropertyValueRendererManager, SelectionMode, TreeActions,
