@@ -16,19 +16,21 @@ import { AppUi } from "../../../common/AppUi/AppUi";
 export class ToolbarButtonSample extends React.Component {
   public static uiProvider?: ToolbarButtonProvider;
   public static async setup(_iModelName: string) {
-    AppUi.setIModelName(_iModelName);
+    //AppUi.setIModelName(_iModelName);
+    //AppUi.setIModelName("Metrostation Sample");
 
     if (this.uiProvider === undefined)
       this.uiProvider = new ToolbarButtonProvider();
     UiItemsManager.register(this.uiProvider);
 
-    await SampleAppUiComponent.initialize("SampleViewportFrontstage");
+    await SampleAppUiComponent.initialize("Metrostation Sample", "SampleViewportFrontstage");
     IModelApp.toolAdmin.defaultToolId = SelectionTool.toolId;
     return <ToolbarButtonSample ></ToolbarButtonSample>;
   }
   public static teardown() {
     if (this.uiProvider !== undefined)
       UiItemsManager.unregister(this.uiProvider.id);
+    AppUi.restoreDefaults();
   }
   public getControlPane() {
     return (

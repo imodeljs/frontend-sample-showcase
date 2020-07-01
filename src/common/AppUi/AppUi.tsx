@@ -11,12 +11,27 @@ import { StartupComponentFrontstage } from "../../Components/frontstages/Startup
  * Example Ui Configuration for an iModel.js App
  */
 export class AppUi {
-
-  public static iModelName: string;
+  public static initialized: boolean = false;
+  private static _iModelName: string;
+  private static _frontstageId: string;
   // Initialize the ConfigurableUiManager
   public static initialize() {
-    ConfigurableUiManager.initialize();
-    AppUi.defineFrontstages();
+    if (!this.initialized) {
+      this.initialized = true;
+      ConfigurableUiManager.initialize();
+      AppUi.defineFrontstages();
+    }
+  }
+  public static restoreDefaults() {
+    const frontstageDef = FrontstageManager.activeFrontstageDef;
+    frontstageDef && frontstageDef.restoreLayout();
+  }
+
+  public static get iModelName () {
+    return this._iModelName;
+  }
+  public static get frontstageId () {
+    return this._frontstageId;
   }
   private static defineFrontstages() {
 
@@ -26,13 +41,14 @@ export class AppUi {
     ConfigurableUiManager.loadContentGroups(AppUi.getContentGroups());
   }
 
-  public static setIModelName (iModelName: string) {
-    this.iModelName = iModelName;
-  }
-  public static async setFrontstage(frontStageName: string) {
-    if (undefined === UiFramework.getIModelConnection())
-      await FrontstageManager.setActiveFrontstage("StartupComponentFrontstage");
-    await FrontstageManager.setActiveFrontstage(frontStageName);
+  public static async setFrontstage(iModelName: string, frontStageName: string) {
+    this._frontstageId = frontStageName;
+    if (iModelName !== this._iModelName) {
+      this._iModelName = iModelName;
+      await FrontstageManager.setActiveFrontstage("StartupComponentFrontstage")
+    } else {
+      await FrontstageManager.setActiveFrontstage(frontStageName);
+    }
   }
 
   private static getContentLayouts(): ContentLayoutProps[] {
@@ -61,7 +77,7 @@ export class AppUi {
         {
           classId: IModelViewportControl,
           id: "singleIModelView",
-          applicationData: { viewState: UiFramework.getDefaultViewState, iModelConnection: UiFramework.getIModelConnection},
+          applicationData: { viewState: UiFramework.getDefaultViewState, iModelConnection: UiFramework.getIModelConnection },
         },
       ],
     };
@@ -72,7 +88,7 @@ export class AppUi {
         {
           classId: StartupComponentContentControl,
           id: "SampleShowcase.StartupComponentControl",
-          applicationData: { iModelName: AppUi.iModelName},
+          applicationData: { iModelName: AppUi.iModelName, frontstageId: AppUi.frontstageId },
         },
       ],
     };

@@ -7,7 +7,6 @@ import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { StartupComponent } from "../Startup/Startup";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
-import { UiFramework } from "@bentley/ui-framework";
 
 export interface ReloadableViewportProps {
   iModelName: string;

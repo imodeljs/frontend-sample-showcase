@@ -11,14 +11,9 @@ import { BeDragDropContext } from "@bentley/ui-components";
 import { AppUi } from "./AppUi";
 
 export class SampleAppUiComponent extends React.Component {
-  private static _initialized: boolean = false;
-
-  public static async initialize(frontStageName: string) {
-    if (!this._initialized) {
-      this._initialized = true;
-      AppUi.initialize();
-    }
-    await AppUi.setFrontstage(frontStageName);
+  public static async initialize(iModelName: string, frontStageName: string) {
+    AppUi.initialize();
+    await AppUi.setFrontstage(iModelName, frontStageName);
   }
 
   /** Creates an App instance */
