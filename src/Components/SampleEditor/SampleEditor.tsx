@@ -30,6 +30,7 @@ interface SampleEditorReplacementProps {
 
 export interface InternalFile extends File {
   import: Promise<{ default: string; }>;
+  entry?: boolean;
 }
 
 type Sub<T extends T1, T1 extends object> = Pick<T, SetComplement<keyof T, keyof T1>>;
