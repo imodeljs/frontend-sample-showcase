@@ -10,7 +10,10 @@ import "../../common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from "../IModelSelector/IModelSelector";
 import SampleEditor from "../SampleEditor/SampleEditor";
-import { ActivityBar, ActivityBarItem, InternalFile, SplitScreen } from "@bentley/monaco-editor";
+import { InternalFile, SplitScreen } from "@bentley/monaco-editor";
+import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
+import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
+import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 
 // cSpell:ignore imodels
 
@@ -35,6 +38,8 @@ interface ShowcaseState {
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private _samples = sampleManifest;
+  private _prevSampleSetup?: any;
+  private _prevSampleTeardown?: any;
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -45,11 +50,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       iModelName: IModelSelector.defaultIModel,
       activeSampleGroup: names.group,
       activeSampleName: names.sample,
-      showEditor: false,
+      showEditor: true,
     };
 
-    this.onEditorButtonClick = this.onEditorButtonClick.bind(this);
-    this.onSampleTranspiled = this.onSampleTranspiled.bind(this);
   }
 
   private getNamesFromURLParams(): { group: string, sample: string } {
@@ -100,7 +103,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     if (iModelList && 1 < iModelList.length)
       return (
         <div className="model-selector">
-          <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this.onIModelChange} />
+          <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this._onIModelChange} />
         </div>);
   }
 
@@ -133,6 +136,20 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     });
   }
 
+  private _onGalleryChanged = (groupName: string, sampleName: string) => {
+    if (this._prevSampleSetup) {
+      if (window.confirm("Changes made to the code will not be saved!")) {
+        const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
+        activeSample.setup = this._prevSampleSetup;
+        activeSample.teardown = this._prevSampleTeardown;
+        this._prevSampleSetup = undefined;
+        this._onActiveSampleChange(groupName, sampleName);
+      }
+    } else {
+      this._onActiveSampleChange(groupName, sampleName);
+    }
+  }
+
   private _onActiveSampleChange = (groupName: string, sampleName: string) => {
     const oldSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined !== oldSample && oldSample.teardown)
@@ -142,33 +159,73 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setupNewSample(groupName, sampleName);
   }
 
-  private onIModelChange = (iModelName: string) => {
+  private _onIModelChange = (iModelName: string) => {
     this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName));
   }
 
-  private onEditorButtonClick() {
+  private _onEditorButtonClick = () => {
     this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
   }
 
-  private async onSampleTranspiled(blob: string) {
-    // tslint:disable-next-line: variable-name
-    const SampleUi = React.lazy(() => import( /* webpackIgnore: true */ blob));
+  private _onSampleTranspiled = async (blob: string) => {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-    const oldSetup = activeSample.setup;
-    activeSample.setup = async (iModelName: string) => {
-      if (oldSetup) {
-        await oldSetup(iModelName);
+    const sampleUi = await import( /* webpackIgnore: true */ blob);
+
+    if (!this._prevSampleSetup) {
+      this._prevSampleSetup = activeSample.setup;
+    }
+    if (!this._prevSampleTeardown) {
+      this._prevSampleTeardown = activeSample.teardown;
+    }
+
+    /* HACK: Because some samples have a setup method stored in the sample itself, which is editable, we need to make suree call it.
+    *  Unfortunately, there isn't an easy way to tell where that method comes from, so we can only assume that the setup/teardown methods
+    *  are static and shares the same name as the method used in the sample. (Open to suggestions on this one.)
+    */
+    let internalSetup: any;
+    let internalTeardown: any;
+    if (activeSample.setup && Object.keys(sampleUi).length > 1) {
+      for (const key in sampleUi) {
+        if (key !== "default") {
+          if (Object.getOwnPropertyNames(sampleUi[key]).filter((prop) => typeof sampleUi[key][prop] === "function").includes(activeSample.setup.name)) {
+            internalSetup = sampleUi[key][activeSample.setup.name].bind(sampleUi[key]);
+            if (activeSample.teardown) {
+              internalTeardown = sampleUi[key][activeSample.teardown.name].bind(sampleUi[key]);
+            }
+          }
+        }
       }
-      return (
-        <React.Suspense fallback={"Loading"}>
-          <SampleUi iModelName={iModelName} />
-        </React.Suspense>);
+    }
+
+    activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
+      try {
+        if (!internalSetup && this._prevSampleSetup) {
+          await this._prevSampleSetup(iModelName, iModelSelector);
+        } else {
+          await internalSetup();
+        }
+        return (
+          <sampleUi.default iModelName={iModelName} iModelSelector={iModelSelector} />
+        );
+      } catch (err) {
+        return (
+          <DisplayError error={err} />
+        );
+      }
     };
+
+    activeSample.teardown = internalTeardown || this._prevSampleTeardown;
 
     const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
     group.samples.splice(sampleIndex, 1, activeSample);
     this._onActiveSampleChange(group.groupName, activeSample.name);
+  }
+
+  private _onPanelSizeChange = (size: number) => {
+    if (size <= 200 && this.state.showEditor) {
+      this.setState({ showEditor: false });
+    }
   }
 
   public render() {
@@ -177,22 +234,18 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     return (
       <div className="showcase">
-        <SplitScreen style={{ position: "relative" }} size={48} allowResize={false} resizerStyle={{ cursor: "default" }} pane1Style={{ display: "flex" }}>
-          <ActivityBar>
-            <ActivityBarItem onClick={this.onEditorButtonClick} active={this.state.showEditor}>
-              <div className="codicon codicon-json" style={{ fontSize: "24px" }} />
-            </ActivityBarItem>
-          </ActivityBar>
-          <SplitScreen style={{ position: "relative" }} minSize={500} pane1Style={this.state.showEditor ? undefined : { width: 0 }}>
-            <SampleEditor files={files} onTranspiled={this.onSampleTranspiled} />
-            <div style={{ height: "100%" }}>
-              <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
-                {this.state.sampleUI}
-              </div>
+        <SplitScreen style={{ position: "relative" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? undefined : { width: 0 }} onChange={this._onPanelSizeChange}>
+          <SampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
+          <div style={{ height: "100%" }}>
+            <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
+              {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="sample-code-button" onClick={this._onEditorButtonClick}>Explore Code</Button>}
+              <ErrorBoundary>
+                {this.state.sampleUI || null}
+              </ErrorBoundary>
             </div>
-          </SplitScreen>
+          </div>
         </SplitScreen>
-        <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onActiveSampleChange} />
+        <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryChanged} />
       </div>
     );
   }
