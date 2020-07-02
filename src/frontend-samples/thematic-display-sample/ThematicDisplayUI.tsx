@@ -9,7 +9,7 @@ import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ThematicDisplayAPI } from "./ThematicDisplayApp";
+import ThematicDisplayApp from "./ThematicDisplayApp";
 
 /** React state of the Sample component */
 interface SampleState {
@@ -60,24 +60,24 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
    */
   public static init(vp: Viewport) {
     // Test that view is compatible with thematic display.
-    if (undefined === vp || !ThematicDisplayAPI.isThematicDisplaySupported(vp)) {
+    if (undefined === vp || !ThematicDisplayApp.isThematicDisplaySupported(vp)) {
       alert("iModel is not compatible with thematic display, please use an iModel with a 3d view.");
       return;
     }
 
     // Set the default values.
-    ThematicDisplayAPI.setThematicDisplayProps(vp, this._defaultProps);
+    ThematicDisplayApp.setThematicDisplayProps(vp, this._defaultProps);
 
     // Will enable Thematic Display over the whole iModel.
-    const extents = ThematicDisplayAPI.getProjectExtents(vp);
-    ThematicDisplayAPI.setThematicDisplayRange(vp, extents);
+    const extents = ThematicDisplayApp.getProjectExtents(vp);
+    ThematicDisplayApp.setThematicDisplayRange(vp, extents);
 
     // Redraw viewport with new settings
-    ThematicDisplayAPI.syncViewport(vp);
+    ThematicDisplayApp.syncViewport(vp);
 
     // Turn on
     // Note: Since this function is modifying the view flags, the view does not need to be synced to see the changes.
-    ThematicDisplayAPI.setThematicDisplayOnOff(vp, true);
+    ThematicDisplayApp.setThematicDisplayOnOff(vp, true);
   }
 
   /** Update the state of the sample react component by querying the API. */
@@ -87,8 +87,8 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     if (undefined === vp)
       return;
 
-    const props = ThematicDisplayAPI.getThematicDisplayProps(vp);
-    const extents = ThematicDisplayAPI.getProjectExtents(vp);
+    const props = ThematicDisplayApp.getThematicDisplayProps(vp);
+    const extents = ThematicDisplayApp.getProjectExtents(vp);
     const range = props.range;
 
     let colorScheme = props.gradientSettings?.colorScheme;
@@ -96,7 +96,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
       colorScheme = ThematicGradientColorScheme.BlueRed;
 
     this.setState({
-      on: ThematicDisplayAPI.isThematicDisplayOn(vp),
+      on: ThematicDisplayApp.isThematicDisplayOn(vp),
       extents: undefined === extents ? [0, 1] : extents,
       range: undefined === range ? [0, 1] : range,
       colorScheme,
@@ -120,7 +120,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     if (undefined === vp)
       return;
 
-    ThematicDisplayAPI.setThematicDisplayOnOff(vp, checked);
+    ThematicDisplayApp.setThematicDisplayOnOff(vp, checked);
     this.updateState();
   }
 
@@ -140,8 +140,8 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     // This keeps the high and low from crossing
     const newRange = Range1d.createXX(values[0], values[1]);
 
-    ThematicDisplayAPI.setThematicDisplayRange(vp, newRange);
-    ThematicDisplayAPI.syncViewport(vp);
+    ThematicDisplayApp.setThematicDisplayRange(vp, newRange);
+    ThematicDisplayApp.syncViewport(vp);
     this.updateState();
   }
 
@@ -167,8 +167,8 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     // Convert the value back to number represented by enum.
     const colorScheme: ThematicGradientColorScheme = Number.parseInt(event.target.value, 10);
 
-    ThematicDisplayAPI.setThematicDisplayGradientColorScheme(vp, colorScheme);
-    ThematicDisplayAPI.syncViewport(vp);
+    ThematicDisplayApp.setThematicDisplayGradientColorScheme(vp, colorScheme);
+    ThematicDisplayApp.syncViewport(vp);
     this.updateState();
   }
 

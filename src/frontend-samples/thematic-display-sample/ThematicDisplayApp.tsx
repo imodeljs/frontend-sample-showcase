@@ -11,8 +11,24 @@ import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
 // cSpell:ignore imodels
 
-/** This file contains the user interface and main logic that is specific to this sample. */
-export class ThematicDisplayAPI {
+/** Handles the setup and teardown of the thematic display sample */
+export default class ThematicDisplayApp {
+  public static originalProps?: ThematicDisplayProps;
+  public static originalFlag: boolean = false;
+  public static viewport?: Viewport;
+
+  /** Called by the showcase before the sample is started. */
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
+    return <ThematicDisplaySampleUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  }
+
+  /** Called by the showcase before swapping to another sample. */
+  public static teardown(): void {
+    if (undefined === this.viewport) return;
+    this.setThematicDisplayProps(this.viewport, this.originalProps);
+    this.setThematicDisplayOnOff(this.viewport, this.originalFlag);
+  }
+
   /** Render changes to viewport using Viewport API. */
   public static syncViewport(vp: Viewport): void {
     vp.synchWithView();
@@ -60,36 +76,17 @@ export class ThematicDisplayAPI {
 
   /** Modify the range setting using the Viewport API. */
   public static setThematicDisplayRange(vp: Viewport, range: Range1dProps) {
-    const props = ThematicDisplayAPI.getThematicDisplayProps(vp);
+    const props = this.getThematicDisplayProps(vp);
     props.range = range;
     this.setThematicDisplayProps(vp, props);
   }
 
   /** Modify the gradient color scheme setting using the Viewport API. */
   public static setThematicDisplayGradientColorScheme(vp: Viewport, colorScheme: ThematicGradientColorScheme) {
-    const props = ThematicDisplayAPI.getThematicDisplayProps(vp);
+    const props = this.getThematicDisplayProps(vp);
     if (undefined === props.gradientSettings)
       props.gradientSettings = {};
     props.gradientSettings.colorScheme = colorScheme;
     this.setThematicDisplayProps(vp, props);
-  }
-}
-
-/** Handles the setup and teardown of the thematic display sample */
-export default class ThematicDisplaySampleApp {
-  public static originalProps?: ThematicDisplayProps;
-  public static originalFlag: boolean = false;
-  public static viewport?: Viewport;
-
-  /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <ThematicDisplaySampleUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
-  /** Called by the showcase before swapping to another sample. */
-  public static teardown(): void {
-    if (undefined === this.viewport) return;
-    ThematicDisplayAPI.setThematicDisplayProps(this.viewport, this.originalProps);
-    ThematicDisplayAPI.setThematicDisplayOnOff(this.viewport, this.originalFlag);
   }
 }

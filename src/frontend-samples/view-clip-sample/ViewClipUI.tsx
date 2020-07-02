@@ -10,7 +10,7 @@ import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
-import { addExtentsClipRange, clearClips, setClipPlane, setViewClipFromClipPlaneSet } from "./ViewClipApp";
+import ViewClipApp from "./ViewClipApp";
 
 interface ViewClipUIProps {
   iModelName: string;
@@ -42,7 +42,7 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
       return false;
     }
     if (this.state.imodel) {
-      return setClipPlane(vp, event.target.value, this.state.imodel);
+      return ViewClipApp.setClipPlane(vp, event.target.value, this.state.imodel);
     }
   }
 
@@ -64,7 +64,7 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
           // Negate the planeSet
           planeSet.negateAllPlanes();
           // This method calls setViewClip. Note that editing the existing clip was not sufficient. The existing clip was edited then passed back to setViewClip.
-          return setViewClipFromClipPlaneSet(vp, planeSet);
+          return ViewClipApp.setViewClipFromClipPlaneSet(vp, planeSet);
         }
       }
     }
@@ -79,12 +79,12 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
       return false;
     }
     // Clear any other clips before adding the clip range
-    clearClips(vp);
+    ViewClipApp.clearClips(vp);
     if (showClipRange) {
       if (!vp.view.getViewClip())
-        addExtentsClipRange(vp);
+        ViewClipApp.addExtentsClipRange(vp);
     } else {
-      clearClips(vp);
+      ViewClipApp.clearClips(vp);
     }
     return true;
   }

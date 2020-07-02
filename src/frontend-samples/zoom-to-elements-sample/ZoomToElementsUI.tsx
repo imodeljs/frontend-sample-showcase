@@ -10,7 +10,7 @@ import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@ben
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { zoomToElements } from "./ZoomToElementsApp";
+import ZoomToElementsApp from "./ZoomToElementsApp";
 
 /** React props */
 interface ZoomToProps {
@@ -154,7 +154,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
           </div>
           <hr></hr>
           <div style={{ textAlign: "center" }}>
-            <Button buttonType={ButtonType.Primary} onClick={() => zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
+            <Button buttonType={ButtonType.Primary} onClick={() => ZoomToElementsApp.zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
           </div>
         </div>
       </>
