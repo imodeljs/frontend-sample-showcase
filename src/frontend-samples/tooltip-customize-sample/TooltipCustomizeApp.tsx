@@ -9,7 +9,6 @@ import { ProxyToolAdmin, ShowcaseToolAdmin } from "../../api/showcasetooladmin";
 import { ElemProperty, TooltipCustomizeSettings, TooltipCustomizeUI } from "./TooltipCustomizeUI";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 
-
 // SampleToolAdmin would typically extend ToolAdmin
 //  See Notes on use of ProxyToolAdmin at the bottom of this file.
 //  Do this: "class YourToolAdmin extends ToolAdmin"

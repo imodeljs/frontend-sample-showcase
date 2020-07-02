@@ -27,4 +27,4 @@ export const changeViewportView = async (index: number, imodel: IModelConnection
     if (targetView) vp.changeView(targetView);
     else alert("Invalid View Detected!");
   }
-}
+};

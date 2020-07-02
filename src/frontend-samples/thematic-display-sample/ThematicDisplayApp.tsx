@@ -75,7 +75,6 @@ export class ThematicDisplayAPI {
   }
 }
 
-
 /** Handles the setup and teardown of the thematic display sample */
 export default class ThematicDisplaySampleApp {
   public static originalProps?: ThematicDisplayProps;
