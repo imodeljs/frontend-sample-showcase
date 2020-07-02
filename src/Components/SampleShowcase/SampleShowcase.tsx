@@ -9,8 +9,8 @@ import "./SampleShowcase.scss";
 import "../../common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from "../IModelSelector/IModelSelector";
-import SampleEditor, { InternalFile } from "../SampleEditor/SampleEditor";
-import { ActivityBar, ActivityBarItem, SplitScreen } from "@bentley/monaco-editor";
+import SampleEditor from "../SampleEditor/SampleEditor";
+import { ActivityBar, ActivityBarItem, InternalFile, SplitScreen } from "@bentley/monaco-editor";
 
 // cSpell:ignore imodels
 
@@ -49,6 +49,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     };
 
     this.onEditorButtonClick = this.onEditorButtonClick.bind(this);
+    this.onSampleTranspiled = this.onSampleTranspiled.bind(this);
   }
 
   private getNamesFromURLParams(): { group: string, sample: string } {
@@ -149,6 +150,27 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
   }
 
+  private async onSampleTranspiled(blob: string) {
+    // tslint:disable-next-line: variable-name
+    const SampleUi = React.lazy(() => import( /* webpackIgnore: true */ blob));
+    const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
+    const oldSetup = activeSample.setup;
+    activeSample.setup = async (iModelName: string) => {
+      if (oldSetup) {
+        await oldSetup(iModelName);
+      }
+      return (
+        <React.Suspense fallback={"Loading"}>
+          <SampleUi iModelName={iModelName} />
+        </React.Suspense>);
+    };
+
+    const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
+    const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
+    group.samples.splice(sampleIndex, 1, activeSample);
+    this._onActiveSampleChange(group.groupName, activeSample.name);
+  }
+
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     const files = activeSample ? activeSample.files : undefined;
@@ -162,7 +184,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
             </ActivityBarItem>
           </ActivityBar>
           <SplitScreen style={{ position: "relative" }} minSize={500} pane1Style={this.state.showEditor ? undefined : { width: 0 }}>
-            <SampleEditor files={files} />
+            <SampleEditor files={files} onTranspiled={this.onSampleTranspiled} />
             <div style={{ height: "100%" }}>
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {this.state.sampleUI}
