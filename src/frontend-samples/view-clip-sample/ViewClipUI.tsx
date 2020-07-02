@@ -10,6 +10,7 @@ import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
+import { addExtentsClipRange, clearClips, setClipPlane, setViewClipFromClipPlaneSet } from "./ViewClipApp";
 
 interface ViewClipUIProps {
   iModelName: string;
@@ -33,104 +34,6 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
     };
   }
 
-  /* Method for clearing all clips in the viewport */
-  private _clearClips(vp: ScreenViewport) {
-    // Run the ViewClipClearTool and hide the decorators
-    IModelApp.tools.run(ViewClipClearTool.toolId);
-    ViewClipDecorationProvider.create().toggleDecoration(vp);
-  }
-
-  /* Method for adding decorators to the viewport */
-  private _addDecorators(vp: ScreenViewport) {
-    // Create a clip decorator. Selecting the clip decoration to immediately show the handles is the default.
-    const vcdp: ViewClipDecorationProvider = ViewClipDecorationProvider.create();
-    // Default behavior is to hide the decorators on deselect. We want to keep the decorators showing in this example.
-    vcdp.clearDecorationOnDeselect = false;
-    vcdp.showDecoration(vp);
-    // The decorators require the SelectTool being active.
-    IModelApp.toolAdmin.startDefaultTool();
-  }
-
-  /* Method for adding a new clip range around the model's extents */
-  private _addExtentsClipRange = (vp: ScreenViewport) => {
-    // Get the range of the model contents.
-    const range = vp.view.computeFitRange();
-    // Remove the top half of the z-range so we have something clipped by default
-    range.high.z = (range.high.z + range.low.z) / 2.0;
-    // Create a block for the ClipVector.
-    const block: ClipShape = ClipShape.createBlock(range, range.isAlmostZeroZ ? ClipMaskXYZRangePlanes.XAndY : ClipMaskXYZRangePlanes.All, false, false);
-    // Create the ClipVector
-    const clip: ClipVector = ClipVector.createEmpty();
-    // Add the block to the Clipvector and set it in the ScreenViewport.
-    clip.appendReference(block);
-    vp.view.setViewClip(clip);
-    vp.setupFromView();
-    this._addDecorators(vp);
-  }
-
-  /* Turn on/off the clip range */
-  private _onToggleRangeClip = async (showClipRange: boolean) => {
-    this.setState({ showClipBlock: showClipRange, clipPlane: "None" });
-    const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp) {
-      return false;
-    }
-    // Clear any other clips before adding the clip range
-    this._clearClips(vp);
-    if (showClipRange) {
-      if (!vp.view.getViewClip())
-        this._addExtentsClipRange(vp);
-    } else {
-      this._clearClips(vp);
-    }
-    return true;
-  }
-
-  /* Method for getting a normal vector. */
-  private _getPlaneInwardNormal(orientation: EditManipulator.RotationType, viewport: Viewport): Vector3d | undefined {
-    const matrix = EditManipulator.HandleUtils.getRotation(orientation, viewport);
-    if (undefined === matrix)
-      return undefined;
-    return matrix.getColumn(2).negate();
-  }
-
-  private setViewClipFromClipPlaneSet(vp: ScreenViewport, planeSet: ConvexClipPlaneSet) {
-    const prim = ClipPrimitive.createCapture(planeSet);
-    const clip = ClipVector.createEmpty();
-    clip.appendReference(prim);
-    vp.view.setViewClip(clip);
-    vp.setupFromView();
-    this._addDecorators(vp);
-    return true;
-  }
-
-  /* Method for setting a plane as the view clip */
-  private _setClipPlane(vp: ScreenViewport, clipPlane: string) {
-    let rotationType: EditManipulator.RotationType;
-    switch (clipPlane) {
-      case "0": rotationType = EditManipulator.RotationType.Top; break;
-      case "1": rotationType = EditManipulator.RotationType.Front; break;
-      case "2": rotationType = EditManipulator.RotationType.Left; break;
-      case "None": {
-        this._clearClips(vp);
-        return true;
-      } default: rotationType = EditManipulator.RotationType.Top; break;
-    }
-
-    // Get the center point of the displayed extents as a starting point for the clip plane
-    const point: Point3d = this.state.imodel!.displayedExtents.center;
-    const normal: Vector3d | undefined = this._getPlaneInwardNormal(rotationType, vp);
-    const plane: Plane3dByOriginAndUnitNormal | undefined = Plane3dByOriginAndUnitNormal.create(point, normal!);
-    if (undefined === plane)
-      return false;
-    let planeSet: ConvexClipPlaneSet | undefined;
-
-    if (undefined === planeSet)
-      planeSet = ConvexClipPlaneSet.createEmpty();
-    planeSet.addPlaneToConvexSet(ClipPlane.createPlane(plane));
-    return this.setViewClipFromClipPlaneSet(vp, planeSet);
-  }
-
   /* Handler for plane select */
   private _onPlaneSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ showClipBlock: false, clipPlane: event.target.value });
@@ -138,7 +41,9 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
     if (undefined === vp) {
       return false;
     }
-    return this._setClipPlane(vp, event.target.value);
+    if (this.state.imodel) {
+      return setClipPlane(vp, event.target.value, this.state.imodel);
+    }
   }
 
   /* Method for flipping (negating) the current clip plane. */
@@ -159,9 +64,27 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
           // Negate the planeSet
           planeSet.negateAllPlanes();
           // This method calls setViewClip. Note that editing the existing clip was not sufficient. The existing clip was edited then passed back to setViewClip.
-          return this.setViewClipFromClipPlaneSet(vp, planeSet);
+          return setViewClipFromClipPlaneSet(vp, planeSet);
         }
       }
+    }
+    return true;
+  }
+
+  /* Turn on/off the clip range */
+  private _onToggleRangeClip = async (showClipRange: boolean) => {
+    this.setState({ showClipBlock: showClipRange, clipPlane: "None" });
+    const vp = IModelApp.viewManager.selectedView;
+    if (undefined === vp) {
+      return false;
+    }
+    // Clear any other clips before adding the clip range
+    clearClips(vp);
+    if (showClipRange) {
+      if (!vp.view.getViewClip())
+        addExtentsClipRange(vp);
+    } else {
+      clearClips(vp);
     }
     return true;
   }

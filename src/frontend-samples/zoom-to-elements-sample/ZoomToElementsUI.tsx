@@ -5,22 +5,12 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, MarginPercent, StandardViewId, ViewChangeOptions, Viewport, ZoomToOptions } from "@bentley/imodeljs-frontend";
+import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-
-class ZoomToElementsAPI {
-  public static async zoomToElements(elementIds: string[], viewChangeOpts: ViewChangeOptions, zoomToOpts: ZoomToOptions, vp: Viewport, imodel: IModelConnection) {
-
-    // Set the view to point at a volume containing the list of elements
-    await vp.zoomToElements(elementIds, { ...viewChangeOpts, ...zoomToOpts });
-
-    // Select the elements.  This is not necessary, but it makes them easier to see.
-    imodel.selectionSet.replace(elementIds);
-  }
-}
+import { zoomToElements } from "./ZoomToElementsApp";
 
 /** React props */
 interface ZoomToProps {
@@ -29,7 +19,7 @@ interface ZoomToProps {
 }
 
 /** React state */
-interface ZoomToState {
+export interface ZoomToState {
   imodel?: IModelConnection;
   elementsAreSelected: boolean;
   elementList: string[];
@@ -73,24 +63,6 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     this.setState({ elementsAreSelected: !selection.isEmpty });
-  }
-
-  private _handleZoomToElementsButton = async () => {
-    const viewChangeOpts: ViewChangeOptions = {};
-    if (this.state.animateEnable)
-      viewChangeOpts.animateFrustumChange = this.state.animateVal;
-    if (this.state.marginEnable)
-      viewChangeOpts.marginPercent = new MarginPercent(this.state.marginVal, this.state.marginVal, this.state.marginVal, this.state.marginVal);
-
-    const zoomToOpts: ZoomToOptions = {};
-    if (this.state.relativeViewEnable)
-      zoomToOpts.placementRelativeId = this.state.relativeViewVal;
-    if (this.state.standardViewEnable)
-      zoomToOpts.standardViewId = this.state.standardViewVal;
-
-    const vp = IModelApp.viewManager.selectedView!;
-    // tslint:disable-next-line no-floating-promises
-    ZoomToElementsAPI.zoomToElements(this.state.elementList, viewChangeOpts, zoomToOpts, vp, this.state.imodel!);
   }
 
   private _handleCaptureIdsButton = () => {
@@ -182,7 +154,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
           </div>
           <hr></hr>
           <div style={{ textAlign: "center" }}>
-            <Button buttonType={ButtonType.Primary} onClick={() => this._handleZoomToElementsButton()} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
+            <Button buttonType={ButtonType.Primary} onClick={() => zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
           </div>
         </div>
       </>

@@ -9,7 +9,7 @@ import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ThematicDisplayAPI } from "./ThematicDisplayAPI";
+import { ThematicDisplayAPI } from "./ThematicDisplayApp";
 
 /** React state of the Sample component */
 interface SampleState {

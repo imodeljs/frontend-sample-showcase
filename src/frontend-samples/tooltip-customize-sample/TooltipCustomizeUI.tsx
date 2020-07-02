@@ -8,8 +8,22 @@ import "../../common/samples-common.scss";
 import { Toggle } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "../../api/showcasetooladmin";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ElemProperty, TooltipCustomizeSettings } from "./TooltipCustomizeApp";
-import { SampleToolAdmin } from "./SampleToolAdmin";
+import { SampleToolAdmin } from "./TooltipCustomizeApp";
+
+export enum ElemProperty {
+  Origin = "Origin",
+  LastModified = "LastMod",
+  CodeValue = "CodeValue",
+}
+
+export interface TooltipCustomizeSettings {
+  showImage: boolean;
+  showCustomText: boolean;
+  showElementProperty: boolean;
+  showDefaultToolTip: boolean;
+  customText: string;
+  elemProperty: ElemProperty;
+}
 
 /** A React component that renders the UI specific for this sample */
 export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {

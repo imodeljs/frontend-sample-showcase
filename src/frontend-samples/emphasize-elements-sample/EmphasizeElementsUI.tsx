@@ -7,16 +7,12 @@ import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@ben
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 
 import { ColorDef } from "@bentley/imodeljs-common";
-
-enum ActionType {
-  Emphasize = "Emphasize",
-  Isolate = "Isolate",
-  Hide = "Hide",
-  Override = "Color",
-}
+import {
+  ClearEmphasizeAction, ClearHideAction, ClearIsolateAction, ClearOverrideAction,
+  EmphasizeAction, HideAction, IsolateAction, OverrideAction,
+} from "./EmphasizeElementsApp";
 
 /** React state of the Sample component */
 interface EmphasizeElementsState {
@@ -29,89 +25,11 @@ interface EmphasizeElementsState {
   colorValue: ColorDef;
 }
 
-abstract class EmphasizeActionBase {
-  protected abstract execute(emph: EmphasizeElements, vp: ScreenViewport): boolean;
-
-  public run(): boolean {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp) {
-      return false;
-    }
-
-    const emph = EmphasizeElements.getOrCreate(vp);
-    return this.execute(emph, vp);
-  }
-}
-
-class EmphasizeAction extends EmphasizeActionBase {
-  private _wantEmphasis: boolean;
-
-  public constructor(wantEmphasis: boolean) {
-    super();
-    this._wantEmphasis = wantEmphasis;
-  }
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.wantEmphasis = this._wantEmphasis;
-    emph.emphasizeSelectedElements(vp);
-    return true;
-  }
-}
-
-class ClearEmphasizeAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearEmphasizedElements(vp);
-    return true;
-  }
-}
-
-class HideAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.hideSelectedElements(vp);
-    return true;
-  }
-}
-
-class ClearHideAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearHiddenElements(vp);
-    return true;
-  }
-}
-
-class IsolateAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.isolateSelectedElements(vp);
-    return true;
-  }
-}
-
-class ClearIsolateAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearIsolatedElements(vp);
-    return true;
-  }
-}
-
-class OverrideAction extends EmphasizeActionBase {
-  private _colorValue: ColorDef;
-
-  public constructor(colorValue: ColorDef) {
-    super();
-    this._colorValue = colorValue;
-  }
-
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.overrideSelectedElements(vp, this._colorValue, FeatureOverrideType.ColorOnly, false, true);
-    return true;
-  }
-}
-
-class ClearOverrideAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearOverriddenElements(vp);
-    return true;
-  }
+enum ActionType {
+  Emphasize = "Emphasize",
+  Isolate = "Isolate",
+  Hide = "Hide",
+  Override = "Color",
 }
 
 /** A React component that renders the UI specific for this sample */

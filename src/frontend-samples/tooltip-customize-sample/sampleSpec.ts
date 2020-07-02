@@ -13,7 +13,6 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     files: [
       { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp"), entry: true },
       { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI") },
-      { name: "SampleToolAdmin.ts", import: import("!!raw-loader!./SampleToolAdmin") },
     ],
     setup: TooltipCustomizeApp.setup,
     teardown: TooltipCustomizeApp.teardown,

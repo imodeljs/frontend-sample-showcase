@@ -9,7 +9,7 @@ import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-fronten
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ViewCreator2d } from "./ViewCreator2d";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-
+import { changeViewportView } from "./ViewerOnly2dApp";
 // The Props and State for this sample component
 interface ViewerOnly2dProps {
   iModelName: string;
@@ -63,15 +63,9 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
   /** When a model is selected in above list, get its view and switch to it.  */
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.selectedOptions[0].value, undefined);
-    const vp = IModelApp.viewManager.selectedView;
 
-    if (vp) {
-      const vpAspect = vp.vpDiv.clientHeight / vp.vpDiv.clientWidth;
-      const viewCreator = new ViewCreator2d(this.state.imodel!);
-      const targetView = await viewCreator.getViewForModel(this.state.models![index], vpAspect);
-
-      if (targetView && vp) vp.changeView(targetView);
-      else alert("Invalid View Detected!");
+    if (this.state.imodel && this.state.models) {
+      await changeViewportView(index, this.state.imodel, this.state.models);
     }
   }
 
