@@ -45,11 +45,11 @@ const toolbar = () => {
   /* eslint-disable */
   return (
     <div className="toolbar">
-      <a href="javascript:;" title={SelectionTool.flyover} onClick={select}><span className="icon icon-cursor"></span></a>
-      <a href="javascript:;" title={FitViewTool.flyover} onClick={fitView}><span className="icon icon-fit-to-view"></span></a>
-      <a href="javascript:;" title={RotateViewTool.flyover} onClick={rotate}><span className="icon icon-gyroscope"></span></a>
-      <a href="javascript:;" title={PanViewTool.flyover} onClick={pan}><span className="icon icon-hand-2"></span></a>
-      <a href="javascript:;" title={ZoomViewTool.flyover} onClick={zoom}><span className="icon icon-zoom"></span></a>
+      <a href="#" title={SelectionTool.flyover} onClick={(e) => { e.preventDefault(); select(); }}><span className="icon icon-cursor"></span></a>
+      <a href="#" title={FitViewTool.flyover} onClick={(e) => { e.preventDefault(); fitView(); }}><span className="icon icon-fit-to-view"></span></a>
+      <a href="#" title={RotateViewTool.flyover} onClick={(e) => { e.preventDefault(); rotate(); }}><span className="icon icon-gyroscope"></span></a>
+      <a href="#" title={PanViewTool.flyover} onClick={(e) => { e.preventDefault(); pan(); }}><span className="icon icon-hand-2"></span></a>
+      <a href="#" title={ZoomViewTool.flyover} onClick={(e) => { e.preventDefault(); zoom(); }}><span className="icon icon-zoom"></span></a>
     </div>
   );
   /* eslint-enable */
