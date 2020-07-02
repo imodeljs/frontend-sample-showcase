@@ -10,7 +10,7 @@ export function getToolbarButtonSample(): SampleSpec {
   return ({
     name: "toolbar-button-sample",
     label: "Add Toolbar Button (Dynamically)",
-    image: "viewport-only-thumbnail.png",
+    image: "toolbar-button-thumbnail.png",
     files: [
       { name: "ToolbarButtonSample.tsx", import: import("!!raw-loader!./index") },
       { name: "ToolbarButtonProvider.tsx", import: import("!!raw-loader!./ToolbarButtonProvider") },

@@ -10,7 +10,7 @@ export function getViewportFrontstageSample(): SampleSpec {
   return ({
     name: "viewport-frontstage-sample",
     label: "Viewport Frontstage",
-    image: "viewport-only-thumbnail.png",
+    image: "viewport-frontstage-thumbnail.png",
     files: [
       { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!./index") },
       { name: "ViewportFrontstage.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage")},
