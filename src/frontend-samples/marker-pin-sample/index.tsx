@@ -22,7 +22,7 @@ interface ManualPinSelection {
   image: string;
 }
 
-export default class MarkerPinsApp {
+export class MarkerPinsApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
   public static range?: Range2d;
@@ -106,7 +106,7 @@ interface MarkerPinsUIState {
   manualPin: ManualPinSelection;
 }
 
-export class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, MarkerPinsUIState> {
+export default class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
