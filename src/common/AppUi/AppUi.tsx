@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ConfigurableUiManager, ContentGroupProps, ContentLayoutProps, FrontstageManager, IModelViewportControl, UiFramework } from "@bentley/ui-framework";
+import { ConfigurableUiManager, ContentGroupProps, ContentLayoutProps, FrontstageManager } from "@bentley/ui-framework";
 import { StartupComponentContentControl } from "./StartupComponentContentControl";
-import { SampleViewportFrontstage } from "../../Components/frontstages/SampleViewportFrontstage";
+import { ViewportFrontstage } from "../../Components/frontstages/ViewportFrontstage";
 import { StartupComponentFrontstage } from "../../Components/frontstages/StartupComponentFrontstage";
 
 /**
@@ -20,7 +20,7 @@ export class AppUi {
       this.initialized = true;
       ConfigurableUiManager.initialize();
       AppUi.defineFrontstages();
-      this._frontstageId = "SampleViewFrontstage"; // default frontstage id
+      this._frontstageId = "ViewportFrontstage"; // default frontstage id
     }
   }
   public static restoreDefaults() {
@@ -37,7 +37,7 @@ export class AppUi {
   private static defineFrontstages() {
 
     ConfigurableUiManager.addFrontstageProvider(new StartupComponentFrontstage());
-    ConfigurableUiManager.addFrontstageProvider(new SampleViewportFrontstage());
+    ConfigurableUiManager.addFrontstageProvider(new ViewportFrontstage());
     ConfigurableUiManager.loadContentLayouts(AppUi.getContentLayouts());
     ConfigurableUiManager.loadContentGroups(AppUi.getContentGroups());
   }
@@ -76,17 +76,6 @@ export class AppUi {
   }
 
   private static getContentGroups(): ContentGroupProps[] {
-    const singleIModelViewport: ContentGroupProps = {
-      id: "singleIModelViewport",
-      contents: [
-        {
-          classId: IModelViewportControl,
-          id: "singleIModelView",
-          applicationData: { viewState: UiFramework.getDefaultViewState, iModelConnection: UiFramework.getIModelConnection },
-        },
-      ],
-    };
-
     const startupComponent: ContentGroupProps = {
       id: "startupComponent",
       contents: [
@@ -98,7 +87,7 @@ export class AppUi {
     };
 
     const contentGroups: ContentGroupProps[] = [];
-    contentGroups.push(startupComponent, singleIModelViewport);
+    contentGroups.push(startupComponent);
     return contentGroups;
   }
 }

@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-// import { ViewState } from "@bentley/imodeljs-frontend";
+import * as React from "react";
 import {
   BasicNavigationWidget,
   BasicToolWidget,
@@ -14,7 +14,6 @@ import {
   Zone,
 } from "@bentley/ui-framework";
 import { StageUsage } from "@bentley/ui-abstract";
-import * as React from "react";
 import { SmallStatusBarWidgetControl } from "../Widgets/SmallStatusBar";
 
 /**
