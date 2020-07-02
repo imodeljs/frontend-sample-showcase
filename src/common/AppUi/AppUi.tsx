@@ -20,6 +20,7 @@ export class AppUi {
       this.initialized = true;
       ConfigurableUiManager.initialize();
       AppUi.defineFrontstages();
+      this._frontstageId = "SampleViewFrontstage"; // default frontstage id
     }
   }
   public static restoreDefaults() {
@@ -27,10 +28,10 @@ export class AppUi {
     frontstageDef && frontstageDef.restoreLayout();
   }
 
-  public static get iModelName () {
+  public static get iModelName() {
     return this._iModelName;
   }
-  public static get frontstageId () {
+  public static get frontstageId() {
     return this._frontstageId;
   }
   private static defineFrontstages() {
@@ -41,13 +42,17 @@ export class AppUi {
     ConfigurableUiManager.loadContentGroups(AppUi.getContentGroups());
   }
 
-  public static async setFrontstage(iModelName: string, frontStageName: string) {
-    this._frontstageId = frontStageName;
-    if (iModelName !== this._iModelName) {
+  public static async activateFrontstage(frontstageId?: string) {
+    await FrontstageManager.setActiveFrontstage(undefined === frontstageId ? this._frontstageId : frontstageId);
+  }
+  public static async setIModelAndFrontstage(iModelName?: string, frontstageId?: string) {
+    if (undefined !== frontstageId)
+      this._frontstageId = frontstageId;
+    if (undefined !== iModelName && iModelName !== this._iModelName) {
       this._iModelName = iModelName;
       await FrontstageManager.setActiveFrontstage("StartupComponentFrontstage")
     } else {
-      await FrontstageManager.setActiveFrontstage(frontStageName);
+      await this.activateFrontstage(this._frontstageId);
     }
   }
 
@@ -88,7 +93,6 @@ export class AppUi {
         {
           classId: StartupComponentContentControl,
           id: "SampleShowcase.StartupComponentControl",
-          applicationData: { iModelName: AppUi.iModelName, frontstageId: AppUi.frontstageId },
         },
       ],
     };

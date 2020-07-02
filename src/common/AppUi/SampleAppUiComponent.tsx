@@ -8,14 +8,8 @@ import { ColorTheme, ConfigurableUiContent, DragDropLayerRenderer, FrameworkVers
 import { SafeAreaInsets } from "@bentley/ui-ninezone";
 import { Provider } from "react-redux";
 import { BeDragDropContext } from "@bentley/ui-components";
-import { AppUi } from "./AppUi";
 
 export class SampleAppUiComponent extends React.Component {
-  public static async initialize(iModelName: string, frontStageName: string) {
-    AppUi.initialize();
-    await AppUi.setFrontstage(iModelName, frontStageName);
-  }
-
   /** Creates an App instance */
   constructor(props?: any, context?: any) {
     super(props, context);

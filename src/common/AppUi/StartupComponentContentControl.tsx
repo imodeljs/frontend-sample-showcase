@@ -2,17 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ConfigurableCreateInfo, ContentControl, FrontstageManager, FrontstageActivatedEventArgs, UiFramework, ConfigurableUiManager } from "@bentley/ui-framework";
+import { ConfigurableCreateInfo, ConfigurableUiManager, ContentControl, UiFramework } from "@bentley/ui-framework";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewSetup } from "../../api/viewSetup";
 import { StartupComponent } from "../../Components/Startup/Startup";
 import React from "react";
 import { AppUi } from "./AppUi";
 
-export interface StartupControlProps {
-  iModelName: string;
-  frontstageId: string;
-}
 
 export class StartupComponentContentControl extends ContentControl {
 
@@ -20,7 +16,7 @@ export class StartupComponentContentControl extends ContentControl {
     return "SampleShowcase.StartupComponentControl";
   }
 
-  constructor(info: ConfigurableCreateInfo, protected _options: StartupControlProps) {
+  constructor(info: ConfigurableCreateInfo, protected _options: any) {
     super(info, _options);
 
   }
@@ -38,7 +34,7 @@ export class StartupComponentContentControl extends ContentControl {
     const viewState = await ViewSetup.getDefaultView(imodel);
     UiFramework.setIModelConnection(imodel);
     UiFramework.setDefaultViewState(viewState);
-    await AppUi.setFrontstage(AppUi.iModelName, AppUi.frontstageId);
+    await AppUi.activateFrontstage();
   }
 }
 
