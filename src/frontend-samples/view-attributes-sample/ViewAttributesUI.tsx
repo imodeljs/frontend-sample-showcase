@@ -169,7 +169,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     );
   }
 
-  private onIModelReady = (imodel: IModelConnection) => {
+  private onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
       const attrValues = ViewAttributesApp.getAttrValues(vp);
       this.setState({ vp, attrValues });

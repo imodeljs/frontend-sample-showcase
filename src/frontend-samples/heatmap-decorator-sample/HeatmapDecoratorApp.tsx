@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import HeatmapDecoratorUI from "./HeatmapDecoratorUI";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";

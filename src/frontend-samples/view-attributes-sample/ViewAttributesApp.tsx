@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { Environment, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { RenderMode } from "@bentley/imodeljs-common";
 import ViewAttributesUI from "./ViewAttributesUI";

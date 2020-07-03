@@ -14,7 +14,7 @@
     "@bentley/imodeljs-i18n": "2.0.0",
     "@bentley/imodeljs-quantity": "2.0.0",
     "@bentley/itwin-client": "2.0.0",
-    "@bentley/monaco-editor": "^1.2.0",
+    "@bentley/monaco-editor": "^1.2.1",
     "@bentley/orbitgt-core": "2.0.0",
     "@bentley/presentation-common": "2.0.0",
     "@bentley/presentation-components": "2.0.0",

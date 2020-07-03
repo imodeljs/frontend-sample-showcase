@@ -91,7 +91,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
   }
 
   private onIModelReady = (imodel: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce(async (vp: Viewport) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: Viewport) => {
       this.setState({ imodel });
 
       // Get all 2D models once view opens.

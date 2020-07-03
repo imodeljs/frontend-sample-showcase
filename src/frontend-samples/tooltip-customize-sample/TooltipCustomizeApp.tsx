@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
-import { ProxyToolAdmin, ShowcaseToolAdmin } from "../../api/showcasetooladmin";
+import "common/samples-common.scss";
+import { ProxyToolAdmin, ShowcaseToolAdmin } from "api/showcasetooladmin";
 import { ElemProperty, TooltipCustomizeSettings, TooltipCustomizeUI } from "./TooltipCustomizeUI";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 

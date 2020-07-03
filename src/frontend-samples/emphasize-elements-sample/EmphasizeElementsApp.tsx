@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 

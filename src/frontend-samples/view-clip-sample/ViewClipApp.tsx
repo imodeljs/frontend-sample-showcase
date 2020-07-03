@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
-import ViewClipUI from "./ViewClipUI";
+import "common/samples-common.scss";
+import { ViewClipUI } from "./ViewClipUI";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, Viewport } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
 

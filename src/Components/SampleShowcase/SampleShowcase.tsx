@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from "../IModelSelector/IModelSelector";
 import SampleEditor from "../SampleEditor/SampleEditor";
@@ -143,6 +143,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         activeSample.setup = this._prevSampleSetup;
         activeSample.teardown = this._prevSampleTeardown;
         this._prevSampleSetup = undefined;
+        this._prevSampleTeardown = undefined;
         this._onActiveSampleChange(groupName, sampleName);
       }
     } else {
@@ -184,14 +185,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     */
     let internalSetup: any;
     let internalTeardown: any;
-    if (activeSample.setup && Object.keys(sampleUi).length > 1) {
+    if (activeSample.setup && Object.keys(sampleUi).length >= 1) {
       for (const key in sampleUi) {
-        if (key !== "default") {
-          if (Object.getOwnPropertyNames(sampleUi[key]).filter((prop) => typeof sampleUi[key][prop] === "function").includes(activeSample.setup.name)) {
-            internalSetup = sampleUi[key][activeSample.setup.name].bind(sampleUi[key]);
-            if (activeSample.teardown) {
-              internalTeardown = sampleUi[key][activeSample.teardown.name].bind(sampleUi[key]);
-            }
+        if (Object.getOwnPropertyNames(sampleUi[key]).filter((prop) => typeof sampleUi[key][prop] === "function").includes(this._prevSampleSetup.name)) {
+          internalSetup = sampleUi[key][this._prevSampleSetup.name].bind(sampleUi[key]);
+          if (activeSample.teardown) {
+            internalTeardown = sampleUi[key][this._prevSampleTeardown.name].bind(sampleUi[key]);
           }
         }
       }
@@ -199,14 +198,14 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
       try {
+        let UI: any;
         if (!internalSetup && this._prevSampleSetup) {
           await this._prevSampleSetup(iModelName, iModelSelector);
+          UI = <sampleUi.default iModelName={iModelName} iModelSelector={iModelSelector} />;
         } else {
-          await internalSetup();
+          UI = await internalSetup(iModelName, iModelSelector);
         }
-        return (
-          <sampleUi.default iModelName={iModelName} iModelSelector={iModelSelector} />
-        );
+        return (UI);
       } catch (err) {
         return (
           <DisplayError error={err} />
