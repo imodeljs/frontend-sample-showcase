@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { Toggle } from "@bentley/ui-core";
-import { ShowcaseToolAdmin } from "../../api/showcasetooladmin";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ShowcaseToolAdmin } from "api/showcasetooladmin";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { SampleToolAdmin } from "./TooltipCustomizeApp";
 
 export enum ElemProperty {

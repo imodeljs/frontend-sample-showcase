@@ -14,8 +14,9 @@ import { ExpansionToggle } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import "./TableNodeTree.scss";
+import SampleApp from "common/SampleApp";
 
-export default class TableNodeTreeSample extends React.Component<{}> {
+export default class TableNodeTreeSample extends React.Component<{}> implements SampleApp {
 
   public getControlPane() {
     return (

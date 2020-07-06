@@ -5,6 +5,18 @@
 .showcase {
   height: 100vh;
   display: flex;
+
+  >.SplitPane {
+    background-color: unset !important;
+
+    .Pane {
+      overflow: hidden;
+
+      &.Pane1 {
+        background-color: #1E1E1E;
+      }
+    }
+  }
 }
 
 
@@ -13,18 +25,12 @@
   width: 100%;
   background-color: var(--buic-background-control);
   overflow-y: auto;
-  overflow-x: hidden;
-}
 
-.SplitPane {
-  background-color: unset !important;
-
-  .Pane {
-    overflow: hidden;
-
-    .Pane1 {
-      background-color: #1E1E1E;
-    }
+  >.sample-code-button {
+    position: absolute;
+    left: 1em;
+    top: 1em;
+    z-index: 1;
   }
 }
 

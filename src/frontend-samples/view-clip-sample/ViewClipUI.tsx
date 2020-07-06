@@ -24,7 +24,7 @@ interface ViewClipUIState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
+export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -44,6 +44,7 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
     if (this.state.imodel) {
       return ViewClipApp.setClipPlane(vp, event.target.value, this.state.imodel);
     }
+    return false;
   }
 
   /* Method for flipping (negating) the current clip plane. */
@@ -108,7 +109,7 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
   private _onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
 
-    IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
+    IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
       // tslint:disable-next-line no-floating-promises
       this.setState({ imodel, showClipBlock: true }, () => { this._onToggleRangeClip(true); });
     });

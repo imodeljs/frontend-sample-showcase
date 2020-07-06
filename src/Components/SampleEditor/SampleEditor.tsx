@@ -2,204 +2,101 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { File, Module, MonacoEditor, MonacoEditorFile, MonacoEditorProps, NavigationFile, TabNavigation } from "@bentley/monaco-editor";
-import path from "path";
+import { ErrorList, ModelDiagnostics, Module, MonacoEditor, SplitScreen, TabNavigationAction } from "@bentley/monaco-editor";
+import "@bentley/monaco-editor/lib/editor/icons/codicon.css";
 import * as React from "react";
-import { createSourceFile, forEachChild, ImportDeclaration, ScriptKind, ScriptTarget, SourceFile, SyntaxKind, TextChangeRange } from "typescript";
-import "./icons/codicon.css";
+import { modules } from "./Modules";
 import "./SampleEditor.scss";
 
 export interface SampleEditorProps {
-  /** Files to inject into the component, can be any type of file (External, Navigation, etc.) */
-  files?: File[];
-  /** The height to be passed to the editor component. */
-  height?: string;
-  /** The width to be passed to the editor component. */
-  width?: string;
+  files?: any[];
+  onCloseClick: () => void;
+  onTranspiled?: ((blobUrl: string) => void);
 }
 
-export interface SampleEditorState {
-  files?: Array<MonacoEditorFile & NavigationFile>;
-  currentFile?: string;
+interface SampledEditorState {
+  diagnostics: ModelDiagnostics[];
+  active?: string;
 }
 
-interface SampleEditorReplacementProps {
-  files?: Array<MonacoEditorFile & NavigationFile>;
-  currentFile?: string;
-}
-
-export interface InternalFile extends File {
-  import: Promise<{ default: string; }>;
-  entry?: boolean;
-}
-
-type Sub<T extends T1, T1 extends object> = Pick<T, SetComplement<keyof T, keyof T1>>;
-type SetComplement<A, A1 extends A> = SetDifference<A, A1>;
-type SetDifference<A, B> = A extends B ? never : A;
-
-const modules = [
-  { name: "react" },
-  { name: "react-dom" },
-  { name: "@bentley/bentleyjs-core" },
-  { name: "@bentley/context-registry-client" },
-  { name: "@bentley/frontend-authorization-client" },
-  { name: "@bentley/geometry-core" },
-  { name: "@bentley/icons-generic-webfont" },
-  { name: "@bentley/imodelhub-client" },
-  { name: "@bentley/imodeljs-common" },
-  { name: "@bentley/imodeljs-frontend" },
-  { name: "@bentley/imodeljs-i18n" },
-  { name: "@bentley/imodeljs-quantity" },
-  { name: "@bentley/itwin-client" },
-  { name: "@bentley/orbitgt-core" },
-  { name: "@bentley/presentation-common" },
-  { name: "@bentley/presentation-components" },
-  { name: "@bentley/presentation-frontend" },
-  { name: "@bentley/product-settings-client" },
-  { name: "@bentley/ui-abstract" },
-  { name: "@bentley/ui-components" },
-  { name: "@bentley/ui-core" },
-  { name: "@bentley/webgl-compatibility" },
-] as Module[];
-
-export default class SampleEditor extends React.Component<Sub<MonacoEditorProps, SampleEditorReplacementProps> & SampleEditorProps, SampleEditorState> {
-
-  constructor(props: any) {
+export default class SampleEditor extends React.Component<SampleEditorProps, SampledEditorState> {
+  constructor(props: SampleEditorProps) {
     super(props);
-    this.state = {
-      files: undefined,
-      currentFile: undefined,
-    };
-    this.onTabClick = this.onTabClick.bind(this);
-  }
 
-  public componentDidMount() {
-    this.props.files && this.getData(this.props.files);
+    this.state = {
+      diagnostics: [],
+    };
   }
 
   public componentDidUpdate(prevProps: SampleEditorProps) {
-    if (prevProps.files !== this.props.files) {
-      this.setState({ files: undefined, currentFile: undefined });
-      this.props.files && this.getData(this.props.files);
+    if (this.props.files !== prevProps.files) {
+      this.setState({ diagnostics: [] });
     }
   }
 
-  public getData(props: File[]) {
-    this.getInternalData(props)
-      .then((importedData) => this.modifyImports(importedData))
-      .then((modifiedData) => this.setState({ files: modifiedData, currentFile: modifiedData[0].name }))
-      // tslint:disable-next-line: no-console
-      .catch((err) => console.error(err));
+  private _onDiagnostics = (diagnostics: ModelDiagnostics[]) => {
+    this.setState({ diagnostics });
   }
 
-  public async getInternalData(files: File[]): Promise<Array<MonacoEditorFile & NavigationFile>> {
-    return Promise.all(files.map(async (file: File) => {
-      if ((file as InternalFile).import) {
-        const internalFile = file as InternalFile;
-        return {
-          name: internalFile.name,
-          code: await this.importInternalData(internalFile.import),
-        };
-        // If the file has code, just return it as is.
-      } else if ((file as MonacoEditorFile).code) {
-        return file as MonacoEditorFile;
-      } else {
-        // Otherwise, it's an empty file.
-        return {
-          name: file.name,
-          code: "",
-        };
-      }
-    }));
-  }
-
-  private async modifyImports(importedFiles: Array<MonacoEditorFile & NavigationFile>) {
-    return Promise.all(importedFiles.map((file) => {
-      const sourceFile = createSourceFile(
-        "",
-        file.code,
-        ScriptTarget.Latest,
-        true,
-        ScriptKind.TS,
-      );
-
-      const relativeImport = this.extractRelativeImport(sourceFile);
-      if (relativeImport) {
-        return {
-          ...file,
-          code: this.modifyRelativeImports(sourceFile, relativeImport).text,
-        };
-      } else {
-        return file;
-      }
-    }));
-  }
-
-  public modifyRelativeImports(source: SourceFile, relativeImport: ImportDeclaration) {
-    const importValue = relativeImport.moduleSpecifier.getText();
-    const newImportValue = importValue[importValue.length - 1] + "./" + path.basename(importValue);
-
-    const sourceText = source.text;
-    const newSourceText = sourceText.substr(0, relativeImport.moduleSpecifier.pos + 1) + newImportValue + sourceText.substr(relativeImport.moduleSpecifier.end);
-
-    let newSource = source.update(newSourceText,
-      {
-        span: {
-          start: 0,
-          length: sourceText.length,
-        },
-        newLength: newSourceText.length,
-      } as TextChangeRange);
-
-    const nextRelativeImport = this.extractRelativeImport(newSource);
-    if (nextRelativeImport) {
-      newSource = this.modifyRelativeImports(newSource, nextRelativeImport);
-    }
-    return newSource;
-  }
-
-  private extractRelativeImport(value: SourceFile) {
-
-    return forEachChild(value, (node) => {
-      if (node.kind === SyntaxKind.ImportDeclaration) {
-        const importValue = (node as ImportDeclaration).moduleSpecifier.getText();
-        if (importValue.match(/\.\.\/|\.\/(.+)\//)) {
-          return (node as ImportDeclaration);
-        }
-      }
-    });
-  }
-
-  private async importInternalData(importStatement: Promise<{ default: string; }>) {
-    try {
-      const file = await importStatement;
-      return file.default;
-    } catch (err) {
-      return `ERROR INITIALIZING FILE: ${err}`;
+  private _onNavItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement | null;
+    if (target && target.title && target.title.toLowerCase() !== this.state.active) {
+      this.setState({ active: target.title.toLowerCase() });
+    } else {
+      this.setState({ active: undefined });
     }
   }
 
-  private onTabClick(file: string) {
-    if (this.state.currentFile !== file) {
-      this.setState({ currentFile: file });
+  private _onSplitChange = (size: number) => {
+    if (this.state.active && size < 200) {
+      const event = document.createEvent("MouseEvent");
+      event.initMouseEvent("mouseup", true, true, document.defaultView!, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      document.dispatchEvent(event);
+      this.setState({ active: undefined });
     }
   }
 
   public render() {
-    const { files, ...editorProps } = this.props;
+    let problemCount = 0;
+    this.state.diagnostics &&
+      this.state.diagnostics.forEach(
+        (diagnostic) =>
+          (problemCount +=
+            (diagnostic.semanticDiagnostic?.length || 0) +
+            (diagnostic.suggestionDiagnostics?.length || 0) +
+            (diagnostic.syntacticDiagnostics?.length || 0)),
+      );
     return (
-      <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "100%" }}>
-        <TabNavigation currentFile={this.state.currentFile} files={(this.state.files || []).filter((file) => !file.name.match(/s?css$/gi)) as NavigationFile[]} onTabClick={this.onTabClick} showClose={false} >
-        </TabNavigation>
-        <div style={{ height: this.props.height || "100%", width: this.props.width || "100%", display: this.state.files ? undefined : "none" }}>
-          <MonacoEditor {...editorProps} readonly={true} files={this.state.files} currentFile={this.state.currentFile} modules={modules} />
-        </div>
-        <div className="loading-content" style={{ height: this.props.height || "100%", width: this.props.width || "100%", display: !this.state.files ? undefined : "none" }}>
-          <div className="spinner-container">
-            <div className="spinner codicon codicon-loading"></div>
+      <SplitScreen split={"horizontal"} size={this.state.active ? 201 : 35} minSize={35} className="sample-editor" primary="second" pane2Style={this.state.active ? undefined : { height: "35px" }} onChange={this._onSplitChange} allowResize={!!this.state.active}>
+        <MonacoEditor
+          enableExplorer={false}
+          enableTabNavigation={true}
+          enableTranspiler={true}
+          modules={modules as Module[]}
+          files={this.props.files}
+          onTranspiled={this.props.onTranspiled}
+          onDiagnostics={this._onDiagnostics}>
+          <TabNavigationAction onClick={this.props.onCloseClick}>
+            <div className="codicon codicon-close" title="Close"></div>
+          </TabNavigationAction>
+        </MonacoEditor>
+        <div className="sample-editor-pane">
+          <div id="sample-editor-pane-nav">
+            <div className={`sample-editor-pane-nav-item${this.state.active === "problems" ? " active" : ""}`} title="Problems" onClick={this._onNavItemClick}>
+              <span>Problems</span>
+              {problemCount > 0 && (
+                <div className="notification-container">
+                  <span className="notification">{problemCount}</span>
+                </div>)}
+            </div>
           </div>
+          {this.state.active && (problemCount > 0 ?
+            <ErrorList diagnostics={this.state.diagnostics} /> :
+            <div className="sample-editor-pane-content">
+              No problems have been detected so far.
+            </div>)}
         </div>
-      </div>
+      </SplitScreen>
     );
   }
 }

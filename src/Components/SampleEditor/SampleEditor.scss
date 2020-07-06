@@ -2,69 +2,88 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-.loading-content {
-  flex: 1 1 auto;
-  background-color: #1E1E1E;
-  position: relative;
+.sample-editor {
+  font-family: "Segoe WPC", "Segoe UI", sans-serif !important;
+  font-size: 13px;
 
-  >.spinner-container {
-    color: #CCCCCC;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
+  .sample-editor-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 
-    >.spinner {
-      font-size: 36px;
-
-      -webkit-animation-name: spin;
-      -webkit-animation-duration: 2000ms;
-      -webkit-animation-iteration-count: infinite;
-      -webkit-animation-timing-function: linear;
-      -moz-animation-name: spin;
-      -moz-animation-duration: 2000ms;
-      -moz-animation-iteration-count: infinite;
-      -moz-animation-timing-function: linear;
-      -ms-animation-name: spin;
-      -ms-animation-duration: 2000ms;
-      -ms-animation-iteration-count: infinite;
-      -ms-animation-timing-function: linear;
-
-      animation-name: spin;
-      animation-duration: 2000ms;
-      animation-iteration-count: infinite;
-      animation-timing-function: linear;
+    .sample-editor-pane-content {
+      color: #CCCCCC;
+      padding: 8px;
     }
-  }
-}
 
-@-moz-keyframes spin {
-  from {
-    -moz-transform: rotate(0deg);
   }
 
-  to {
-    -moz-transform: rotate(360deg);
-  }
-}
+  #sample-editor-pane-nav {
+    display: flex;
+    background-color: #252526;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-width: thin;
+    height: 35px;
+    flex-shrink: 0;
 
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
+    &::-webkit-scrollbar {
+      height: 7px;
+    }
 
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2)
+    }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
 
-  to {
-    transform: rotate(360deg);
+    &:hover {
+      overflow-x: auto;
+    }
+
+    >.sample-editor-pane-nav-item {
+      padding-right: 10px;
+      padding-left: 10px;
+      line-height: 35px;
+      color: #969696;
+      display: inline-block;
+      cursor: pointer;
+
+      &:hover {
+        color: #CCCCCC;
+      }
+
+      &.active {
+        background-color: #1E1E1E;
+        color: #ffffff;
+      }
+
+      .notification-container {
+        margin-left: 8px;
+        line-height: 11px;
+        display: inline-block;
+
+        .notification {
+          background-color: rgb(77, 77, 77);
+          ;
+          padding: 3px 5px;
+          border-radius: 11px;
+          font-size: 11px;
+          min-width: 18px;
+          min-height: 18px;
+          line-height: 11px;
+          font-weight: 400;
+          text-align: center;
+          display: inline-block;
+          box-sizing: border-box;
+          color: #ffffff;
+        }
+      }
+    }
   }
 }
