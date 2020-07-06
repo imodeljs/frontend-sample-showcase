@@ -118,15 +118,19 @@ export class ViewCreator2d {
   }
 
   private async _addSheetViewProps(modelId: Id64String, props: ViewStateProps) {
-
-    const modelRange: any = (await this._imodel.models.queryModelRanges(modelId))[0];
-
+    let width = 0;
+    let height = 0;
+    for await (const row of this._imodel.query(`SELECT Width, Height FROM bis.Sheet WHERE ECInstanceId = ${modelId}`)) {
+      width = row.width as number;
+      height = row.height as number;
+      break;
+    }
     const sheetProps: SheetProps = {
       model: modelId,
       code: { spec: "", scope: "" },
       classFullName: "DrawingSheetModel",
-      height: modelRange.high[1] - modelRange.low[1],
-      width: modelRange.high[0] - modelRange.low[0],
+      height,
+      width,
     };
 
     props.sheetAttachments = await this._getSheetAttachments(modelId);
