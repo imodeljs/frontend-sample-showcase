@@ -1,5 +1,5 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomNodeLoadingTreeSample } from ".";
+import { CustomNodeLoadingTreeSample } from "./CustomNodeLoadingTree";
 
 export function getCustomNodeLoadingTreeSpec(): SampleSpec {
   return ({
@@ -7,8 +7,7 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     label: "Custom Node Loading Tree",
     image: "custom-node-loading-tree-thumbnail.png",
     files: [
-      { name: "CustomNodeLoadingTreeSample.tsx", import: import("!!raw-loader!.") },
-      { name: "index.scss", import: import("!!raw-loader!../index.scss") },
+      { name: "CustomNodeLoadingTreeSample.tsx", import: import("!!raw-loader!./CustomNodeLoadingTree") },
     ],
     setup: CustomNodeLoadingTreeSample.setup,
   });

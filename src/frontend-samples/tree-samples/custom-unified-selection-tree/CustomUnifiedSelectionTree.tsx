@@ -10,7 +10,7 @@ import { InstanceKey, Key, Keys, KeySet, NodeKey, Ruleset } from "@bentley/prese
 import { SelectionChangeType } from "@bentley/presentation-frontend";
 import { useDisposable } from "@bentley/ui-core";
 
-import { ReloadableViewport } from "../../../Components/Viewport/ReloadableViewport";
+import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
 
 const PAGING_SIZE = 20;
 const RULESET_CLASSES: Ruleset = require("./Classes.json"); // tslint:disable-line: no-var-requires
@@ -19,7 +19,7 @@ export interface CustomUnifiedSelectionTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelName: string }, { iModel: IModelConnection }> {
 
   public getControlPane() {
     return (
@@ -29,14 +29,13 @@ export class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelNa
             <span>This tree shows ECClasses and their ECProperties. Selecting an ECClass or its ECProperty puts the class to unified selection storage.
             Also, whenever an ECClass is added to unified selection storage, the tree shows it and its properties as selected.</span>
           </div>
-          {this.props.iModelSelector}
         </div>
       </>
     );
   }
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomUnifiedSelectionTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></CustomUnifiedSelectionTreeSample>;
+  public static async setup(iModelName: string) {
+    return <CustomUnifiedSelectionTreeSample iModelName={iModelName}></CustomUnifiedSelectionTreeSample>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {
@@ -49,11 +48,9 @@ export class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelNa
     return (
       <>
         {this.getControlPane()}
-        <div className="dual-view-vertical">
-          <div className="sample-tree">
-            {(this.state && this.state.iModel) ? <CustomUnifiedSelectionTree imodel={this.state.iModel}></CustomUnifiedSelectionTree> : <></>}
-          </div>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableViewport>
+        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
+        <div className="sample-tree">
+          {(this.state && this.state.iModel) ? <CustomUnifiedSelectionTree imodel={this.state.iModel}></CustomUnifiedSelectionTree> : <></>}
         </div>
       </>
     );

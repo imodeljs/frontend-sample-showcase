@@ -1,5 +1,5 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomWebfontIconsTreeSample } from ".";
+import { CustomWebfontIconsTreeSample } from "./CustomWebfontIconsTree";
 
 export function getCustomWebfontIconsTreeSpec(): SampleSpec {
   return ({
@@ -7,8 +7,7 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
     label: "Custom Webfont Icons Tree",
     image: "custom-webfont-icons-tree-thumbnail.png",
     files: [
-      { name: "CustomWebfontIconsTreeSample.tsx", import: import("!!raw-loader!./index") },
-      { name: "index.scss", import: import("!!raw-loader!../index.scss") },
+      { name: "CustomWebfontIconsTreeSample.tsx", import: import("!!raw-loader!./CustomWebfontIconsTree") },
     ],
     setup: CustomWebfontIconsTreeSample.setup,
   });

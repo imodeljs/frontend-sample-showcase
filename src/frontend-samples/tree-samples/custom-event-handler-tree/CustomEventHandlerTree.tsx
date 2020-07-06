@@ -22,7 +22,7 @@ export default class CustomEventHandlerTreeSample extends React.Component<{}> {
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>Selection in this tree is synchronized with checkboxes. Notice how selecting node checks checkbox and vice versa.</span>
+            <span>This tree demonstrates the interaction between tree node selection and checkbox selection. Selecting a tree node checks the corresponding checkbox, and deselects all other checkboxes.</span>
           </div>
         </div>
       </>

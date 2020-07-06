@@ -1,5 +1,5 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { PresentationTreeSample } from ".";
+import { PresentationTreeSample } from "./PresentationTree";
 
 export function getPresentationTreeSpec(): SampleSpec {
   return ({
@@ -7,8 +7,7 @@ export function getPresentationTreeSpec(): SampleSpec {
     label: "Presentation Tree",
     image: "presentation-tree-thumbnail.png",
     files: [
-      { name: "PresentationTreeSample.tsx", import: import("!!raw-loader!.") },
-      { name: "index.scss", import: import("!!raw-loader!../index.scss") },
+      { name: "PresentationTreeSample.tsx", import: import("!!raw-loader!./PresentationTree") },
     ],
     setup: PresentationTreeSample.setup,
   });

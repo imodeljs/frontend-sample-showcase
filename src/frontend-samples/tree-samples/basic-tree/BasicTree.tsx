@@ -15,7 +15,7 @@ export default class BasicTreeSample extends React.Component<{}> {
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>This is the default tree.</span>
+            <span>This is the default tree, allowing for the nesting of nodes within other nodes, which can be expanded or collapsed.</span>
           </div>
         </div>
       </>

@@ -14,8 +14,8 @@ import { Ruleset } from "@bentley/presentation-common";
 import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
-import { SampleDataProvider } from "../Common";
-import { ReloadableConnection } from "../../../Components/ReloadableConnection/ReloadableConnection";
+import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
+import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -24,24 +24,23 @@ export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: string }, { iModel: IModelConnection }> {
 
   public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>This tree loads data using two different data providers: 'Presentation Hierarchy' nodes are loaded using presentation rules
+            <span>Data in this tree is loaded using two data providers: 'Presentation Hierarchy' nodes are loaded using Presentation rules
             and 'In Memory Hierarchy' nodes are loaded from memory.</span>
           </div>
-          {this.props.iModelSelector}
         </div>
       </>
     );
   }
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomNodeLoadingTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></CustomNodeLoadingTreeSample>;
+  public static async setup(iModelName: string) {
+    return <CustomNodeLoadingTreeSample iModelName={iModelName}></CustomNodeLoadingTreeSample>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {
@@ -51,11 +50,10 @@ export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: s
   }
 
   public render() {
-    // /        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
-
     return (
       <>
         {this.getControlPane()}
+        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
         <div className="sample-tree">
           {(this.state && this.state.iModel) ? <CustomNodeLoadingTree imodel={this.state.iModel}></CustomNodeLoadingTree> : <></>}
         </div>

@@ -22,7 +22,7 @@ export default class TableNodeTreeSample extends React.Component<{}> {
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>In this example tree is rendered as a multi-column tree.</span>
+            <span>This tree showcases the ability to have multiple columns while still allowing for the expansion and collapsing of data.</span>
           </div>
         </div>
       </>

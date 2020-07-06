@@ -7,7 +7,7 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
+import { ReloadableConnection } from "../../../Components/ReloadableConnection/ReloadableConnection";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -16,22 +16,23 @@ export interface PresentationTreeProps {
   imodel: IModelConnection;
 }
 
-export class PresentationTreeSample extends React.Component<{ iModelName: string }, { iModel: IModelConnection }> {
+export class PresentationTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
 
   public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>Data in this tree is loaded using Presentation rules.</span>
+            <span>This tree loads in data from the presentation rules of the currently selected iModel.</span>
           </div>
+          {this.props.iModelSelector}
         </div>
       </>
     );
   }
 
-  public static async setup(iModelName: string) {
-    return <PresentationTreeSample iModelName={iModelName}></PresentationTreeSample>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <PresentationTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></PresentationTreeSample>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {
@@ -41,10 +42,11 @@ export class PresentationTreeSample extends React.Component<{ iModelName: string
   }
 
   public render() {
+    //        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
+
     return (
       <>
         {this.getControlPane()}
-        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
         <div className="sample-tree">
           {(this.state && this.state.iModel) ? <PresentationTree imodel={this.state.iModel}></PresentationTree> : <></>}
         </div>

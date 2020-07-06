@@ -1,5 +1,5 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomUnifiedSelectionTreeSample } from ".";
+import { CustomUnifiedSelectionTreeSample } from "./CustomUnifiedSelectionTree";
 
 export function getCustomUnifiedSelectionTreeSpec(): SampleSpec {
   return ({
@@ -7,8 +7,7 @@ export function getCustomUnifiedSelectionTreeSpec(): SampleSpec {
     label: "Custom Unified Selection Tree",
     image: "custom-unified-selection-tree-thumbnail.png",
     files: [
-      { name: "CustomUnifiedSelectionTreeSample.tsx", import: import("!!raw-loader!.") },
-      { name: "index.scss", import: import("!!raw-loader!../index.scss") },
+      { name: "CustomUnifiedSelectionTreeSample.tsx", import: import("!!raw-loader!./CustomUnifiedSelectionTree") },
     ],
     setup: CustomUnifiedSelectionTreeSample.setup,
   });

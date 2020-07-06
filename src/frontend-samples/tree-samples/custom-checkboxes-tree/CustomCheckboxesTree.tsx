@@ -21,7 +21,7 @@ export default class CustomCheckboxesTreeSample extends React.Component<{}> {
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>Checkbox for each node in this tree is rendered as an eye positioned at the left side.</span>
+            <span>This tree demonstrates the ability to render customized icons as the checkboxes for the nodes in a tree.</span>
           </div>
         </div>
       </>

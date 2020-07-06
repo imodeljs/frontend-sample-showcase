@@ -8,7 +8,7 @@ import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNode
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { ReloadableConnection } from "../../../Components/ReloadableConnection/ReloadableConnection";
+import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json"); // tslint:disable-line: no-var-requires
@@ -17,23 +17,22 @@ export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> {
+export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: string }, { iModel?: IModelConnection }> {
 
   public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>This tree renders an icon that is defined in the presentation rules of the selected iModel.</span>
+            <span>In this tree an icon defined in Presentation rules is rendered for each node.</span>
           </div>
-          {this.props.iModelSelector}
         </div>
       </>
     );
   }
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomWebfontIconsTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></CustomWebfontIconsTreeSample>;
+  public static async setup(iModelName: string) {
+    return <CustomWebfontIconsTreeSample iModelName={iModelName}></CustomWebfontIconsTreeSample>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {
@@ -43,11 +42,10 @@ export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: 
   }
 
   public render() {
-    //        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
-
     return (
       <>
         {this.getControlPane()}
+        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
         <div className="sample-tree">
           {(this.state && this.state.iModel) ? <CustomWebfontIconsTree imodel={this.state.iModel}></CustomWebfontIconsTree> : <></>}
         </div>

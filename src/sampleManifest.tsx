@@ -88,14 +88,14 @@ export const sampleManifest: SampleSpecGroup[] = [{
 }, {
   groupName: "UI Trees", samples: [
     getBasicTreeSpec(),
-    getCustomCheckboxesTreeSpec(),
-    getCustomEventHandlerTreeSpec(),
-    getCustomTableNodeTreeSpec(),
-    getCustomWebfontIconsTreeSpec(),
-    getCustomNodeLoadingTreeSpec(),
-    getUnifiedSelectionTreeSpec(),
-    getCustomUnifiedSelectionTreeSpec(),
     getPresentationTreeSpec(),
+    getCustomNodeLoadingTreeSpec(),
+    getCustomTableNodeTreeSpec(),
+    getCustomEventHandlerTreeSpec(),
+    getCustomCheckboxesTreeSpec(),
+    getUnifiedSelectionTreeSpec(),
+    getCustomWebfontIconsTreeSpec(),
+    getCustomUnifiedSelectionTreeSpec(),
   ],
 },
 ];
