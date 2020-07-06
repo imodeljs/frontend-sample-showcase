@@ -7,7 +7,7 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
+import { ReloadableViewport } from "../../../Components/Viewport/ReloadableViewport";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -16,7 +16,7 @@ export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }
 
-export class UnifiedSelectionTree extends React.Component<{ iModelName: string }, { iModel: IModelConnection }> {
+export class UnifiedSelectionTree extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
 
   public getControlPane() {
     return (
@@ -25,13 +25,14 @@ export class UnifiedSelectionTree extends React.Component<{ iModelName: string }
           <div className="sample-instructions">
             <span>Data in this tree is loaded using Presentation rules.</span>
           </div>
+          {this.props.iModelSelector}
         </div>
       </>
     );
   }
 
-  public static async setup(iModelName: string) {
-    return <UnifiedSelectionTree iModelName={iModelName}></UnifiedSelectionTree>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <UnifiedSelectionTree iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTree>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {
@@ -44,9 +45,11 @@ export class UnifiedSelectionTree extends React.Component<{ iModelName: string }
     return (
       <>
         {this.getControlPane()}
-        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
-        <div className="sample-tree">
-          {(this.state && this.state.iModel) ? <PresentationTree imodel={this.state.iModel}></PresentationTree> : <></>}
+        <div className="dual-view-vertical">
+          <div className="sample-tree">
+            {(this.state && this.state.iModel) ? <PresentationTree imodel={this.state.iModel}></PresentationTree> : <></>}
+          </div>
+          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableViewport>
         </div>
       </>
     );

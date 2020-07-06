@@ -8,7 +8,7 @@ import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNode
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
+import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json"); // tslint:disable-line: no-var-requires
@@ -17,7 +17,7 @@ export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: string }, { iModel?: IModelConnection }> {
+export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> {
 
   public getControlPane() {
     return (
@@ -26,13 +26,14 @@ export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: 
           <div className="sample-instructions">
             <span>In this tree an icon defined in Presentation rules is rendered for each node.</span>
           </div>
+          {this.props.iModelSelector}
         </div>
       </>
     );
   }
 
-  public static async setup(iModelName: string) {
-    return <CustomWebfontIconsTreeSample iModelName={iModelName}></CustomWebfontIconsTreeSample>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <CustomWebfontIconsTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></CustomWebfontIconsTreeSample>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {

@@ -84,6 +84,10 @@
   height: 100%;
   flex-shrink: 0;
   flex-direction: column;
+  
+  .toolbar {
+    top: 53%;
+  }
 }
 
 .dual-view-horizontal {

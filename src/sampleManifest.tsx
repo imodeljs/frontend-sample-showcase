@@ -35,7 +35,6 @@ import { getCustomTableNodeTreeSpec } from "./frontend-samples/tree-samples/cust
 import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/custom-webfont-icons-tree/sampleSpec";
 import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
 import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
-import { getCustomUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/custom-unified-selection-tree/sampleSpec";
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
 
 export interface SampleSpec {
@@ -95,7 +94,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getCustomCheckboxesTreeSpec(),
     getUnifiedSelectionTreeSpec(),
     getCustomWebfontIconsTreeSpec(),
-    getCustomUnifiedSelectionTreeSpec(),
   ],
 },
 ];

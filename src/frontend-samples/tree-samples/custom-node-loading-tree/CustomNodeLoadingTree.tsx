@@ -15,7 +15,7 @@ import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
-import { ReloadableConnection } from "../../../Components/ReloadableComponent/ReloadableConnection";
+import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -24,7 +24,7 @@ export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: string }, { iModel: IModelConnection }> {
+export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
 
   public getControlPane() {
     return (
@@ -34,13 +34,14 @@ export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: s
             <span>Data in this tree is loaded using two data providers: 'Presentation Hierarchy' nodes are loaded using Presentation rules
             and 'In Memory Hierarchy' nodes are loaded from memory.</span>
           </div>
+          {this.props.iModelSelector}
         </div>
       </>
     );
   }
 
-  public static async setup(iModelName: string) {
-    return <CustomNodeLoadingTreeSample iModelName={iModelName}></CustomNodeLoadingTreeSample>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <CustomNodeLoadingTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></CustomNodeLoadingTreeSample>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {
