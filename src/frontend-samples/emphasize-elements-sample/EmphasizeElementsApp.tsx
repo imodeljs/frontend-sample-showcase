@@ -9,8 +9,9 @@ import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport } fro
 import { ColorDef } from "@bentley/imodeljs-common";
 
 import EmphasizeElementsUI from "./EmphasizeElementsUI";
+import SampleApp from "common/SampleApp";
 
-export default class EmphasizeElementsApp {
+export default class EmphasizeElementsApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <EmphasizeElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }

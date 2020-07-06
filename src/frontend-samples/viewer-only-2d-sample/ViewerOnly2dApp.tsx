@@ -9,8 +9,9 @@ import ViewerOnly2dUI from "./ViewerOnly2dUI";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewCreator2d } from "./ViewCreator2d";
 import { ModelProps } from "@bentley/imodeljs-common";
+import SampleApp from "common/SampleApp";
 
-export default class ViewerOnly2dApp {
+export default class ViewerOnly2dApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }

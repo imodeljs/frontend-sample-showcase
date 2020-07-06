@@ -9,9 +9,10 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import HeatmapDecorator from "./HeatmapDecorator";
+import SampleApp from "common/SampleApp";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class HeatmapDecoratorApp {
+export default class HeatmapDecoratorApp implements SampleApp {
 
   public static decorator?: HeatmapDecorator;
   public static range?: Range2d;

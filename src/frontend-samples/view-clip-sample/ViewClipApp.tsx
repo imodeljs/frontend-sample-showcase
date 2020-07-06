@@ -8,8 +8,9 @@ import "common/samples-common.scss";
 import { ViewClipUI } from "./ViewClipUI";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, Viewport } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
+import SampleApp from "common/SampleApp";
 
-export default class ViewClipApp {
+export default class ViewClipApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <ViewClipUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }

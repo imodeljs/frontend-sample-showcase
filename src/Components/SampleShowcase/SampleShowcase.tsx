@@ -14,6 +14,7 @@ import { InternalFile, SplitScreen } from "@bentley/monaco-editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
+import SampleApp from "common/SampleApp";
 
 // cSpell:ignore imodels
 
@@ -170,7 +171,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   private _onSampleTranspiled = async (blob: string) => {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-    const sampleUi = await import( /* webpackIgnore: true */ blob);
+    const sampleUi = (await import( /* webpackIgnore: true */ blob)).default as typeof SampleApp;
 
     if (!this._prevSampleSetup) {
       this._prevSampleSetup = activeSample.setup;
@@ -179,33 +180,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       this._prevSampleTeardown = activeSample.teardown;
     }
 
-    /* HACK: Because some samples have a setup method stored in the sample itself, which is editable, we need to make suree call it.
-    *  Unfortunately, there isn't an easy way to tell where that method comes from, so we can only assume that the setup/teardown methods
-    *  are static and shares the same name as the method used in the sample. (Open to suggestions on this one.)
-    */
-    let internalSetup: any;
-    let internalTeardown: any;
-    if (activeSample.setup && Object.keys(sampleUi).length >= 1) {
-      for (const key in sampleUi) {
-        if (Object.getOwnPropertyNames(sampleUi[key]).filter((prop) => typeof sampleUi[key][prop] === "function").includes(this._prevSampleSetup.name)) {
-          internalSetup = sampleUi[key][this._prevSampleSetup.name].bind(sampleUi[key]);
-          if (activeSample.teardown) {
-            internalTeardown = sampleUi[key][this._prevSampleTeardown.name].bind(sampleUi[key]);
-          }
-        }
-      }
-    }
-
     activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
       try {
-        let UI: any;
-        if (!internalSetup && this._prevSampleSetup) {
-          await this._prevSampleSetup(iModelName, iModelSelector);
-          UI = <sampleUi.default iModelName={iModelName} iModelSelector={iModelSelector} />;
-        } else {
-          UI = await internalSetup(iModelName, iModelSelector);
-        }
-        return (UI);
+        return sampleUi.setup(iModelName, iModelSelector);
       } catch (err) {
         return (
           <DisplayError error={err} />
@@ -213,7 +190,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       }
     };
 
-    activeSample.teardown = internalTeardown || this._prevSampleTeardown;
+    activeSample.teardown = sampleUi.teardown || this._prevSampleTeardown;
 
     const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);

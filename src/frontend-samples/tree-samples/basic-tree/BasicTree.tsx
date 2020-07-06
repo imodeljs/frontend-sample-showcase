@@ -5,8 +5,9 @@
 import * as React from "react";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
+import SampleApp from "common/SampleApp";
 
-export default class BasicTreeSample extends React.Component<{}> {
+export default class BasicTreeSample extends React.Component<{}> implements SampleApp {
 
   public getControlPane() {
     return (

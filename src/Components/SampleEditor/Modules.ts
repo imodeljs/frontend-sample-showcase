@@ -124,6 +124,11 @@ export const modules: ModuleBase[] = [
         typedef: import("!!raw-loader!../Viewport/ReloadableViewport.d.ts"),
     } as InternalModule),
     ({
+        name: "common/SampleApp",
+        import: import("../../common/SampleApp"),
+        typedef: import("!!raw-loader!../../common/SampleApp.d.ts"),
+    } as InternalModule),
+    ({
         name: "common/CommonComponentTools/index.scss",
         import: import("!!raw-loader!common/CommonComponentTools/index.scss"),
     } as InternalModule),

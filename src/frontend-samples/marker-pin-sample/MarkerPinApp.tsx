@@ -11,8 +11,9 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import MarkerPinsUI from "./MarkerPinUI";
+import SampleApp from "common/SampleApp";
 
-export default class MarkerPinApp {
+export default class MarkerPinApp implements SampleApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
   public static range?: Range2d;

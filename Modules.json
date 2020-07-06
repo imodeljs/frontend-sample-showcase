@@ -128,6 +128,11 @@
       "typedef": true
     },
     {
+      "name": "common/SampleApp",
+      "import": "./src/common/SampleApp",
+      "typedef": true
+    },
+    {
       "name": "common/CommonComponentTools/index.scss",
       "import": "!!raw-loader!common/CommonComponentTools/index.scss"
     },
