@@ -8,6 +8,7 @@ import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNode
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
+import SampleApp from "common/SampleApp";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -16,7 +17,7 @@ export interface PresentationTreeProps {
   imodel: IModelConnection;
 }
 
-export class PresentationTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export default class PresentationTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
 
   public getControlPane() {
     return (

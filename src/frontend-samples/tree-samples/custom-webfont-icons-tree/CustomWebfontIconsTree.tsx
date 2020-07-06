@@ -9,6 +9,7 @@ import { usePresentationTreeNodeLoader } from "@bentley/presentation-components"
 import { Ruleset } from "@bentley/presentation-common";
 import "@fortawesome/fontawesome-free/css/all.css";
 import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
+import SampleApp from "common/SampleApp";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json"); // tslint:disable-line: no-var-requires
@@ -17,7 +18,7 @@ export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> {
+export default class CustomWebfontIconsTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> implements SampleApp {
 
   public getControlPane() {
     return (

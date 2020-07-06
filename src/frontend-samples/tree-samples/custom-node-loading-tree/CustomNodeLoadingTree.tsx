@@ -16,6 +16,7 @@ import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
+import SampleApp from "common/SampleApp";
 
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
@@ -24,7 +25,7 @@ export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export default class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
 
   public getControlPane() {
     return (

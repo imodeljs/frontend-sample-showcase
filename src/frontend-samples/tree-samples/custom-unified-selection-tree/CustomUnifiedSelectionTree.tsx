@@ -11,6 +11,7 @@ import { SelectionChangeType } from "@bentley/presentation-frontend";
 import { useDisposable } from "@bentley/ui-core";
 
 import { ReloadableViewport } from "../../../Components/Viewport/ReloadableViewport";
+import SampleApp from "common/SampleApp";
 
 const PAGING_SIZE = 20;
 const RULESET_CLASSES: Ruleset = require("./Classes.json"); // tslint:disable-line: no-var-requires
@@ -19,7 +20,7 @@ export interface CustomUnifiedSelectionTreeProps {
   imodel: IModelConnection;
 }
 
-export class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export default class CustomUnifiedSelectionTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
 
   public getControlPane() {
     return (
