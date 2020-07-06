@@ -54,13 +54,17 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
   private createElementsForSample(sample: SampleSpec, groupName: string) {
     const isChecked = this.props.selected === sample.name;
     const idString = this._idFromNames(sample.name, groupName);
+    const image = sample.image;
+    const imageBase = image.split(".").slice(0, -1).join(".");
+    const imageExt = image.split(".").pop();
+    const image2x = imageBase + "@2x." + imageExt + " 2x";
 
     return (
       <label className="gallery-card-radio-btn">
         <span>{sample.label}</span>
         <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
         <div className="gallery-card gallery-card-body">
-          <img src={sample.image} alt={sample.name} />
+          <img src={image} srcSet={image2x} alt={sample.name} />
         </div>
       </label>
     );

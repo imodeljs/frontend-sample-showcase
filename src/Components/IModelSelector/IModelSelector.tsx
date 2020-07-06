@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {
@@ -43,7 +43,8 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
 
     return (
       <div>
-        <span>Pick model to view it: </span>
+        <hr></hr>
+        <span>Choose iModel: </span>
         <select value={value} onChange={this._handleSelection}>
           {entries}
         </select>

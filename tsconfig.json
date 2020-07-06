@@ -19,6 +19,7 @@
     "noEmit": true,
     "jsx": "react",
     "downlevelIteration": true,
+    "baseUrl": "src"
   },
   "include": [
     "src"
