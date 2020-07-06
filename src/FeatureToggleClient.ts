@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { LDClient, LDFlagValue, initialize } from "launchdarkly-js-client-sdk";
+import { initialize, LDClient, LDFlagValue } from "launchdarkly-js-client-sdk";
 import { Guid, assert } from "@bentley/bentleyjs-core";
 
 /** Lists all feature flags used including the LaunchDarkly key name.
@@ -16,7 +16,7 @@ export const featureFlags = {
 
 export class FeatureToggleClient {
   private static readonly _ldClientSideIds: { [deploymentEnv: string]: string } = {
-    DEPLOYED: "5beb1872d4851c306086a4fc"
+    DEPLOYED: "5beb1872d4851c306086a4fc",
   };
 
   private static _ldClient?: LDClient;

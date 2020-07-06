@@ -7,7 +7,7 @@ import "@bentley/monaco-editor/lib/editor/icons/codicon.css";
 import * as React from "react";
 import { modules } from "./Modules";
 import "./SampleEditor.scss";
-import { FeatureToggleClient, featureFlags } from "../../FeatureToggleClient";
+import { featureFlags, FeatureToggleClient } from "../../FeatureToggleClient";
 
 export interface SampleEditorProps {
   files?: any[];
