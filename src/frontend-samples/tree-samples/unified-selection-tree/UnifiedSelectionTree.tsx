@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
-import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
+import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-components";
+import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import { ReloadableViewport } from "../../../Components/Viewport/ReloadableViewport";
 import SampleApp from "common/SampleApp";
@@ -17,14 +17,14 @@ export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }
 
-export default class UnifiedSelectionTree extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
+export default class UnifiedSelectionTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
 
   public getControlPane() {
     return (
       <>
         <div className="sample-ui  component-ui">
           <div className="sample-instructions">
-            <span>Data in this tree is loaded using Presentation rules.</span>
+            <span>This tree synchronizes node selections with the viewport. Selecting nodes will cause their corresponding visuals to be highlighted.</span>
           </div>
           {this.props.iModelSelector}
         </div>
@@ -33,7 +33,7 @@ export default class UnifiedSelectionTree extends React.Component<{ iModelName: 
   }
 
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <UnifiedSelectionTree iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTree>;
+    return <UnifiedSelectionTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTreeSample>;
   }
 
   public onIModelReady = (imodel: IModelConnection) => {
@@ -48,7 +48,7 @@ export default class UnifiedSelectionTree extends React.Component<{ iModelName: 
         {this.getControlPane()}
         <div className="dual-view-vertical">
           <div className="sample-tree">
-            {(this.state && this.state.iModel) ? <PresentationTree imodel={this.state.iModel}></PresentationTree> : <></>}
+            {(this.state && this.state.iModel) ? <UnifiedSelectionTree imodel={this.state.iModel}></UnifiedSelectionTree> : <></>}
           </div>
           <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableViewport>
         </div>
@@ -57,17 +57,20 @@ export default class UnifiedSelectionTree extends React.Component<{ iModelName: 
   }
 }
 
-export interface PresentationTreeProps {
+export interface UnifiedSelectionTreeProps {
   imodel: IModelConnection;
 }
 
 /**
- * This component demonstrates how to use `ControlledTree` with presentation rules.
- * It uses presentation rules defined in '../TreeHierarchy.json' to load
- * data from supplied iModel.
+ * This component demonstrates how to hook `ControlledTree` into Unified Selection with default Unified Selection handling.
+ * It uses presentation rules defined in '../TreeHierarchy.json' to load data from supplied iModel.
+ *
+ * In order for tree to modify Unified Selection and react to it's changes `UnifiedSelectionTreeEventHandler`
+ * is used. It extends default `TreeEventHandler` and additionally adds/removes keys to/from Unified Selection
+ * when nodes are selected/deselected and changes tree selection to match Unified Selection.
  */
-export function PresentationTree(props: PresentationTreeProps) {
-  // create tree node loader to load data using presentation rules. It loads nodes to tree model
+export function UnifiedSelectionTree(props: UnifiedSelectionTreeProps) {
+  // create tree node loader to load nodes using presentation rules. It loads nodes to tree model
   // in pages using supplied iModel and presentation ruleset.
   // 'usePresentationTreeNodeLoader' creates tree model source and paged tree node loader.
   // Tree model source can be accessed through node loader. New model source and node loader
@@ -78,16 +81,11 @@ export function PresentationTree(props: PresentationTreeProps) {
     pageSize: PAGING_SIZE,
   });
 
-  // create parameters for default tree event handler. It needs 'nodeLoader' to load child nodes when parent node
-  // is expanded and 'modelSource' to modify nodes' state in tree model. 'collapsedChildrenDisposalEnabled' flag
-  // specifies that child nodes should be removed from tree model when parent node is collapsed.
-  // `React.useMemo' is used to avoid creating new params object on each render
-  const eventHandlerParams = React.useMemo(() => ({ nodeLoader, modelSource: nodeLoader.modelSource, collapsedChildrenDisposalEnabled: true }), [nodeLoader]);
-
-  // create default event handler. It handles tree events: expanding/collapsing, selecting/deselecting nodes,
-  // checking/unchecking checkboxes. It also initiates child nodes loading when parent node is expanded.
-  // `useTreeEventsHandler` created new event handler when 'eventHandlerParams' object changes
-  const eventHandler = useTreeEventsHandler(eventHandlerParams);
+  // create event handler that handles tree events: expanding/collapsing, selecting/deselecting nodes. Additionally it adds/removes keys to/from
+  // Unified Selection when nodes are selected/deselected and updates nodes' selection in tree model to match Unified Selection.
+  // `useUnifiedSelectionTreeEventHandler` creates new event handler when object passed to it changes. It only accepts
+  // node loaders that uses `IPresentationTreeDataProvider`
+  const eventHandler = useUnifiedSelectionTreeEventHandler({ nodeLoader, collapsedChildrenDisposalEnabled: true });
 
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
@@ -98,7 +96,7 @@ export function PresentationTree(props: PresentationTreeProps) {
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
-        selectionMode={SelectionMode.None}
+        selectionMode={SelectionMode.Extended}
         treeEvents={eventHandler}
         visibleNodes={visibleNodes}
       />

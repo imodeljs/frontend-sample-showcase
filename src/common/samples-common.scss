@@ -7,6 +7,10 @@
   -o-transition: all 500ms ease;
   transition: all 500ms ease;
   cursor: pointer;
+
+  .imodel-list {
+    max-width: 100%;
+  }
 }
 
 .sample-ui {
