@@ -60,6 +60,8 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
 
   public render() {
     let problemCount = 0;
+    const urlEnableEditor = new URLSearchParams(window.location.search).get("editor");
+    const executable = urlEnableEditor ? urlEnableEditor.toLowerCase() === "true" : FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor);
     this.state.diagnostics &&
       this.state.diagnostics.forEach(
         (diagnostic) =>
@@ -74,7 +76,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
         <MonacoEditor
           enableExplorer={false}
           enableTabNavigation={true}
-          enableTranspiler={FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor)}
+          enableTranspiler={executable}
           modules={modules as Module[]}
           files={this.props.files}
           onTranspiled={this.props.onTranspiled}

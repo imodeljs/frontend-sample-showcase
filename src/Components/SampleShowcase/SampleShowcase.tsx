@@ -133,6 +133,11 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       params.append("group", groupName);
       params.append("sample", sampleName);
 
+      // Detect if editor was enabled in URL params as a semi-backdoor, this
+      // bypasses the ld feature flag
+      const editorEnabled = new URLSearchParams(window.location.search).get("editor");
+      if (editorEnabled) params.append("editor", editorEnabled);
+
       window.history.replaceState(null, "", "?" + params.toString());
     });
   }
