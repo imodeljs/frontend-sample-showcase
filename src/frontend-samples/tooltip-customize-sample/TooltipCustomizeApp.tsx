@@ -4,10 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
-import { ProxyToolAdmin, ShowcaseToolAdmin } from "../../api/showcasetooladmin";
+import "common/samples-common.scss";
+import { ProxyToolAdmin, ShowcaseToolAdmin } from "api/showcasetooladmin";
 import { ElemProperty, TooltipCustomizeSettings, TooltipCustomizeUI } from "./TooltipCustomizeUI";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
+import SampleApp from "common/SampleApp";
 
 // SampleToolAdmin would typically extend ToolAdmin
 //  See Notes on use of ProxyToolAdmin at the bottom of this file.
@@ -98,7 +99,7 @@ export class SampleToolAdmin extends ProxyToolAdmin {
   }
 }
 
-export default class TooltipCustomizeApp {
+export default class TooltipCustomizeApp implements SampleApp {
   public static settings: TooltipCustomizeSettings = {
     showImage: true,
     showCustomText: false,

@@ -8,11 +8,11 @@ import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, 
 import { Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
-import { PointSelector } from "../../common/PointSelector/PointSelector";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { PointSelector } from "common/PointSelector/PointSelector";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import HeatmapDecoratorApp from "./HeatmapDecoratorApp";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { ViewSetup } from "../../api/viewSetup";
+import { ViewSetup } from "api/viewSetup";
 
 /** React state of the Sample component */
 interface HeatmapDecoratorUIProps {

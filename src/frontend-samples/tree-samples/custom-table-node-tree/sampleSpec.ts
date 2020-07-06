@@ -14,6 +14,7 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     customModelList: [],
     files: [
       { name: "CustomTableNodeTree.tsx", import: import("!!raw-loader!./CustomTableNodeTree"), entry: true },
+      { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
     setup: TableNodeTreeSample.setup,
   });

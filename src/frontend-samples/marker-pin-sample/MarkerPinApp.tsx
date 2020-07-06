@@ -4,15 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
-import { MarkerPinsUI } from "./MarkerPinUI";
+import MarkerPinsUI from "./MarkerPinUI";
+import SampleApp from "common/SampleApp";
 
-export default class MarkerPinApp {
+export default class MarkerPinApp implements SampleApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
   public static range?: Range2d;
