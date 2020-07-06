@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { initialize, LDClient, LDFlagValue } from "launchdarkly-js-client-sdk";
-import { Guid, assert } from "@bentley/bentleyjs-core";
+import { assert, Guid } from "@bentley/bentleyjs-core";
 
 /** Lists all feature flags used including the LaunchDarkly key name.
  *  This simplifies maintenance consistency between flags defined in LaunchDarkly
