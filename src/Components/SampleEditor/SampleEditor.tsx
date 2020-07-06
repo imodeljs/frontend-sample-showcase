@@ -7,6 +7,7 @@ import "@bentley/monaco-editor/lib/editor/icons/codicon.css";
 import * as React from "react";
 import { modules } from "./Modules";
 import "./SampleEditor.scss";
+import { featureFlags, FeatureToggleClient } from "../../FeatureToggleClient";
 
 export interface SampleEditorProps {
   files?: any[];
@@ -29,6 +30,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
   }
 
   public componentDidUpdate(prevProps: SampleEditorProps) {
+
     if (this.props.files !== prevProps.files) {
       this.setState({ diagnostics: [] });
     }
@@ -58,6 +60,8 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
 
   public render() {
     let problemCount = 0;
+    const urlEnableEditor = new URLSearchParams(window.location.search).get("editor");
+    const executable = urlEnableEditor ? urlEnableEditor.toLowerCase() === "true" : FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor);
     this.state.diagnostics &&
       this.state.diagnostics.forEach(
         (diagnostic) =>
@@ -66,12 +70,13 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
             (diagnostic.suggestionDiagnostics?.length || 0) +
             (diagnostic.syntacticDiagnostics?.length || 0)),
       );
+
     return (
       <SplitScreen split={"horizontal"} size={this.state.active ? 201 : 35} minSize={35} className="sample-editor" primary="second" pane2Style={this.state.active ? undefined : { height: "35px" }} onChange={this._onSplitChange} allowResize={!!this.state.active}>
         <MonacoEditor
           enableExplorer={false}
           enableTabNavigation={true}
-          enableTranspiler={true}
+          enableTranspiler={executable}
           modules={modules as Module[]}
           files={this.props.files}
           onTranspiled={this.props.onTranspiled}
