@@ -16,7 +16,7 @@ export function getViewportFrontstageSample(): SampleSpec {
       { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!./index"), entry: true },
       { name: "ViewportFrontstage.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage")},
     ],
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
+    customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: ViewportFrontstageSample.setup,
     teardown: ViewportFrontstageSample.teardown,
   });
