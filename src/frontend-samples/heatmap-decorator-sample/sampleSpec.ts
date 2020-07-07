@@ -12,7 +12,7 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
     image: "heatmap-decorator-thumbnail.png",
     files: [
       { name: "HeatmapDecoratorApp.tsx", import: import("!!raw-loader!./HeatmapDecoratorApp"), entry: true },
-      { name: "HeatmapDecoratorUI.tsx", import: import("!!raw-loader!./HeatmapDecoratorUI"), entry: true },
+      { name: "HeatmapDecoratorUI.tsx", import: import("!!raw-loader!./HeatmapDecoratorUI") },
       { name: "HeatmapDecorator.tsx", import: import("!!raw-loader!./HeatmapDecorator") },
     ],
     setup: HeatmapDecoratorApp.setup,

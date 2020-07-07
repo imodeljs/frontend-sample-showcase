@@ -128,12 +128,17 @@
       "typedef": true
     },
     {
+      "name": "common/SampleApp",
+      "import": "./src/common/SampleApp",
+      "typedef": true
+    },
+    {
       "name": "common/CommonComponentTools/index.scss",
       "import": "!!raw-loader!common/CommonComponentTools/index.scss"
     },
     {
-      "name": "common/DataProvider/index.scss",
-      "import": "!!raw-loader!common/DataProvider/index.scss"
+      "name": "common/DataProvider/Trees.scss",
+      "import": "!!raw-loader!common/DataProvider/Trees.scss"
     },
     {
       "name": "common/samples-common.scss",

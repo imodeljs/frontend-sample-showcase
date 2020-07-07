@@ -8,11 +8,12 @@ import { Range1dProps } from "@bentley/geometry-core";
 import { ThematicDisplay, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import ThematicDisplaySampleUI from "./ThematicDisplayUI";
+import SampleApp from "common/SampleApp";
 
 // cSpell:ignore imodels
 
 /** Handles the setup and teardown of the thematic display sample */
-export default class ThematicDisplayApp {
+export default class ThematicDisplayApp implements SampleApp {
   public static originalProps?: ThematicDisplayProps;
   public static originalFlag: boolean = false;
   public static viewport?: Viewport;

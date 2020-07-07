@@ -13,8 +13,9 @@ import {
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 
 import { ImageCheckBox, NodeCheckboxRenderProps } from "@bentley/ui-core";
+import SampleApp from "common/SampleApp";
 
-export default class CustomCheckboxesTreeSample extends React.Component<{}> {
+export default class CustomCheckboxesTreeSample extends React.Component<{}> implements SampleApp {
 
   public getControlPane() {
     return (

@@ -14,7 +14,7 @@ module.exports = function (config, env) {
 
   return Object.assign(config, override(
     addWebpackPlugin(new MonacoWebpackPlugin({
-      languages: ["typescript"]
+      languages: ["typescript", "javascript", "css", "scss", "html"]
     })),
   )(config, env))
 }

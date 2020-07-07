@@ -11,7 +11,7 @@ export function getViewAttributesSpec(): SampleSpec {
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
     files: [
-      { name: "ViewAttributesApp.ts", import: import("!!raw-loader!./ViewAttributesApp"), entry: true },
+      { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp"), entry: true },
       { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI") },
     ],
     setup: ViewAttributesApp.setup,

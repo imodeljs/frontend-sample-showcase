@@ -14,6 +14,7 @@ import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 import { NoSignInIAuthClient } from "./NoSignInIAuthClient";
 import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
+import { FeatureToggleClient } from "./FeatureToggleClient";
 
 // Boiler plate code
 export interface SampleContext {
@@ -102,6 +103,8 @@ export class SampleBaseApp {
     const userURL = Config.App.get("imjs_sample_showcase_user", "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser");
     await authClient.generateTokenString(userURL, new ClientRequestContext());
     IModelApp.authorizationClient = authClient;
+
+    await FeatureToggleClient.initialize();
 
     try {
       await SampleBaseApp.oidcClient.signInSilent(new ClientRequestContext());
