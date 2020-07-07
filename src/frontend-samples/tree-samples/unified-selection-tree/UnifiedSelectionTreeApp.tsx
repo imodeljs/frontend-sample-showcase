@@ -7,54 +7,16 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import { ReloadableViewport } from "../../../Components/Viewport/ReloadableViewport";
 import SampleApp from "common/SampleApp";
-
+import { UnifiedSelectionTreeUI } from "./UnifiedSelectionTreeUI";
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
 
-export interface CustomNodeLoadingTreeProps {
-  imodel: IModelConnection;
-}
-
-export default class UnifiedSelectionTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
-
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>This tree synchronizes node selections with the viewport. Selecting nodes will cause their corresponding visuals to be highlighted.</span>
-          </div>
-          {this.props.iModelSelector}
-        </div>
-      </>
-    );
-  }
-
+export default class UnifiedSelectionTreeApp extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <UnifiedSelectionTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTreeSample>;
+    return <UnifiedSelectionTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTreeUI>;
   }
 
-  public onIModelReady = (imodel: IModelConnection) => {
-    this.setState({
-      iModel: imodel,
-    });
-  }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPane()}
-        <div className="dual-view-vertical">
-          <div className="sample-tree">
-            {(this.state && this.state.iModel) ? <UnifiedSelectionTree imodel={this.state.iModel}></UnifiedSelectionTree> : <></>}
-          </div>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableViewport>
-        </div>
-      </>
-    );
-  }
 }
 
 export interface UnifiedSelectionTreeProps {

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomWebfontIconsTreeSample from "./CustomWebfontIconsTree";
+import CustomWebfontIconsTreeApp from "./CustomWebfontIconsTreeApp";
 
 export function getCustomWebfontIconsTreeSpec(): SampleSpec {
   return ({
@@ -11,8 +11,8 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
     label: "Custom Webfont Icons Tree",
     image: "custom-webfont-icons-tree-thumbnail.png",
     files: [
-      { name: "CustomWebfontIconsTreeSample.tsx", import: import("!!raw-loader!./CustomWebfontIconsTree"), entry: true },
+      { name: "CustomWebfontIconsTreeApp.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeApp"), entry: true },
     ],
-    setup: CustomWebfontIconsTreeSample.setup,
+    setup: CustomWebfontIconsTreeApp.setup,
   });
 }

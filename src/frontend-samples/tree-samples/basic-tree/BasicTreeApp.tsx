@@ -6,39 +6,16 @@ import * as React from "react";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import SampleApp from "common/SampleApp";
+import { BasicTreeUI } from "./BasicTreeUI";
 
-export default class BasicTreeSample extends React.Component<{}> implements SampleApp {
-
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>This is the default tree, allowing for the nesting of nodes within other nodes, which can be expanded or collapsed.</span>
-          </div>
-        </div>
-      </>
-    );
-  }
-
+export default class BasicTreeApp extends React.Component<{}> implements SampleApp {
   public static async setup() {
-    return <BasicTreeSample></BasicTreeSample>;
-  }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPane()}
-        <div className="sample-tree">
-          <Tree></Tree>
-        </div>
-      </>
-    );
+    return <BasicTreeUI></BasicTreeUI>;
   }
 
 }
 
-function Tree() {
+export function BasicTree() {
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render
   const dataProvider = React.useMemo(() => new SampleDataProvider(), []);

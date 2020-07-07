@@ -15,56 +15,21 @@ import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
-import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
 import SampleApp from "common/SampleApp";
+import { CustomNodeLoadingTreeUI } from "./CustomNodeLoadingTreeUI";
+export default class CustomNodeLoadingTreeApp extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <CustomNodeLoadingTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomNodeLoadingTreeUI>;
+  }
 
-const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
+}
 
 export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }
 
-export default class CustomNodeLoadingTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
-
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Data in this tree is loaded using two data providers: 'Presentation Hierarchy' nodes are loaded using Presentation rules
-            and 'In Memory Hierarchy' nodes are loaded from memory.</span>
-          </div>
-          {this.props.iModelSelector}
-        </div>
-      </>
-    );
-  }
-
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomNodeLoadingTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></CustomNodeLoadingTreeSample>;
-  }
-
-  public onIModelReady = (imodel: IModelConnection) => {
-    this.setState({
-      iModel: imodel,
-    });
-  }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPane()}
-        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
-        <div className="sample-tree">
-          {(this.state && this.state.iModel) ? <CustomNodeLoadingTree imodel={this.state.iModel}></CustomNodeLoadingTree> : <></>}
-        </div>
-      </>
-    );
-  }
-
-}
-
+const PAGING_SIZE = 20;
+const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
 /**
  * This component demonstrates how to use `ControlledTree` with custom nodes loading to load nodes from
  * multiple data providers. Default node loaders `TreeNodeLoader` and `PagedTreeNodeLoader` works with

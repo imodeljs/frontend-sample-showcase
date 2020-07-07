@@ -7,60 +7,29 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
+import "@fortawesome/fontawesome-free/css/all.css";
 import SampleApp from "common/SampleApp";
-
+import { CustomWebfontIconsTreeUI } from "./CustomWebfontIconsTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
+const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json"); // tslint:disable-line: no-var-requires
 
-export interface PresentationTreeProps {
+export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
-export default class PresentationTreeSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
-
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Data in this tree is loaded using Presentation rules.</span>
-          </div>
-          {this.props.iModelSelector}
-        </div>
-      </>
-    );
-  }
-
+export default class CustomWebfontIconsTreeApp extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <PresentationTreeSample iModelName={iModelName} iModelSelector={iModelSelector}></PresentationTreeSample>;
-  }
-
-  public onIModelReady = (imodel: IModelConnection) => {
-    this.setState({
-      iModel: imodel,
-    });
-  }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPane()}
-        <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
-        <div className="sample-tree">
-          {(this.state && this.state.iModel) ? <PresentationTree imodel={this.state.iModel}></PresentationTree> : <></>}
-        </div>
-      </>
-    );
+    return <CustomWebfontIconsTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomWebfontIconsTreeUI>;
   }
 }
-
 /**
- * This component demonstrates how to use `ControlledTree` with presentation rules.
- * It uses presentation rules defined in '../TreeHierarchy.json' to load
- * data from supplied iModel.
+ * This component demonstrates how to use `ControlledTree` with node icons from webfonts library.
+ * It uses presentation rules defined in './TreeWithIcons.json' to load data from supplied iModel.
+ *
+ * This component uses `fontawesome` webfonts library to get icons. Presentation rules defines
+ * which icons should be shown for different nodes.
  */
-export function PresentationTree(props: PresentationTreeProps) {
+export function CustomWebfontIconsTree(props: CustomWebfontIconsTreeProps) {
   // create tree node loader to load data using presentation rules. It loads nodes to tree model
   // in pages using supplied iModel and presentation ruleset.
   // 'usePresentationTreeNodeLoader' creates tree model source and paged tree node loader.
@@ -68,7 +37,7 @@ export function PresentationTree(props: PresentationTreeProps) {
   // is created when any property of object passed to `usePresentationTreeNodeLoader` changes
   const nodeLoader = usePresentationTreeNodeLoader({
     imodel: props.imodel,
-    ruleset: RULESET_TREE_HIERARCHY,
+    ruleset: RULESET_TREE_WITH_ICONS,
     pageSize: PAGING_SIZE,
   });
 
@@ -92,9 +61,11 @@ export function PresentationTree(props: PresentationTreeProps) {
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
-        selectionMode={SelectionMode.None}
+        selectionMode={SelectionMode.Extended}
         treeEvents={eventHandler}
         visibleNodes={visibleNodes}
+        // this property specifies to render icon for each node
+        iconsEnabled={true}
       />
     </div>
   </>;

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import TableNodeTreeSample from "./CustomTableNodeTree";
+import TableNodeTreeApp from "./CustomTableNodeTreeApp";
 
 export function getCustomTableNodeTreeSpec(): SampleSpec {
   return ({
@@ -13,9 +13,9 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     image: "custom-table-node-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "CustomTableNodeTree.tsx", import: import("!!raw-loader!./CustomTableNodeTree"), entry: true },
+      { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp"), entry: true },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
-    setup: TableNodeTreeSample.setup,
+    setup: TableNodeTreeApp.setup,
   });
 }

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomNodeLoadingTreeSample from "./CustomNodeLoadingTree";
+import CustomNodeLoadingTreeApp from "./CustomNodeLoadingTreeApp";
 
 export function getCustomNodeLoadingTreeSpec(): SampleSpec {
   return ({
@@ -11,8 +11,8 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     label: "Custom Node Loading Tree",
     image: "custom-node-loading-tree-thumbnail.png",
     files: [
-      { name: "CustomNodeLoadingTreeSample.tsx", import: import("!!raw-loader!./CustomNodeLoadingTree"), entry: true },
+      { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp"), entry: true },
     ],
-    setup: CustomNodeLoadingTreeSample.setup,
+    setup: CustomNodeLoadingTreeApp.setup,
   });
 }

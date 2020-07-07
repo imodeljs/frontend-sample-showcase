@@ -4,48 +4,21 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "common/DataProvider/Trees.scss";
-
+import SampleApp from "common/SampleApp";
 import {
   ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps,
   useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes,
 } from "@bentley/ui-components";
-
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
-
 import { ImageCheckBox, NodeCheckboxRenderProps } from "@bentley/ui-core";
-import SampleApp from "common/SampleApp";
+import { CustomCheckboxesTreeUI } from "./CustomCheckboxesTreeUI";
 
-export default class CustomCheckboxesTreeSample extends React.Component<{}> implements SampleApp {
-
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>This tree demonstrates the ability to render customized icons as the checkboxes for the nodes in a tree.</span>
-          </div>
-        </div>
-      </>
-    );
-  }
+export default class CustomCheckboxesTreeApp extends React.Component<{}> implements SampleApp {
 
   public static async setup() {
-    return <CustomCheckboxesTreeSample></CustomCheckboxesTreeSample>;
+    return <CustomCheckboxesTreeUI></CustomCheckboxesTreeUI>;
   }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPane()}
-        <div className="sample-tree tree">
-          <CustomCheckboxesTree></CustomCheckboxesTree>
-        </div>
-      </>
-    );
-  }
-
 }
-
 /**
  * This component demonstrates how use `ControlledTree` with custom checkbox rendering.
  * It uses `NodesWithCheckboxProvider` to get fake data to show.
