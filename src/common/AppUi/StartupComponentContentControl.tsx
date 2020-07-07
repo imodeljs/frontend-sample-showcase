@@ -9,7 +9,6 @@ import { StartupComponent } from "../../Components/Startup/Startup";
 import React from "react";
 import { AppUi } from "./AppUi";
 
-
 export class StartupComponentContentControl extends ContentControl {
 
   public static get id() {

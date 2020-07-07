@@ -50,7 +50,7 @@ export class AppUi {
       this._frontstageId = frontstageId;
     if (undefined !== iModelName && iModelName !== this._iModelName) {
       this._iModelName = iModelName;
-      await FrontstageManager.setActiveFrontstage("StartupComponentFrontstage")
+      await FrontstageManager.setActiveFrontstage("StartupComponentFrontstage");
     } else {
       await this.activateFrontstage(this._frontstageId);
     }
