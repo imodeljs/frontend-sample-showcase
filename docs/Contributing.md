@@ -1,10 +1,13 @@
 # Contributing Sample Code
 
-To add sample code to the repo, there are a few steps required for it to function correctly. Following these guidelines will ensure the sample displays correctly and allows other users can edit the code directly in the showcase. To begin, create a new folder within the frontend-samples folder. Each sample requires 3 parts, the SampleSpec, the SampleApp, and the UI Component.
+To add sample code to the repo, there are a few steps required for it to function correctly. The following guidelines will ensure the sample displays correctly and allows other users to edit code directly in the showcase. To begin, create a new folder within the frontend-samples folder. Each sample requires 3 parts, the SampleSpec, the SampleApp, and the UI Component.
 
 ## SampleSpec
 
-Each sample is required to have a SampleSpec. The SampleSpec's purpose it to tell the showcase app how to setup and teardown the sample, provide files to the code editor, and provide the link to the screenshot for the navigation carousel.
+Each sample is **required** to have a SampleSpec. The SampleSpec's serves three main purposes:
+1) Tell the showcase app how to setup and teardown the sample
+2) Provide files to the code editor
+3) Provide the link to the screenshot for the navigation carousel.
 
 ```ts
 interface SampleSpec {
@@ -46,7 +49,7 @@ interface InternalFile {
 
 ## SampleApp
 
-Each sample should have a default class that implements the SampleApp class. Implementing this class will ensure the sample will be able to run after a user has changed code within the code editor of the showcase. Imports in this file are sensitive as they need to be accessible to the editor as well as to the showcase app, check the [Imports section](#imports) for more info.
+Each sample should have a default class that implements the SampleApp class. Implementing this class will ensure the sample will be able to run after a user has changed code within the code editor of the showcase. Imports in this file are sensitive as they need to be accessible to the editor as well as to the showcase app. Check the [Imports section](#imports) for more info.
 
 ```ts
 abstract class SampleApp {
@@ -63,7 +66,7 @@ Below are more in-depth explanations for the SampleApp properties.
 
 ## UI Component
 
-The UI component is the component users will interact with in the sample. Typically this would be a component related to iModel.js, however, it is not limited to just iModel.js. Any React component will do just fine. Imports in this file are sensitive as they need to be accessible to the editor as well as to the showcase app, check the [Imports section](#imports) for more info.
+The UI component is the component users will interact with in the sample. Typically this would be a component related to iModel.js, however, it is not limited to just iModel.js. Any React component will do just fine. Imports in this file are sensitive as they need to be accessible to the editor as well as to the showcase app. Check the [Imports section](#imports) for more info.
 
 ### Using iModel.js in your sample
 
@@ -84,7 +87,7 @@ export default class MySampleUI extends React.Component<{ iModelName: string, iM
 
 ## Imports
 
-Imports can be tricky, as the sample has to be able to resolve it's dependencies both in the showcase and as an external component. There are a few things you can do to help. First, differentiate between sample code that is important to the sample and you should like to show in the editor and sample code that can be "hidden away". We'll call them "visible code" and "hidden code" respectively.
+Imports can be tricky, as the sample has to be able to resolve it's dependencies both in the showcase and as an external component. There are a few things you can do to help. First, differentiate between relevant sample code that you would like to show in the editor and sample code that can be "hidden away". We'll call them "visible code" and "hidden code" respectively.
 
 ### Visible Code
 
