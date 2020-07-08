@@ -46,7 +46,7 @@ interface InternalFile {
 
 ## SampleApp
 
-Each sample should have a default class that implements the SampleApp class. Implementing this class will ensure the sample will be able to run after a user has changed code within the code editor of the showcase. Imports in this file are sensitve as they need to be accessible to the editor as well as to the showcase app, check the [Imports section](#imports) for more info.
+Each sample should have a default class that implements the SampleApp class. Implementing this class will ensure the sample will be able to run after a user has changed code within the code editor of the showcase. Imports in this file are sensitive as they need to be accessible to the editor as well as to the showcase app, check the [Imports section](#imports) for more info.
 
 ```ts
 abstract class SampleApp {
@@ -63,7 +63,7 @@ Below are more in-depth explanations for the SampleApp properties.
 
 ## UI Component
 
-The UI component is the component users will interact with in the sample. Typically this would be a component related to iModel.js, however, it is not limited to just iModel.js. Any React component will do just fine. Imports in this file are sensitve as they need to be accessible to the editor as well as to the showcase app, check the [Imports section](#imports) for more info.
+The UI component is the component users will interact with in the sample. Typically this would be a component related to iModel.js, however, it is not limited to just iModel.js. Any React component will do just fine. Imports in this file are sensitive as they need to be accessible to the editor as well as to the showcase app, check the [Imports section](#imports) for more info.
 
 ### Using iModel.js in your sample
 
@@ -99,7 +99,7 @@ import { MyRequiredValue } from "./MyRequiredFile";
 [...]
 ```
 
-Since I would like this file to be editable, my SampleSpec should refect it:
+Since I would like this file to be editable, my SampleSpec should reflect it:
 
 ```ts
 import MySampleApp from "./MySampleApp";
@@ -140,4 +140,4 @@ Since I would like this file to not be editable or viewable, I need to add the f
 }
 ```
 
-Note that if the file is a scss/sass file, it is not necessary to include the ```"typedef": true``` property, howver it will require the ```"import"``` property to include ```!!raw-loader!``` before the file reference.
+Note that if the file is a scss/sass file, it is not necessary to include the ```"typedef": true``` property, however it will require the ```"import"``` property to include ```!!raw-loader!``` before the file reference.
