@@ -2,6 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
@@ -36,15 +38,6 @@ import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/c
 import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
 import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
-
-export interface SampleSpec {
-  name: string;
-  label: string;
-  image: string;
-  customModelList?: string[];
-  setup?: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
-  teardown?: () => void;
-}
 
 export interface SampleSpecGroup {
   groupName: string;

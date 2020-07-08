@@ -7,26 +7,16 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
-import { sampleManifest } from "../../sampleManifest";
+import { sampleManifest, SampleSpec } from "../../sampleManifest";
 import { IModelSelector } from "../IModelSelector/IModelSelector";
 import SampleEditor from "../SampleEditor/SampleEditor";
-import { InternalFile, SplitScreen } from "@bentley/monaco-editor";
+import { SplitScreen } from "@bentley/monaco-editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
 
 // cSpell:ignore imodels
-
-export interface SampleSpec {
-  name: string;
-  label: string;
-  image: string;
-  files?: InternalFile[];
-  customModelList?: string[];
-  setup?: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
-  teardown?: () => void;
-}
 
 interface ShowcaseState {
   iModelName: string;
