@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomEventHandlerTreeSample from "./CustomEventHandlerTree";
+import CustomEventHandlerTreeApp from "./CustomEventHandlerTreeApp";
 
 export function getCustomEventHandlerTreeSpec(): SampleSpec {
   return ({
@@ -13,8 +13,8 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     image: "custom-event-handler-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "CustomEventHandlerTree.tsx", import: import("!!raw-loader!./CustomEventHandlerTree"), entry: true },
+      { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp"), entry: true },
     ],
-    setup: CustomEventHandlerTreeSample.setup,
+    setup: CustomEventHandlerTreeApp.setup,
   });
 }

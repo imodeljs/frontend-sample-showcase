@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import BasicTreeSample from "./BasicTree";
+import BasicTreeApp from "./BasicTreeApp";
 
 export function getBasicTreeSpec(): SampleSpec {
   return ({
@@ -13,8 +13,8 @@ export function getBasicTreeSpec(): SampleSpec {
     image: "basic-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "BasicTree.tsx", import: import("!!raw-loader!./BasicTree"), entry: true },
+      { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp"), entry: true },
     ],
-    setup: BasicTreeSample.setup,
+    setup: BasicTreeApp.setup,
   });
 }
