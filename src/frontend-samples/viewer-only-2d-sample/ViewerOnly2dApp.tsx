@@ -10,10 +10,29 @@ import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewCreator2d } from "./ViewCreator2d";
 import { ModelProps } from "@bentley/imodeljs-common";
 import SampleApp from "common/SampleApp";
+import { ViewSetup } from "api/viewSetup";
 
 export default class ViewerOnly2dApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  }
+
+  public static getDrawingModelList(models: ModelProps[]) {
+    const drawingViews: JSX.Element[] = [];
+    models.forEach((model: ModelProps, index) => {
+      if (ViewCreator2d.drawingModelClasses.includes(model.classFullName))
+        drawingViews.push(<option key={index} value={index}>{model.name}</option>);
+    });
+    return drawingViews;
+  }
+
+  public static getSheetModelList(models: ModelProps[]) {
+    const sheetViews: JSX.Element[] = [];
+    models.forEach((model: ModelProps, index) => {
+      if (ViewCreator2d.sheetModelClasses.includes(model.classFullName))
+        sheetViews.push(<option key={index} value={index}>{model.name}</option>);
+    });
+    return sheetViews;
   }
 }
 
@@ -22,7 +41,7 @@ export const changeViewportView = async (index: number, imodel: IModelConnection
   const vp = IModelApp.viewManager.selectedView;
 
   if (vp) {
-    const vpAspect = vp.vpDiv.clientHeight / vp.vpDiv.clientWidth;
+    const vpAspect = ViewSetup.getAspectRatio();
     const viewCreator = new ViewCreator2d(imodel!);
     const targetView = await viewCreator.getViewForModel(models![index], vpAspect);
     if (targetView) vp.changeView(targetView);
