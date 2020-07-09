@@ -34,8 +34,8 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
 
   /** Create a UI component with all 2D models listed */
   private _modelSelector = () => {
-    const sheetViews: JSX.Element[] = ViewerOnly2dApp.getSheetModelList(this.state.models!);
-    const drawingViews: JSX.Element[] = ViewerOnly2dApp.getDrawingModelList(this.state.models!);
+    const sheetViews: JSX.Element[] = this.getSheetModelList(this.state.models!);
+    const drawingViews: JSX.Element[] = this.getDrawingModelList(this.state.models!);
 
     // Display drawing and sheet options in separate sections.
     return (
@@ -49,6 +49,24 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
         </select>
       </div>
     );
+  }
+
+  public getDrawingModelList(models: ModelProps[]) {
+    const drawingViews: JSX.Element[] = [];
+    models.forEach((model: ModelProps, index) => {
+      if (ViewCreator2d.drawingModelClasses.includes(model.classFullName))
+        drawingViews.push(<option key={index} value={index}>{model.name}</option>);
+    });
+    return drawingViews;
+  }
+
+  public getSheetModelList(models: ModelProps[]) {
+    const sheetViews: JSX.Element[] = [];
+    models.forEach((model: ModelProps, index) => {
+      if (ViewCreator2d.sheetModelClasses.includes(model.classFullName))
+        sheetViews.push(<option key={index} value={index}>{model.name}</option>);
+    });
+    return sheetViews;
   }
 
   /** When a model is selected in above list, get its view and switch to it.  */
@@ -84,11 +102,12 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     this.setState({ imodel });
     let viewState = await ViewSetup.getDefaultView(imodel);
-    const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
+    const models = await ViewerOnly2dApp.get2DModels(imodel);
     if (models) {
       this.setState({ models });
       const viewCreator = new ViewCreator2d(imodel);
       const targetView = await viewCreator.getViewForModel(models![0], ViewSetup.getAspectRatio());
+
       if (targetView) {
         viewState = targetView;
       }
