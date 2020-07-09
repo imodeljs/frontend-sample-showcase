@@ -2,6 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
@@ -32,6 +34,10 @@ import { getBasicTreeSpec } from "./frontend-samples/tree-samples/basic-tree/sam
 import { getCustomCheckboxesTreeSpec } from "./frontend-samples/tree-samples/custom-checkboxes-tree/sampleSpec";
 import { getCustomEventHandlerTreeSpec } from "./frontend-samples/tree-samples/custom-event-handler-tree/sampleSpec";
 import { getCustomTableNodeTreeSpec } from "./frontend-samples/tree-samples/custom-table-node-tree/sampleSpec";
+import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/custom-webfont-icons-tree/sampleSpec";
+import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
+import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
+import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
 
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
@@ -44,7 +50,6 @@ export interface SampleSpec {
   setup?: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
-
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
@@ -86,9 +91,13 @@ export const sampleManifest: SampleSpecGroup[] = [{
 }, {
   groupName: "UI Trees", samples: [
     getBasicTreeSpec(),
-    getCustomCheckboxesTreeSpec(),
-    getCustomEventHandlerTreeSpec(),
+    getPresentationTreeSpec(),
+    getCustomNodeLoadingTreeSpec(),
     getCustomTableNodeTreeSpec(),
+    getCustomEventHandlerTreeSpec(),
+    getCustomCheckboxesTreeSpec(),
+    getUnifiedSelectionTreeSpec(),
+    getCustomWebfontIconsTreeSpec(),
   ],
 }, {
   groupName: "AppUI", samples: [

@@ -45,7 +45,7 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
       <div>
         <hr></hr>
         <span>Choose iModel: </span>
-        <select value={value} onChange={this._handleSelection}>
+        <select className="imodel-list" value={value} onChange={this._handleSelection}>
           {entries};
         </select>
       </div>

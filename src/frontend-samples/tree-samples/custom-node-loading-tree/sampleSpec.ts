@@ -2,19 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomCheckboxesTreeApp from "./CustomCheckboxesTreeApp";
+import CustomNodeLoadingTreeApp from "./CustomNodeLoadingTreeApp";
 
-export function getCustomCheckboxesTreeSpec(): SampleSpec {
+export function getCustomNodeLoadingTreeSpec(): SampleSpec {
   return ({
-    name: "custom-checkboxes-sample",
-    label: "Custom Checkboxes Tree",
-    image: "custom-checkboxes-tree-thumbnail.png",
-    customModelList: [],
+    name: "custom-node-loading-sample",
+    label: "Custom Node Loading Tree",
+    image: "custom-node-loading-tree-thumbnail.png",
     files: [
-      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp"), entry: true },
+      { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp"), entry: true },
     ],
-    setup: CustomCheckboxesTreeApp.setup,
+    setup: CustomNodeLoadingTreeApp.setup,
   });
 }
