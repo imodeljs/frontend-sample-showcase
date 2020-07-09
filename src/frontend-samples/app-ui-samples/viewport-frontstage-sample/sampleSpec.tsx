@@ -5,7 +5,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
-import { ViewportFrontstageSample } from "./index";
+import { ViewportFrontstageSample } from "./ViewportFrontstageApp";
 
 export function getViewportFrontstageSample(): SampleSpec {
   return ({
@@ -13,8 +13,8 @@ export function getViewportFrontstageSample(): SampleSpec {
     label: "Viewport Frontstage",
     image: "viewport-frontstage-thumbnail.png",
     files: [
-      { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!./index"), entry: true },
-      { name: "ViewportFrontstage.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage")},
+      { name: "ViewportFrontstageApp.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
+      { name: "ViewportFrontstageUi.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage")},
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: ViewportFrontstageSample.setup,
