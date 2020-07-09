@@ -5,11 +5,12 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
+import { ViewSetup } from "api/viewSetup";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -26,7 +27,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     super(props, context);
     this.state = {
       attrValues: {
-        renderMode: RenderMode.SmoothShade,
+        renderMode: RenderMode.Wireframe,
         acs: false,
         cameraOn: false,
         grid: false,
@@ -66,9 +67,9 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
     switch (event.target.value) {
       case "HiddenLine": { renderMode = RenderMode.HiddenLine; break; }
-      default:
       case "SmoothShade": { renderMode = RenderMode.SmoothShade; break; }
       case "SolidFill": { renderMode = RenderMode.SolidFill; break; }
+      default:
       case "Wireframe": { renderMode = RenderMode.Wireframe; break; }
     }
 
@@ -81,9 +82,9 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     const element =
       <select style={{ width: "fit-content" }} onChange={this._onChangeRenderMode}>
         <option value={"HiddenLine"}> Hidden Line </option>
-        <option selected={true} value={"SmoothShade"}> Smooth Shade </option>
+        <option value={"SmoothShade"}> Smooth Shade </option>
         <option value={"SolidFill"}> Solid Fill </option>
-        <option value={"Wireframe"}> Wireframe </option>
+        <option selected={true} value={"Wireframe"}> Wireframe </option>
       </select>;
 
     return this.createJSXElementForAttribute(label, info, element);
@@ -176,11 +177,17 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     });
   }
 
+  public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+    viewState.viewFlags.renderMode = RenderMode.Wireframe;
+    return viewState;
+  }
+
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
         {this.getControlPane()}
       </>
     );
