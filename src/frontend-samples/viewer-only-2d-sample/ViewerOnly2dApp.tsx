@@ -17,20 +17,29 @@ export default class ViewerOnly2dApp implements SampleApp {
     return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
-  public static async get2DModels(imodel: IModelConnection) {
-    return imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
+  public static async get2DModels(imodel: IModelConnection): Promise<{ drawings: ModelProps[], sheets: ModelProps[] }> {
+    const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
+    const drawingViews: ModelProps[] = [];
+    const sheetViews: ModelProps[] = [];
+    models.forEach((model: ModelProps, index) => {
+      if (ViewCreator2d.isSheetModelClass(model.classFullName))
+        sheetViews.push(model);
+      else if (ViewCreator2d.isDrawingModelClass(model.classFullName))
+        drawingViews.push(model);
+    });
+    return { drawings: drawingViews, sheets: sheetViews };
+  }
+
+  /** When a model is selected in above list, get its view and switch to it.  */
+  public static async changeViewportView(imodel: IModelConnection, newModel: ModelProps) {
+    const vp = IModelApp.viewManager.selectedView;
+    const vpAspect = ViewSetup.getAspectRatio();
+
+    if (vp && vpAspect) {
+      const viewCreator = new ViewCreator2d(imodel);
+      const targetView = await viewCreator.getViewForModel(newModel, vpAspect);
+      if (targetView) vp.changeView(targetView);
+      else alert("Invalid View Detected!");
+    }
   }
 }
-
-/** When a model is selected in above list, get its view and switch to it.  */
-export const changeViewportView = async (index: number, imodel: IModelConnection, models: ModelProps[]) => {
-  const vp = IModelApp.viewManager.selectedView;
-
-  if (vp) {
-    const vpAspect = ViewSetup.getAspectRatio();
-    const viewCreator = new ViewCreator2d(imodel!);
-    const targetView = await viewCreator.getViewForModel(models![index], vpAspect!);
-    if (targetView) vp.changeView(targetView);
-    else alert("Invalid View Detected!");
-  }
-};
