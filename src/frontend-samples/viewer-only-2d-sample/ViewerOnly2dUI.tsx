@@ -40,7 +40,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     // Display drawing and sheet options in separate sections.
     return (
       <div style={{ marginTop: "20px" }}>
-        <span>Pick model to view it: </span>
+        <span>Select Drawing or Sheet: </span>
         <select onChange={this._handleSelection}>
           {(drawingViews.length > 0) ? <optgroup label="Drawings" /> : null};
           {drawingViews};
