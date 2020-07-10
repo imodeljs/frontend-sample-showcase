@@ -53,6 +53,7 @@ export class ViewSetup {
     }
 
     viewState.viewFlags.shadows = false;
+    viewState.viewFlags.grid = false;
 
     if (viewState.is3d()) {
       const viewState3d = viewState as ViewState3d;
