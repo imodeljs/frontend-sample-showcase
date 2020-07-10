@@ -13,12 +13,14 @@ import SampleApp from "common/SampleApp";
 // cSpell:ignore imodels
 
 export enum ViewFlag {
-  ACS, Grid, HiddenEdges, Monochrome, VisibleEdges, Shadows,
+  ACS, BackgroundMap, Grid, HiddenEdges, Monochrome, VisibleEdges, Shadows,
 }
 
 export interface AttrValues {
   renderMode: RenderMode;
   acs: boolean;
+  backgroundMap: boolean;
+  backgroundTransparency: number | false;
   cameraOn: boolean;
   grid: boolean;
   hiddenEdges: boolean;
@@ -39,6 +41,8 @@ export default class ViewAttributesApp implements SampleApp {
     return {
       renderMode: ViewAttributesApp.getRenderModel(vp),
       acs: ViewAttributesApp.getViewFlag(vp, ViewFlag.ACS),
+      backgroundMap: ViewAttributesApp.getViewFlag(vp, ViewFlag.BackgroundMap),
+      backgroundTransparency: ViewAttributesApp.getBackgroundTransparency(vp),
       cameraOn: ViewAttributesApp.isCameraOn(vp),
       grid: ViewAttributesApp.getViewFlag(vp, ViewFlag.Grid),
       hiddenEdges: ViewAttributesApp.getViewFlag(vp, ViewFlag.HiddenEdges),
@@ -53,6 +57,7 @@ export default class ViewAttributesApp implements SampleApp {
   public static getViewFlag(vp: Viewport, flag: ViewFlag): boolean {
     switch (flag) {
       case ViewFlag.ACS: return vp.viewFlags.acsTriad;
+      case ViewFlag.BackgroundMap: return vp.viewFlags.backgroundMap;
       case ViewFlag.Grid: return vp.viewFlags.grid;
       case ViewFlag.HiddenEdges: return vp.viewFlags.hiddenEdges;
       case ViewFlag.Monochrome: return vp.viewFlags.monochrome;
@@ -70,6 +75,9 @@ export default class ViewAttributesApp implements SampleApp {
     switch (flag) {
       case ViewFlag.ACS:
         viewFlags.acsTriad = on;
+        break;
+      case ViewFlag.BackgroundMap:
+        viewFlags.backgroundMap = on;
         break;
       case ViewFlag.Grid:
         viewFlags.grid = on;
@@ -94,6 +102,16 @@ export default class ViewAttributesApp implements SampleApp {
   // Query camera setting using the Viewport API.
   public static isCameraOn(vp: Viewport) {
     return vp.isCameraOn;
+  }
+
+  public static getBackgroundTransparency(vp: Viewport) {
+    return vp.backgroundMapSettings.transparency;
+  }
+
+  public static setBackgroundTransparency(vp: Viewport, transparency: number) {
+    const style = vp.backgroundMapSettings.clone({ transparency });
+    vp.displayStyle.backgroundMapSettings = style;
+    vp.synchWithView();
   }
 
   // Modify camera setting using the Viewport API.
