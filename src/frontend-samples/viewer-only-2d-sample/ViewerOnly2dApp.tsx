@@ -21,7 +21,7 @@ export default class ViewerOnly2dApp implements SampleApp {
     const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
     const drawingViews: ModelProps[] = [];
     const sheetViews: ModelProps[] = [];
-    models.forEach((model: ModelProps, index) => {
+    models.forEach((model: ModelProps) => {
       if (ViewCreator2d.isSheetModelClass(model.classFullName))
         sheetViews.push(model);
       else if (ViewCreator2d.isDrawingModelClass(model.classFullName))

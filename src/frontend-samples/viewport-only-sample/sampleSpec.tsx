@@ -12,7 +12,7 @@ export function getViewportOnlySpec(): SampleSpec {
     image: "viewport-only-thumbnail.png",
     files: [
       { name: "ViewportOnlyApp.tsx", import: import("!!raw-loader!./ViewportOnlyApp"), entry: true },
-      { name: "ViewportOnlySample.tsx", import: import("!!raw-loader!./ViewportOnlySample") },
+      { name: "ViewportOnlyUI.tsx", import: import("!!raw-loader!./ViewportOnlyUI") },
     ],
     setup: ViewportOnlyApp.setup,
   });
