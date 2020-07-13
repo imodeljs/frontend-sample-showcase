@@ -104,10 +104,12 @@ export default class ViewAttributesApp implements SampleApp {
     return vp.isCameraOn;
   }
 
+  // Query map background transparency using the Viewport API
   public static getBackgroundTransparency(vp: Viewport) {
     return vp.backgroundMapSettings.transparency;
   }
 
+  // Modify map background transparency using the Viewport API
   public static setBackgroundTransparency(vp: Viewport, transparency: number) {
     const style = vp.backgroundMapSettings.clone({ transparency });
     vp.displayStyle.backgroundMapSettings = style;

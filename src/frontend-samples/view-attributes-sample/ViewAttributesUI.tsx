@@ -147,6 +147,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     return this.createJSXElementForAttribute(label, info, element);
   }
 
+  // Query the geolocation of an iModel using the Viewport API
   private isModelGeolocated() {
     if (this.state.vp && this.state.vp.iModel) {
       return this.state.vp.iModel.isGeoLocated;
