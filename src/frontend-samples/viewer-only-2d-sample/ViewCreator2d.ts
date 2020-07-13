@@ -16,6 +16,20 @@ export class ViewCreator2d {
   public static drawingModelClasses = [DrawingModelState.classFullName, SectionDrawingModelState.classFullName];
   public static sheetModelClasses = [SheetModelState.classFullName];
 
+  public static isDrawingModelClass(modelType: string) {
+    if (ViewCreator2d.drawingModelClasses.includes(modelType)) {
+      return true;
+    }
+    return false;
+  }
+
+  public static isSheetModelClass(modelType: string) {
+    if (ViewCreator2d.sheetModelClasses.includes(modelType)) {
+      return true;
+    }
+    return false;
+  }
+
   /** Create and return a view for a given 2D model */
   public async getViewForModel(model: ModelProps, vpAspect?: number): Promise<ViewState | undefined> {
     let viewState: ViewState2d | undefined;
@@ -30,10 +44,10 @@ export class ViewCreator2d {
   private async _createViewState2d(modelId: Id64String, modelType: string, vpAspect?: number): Promise<ViewState2d | undefined> {
     let viewState: ViewState2d | undefined;
 
-    if (ViewCreator2d.drawingModelClasses.includes(modelType)) {
+    if (ViewCreator2d.isDrawingModelClass(modelType)) {
       const props = await this._createViewStateProps(modelId, ColorDef.white, vpAspect);
       viewState = (DrawingViewState.createFromProps(props, this._imodel) as ViewState2d);
-    } else if (ViewCreator2d.sheetModelClasses.includes(modelType)) {
+    } else if (ViewCreator2d.isSheetModelClass(modelType)) {
       let props = await this._createViewStateProps(modelId, ColorDef.white, vpAspect);
       props = await this._addSheetViewProps(modelId, props);
       viewState = (SheetViewState.createFromProps(props, this._imodel) as ViewState2d);

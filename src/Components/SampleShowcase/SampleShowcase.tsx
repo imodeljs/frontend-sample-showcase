@@ -22,9 +22,9 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
-  files?: InternalFile[];
+  files: InternalFile[];
   customModelList?: string[];
-  setup?: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
+  setup: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 
