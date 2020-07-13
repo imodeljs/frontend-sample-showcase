@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
-import { Toggle, Slider } from "@bentley/ui-core";
+import { Toggle } from "@bentley/ui-core";
 import { RenderMode, ThematicDisplay } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
@@ -30,7 +30,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
         renderMode: RenderMode.Wireframe,
         acs: false,
         backgroundMap: false,
-        backgroundTransparency: 1,
+        backgroundTransparency: 0.5,
         cameraOn: false,
         grid: false,
         hiddenEdges: false,
@@ -156,7 +156,10 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
   // Create the react components for the camera toggle row.
   private createTransparencySlider(label: string, info: string) {
     if (this.state.vp) {
-      const element = <input type={"range"} min={0} max={100} onChange={(event: React.ChangeEvent<HTMLInputElement>) => ViewAttributesApp.setBackgroundTransparency(this.state.vp!, -1 * ((Number(event.target.value) / 100) - 1))} />;
+      const element = <input type={"range"} min={0} max={99} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.vp)
+          ViewAttributesApp.setBackgroundTransparency(this.state.vp, Math.abs((Number(event.target.value) / 100) - 1));
+      }} />;
       return this.createJSXElementForAttribute(label, info, element);
     }
   }
@@ -175,8 +178,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
             {this.createRenderModePicker("Render Mode", "Controls the render mode.")}
             {this.createViewFlagToggle(ViewFlag.ACS, "ACS", "Turn on to see a visualization of the active coordinate system.")}
             {this.isModelGeolocated() ? this.createViewFlagToggle(ViewFlag.BackgroundMap, "Background Map", "Turn on to see the geolocated iModel on a map. Turn off to disable map.") : undefined}
-            {this.isModelGeolocated() ? this.createTransparencySlider("Background Map", "Turn on to see the geolocated iModel on a map. Turn off to disable map.") : undefined}
-
+            {(this.isModelGeolocated() && this.state.attrValues.backgroundMap) ? this.createTransparencySlider("Map Transparency", "Adjusting this slider changes the transparency of the background map. This is only visible if the map is currently being displayed.") : undefined}
             {this.createCameraToggle("Camera", "Turn on for perspective view.  Turn off for orthographic view.")}
             {this.createViewFlagToggle(ViewFlag.Grid, "Grid", "")}
             {this.createViewFlagToggle(ViewFlag.Monochrome, "Monochrome", "Turn on to disable colors.")}
@@ -193,6 +195,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
   private onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
       const attrValues = ViewAttributesApp.getAttrValues(vp);
+      ViewAttributesApp.setBackgroundTransparency(vp, 0.5);
       this.setState({ vp, attrValues });
     });
   }
