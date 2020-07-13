@@ -158,7 +158,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     if (this.state.vp) {
       const element = <input type={"range"} min={0} max={99} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         if (this.state.vp)
-          // The calculation used here converts the whole number range 0-99 into a range from 1 to 0
+          // The calculation used here converts the whole number range 0 to 99 into a range from 1 to 0
           // This allows the rightmost value of the slider to be opaque, while the leftmost value is completely transparent
           ViewAttributesApp.setBackgroundTransparency(this.state.vp, Math.abs((Number(event.target.value) / 100) - 1));
       }} />;
