@@ -30,7 +30,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
         renderMode: RenderMode.Wireframe,
         acs: false,
         backgroundMap: false,
-        backgroundTransparency: 0.5,
+        backgroundTransparency: 0.01,
         cameraOn: false,
         grid: false,
         hiddenEdges: false,
@@ -147,17 +147,10 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  // Query the geolocation of an iModel using the Viewport API
-  private isModelGeolocated() {
-    if (this.state.vp && this.state.vp.iModel) {
-      return this.state.vp.iModel.isGeoLocated;
-    }
-  }
-
   // Create the react component for the transparency slider
   private createTransparencySlider(label: string, info: string) {
     if (this.state.vp) {
-      const element = <input type={"range"} min={0} max={99} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+      const element = <input type={"range"} min={0} max={99} defaultValue={99} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         if (this.state.vp)
           // The calculation used here converts the whole number range 0 to 99 into a range from 1 to 0
           // This allows the rightmost value of the slider to be opaque, while the leftmost value is completely transparent
@@ -180,8 +173,8 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
             {this.createRenderModePicker("Render Mode", "Controls the render mode.")}
             {this.createViewFlagToggle(ViewFlag.ACS, "ACS", "Turn on to see a visualization of the active coordinate system.")}
-            {this.isModelGeolocated() ? this.createViewFlagToggle(ViewFlag.BackgroundMap, "Background Map", "Turn on to see the geolocated iModel on a map. Turn off to disable map.") : undefined}
-            {(this.isModelGeolocated() && this.state.attrValues.backgroundMap) ? this.createTransparencySlider("Map Transparency", "Adjusting this slider changes the transparency of the background map. This is only visible if the map is currently being displayed.") : undefined}
+            {this.createViewFlagToggle(ViewFlag.BackgroundMap, "Background Map", "Turn on to see the iModel on a map. Turn off to disable map. Does not apply if the selected iModel is not geolocated.")}
+            {this.createTransparencySlider("Map Transparency", "Adjusting this slider changes the transparency of the background map. Does not apply if map is not currently being displayed.")}
             {this.createCameraToggle("Camera", "Turn on for perspective view.  Turn off for orthographic view.")}
             {this.createViewFlagToggle(ViewFlag.Grid, "Grid", "")}
             {this.createViewFlagToggle(ViewFlag.Monochrome, "Monochrome", "Turn on to disable colors.")}
@@ -198,7 +191,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
   private onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
       const attrValues = ViewAttributesApp.getAttrValues(vp);
-      ViewAttributesApp.setBackgroundTransparency(vp, 0.5);
+      ViewAttributesApp.setBackgroundTransparency(vp, 0.01);
       this.setState({ vp, attrValues });
     });
   }
