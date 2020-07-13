@@ -40,7 +40,7 @@ export function UnifiedSelectionTree(props: UnifiedSelectionTreeProps) {
   const nodeLoader = usePresentationTreeNodeLoader({
     imodel: props.imodel,
     ruleset: RULESET_TREE_HIERARCHY,
-    pageSize: PAGING_SIZE,
+    pagingSize: PAGING_SIZE,
   });
 
   // create event handler that handles tree events: expanding/collapsing, selecting/deselecting nodes. Additionally it adds/removes keys to/from
