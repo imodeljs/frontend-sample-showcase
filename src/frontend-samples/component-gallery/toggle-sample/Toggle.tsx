@@ -7,6 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import "common/CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { LabeledToggle, Toggle, ToggleButtonType } from "@bentley/ui-core";
 import SampleApp from "common/SampleApp";
 
@@ -38,9 +39,7 @@ export default class ToggleList extends React.Component<{}> implements SampleApp
     return (
       <>
         <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Different styles of toggles that can be used in iModel.js applications</span>
-          </div>
+          <ControlPaneHeader instructions="Different styles of toggles that can be used in iModel.js applications."></ControlPaneHeader>
         </div>
       </>
     );

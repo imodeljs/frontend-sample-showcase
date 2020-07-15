@@ -6,6 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -120,9 +121,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     return (
       <>
         <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Use the options below to control the view clip.</span>
-          </div>
+          <ControlPaneHeader instructions="Use the options below to control the view clip."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-3col even-3col">

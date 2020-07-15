@@ -6,6 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
@@ -83,8 +84,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
         { /* This is the ui specific for this sample.*/}
         <div className="sample-ui">
           <div>
-            <span>The picker below shows a list of 2D models in this iModel.</span>
-            {this.props.iModelSelector}
+            <ControlPaneHeader instructions="The picker below shows a list of 2D models in this iModel."></ControlPaneHeader>            {this.props.iModelSelector}
             <hr />
             {this._modelSelector()}
           </div>

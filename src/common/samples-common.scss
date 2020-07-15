@@ -33,14 +33,38 @@
   z-index: 1;
 }
 
-.sample-instructions {
+.control-pane-header {
   display: flex;
+  flex-direction: horizontal;
+
+  .control-pane-toggle {
+    width: 20px;
+    height: 1px;
+  }
+  .control-pane-toggle::after {
+    content: "\f2ff";
+    right: 6px;
+    top: 6px;
+    position: absolute;
+    font-family: "bentley-icons-generic-webfont";
+    font-style: normal;
+    font-size: 1rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .sample-instructions {
+    display: flex;
+    flex-grow: 1;
+  }
+  
+  .sample-instructions>span {
+    flex-grow: 1;
+    width: 0;
+  }  
 }
 
-.sample-instructions>span {
-  flex-grow: 1;
-  width: 0;
-}
+
 
 .sample-heading {
   font-weight: bold;

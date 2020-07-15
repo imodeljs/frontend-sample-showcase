@@ -34,6 +34,23 @@
   }
 }
 
+.sample-content.hide-control-pane {
+  .sample-ui {
+    display: none;
+  }
+  .control-pane-button {
+    display: inline-block;
+  }
+}
+
+.control-pane-button {
+  display: none;
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+  z-index: 1;
+}
+
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;

@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
 import { PresentationTree } from "./PresentationTreeApp";
@@ -17,9 +18,7 @@ export class PresentationTreeUI extends React.Component<{ iModelName: string, iM
     return (
       <>
         <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Data in this tree is loaded using Presentation rules.</span>
-          </div>
+          <ControlPaneHeader instructions="Data in this tree is loaded using Presentation rules."></ControlPaneHeader>
           {this.props.iModelSelector}
         </div>
       </>

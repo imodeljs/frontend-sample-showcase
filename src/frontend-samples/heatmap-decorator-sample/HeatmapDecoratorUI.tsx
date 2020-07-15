@@ -5,6 +5,7 @@
 import * as React from "react";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
@@ -104,9 +105,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     return (
       <>
         <div className="sample-ui" >
-          <div className="sample-instructions">
-            <span>Use the options below to control the heatmap visualization.</span>
-          </div>
+          <ControlPaneHeader instructions="Use the options below to control the heatmap visualization."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col">

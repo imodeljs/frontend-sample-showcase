@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -122,9 +123,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     return (
       <>
         <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Select one or more elements.  Click one of the Apply buttons.</span>
-          </div>
+          <ControlPaneHeader instructions="Select one or more elements.  Click one of the Apply buttons."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-4col">

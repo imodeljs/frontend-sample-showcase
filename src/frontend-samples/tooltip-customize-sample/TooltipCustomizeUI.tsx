@@ -5,6 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { Toggle } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "api/showcasetooladmin";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -91,9 +92,7 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iM
     return (
       <>
         <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.</span>
-          </div>
+          <ControlPaneHeader instructions="Hover the mouse pointer over an element to see the tooltip.  Use these options to control it."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-3col">

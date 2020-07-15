@@ -6,6 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import "common/CommonComponentTools/index.scss";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
 import { CheckListBox, CheckListBoxItem, CheckListBoxSeparator } from "@bentley/ui-core";
 import SampleApp from "common/SampleApp";
@@ -45,9 +46,7 @@ export default class CheckListBoxList extends React.Component<{}> implements Sam
     return (
       <>
         <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Different styles of checklistboxes that can be used in iModel.js applications</span>
-          </div>
+          <ControlPaneHeader instructions="Different styles of checklistboxes that can be used in iModel.js applications."></ControlPaneHeader>
         </div>
       </>
     );

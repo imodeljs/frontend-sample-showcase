@@ -203,6 +203,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._onActiveSampleChange(group.groupName, activeSample.name);
   }
 
+  public onControlPaneButtonClick() {
+    // Hide the control pane
+    const sampleContent = document.getElementsByClassName("sample-content");
+    sampleContent[0].classList.remove("hide-control-pane");
+  }
+
   private _onPanelSizeChange = (size: number) => {
     if (size <= 200 && this.state.showEditor) {
       this.setState({ showEditor: false });
@@ -220,6 +226,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
           <div style={{ height: "100%" }}>
             <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
               {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="sample-code-button" onClick={this._onEditorButtonClick}>Explore Code</Button>}
+              <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.onControlPaneButtonClick}>Show Control Pane</Button>
               <ErrorBoundary>
                 {this.state.sampleUI || null}
               </ErrorBoundary>

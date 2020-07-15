@@ -7,6 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { PopupMenu } from "./PopupMenu";
@@ -128,9 +129,7 @@ export default class MarkerPinsUI extends React.Component<{ iModelName: string, 
       <>
         <PopupMenu />
         <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Use the options below to control the marker pins.  Click a marker to open a menu of options.</span>
-          </div>
+          <ControlPaneHeader instructions="Use the options below to control the marker pins.  Click a marker to open a menu of options."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col">

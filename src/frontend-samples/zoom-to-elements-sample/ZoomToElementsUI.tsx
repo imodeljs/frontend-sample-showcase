@@ -6,6 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
@@ -124,9 +125,8 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
     return (
       <>
         <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.</span>
-          </div>
+          <ControlPaneHeader instructions="Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements."></ControlPaneHeader>
+
           {this.props.iModelSelector}
           <hr></hr>
           <div className="table-wrapper">

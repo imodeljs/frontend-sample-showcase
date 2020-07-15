@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import "common/samples-common.scss";
 
 export default class ViewportOnlyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
@@ -17,7 +18,7 @@ export default class ViewportOnlyUI extends React.Component<{ iModelName: string
 
         { /* The control pane */}
         <div className="sample-ui">
-          <span>Use the toolbar at the top-right to navigate the model.</span>
+          <ControlPaneHeader instructions="Use the toolbar at the top-right to navigate the model."></ControlPaneHeader>
           {this.props.iModelSelector}
         </div>
       </>

@@ -6,6 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
 import ShadowStudyApp from "./ShadowStudyApp";
@@ -132,9 +133,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     return (
       <>
         <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Select a date and time.</span>
-          </div>
+          <ControlPaneHeader instructions="Select a date and time."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-3col">

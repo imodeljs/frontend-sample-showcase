@@ -6,6 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -165,9 +166,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     return (
       <>
         < div className="sample-ui" >
-          <div>
-            <span>Use the controls below to change the view attributes.</span>
-          </div>
+          <ControlPaneHeader instructions="Use the controls below to change the view attributes."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>

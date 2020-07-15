@@ -5,6 +5,7 @@
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
+import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
@@ -194,9 +195,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
       <>
         { /* This is the ui specific for this sample.*/}
         <div className="sample-ui">
-          <div>
-            <span>Use the controls below to change the thematic display attributes.</span>
-          </div>
+          <ControlPaneHeader instructions="Use the controls below to change the thematic display attributes."></ControlPaneHeader>
           {this.props.iModelSelector}
           <hr></hr>
           <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
