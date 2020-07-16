@@ -6,7 +6,7 @@ import * as React from "react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 
 import { ColorDef } from "@bentley/imodeljs-common";
 import {

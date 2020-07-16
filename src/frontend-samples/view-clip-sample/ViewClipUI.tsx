@@ -8,8 +8,8 @@ import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "api/viewSetup";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "../../api/viewSetup";
 import ViewClipApp from "./ViewClipApp";
 
 interface ViewClipUIProps {
