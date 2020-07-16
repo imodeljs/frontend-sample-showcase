@@ -3,7 +3,8 @@
   "instrumentedTestBundle": "./lib/test/webpack/bundled-tests.instrumented.js",
   "ports": {
     "frontend": 3000,
-    "frontendDebugging": 9223
+    "frontendDebugging": 9223,
+    "debugging": 5858
   },
   "mochaOptions": {
     "timeout": 2000,
@@ -15,6 +16,7 @@
   "chromeOptions": {
     "publicDirs": [
       "src/public",
+      "src/lib",
       "src/test/public",
     ],
     "args": [

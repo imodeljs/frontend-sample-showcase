@@ -11,8 +11,11 @@
     "Heatmap",
     "Oidc",
     "Reloadable",
+    "bentleyjs",
+    "exton",
     "imodel",
-    "imodeljs"
+    "imodeljs",
+    "typemoq"
   ],
   "json.schemas": [
     {

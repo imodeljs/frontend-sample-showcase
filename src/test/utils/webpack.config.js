@@ -6,6 +6,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const glob = require("glob");
+const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 const frontendLib = path.resolve(__dirname, "../../../lib");
 
@@ -17,6 +18,9 @@ function createConfig(shouldInstrument) {
       path: path.resolve(frontendLib, "test/webpack/"),
       filename: "bundled-tests.js",
       devtoolModuleFilenameTemplate: "file:///[absolute-resource-path]"
+    },
+    resolve: {
+      extensions: ['.js', '.jsx', '.ts', '.tsx']
     },
     devtool: "nosources-source-map",
     module: {
@@ -34,12 +38,12 @@ function createConfig(shouldInstrument) {
           enforce: "pre"
         },
         {   //look for .scss, .css, .svg, .png, and use the null loader
-          test: /azure-storage|AzureFileHandler|UrlFileHandler|\.css$|\.svg$/,
+          test: /azure-storage|AzureFileHandler|UrlFileHandler|\.svg$/,
           use: "null-loader"
         },
         {
-          test: /\.(scss|sass)$/,
-          use: "raw-loader",
+          test: /\.(scss|sass|css)$/,
+          use: "null-loader",
         },
         {
           test: /\.(jsx)$/,         // Match .jsx files
@@ -48,7 +52,7 @@ function createConfig(shouldInstrument) {
             {
               loader: 'babel-loader',
               options: {
-                presets: ['react']
+                presets: ['@babel/react']
               }
             }
           ],
@@ -59,9 +63,12 @@ function createConfig(shouldInstrument) {
     optimization: {
       nodeEnv: "production"
     },
-    externals: {
-      electron: "commonjs electron",
-    },
+    externals: [
+      (_ctx, req, cb) => (/\.scss$/.test(req)) ? cb(null, "var null") : cb(),
+      {
+        electron: "commonjs electron",
+      },
+    ],
     plugins: [
       // Makes some environment variables available to the JS code, for example:
       // if (process.env.NODE_ENV === "development") { ... }. See `./env.js`.
@@ -71,7 +78,19 @@ function createConfig(shouldInstrument) {
             env[key] = JSON.stringify(process.env[key]);
             return env;
           }, {}),
-      })
+      }),
+      new WebpackShellPluginNext({
+        onBuildStart: {
+          scripts: ['echo "Webpack Start"'],
+          blocking: true,
+          parallel: false
+        },
+        onBuildEnd: {
+          scripts: ["echo `Webpack End`"],
+          blocking: false,
+          parallel: true
+        }
+      }),
     ]
   };
 
@@ -83,6 +102,7 @@ function createConfig(shouldInstrument) {
       exclude: path.join(frontendLib, "test"),
       loader: require.resolve("istanbul-instrumenter-loader"),
       options: {
+        esModules: true,
         debug: true
       },
       enforce: "post",
