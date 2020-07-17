@@ -45,6 +45,11 @@
 
 .control-pane-button {
   display: none;
+}
+
+.collapsed-button-container {
+  display: flex;
+  flex-direction: horizontal;
   position: absolute;
   right: 1em;
   bottom: 1em;
