@@ -5,7 +5,7 @@
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
-import { ToolbarButtonSample } from "./index";
+import { ToolbarButtonSample } from "./ToolbarButtonApp";
 
 export function getToolbarButtonSample(): SampleSpec {
   return ({
@@ -13,8 +13,8 @@ export function getToolbarButtonSample(): SampleSpec {
     label: "Add Toolbar Button (Dynamically)",
     image: "toolbar-button-thumbnail.png",
     files: [
-      { name: "ToolbarButtonSample.tsx", import: import("!!raw-loader!./index"), entry: true },
-      { name: "ToolbarButtonProvider.tsx", import: import("!!raw-loader!./ToolbarButtonProvider") },
+      { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp"), entry: true },
+      { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi") },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
     setup: ToolbarButtonSample.setup,

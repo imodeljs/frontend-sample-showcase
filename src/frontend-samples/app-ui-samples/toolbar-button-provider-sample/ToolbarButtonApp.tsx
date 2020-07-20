@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { UiItemsManager } from "@bentley/ui-abstract";
-import { ToolbarButtonProvider } from "./ToolbarButtonProvider";
+import { ToolbarButtonProvider } from "./ToolbarButtonUi";
 import "../../../common/samples-common.scss";
 import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
 import { AppUi } from "../../../common/AppUi/AppUi";
