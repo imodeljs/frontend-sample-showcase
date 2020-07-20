@@ -24,7 +24,7 @@
     background-color: #333 !important;
   }
   .header {
-    width: 260px;
+    width: 250px;
     background-color: #333 !important;
   }
 }
@@ -39,7 +39,6 @@
   width: 240px;
   height: 160px;
   margin-left: 10px;
-  margin-right: 10px;
   margin-bottom: 5px;
 
   word-wrap: break-word;
@@ -75,7 +74,7 @@
 }
 
 .gallery-card-input-element:checked + .gallery-card::after {
-  content: "\f2c5";
+  content: "\f2d1";
   color: #008be1;
   position: absolute;
   right: 6px;

@@ -19,6 +19,7 @@
   }
 }
 
+
 .sample-content {
   height: 100%;
   width: 100%;
@@ -31,5 +32,22 @@
     top: 1em;
     z-index: 1;
   }
+}
 
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background-color: var(--buic-background-scrollbar);
+  background-clip: content-box;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 2px;
 }

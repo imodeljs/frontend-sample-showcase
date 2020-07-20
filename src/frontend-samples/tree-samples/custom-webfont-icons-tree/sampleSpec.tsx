@@ -2,19 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomCheckboxesTreeApp from "./CustomCheckboxesTreeApp";
+import CustomWebfontIconsTreeApp from "./CustomWebfontIconsTreeApp";
 
-export function getCustomCheckboxesTreeSpec(): SampleSpec {
+export function getCustomWebfontIconsTreeSpec(): SampleSpec {
   return ({
-    name: "custom-checkboxes-sample",
-    label: "Custom Checkboxes Tree",
-    image: "custom-checkboxes-tree-thumbnail.png",
-    customModelList: [],
+    name: "custom-webfont-icons-tree-sample",
+    label: "Custom Webfont Icons Tree",
+    image: "custom-webfont-icons-tree-thumbnail.png",
     files: [
-      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp"), entry: true },
+      { name: "CustomWebfontIconsTreeApp.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeApp"), entry: true },
     ],
-    setup: CustomCheckboxesTreeApp.setup,
+    setup: CustomWebfontIconsTreeApp.setup,
   });
 }
