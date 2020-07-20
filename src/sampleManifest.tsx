@@ -41,7 +41,6 @@ import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/present
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
-
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
