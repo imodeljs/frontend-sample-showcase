@@ -16,7 +16,7 @@ export function getViewerOnly2dSpec(): SampleSpec {
       { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI") },
       { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
     ],
-    customModelList: [SampleIModels.House],
+    customModelList: [SampleIModels.House, SampleIModels.MetroStation],
     setup: ViewerOnly2dApp.setup,
   });
 }

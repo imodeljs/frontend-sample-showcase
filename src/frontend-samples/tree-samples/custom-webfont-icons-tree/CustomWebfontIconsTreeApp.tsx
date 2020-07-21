@@ -38,7 +38,7 @@ export function CustomWebfontIconsTree(props: CustomWebfontIconsTreeProps) {
   const nodeLoader = usePresentationTreeNodeLoader({
     imodel: props.imodel,
     ruleset: RULESET_TREE_WITH_ICONS,
-    pageSize: PAGING_SIZE,
+    pagingSize: PAGING_SIZE,
   });
 
   // create parameters for default tree event handler. It needs 'nodeLoader' to load child nodes when parent node
