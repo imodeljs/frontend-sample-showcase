@@ -9,8 +9,8 @@ import SampleApp from "common/SampleApp";
 import { BasicTreeUI } from "./BasicTreeUI";
 
 export default class BasicTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup() {
-    return <BasicTreeUI></BasicTreeUI>;
+  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <BasicTreeUI setupControlPane={setupControlPane}></BasicTreeUI>;
   }
 
 }

@@ -5,7 +5,6 @@
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
-import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
@@ -23,7 +22,7 @@ interface SampleState {
 /** React props for the Sample component */
 interface ThematicDisplaySampleUIProps {
   iModelName: string;
-  iModelSelector: React.ReactNode;
+  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -190,19 +189,14 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   }
 
   /** Components for rendering the sample's instructions and controls */
-  public getControlPane() {
+  public getControls() {
     return (
       <>
         { /* This is the ui specific for this sample.*/}
-        <div className="sample-ui">
-          <ControlPaneHeader instructions="Use the controls below to change the thematic display attributes."></ControlPaneHeader>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
-            {this.createThematicDisplayToggle("Thematic Display", "Turn off to see the original model without decorations.")}
-            {this.createColorSchemePicker("Color Scheme", "Control the thematic color scheme.")}
-            {this.createThematicDisplayRangeSlider("Change Range", "Control the effective area of the thematic display.")}
-          </div>
+        <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
+          {this.createThematicDisplayToggle("Thematic Display", "Turn off to see the original model without decorations.")}
+          {this.createColorSchemePicker("Color Scheme", "Control the thematic color scheme.")}
+          {this.createThematicDisplayRangeSlider("Change Range", "Control the effective area of the thematic display.")}
         </div>
       </>
     );
@@ -210,10 +204,10 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Use the controls below to change the thematic display attributes.", this.getControls())
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-        {this.getControlPane()}
       </>
     );
   }

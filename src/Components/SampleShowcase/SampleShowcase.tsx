@@ -15,6 +15,7 @@ import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // cSpell:ignore imodels
 
@@ -24,7 +25,7 @@ export interface SampleSpec {
   image: string;
   files: InternalFile[];
   customModelList?: string[];
-  setup: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
+  setup: (iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 
@@ -33,6 +34,7 @@ interface ShowcaseState {
   activeSampleGroup: string;
   activeSampleName: string;
   sampleUI?: React.ReactNode;
+  sampleControlPane?: React.ReactNode;
   showEditor: boolean;
   showGallery: boolean;
 }
@@ -127,7 +129,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       if (newSampleSpec.name !== this.state.activeSampleName) {
         iModelName = iModelList[0];
       }
-      sampleUI = await newSampleSpec.setup(iModelName, this.getIModelSelector(iModelName, iModelList));
+      sampleUI = await newSampleSpec.setup(iModelName, this.setupControlPane.bind(this));
     }
 
     this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
@@ -189,7 +191,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
       try {
-        return sampleUi.setup(iModelName, iModelSelector);
+        return sampleUi.setup(iModelName, this.setupControlPane.bind(this));
       } catch (err) {
         return (
           <DisplayError error={err} />
@@ -205,7 +207,17 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._onActiveSampleChange(group.groupName, activeSample.name);
   }
 
-  public onControlPaneButtonClick() {
+  private setupControlPane(instructions: string, controls?: React.ReactNode) {
+    const sampleSpec = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+    if (sampleSpec) {
+      const iModelList = this.getIModelList(sampleSpec);
+      const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
+      const controlPane = <ControlPane instructions={instructions} controls={controls ? controls : undefined} iModelSelector={iModelSelector}></ControlPane>;
+      this.setState({ sampleControlPane: controlPane });
+    }
+  }
+
+  public setupControlPaneButtonClick = () => {
     // Hide the control pane
     const sampleContent = document.getElementsByClassName("sample-content");
     sampleContent[0].classList.remove("hide-control-pane");
@@ -236,8 +248,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="sample-code-button" onClick={this._onEditorButtonClick}>Explore Code</Button>}
                 <div className="collapsed-button-container">
-                  <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.onControlPaneButtonClick}>Show Control Pane</Button>
-                  {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={() => this.setState({ showGallery: true })}>Show Sample Gallery</Button>}
+                  {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="gallery-button" onClick={() => this.setState({ showGallery: true })}>Show Sample Gallery</Button>}
+                  <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.setupControlPaneButtonClick}>Show Control Pane</Button>
+                  {this.state.sampleControlPane ? this.state.sampleControlPane : undefined}
                 </div>
                 <ErrorBoundary>
                   {this.state.sampleUI || null}

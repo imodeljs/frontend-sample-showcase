@@ -3,25 +3,15 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import "common/DataProvider/Trees.scss";
 import { CustomEventHandlerTree } from "./CustomEventHandlerTreeApp";
 
-export class CustomEventHandlerTreeUI extends React.Component<{}> {
+export class CustomEventHandlerTreeUI extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> {
 
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <ControlPaneHeader instructions="This tree demonstrates the interaction between tree node selection and checkbox selection. Selecting a tree node checks the corresponding checkbox, and deselects all other checkboxes."></ControlPaneHeader>
-        </div>
-      </>
-    );
-  }
   public render() {
+    this.props.setupControlPane("This tree demonstrates the interaction between tree node selection and checkbox selection. Selecting a tree node checks the corresponding checkbox, and deselects all other checkboxes.");
     return (
       <>
-        {this.getControlPane()}
         <div className="tree sample-tree">
           <CustomEventHandlerTree></CustomEventHandlerTree>
         </div>

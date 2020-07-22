@@ -40,6 +40,8 @@
   }
   .control-pane-button {
     display: inline-block;
+    margin-right: 5px;
+    margin-left: 5px;
   }
 }
 
@@ -47,9 +49,14 @@
   display: none;
 }
 
+.gallery-button {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
 .collapsed-button-container {
   display: flex;
-  flex-direction: horizontal;
+  flex-direction: column;
   position: absolute;
   right: 1em;
   bottom: 1em;

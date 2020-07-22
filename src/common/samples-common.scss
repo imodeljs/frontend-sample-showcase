@@ -21,7 +21,6 @@
   color: white;
   bottom: 2%;
   right: 2%;
-  position: absolute;
   -webkit-transition: all 500ms ease;
   -o-transition: all 500ms ease;
   transition: all 500ms ease;
@@ -35,17 +34,16 @@
 
 .control-pane-header {
   display: flex;
-  flex-direction: horizontal;
+  flex-direction: row;
 
   .control-pane-toggle {
-    width: 20px;
-    height: 1px;
+    //width: 20px;
+    //height: 1px;
   }
   .control-pane-toggle::after {
     content: "\f2ff";
-    right: 6px;
-    top: 6px;
-    position: absolute;
+    //right: 6px;
+    //top: 6px;
     font-family: "bentley-icons-generic-webfont";
     font-style: normal;
     font-size: 1rem;

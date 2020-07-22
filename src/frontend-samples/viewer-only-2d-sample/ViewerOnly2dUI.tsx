@@ -6,7 +6,6 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ControlPaneHeader } from "Components/ControlPaneHeader/ControlPaneHeader";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
@@ -16,7 +15,7 @@ import { ViewCreator2d } from "./ViewCreator2d";
 // The Props and State for this sample component
 interface ViewerOnly2dProps {
   iModelName: string;
-  iModelSelector: React.ReactNode;
+  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
 }
 
 interface ViewerOnly2dState {
@@ -78,17 +77,11 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
   }
 
   /** Components for rendering the sample's instructions and controls */
-  public getControlPane() {
+  public getControls() {
     return (
       <>
         { /* This is the ui specific for this sample.*/}
-        <div className="sample-ui">
-          <div>
-            <ControlPaneHeader instructions="The picker below shows a list of 2D models in this iModel."></ControlPaneHeader>            {this.props.iModelSelector}
-            <hr />
-            {this._modelSelector()}
-          </div>
-        </div>
+        {this._modelSelector()}
       </>
     );
   }
@@ -115,10 +108,10 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("The picker below shows a list of 2D models in this iModel.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} getCustomViewState={this.getInitialView} />
-        {this.getControlPane()}
       </>
     );
   }
