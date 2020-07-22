@@ -197,7 +197,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     this.props.setupControlPane("Use the controls below to change the view attributes.", this.getControls());
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />,
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
       </>
     );
   }

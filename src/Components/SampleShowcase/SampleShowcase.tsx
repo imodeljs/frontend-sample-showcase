@@ -37,6 +37,7 @@ interface ShowcaseState {
   sampleControlPane?: React.ReactNode;
   showEditor: boolean;
   showGallery: boolean;
+  showControlPane: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
@@ -56,6 +57,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       activeSampleName: names.sample,
       showEditor: true,
       showGallery: true,
+      showControlPane: true,
     };
 
   }
@@ -212,15 +214,14 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     if (sampleSpec) {
       const iModelList = this.getIModelList(sampleSpec);
       const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
-      const controlPane = <ControlPane instructions={instructions} controls={controls ? controls : undefined} iModelSelector={iModelSelector}></ControlPane>;
+      const controlPane = <ControlPane instructions={instructions} onCollapse={this.onControlPaneButtonClick} controls={controls ? controls : undefined} iModelSelector={iModelSelector}></ControlPane>;
       this.setState({ sampleControlPane: controlPane });
     }
   }
 
-  public setupControlPaneButtonClick = () => {
+  public onControlPaneButtonClick = () => {
     // Hide the control pane
-    const sampleContent = document.getElementsByClassName("sample-content");
-    sampleContent[0].classList.remove("hide-control-pane");
+    this.setState((prevState) => ({ showControlPane: !prevState.showControlPane }));
   }
 
   private _onEditorSizeChange = (size: number) => {
@@ -249,8 +250,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="sample-code-button" onClick={this._onEditorButtonClick}>Explore Code</Button>}
                 <div className="collapsed-button-container">
                   {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="gallery-button" onClick={() => this.setState({ showGallery: true })}>Show Sample Gallery</Button>}
-                  <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.setupControlPaneButtonClick}>Show Control Pane</Button>
-                  {this.state.sampleControlPane ? this.state.sampleControlPane : undefined}
+                  {!this.state.showControlPane ? <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.onControlPaneButtonClick}>Show Control Pane</Button> : undefined}
+                  {this.state.sampleControlPane && this.state.showControlPane ? this.state.sampleControlPane : undefined}
                 </div>
                 <ErrorBoundary>
                   {this.state.sampleUI || null}

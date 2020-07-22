@@ -58,7 +58,8 @@
   
   .sample-instructions>span {
     flex-grow: 1;
-    width: 0;
+    min-width: 100px;
+    width: 100px;
   }  
 }
 

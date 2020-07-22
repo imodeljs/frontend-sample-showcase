@@ -204,7 +204,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Use the controls below to change the thematic display attributes.", this.getControls())
+    this.props.setupControlPane("Use the controls below to change the thematic display attributes.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />

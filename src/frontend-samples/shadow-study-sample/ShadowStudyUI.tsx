@@ -148,7 +148,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Select a date and time.", this.getControls())
+    this.props.setupControlPane("Select a date and time.", this.getControls());
     return (
       <>
         <ReloadableViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />

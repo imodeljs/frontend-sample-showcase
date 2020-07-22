@@ -35,19 +35,12 @@
 }
 
 .sample-content.hide-control-pane {
-  .sample-ui {
-    display: none;
-  }
   .control-pane-button {
-    display: inline-block;
     margin-right: 5px;
     margin-left: 5px;
   }
 }
 
-.control-pane-button {
-  display: none;
-}
 
 .gallery-button {
   margin-right: 5px;

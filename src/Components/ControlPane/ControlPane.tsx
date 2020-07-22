@@ -1,6 +1,10 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 
-export class ControlPane extends React.Component<{ instructions: string, controls?: React.ReactNode, iModelSelector?: React.ReactNode }> {
+export class ControlPane extends React.Component<{ instructions: string, onCollapse: () => void, controls?: React.ReactNode, iModelSelector?: React.ReactNode }> {
   public render() {
     return (
       <>
@@ -9,10 +13,10 @@ export class ControlPane extends React.Component<{ instructions: string, control
             <div className="sample-instructions">
               <span>{this.props.instructions}</span>
             </div>
-            <div className="control-pane-toggle" onClick={this.handleClick}></div>
+            <div className="control-pane-toggle" onClick={this.props.onCollapse}></div>
           </div>
           {this.props.iModelSelector ? this.props.iModelSelector : undefined}
-          <hr></hr>
+          {this.props.controls ? <hr></hr> : undefined}
           {this.props.controls ? this.props.controls : undefined}
         </div>
 
