@@ -19,7 +19,6 @@
   }
 }
 
-
 .sample-content {
   height: 100%;
   width: 100%;
@@ -34,13 +33,10 @@
   }
 }
 
-.sample-content.hide-control-pane {
-  .control-pane-button {
-    margin-right: 5px;
-    margin-left: 5px;
-  }
+.control-pane-button {
+  margin-right: 5px;
+  margin-left: 5px;
 }
-
 
 .gallery-button {
   margin-right: 5px;

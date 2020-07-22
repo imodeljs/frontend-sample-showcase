@@ -36,14 +36,8 @@
   display: flex;
   flex-direction: row;
 
-  .control-pane-toggle {
-    //width: 20px;
-    //height: 1px;
-  }
   .control-pane-toggle::after {
     content: "\f2ff";
-    //right: 6px;
-    //top: 6px;
     font-family: "bentley-icons-generic-webfont";
     font-style: normal;
     font-size: 1rem;
