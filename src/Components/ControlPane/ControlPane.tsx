@@ -23,10 +23,4 @@ export class ControlPane extends React.Component<{ instructions: string, onColla
       </>
     );
   }
-
-  public handleClick() {
-    // Add the hide control pane tag to the sample content
-    const sampleContent = document.getElementsByClassName("sample-content");
-    sampleContent[0].classList.add("hide-control-pane");
-  }
 }
