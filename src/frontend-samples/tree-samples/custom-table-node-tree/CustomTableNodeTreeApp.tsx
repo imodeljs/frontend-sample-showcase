@@ -19,8 +19,8 @@ import { TableNodeTreeUI } from "./CustomTableNodeTreeUI";
 
 export default class TableNodeTreeApp extends React.Component<{}> implements SampleApp {
 
-  public static async setup() {
-    return <TableNodeTreeUI></TableNodeTreeUI>;
+  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <TableNodeTreeUI setupControlPane={setupControlPane}></TableNodeTreeUI>;
   }
 
 }

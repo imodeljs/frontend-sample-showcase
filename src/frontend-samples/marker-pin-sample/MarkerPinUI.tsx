@@ -27,7 +27,9 @@ interface MarkerPinsUIState {
   manualPin: ManualPinSelection;
 }
 
-export default class MarkerPinsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, MarkerPinsUIState> {
+export default class MarkerPinsUI extends React.Component<{
+  iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+}, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -123,35 +125,28 @@ export default class MarkerPinsUI extends React.Component<{ iModelName: string, 
   }
 
   /** Components for rendering the sample's instructions and controls */
-  public getControlPane() {
+  public getControls() {
     return (
       <>
         <PopupMenu />
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Use the options below to control the marker pins.  Click a marker to open a menu of options.</span>
-          </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="sample-options-2col">
-            <span>Show Markers</span>
-            <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowMarkers} />
-          </div>
-          <hr></hr>
-          <div className="sample-heading">
-            <span>Auto-generate locations</span>
-          </div>
-          <div className="sample-options-2col">
-            <PointSelector onPointsChanged={this._onPointsChanged} range={MarkerPinApp.range} />
-          </div>
-          <hr></hr>
-          <div className="sample-heading">
-            <span>Manual placement</span>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <RadioCard entries={this.getMarkerList()} selected={this.state.manualPin.name} onChange={this._onManualPinChange} />
-            <Button buttonType={ButtonType.Primary} onClick={this._onStartPlaceMarkerTool} title="Click here and then click the view to place a new marker">Place Marker</Button>
-          </div>
+        <div className="sample-options-2col">
+          <span>Show Markers</span>
+          <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowMarkers} />
+        </div>
+        <hr></hr>
+        <div className="sample-heading">
+          <span>Auto-generate locations</span>
+        </div>
+        <div className="sample-options-2col">
+          <PointSelector onPointsChanged={this._onPointsChanged} range={MarkerPinApp.range} />
+        </div>
+        <hr></hr>
+        <div className="sample-heading">
+          <span>Manual placement</span>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <RadioCard entries={this.getMarkerList()} selected={this.state.manualPin.name} onChange={this._onManualPinChange} />
+          <Button buttonType={ButtonType.Primary} onClick={this._onStartPlaceMarkerTool} title="Click here and then click the view to place a new marker">Place Marker</Button>
         </div>
       </>
     );
@@ -159,11 +154,10 @@ export default class MarkerPinsUI extends React.Component<{ iModelName: string, 
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Use the options below to control the marker pins.  Click a marker to open a menu of options.", this.getControls());
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsUI.getTopView} />
-        {this.getControlPane()}
-      </>
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsUI.getTopView} />      </>
     );
   }
 }

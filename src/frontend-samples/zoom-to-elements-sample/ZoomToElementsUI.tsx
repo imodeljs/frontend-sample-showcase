@@ -15,7 +15,7 @@ import ZoomToElementsApp from "./ZoomToElementsApp";
 /** React props */
 interface ZoomToProps {
   iModelName: string;
-  iModelSelector: React.ReactNode;
+  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
 }
 
 /** React state */
@@ -120,42 +120,35 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
   }
 
   /** Components for rendering the sample's instructions and controls */
-  private getControlPane() {
+  private getControls() {
     return (
       <>
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.</span>
+        <div className="table-wrapper">
+          {this._elementIdSelector()}
+          <div className="table-button-wrapper">
+            <Button buttonType={ButtonType.Primary} title="Add Elements selected in view" onClick={() => this._handleCaptureIdsButton()} disabled={!this.state.elementsAreSelected}>+</Button>
+            <Button buttonType={ButtonType.Primary} title="Remove selected list entries" onClick={() => this._handleRemoveIdsButton()} disabled={0 === this.state.selectedList.length}>-</Button>
           </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="table-wrapper">
-            {this._elementIdSelector()}
-            <div className="table-button-wrapper">
-              <Button buttonType={ButtonType.Primary} title="Add Elements selected in view" onClick={() => this._handleCaptureIdsButton()} disabled={!this.state.elementsAreSelected}>+</Button>
-              <Button buttonType={ButtonType.Primary} title="Remove selected list entries" onClick={() => this._handleRemoveIdsButton()} disabled={0 === this.state.selectedList.length}>-</Button>
-            </div>
-          </div>
-          <span className="table-caption">{this.state.elementList.length} elementIds in list</span>
-          <hr></hr>
-          <div className="sample-options-3col">
-            <Toggle isOn={this.state.animateEnable} onChange={() => this.setState((prevState) => ({ animateEnable: !prevState.animateEnable }))} />
-            <span>Animate</span>
-            <Toggle isOn={this.state.animateVal} onChange={() => this.setState((prevState) => ({ animateVal: !prevState.animateVal }))} disabled={!this.state.animateEnable} />
-            <Toggle isOn={this.state.marginEnable} onChange={() => this.setState((prevState) => ({ marginEnable: !prevState.marginEnable }))} />
-            <span>Margin</span>
-            <input type="range" min="0" max="0.25" step="0.01" value={this.state.marginVal} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState({ marginVal: Number(event.target.value) })} disabled={!this.state.marginEnable}></input>
-            <Toggle isOn={this.state.standardViewEnable} onChange={() => this.setState((prevState) => ({ standardViewEnable: !prevState.standardViewEnable }))} />
-            <span>Standard View</span>
-            <ViewPicker onViewPick={(viewId: StandardViewId) => { this.setState({ standardViewVal: viewId }); }} disabled={!this.state.standardViewEnable} />
-            <Toggle isOn={this.state.relativeViewEnable} onChange={() => this.setState((prevState) => ({ relativeViewEnable: !prevState.relativeViewEnable }))} />
-            <span>Relative View</span>
-            <ViewPicker onViewPick={(viewId: StandardViewId) => { this.setState({ relativeViewVal: viewId }); }} disabled={!this.state.relativeViewEnable} />
-          </div>
-          <hr></hr>
-          <div style={{ textAlign: "center" }}>
-            <Button buttonType={ButtonType.Primary} onClick={() => ZoomToElementsApp.zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
-          </div>
+        </div>
+        <span className="table-caption">{this.state.elementList.length} elementIds in list</span>
+        <hr></hr>
+        <div className="sample-options-3col">
+          <Toggle isOn={this.state.animateEnable} onChange={() => this.setState((prevState) => ({ animateEnable: !prevState.animateEnable }))} />
+          <span>Animate</span>
+          <Toggle isOn={this.state.animateVal} onChange={() => this.setState((prevState) => ({ animateVal: !prevState.animateVal }))} disabled={!this.state.animateEnable} />
+          <Toggle isOn={this.state.marginEnable} onChange={() => this.setState((prevState) => ({ marginEnable: !prevState.marginEnable }))} />
+          <span>Margin</span>
+          <input type="range" min="0" max="0.25" step="0.01" value={this.state.marginVal} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState({ marginVal: Number(event.target.value) })} disabled={!this.state.marginEnable}></input>
+          <Toggle isOn={this.state.standardViewEnable} onChange={() => this.setState((prevState) => ({ standardViewEnable: !prevState.standardViewEnable }))} />
+          <span>Standard View</span>
+          <ViewPicker onViewPick={(viewId: StandardViewId) => { this.setState({ standardViewVal: viewId }); }} disabled={!this.state.standardViewEnable} />
+          <Toggle isOn={this.state.relativeViewEnable} onChange={() => this.setState((prevState) => ({ relativeViewEnable: !prevState.relativeViewEnable }))} />
+          <span>Relative View</span>
+          <ViewPicker onViewPick={(viewId: StandardViewId) => { this.setState({ relativeViewVal: viewId }); }} disabled={!this.state.relativeViewEnable} />
+        </div>
+        <hr></hr>
+        <div style={{ textAlign: "center" }}>
+          <Button buttonType={ButtonType.Primary} onClick={() => ZoomToElementsApp.zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
         </div>
       </>
     );
@@ -163,10 +156,10 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
-        {this.getControlPane()}
       </>
     );
   }
