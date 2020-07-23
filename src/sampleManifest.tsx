@@ -38,6 +38,7 @@ import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/c
 import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
 import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
+import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -49,6 +50,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
     getViewAttributesSpec(),
+    getMultiViewportSpec(),
   ],
 }, {
   groupName: "Viewer Features", samples: [
