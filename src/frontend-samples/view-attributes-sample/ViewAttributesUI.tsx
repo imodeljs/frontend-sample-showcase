@@ -20,7 +20,7 @@ interface ViewAttributesState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
+export default class ViewAttributesUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls: React.ReactNode) => void }, ViewAttributesState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -160,31 +160,21 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     }
   }
 
-  /** Components for rendering the sample's instructions and controls */
-  private getControlPane() {
+  public getControls(): React.ReactNode {
     return (
-      <>
-        < div className="sample-ui" >
-          <div>
-            <span>Use the controls below to change the view attributes.</span>
-          </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
-            {this.createRenderModePicker("Render Mode", "Controls the render mode.")}
-            {this.createViewFlagToggle(ViewFlag.ACS, "ACS", "Turn on to see a visualization of the active coordinate system.")}
-            {this.createViewFlagToggle(ViewFlag.BackgroundMap, "Background Map", "Turn on to see the iModel on a map. Turn off to disable map. Does not apply if the selected iModel is not geolocated.")}
-            {this.createTransparencySlider("Map Transparency", "Adjusting this slider changes the transparency of the background map. Does not apply if map is not currently being displayed.")}
-            {this.createCameraToggle("Camera", "Turn on for perspective view.  Turn off for orthographic view.")}
-            {this.createViewFlagToggle(ViewFlag.Grid, "Grid", "")}
-            {this.createViewFlagToggle(ViewFlag.Monochrome, "Monochrome", "Turn on to disable colors.")}
-            {this.createViewFlagToggle(ViewFlag.Shadows, "Shadows", "Turn on to see shadows.")}
-            {this.createSkyboxToggle("Sky box", "Turn on to see the sky box.")}
-            {this.createViewFlagToggle(ViewFlag.VisibleEdges, "Visible Edges", "Turn off to disable visible edges.  Only applies to smooth shade render mode.")}
-            {this.createViewFlagToggle(ViewFlag.HiddenEdges, "Hidden Edges", "Turn on to see hidden edges.  Does not apply to wireframe.  For smooth shade render mode, does not apply when visible edges are off.")}
-          </div>
-        </div >
-      </>
+      <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
+        {this.createRenderModePicker("Render Mode", "Controls the render mode.")}
+        {this.createViewFlagToggle(ViewFlag.ACS, "ACS", "Turn on to see a visualization of the active coordinate system.")}
+        {this.createViewFlagToggle(ViewFlag.BackgroundMap, "Background Map", "Turn on to see the iModel on a map. Turn off to disable map. Does not apply if the selected iModel is not geolocated.")}
+        {this.createTransparencySlider("Map Transparency", "Adjusting this slider changes the transparency of the background map. Does not apply if map is not currently being displayed.")}
+        {this.createCameraToggle("Camera", "Turn on for perspective view.  Turn off for orthographic view.")}
+        {this.createViewFlagToggle(ViewFlag.Grid, "Grid", "")}
+        {this.createViewFlagToggle(ViewFlag.Monochrome, "Monochrome", "Turn on to disable colors.")}
+        {this.createViewFlagToggle(ViewFlag.Shadows, "Shadows", "Turn on to see shadows.")}
+        {this.createSkyboxToggle("Sky box", "Turn on to see the sky box.")}
+        {this.createViewFlagToggle(ViewFlag.VisibleEdges, "Visible Edges", "Turn off to disable visible edges.  Only applies to smooth shade render mode.")}
+        {this.createViewFlagToggle(ViewFlag.HiddenEdges, "Hidden Edges", "Turn on to see hidden edges.  Does not apply to wireframe.  For smooth shade render mode, does not apply when visible edges are off.")}
+      </div>
     );
   }
 
@@ -204,11 +194,12 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Use the controls below to change the view attributes.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
-        {this.getControlPane()}
       </>
     );
   }
+
 }

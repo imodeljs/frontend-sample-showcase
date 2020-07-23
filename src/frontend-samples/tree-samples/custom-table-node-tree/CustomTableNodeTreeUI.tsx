@@ -7,24 +7,12 @@ import "common/DataProvider/Trees.scss";
 import { TableNodeTree } from "./CustomTableNodeTreeApp";
 import "./TableNodeTree.scss";
 
-export class TableNodeTreeUI extends React.Component<{}> {
-
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>This tree showcases the ability to have multiple columns while still allowing for the expansion and collapsing of data.</span>
-          </div>
-        </div>
-      </>
-    );
-  }
+export class TableNodeTreeUI extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> {
 
   public render() {
+    this.props.setupControlPane("This tree showcases the ability to have multiple columns while still allowing for the expansion and collapsing of data.");
     return (
       <>
-        {this.getControlPane()}
         <div className="sample-tree tree">
           <TableNodeTree></TableNodeTree>
         </div>

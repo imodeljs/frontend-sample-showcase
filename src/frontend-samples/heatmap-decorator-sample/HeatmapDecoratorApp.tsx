@@ -18,8 +18,8 @@ export default class HeatmapDecoratorApp implements SampleApp {
   public static range?: Range2d;
   public static height?: number;
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <HeatmapDecoratorUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
+    return <HeatmapDecoratorUI iModelName={iModelName} setupControlPane={setupControlPane} />;
   }
 
   public static teardown() {
