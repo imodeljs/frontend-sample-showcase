@@ -65,8 +65,6 @@ class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: S
 
 class BackgroundMapToggleProvider implements TiledGraphicsProvider {
   public clipVolume?: RenderClipVolume;
-  public static readonly id = "BackgroundMapToggleProvider";
-  public get id() { return BackgroundMapToggleProvider.id; }
 
   constructor(clip: ClipVector) {
     this.clipVolume = IModelApp.renderSystem.createClipVolume(clip);
@@ -83,11 +81,11 @@ class BackgroundMapToggleProvider implements TiledGraphicsProvider {
   public addToScene(output: SceneContext): void {
     const vp = output.viewport;
     const clip = vp.view.getViewClip();
-    const bgMapF = vp.viewFlags.backgroundMap;
+    // const bgMapF = vp.viewFlags.backgroundMap;
 
     vp.view.setViewClip(this.clipVolume?.clipVector);
     let vf = vp.viewFlags.clone();
-    vf.backgroundMap = !bgMapF;
+    // vf.backgroundMap = !bgMapF;
     vp.viewFlags = vf;
 
     const context = vp.createSceneContext();
@@ -107,7 +105,7 @@ class BackgroundMapToggleProvider implements TiledGraphicsProvider {
 
     vp.view.setViewClip(clip);
     vf = vp.viewFlags.clone();
-    vf.backgroundMap = bgMapF;
+    // vf.backgroundMap = bgMapF;
     vp.viewFlags = vf;
   }
 }
@@ -148,10 +146,13 @@ export class TiledGraphicsOverrider {
       return;
     }
     if (!this._prevPoint?.isAlmostEqual(screenPoint)) {
-      const clip = this.createClip(SwipingViewportApp.getNormal(this._viewport, screenPoint), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint));
+      const vp = this._viewport;
+      const normal = SwipingViewportApp.getNormal(vp, screenPoint);
+      const worldPoint = SwipingViewportApp.getWorldPoint(vp, screenPoint);
+      const clip = this.createClip(normal.negate(), worldPoint);
       this.provider.clipVolume?.dispose();
       this.provider.clipVolume = IModelApp.renderSystem.createClipVolume(clip);
-      this._viewport.view.setViewClip(this.createClip(SwipingViewportApp.getNormal(this._viewport, screenPoint).negate(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
+      this._viewport.view.setViewClip(this.createClip(normal, worldPoint));
       this._viewport.synchWithView();
     }
   }
