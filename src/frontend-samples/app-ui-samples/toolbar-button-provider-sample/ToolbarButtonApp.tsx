@@ -7,6 +7,8 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { UiItemsManager } from "@bentley/ui-abstract";
 import { ToolbarButtonProvider } from "./ToolbarButtonUi";
 import "../../../common/samples-common.scss";
+import "../../../common/AppUi/app-ui.scss";
+import classnames from "classnames";
 import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
 import { AppUi } from "../../../common/AppUi/AppUi";
 
@@ -32,10 +34,11 @@ export class ToolbarButtonSample extends React.Component < { iModelSelector: Rea
 
   /** The sample's render method */
   public render() {
+    const instructionClassName = classnames("sample-ui", "app-ui");
     return (
       <>
         <SampleAppUiComponent></SampleAppUiComponent>
-        <div className="sample-ui">
+        <div className={instructionClassName}>
           <span>Press the Lightbulb button tool at the top of the screen.</span>
           {this.props.iModelSelector}
         </div>

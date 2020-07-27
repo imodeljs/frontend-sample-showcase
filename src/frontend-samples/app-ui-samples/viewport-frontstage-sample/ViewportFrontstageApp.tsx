@@ -5,6 +5,8 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../../common/samples-common.scss";
+import "../../../common/AppUi/app-ui.scss";
+import classnames from "classnames";
 import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
 import { AppUi } from "../../../common/AppUi/AppUi";
 
@@ -24,10 +26,11 @@ export class ViewportFrontstageSample extends React.Component < { iModelSelector
 
   /** The sample's render method */
   public render() {
+    const instructionClassName = classnames("sample-ui", "app-ui");
     return (
       <>
         <SampleAppUiComponent></SampleAppUiComponent>
-        <div className="sample-ui">
+        <div className={instructionClassName}>
           <span>A basic frontstage using the IModelViewportContentControl in UI Framework.</span>
           {this.props.iModelSelector}
         </div>
