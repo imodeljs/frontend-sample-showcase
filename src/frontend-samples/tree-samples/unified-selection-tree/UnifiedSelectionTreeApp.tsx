@@ -12,9 +12,9 @@ import { UnifiedSelectionTreeUI } from "./UnifiedSelectionTreeUI";
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
 
-export default class UnifiedSelectionTreeApp extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <UnifiedSelectionTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTreeUI>;
+export default class UnifiedSelectionTreeApp extends React.Component<{}> implements SampleApp {
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <UnifiedSelectionTreeUI iModelName={iModelName} setupControlPane={setupControlPane}></UnifiedSelectionTreeUI>;
   }
 
 }

@@ -62,14 +62,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
     let problemCount = 0;
     const urlEnableEditor = new URLSearchParams(window.location.search).get("editor");
     const executable = urlEnableEditor ? urlEnableEditor.toLowerCase() === "true" : FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor);
-    this.state.diagnostics &&
-      this.state.diagnostics.forEach(
-        (diagnostic) =>
-          (problemCount +=
-            (diagnostic.semanticDiagnostic?.length || 0) +
-            (diagnostic.suggestionDiagnostics?.length || 0) +
-            (diagnostic.syntacticDiagnostics?.length || 0)),
-      );
+    this.state.diagnostics && this.state.diagnostics.forEach((diagnostic) => problemCount += diagnostic.markerCodeActionData.length);
 
     return (
       <SplitScreen split={"horizontal"} size={this.state.active ? 201 : 35} minSize={35} className="sample-editor" primary="second" pane2Style={this.state.active ? undefined : { height: "35px" }} onChange={this._onSplitChange} allowResize={!!this.state.active}>

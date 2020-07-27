@@ -17,7 +17,7 @@ import { ViewSetup } from "api/viewSetup";
 /** React state of the Sample component */
 interface HeatmapDecoratorUIProps {
   iModelName: string;
-  iModelSelector: React.ReactNode;
+  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
 }
 
 interface HeatmapDecoratorUIState {
@@ -100,33 +100,26 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
   }
 
   /** Components for rendering the sample's instructions and controls */
-  public getControlPane() {
+  public getControls() {
     return (
       <>
-        <div className="sample-ui" >
-          <div className="sample-instructions">
-            <span>Use the options below to control the heatmap visualization.</span>
-          </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="sample-options-2col">
-            <span>Show Heatmap</span>
-            <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowHeatmap} />
-            <PointSelector onPointsChanged={this._onPointsChanged} range={HeatmapDecoratorApp.range} />
-            <span>Spread Factor</span>
-            <input type="range" min="1" max="100" value={this.state.spreadFactor} onChange={this._onChangeSpreadFactor}></input>
-          </div>
-        </div >
+        <div className="sample-options-2col">
+          <span>Show Heatmap</span>
+          <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowHeatmap} />
+          <PointSelector onPointsChanged={this._onPointsChanged} range={HeatmapDecoratorApp.range} />
+          <span>Spread Factor</span>
+          <input type="range" min="1" max="100" value={this.state.spreadFactor} onChange={this._onChangeSpreadFactor}></input>
+        </div>
       </>
     );
   }
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Use the options below to control the heatmap visualization.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={HeatmapDecoratorUI.getTopView} />
-        {this.getControlPane()}
       </>
     );
   }

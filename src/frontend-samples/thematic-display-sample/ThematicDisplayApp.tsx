@@ -19,8 +19,8 @@ export default class ThematicDisplayApp implements SampleApp {
   public static viewport?: Viewport;
 
   /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <ThematicDisplaySampleUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
+    return <ThematicDisplaySampleUI iModelName={iModelName} setupControlPane={setupControlPane} />;
   }
 
   /** Called by the showcase before swapping to another sample. */
