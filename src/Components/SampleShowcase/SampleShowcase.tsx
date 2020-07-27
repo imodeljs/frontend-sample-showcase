@@ -259,7 +259,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
               </div>
             </div>
           </SplitScreen>
-          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryChanged} />
+          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryChanged} onCollapse={() => this.setState({ showGallery: false })} />
         </SplitScreen>
       </div>
     );
