@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { ViewClipUI } from "./ViewClipUI";
-import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, Viewport } from "@bentley/imodeljs-frontend";
+import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, Viewport, ViewClipTool } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
 import SampleApp from "common/SampleApp";
 
@@ -45,8 +45,9 @@ export default class ViewClipApp implements SampleApp {
     const clip: ClipVector = ClipVector.createEmpty();
     // Add the block to the Clipvector and set it in the ScreenViewport.
     clip.appendReference(block);
+    // Call enableClipVolume helper method to ensure all clip flags are properly set
+    ViewClipTool.enableClipVolume(vp);
     vp.view.setViewClip(clip);
-    vp.setupFromView();
     ViewClipApp.addDecorators(vp);
   }
 
