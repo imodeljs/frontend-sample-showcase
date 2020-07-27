@@ -231,7 +231,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   private _onSampleGallerySizeChange = (size: number) => {
-    if (size <= 50 && this.state.showGallery) {
+    if (size <= 100 && this.state.showGallery) {
       this.setState({ showGallery: false });
     }
   }
@@ -242,7 +242,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     return (
       <div className="showcase">
-        <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 50 : 60} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
+        <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
           <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
             <SampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
             <div style={{ height: "100%" }}>
