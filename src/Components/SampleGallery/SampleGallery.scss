@@ -15,17 +15,14 @@
   }
 }
 
-.gallery-close-button::after {
+.gallery-close-button {
   cursor: pointer;
   position:absolute;
   top: 5px;
   right: 15px;
-  content: "\f2ff";
-  font-family: "bentley-icons-generic-webfont";
-  font-style: normal;
-  font-size: 1rem;
-  font-weight: 900;
-  line-height: 1;
+  color: var(--buic-foreground-body);
+}
+.gallery-close-button:hover {
   color: white;
 }
 
