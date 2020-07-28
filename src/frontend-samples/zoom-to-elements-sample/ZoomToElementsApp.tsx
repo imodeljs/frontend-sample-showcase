@@ -10,8 +10,8 @@ import ZoomToElementsUI, { ZoomToState } from "./ZoomToElementsUI";
 import SampleApp from "common/SampleApp";
 
 export default class ZoomToElementsApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ZoomToElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <ZoomToElementsUI iModelName={iModelName} setupControlPane={setupControlPane} />;
   }
 
   public static zoomToElements = async (state: ZoomToState) => {

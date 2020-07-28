@@ -13,8 +13,8 @@ import SampleApp from "common/SampleApp";
 import { ViewSetup } from "api/viewSetup";
 
 export default class ViewerOnly2dApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <ViewerOnly2dUI iModelName={iModelName} setupControlPane={setupControlPane} />;
   }
 
   public static async get2DModels(imodel: IModelConnection): Promise<{ drawings: ModelProps[], sheets: ModelProps[] }> {

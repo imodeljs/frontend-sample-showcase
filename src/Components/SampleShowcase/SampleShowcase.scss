@@ -19,7 +19,6 @@
   }
 }
 
-
 .sample-content {
   height: 100%;
   width: 100%;
@@ -32,6 +31,25 @@
     top: 1em;
     z-index: 1;
   }
+}
+
+.control-pane-button {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.gallery-button {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.collapsed-button-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+  z-index: 1;
 }
 
 ::-webkit-scrollbar {

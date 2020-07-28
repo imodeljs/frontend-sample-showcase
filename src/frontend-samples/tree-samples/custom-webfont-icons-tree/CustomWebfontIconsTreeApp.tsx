@@ -17,9 +17,9 @@ export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
-export default class CustomWebfontIconsTreeApp extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomWebfontIconsTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomWebfontIconsTreeUI>;
+export default class CustomWebfontIconsTreeApp extends React.Component<{}> implements SampleApp {
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <CustomWebfontIconsTreeUI iModelName={iModelName} setupControlPane={setupControlPane}></CustomWebfontIconsTreeUI>;
   }
 }
 /**
