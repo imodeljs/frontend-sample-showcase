@@ -13,7 +13,7 @@ export class ControlPane extends React.Component<{ instructions: string, onColla
             <div className="sample-instructions">
               <span>{this.props.instructions}</span>
             </div>
-            <div className="control-pane-toggle" onClick={this.props.onCollapse}></div>
+            <i className="icon icon-visibility-hide-2 control-pane-toggle" onClick={this.props.onCollapse}></i>
           </div>
           {this.props.iModelSelector ? this.props.iModelSelector : undefined}
           {this.props.controls ? <hr></hr> : undefined}
