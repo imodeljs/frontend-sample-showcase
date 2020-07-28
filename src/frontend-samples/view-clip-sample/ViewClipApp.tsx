@@ -45,7 +45,7 @@ export default class ViewClipApp implements SampleApp {
     const clip: ClipVector = ClipVector.createEmpty();
     // Add the block to the Clipvector and set it in the ScreenViewport.
     clip.appendReference(block);
-    // Call enableClipVolume helper method to ensure all clip flags are properly set
+    // Call enableClipVolume to ensure all clip flags are properly set
     ViewClipTool.enableClipVolume(vp);
     vp.view.setViewClip(clip);
     ViewClipApp.addDecorators(vp);
