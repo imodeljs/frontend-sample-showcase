@@ -25,7 +25,7 @@ export interface SampleSpec {
   image: string;
   files: InternalFile[];
   customModelList?: string[];
-  setup: (iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) => Promise<React.ReactNode>;
+  setup: (iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 
@@ -148,6 +148,10 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     });
   }
 
+  private resetControlPaneClassName() {
+    const container = document.getElementsByClassName("collapsed-button-container")[0];
+    container.className = "collapsed-button-container";
+  }
   private _onGalleryChanged = (groupName: string, sampleName: string) => {
     if (this._prevSampleSetup) {
       if (window.confirm("Changes made to the code will not be saved!")) {
@@ -164,6 +168,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   private _onActiveSampleChange = (groupName: string, sampleName: string) => {
+    this.resetControlPaneClassName();
     const oldSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
@@ -209,12 +214,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._onActiveSampleChange(group.groupName, activeSample.name);
   }
 
-  private setupControlPane(instructions: string, controls?: React.ReactNode) {
+  private setupControlPane(instructions: string, controls?: React.ReactNode, className?: string) {
     const sampleSpec = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (sampleSpec) {
       const iModelList = this.getIModelList(sampleSpec);
       const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
-      const controlPane = <ControlPane instructions={instructions} onCollapse={this.onControlPaneButtonClick} controls={controls ? controls : undefined} iModelSelector={iModelSelector}></ControlPane>;
+      const controlPane = <ControlPane instructions={instructions} onCollapse={this.onControlPaneButtonClick} controls={controls ? controls : undefined} iModelSelector={iModelSelector} className={className ? className : undefined}></ControlPane>;
       this.setState({ sampleControlPane: controlPane });
     }
   }

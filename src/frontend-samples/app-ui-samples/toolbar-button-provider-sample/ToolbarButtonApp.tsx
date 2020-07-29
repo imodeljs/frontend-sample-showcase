@@ -8,23 +8,23 @@ import { UiItemsManager } from "@bentley/ui-abstract";
 import { ToolbarButtonProvider } from "./ToolbarButtonUi";
 import "../../../common/samples-common.scss";
 import "../../../common/AppUi/app-ui.scss";
-import classnames from "classnames";
 import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
 import { AppUi } from "../../../common/AppUi/AppUi";
+import SampleApp from "../../../common/SampleApp";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
-export class ToolbarButtonSample extends React.Component < { iModelSelector: React.ReactNode } > {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+export class ToolbarButtonSample extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void }> implements SampleApp {
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void) {
     // Initialize utility class for AppUi samples
     AppUi.initialize();
     // Register provider for to AppUi for toolbar items
     if (undefined === UiItemsManager.getUiItemsProvider("ToolbarButtonProvider"))
-    UiItemsManager.register(new ToolbarButtonProvider());
+      UiItemsManager.register(new ToolbarButtonProvider());
 
     // set up iModel and AppUi Frontstage
     await AppUi.setIModelAndFrontstage(iModelName, "ViewportFrontstage");
-    return <ToolbarButtonSample iModelSelector={ iModelSelector }></ToolbarButtonSample>;
+    return <ToolbarButtonSample setupControlPane={setupControlPane}></ToolbarButtonSample>;
   }
   public static teardown() {
     if (undefined !== UiItemsManager.getUiItemsProvider("ToolbarButtonProvider"))
@@ -34,14 +34,10 @@ export class ToolbarButtonSample extends React.Component < { iModelSelector: Rea
 
   /** The sample's render method */
   public render() {
-    const instructionClassName = classnames("sample-ui", "app-ui");
+    this.props.setupControlPane("Press the Lightbulb button tool at the top of the screen.", undefined, "app-ui");
     return (
       <>
         <SampleAppUiComponent></SampleAppUiComponent>
-        <div className={instructionClassName}>
-          <span>Press the Lightbulb button tool at the top of the screen.</span>
-          {this.props.iModelSelector}
-        </div>
       </>
     );
   }
