@@ -26,7 +26,7 @@ export class SampleBaseApp {
   private static _appStateManager: StateManager | undefined;
 
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
-  public static async startup() {
+  public static async startup(options?: IModelAppOptions) {
 
     const opts: IModelAppOptions = Object.assign({
       tileAdmin: TileAdmin.create({ useProjectExtents: false }),
@@ -34,9 +34,10 @@ export class SampleBaseApp {
       toolAdmin: ShowcaseToolAdmin.initialize(),
     }, options);
 
+    await IModelApp.startup(opts);
+
     // initialize OIDC
     await SampleBaseApp.initializeOidc();
-    await IModelApp.startup(opts);
 
     // use new state manager that allows dynamic additions from extensions and snippets
     if (!this._appStateManager) {
@@ -90,9 +91,7 @@ export class SampleBaseApp {
     const scope = Config.App.get("imjs_frontend_sample_scope", "openid email profile organization imodelhub context-registry-service:read-only product-settings-service general-purpose-imodeljs-backend imodeljs-router");
     const responseType = "code";
     const oidcConfig: BrowserAuthorizationClientConfiguration = { clientId, redirectUri, scope, responseType };
-
     await BrowserAuthorizationCallbackHandler.handleSigninCallback(oidcConfig.redirectUri);
-
     // Setup the IModelApp authorization client
     IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig); ..
     */
