@@ -15,38 +15,14 @@ import { CheckBoxState, useDisposable } from "@bentley/ui-core";
 
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import SampleApp from "common/SampleApp";
+import { CustomEventHandlerTreeUI } from "./CustomEventHandlerTreeUI";
 
-export default class CustomEventHandlerTreeSample extends React.Component<{}> implements SampleApp {
+export default class CustomEventHandlerTreeApp extends React.Component<{}> implements SampleApp {
 
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Selection in this tree is synchronized with checkboxes. Notice how selecting node checks checkbox and vice versa.</span>
-          </div>
-        </div>
-      </>
-    );
+  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <CustomEventHandlerTreeUI setupControlPane={setupControlPane}></CustomEventHandlerTreeUI>;
   }
-
-  public static async setup() {
-    return <CustomEventHandlerTreeSample></CustomEventHandlerTreeSample>;
-  }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPane()}
-        <div className="tree sample-tree">
-          <CustomEventHandlerTree></CustomEventHandlerTree>
-        </div>
-      </>
-    );
-  }
-
 }
-
 /**
  * This component demonstrates how to use `ControlledTree` with custom tree events handling.
  * It uses `NodesWithCheckboxProvider` class to get some fake data to show.

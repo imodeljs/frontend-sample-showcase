@@ -16,8 +16,6 @@ export function getMarkerPinSpec(): SampleSpec {
       { name: "MarkerPinDecorator.tsx", import: import("!!raw-loader!./MarkerPinDecorator") },
       { name: "PlaceMarkerTool.ts", import: import("!!raw-loader!./PlaceMarkerTool") },
       { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
-      { name: "RadioCard/RadioCard.tsx", import: import("!!raw-loader!./RadioCard/RadioCard") },
-      { name: "RadioCard/RadioCard.scss", import: import("!!raw-loader!./RadioCard/RadioCard.scss") },
     ],
     setup: MarkerPinApp.setup,
     teardown: MarkerPinApp.teardown,

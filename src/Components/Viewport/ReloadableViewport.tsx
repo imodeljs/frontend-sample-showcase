@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { StartupComponent } from "../Startup/Startup";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
+import { StartupComponent } from "../Startup/Startup";
 
 export interface ReloadableViewportProps {
   iModelName: string;

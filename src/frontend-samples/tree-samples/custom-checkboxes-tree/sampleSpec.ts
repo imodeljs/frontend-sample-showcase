@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomCheckboxesTreeSample from "./CustomCheckboxesTree";
+import CustomCheckboxesTreeApp from "./CustomCheckboxesTreeApp";
 
 export function getCustomCheckboxesTreeSpec(): SampleSpec {
   return ({
@@ -13,8 +13,8 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     image: "custom-checkboxes-tree-thumbnail.png",
     customModelList: [],
     files: [
-      { name: "CustomCheckboxesTree.tsx", import: import("!!raw-loader!./CustomCheckboxesTree"), entry: true },
+      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp"), entry: true },
     ],
-    setup: CustomCheckboxesTreeSample.setup,
+    setup: CustomCheckboxesTreeApp.setup,
   });
 }

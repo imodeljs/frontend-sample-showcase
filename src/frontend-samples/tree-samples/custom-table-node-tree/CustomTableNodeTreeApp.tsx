@@ -15,38 +15,15 @@ import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import "./TableNodeTree.scss";
 import SampleApp from "common/SampleApp";
+import { TableNodeTreeUI } from "./CustomTableNodeTreeUI";
 
-export default class TableNodeTreeSample extends React.Component<{}> implements SampleApp {
+export default class TableNodeTreeApp extends React.Component<{}> implements SampleApp {
 
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>In this example tree is rendered as a multi-column tree.</span>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  public static async setup() {
-    return <TableNodeTreeSample></TableNodeTreeSample>;
-  }
-
-  public render() {
-    return (
-      <>
-        {this.getControlPane()}
-        <div className="sample-tree tree">
-          <TableNodeTree></TableNodeTree>
-        </div>
-      </>
-    );
+  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <TableNodeTreeUI setupControlPane={setupControlPane}></TableNodeTreeUI>;
   }
 
 }
-
 /**
  * This component demonstrates use `ControlledTree` with custom nodes rendering. It uses
  * `DataProvider` class to get some fake data to show. Tree by this component is rendered

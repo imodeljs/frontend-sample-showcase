@@ -17,7 +17,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export default class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
+export default class ShadowStudyUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void }, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -128,37 +128,30 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     return viewState;
   }
 
-  public getControlPane() {
+  public getControls() {
     return (
       <>
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Select a date and time.</span>
-          </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="sample-options-3col">
-            <div>Time of Day</div>
-            <input type="range" min="0" max="1439" value={this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange={this._updateTime} ></input>
-            <div id="time">{this.convertMinToTime()}</div>
-          </div>
-          <div className="sample-options-3col">
-            <div>Date</div>
-            <input type="date" id="date_picker" onChange={this._updateDate}></input>
-            <div id="date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear()}</div>
-          </div>
-          <div id="date_invalid" ></div>
+        <div className="sample-options-3col">
+          <div>Time of Day</div>
+          <input type="range" min="0" max="1439" value={this.state.date.getHours() * 60 + this.state.date.getMinutes()} onChange={this._updateTime} ></input>
+          <div id="time">{this.convertMinToTime()}</div>
         </div>
+        <div className="sample-options-3col">
+          <div>Date</div>
+          <input type="date" id="date_picker" onChange={this._updateDate}></input>
+          <div id="date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear()}</div>
+        </div>
+        <div id="date_invalid" ></div>
       </>
     );
   }
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Select a date and time.", this.getControls());
     return (
       <>
         <ReloadableViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />
-        {this.getControlPane()}
       </>
     );
   }

@@ -15,7 +15,7 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 
-export default class TabsList extends React.Component<{}> implements SampleApp {
+export default class TabsList extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> implements SampleApp {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getTabsData(): ComponentExampleProps[] {
@@ -27,29 +27,16 @@ export default class TabsList extends React.Component<{}> implements SampleApp {
     ];
   }
 
-  public static async setup() {
-    return <TabsList></TabsList>;
-  }
-
-  // Creates the side panel featuring a description of the component type, as well as providing a github link to the sample code
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Different styles of tabs that can be used in iModel.js applications</span>
-          </div>
-        </div>
-      </>
-    );
+  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+    return <TabsList setupControlPane={setupControlPane}></TabsList>;
   }
 
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
+    this.props.setupControlPane("Different styles of tabs that can be used in iModel.js applications.");
     return (
       <>
-        {this.getControlPane()}
         <ComponentContainer data={TabsList.getTabsData()}></ComponentContainer>
       </>
     );
