@@ -37,6 +37,12 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Testing
+
+This package uses a Bentley developed testing tool called [Certa](https://www.npmjs.com/package/@bentley/certa). The three required scripts to run the tests are `test-build`, `webpackTests`, and finally `test-certa`. create-react-app does not contain the necessary framework for testing an iModel.js application which is the reason for the test specific build and webpack workflow. 
+
+The recommended way of writing tests is to use watch scripts for the TypeScript transpiling and webpacking. In three separate terminals: `test-build:watch`, `webpackTests:watch`, and finally `test-certa`.
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
