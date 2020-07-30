@@ -4,8 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* tslint:disable:no-console */
-import "../_setupTests";
-
 import { expect } from "chai";
 // tslint:disable-next-line:no-direct-imports
 import * as TypeMoq from "typemoq";
@@ -18,9 +16,7 @@ import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/E
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApp";
 import ThematicDisplayApp from "../frontend-samples/thematic-display-sample/ThematicDisplayApp";
 import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApp";
-import { TestUtilities } from "./testUtilities";
-
-// setup;
+import { TestUtilities } from "./utils/testUtilities";
 
 describe("View Clipping Sample", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
@@ -35,7 +31,7 @@ describe("View Clipping Sample", () => {
   it("Adds a view clip plane to the viewport", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
     if (vp) {
-      ViewClipApp.setClipPlane(vp, "0", imodelMock.object as unknown as IModelConnection);
+      ViewClipApp.setClipPlane(vp, "0", imodelMock.object as IModelConnection);
       expect(vp.view.getViewClip()).to.not.be.undefined;
       ViewClipApp.clearClips(vp);
     } else {

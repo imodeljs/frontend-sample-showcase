@@ -8,9 +8,7 @@ import * as TypeMoq from "typemoq";
 import { Guid, GuidString } from "@bentley/bentleyjs-core";
 import { Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
 import { Cartographic } from "@bentley/imodeljs-common";
-import {
-  BlankConnection, IModelConnection, ScreenViewport, SpatialViewState,
-} from "@bentley/imodeljs-frontend";
+import { BlankConnection, IModelConnection, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
 
 function createViewDiv() {
   const div = document.createElement("div");
@@ -44,6 +42,7 @@ export class TestUtilities {
     const viewDiv = createViewDiv();
     return ScreenViewport.create(viewDiv, spatial);
   }
+
   public static getMockViewport() {
     const viewDiv = createViewDiv();
     const blankConnection = this.getBlankConnection();
