@@ -84,7 +84,6 @@
     "test-build": "tsc 1>&2 --noEmit false --jsx preserve --outDir ./lib",
     "test-build:watch": "tsc 1>&2 --noEmit false --jsx preserve --outDir ./lib -w",
     "test-certa": "certa -r chrome",
-    "test:debug": "certa -r chrome --debug",
     "webpackTests": "webpack --config ./src/test/utils/webpack.config.js 1>&2",
     "webpackTests:watch": "webpack --config ./src/test/utils/webpack.config.js --watch --info-verbosity verbose --progress  1>&2"
   },
