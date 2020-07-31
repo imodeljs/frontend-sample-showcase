@@ -12,4 +12,7 @@ export default class MultiViewportApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <MultiViewportUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
+  public static async teardown() {
+    
+  }
 }

@@ -1,0 +1,27 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+$viewport-height: 50%;
+
+%mutli-view-viewport {
+  width: 100%;
+}
+
+.active-viewport {
+  box-sizing: border-box;
+  border-color: #69ade3;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.mutli-view-viewport-top {
+  @extend %mutli-view-viewport;
+  height: $viewport-height;
+}
+
+.mutli-view-viewport-bottom {
+  @extend %mutli-view-viewport;
+  height: 100% - $viewport-height;
+}
