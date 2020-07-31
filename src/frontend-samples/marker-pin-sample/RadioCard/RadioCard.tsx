@@ -39,7 +39,10 @@ export class RadioCard extends React.Component<RadioCardProps, {}> {
       <>
         <label className="card-radio-btn">
           <input type="radio" name="marker-types" className="card-input-element d-none" id={entry.value} checked={isChecked} onChange={this._onCardSelected} />
+
           <div className={divClass}>
+            <div className="icon icon-status-success marker-pin-selection-icon"></div>
+
             <img src={entry.image} alt={entry.value} />
           </div>
         </label>

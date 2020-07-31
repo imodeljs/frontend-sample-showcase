@@ -65,6 +65,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
       <label className="gallery-card-radio-btn">
         <span>{sample.label}</span>
         <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
+        <div className="icon icon-status-success gallery-selection-icon"></div>
         <div className="gallery-card gallery-card-body">
           <img src={image} srcSet={image2x} alt={sample.name} />
         </div>
