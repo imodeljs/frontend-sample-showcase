@@ -55,12 +55,15 @@
   cursor: pointer;
 }
 
-.card-input-element:checked + .card {
+.card-input-element:checked ~ .card {
   border: 2px solid #008be1;
+  .marker-pin-selection-icon {
+    display: block;
+  }
+  
 }
 
-.card-input-element:checked + .card::after {
-  content: "\f2d1";
+.marker-pin-selection-icon {
   color: #008be1;
   position: absolute;
   right: 4px;
@@ -70,7 +73,8 @@
   font-size: 0.5rem;
   font-weight: 900;
   line-height: 1;
-  }
+  display: none;
+}
 
 .card-input-element.d-none {
   display: none!important;
