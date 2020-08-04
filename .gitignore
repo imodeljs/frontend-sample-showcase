@@ -11,6 +11,10 @@
 # production
 /build
 
+# build output
+.nyc_output
+/**/lib
+
 # misc
 .DS_Store
 .env.local
