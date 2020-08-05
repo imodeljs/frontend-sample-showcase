@@ -4,22 +4,22 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "Components/IModelSelector/IModelSelector";
-import SwipingViewportApp from "./SwipingViewportApp";
+import SwipingComparisonApp from "./SwipingComparisonApp";
 
-export function getSwipingViewportSpec(): SampleSpec {
+export function getSwipingComparisonSpec(): SampleSpec {
   return ({
     name: "swiping-viewport-sample",
-    label: "Swiping Viewport",
+    label: "Swiping Comparison",
     image: "viewport-only-thumbnail.png",
     // image: "swiping-viewport-thumbnail.png",
     files: [
-      { name: "SwipingViewportApp.tsx", import: import("!!raw-loader!./SwipingViewportApp"), entry: true },
-      { name: "SwipingViewportUI.tsx", import: import("!!raw-loader!./SwipingViewportUI") },
+      { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp"), entry: true },
+      { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI") },
       { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
       { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
     ],
     // customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
-    setup: SwipingViewportApp.setup,
+    setup: SwipingComparisonApp.setup,
     // teardown: ThematicDisplaySampleApp.teardown,
   });
 }

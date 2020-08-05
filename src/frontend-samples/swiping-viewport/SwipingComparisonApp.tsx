@@ -7,7 +7,7 @@ import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Tran
 import { FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, EditManipulator, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
-import SwipingViewportSampleUIComponent from "./SwipingViewportUI";
+import SwipingComparisonUI from "./SwipingComparisonUI";
 import { Frustum } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
@@ -58,7 +58,7 @@ class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: S
   public render() {
     return (<>
       <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-      {this.state.viewport ? <SwipingViewportSampleUIComponent viewport={this.state.viewport!} iModelSelector={this.props.iModelSelector} /> : <></>}
+      {this.state.viewport ? <SwipingComparisonUI viewport={this.state.viewport!} iModelSelector={this.props.iModelSelector} /> : <></>}
     </>);
   }
 }

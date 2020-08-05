@@ -8,7 +8,7 @@ import { Frustum } from "@bentley/imodeljs-common";
 import { ScreenViewport, ViewClipTool } from "@bentley/imodeljs-frontend";
 import React from "react";
 import { DividerComponent } from "./Divider";
-import SwipingViewportApp, { TiledGraphicsOverrider } from "./SwipingViewportApp";
+import SwipingViewportApp, { TiledGraphicsOverrider } from "./SwipingComparisonApp";
 
 export interface SwipingViewportSampleUIProps {
   viewport: ScreenViewport;
@@ -20,7 +20,7 @@ interface SampleState {
   dividerLeft: number;
 }
 
-export default class SwipingViewportSampleUIComponent extends React.Component<SwipingViewportSampleUIProps, SampleState> {
+export default class SwipingComparisonUI extends React.Component<SwipingViewportSampleUIProps, SampleState> {
   public get screenPoint(): Point3d {
     const y = this.state.bounds.top + (this.state.bounds.height / 2);
     return new Point3d(this.state.dividerLeft, y, 0);
