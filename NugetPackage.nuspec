@@ -13,6 +13,7 @@
         <tags></tags>
     </metadata>
     <files>
-      <file src="build\**" target="content\sample-showcase" />
+      <file src="public\iframe-index.html" target="content\sample-showcase\index.html" />
+      <file src="build\**" target="content\sample-showcase\frontend-sample-showcase" />
     </files>
 </package>

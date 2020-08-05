@@ -99,17 +99,18 @@
                 </nav>
             </div>
         </header>
-<div id='main-wrapper' style="height: 1px; display: block">
-	<iframe id="frontend-samples" width=100% height= 100% src=""></iframe>
-</div>
+        <div id='main-wrapper' style="height: 1px; display: block">
+          <iframe id="frontend-samples" width=100% height= 100% src=""></iframe>
+        </div>
 
       <script>
         function receiveMessage(event) {
+          console.log(event);
           window.history.replaceState(null, "", event.data);
         }
         window.addEventListener("message", receiveMessage, false);
 
-        document.getElementById("frontend-samples").src = "https://www.imodeljs.org/sample-showcase/" + window.location.search;
+        document.getElementById("frontend-samples").src = "https://imjsdocumentdeveussa01.z13.web.core.windows.net/sample-showcase/" + window.location.search;
       </script>
 
 </div>
