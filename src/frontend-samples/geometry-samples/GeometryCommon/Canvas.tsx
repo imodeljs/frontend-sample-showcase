@@ -31,9 +31,13 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
     }
   }
 
+  public componentDidUpdate() {
+    this.resize();
+    this.props.drawingCallback();
+  }
+
   public componentDidMount() {
     this.resize();
-
     this.props.drawingCallback();
   }
 
