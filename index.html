@@ -36,7 +36,7 @@
 
             <div class="navbar-collapse collapse justify-content-stretch" id="navbar5">
               <ul class="navbar-nav mb-0" id="doc-site-tabs">
-                <li class="nav-item "><a class="nav-link" href="https://www.imodeljs.org/getting-started">Getting Started</a></li><li class="nav-item "><a class="nav-link" href="https://www.imodeljs.org/sample-showcase">Samples</a></li><li class="nav-item "><a class="nav-link" href="https://www.imodeljs.org/learning">Learning</a></li><li class="nav-item active"><a class="nav-link" href="https://www.imodeljs.org/reference">API</a></li><li class="nav-item dropdown change-history-tab  "><a class="nav-link" style="display:inline-block;" href="https://www.imodeljs.org/changehistory">v2.4.0</a><a class="nav-link dropdown-toggle" style="display:inline-block;padding-left:1px;margin-left:1px;box-shadow:none;" href="https://www.imodeljs.org/changehistory" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                <li class="nav-item "><a class="nav-link" href="https://www.imodeljs.org/getting-started">Getting Started</a></li><li class="nav-item active"><a class="nav-link" href="https://www.imodeljs.org/sample-showcase">Samples</a></li><li class="nav-item "><a class="nav-link" href="https://www.imodeljs.org/learning">Learning</a></li><li class="nav-item"><a class="nav-link" href="https://www.imodeljs.org/reference">API</a></li><li class="nav-item dropdown change-history-tab  "><a class="nav-link" style="display:inline-block;" href="https://www.imodeljs.org/changehistory">v2.4.0</a><a class="nav-link dropdown-toggle" style="display:inline-block;padding-left:1px;margin-left:1px;box-shadow:none;" href="https://www.imodeljs.org/changehistory" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdown"><a class="dropdown-item" href="https://www.imodeljs.org/changehistory">v2.4.0</a><a class="dropdown-item" href="https://www.imodeljs.org/v1/reference">v1.14.0</a><div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="https://www.imodeljs.org/changehistory">Change History</a></div></li>
               </ul>
@@ -44,6 +44,15 @@
           </nav>
         </div>
       </header>
+
+      <script>
+        function receiveMessage(event) {
+          window.history.replaceState(null, "", event.data);
+          // ...
+        }
+
+        window.addEventListener("message", receiveMessage, false);
+      </script>
 
       <div id="main-wrapper" style="height: 1; display: block">
         <iframe width=100% height= 100% src="./build/index.html"></iframe>
