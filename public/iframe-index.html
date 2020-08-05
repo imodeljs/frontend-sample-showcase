@@ -105,7 +105,6 @@
 
       <script>
         function receiveMessage(event) {
-          console.log(event);
           window.history.replaceState(null, "", event.data);
         }
         window.addEventListener("message", receiveMessage, false);
