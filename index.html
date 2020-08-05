@@ -1,63 +1,122 @@
-<html>
-  <head>
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Getting started (offline quick start) - iModel.js</title>
+    <meta name="BeMetalsmithVersion" content="v4.1.4">
+    <meta name="og:title" content="Getting started (offline quick start) - iModel.js">
+    <meta name="twitter:title" content="Getting started (offline quick start) - iModel.js">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" type="text/css" href="https://www.imodeljs.org/styles/bundle.css">
-  </head>
-  <body>
+
+    <!-- KaTeX Start -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.css" integrity="sha384-bsHo4/LA+lkZv61JspMDQB9QP1TtO4IgOf2yYS+J6VdAYLVyx1c3XKcsHh0Vy8Ws" crossorigin="anonymous">
+    <!-- KaTeX End -->
+
+    <style>
+       .btn-primary:hover {
+            outline: none;
+            box-shadow: none;
+            border-color: #002A44;
+        }
+    </style>
+    <!-- bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/oidc-client/1.7.1/oidc-client.min.js"></script>
+
+    <!-- fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"> 
+    
+    <link rel="stylesheet" type="text/css" href="/styles/devRegistration.css"> 
+    
+    <link rel="stylesheet" type="text/css" href="/styles/embeddedConsole.css">  
+        <link rel='shortcut icon' type='image/x-icon' href='/assets/imodeljs_favicon_16.png' /> 
+        <meta property="og:description" content="Create Immersive Connections with your Infrastructure Digital Twin."><meta property="og:url" content="imodeljs.org"><meta name="twitter:card" content="summary_large_image">
+        <meta property="og:image" content="/assets/twitter-share.png">
+        <meta />
+</head>
+
+<body data-site-root=/ class='layout-index '>
+    <span id="contentLoader">
+        <p>Woah! This page has a great deal of content... Give us a second to load it.</p>
+    </span>
+    <span id="contentLoaderBackground"></span>
     <div id="flex-wrapper">
-      <header id="main-header">
-        <div class="nav-header-container">
-          <nav class="navbar nav-main-header navbar-expand-md fixed-top navbar-light pb-0">
-            <a href="/" class="navbar-brand">
-              <img id="site-logo" class="site-logo" src="https://www.imodeljs.org/assets/imodeljs-logo.svg"> 
-              <img id="site-logo-small" class="site-logo-small" src="https://www.imodeljs.org/assets/imodeljs-icon.svg" style="display:none;"> 
-            </a>
-            <button class="navbar-toggler no-user-select mr-auto" type="button" data-toggle="collapse" data-target="#navbar5">
-              <span class="navbar-toggler-header">API&nbsp;&nbsp;<i class="fa fa-caret-down"></i></span>
-            </button>
-            <ul class="navbar-nav ml-auto pr-0 nav-search">
-              <span class="search-bar">
-                <li>
-                  <div id="search-container"><div data-radium="true"> <div data-radium="true" style="width: 100%; height: 44px; display: flex;"><div class="search-container-base search-container-inactive"><form id="search-form" name="searchForm" class="search-form" autocomplete="off" data-radium="true"><input name="query" class="search-input no-user-select" type="search" placeholder="Search..." value=""><span class="search-trigger" data-radium="true" style="display: inline-block; cursor: pointer; position: absolute; right: 35px; top: 7px; z-index: 20;"><i class="icon icon-search" data-radium="true" style="font-size: 15px;"></i></span></form></div><div class="search-results-base custom-scrollbar search-inactive " data-radium="true"><ul id="search-results" data-radium="true" style="margin-top: 20px; display: inline;"></ul></div><div class="search-results-base search-google-inactive" data-radium="true"><div class="inner-google" data-radium="true">More Results for ""</div></div><style></style></div><style></style></div></div>
-                </li>
-                <script>
-                  (function() {
-                    var cx = '018053174497532353467:v_gnrjjlqwc';
-                    var gcse = document.createElement('script');
-                    gcse.type = 'text/javascript';
-                    gcse.async = true;
-                    gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
-                    var s = document.getElementsByTagName('script')[0];
-                    s.parentNode.insertBefore(gcse, s);
-                  })();
-                </script>
-                <div id="___gcse_0"><div class="gsc-control-cse gsc-control-cse-en"><div class="gsc-control-wrapper-cse" dir="ltr" style="visibility: hidden;"><form class="gsc-search-box gsc-search-box-tools" accept-charset="utf-8" style="display: none;"><table cellspacing="0" cellpadding="0" class="gsc-search-box"><tbody><tr><td class="gsc-input"><div class="gsc-input-box" id="gsc-iw-id1"><table cellspacing="0" cellpadding="0" id="gs_id50" class="gstl_50 gsc-input" style="width: 100%; padding: 0px;"><tbody><tr><td id="gs_tti50" class="gsib_a"><input autocomplete="off" type="text" size="10" class="gsc-input" name="search" title="search" id="gsc-i-id1" dir="ltr" spellcheck="false" style="width: 100%; padding: 0px; border: none; margin: 0px; height: auto; outline: none;"></td><td class="gsib_b"><div class="gsst_b" id="gs_st50" dir="ltr"><a class="gsst_a" href="javascript:void(0)" style="display: none;" title="Clear search box" role="button"><span class="gscb_a" id="gs_cb50" aria-hidden="true">×</span></a></div></td></tr></tbody></table></div></td><td class="gsc-search-button"><button class="gsc-search-button gsc-search-button-v2"><svg width="13" height="13" viewBox="0 0 13 13"><title>search</title><path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z"></path></svg></button></td><td class="gsc-clear-button"><div class="gsc-clear-button" title="clear results">&nbsp;</div></td></tr></tbody></table></form><div class="gsc-results-wrapper-overlay"><div class="gsc-results-close-btn" tabindex="0"></div><div class="gsc-positioningWrapper"><div class="gsc-tabsAreaInvisible"><div aria-label="refinement" role="tab" class="gsc-tabHeader gsc-inline-block gsc-tabhActive">Custom Search</div><span class="gs-spacer"> </span></div></div><div class="gsc-positioningWrapper"><div class="gsc-tabsAreaInvisible"></div></div><div class="gsc-above-wrapper-area-invisible"><table cellspacing="0" cellpadding="0" class="gsc-above-wrapper-area-container"><tbody><tr><td class="gsc-result-info-container"><div class="gsc-result-info-invisible"></div></td><td class="gsc-orderby-container"><div class="gsc-orderby-invisible"><div class="gsc-orderby-label gsc-inline-block">Sort by:</div><div class="gsc-option-menu-container gsc-inline-block"><div class="gsc-selected-option-container gsc-inline-block"><div class="gsc-selected-option">Relevance</div><div class="gsc-option-selector"></div></div><div class="gsc-option-menu-invisible"><div class="gsc-option-menu-item gsc-option-menu-item-highlighted"><div class="gsc-option">Relevance</div></div><div class="gsc-option-menu-item"><div class="gsc-option">Date</div></div></div></div></div></td></tr></tbody></table></div><div class="gsc-adBlockInvisible"></div><div class="gsc-wrapper"><div class="gsc-adBlockInvisible"></div><div class="gsc-resultsbox-invisible"><div class="gsc-resultsRoot gsc-tabData gsc-tabdActive"><div><div class="gsc-expansionArea"></div></div></div></div></div></div><div class="gsc-modal-background-image" tabindex="0"></div></div></div></div></span>
-            </ul>
-            <ul class="navbar-nav ml-auto nav-search" id="container"></ul>
 
-            <div class="navbar-collapse collapse justify-content-stretch" id="navbar5">
-              <ul class="navbar-nav mb-0" id="doc-site-tabs">
-                <li class="nav-item "><a class="nav-link" href="https://www.imodeljs.org/getting-started">Getting Started</a></li><li class="nav-item active"><a class="nav-link" href="https://www.imodeljs.org/sample-showcase">Samples</a></li><li class="nav-item "><a class="nav-link" href="https://www.imodeljs.org/learning">Learning</a></li><li class="nav-item"><a class="nav-link" href="https://www.imodeljs.org/reference">API</a></li><li class="nav-item dropdown change-history-tab  "><a class="nav-link" style="display:inline-block;" href="https://www.imodeljs.org/changehistory">v2.4.0</a><a class="nav-link dropdown-toggle" style="display:inline-block;padding-left:1px;margin-left:1px;box-shadow:none;" href="https://www.imodeljs.org/changehistory" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdown"><a class="dropdown-item" href="https://www.imodeljs.org/changehistory">v2.4.0</a><a class="dropdown-item" href="https://www.imodeljs.org/v1/reference">v1.14.0</a><div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="https://www.imodeljs.org/changehistory">Change History</a></div></li>
-              </ul>
+
+
+        <header id="main-header">
+            <div class='nav-header-container'>
+                <nav class="navbar nav-main-header navbar-expand-md fixed-top navbar-light pb-0">
+                    <a href="/" class="navbar-brand">
+                            <img id="site-logo" class="site-logo" src="/assets/imodeljs-logo.svg" /> 
+                            <img id="site-logo-small" class="site-logo-small" src="/assets/imodeljs-icon.svg" style="display:none;"/> 
+                    </a>
+                    <button class="navbar-toggler no-user-select mr-auto" type="button" data-toggle="collapse" data-target="#navbar5">
+                        <span class="navbar-toggler-header"></span>
+                    </button>
+                    <ul class="navbar-nav ml-auto pr-0 nav-search">
+                        <span class='search-bar'>
+                          <li>
+                            <div id='search-container'>
+                            </div>
+                          </li>
+                          <script>
+                            (function() {
+                              var cx = '018053174497532353467:v_gnrjjlqwc';
+                              var gcse = document.createElement('script');
+                              gcse.type = 'text/javascript';
+                              gcse.async = true;
+                              gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+                              var s = document.getElementsByTagName('script')[0];
+                              s.parentNode.insertBefore(gcse, s);
+                            })();
+                          </script>
+                          <gcse:searchresults-only gname="sitesearch" resultSetSize="7"></gcse:search>
+                        </span>
+                    </ul>
+                    <ul class="navbar-nav ml-auto nav-search" id="container"></ul>
+                    
+                    <div class="navbar-collapse collapse justify-content-stretch" id="navbar5">
+                        <ul class="navbar-nav mb-0" id="doc-site-tabs">
+                                <li class="nav-item"><a class="nav-link" href="/getting-started">Getting Started</a></li><li class="nav-item active"><a class="nav-link" href="/sample-showcase">Samples</a></li><li class="nav-item "><a class="nav-link" href="/learning">Learning</a></li><li class="nav-item "><a class="nav-link" href="/reference">API</a></li><li class="nav-item dropdown change-history-tab  "><a class="nav-link" style="display:inline-block;" href="/changehistory">v2.4.0</a><a class="nav-link dropdown-toggle" style="display:inline-block;padding-left:1px;margin-left:1px;box-shadow:none;" href="/changehistory" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                               <div class="dropdown-menu" aria-labelledby="navbarDropdown"><a class="dropdown-item" href="/changehistory">v2.4.0</a><a class="dropdown-item" href="/v1/getting-started">v1.14.0</a><div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/changehistory">Change History</a></div></li>
+                        </ul>
+                    </div>
+                </nav>
             </div>
-          </nav>
-        </div>
-      </header>
-
-      <div id="main-wrapper" style="height: 1; display: block">
-        <iframe id="frontend-samples" width=100% height= 100% src=""></iframe>
-      </div>
+        </header>
+<div id='main-wrapper' style="height: 1px; display: block">
+	<iframe id="frontend-samples" width=100% height= 100% src=""></iframe>
+</div>
 
       <script>
         function receiveMessage(event) {
           window.history.replaceState(null, "", event.data);
         }
         window.addEventListener("message", receiveMessage, false);
-        
-        document.getElementById("frontend-samples").src = "/build/index.html" + window.location.search;
+
+        document.getElementById("frontend-samples").src = "https://www.imodeljs.org/sample-showcase/" + window.location.search;
       </script>
 
-    </div>
-  </body>
+</div>
+<a href="javascript:" id="return-to-top"><i class="icon icon-chevron-up"></i></a>
+<script src="https://www.imodeljs.org/scripts/bundle.js"></script>
+</body>
+
 </html>
+
+
