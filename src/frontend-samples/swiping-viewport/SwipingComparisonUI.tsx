@@ -4,23 +4,24 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { Point3d } from "@bentley/geometry-core";
-import { Frustum } from "@bentley/imodeljs-common";
-import { ScreenViewport, ViewClipTool } from "@bentley/imodeljs-frontend";
+import { Frustum, RenderMode } from "@bentley/imodeljs-common";
+import { ScreenViewport, ViewClipTool, ViewPose } from "@bentley/imodeljs-frontend";
 import React from "react";
 import { DividerComponent } from "./Divider";
 import SwipingViewportApp, { TiledGraphicsOverrider } from "./SwipingComparisonApp";
 
-export interface SwipingViewportSampleUIProps {
+export interface SwipingComparisonUIProps {
   viewport: ScreenViewport;
-  iModelSelector: React.ReactNode;
+  setupControlPane: (instructions: string, controls: React.ReactNode) => void;
 }
+
 interface SampleState {
   bounds: ClientRect;
   frustum: Frustum;
   dividerLeft: number;
 }
 
-export default class SwipingComparisonUI extends React.Component<SwipingViewportSampleUIProps, SampleState> {
+export default class SwipingComparisonUI extends React.Component<SwipingComparisonUIProps, SampleState> {
   public get screenPoint(): Point3d {
     const y = this.state.bounds.top + (this.state.bounds.height / 2);
     return new Point3d(this.state.dividerLeft, y, 0);
@@ -29,7 +30,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingViewport
   private _dividerLeft: number; // position relative to the viewport
 
   /** Creates a Sample instance */
-  constructor(props: SwipingViewportSampleUIProps, context?: any) {
+  constructor(props: SwipingComparisonUIProps, context?: any) {
     super(props, context);
     const vp = this.props.viewport;
     this._overrider = new TiledGraphicsOverrider(vp);
@@ -51,8 +52,14 @@ export default class SwipingComparisonUI extends React.Component<SwipingViewport
   }
 
   private updateCompare() {
-    // this._overrider.compare(this.screenPoint);
-    this.compare(this.screenPoint);
+    const vp = this.props.viewport;
+    const vf = vp.viewFlags.clone();
+    vf.renderMode = RenderMode.Wireframe;
+    vp.viewFlags = vf;
+    vp.synchWithView();
+
+    this._overrider.compare(this.screenPoint);
+    // this.compare(this.screenPoint);
   }
 
   private initPositionDivider(vp: ScreenViewport): number {
@@ -84,7 +91,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingViewport
     this.updateState();
   }
 
-  public componentDidUpdate(_prevProps: SwipingViewportSampleUIProps, prevState: SampleState, _snapshot: any) {
+  public componentDidUpdate(_prevProps: SwipingComparisonUIProps, prevState: SampleState, _snapshot: any) {
     let updateCompare = false;
     // let updateState = false;
     if (this.state.bounds.height !== prevState.bounds.height
@@ -113,24 +120,18 @@ export default class SwipingComparisonUI extends React.Component<SwipingViewport
     this.updateCompare();
   }
 
-  public compare(screenPoint: Point3d): void {
-    const vp = this.props.viewport;
-    ViewClipTool.doClipToPlane(vp, SwipingViewportApp.getWorldPoint(vp, screenPoint), SwipingViewportApp.getNormal(vp, screenPoint), true);
-  }
-  public clear(): void {
-    ViewClipTool.doClipClear(this.props.viewport);
+  public getControls(): React.ReactNode {
+    return (<>
+      <div>Sup Dog</div>
+    </>);
   }
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Compare with the Wireframe", this.getControls());
     return (<>
       { /* Viewport to display the iModel */}
       <DividerComponent sideL={this.state.dividerLeft} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
-      { /* The control pane */}
-      <div className="sample-ui">
-        <span>Divider Stuff</span>
-        {this.props.iModelSelector}
-      </div>
     </>);
   }
 }

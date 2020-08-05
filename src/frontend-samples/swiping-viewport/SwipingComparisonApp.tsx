@@ -8,14 +8,18 @@ import { FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneCont
 import SampleApp from "common/SampleApp";
 import * as React from "react";
 import SwipingComparisonUI from "./SwipingComparisonUI";
-import { Frustum } from "@bentley/imodeljs-common";
+import { Frustum, RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 export default class SwipingViewportApp implements SampleApp {
 
   /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <ViewportLoader iModelName={iModelName} iModelSelector={iModelSelector} />;
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
+    return <ViewportLoader iModelName={iModelName} setupControlPane={setupControlPane} />;
+  }
+
+  /** Called by the showcase before swapping to another sample. */
+  public static teardown(): void {
   }
 
   public static getFrustum(vp: Viewport): Frustum {
@@ -42,8 +46,8 @@ export default class SwipingViewportApp implements SampleApp {
     return normal;
   }
 }
-// A simple component to load the viewport before starting the sample app.
-interface ViewportLoaderProps { iModelName: string; iModelSelector: React.ReactNode; }
+/** A simple component to load the viewport before starting the sample app. */
+interface ViewportLoaderProps { iModelName: string; setupControlPane: (instructions: string, controls?: React.ReactNode) => void }
 class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: ScreenViewport }> {
   public state = { viewport: undefined };
   private _onIModelReady = () => {
@@ -58,7 +62,7 @@ class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: S
   public render() {
     return (<>
       <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-      {this.state.viewport ? <SwipingComparisonUI viewport={this.state.viewport!} iModelSelector={this.props.iModelSelector} /> : <></>}
+      {undefined !== this.state.viewport ? <SwipingComparisonUI viewport={this.state.viewport!} setupControlPane={this.props.setupControlPane} /> : <></>}
     </>);
   }
 }
@@ -78,15 +82,23 @@ class BackgroundMapToggleProvider implements TiledGraphicsProvider {
     viewport.view.forEachTileTreeRef(func);
   }
 
+  public setClipVector(clip: ClipVector) {
+    this.clipVolume = IModelApp.renderSystem.createClipVolume(clip);
+  }
+
   public addToScene(output: SceneContext): void {
+
+    // save view to replaces after comparison drawing
     const vp = output.viewport;
     const clip = vp.view.getViewClip();
-    // const bgMapF = vp.viewFlags.backgroundMap;
+    const renderMode: RenderMode = vp.viewFlags.renderMode;
 
+    // update for comparison drawing
     vp.view.setViewClip(this.clipVolume?.clipVector);
     let vf = vp.viewFlags.clone();
-    // vf.backgroundMap = !bgMapF;
+    vf.renderMode = RenderMode.Wireframe;
     vp.viewFlags = vf;
+    vp.synchWithView();
 
     const context = vp.createSceneContext();
     vp.view.createScene(context);
@@ -105,8 +117,9 @@ class BackgroundMapToggleProvider implements TiledGraphicsProvider {
 
     vp.view.setViewClip(clip);
     vf = vp.viewFlags.clone();
-    // vf.backgroundMap = bgMapF;
+    vf.renderMode = renderMode;
     vp.viewFlags = vf;
+    vp.synchWithView();
   }
 }
 
@@ -141,7 +154,7 @@ export class TiledGraphicsOverrider {
 
   public updateProvider(screenPoint: Point3d) {
     if (undefined === this.provider) {
-      this.setProvider(screenPoint);
+      this.initProvider(screenPoint);
       this._viewport.synchWithView();
       return;
     }
@@ -149,21 +162,22 @@ export class TiledGraphicsOverrider {
       const vp = this._viewport;
       const normal = SwipingViewportApp.getNormal(vp, screenPoint);
       const worldPoint = SwipingViewportApp.getWorldPoint(vp, screenPoint);
-      const clip = this.createClip(normal.negate(), worldPoint);
+      const clip = this.createClip(normal.clone().negate(), worldPoint);
       this.provider.clipVolume?.dispose();
-      this.provider.clipVolume = IModelApp.renderSystem.createClipVolume(clip);
-      this._viewport.view.setViewClip(this.createClip(normal, worldPoint));
+      this.provider.setClipVector(clip);
+      this._viewport.view.setViewClip(this.createClip(normal.clone(), worldPoint));
       this._viewport.synchWithView();
     }
   }
 
-  public setProvider(screenPoint: Point3d) {
+  public initProvider(screenPoint: Point3d) {
     this._prevPoint = screenPoint;
     const vp = this._viewport;
+    const normal = SwipingViewportApp.getNormal(this._viewport, screenPoint);
 
-    this.provider = new BackgroundMapToggleProvider(this.createClip(SwipingViewportApp.getNormal(this._viewport, screenPoint), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
+    this.provider = new BackgroundMapToggleProvider(this.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
     vp.addTiledGraphicsProvider(this.provider);
-    vp.view.setViewClip(this.createClip(SwipingViewportApp.getNormal(this._viewport, screenPoint).negate(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
+    vp.view.setViewClip(this.createClip(normal.clone(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
     vp.viewFlags.clipVolume = true;
   }
 
