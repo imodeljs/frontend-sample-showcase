@@ -15,13 +15,13 @@ export default class SmallConvexHull implements SampleApp {
   public static drawingCallback() {
     const allGeometry: GeometryQuery[] = [];
     const points: Point3d[] = [];
-    points.push(Point3d.create(1, 0, 0));
-    points.push(Point3d.create(2, 1, 0));
-    points.push(Point3d.create(1, 3, 0));
-    points.push(Point3d.create(8, 0.5, 0));
-    points.push(Point3d.create(5, 6, 0));
-    points.push(Point3d.create(-1, 2, 0));
-    points.push(Point3d.create(3, 4, 0));
+    points.push(Point3d.create(100, 0, 0));
+    points.push(Point3d.create(200, 100, 0));
+    points.push(Point3d.create(100, 300, 0));
+    points.push(Point3d.create(700, 50, 0));
+    points.push(Point3d.create(500, 600, 0));
+    points.push(Point3d.create(0, 200, 0));
+    points.push(Point3d.create(300, 400, 0));
     const hullPoints: Point3d[] = [];
     const interiorPoints: Point3d[] = [];
     Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);

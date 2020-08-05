@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "./Canvas.scss";
-import { LineSegment3d, Point3d, LineString3d } from "@bentley/geometry-core";
-export class Canvas extends React.Component<{ drawingCallback: () => void }, {}> {
+import { LineSegment3d, LineString3d, Point3d } from "@bentley/geometry-core";
+export class Canvas extends React.Component<{ drawingCallback: () => void }, { pixelHeight: number, pixelWidth: number }> {
 
   public render() {
     this.resize();
@@ -23,6 +23,8 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, {}>
     if (canvas && sampleContainer) {
       canvas.width = sampleContainer.clientWidth;
       canvas.height = sampleContainer.clientHeight;
+      if (this.state && this.state.pixelHeight && this.state.pixelWidth && this.state.pixelHeight !== sampleContainer.clientHeight && this.state.pixelWidth !== sampleContainer.clientWidth)
+        this.setState({ pixelHeight: sampleContainer.clientHeight, pixelWidth: sampleContainer.clientWidth });
       const context = canvas.getContext("2d");
       if (context)
         context.transform(1, 0, 0, -1, 0, canvas.height);
@@ -31,8 +33,8 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, {}>
 
   public componentDidMount() {
     this.resize();
-    this.props.drawingCallback();
 
+    this.props.drawingCallback();
   }
 
   public static drawLine(segment: LineSegment3d) {
@@ -61,7 +63,13 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, {}>
 
   //  Draws a piece of geometry
   public static drawGeometry(geometry: LineString3d, pointSize?: number) {
-
+    // tslint:disable-next-line: forin
+    const numSegments = geometry.quickLength();
+    for (let i = 0; i < numSegments; i++) {
+      const segment = geometry.getIndexedSegment(i);
+      if (segment)
+        Canvas.drawLine(segment);
+    }
   }
 
   public static drawPoints(points: Point3d[], pointSize?: number) {

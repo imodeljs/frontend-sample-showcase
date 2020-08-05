@@ -5,7 +5,7 @@
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
 import SimpleLine from "./SimpleLine";
 
-export function getBasicGeometrySpec(): SampleSpec {
+export function getSimpleLineSpec(): SampleSpec {
   return ({
     name: "simple-line-sample",
     label: "Simple Line",

@@ -42,7 +42,9 @@ import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/present
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
-import { getBasicGeometrySpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
+import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
+import { getSmallConvexHullSpec } from "./frontend-samples/geometry-samples/small-convex-hull/sampleSpec";
+
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -100,7 +102,8 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "Geometry Samples", samples: [
-    getBasicGeometrySpec(),
+    getSimpleLineSpec(),
+    getSmallConvexHullSpec(),
   ],
 },
 ];
