@@ -31,5 +31,41 @@
     top: 1em;
     z-index: 1;
   }
+}
 
+.control-pane-button {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.gallery-button {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.collapsed-button-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+  z-index: 1;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background-color: var(--buic-background-scrollbar);
+  background-clip: content-box;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 2px;
 }

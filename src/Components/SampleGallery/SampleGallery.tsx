@@ -6,13 +6,15 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleGallery.scss";
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
-import { SampleSpec, SampleSpecGroup } from "../../sampleManifest";
+import { SampleSpecGroup } from "../../sampleManifest";
+import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];
   group: string;
   selected: string;
   onChange: ((group: string, sample: string) => void);
+  onCollapse: () => void;
 }
 
 interface ExpandedState {
@@ -63,6 +65,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
       <label className="gallery-card-radio-btn">
         <span>{sample.label}</span>
         <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
+        <div className="icon icon-status-success gallery-selection-icon"></div>
         <div className="gallery-card gallery-card-body">
           <img src={image} srcSet={image2x} alt={sample.name} />
         </div>
@@ -108,6 +111,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
         <ExpandableList className="gallery-card-radio" singleExpandOnly={false} defaultActiveBlock={0}>
           {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
         </ExpandableList>
+        <i className="icon icon-visibility-hide-2 gallery-close-button" onClick={this.props.onCollapse}></i>
       </>
     );
   }

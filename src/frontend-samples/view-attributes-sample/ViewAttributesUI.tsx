@@ -5,11 +5,12 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
+import { ViewSetup } from "api/viewSetup";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -19,15 +20,17 @@ interface ViewAttributesState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
+export default class ViewAttributesUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls: React.ReactNode) => void }, ViewAttributesState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
       attrValues: {
-        renderMode: RenderMode.SmoothShade,
+        renderMode: RenderMode.Wireframe,
         acs: false,
+        backgroundMap: false,
+        backgroundTransparency: 0.01,
         cameraOn: false,
         grid: false,
         hiddenEdges: false,
@@ -66,9 +69,9 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
     switch (event.target.value) {
       case "HiddenLine": { renderMode = RenderMode.HiddenLine; break; }
-      default:
       case "SmoothShade": { renderMode = RenderMode.SmoothShade; break; }
       case "SolidFill": { renderMode = RenderMode.SolidFill; break; }
+      default:
       case "Wireframe": { renderMode = RenderMode.Wireframe; break; }
     }
 
@@ -81,9 +84,9 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     const element =
       <select style={{ width: "fit-content" }} onChange={this._onChangeRenderMode}>
         <option value={"HiddenLine"}> Hidden Line </option>
-        <option selected={true} value={"SmoothShade"}> Smooth Shade </option>
+        <option value={"SmoothShade"}> Smooth Shade </option>
         <option value={"SolidFill"}> Solid Fill </option>
-        <option value={"Wireframe"}> Wireframe </option>
+        <option selected={true} value={"Wireframe"}> Wireframe </option>
       </select>;
 
     return this.createJSXElementForAttribute(label, info, element);
@@ -132,6 +135,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
     switch (flag) {
       case ViewFlag.ACS: flagValue = this.state.attrValues.acs; break;
+      case ViewFlag.BackgroundMap: flagValue = this.state.attrValues.backgroundMap; break;
       case ViewFlag.Grid: flagValue = this.state.attrValues.grid; break;
       case ViewFlag.HiddenEdges: flagValue = this.state.attrValues.hiddenEdges; break;
       case ViewFlag.Monochrome: flagValue = this.state.attrValues.monochrome; break;
@@ -143,46 +147,59 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  /** Components for rendering the sample's instructions and controls */
-  private getControlPane() {
+  // Create the react component for the transparency slider
+  private createTransparencySlider(label: string, info: string) {
+    if (this.state.vp) {
+      const element = <input type={"range"} min={0} max={99} defaultValue={99} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.vp)
+          // The calculation used here converts the whole number range 0 to 99 into a range from 1 to 0
+          // This allows the rightmost value of the slider to be opaque, while the leftmost value is completely transparent
+          ViewAttributesApp.setBackgroundTransparency(this.state.vp, Math.abs((Number(event.target.value) / 100) - 1));
+      }} />;
+      return this.createJSXElementForAttribute(label, info, element);
+    }
+  }
+
+  public getControls(): React.ReactNode {
     return (
-      <>
-        < div className="sample-ui" >
-          <div>
-            <span>Use the controls below to change the view attributes.</span>
-          </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
-            {this.createRenderModePicker("Render Mode", "Controls the render mode.")}
-            {this.createViewFlagToggle(ViewFlag.ACS, "ACS", "Turn on to see a visualization of the active coordinate system.")}
-            {this.createCameraToggle("Camera", "Turn on for perspective view.  Turn off for orthographic view.")}
-            {this.createViewFlagToggle(ViewFlag.Grid, "Grid", "")}
-            {this.createViewFlagToggle(ViewFlag.Monochrome, "Monochrome", "Turn on to disable colors.")}
-            {this.createViewFlagToggle(ViewFlag.Shadows, "Shadows", "Turn on to see shadows.")}
-            {this.createSkyboxToggle("Sky box", "Turn on to see the sky box.")}
-            {this.createViewFlagToggle(ViewFlag.VisibleEdges, "Visible Edges", "Turn off to disable visible edges.  Only applies to smooth shade render mode.")}
-            {this.createViewFlagToggle(ViewFlag.HiddenEdges, "Hidden Edges", "Turn on to see hidden edges.  Does not apply to wireframe.  For smooth shade render mode, does not apply when visible edges are off.")}
-          </div>
-        </div >
-      </>
+      <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
+        {this.createRenderModePicker("Render Mode", "Controls the render mode.")}
+        {this.createViewFlagToggle(ViewFlag.ACS, "ACS", "Turn on to see a visualization of the active coordinate system.")}
+        {this.createViewFlagToggle(ViewFlag.BackgroundMap, "Background Map", "Turn on to see the iModel on a map. Turn off to disable map. Does not apply if the selected iModel is not geolocated.")}
+        {this.createTransparencySlider("Map Transparency", "Adjusting this slider changes the transparency of the background map. Does not apply if map is not currently being displayed.")}
+        {this.createCameraToggle("Camera", "Turn on for perspective view.  Turn off for orthographic view.")}
+        {this.createViewFlagToggle(ViewFlag.Grid, "Grid", "")}
+        {this.createViewFlagToggle(ViewFlag.Monochrome, "Monochrome", "Turn on to disable colors.")}
+        {this.createViewFlagToggle(ViewFlag.Shadows, "Shadows", "Turn on to see shadows.")}
+        {this.createSkyboxToggle("Sky box", "Turn on to see the sky box.")}
+        {this.createViewFlagToggle(ViewFlag.VisibleEdges, "Visible Edges", "Turn off to disable visible edges.  Only applies to smooth shade render mode.")}
+        {this.createViewFlagToggle(ViewFlag.HiddenEdges, "Hidden Edges", "Turn on to see hidden edges.  Does not apply to wireframe.  For smooth shade render mode, does not apply when visible edges are off.")}
+      </div>
     );
   }
 
   private onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
       const attrValues = ViewAttributesApp.getAttrValues(vp);
+      ViewAttributesApp.setBackgroundTransparency(vp, 0.01);
       this.setState({ vp, attrValues });
     });
   }
 
+  public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+    viewState.viewFlags.renderMode = RenderMode.Wireframe;
+    return viewState;
+  }
+
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Use the controls below to change the view attributes.", this.getControls());
     return (
       <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
-        {this.getControlPane()}
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
       </>
     );
   }
+
 }

@@ -2,14 +2,15 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { NotificationManager, ToolTipOptions } from "@bentley/imodeljs-frontend";
+import { ToolTipOptions } from "@bentley/imodeljs-frontend";
 import { XAndY } from "@bentley/geometry-core";
+import { AppNotificationManager } from "@bentley/ui-framework";
 
 // NEEDSWORK: move this to Tooltip.tsx
 import ToolTip from "tooltip.js";
 import "./ToolTip.scss";
 
-export class ShowcaseNotificationManager extends NotificationManager {
+export class ShowcaseNotificationManager extends AppNotificationManager {
   private _toolTip?: ToolTip;
   private _el?: HTMLElement;
   private _tooltipDiv?: HTMLDivElement;

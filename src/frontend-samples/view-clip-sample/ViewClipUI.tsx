@@ -8,13 +8,13 @@ import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "api/viewSetup";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "../../api/viewSetup";
 import ViewClipApp from "./ViewClipApp";
 
 interface ViewClipUIProps {
   iModelName: string;
-  iModelSelector: React.ReactNode;
+  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
 }
 
 interface ViewClipUIState {
@@ -116,28 +116,21 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
   }
 
   /** Components for rendering the sample's instructions and controls */
-  public getControlPane() {
+  public getControls() {
     return (
       <>
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Use the options below to control the view clip.</span>
-          </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          <div className="sample-options-3col even-3col">
-            <span>Clip Range</span>
-            <Toggle isOn={this.state.showClipBlock} onChange={this._onToggleRangeClip} />
-            <span />
-            <span>Clip Plane</span>
-            <select onChange={this._onPlaneSelectChange} value={this.state.clipPlane}>
-              <option value={"None"}> None </option>
-              <option value={EditManipulator.RotationType.Left}> X </option>
-              <option value={EditManipulator.RotationType.Front}> Y </option>
-              <option value={EditManipulator.RotationType.Top}> Z </option>
-            </select>
-            <Button buttonType={ButtonType.Primary} onClick={() => this._handleFlipButton()} disabled={this.state.clipPlane === "None"}>Flip</Button>
-          </div>
+        <div className="sample-options-3col even-3col">
+          <span>Clip Range</span>
+          <Toggle isOn={this.state.showClipBlock} onChange={this._onToggleRangeClip} />
+          <span />
+          <span>Clip Plane</span>
+          <select onChange={this._onPlaneSelectChange} value={this.state.clipPlane}>
+            <option value={"None"}> None </option>
+            <option value={EditManipulator.RotationType.Left}> X </option>
+            <option value={EditManipulator.RotationType.Front}> Y </option>
+            <option value={EditManipulator.RotationType.Top}> Z </option>
+          </select>
+          <Button buttonType={ButtonType.Primary} onClick={() => this._handleFlipButton()} disabled={this.state.clipPlane === "None"}>Flip</Button>
         </div>
       </>
     );
@@ -145,10 +138,10 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
 
   /** The sample's render method */
   public render() {
+    this.props.setupControlPane("Use the options below to control the view clip.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
-        {this.getControlPane()}
       </>
     );
   }

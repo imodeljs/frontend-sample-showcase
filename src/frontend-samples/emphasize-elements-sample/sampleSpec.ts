@@ -16,7 +16,7 @@ export function getEmphasizeElementsSpec(): SampleSpec {
       { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI") },
 
     ],
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
+    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     setup: EmphasizeElementsApp.setup,
     teardown: EmphasizeElementsApp.teardown,
   });
