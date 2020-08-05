@@ -254,9 +254,10 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="sample-code-button" onClick={this._onEditorButtonClick}>Explore Code</Button>}
                 <div className="collapsed-button-container">
-                  {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="gallery-button" onClick={() => this.setState({ showGallery: true })}>Show Sample Gallery</Button>}
                   {!this.state.showControlPane ? <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.onControlPaneButtonClick}>Show Control Pane</Button> : undefined}
                   {this.state.sampleControlPane && this.state.showControlPane ? this.state.sampleControlPane : undefined}
+                  {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="gallery-button" onClick={() => this.setState({ showGallery: true })}>Show Sample Gallery</Button>}
+
                 </div>
                 <ErrorBoundary>
                   {this.state.sampleUI || null}
