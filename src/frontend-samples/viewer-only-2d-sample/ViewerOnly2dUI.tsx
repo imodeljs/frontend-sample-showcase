@@ -41,7 +41,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     return (
       <div style={{ marginTop: "20px" }}>
         <span>Select Drawing or Sheet: </span>
-        <select onChange={this._handleSelection}>
+        <select onChange={this._handleSelection} className="2d-model-selector">
           {(drawingViews.length > 0) ? <optgroup label="Drawings" /> : null};
           {drawingViews};
           {(sheetViews.length > 0) ? <optgroup label="Sheets" /> : null};
@@ -103,6 +103,10 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     }
 
     await ViewerOnly2dApp.changeViewportView(imodel, firstModel);
+
+    const modelSelector2d = document.getElementsByClassName("2d-model-selector")[0] as HTMLSelectElement;
+    modelSelector2d.selectedIndex = 0;
+
     return viewState;
   }
 
