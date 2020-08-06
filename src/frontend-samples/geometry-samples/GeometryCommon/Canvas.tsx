@@ -67,7 +67,6 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
 
   //  Draws a piece of geometry
   public static drawGeometry(geometry: LineString3d, pointSize?: number) {
-    // tslint:disable-next-line: forin
     const numSegments = geometry.quickLength();
     for (let i = 0; i < numSegments; i++) {
       const segment = geometry.getIndexedSegment(i);
@@ -77,9 +76,9 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
   }
 
   public static drawPoints(points: Point3d[], pointSize?: number) {
-    // tslint:disable-next-line: forin
     for (const point in points) {
-      Canvas.drawCircle(2, points[point]);
+      if (point)
+        Canvas.drawCircle(2, points[point]);
     }
   }
 }

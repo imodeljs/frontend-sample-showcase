@@ -45,7 +45,6 @@ import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/v
 import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
 import { getSmallConvexHullSpec } from "./frontend-samples/geometry-samples/small-convex-hull/sampleSpec";
 
-
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
