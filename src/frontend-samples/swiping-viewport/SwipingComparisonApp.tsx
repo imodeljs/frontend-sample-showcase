@@ -8,7 +8,7 @@ import { FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneCont
 import SampleApp from "common/SampleApp";
 import * as React from "react";
 import SwipingComparisonUI from "./SwipingComparisonUI";
-import { Frustum, RenderMode } from "@bentley/imodeljs-common";
+import { Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 export default class SwipingViewportApp implements SampleApp {
@@ -67,11 +67,13 @@ class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: S
   }
 }
 
-class BackgroundMapToggleProvider implements TiledGraphicsProvider {
+class ComparisonProvider implements TiledGraphicsProvider {
   public clipVolume?: RenderClipVolume;
+  public viewFlagOverrides = new ViewFlagOverrides();
 
   constructor(clip: ClipVector) {
     this.clipVolume = IModelApp.renderSystem.createClipVolume(clip);
+    this.viewFlagOverrides.setRenderMode(RenderMode.Wireframe);
   }
 
   public dispose(): void {
@@ -91,14 +93,9 @@ class BackgroundMapToggleProvider implements TiledGraphicsProvider {
     // save view to replaces after comparison drawing
     const vp = output.viewport;
     const clip = vp.view.getViewClip();
-    const renderMode: RenderMode = vp.viewFlags.renderMode;
 
     // update for comparison drawing
-    vp.view.setViewClip(this.clipVolume?.clipVector);
-    let vf = vp.viewFlags.clone();
-    vf.renderMode = RenderMode.Wireframe;
-    vp.viewFlags = vf;
-    vp.synchWithView();
+    vp.view.setViewClip(this.clipVolume?.clipVector);  // TODO: Have Paul review
 
     const context = vp.createSceneContext();
     vp.view.createScene(context);
@@ -112,19 +109,16 @@ class BackgroundMapToggleProvider implements TiledGraphicsProvider {
       for (const gf of gfx)
         branch.entries.push(gf);
 
+      branch.setViewFlagOverrides(this.viewFlagOverrides);
       output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
     }
 
     vp.view.setViewClip(clip);
-    vf = vp.viewFlags.clone();
-    vf.renderMode = renderMode;
-    vp.viewFlags = vf;
-    vp.synchWithView();
   }
 }
 
 export class TiledGraphicsOverrider {
-  public provider: BackgroundMapToggleProvider | undefined;
+  public provider: ComparisonProvider | undefined;
   private _prevPoint: Point3d | undefined;
 
   constructor(private _viewport: ScreenViewport) { }
@@ -173,9 +167,10 @@ export class TiledGraphicsOverrider {
   public initProvider(screenPoint: Point3d) {
     this._prevPoint = screenPoint;
     const vp = this._viewport;
+    // vp.onRender.addListener((vp) => { vp.viewFlags.clipVolume = false; vp.synchWithView(); })
     const normal = SwipingViewportApp.getNormal(this._viewport, screenPoint);
 
-    this.provider = new BackgroundMapToggleProvider(this.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
+    this.provider = new ComparisonProvider(this.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
     vp.addTiledGraphicsProvider(this.provider);
     vp.view.setViewClip(this.createClip(normal.clone(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
     vp.viewFlags.clipVolume = true;

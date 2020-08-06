@@ -52,14 +52,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   }
 
   private updateCompare() {
-    const vp = this.props.viewport;
-    const vf = vp.viewFlags.clone();
-    vf.renderMode = RenderMode.Wireframe;
-    vp.viewFlags = vf;
-    vp.synchWithView();
-
     this._overrider.compare(this.screenPoint);
-    // this.compare(this.screenPoint);
   }
 
   private initPositionDivider(vp: ScreenViewport): number {
