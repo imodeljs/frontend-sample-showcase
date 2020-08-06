@@ -43,11 +43,13 @@ export default class MultiViewportApp implements SampleApp {
     MultiViewportApp.twoWaySync.disconnect();
   }
 
+  /** Adds a listener to IModalApp for when the selected Viewport changes.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForSelectedViewportChange(onChange: (args: SelectedViewportChangedArgs) => void) {
     MultiViewportApp._selectedViewportChangedListeners.push(onChange);
     IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
   }
 
+  /** Adds a listener to IModalApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForViewOpened(onOpen: (args: ScreenViewport) => void) {
     MultiViewportApp._viewOpenedListeners.push(onOpen);
     IModelApp.viewManager.onViewOpen.addListener(onOpen);
@@ -58,12 +60,6 @@ export default class MultiViewportApp implements SampleApp {
     const viewFlags = vp.viewFlags.clone();
     viewFlags.renderMode = mode;
     vp.viewFlags = viewFlags;
-  }
-  // Modify map background transparency using the Viewport API
-  public static setBackgroundTransparency(vp: Viewport, enabled: boolean) {
-    const vf = vp.viewFlags.clone();
-    vf.backgroundMap = enabled;
-    vp.viewFlags = vf;
   }
   // Modify map background transparency using the Viewport API
   public static syncViewportWithView(vp: Viewport) {

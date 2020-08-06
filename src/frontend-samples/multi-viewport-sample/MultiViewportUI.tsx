@@ -119,14 +119,6 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
           <hr></hr>
           {/** Selected Viewport dependent controls */}
           <div className="sample-options-2col">
-            <span>Background Map</span>
-            <Toggle
-              isOn={this.state.selectedViewport?.viewFlags.backgroundMap}
-              disabled={undefined === this.state.selectedViewport}
-              onChange={undefined}
-            />
-          </div>
-          <div className="sample-options-2col">
             <span>Render Mode</span>
             <select
               disabled={undefined === this.state.selectedViewport}
