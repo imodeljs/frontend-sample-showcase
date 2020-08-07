@@ -57,6 +57,10 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     }
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Use the controls below to effect the highlighted selected viewport. Syncing the viewports will initially match to the selected viewport.", this.getControls());
+  }
+
   // Adds listeners after the iModel is loaded.
   // Note: The [MultiViewportApp] handles removing theses listeners they are irrelevant and insuring no duplicates.
   private _onIModelReady = (_iModel: IModelConnection) => {
@@ -117,7 +121,6 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
   }
 
   public render() {
-    this.props.setupControlPane("Use the controls below to effect the highlighted selected viewport. Syncing the viewports will initially match to the selected viewport.", this.getControls());
     return (
       <>
         { /* Viewport to display the iModel */}
