@@ -9,7 +9,7 @@ export function getMultiViewportSpec(): SampleSpec {
   return ({
     name: "multi-viewport-sample",
     label: "Multiple Viewports",
-    image: "viewport-only-thumbnail.png", // TODO: get real screenshot
+    image: "multi-viewport-thumbnail.png",
     files: [
       { name: "MultiViewportApp.tsx", import: import("!!raw-loader!./MultiViewportApp"), entry: true },
       { name: "MultiViewportUI.tsx", import: import("!!raw-loader!./MultiViewportUI") },
