@@ -43,10 +43,13 @@ export default class TilesList extends React.Component<{ setupControlPane: (inst
     return <TilesList setupControlPane={setupControlPane}></TilesList>;
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Different styles of tiles that can be used in iModel.js applications.");
+  }
+
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
-    this.props.setupControlPane("Different styles of tiles that can be used in iModel.js applications.");
     return (
       <>
         <ComponentContainer data={TilesList.getTilesData()}></ComponentContainer>

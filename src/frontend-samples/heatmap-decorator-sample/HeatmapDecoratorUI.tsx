@@ -114,9 +114,12 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     );
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Use the options below to control the heatmap visualization.", this.getControls());
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Use the options below to control the heatmap visualization.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={HeatmapDecoratorUI.getTopView} />
