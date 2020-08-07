@@ -58,7 +58,7 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
     }
   }
 
-  public static drawPolygon(points: GrowableXYZArray | undefined) {
+  public static drawPolygon(points: GrowableXYZArray | undefined, fill?: boolean) {
     const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
     const context = canvas.getContext("2d");
     if (context && points && points.length > 1) {
@@ -69,6 +69,8 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
         context.lineTo(points.getXAtUncheckedPointIndex(i), points.getYAtUncheckedPointIndex(i));
       }
       context.closePath();
+      if (fill)
+        context.fill();
       context.stroke();
     }
   }
@@ -85,19 +87,33 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
   }
 
   //  Draws a piece of geometry
-  public static drawGeometry(geometry: GeometryQuery) {
+  public static drawGeometry(geometry: GeometryQuery, fill?: boolean) {
     if (geometry instanceof LineSegment3d) {
 
     } else if (geometry instanceof LineString3d) {
-      const numSegments = geometry.packedPoints.length;
-      for (let i = 0; i + 1 < numSegments; i++) {
-        const segment = geometry.getIndexedSegment(i);
-        if (segment)
-          Canvas.drawLine(segment);
+      const numSegments = geometry.quickLength();
+      const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
+      const context = canvas.getContext("2d");
+      if (context) {
+        context.beginPath();
+        for (let i = 0; i < numSegments; i++) {
+          const segment = geometry.getIndexedSegment(i);
+          if (segment) {
+            if (i === 0) {
+              context.moveTo(segment.point0Ref.x, segment.point0Ref.y);
+            } else {
+              context.lineTo(segment.point0Ref.x, segment.point0Ref.y);
+            }
+          }
+        }
+        context.closePath();
+        if (fill)
+          context.fill();
+        context.stroke();
       }
     } else if (geometry instanceof Loop) {
       const strokePoints = geometry.getPackedStrokes();
-      Canvas.drawPolygon(strokePoints);
+      Canvas.drawPolygon(strokePoints, fill);
     }
   }
 
@@ -106,5 +122,22 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
       if (point)
         Canvas.drawCircle(2, points[point]);
     }
+  }
+
+  public static drawText(text: string, x: number, y: number) {
+    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
+    const context = canvas.getContext("2d");
+    if (context) {
+      context.transform(1, 0, 0, -1, 0, canvas.height);
+      context.fillText(text, x, canvas.height - y);
+      context.transform(1, 0, 0, -1, 0, canvas.height);
+    }
+  }
+
+  public static clearCanvas() {
+    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
+    const context = canvas.getContext("2d");
+    if (context)
+      context.clearRect(0, 0, canvas.width, canvas.height);
   }
 }
