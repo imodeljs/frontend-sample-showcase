@@ -5,7 +5,6 @@
 import { RenderMode } from "@bentley/imodeljs-common";
 import { IModelConnection, SelectedViewportChangedArgs, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
-import { ViewSetup } from "api/viewSetup";
 import "common/samples-common.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
@@ -30,7 +29,7 @@ export interface MultiViewportUIProps {
 /** A React component that renders the UI specific for this sample */
 export default class MultiViewportUI extends React.Component<MultiViewportUIProps, MultiViewportUIState> {
 
-  public state: MultiViewportUIState = { iModel: undefined, view: undefined, isSynced: false, viewports: [] };
+  public state: MultiViewportUIState = { isSynced: false, viewports: [] };
 
   // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
@@ -51,9 +50,11 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
   }
 
   public componentDidUpdate(_prevProps: MultiViewportUIProps, prevState: MultiViewportUIState) {
+    let renderMode: RenderMode;
     if (undefined !== this.state.selectedViewport
-      && prevState.selectedViewport?.viewportId !== this.state.selectedViewport?.viewportId) {
-      this.setState({ renderMode: this.state.selectedViewport?.viewFlags.renderMode });
+      && prevState.selectedViewport?.viewportId !== this.state.selectedViewport?.viewportId
+      && prevState.renderMode !== (renderMode = this.state.selectedViewport?.viewFlags.renderMode)) {
+      this.setState({ renderMode });
     }
   }
 
@@ -108,14 +109,14 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
       </div>
       <div className="sample-options-2col">
         <span>Render Mode</span>
-        <select
+        {undefined !== this.state.renderMode ? <select
           disabled={undefined === this.state.selectedViewport}
           value={this.state.renderMode}
           style={{ width: "fit-content" }}
           onChange={this._onChangeRenderMode}
         >
           {entries}
-        </select>
+        </select> : <></>}
       </div>
     </>);
   }
