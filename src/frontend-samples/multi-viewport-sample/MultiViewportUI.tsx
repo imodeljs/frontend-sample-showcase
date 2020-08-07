@@ -21,6 +21,7 @@ export interface MultiViewportUIState {
   iModel?: IModelConnection;
   view?: ViewState;
 }
+/** The React props for this UI component */
 export interface MultiViewportUIProps {
   iModelName: string;
   setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void;
@@ -33,20 +34,18 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
-    // Highlight Selected Viewport
     if (args.previous)
       args.previous!.vpDiv.classList.remove("active-viewport");
     if (args.current)
       args.current.vpDiv.classList.add("active-viewport");
-    // console.debug("selected");
   }
 
-  // Tracks opened View and adds them to the state.
+  // Handles opened View and adds them to the state.
   private _getViews = (viewport: Viewport) => {
     this.setState({ viewports: [...this.state.viewports, viewport] });
   }
 
-  // Tracks the selected viewport and sets the current to the state.
+  // Handles changes to the selected viewport and adds the current to the state.
   private _getSelectedViewport = (args: SelectedViewportChangedArgs) => {
     this.setState({ selectedViewport: args.current });
   }
@@ -68,10 +67,11 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   // Handle changes to the UI sync toggle.
   private _onSyncToggleChange = (isOn: boolean) => {
-    const selectedViewport = this.state.selectedViewport!;
-    const unselectedViewport = this.state.viewports.filter((vp) => vp.viewportId !== selectedViewport?.viewportId)[0];
-
     if (isOn) {
+      const selectedViewport = this.state.selectedViewport!;
+      const unselectedViewport = this.state.viewports.filter((vp) => vp.viewportId !== selectedViewport?.viewportId)[0];
+      // By passing the selected viewport as the first argument, this will be the view
+      //  used to override the second argument's view.
       MultiViewportApp.connectViewports(selectedViewport, unselectedViewport);
     } else
       MultiViewportApp.disconnectViewports();
@@ -91,19 +91,17 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
   }
 
   public getControls(): React.ReactNode {
+    // This maps an enum [RenderMode] to the options elements.
     const entries = Object.keys(RenderMode)
       .filter((value) => isNaN(Number(value)) === false)
       .map((str: string) => Number(str))
       .map((key) => <option key={key} value={key}>{RenderMode[key]}</option>);
 
     return (<>
-      {/** Selected Viewport independent controls */}
       <div className="sample-options-2col">
         <span>Sync Viewports</span>
         <Toggle disabled={this.state.viewports.length !== 2} isOn={this.state.isSynced} onChange={this._onSyncToggleChange} />
       </div>
-      <hr></hr>
-      {/** Selected Viewport dependent controls */}
       <div className="sample-options-2col">
         <span>Render Mode</span>
         <select
@@ -118,9 +116,8 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     </>);
   }
 
-  /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Do the thing and be amazed", this.getControls());
+    this.props.setupControlPane("Use the controls below to effect the highlighted selected viewport. Syncing the viewports will initially match to the selected viewport.", this.getControls());
     return (
       <>
         { /* Viewport to display the iModel */}

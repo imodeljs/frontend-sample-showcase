@@ -20,7 +20,6 @@ export default class MultiViewportApp implements SampleApp {
   public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void) {
     MultiViewportApp._selectedViewportChangedListeners.length = 0;
     MultiViewportApp._viewOpenedListeners.length = 0;
-    console.debug("start");
     return <MultiViewportUI iModelName={iModelName} setupControlPane={setupControlPane} />;
   }
 
@@ -33,9 +32,8 @@ export default class MultiViewportApp implements SampleApp {
     MultiViewportApp._viewOpenedListeners.forEach(
       (listener) => { IModelApp.viewManager.onViewOpen.removeListener(listener); });
     MultiViewportApp._viewOpenedListeners.length = 0;
-    console.debug("teardown");
   }
-  /** Connects the views of the two provided viewports. */
+  /** Connects the views of the two provided viewports, overriding the second parameter's view with the first's view. */
   public static connectViewports(vp1: Viewport, vp2: Viewport) {
     MultiViewportApp.twoWaySync.connect(vp1, vp2);
   }
@@ -48,14 +46,14 @@ export default class MultiViewportApp implements SampleApp {
   public static listenForSelectedViewportChange(onChange: (args: SelectedViewportChangedArgs) => void) {
     MultiViewportApp._selectedViewportChangedListeners.push(onChange);
     if (false === IModelApp.viewManager.onSelectedViewportChanged.has(onChange))
-    IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
+      IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
   }
 
   /** Adds a listener to IModalApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForViewOpened(onOpen: (args: ScreenViewport) => void) {
     MultiViewportApp._viewOpenedListeners.push(onOpen);
     if (false === IModelApp.viewManager.onViewOpen.has(onOpen))
-    IModelApp.viewManager.onViewOpen.addListener(onOpen);
+      IModelApp.viewManager.onViewOpen.addListener(onOpen);
   }
 
   /** Modify render mode setting using the Viewport API. */
