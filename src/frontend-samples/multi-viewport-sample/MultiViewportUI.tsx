@@ -17,6 +17,7 @@ export interface MultiViewportUIState {
   isSynced: boolean;
   viewports: Viewport[];
   selectedViewport?: Viewport;
+  renderMode?: RenderMode;
   iModel?: IModelConnection;
   view?: ViewState;
 }
@@ -50,6 +51,13 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     this.setState({ selectedViewport: args.current });
   }
 
+  public componentDidUpdate(_prevProps: MultiViewportUIProps, prevState: MultiViewportUIState) {
+    if (undefined !== this.state.selectedViewport
+      && prevState.selectedViewport?.viewportId !== this.state.selectedViewport?.viewportId) {
+      this.setState({ renderMode: this.state.selectedViewport?.viewFlags.renderMode });
+    }
+  }
+
   // Adds listeners after the iModel is loaded.
   // Note: The [MultiViewportApp] handles removing theses listeners they are irrelevant and insuring no duplicates.
   private _onIModelReady = (_iModel: IModelConnection) => {
@@ -79,6 +87,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     MultiViewportApp.setRenderMode(this.state.selectedViewport, renderMode);
     // Since the render mode is set by the view flags, the viewports needs to be synced before it will be reflected on screen.
     MultiViewportApp.syncViewportWithView(this.state.selectedViewport);
+    this.setState({ renderMode });
   }
 
   public getControls(): React.ReactNode {
@@ -99,7 +108,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
         <span>Render Mode</span>
         <select
           disabled={undefined === this.state.selectedViewport}
-          value={this.state.selectedViewport?.viewFlags.renderMode}
+          value={this.state.renderMode}
           style={{ width: "fit-content" }}
           onChange={this._onChangeRenderMode}
         >
