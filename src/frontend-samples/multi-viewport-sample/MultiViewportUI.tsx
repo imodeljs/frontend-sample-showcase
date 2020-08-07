@@ -30,28 +30,6 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   public state: MultiViewportUIState = { iModel: undefined, view: undefined, isSynced: false, viewports: [] };
 
-  constructor(props: MultiViewportUIProps, context: any) {
-    super(props, context);
-    MultiViewportApp.listenForSelectedViewportChange(this._setViewportStyling);
-    MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
-    MultiViewportApp.listenForViewOpened(this._getViews);
-    // console.debug("constructor");
-  }
-
-  // public componentDidMount() {
-  //   console.debug("mount");
-  // }
-
-  // React method run when props or state are changed
-  public componentDidUpdate(prevProps: MultiViewportUIProps, prevState: MultiViewportUIState) {
-    if (undefined === prevState.iModel && undefined !== this.state.iModel)
-      // Get default View for the iModel to load the second viewport
-      ViewSetup.getDefaultView(this.state.iModel).then((view) => {
-        this.setState({ view });
-      }).catch();
-
-  }
-
   // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
     // Highlight Selected Viewport
@@ -72,9 +50,12 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     this.setState({ selectedViewport: args.current });
   }
 
-  // Sets up parts of the app for after the iModel is loaded.
-  private _onIModelReady = (iModel: IModelConnection) => {
-    // this.setState({ iModel });
+  // Adds listeners after the iModel is loaded.
+  // Note: The [MultiViewportApp] handles removing theses listeners they are irrelevant and insuring no duplicates.
+  private _onIModelReady = (_iModel: IModelConnection) => {
+    MultiViewportApp.listenForSelectedViewportChange(this._setViewportStyling);
+    MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
+    MultiViewportApp.listenForViewOpened(this._getViews);
   }
 
   // Handle changes to the UI sync toggle.

@@ -47,12 +47,14 @@ export default class MultiViewportApp implements SampleApp {
   /** Adds a listener to IModalApp for when the selected Viewport changes.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForSelectedViewportChange(onChange: (args: SelectedViewportChangedArgs) => void) {
     MultiViewportApp._selectedViewportChangedListeners.push(onChange);
+    if (false === IModelApp.viewManager.onSelectedViewportChanged.has(onChange))
     IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
   }
 
   /** Adds a listener to IModalApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForViewOpened(onOpen: (args: ScreenViewport) => void) {
     MultiViewportApp._viewOpenedListeners.push(onOpen);
+    if (false === IModelApp.viewManager.onViewOpen.has(onOpen))
     IModelApp.viewManager.onViewOpen.addListener(onOpen);
   }
 
