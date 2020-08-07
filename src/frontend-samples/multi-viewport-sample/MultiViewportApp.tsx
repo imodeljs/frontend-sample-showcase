@@ -10,17 +10,18 @@ import MultiViewportUI from "./MultiViewportUI";
 import { IModelApp, TwoWayViewportSync, Viewport, SelectedViewportChangedArgs, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { RenderMode } from "@bentley/imodeljs-common";
 
+/** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApp implements SampleApp {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();
   private static _selectedViewportChangedListeners: Array<(args: SelectedViewportChangedArgs) => void> = [];
   private static _viewOpenedListeners: Array<(args: ScreenViewport) => void> = [];
 
   /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void) {
     MultiViewportApp._selectedViewportChangedListeners.length = 0;
     MultiViewportApp._viewOpenedListeners.length = 0;
-    console.debug("Startup");
-    return <MultiViewportUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+    console.debug("start");
+    return <MultiViewportUI iModelName={iModelName} setupControlPane={setupControlPane} />;
   }
 
   /** Called by the showcase before swapping to another sample. */
@@ -32,7 +33,7 @@ export default class MultiViewportApp implements SampleApp {
     MultiViewportApp._viewOpenedListeners.forEach(
       (listener) => { IModelApp.viewManager.onViewOpen.removeListener(listener); });
     MultiViewportApp._viewOpenedListeners.length = 0;
-    console.debug("Teardown");
+    console.debug("teardown");
   }
   /** Connects the views of the two provided viewports. */
   public static connectViewports(vp1: Viewport, vp2: Viewport) {
@@ -55,13 +56,14 @@ export default class MultiViewportApp implements SampleApp {
     IModelApp.viewManager.onViewOpen.addListener(onOpen);
   }
 
-  // Modify render mode setting using the Viewport API.
+  /** Modify render mode setting using the Viewport API. */
   public static setRenderMode(vp: Viewport, mode: RenderMode) {
     const viewFlags = vp.viewFlags.clone();
     viewFlags.renderMode = mode;
     vp.viewFlags = viewFlags;
   }
-  // Modify map background transparency using the Viewport API
+
+  /** Signal viewport to sync with an updated [ViewState] using the Viewport API. */
   public static syncViewportWithView(vp: Viewport) {
     vp.synchWithView();
   }

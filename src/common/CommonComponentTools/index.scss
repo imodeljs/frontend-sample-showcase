@@ -5,16 +5,13 @@
 
 @import "~@bentley/ui-core/lib/ui-core/style/themecolors";
 
-$component-examples-leftpanel-width: 225px;
-$component-examples-rightpanel-width: 235px;
-
 .component-ui {
   width: 20%;
 }
 
 .component-container {
-  padding-left: 25%;
-  padding-right: 25%;
+  padding-left: 15%;
+  padding-right: 15%;
   color: white;
 
   .component-example-container {
@@ -28,7 +25,7 @@ $component-examples-rightpanel-width: 235px;
       display: flex;
       flex-direction: column;
       flex: 1;
-      width: $component-examples-leftpanel-width;
+      width: 50%;
 
       .title {
         font-size: 18px;
@@ -44,7 +41,7 @@ $component-examples-rightpanel-width: 235px;
 
     .right-panel {
       display: flex;
-      width: $component-examples-rightpanel-width;
+      width: 50%;
 
     }
   }

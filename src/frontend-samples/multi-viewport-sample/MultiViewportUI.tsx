@@ -3,8 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { RenderMode } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, Viewport, ViewState, SelectedViewportChangedArgs } from "@bentley/imodeljs-frontend";
-import { ViewportComponent } from "@bentley/ui-components";
+import { IModelConnection, SelectedViewportChangedArgs, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import { ViewSetup } from "api/viewSetup";
 import "common/samples-common.scss";
@@ -13,6 +12,7 @@ import * as React from "react";
 import "./multi-view-sample.scss";
 import MultiViewportApp from "./MultiViewportApp";
 
+/** The React state for this UI component */
 export interface MultiViewportUIState {
   isSynced: boolean;
   viewports: Viewport[];
@@ -22,9 +22,10 @@ export interface MultiViewportUIState {
 }
 export interface MultiViewportUIProps {
   iModelName: string;
-  iModelSelector: React.ReactNode;
+  setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void;
 }
 
+/** A React component that renders the UI specific for this sample */
 export default class MultiViewportUI extends React.Component<MultiViewportUIProps, MultiViewportUIState> {
 
   public state: MultiViewportUIState = { iModel: undefined, view: undefined, isSynced: false, viewports: [] };
@@ -33,9 +34,15 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     super(props, context);
     MultiViewportApp.listenForSelectedViewportChange(this._setViewportStyling);
     MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
-    MultiViewportApp.listenForViewOpened(this._getViewports);
+    MultiViewportApp.listenForViewOpened(this._getViews);
+    // console.debug("constructor");
   }
 
+  // public componentDidMount() {
+  //   console.debug("mount");
+  // }
+
+  // React method run when props or state are changed
   public componentDidUpdate(prevProps: MultiViewportUIProps, prevState: MultiViewportUIState) {
     if (undefined === prevState.iModel && undefined !== this.state.iModel)
       // Get default View for the iModel to load the second viewport
@@ -45,27 +52,32 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   }
 
+  // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
     // Highlight Selected Viewport
     if (args.previous)
       args.previous!.vpDiv.classList.remove("active-viewport");
     if (args.current)
       args.current.vpDiv.classList.add("active-viewport");
+    // console.debug("selected");
   }
 
-  private _getViewports = (viewport: Viewport) => {
+  // Tracks opened View and adds them to the state.
+  private _getViews = (viewport: Viewport) => {
     this.setState({ viewports: [...this.state.viewports, viewport] });
   }
 
+  // Tracks the selected viewport and sets the current to the state.
   private _getSelectedViewport = (args: SelectedViewportChangedArgs) => {
     this.setState({ selectedViewport: args.current });
   }
 
   // Sets up parts of the app for after the iModel is loaded.
   private _onIModelReady = (iModel: IModelConnection) => {
-    this.setState({ iModel });
+    // this.setState({ iModel });
   }
 
+  // Handle changes to the UI sync toggle.
   private _onSyncToggleChange = (isOn: boolean) => {
     const selectedViewport = this.state.selectedViewport!;
     const unselectedViewport = this.state.viewports.filter((vp) => vp.viewportId !== selectedViewport?.viewportId)[0];
@@ -84,16 +96,41 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
       return;
     const renderMode: RenderMode = Number.parseInt(event.target.value, 10);
     MultiViewportApp.setRenderMode(this.state.selectedViewport, renderMode);
+    // Since the render mode is set by the view flags, the viewports needs to be synced before it will be reflected on screen.
     MultiViewportApp.syncViewportWithView(this.state.selectedViewport);
   }
 
-  /** The sample's render method */
-  public render() {
+  public getControls(): React.ReactNode {
     const entries = Object.keys(RenderMode)
       .filter((value) => isNaN(Number(value)) === false)
       .map((str: string) => Number(str))
       .map((key) => <option key={key} value={key}>{RenderMode[key]}</option>);
 
+    return (<>
+      {/** Selected Viewport independent controls */}
+      <div className="sample-options-2col">
+        <span>Sync Viewports</span>
+        <Toggle disabled={this.state.viewports.length !== 2} isOn={this.state.isSynced} onChange={this._onSyncToggleChange} />
+      </div>
+      <hr></hr>
+      {/** Selected Viewport dependent controls */}
+      <div className="sample-options-2col">
+        <span>Render Mode</span>
+        <select
+          disabled={undefined === this.state.selectedViewport}
+          value={this.state.selectedViewport?.viewFlags.renderMode}
+          style={{ width: "fit-content" }}
+          onChange={this._onChangeRenderMode}
+        >
+          {entries}
+        </select>
+      </div>
+    </>);
+  }
+
+  /** The sample's render method */
+  public render() {
+    this.props.setupControlPane("Do the thing and be amazed", this.getControls());
     return (
       <>
         { /* Viewport to display the iModel */}
@@ -101,34 +138,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
           <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
         <div className={"mutli-view-viewport-bottom"}>
-          {undefined !== this.state.iModel && undefined !== this.state.view ? <ViewportComponent imodel={this.state.iModel} viewState={this.state.view} /> : <></>}
-        </div>
-
-        { /* The control pane */}
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Use the toolbar at the top-right to navigate the model.</span>
-          </div>
-          {this.props.iModelSelector}
-          <hr></hr>
-          {/** Selected Viewport independent controls */}
-          <div className="sample-options-2col">
-            <span>Sync Viewports</span>
-            <Toggle disabled={this.state.viewports.length !== 2} isOn={this.state.isSynced} onChange={this._onSyncToggleChange} />
-          </div>
-          <hr></hr>
-          {/** Selected Viewport dependent controls */}
-          <div className="sample-options-2col">
-            <span>Render Mode</span>
-            <select
-              disabled={undefined === this.state.selectedViewport}
-              value={this.state.selectedViewport?.viewFlags.renderMode}
-              style={{ width: "fit-content" }}
-              onChange={this._onChangeRenderMode}
-            >
-              {entries}
-            </select>
-          </div>
+          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
       </>
     );

@@ -14,6 +14,7 @@ interface SampleGalleryProps {
   group: string;
   selected: string;
   onChange: ((group: string, sample: string) => void);
+  onCollapse: () => void;
 }
 
 interface ExpandedState {
@@ -64,6 +65,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
       <label className="gallery-card-radio-btn">
         <span>{sample.label}</span>
         <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
+        <div className="icon icon-status-success gallery-selection-icon"></div>
         <div className="gallery-card gallery-card-body">
           <img src={image} srcSet={image2x} alt={sample.name} />
         </div>
@@ -109,6 +111,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
         <ExpandableList className="gallery-card-radio" singleExpandOnly={false} defaultActiveBlock={0}>
           {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
         </ExpandableList>
+        <i className="icon icon-visibility-hide-2 gallery-close-button" onClick={this.props.onCollapse}></i>
       </>
     );
   }

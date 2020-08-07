@@ -7,12 +7,23 @@
   background-color: #333;
   overflow-y: scroll;
   overflow-x: hidden;
-
+  width: 100%;
   height: 100%;
 
   .uicore-expandable-blocks-block.is-expanded:before {
     background: none;
   }
+}
+
+.gallery-close-button {
+  cursor: pointer;
+  position:absolute;
+  top: 5px;
+  right: 15px;
+  color: var(--buic-foreground-body);
+}
+.gallery-close-button:hover {
+  color: white;
 }
 
 .gallery-card-block {
@@ -24,7 +35,7 @@
     background-color: #333 !important;
   }
   .header {
-    width: 250px;
+    width: 100%;
     background-color: #333 !important;
   }
 }
@@ -32,12 +43,14 @@
 .gallery-card-radio-btn>span {
   color: white;
   margin-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
 }
 
 .gallery-card {
   position: relative;
-  width: 240px;
-  height: 160px;
   margin-left: 10px;
   margin-bottom: 5px;
 
@@ -55,11 +68,13 @@
   padding: 0px;  
   margin:0;
   display: inline-block;
+  width: 100%;
+  position:relative;
 }
 
 .gallery-card-radio-btn img {
-  width: 240px;
-  height: 160px;
+  width: 100%;
+  height: 100%;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -69,21 +84,21 @@
   cursor: pointer;
 }
 
-.gallery-card-input-element:checked + .gallery-card {
+.gallery-card-input-element:checked ~ .gallery-card {
   border: 2px solid #008be1;
 }
 
-.gallery-card-input-element:checked + .gallery-card::after {
-  content: "\f2d1";
-  color: #008be1;
+.gallery-card-input-element:checked ~ .gallery-selection-icon {
+  display: block;
+}
+
+.gallery-selection-icon {
   position: absolute;
-  right: 6px;
-  top: 6px;
-  font-family: "bentley-icons-generic-webfont";
-  font-style: normal;
-  font-size: 1rem;
-  font-weight: 900;
-  line-height: 1;
+  right: 5px;
+  top: 28px;
+  color: #008be1;
+  display: none;
+  z-index: 1;
 }
 
 .gallery-card-input-element.d-none {

@@ -11,20 +11,7 @@ export interface PresentationTreeProps {
   imodel: IModelConnection;
 }
 
-export class PresentationTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
-
-  public getControlPane() {
-    return (
-      <>
-        <div className="sample-ui  component-ui">
-          <div className="sample-instructions">
-            <span>Data in this tree is loaded using Presentation rules.</span>
-          </div>
-          {this.props.iModelSelector}
-        </div>
-      </>
-    );
-  }
+export class PresentationTreeUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void }, { iModel: IModelConnection }> {
 
   public onIModelReady = (imodel: IModelConnection) => {
     this.setState({
@@ -33,9 +20,9 @@ export class PresentationTreeUI extends React.Component<{ iModelName: string, iM
   }
 
   public render() {
+    this.props.setupControlPane("Data in this tree is loaded using Presentation rules.");
     return (
       <>
-        {this.getControlPane()}
         <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
         <div className="sample-tree">
           {(this.state && this.state.iModel) ? <PresentationTree imodel={this.state.iModel}></PresentationTree> : <></>}
