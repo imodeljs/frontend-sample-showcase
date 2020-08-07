@@ -163,6 +163,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       if (editorEnabled) params.append("editor", editorEnabled);
 
       window.history.replaceState(null, "", "?" + params.toString());
+
+      // Send to parent if within an iframe.
+      if (window.self !== window.top) {
+        window.parent.postMessage("?" + params.toString(), "*");
+      }
+
     });
   }
 
