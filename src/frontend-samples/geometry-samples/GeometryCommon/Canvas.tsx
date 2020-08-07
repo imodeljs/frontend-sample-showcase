@@ -4,8 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "./Canvas.scss";
-import { LineSegment3d, LineString3d, Point3d } from "@bentley/geometry-core";
+import { LineSegment3d, LineString3d, Point3d, GrowableXYZArray, GeometryQuery, Loop } from "@bentley/geometry-core";
 export class Canvas extends React.Component<{ drawingCallback: () => void }, { pixelHeight: number, pixelWidth: number }> {
+
+  private static points: Point3d[] = [];
+  private static lines: LineSegment3d[] = [];
+  private static geometry: LineString3d[] = [];
 
   public render() {
     this.resize();
@@ -54,6 +58,21 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
     }
   }
 
+  public static drawPolygon(points: GrowableXYZArray | undefined) {
+    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
+    const context = canvas.getContext("2d");
+    if (context && points && points.length > 1) {
+      context.fillStyle = "#FF0000";
+      context.beginPath();
+      context.moveTo(points.getXAtUncheckedPointIndex(0), points.getYAtUncheckedPointIndex(0));
+      for (let i = 1; i < points.length; i++) {
+        context.lineTo(points.getXAtUncheckedPointIndex(i), points.getYAtUncheckedPointIndex(i));
+      }
+      context.closePath();
+      context.stroke();
+    }
+  }
+
   public static drawCircle(radius: number, center: Point3d) {
     const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
     const context = canvas.getContext("2d");
@@ -66,12 +85,19 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
   }
 
   //  Draws a piece of geometry
-  public static drawGeometry(geometry: LineString3d, pointSize?: number) {
-    const numSegments = geometry.quickLength();
-    for (let i = 0; i < numSegments; i++) {
-      const segment = geometry.getIndexedSegment(i);
-      if (segment)
-        Canvas.drawLine(segment);
+  public static drawGeometry(geometry: GeometryQuery) {
+    if (geometry instanceof LineSegment3d) {
+
+    } else if (geometry instanceof LineString3d) {
+      const numSegments = geometry.packedPoints.length;
+      for (let i = 0; i + 1 < numSegments; i++) {
+        const segment = geometry.getIndexedSegment(i);
+        if (segment)
+          Canvas.drawLine(segment);
+      }
+    } else if (geometry instanceof Loop) {
+      const strokePoints = geometry.getPackedStrokes();
+      Canvas.drawPolygon(strokePoints);
     }
   }
 
