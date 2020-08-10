@@ -84,21 +84,21 @@
   cursor: pointer;
 }
 
-.gallery-card-input-element:checked + .gallery-card {
+.gallery-card-input-element:checked ~ .gallery-card {
   border: 2px solid #008be1;
 }
 
-.gallery-card-input-element:checked + .gallery-card::after {
-  content: "\f2d1";
-  color: #008be1;
+.gallery-card-input-element:checked ~ .gallery-selection-icon {
+  display: block;
+}
+
+.gallery-selection-icon {
   position: absolute;
-  right: 6px;
-  top: 6px;
-  font-family: "bentley-icons-generic-webfont";
-  font-style: normal;
-  font-size: 1rem;
-  font-weight: 900;
-  line-height: 1;
+  right: 5px;
+  top: 28px;
+  color: #008be1;
+  display: none;
+  z-index: 1;
 }
 
 .gallery-card-input-element.d-none {

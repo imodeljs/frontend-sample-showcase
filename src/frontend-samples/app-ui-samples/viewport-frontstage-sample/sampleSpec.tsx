@@ -14,9 +14,9 @@ export function getViewportFrontstageSample(): SampleSpec {
     image: "viewport-frontstage-thumbnail.png",
     files: [
       { name: "ViewportFrontstageApp.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
-      { name: "ViewportFrontstageUi.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage")},
+      { name: "ViewportFrontstageUi.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage") },
     ],
-    customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House],
+    customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     setup: ViewportFrontstageSample.setup,
     teardown: ViewportFrontstageSample.teardown,
   });

@@ -8,7 +8,7 @@ import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector } from "../IModelSelector/IModelSelector";
+import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
 import SampleEditor from "../SampleEditor/SampleEditor";
 import { InternalFile, SplitScreen } from "@bentley/monaco-editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
@@ -52,7 +52,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     const names = this.getNamesFromURLParams();
 
     this.state = {
-      iModelName: IModelSelector.defaultIModel,
+      iModelName: names.imodel,
       activeSampleGroup: names.group,
       activeSampleName: names.sample,
       showEditor: true,
@@ -62,10 +62,11 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   }
 
-  private getNamesFromURLParams(): { group: string, sample: string } {
+  private getNamesFromURLParams(): { group: string, sample: string, imodel: string } {
     const urlParams = new URLSearchParams(window.location.search);
     const urlGroupName = urlParams.get("group");
     const urlSampleName = urlParams.get("sample");
+    const iModelName = urlParams.get("imodel");
 
     let namesAreValid = false;
     let group = "";
@@ -77,12 +78,25 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       sample = urlSampleName;
     }
 
+    let imodel = "";
+
+    if (iModelName) {
+      const sampleImodels: string[] = Object.values(SampleIModels);
+      if (sampleImodels.includes(iModelName)) {
+        imodel = iModelName;
+      } else {
+        imodel = IModelSelector.defaultIModel;
+      }
+    } else {
+      imodel = IModelSelector.defaultIModel;
+    }
+
     if (!namesAreValid) {
       group = this._samples[0].groupName;
       sample = this._samples[0].samples[0].name;
     }
 
-    return { group, sample };
+    return { group, sample, imodel };
   }
 
   public componentDidMount() {
@@ -139,12 +153,22 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       params.append("group", groupName);
       params.append("sample", sampleName);
 
+      if (iModelName) {
+        params.append("imodel", iModelName);
+      }
+
       // Detect if editor was enabled in URL params as a semi-backdoor, this
       // bypasses the ld feature flag
       const editorEnabled = new URLSearchParams(window.location.search).get("editor");
       if (editorEnabled) params.append("editor", editorEnabled);
 
       window.history.replaceState(null, "", "?" + params.toString());
+
+      // Send to parent if within an iframe.
+      if (window.self !== window.top) {
+        window.parent.postMessage("?" + params.toString(), "*");
+      }
+
     });
   }
 

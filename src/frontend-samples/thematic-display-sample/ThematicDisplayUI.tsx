@@ -8,7 +8,7 @@ import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme } from "@be
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import ThematicDisplayApp from "./ThematicDisplayApp";
 
 /** React state of the Sample component */
