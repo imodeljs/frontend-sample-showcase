@@ -163,9 +163,12 @@ export default class MarkerPinsUI extends React.Component<{
     );
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Use the options below to control the marker pins.  Click a marker to open a menu of options.", this.getControls());
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Use the options below to control the marker pins.  Click a marker to open a menu of options.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsUI.getTopView} />      </>

@@ -31,10 +31,13 @@ export default class TabsList extends React.Component<{ setupControlPane: (instr
     return <TabsList setupControlPane={setupControlPane}></TabsList>;
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Different styles of tabs that can be used in iModel.js applications.");
+  }
+
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
-    this.props.setupControlPane("Different styles of tabs that can be used in iModel.js applications.");
     return (
       <>
         <ComponentContainer data={TabsList.getTabsData()}></ComponentContainer>

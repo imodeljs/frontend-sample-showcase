@@ -16,8 +16,11 @@ export class CustomWebfontIconsTreeUI extends React.Component<{ iModelName: stri
     });
   }
 
-  public render() {
+  public componentDidMount() {
     this.props.setupControlPane("In this tree an icon defined in Presentation rules is rendered for each node.");
+  }
+
+  public render() {
     return (
       <>
         <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>

@@ -45,10 +45,13 @@ export default class LoadingList extends React.Component<{ setupControlPane: (in
     return <LoadingList setupControlPane={setupControlPane}></LoadingList>;
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Different styles of loading icons that can be used in iModel.js applications.");
+  }
+
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
-    this.props.setupControlPane("Different styles of loading icons that can be used in iModel.js applications.");
     return (
       <>
         <ComponentContainer data={LoadingList.getLoadingData()}></ComponentContainer>

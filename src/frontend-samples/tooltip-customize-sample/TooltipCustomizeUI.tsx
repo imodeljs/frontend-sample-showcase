@@ -112,9 +112,12 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string, se
     );
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.", this.getControls());
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} />

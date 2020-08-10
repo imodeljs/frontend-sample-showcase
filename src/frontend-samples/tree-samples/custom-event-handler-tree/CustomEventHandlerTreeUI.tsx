@@ -8,8 +8,11 @@ import { CustomEventHandlerTree } from "./CustomEventHandlerTreeApp";
 
 export class CustomEventHandlerTreeUI extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> {
 
-  public render() {
+  public componentDidMount() {
     this.props.setupControlPane("This tree demonstrates the interaction between tree node selection and checkbox selection. Selecting a tree node checks the corresponding checkbox, and deselects all other checkboxes.");
+  }
+
+  public render() {
     return (
       <>
         <div className="tree sample-tree">

@@ -136,9 +136,12 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     );
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Use the options below to control the view clip.", this.getControls());
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Use the options below to control the view clip.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
