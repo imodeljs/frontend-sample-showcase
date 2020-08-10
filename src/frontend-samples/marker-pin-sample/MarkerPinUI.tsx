@@ -25,6 +25,9 @@ interface MarkerPinsUIState {
   imodel?: IModelConnection;
   showDecorator: boolean;
   manualPin: ManualPinSelection;
+  points: Point3d[];
+  range: Range2d;
+  height: number;
 }
 
 export default class MarkerPinsUI extends React.Component<{
@@ -37,6 +40,9 @@ export default class MarkerPinsUI extends React.Component<{
     this.state = {
       showDecorator: true,
       manualPin: MarkerPinsUI.getManualPinSelections()[0],
+      points: [],
+      range: Range2d.createNull(),
+      height: 0,
     };
   }
 
@@ -46,12 +52,12 @@ export default class MarkerPinsUI extends React.Component<{
   private _onPointsChanged = async (points: Point3d[]): Promise<void> => {
 
     for (const point of points)
-      point.z = MarkerPinApp.height!;
+      point.z = this.state.height;
 
-    if (!MarkerPinApp.decoratorIsSetup())
-      return MarkerPinApp.setupDecorator(points);
-    else
-      MarkerPinApp.setMarkerPoints(points);
+    this.setState({ points }, () => {
+      if (MarkerPinApp.decoratorIsSetup())
+        MarkerPinApp.setMarkerPoints(points);
+    });
   }
 
   /** Called when the user changes the showMarkers toggle. */
@@ -114,13 +120,18 @@ export default class MarkerPinsUI extends React.Component<{
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
 
       // Grab range of the contents of the view. We'll use this to position the random markers.
-      const range = vp.view.computeFitRange();
-      MarkerPinApp.range = Range2d.createFrom(range);
+      const range3d = vp.view.computeFitRange();
+      const range = Range2d.createFrom(range3d);
 
       // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
-      MarkerPinApp.height = range.zHigh;
+      const height = range3d.zHigh;
 
-      this.setState({ imodel });
+      this.setState({ imodel, range, height }, () => {
+        if (this.state.showDecorator) {
+          MarkerPinApp.setupDecorator(this.state.points);
+          MarkerPinApp.enableDecorations();
+        }
+      });
     });
   }
 
@@ -138,7 +149,7 @@ export default class MarkerPinsUI extends React.Component<{
           <span>Auto-generate locations</span>
         </div>
         <div className="sample-options-2col">
-          <PointSelector onPointsChanged={this._onPointsChanged} range={MarkerPinApp.range} />
+          <PointSelector onPointsChanged={this._onPointsChanged} range={this.state.range} />
         </div>
         <hr></hr>
         <div className="sample-heading">
