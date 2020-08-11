@@ -33,6 +33,6 @@ export default class SmallConvexHull implements SampleApp {
     const loop = Loop.create(hullGeometry);
     loop.tryTranslateInPlace(0, 400, 0);
     Canvas.drawGeometry(loop, false);
-    Canvas.drawText("test", 200, 200);
+    Canvas.drawText("test", 200, 200, 60);
   }
 }

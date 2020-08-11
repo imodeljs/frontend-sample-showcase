@@ -124,11 +124,19 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
     }
   }
 
-  public static drawText(text: string, x: number, y: number) {
+  public static drawText(text: string, x: number, y: number, size?: number, font?: string) {
+    if (!font) {
+      font = "Arial";
+    }
+    if (!size) {
+      size = 30;
+    }
     const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
     const context = canvas.getContext("2d");
     if (context) {
       context.transform(1, 0, 0, -1, 0, canvas.height);
+      context.font = size + "px " + font;
+
       context.fillText(text, x, canvas.height - y);
       context.transform(1, 0, 0, -1, 0, canvas.height);
     }
