@@ -75,7 +75,10 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
           onTranspiled={this.props.onTranspiled}
           onDiagnostics={this._onDiagnostics}>
           <TabNavigationAction onClick={this.props.onCloseClick}>
-            <div className="codicon codicon-close" title="Close"></div>
+            <svg className="minimize-button">
+              <use href="icons.svg#minimize"></use>
+              <title>Minimize</title>
+            </svg>
           </TabNavigationAction>
         </MonacoEditor>
         <div className="sample-editor-pane">

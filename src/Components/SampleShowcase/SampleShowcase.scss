@@ -28,19 +28,33 @@
   >.sample-code-button {
     position: absolute;
     left: 1em;
-    top: 1em;
+    bottom: 1em;
     z-index: 1;
+    box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
   }
 }
 
 .control-pane-button {
   margin-right: 5px;
   margin-left: 5px;
+  box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
 }
 
 .gallery-button {
   margin-right: 5px;
   margin-left: 5px;
+  box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
+}
+
+.minimize-button {
+  cursor: pointer;
+  height: 16px;
+  width: 16px;
+  fill: var(--buic-foreground-body);
+  padding: 10px 16px 10px 16px;
+}
+.minimize-button:hover {
+  color: white;
 }
 
 .collapsed-button-container {

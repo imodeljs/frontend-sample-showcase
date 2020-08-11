@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import "./ControlPane.scss";
 
 export class ControlPane extends React.Component<{ instructions: string, onCollapse: () => void, controls?: React.ReactNode, iModelSelector?: React.ReactNode, className?: string }> {
   public render() {
@@ -19,13 +20,15 @@ export class ControlPane extends React.Component<{ instructions: string, onColla
             <div className="sample-instructions">
               <span>{this.props.instructions}</span>
             </div>
-            <i className="icon icon-visibility-hide-2 control-pane-toggle" onClick={this.props.onCollapse}></i>
+            <svg className="control-pane-close-button minimize-button" onClick={this.props.onCollapse}>
+              <use href="icons.svg#minimize"></use>
+              <title>Minimize</title>
+            </svg>
           </div>
           {this.props.iModelSelector ? this.props.iModelSelector : undefined}
           {this.props.controls ? <hr></hr> : undefined}
           {this.props.controls ? this.props.controls : undefined}
         </div>
-
       </>
     );
   }
