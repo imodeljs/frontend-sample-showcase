@@ -14,5 +14,6 @@ export function getSmallConvexHullSpec(): SampleSpec {
       { name: "SmallConvexHull.tsx", import: import("!!raw-loader!./SmallConvexHull"), entry: true },
     ],
     setup: SmallConvexHull.setup,
+    teardown: SmallConvexHull.teardown,
   });
 }

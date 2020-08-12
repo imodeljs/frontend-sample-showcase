@@ -12,10 +12,11 @@ import { ViewSetup } from "api/viewSetup";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator2d } from "./GeometryDecorator";
 import { timeStamp } from "console";
+import { forEach } from "test/utils/webpack.config";
 
 export class Canvas extends React.Component<{ drawingCallback: (context: CanvasRenderingContext2D) => void }, { imodel: IModelConnection, viewState: ViewState }> {
 
-  private decorator2d = new GeometryDecorator2d(this.props.drawingCallback);
+  public static decorator2d: GeometryDecorator2d;
 
   // create a new blank connection centered on Exton PA
   private getBlankConnection() {
@@ -50,32 +51,10 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
     );
   }
 
-  public resize() {
-    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
-    const sampleContainer = document.getElementsByClassName("sample-content")[0];
-    // Canvas will get distorted if width or height is applied by CSS, so we apply the sizing effects here
-    if (canvas && sampleContainer) {
-      canvas.width = sampleContainer.clientWidth;
-      canvas.height = sampleContainer.clientHeight;
-      //if (this.state && this.state.pixelHeight && this.state.pixelWidth && this.state.pixelHeight !== sampleContainer.clientHeight && this.state.pixelWidth !== sampleContainer.clientWidth)
-      //  this.setState({ pixelHeight: sampleContainer.clientHeight, pixelWidth: sampleContainer.clientWidth });
-      const context = canvas.getContext("2d");
-      if (context)
-        context.transform(1, 0, 0, -1, 0, canvas.height);
-    }
-  }
-
-  public componentDidUpdate() {
-    this.resize();
-  }
-
   public async componentDidMount() {
     const imodel = this.getBlankConnection();
     const viewState = await Canvas.getViewState(imodel);
     this.setState({ imodel, viewState });
-    IModelApp.viewManager.addDecorator(this.decorator2d);
-
-    this.resize();
   }
 
   public static drawLine(context: CanvasRenderingContext2D, segment: LineSegment3d) {
@@ -164,7 +143,12 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
     }
   }
 
-  public clearCanvas() {
-    IModelApp.viewManager.dropDecorator(this.decorator2d);
+  public static clearCanvas() {
+    const decorators = IModelApp.viewManager.decorators;
+    decorators.forEach((decorator) => {
+      if (decorator instanceof GeometryDecorator2d) {
+        IModelApp.viewManager.dropDecorator(decorator);
+      }
+    });
   }
 }

@@ -15,23 +15,9 @@ export class GeometryDecorator2d implements Decorator {
   }
 
   public decorate(context: DecorateContext): void {
-    /* This method is called for every rendering frame.  We will reuse our marker sets since the locations and images
-       for the markers don't typically change. */
     if (context.viewport.view.isSpatialView()) {
       context.addCanvasDecoration({ drawDecoration: this.geometryCallback });
     }
-  }
-  testDecorationHit?(id: string): boolean {
-    throw new Error("Method not implemented.");
-  }
-  getDecorationToolTip?(hit: HitDetail): Promise<string | HTMLElement> {
-    throw new Error("Method not implemented.");
-  }
-  onDecorationButtonEvent?(hit: HitDetail, ev: BeButtonEvent): Promise<import("@bentley/imodeljs-frontend").EventHandled> {
-    throw new Error("Method not implemented.");
-  }
-  getDecorationGeometry?(hit: HitDetail): GeometryStreamProps {
-    throw new Error("Method not implemented.");
   }
 
 }

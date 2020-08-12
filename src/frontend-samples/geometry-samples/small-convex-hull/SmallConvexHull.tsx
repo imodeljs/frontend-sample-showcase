@@ -6,10 +6,20 @@ import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { Canvas } from "../GeometryCommon/Canvas";
 import { LineString3d, Point3d, Point3dArray, Loop } from "@bentley/geometry-core";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator2d } from "../GeometryCommon/GeometryDecorator";
 export default class SmallConvexHull implements SampleApp {
 
   public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
+    Canvas.decorator2d = new GeometryDecorator2d(SmallConvexHull.drawingCallback);
+    IModelApp.viewManager.addDecorator(Canvas.decorator2d);
+
     return <Canvas drawingCallback={SmallConvexHull.drawingCallback}></Canvas>;
+  }
+
+  public static teardown() {
+    if (null != Canvas.decorator2d)
+      IModelApp.viewManager.dropDecorator(Canvas.decorator2d);
   }
 
   public static drawingCallback(context: CanvasRenderingContext2D) {
@@ -32,7 +42,7 @@ export default class SmallConvexHull implements SampleApp {
     Canvas.drawGeometry(context, hullGeometry, false);
     const loop = Loop.create(hullGeometry);
     loop.tryTranslateInPlace(0, 400, 0);
-    //Canvas.drawGeometry(context, loop, false);
+    Canvas.drawGeometry(context, loop, false);
     Canvas.drawText(context, "test", 200, 200, 60);
   }
 }

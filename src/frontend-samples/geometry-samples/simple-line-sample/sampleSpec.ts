@@ -14,5 +14,6 @@ export function getSimpleLineSpec(): SampleSpec {
       { name: "SimpleLine.tsx", import: import("!!raw-loader!./SimpleLine"), entry: true },
     ],
     setup: SimpleLine.setup,
+    teardown: SimpleLine.teardown,
   });
 }

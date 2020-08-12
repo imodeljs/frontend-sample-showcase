@@ -6,10 +6,20 @@ import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { Canvas } from "../GeometryCommon/Canvas";
 import { LineSegment3d, Point3d } from "@bentley/geometry-core";
+import { GeometryDecorator2d } from "../GeometryCommon/GeometryDecorator";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 export default class SimpleLine implements SampleApp {
 
   public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
+    Canvas.decorator2d = new GeometryDecorator2d(SimpleLine.drawingCallback)
+    IModelApp.viewManager.addDecorator(Canvas.decorator2d);
     return <Canvas drawingCallback={SimpleLine.drawingCallback}></Canvas>;
+  }
+
+  public static teardown() {
+    if (null != Canvas.decorator2d) {
+      IModelApp.viewManager.dropDecorator(Canvas.decorator2d);
+    }
   }
 
   public static drawingCallback(context: CanvasRenderingContext2D) {
