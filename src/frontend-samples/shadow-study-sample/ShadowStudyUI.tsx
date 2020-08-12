@@ -6,8 +6,8 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "api/viewSetup";
 import ShadowStudyApp from "./ShadowStudyApp";
 
 /** React state of the Sample component */
