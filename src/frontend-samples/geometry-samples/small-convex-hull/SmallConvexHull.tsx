@@ -12,7 +12,7 @@ export default class SmallConvexHull implements SampleApp {
     return <Canvas drawingCallback={SmallConvexHull.drawingCallback}></Canvas>;
   }
 
-  public static drawingCallback() {
+  public static drawingCallback(context: CanvasRenderingContext2D) {
     const points: Point3d[] = [];
     points.push(Point3d.create(100, 0, 0));
     points.push(Point3d.create(200, 100, 0));
@@ -27,12 +27,12 @@ export default class SmallConvexHull implements SampleApp {
     const hullPoints: Point3d[] = [];
     const interiorPoints: Point3d[] = [];
     Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);
-    Canvas.drawPoints(interiorPoints);
+    Canvas.drawPoints(context, interiorPoints);
     const hullGeometry = LineString3d.create(hullPoints)
-    Canvas.drawGeometry(hullGeometry, false);
+    Canvas.drawGeometry(context, hullGeometry, false);
     const loop = Loop.create(hullGeometry);
     loop.tryTranslateInPlace(0, 400, 0);
-    Canvas.drawGeometry(loop, false);
-    Canvas.drawText("test", 200, 200, 60);
+    //Canvas.drawGeometry(context, loop, false);
+    Canvas.drawText(context, "test", 200, 200, 60);
   }
 }

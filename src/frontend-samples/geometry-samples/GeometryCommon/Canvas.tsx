@@ -4,18 +4,48 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "./Canvas.scss";
-import { LineSegment3d, LineString3d, Point3d, GrowableXYZArray, GeometryQuery, Loop } from "@bentley/geometry-core";
-export class Canvas extends React.Component<{ drawingCallback: () => void }, { pixelHeight: number, pixelWidth: number }> {
+import { LineSegment3d, LineString3d, Point3d, GrowableXYZArray, GeometryQuery, Loop, Range3d } from "@bentley/geometry-core";
+import { Viewport, BlankConnection, IModelConnection, ViewState, StandardViewId, SpatialViewState, DisplayStyle3dState, IModelApp } from "@bentley/imodeljs-frontend";
+import { ViewportAndNavigation } from "Components/Viewport/ViewportAndNavigation";
+import { Cartographic, ColorDef } from "@bentley/imodeljs-common";
+import { ViewSetup } from "api/viewSetup";
+import { ViewportComponent } from "@bentley/ui-components";
+import { GeometryDecorator2d } from "./GeometryDecorator";
+import { timeStamp } from "console";
 
-  private static points: Point3d[] = [];
-  private static lines: LineSegment3d[] = [];
-  private static geometry: LineString3d[] = [];
+export class Canvas extends React.Component<{ drawingCallback: (context: CanvasRenderingContext2D) => void }, { imodel: IModelConnection, viewState: ViewState }> {
+
+  private decorator2d = new GeometryDecorator2d(this.props.drawingCallback);
+
+  // create a new blank connection centered on Exton PA
+  private getBlankConnection() {
+    const exton: BlankConnection = BlankConnection.create({
+      // call this connection "Exton PA"
+      name: "Exton PA",
+      // put the center of the connection near Exton, Pennsylvania (Bentley's HQ)
+      location: Cartographic.fromDegrees(-75.686694, 40.065757, 0),
+      // create the area-of-interest to be 2000 x 2000 x 200 meters, centered around 0,0.0
+      extents: new Range3d(-1000, -1000, -100, 1000, 1000, 100),
+    });
+    return exton;
+  }
+
+  /** This callback will be executed by ReloadableViewport to initialize the viewstate */
+  public static async getViewState(imodel: IModelConnection): Promise<ViewState> {
+    const ext = imodel.projectExtents;
+
+    // start with a new "blank" spatial view to show the extents of the project, from top view
+    const blankView = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
+    const style = blankView.displayStyle as DisplayStyle3dState;
+    style.backgroundColor = ColorDef.white;
+
+    return blankView;
+  }
 
   public render() {
-    this.resize();
     return (
       <>
-        <canvas className="geometry-canvas"></canvas>
+        {this.state && this.state.imodel && this.state.viewState ? <ViewportComponent imodel={this.state.imodel} viewState={this.state.viewState}></ViewportComponent> : undefined}
       </>
     );
   }
@@ -27,8 +57,8 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
     if (canvas && sampleContainer) {
       canvas.width = sampleContainer.clientWidth;
       canvas.height = sampleContainer.clientHeight;
-      if (this.state && this.state.pixelHeight && this.state.pixelWidth && this.state.pixelHeight !== sampleContainer.clientHeight && this.state.pixelWidth !== sampleContainer.clientWidth)
-        this.setState({ pixelHeight: sampleContainer.clientHeight, pixelWidth: sampleContainer.clientWidth });
+      //if (this.state && this.state.pixelHeight && this.state.pixelWidth && this.state.pixelHeight !== sampleContainer.clientHeight && this.state.pixelWidth !== sampleContainer.clientWidth)
+      //  this.setState({ pixelHeight: sampleContainer.clientHeight, pixelWidth: sampleContainer.clientWidth });
       const context = canvas.getContext("2d");
       if (context)
         context.transform(1, 0, 0, -1, 0, canvas.height);
@@ -37,17 +67,18 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
 
   public componentDidUpdate() {
     this.resize();
-    this.props.drawingCallback();
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
+    const imodel = this.getBlankConnection();
+    const viewState = await Canvas.getViewState(imodel);
+    this.setState({ imodel, viewState });
+    IModelApp.viewManager.addDecorator(this.decorator2d);
+
     this.resize();
-    this.props.drawingCallback();
   }
 
-  public static drawLine(segment: LineSegment3d) {
-    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
+  public static drawLine(context: CanvasRenderingContext2D, segment: LineSegment3d) {
     if (context) {
       context.fillStyle = "#FF0000";
       context.beginPath();
@@ -58,9 +89,7 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
     }
   }
 
-  public static drawPolygon(points: GrowableXYZArray | undefined, fill?: boolean) {
-    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
+  public static drawPolygon(context: CanvasRenderingContext2D, points: GrowableXYZArray | undefined, fill?: boolean) {
     if (context && points && points.length > 1) {
       context.fillStyle = "#FF0000";
       context.beginPath();
@@ -75,9 +104,7 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
     }
   }
 
-  public static drawCircle(radius: number, center: Point3d) {
-    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
+  public static drawCircle(context: CanvasRenderingContext2D, radius: number, center: Point3d) {
     if (context) {
       context.fillStyle = "#FF0000";
       context.beginPath();
@@ -87,13 +114,12 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
   }
 
   //  Draws a piece of geometry
-  public static drawGeometry(geometry: GeometryQuery, fill?: boolean) {
+  public static drawGeometry(context: CanvasRenderingContext2D, geometry: GeometryQuery, fill?: boolean) {
+
     if (geometry instanceof LineSegment3d) {
 
     } else if (geometry instanceof LineString3d) {
       const numSegments = geometry.quickLength();
-      const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
-      const context = canvas.getContext("2d");
       if (context) {
         context.beginPath();
         for (let i = 0; i < numSegments; i++) {
@@ -113,39 +139,32 @@ export class Canvas extends React.Component<{ drawingCallback: () => void }, { p
       }
     } else if (geometry instanceof Loop) {
       const strokePoints = geometry.getPackedStrokes();
-      Canvas.drawPolygon(strokePoints, fill);
+      Canvas.drawPolygon(context, strokePoints, fill);
     }
   }
 
-  public static drawPoints(points: Point3d[], pointSize?: number) {
+  public static drawPoints(context: CanvasRenderingContext2D, points: Point3d[], pointSize?: number) {
     for (const point in points) {
       if (point)
-        Canvas.drawCircle(2, points[point]);
+        Canvas.drawCircle(context, 2, points[point]);
     }
   }
 
-  public static drawText(text: string, x: number, y: number, size?: number, font?: string) {
+  public static drawText(context: CanvasRenderingContext2D, text: string, x: number, y: number, size?: number, font?: string) {
     if (!font) {
       font = "Arial";
     }
     if (!size) {
       size = 30;
     }
-    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
     if (context) {
-      context.transform(1, 0, 0, -1, 0, canvas.height);
       context.font = size + "px " + font;
 
-      context.fillText(text, x, canvas.height - y);
-      context.transform(1, 0, 0, -1, 0, canvas.height);
+      context.fillText(text, x, y);
     }
   }
 
-  public static clearCanvas() {
-    const canvas = document.getElementsByClassName("geometry-canvas")[0] as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
-    if (context)
-      context.clearRect(0, 0, canvas.width, canvas.height);
+  public clearCanvas() {
+    IModelApp.viewManager.dropDecorator(this.decorator2d);
   }
 }

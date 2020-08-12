@@ -12,17 +12,16 @@ export default class SimpleLine implements SampleApp {
     return <Canvas drawingCallback={SimpleLine.drawingCallback}></Canvas>;
   }
 
-  public static drawingCallback() {
+  public static drawingCallback(context: CanvasRenderingContext2D) {
     const circleRadius = 2;
     const pointA = Point3d.create(100, 50);
     const pointB = Point3d.create(260, 340);
     const myLine = LineSegment3d.create(pointA, pointB);
-
-    Canvas.drawLine(myLine);
+    Canvas.drawLine(context, myLine);
 
     for (const fractionAlongLine of [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]) {
       const pointAlongLine = myLine.fractionToPoint(fractionAlongLine);
-      Canvas.drawCircle(circleRadius, pointAlongLine);
+      Canvas.drawCircle(context, circleRadius, pointAlongLine);
     }
   }
 }
