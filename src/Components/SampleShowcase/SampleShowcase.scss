@@ -25,25 +25,42 @@
   background-color: var(--buic-background-control);
   overflow-y: auto;
 
-  >.sample-code-button {
+  >.show-code-button {
     position: absolute;
     left: 1em;
-    bottom: 1em;
+    top: 50%;
     z-index: 1;
     box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
   }
+  .show-code-button:hover span {
+    display: none;
+  }
+  .show-code-button:hover:before {
+    content:"Explore Code";
+  }
+  
 }
 
-.control-pane-button {
+.show-control-pane-button {
   margin-right: 5px;
   margin-left: 5px;
   box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
 }
 
-.gallery-button {
+.show-gallery-button {
   margin-right: 5px;
   margin-left: 5px;
   box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  z-index: 1;
+}
+.show-gallery-button:hover span {
+  display: none;
+}
+.show-gallery-button:hover:before {
+  content:"Show Sample Gallery";
 }
 
 .minimize-button {
