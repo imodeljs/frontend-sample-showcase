@@ -110,9 +110,12 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     return viewState;
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("The picker below shows a list of 2D models in this iModel.", this.getControls());
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("The picker below shows a list of 2D models in this iModel.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} getCustomViewState={this.getInitialView} />

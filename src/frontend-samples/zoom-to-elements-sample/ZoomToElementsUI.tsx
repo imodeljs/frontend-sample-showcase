@@ -154,9 +154,12 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
     );
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.", this.getControls());
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />

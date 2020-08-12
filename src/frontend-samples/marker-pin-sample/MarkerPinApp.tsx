@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { Point3d, Range2d } from "@bentley/geometry-core";
+import { Point3d } from "@bentley/geometry-core";
 import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
@@ -16,8 +16,6 @@ import SampleApp from "common/SampleApp";
 export default class MarkerPinApp implements SampleApp {
   private static _sampleNamespace: I18NNamespace;
   private static _markerDecorator?: MarkerPinDecorator;
-  public static range?: Range2d;
-  public static height?: number;
   public static _images: Map<string, HTMLImageElement>;
 
   public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
@@ -52,18 +50,16 @@ export default class MarkerPinApp implements SampleApp {
       return;
 
     this._markerDecorator = new MarkerPinDecorator();
-
     this.setMarkerPoints(points);
-    this.enableDecorations();
   }
 
   public static setMarkerPoints(points: Point3d[]) {
-    if (null != this._markerDecorator)
+    if (this._markerDecorator)
       this._markerDecorator.setPoints(points, this._images.get("Google_Maps_pin.svg")!);
   }
 
   public static addMarkerPoint(point: Point3d, pinImage: HTMLImageElement) {
-    if (null != this._markerDecorator)
+    if (this._markerDecorator)
       this._markerDecorator.addPoint(point, pinImage);
   }
 

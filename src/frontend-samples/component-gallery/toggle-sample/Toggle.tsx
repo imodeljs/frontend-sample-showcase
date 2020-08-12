@@ -33,10 +33,13 @@ export default class ToggleList extends React.Component<{ setupControlPane: (ins
     return <ToggleList setupControlPane={setupControlPane}></ToggleList>;
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Different styles of toggles that can be used in iModel.js applications.");
+  }
+
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
-    this.props.setupControlPane("Different styles of toggles that can be used in iModel.js applications.");
     return (
       <>
         <ComponentContainer data={ToggleList.getToggleData()}></ComponentContainer>

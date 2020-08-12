@@ -40,10 +40,13 @@ export default class CheckListBoxList extends React.Component<{ setupControlPane
     return <CheckListBoxList setupControlPane={setupControlPane}></CheckListBoxList>;
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Different styles of checklistboxes that can be used in iModel.js applications.");
+  }
+
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
-    this.props.setupControlPane("Different styles of checklistboxes that can be used in iModel.js applications.");
     return (
       <>
         <ComponentContainer data={CheckListBoxList.getCheckListBoxData()}></ComponentContainer>

@@ -32,9 +32,12 @@ export class ToolbarButtonSample extends React.Component<{ setupControlPane: (in
     AppUi.restoreDefaults();
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Press the Lightbulb button tool at the top of the screen.", undefined, "app-ui");
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Press the Lightbulb button tool at the top of the screen.", undefined, "app-ui");
     return (
       <>
         <SampleAppUiComponent></SampleAppUiComponent>

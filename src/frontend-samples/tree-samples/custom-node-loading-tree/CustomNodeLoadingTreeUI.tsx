@@ -15,8 +15,11 @@ export class CustomNodeLoadingTreeUI extends React.Component<{ iModelName: strin
     });
   }
 
-  public render() {
+  public componentDidMount() {
     this.props.setupControlPane("Data in this tree is loaded using two data providers: 'Presentation Hierarchy' nodes are loaded using Presentation rules and 'In Memory Hierarchy' nodes are loaded from memory.");
+  }
+
+  public render() {
     return (
       <>
         <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>

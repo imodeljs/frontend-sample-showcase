@@ -143,9 +143,12 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     );
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("Select one or more elements.  Click one of the Apply buttons.", this.getControls());
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Select one or more elements.  Click one of the Apply buttons.", this.getControls());
     return (
       <>
         <ReloadableViewport iModelName={this.props.iModelName} />

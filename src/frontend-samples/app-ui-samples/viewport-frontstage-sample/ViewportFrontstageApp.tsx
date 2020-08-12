@@ -23,9 +23,12 @@ export class ViewportFrontstageSample extends React.Component<{ setupControlPane
     AppUi.restoreDefaults();
   }
 
+  public componentDidMount() {
+    this.props.setupControlPane("A basic frontstage using the IModelViewportContentControl in UI Framework.", undefined, "app-ui");
+  }
+
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("A basic frontstage using the IModelViewportContentControl in UI Framework.", undefined, "app-ui");
     return (
       <>
         <SampleAppUiComponent></SampleAppUiComponent>

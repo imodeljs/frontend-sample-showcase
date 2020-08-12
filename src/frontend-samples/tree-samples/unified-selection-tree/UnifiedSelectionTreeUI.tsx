@@ -15,8 +15,11 @@ export class UnifiedSelectionTreeUI extends React.Component<{ iModelName: string
     });
   }
 
-  public render() {
+  public componentDidMount() {
     this.props.setupControlPane("This tree synchronizes node selections with the viewport. Selecting nodes will cause their corresponding visuals to be highlighted.");
+  }
+
+  public render() {
     return (
       <>
         <div className="dual-view-vertical">

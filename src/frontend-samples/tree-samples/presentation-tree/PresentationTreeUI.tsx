@@ -19,8 +19,11 @@ export class PresentationTreeUI extends React.Component<{ iModelName: string, se
     });
   }
 
-  public render() {
+  public componentDidMount() {
     this.props.setupControlPane("Data in this tree is loaded using Presentation rules.");
+  }
+
+  public render() {
     return (
       <>
         <ReloadableConnection iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableConnection>
