@@ -276,7 +276,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
             <SampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
             <div style={{ height: "100%" }}>
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
-                {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-code-button" onClick={this._onEditorButtonClick}><span>&gt;</span></Button>}
+                {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
                 <div className="collapsed-button-container">
                   {!this.state.showControlPane ? <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-control-pane-button" onClick={this.onControlPaneButtonClick}>Show Control Pane</Button> : undefined}
                   {this.state.sampleControlPane && this.state.showControlPane ? this.state.sampleControlPane : undefined}
@@ -285,7 +285,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
                   {this.state.sampleUI || null}
                 </ErrorBoundary>
               </div>
-              {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span>&lt;</span></Button>}
+              {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
             </div>
           </SplitScreen>
           <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryChanged} onCollapse={() => this.setState({ showGallery: false })} />

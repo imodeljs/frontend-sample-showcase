@@ -24,43 +24,42 @@
   width: 100%;
   background-color: var(--buic-background-control);
   overflow-y: auto;
+}
 
-  >.show-code-button {
-    position: absolute;
-    left: 1em;
-    top: 50%;
-    z-index: 1;
-    box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
-  }
-  .show-code-button:hover span {
-    display: none;
-  }
-  .show-code-button:hover:before {
-    content:"Explore Code";
-  }
-  
+.show-panel  {
+  box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+.show-panel:hover {
+  padding-left: 1em;
+  padding-right: 1em;
+}  
+.show-panel:hover span {
+  display: none;
+}
+
+.show-code-button {
+  left: 0px;
+}
+.show-code-button:hover:before {
+  content:"Explore Code";
+}
+
+.show-gallery-button {
+  right: 0px;
+}
+.show-gallery-button:hover:before {
+  content:"Show Sample Gallery";
 }
 
 .show-control-pane-button {
   margin-right: 5px;
   margin-left: 5px;
   box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
-}
-
-.show-gallery-button {
-  margin-right: 5px;
-  margin-left: 5px;
-  box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  z-index: 1;
-}
-.show-gallery-button:hover span {
-  display: none;
-}
-.show-gallery-button:hover:before {
-  content:"Show Sample Gallery";
 }
 
 .minimize-button {
