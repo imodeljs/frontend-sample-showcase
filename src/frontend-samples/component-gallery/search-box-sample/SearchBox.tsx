@@ -9,13 +9,14 @@ import "common/CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
 import { SearchBox } from "@bentley/ui-core";
 import SampleApp from "common/SampleApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
-export default class SearchBoxList extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> implements SampleApp {
+export default class SearchBoxList extends React.Component<{}> implements SampleApp {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getSearchBoxData(): ComponentExampleProps[] {
@@ -26,12 +27,8 @@ export default class SearchBoxList extends React.Component<{ setupControlPane: (
     ];
   }
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <SearchBoxList setupControlPane={setupControlPane}></SearchBoxList>;
-  }
-
-  public componentDidMount() {
-    this.props.setupControlPane("Different styles of search boxes that can be used in iModel.js applications.");
+  public static async setup(_iModelName: string) {
+    return <SearchBoxList></SearchBoxList>;
   }
 
   // Combines the control pane and the component container to create the final display
@@ -39,6 +36,7 @@ export default class SearchBoxList extends React.Component<{ setupControlPane: (
   public render() {
     return (
       <>
+        <ControlPane instructions="Different styles of search boxes that can be used in iModel.js applications."></ControlPane>
         <ComponentContainer data={SearchBoxList.getSearchBoxData()}></ComponentContainer>
       </>
     );

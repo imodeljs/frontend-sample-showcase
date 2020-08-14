@@ -15,8 +15,8 @@ import { CustomCheckboxesTreeUI } from "./CustomCheckboxesTreeUI";
 
 export default class CustomCheckboxesTreeApp extends React.Component<{}> implements SampleApp {
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <CustomCheckboxesTreeUI setupControlPane={setupControlPane}></CustomCheckboxesTreeUI>;
+  public static async setup(_iModelName: string) {
+    return <CustomCheckboxesTreeUI></CustomCheckboxesTreeUI>;
   }
 }
 /**
