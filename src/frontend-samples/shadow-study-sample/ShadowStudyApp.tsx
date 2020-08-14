@@ -11,8 +11,8 @@ import SampleApp from "../../common/SampleApp";
 
 export default class ShadowStudyApp implements SampleApp {
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <ShadowStudyUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <ShadowStudyUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   // Updates the sun time for the current model

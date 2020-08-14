@@ -33,8 +33,8 @@ export interface AttrValues {
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class ViewAttributesApp implements SampleApp {
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <ViewAttributesUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <ViewAttributesUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static getAttrValues(vp: Viewport): AttrValues {

@@ -19,8 +19,8 @@ import { CustomEventHandlerTreeUI } from "./CustomEventHandlerTreeUI";
 
 export default class CustomEventHandlerTreeApp extends React.Component<{}> implements SampleApp {
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <CustomEventHandlerTreeUI setupControlPane={setupControlPane}></CustomEventHandlerTreeUI>;
+  public static async setup(_iModelName: string) {
+    return <CustomEventHandlerTreeUI></CustomEventHandlerTreeUI>;
   }
 }
 /**

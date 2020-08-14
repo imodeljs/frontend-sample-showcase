@@ -19,10 +19,9 @@ import SampleApp from "common/SampleApp";
 import { CustomNodeLoadingTreeUI } from "./CustomNodeLoadingTreeUI";
 
 export default class CustomNodeLoadingTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <CustomNodeLoadingTreeUI iModelName={iModelName} setupControlPane={setupControlPane}></CustomNodeLoadingTreeUI>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <CustomNodeLoadingTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomNodeLoadingTreeUI>;
   }
-
 }
 
 export interface CustomNodeLoadingTreeProps {

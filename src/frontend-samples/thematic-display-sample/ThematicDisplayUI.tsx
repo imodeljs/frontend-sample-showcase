@@ -10,6 +10,7 @@ import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
 import ThematicDisplayApp from "./ThematicDisplayApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface SampleState {
@@ -22,7 +23,7 @@ interface SampleState {
 /** React props for the Sample component */
 interface ThematicDisplaySampleUIProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -202,14 +203,11 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     );
   }
 
-  public componentDidMount() {
-    this.props.setupControlPane("Use the controls below to change the thematic display attributes.", this.getControls());
-  }
-
   /** The sample's render method */
   public render() {
     return (
       <>
+        <ControlPane instructions="Use the controls below to change the thematic display attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );

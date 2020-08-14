@@ -12,8 +12,8 @@ import EmphasizeElementsUI from "./EmphasizeElementsUI";
 import SampleApp from "../../common/SampleApp";
 
 export default class EmphasizeElementsApp implements SampleApp {
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <EmphasizeElementsUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <EmphasizeElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {
