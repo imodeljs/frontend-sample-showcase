@@ -30,12 +30,8 @@
   display: flex;
   flex-direction: row;
 
-  .control-pane-toggle {
-    color: var(--buic-foreground-body);
-  }
-
-  .control-pane-toggle:hover {
-    color: white;
+  .control-pane-minimize {
+    padding: 0;
   }
 
   .sample-instructions {
