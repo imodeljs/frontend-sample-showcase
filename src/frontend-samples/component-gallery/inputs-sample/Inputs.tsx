@@ -10,13 +10,14 @@ import { ComponentContainer, ComponentExampleProps } from "common/CommonComponen
 import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 import SampleApp from "common/SampleApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
-export default class InputsList extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> implements SampleApp {
+export default class InputsList extends React.Component<{}> implements SampleApp {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getInputsData(): ComponentExampleProps[] {
@@ -46,12 +47,8 @@ export default class InputsList extends React.Component<{ setupControlPane: (ins
     ];
   }
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <InputsList setupControlPane={setupControlPane}></InputsList>;
-  }
-
-  public componentDidMount() {
-    this.props.setupControlPane("Different styles of inputs that can be used in iModel.js applications.");
+  public static async setup(_iModelName: string) {
+    return <InputsList></InputsList>;
   }
 
   // Combines the control pane and the component container to create the final display
@@ -59,6 +56,7 @@ export default class InputsList extends React.Component<{ setupControlPane: (ins
   public render() {
     return (
       <>
+        <ControlPane instructions="Different styles of inputs that can be used in iModel.js applications."></ControlPane>
         <ComponentContainer data={InputsList.getInputsData()}></ComponentContainer>
       </>
     );

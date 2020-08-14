@@ -9,13 +9,14 @@ import "common/CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
 import { ContextMenuItem, SplitButton } from "@bentley/ui-core";
 import SampleApp from "common/SampleApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
-export default class SplitButtonList extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> implements SampleApp {
+export default class SplitButtonList extends React.Component<{}> implements SampleApp {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   private static get splitButtonMenuItems(): React.ReactNode[] {
@@ -38,12 +39,8 @@ export default class SplitButtonList extends React.Component<{ setupControlPane:
     ];
   }
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <SplitButtonList setupControlPane={setupControlPane}></SplitButtonList>;
-  }
-
-  public componentDidMount() {
-    this.props.setupControlPane("Different styles of split buttons that can be used in iModel.js applications.");
+  public static async setup(_iModelName: string) {
+    return <SplitButtonList></SplitButtonList>;
   }
 
   // Combines the control pane and the component container to create the final display
@@ -51,6 +48,7 @@ export default class SplitButtonList extends React.Component<{ setupControlPane:
   public render() {
     return (
       <>
+        <ControlPane instructions="Different styles of split buttons that can be used in iModel.js applications."></ControlPane>
         <ComponentContainer data={SplitButtonList.getSplitButtonData()}></ComponentContainer>
       </>
     );

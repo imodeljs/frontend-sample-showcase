@@ -11,6 +11,7 @@ import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
 import { ViewSetup } from "api/viewSetup";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -20,7 +21,7 @@ interface ViewAttributesState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class ViewAttributesUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls: React.ReactNode) => void }, ViewAttributesState> {
+export default class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -192,14 +193,12 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     return viewState;
   }
 
-  public componentDidMount() {
-    this.props.setupControlPane("Use the controls below to change the view attributes.", this.getControls());
-  }
-
   /** The sample's render method */
   public render() {
+
     return (
       <>
+        <ControlPane instructions="Use the controls below to change the view attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
       </>
     );

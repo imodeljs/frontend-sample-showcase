@@ -11,11 +11,12 @@ import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ZoomToElementsApp from "./ZoomToElementsApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React props */
 interface ZoomToProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 /** React state */
@@ -154,14 +155,11 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
     );
   }
 
-  public componentDidMount() {
-    this.props.setupControlPane("Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.", this.getControls());
-  }
-
   /** The sample's render method */
   public render() {
     return (
       <>
+        <ControlPane instructions="Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );

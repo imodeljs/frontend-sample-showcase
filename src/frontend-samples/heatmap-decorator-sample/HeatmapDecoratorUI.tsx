@@ -13,11 +13,12 @@ import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import HeatmapDecoratorApp from "./HeatmapDecoratorApp";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ViewSetup } from "api/viewSetup";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface HeatmapDecoratorUIProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 interface HeatmapDecoratorUIState {
@@ -123,14 +124,11 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     );
   }
 
-  public componentDidMount() {
-    this.props.setupControlPane("Use the options below to control the heatmap visualization.", this.getControls());
-  }
-
   /** The sample's render method */
   public render() {
     return (
       <>
+        <ControlPane instructions="Use the options below to control the heatmap visualization." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={HeatmapDecoratorUI.getTopView} />
       </>
     );
