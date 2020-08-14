@@ -10,7 +10,7 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator2d } from "../GeometryCommon/GeometryDecorator";
 export default class SmallConvexHull implements SampleApp {
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
+  public static async setup(iModelName: string): Promise<React.ReactNode> {
     Canvas.decorator2d = new GeometryDecorator2d(SmallConvexHull.drawingCallback);
     IModelApp.viewManager.addDecorator(Canvas.decorator2d);
 
