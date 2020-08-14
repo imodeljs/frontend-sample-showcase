@@ -244,7 +244,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       const iModelList = this.getIModelList(sampleSpec);
       const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
       const controlPane = <ControlPane instructions={instructions} onCollapse={this.onControlPaneButtonClick} controls={controls ? controls : undefined} iModelSelector={iModelSelector} className={className ? className : undefined}></ControlPane>;
-      this.setState({ sampleControlPane: controlPane });
+      if (!this.state.sampleControlPane || instructions !== "Use the toolbar at the top-right to navigate the model.")
+        this.setState({ sampleControlPane: controlPane });
     }
   }
 

@@ -36,11 +36,26 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
     const ext = imodel.projectExtents;
 
     // start with a new "blank" spatial view to show the extents of the project, from top view
-    const blankView = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
-    const style = blankView.displayStyle as DisplayStyle3dState;
+    const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
+    const style = viewState.displayStyle as DisplayStyle3dState;
+
+    const viewFlags = style.viewFlags;
+    viewFlags.backgroundMap = true;
+    style.viewFlags = viewFlags; // call to accessor to get the json properties to reflect the changes to ViewFlags
+
     style.backgroundColor = ColorDef.white;
 
-    return blankView;
+    // turn on the ground and skybox in the environment
+    const env = style.environment;
+    env.ground.display = true;
+    env.sky.display = true;
+    style.environment = env; // call to accessor to get the json properties to reflect the changes
+
+    style.backgroundColor = ColorDef.white;
+
+
+
+    return viewState;
   }
 
   public render() {

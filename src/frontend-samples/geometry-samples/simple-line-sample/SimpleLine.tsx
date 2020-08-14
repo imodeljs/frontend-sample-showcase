@@ -13,6 +13,7 @@ export default class SimpleLine implements SampleApp {
   public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
     Canvas.decorator2d = new GeometryDecorator2d(SimpleLine.drawingCallback)
     IModelApp.viewManager.addDecorator(Canvas.decorator2d);
+    console.log(IModelApp.viewManager)
     return <Canvas drawingCallback={SimpleLine.drawingCallback}></Canvas>;
   }
 
