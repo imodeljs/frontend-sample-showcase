@@ -15,7 +15,6 @@ import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // cSpell:ignore imodels
 
@@ -25,7 +24,7 @@ export interface SampleSpec {
   image: string;
   files: InternalFile[];
   customModelList?: string[];
-  setup: (iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void) => Promise<React.ReactNode>;
+  setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 
@@ -34,10 +33,8 @@ interface ShowcaseState {
   activeSampleGroup: string;
   activeSampleName: string;
   sampleUI?: React.ReactNode;
-  sampleControlPane?: React.ReactNode;
   showEditor: boolean;
   showGallery: boolean;
-  showControlPane: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
@@ -57,7 +54,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       activeSampleName: names.sample,
       showEditor: true,
       showGallery: true,
-      showControlPane: true,
     };
 
   }
@@ -145,10 +141,11 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       if (newSampleSpec.name !== this.state.activeSampleName) {
         iModelName = iModelList[0];
       }
-      sampleUI = await newSampleSpec.setup(iModelName, this.setupControlPane.bind(this));
+      const iModelSelector = this.getIModelSelector(iModelName, iModelList);
+      sampleUI = await newSampleSpec.setup(iModelName, iModelSelector);
     }
 
-    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName, sampleControlPane: undefined }, () => {
+    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
       const params = new URLSearchParams();
       params.append("group", groupName);
       params.append("sample", sampleName);
@@ -172,10 +169,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     });
   }
 
-  private resetControlPaneClassName() {
-    const container = document.getElementsByClassName("collapsed-button-container")[0];
-    container.className = "collapsed-button-container";
-  }
   private _onGalleryChanged = (groupName: string, sampleName: string) => {
     if (this._prevSampleSetup) {
       if (window.confirm("Changes made to the code will not be saved!")) {
@@ -192,7 +185,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   private _onActiveSampleChange = (groupName: string, sampleName: string) => {
-    this.resetControlPaneClassName();
     const oldSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
@@ -222,7 +214,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
       try {
-        return sampleUi.setup(iModelName, this.setupControlPane.bind(this));
+        return sampleUi.setup(iModelName, iModelSelector);
       } catch (err) {
         return (
           <DisplayError error={err} />
@@ -236,21 +228,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
     group.samples.splice(sampleIndex, 1, activeSample);
     this._onActiveSampleChange(group.groupName, activeSample.name);
-  }
-
-  private setupControlPane(instructions: string, controls?: React.ReactNode, className?: string) {
-    const sampleSpec = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
-    if (sampleSpec) {
-      const iModelList = this.getIModelList(sampleSpec);
-      const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
-      const controlPane = <ControlPane instructions={instructions} onCollapse={this.onControlPaneButtonClick} controls={controls ? controls : undefined} iModelSelector={iModelSelector} className={className ? className : undefined}></ControlPane>;
-      this.setState({ sampleControlPane: controlPane });
-    }
-  }
-
-  public onControlPaneButtonClick = () => {
-    // Hide the control pane
-    this.setState((prevState) => ({ showControlPane: !prevState.showControlPane }));
   }
 
   private _onEditorSizeChange = (size: number) => {
@@ -277,11 +254,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
             <div style={{ height: "100%" }}>
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="sample-code-button" onClick={this._onEditorButtonClick}>Explore Code</Button>}
-                <div className="collapsed-button-container">
-                  {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="gallery-button" onClick={() => this.setState({ showGallery: true })}>Show Sample Gallery</Button>}
-                  {!this.state.showControlPane ? <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.onControlPaneButtonClick}>Show Control Pane</Button> : undefined}
-                  {this.state.sampleControlPane && this.state.showControlPane ? this.state.sampleControlPane : undefined}
-                </div>
+                {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="gallery-button" onClick={() => this.setState({ showGallery: true })}>Show Sample Gallery</Button>}
                 <ErrorBoundary>
                   {this.state.sampleUI || null}
                 </ErrorBoundary>

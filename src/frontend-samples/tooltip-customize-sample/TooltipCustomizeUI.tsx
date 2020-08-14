@@ -9,6 +9,7 @@ import { Toggle } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "api/showcasetooladmin";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { SampleToolAdmin } from "./TooltipCustomizeApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 export enum ElemProperty {
   Origin = "Origin",
@@ -26,7 +27,7 @@ export interface TooltipCustomizeSettings {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class TooltipCustomizeUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void; }, TooltipCustomizeSettings> {
+export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
 
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
@@ -112,14 +113,11 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string, se
     );
   }
 
-  public componentDidMount() {
-    this.props.setupControlPane("Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.", this.getControls());
-  }
-
   /** The sample's render method */
   public render() {
     return (
       <>
+        <ControlPane instructions="Hover the mouse pointer over an element to see the tooltip.  Use these options to control it." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} />
       </>
     );

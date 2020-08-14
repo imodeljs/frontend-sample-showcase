@@ -15,8 +15,8 @@ import SampleApp from "common/SampleApp";
 export default class HeatmapDecoratorApp implements SampleApp {
   public static decorator?: HeatmapDecorator;
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
-    return <HeatmapDecoratorUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
+    return <HeatmapDecoratorUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {

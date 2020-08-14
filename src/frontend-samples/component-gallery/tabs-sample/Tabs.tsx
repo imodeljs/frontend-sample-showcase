@@ -9,13 +9,14 @@ import "common/CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
 import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core";
 import SampleApp from "common/SampleApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
-export default class TabsList extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> implements SampleApp {
+export default class TabsList extends React.Component<{}> implements SampleApp {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getTabsData(): ComponentExampleProps[] {
@@ -27,12 +28,8 @@ export default class TabsList extends React.Component<{ setupControlPane: (instr
     ];
   }
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <TabsList setupControlPane={setupControlPane}></TabsList>;
-  }
-
-  public componentDidMount() {
-    this.props.setupControlPane("Different styles of tabs that can be used in iModel.js applications.");
+  public static async setup(_iModelName: string) {
+    return <TabsList></TabsList>;
   }
 
   // Combines the control pane and the component container to create the final display
@@ -40,6 +37,7 @@ export default class TabsList extends React.Component<{ setupControlPane: (instr
   public render() {
     return (
       <>
+        <ControlPane instructions="Different styles of tabs that can be used in iModel.js applications."></ControlPane>
         <ComponentContainer data={TabsList.getTabsData()}></ComponentContainer>
       </>
     );

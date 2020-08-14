@@ -3,15 +3,28 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
+import "./ControlPane.scss";
 
-export class ControlPane extends React.Component<{ instructions: string, onCollapse: () => void, controls?: React.ReactNode, iModelSelector?: React.ReactNode, className?: string }> {
+export class ControlPane extends React.Component<{ instructions: string, controls?: React.ReactNode, iModelSelector?: React.ReactNode }, { collapsed: boolean }> {
+
+  public componentDidMount() {
+    this.setState({ collapsed: false });
+  }
+
+  private switchCollapse() {
+    const collapsed = !this.state.collapsed;
+    this.setState({ collapsed });
+  }
+
   public render() {
-    // This allows for the addition of a class name to the collapsed button container.
-    // This enabled custom styling to be applied to the container as well as the control pane since they cannot be manually
-    // assigned class names within the sample
-    if (this.props.className)
-      document.getElementsByClassName("collapsed-button-container")[0].classList.add(this.props.className);
-
+    if (this.state && this.state.collapsed) {
+      return (
+        <>
+          <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.switchCollapse.bind(this)}>Show Control Pane</Button>
+        </>
+      );
+    }
     return (
       <>
         <div className="sample-ui">
@@ -19,13 +32,12 @@ export class ControlPane extends React.Component<{ instructions: string, onColla
             <div className="sample-instructions">
               <span>{this.props.instructions}</span>
             </div>
-            <i className="icon icon-visibility-hide-2 control-pane-toggle" onClick={this.props.onCollapse}></i>
+            <i className="icon icon-visibility-hide-2 control-pane-toggle" onClick={this.switchCollapse.bind(this)}></i>
           </div>
           {this.props.iModelSelector ? this.props.iModelSelector : undefined}
           {this.props.controls ? <hr></hr> : undefined}
           {this.props.controls ? this.props.controls : undefined}
         </div>
-
       </>
     );
   }

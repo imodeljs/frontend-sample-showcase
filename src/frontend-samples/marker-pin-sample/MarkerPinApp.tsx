@@ -18,7 +18,7 @@ export default class MarkerPinApp implements SampleApp {
   private static _markerDecorator?: MarkerPinDecorator;
   public static _images: Map<string, HTMLImageElement>;
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
 
     this._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
 
@@ -29,7 +29,7 @@ export default class MarkerPinApp implements SampleApp {
     MarkerPinApp._images.set("pin_celery.svg", await imageElementFromUrl(".\\pin_celery.svg"));
     MarkerPinApp._images.set("pin_poloblue.svg", await imageElementFromUrl(".\\pin_poloblue.svg"));
 
-    return <MarkerPinsUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+    return <MarkerPinsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {

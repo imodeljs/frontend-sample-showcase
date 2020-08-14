@@ -17,8 +17,8 @@ export interface PresentationTreeProps {
 }
 
 export default class PresentationTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <PresentationTreeUI iModelName={iModelName} setupControlPane={setupControlPane}></PresentationTreeUI>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <PresentationTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></PresentationTreeUI>;
   }
 }
 

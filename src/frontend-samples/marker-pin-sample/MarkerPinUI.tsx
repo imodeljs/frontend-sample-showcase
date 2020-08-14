@@ -15,6 +15,7 @@ import { PointSelector } from "common/PointSelector/PointSelector";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
 import MarkerPinApp from "./MarkerPinApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 interface ManualPinSelection {
   name: string;
@@ -31,7 +32,7 @@ interface MarkerPinsUIState {
 }
 
 export default class MarkerPinsUI extends React.Component<{
-  iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelName: string, iModelSelector: React.ReactNode;
 }, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
@@ -163,14 +164,11 @@ export default class MarkerPinsUI extends React.Component<{
     );
   }
 
-  public componentDidMount() {
-    this.props.setupControlPane("Use the options below to control the marker pins.  Click a marker to open a menu of options.", this.getControls());
-  }
-
   /** The sample's render method */
   public render() {
     return (
       <>
+        <ControlPane instructions="Use the options below to control the marker pins.  Click a marker to open a menu of options." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsUI.getTopView} />      </>
     );
   }
