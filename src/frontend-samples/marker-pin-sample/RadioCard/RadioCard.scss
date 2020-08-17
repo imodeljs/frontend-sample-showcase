@@ -2,6 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+@import "../../../../node_modules/@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css"; 
+
+
 .card-radio {
   margin: 10px;
 }
@@ -12,7 +15,7 @@
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
-  background-color: #fff;
+  background-color: var(--buic-background-control);
   background-clip: border-box;
   border: 1px solid rgba(0,0,0,.125);
   border-radius: .25rem;
@@ -52,22 +55,26 @@
   cursor: pointer;
 }
 
-.card-input-element:checked + .card {
+.card-input-element:checked ~ .card {
   border: 2px solid #008be1;
+  .marker-pin-selection-icon {
+    display: block;
+  }
+  
 }
 
-.card-input-element:checked + .card::after {
-  content: "\f2ba";
+.marker-pin-selection-icon {
   color: #008be1;
   position: absolute;
-  right: 6px;
-  top: 6px;
+  right: 4px;
+  top: 4px;
   font-family: "bentley-icons-generic-webfont";
   font-style: normal;
   font-size: 0.5rem;
   font-weight: 900;
   line-height: 1;
-  }
+  display: none;
+}
 
 .card-input-element.d-none {
   display: none!important;

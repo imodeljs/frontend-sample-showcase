@@ -1,0 +1,49 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+@import "~@bentley/ui-core/lib/ui-core/style/themecolors";
+
+.component-ui {
+  width: 20%;
+}
+
+.component-container {
+  padding-left: 15%;
+  padding-right: 15%;
+  color: white;
+
+  .component-example-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0px;
+
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      width: 50%;
+
+      .title {
+        font-size: 18px;
+      }
+
+      .description {
+        margin-top: 10px;
+        font-size: 12px;
+        color: $buic-text-color-muted;
+      }
+
+    }
+
+    .right-panel {
+      display: flex;
+      width: 50%;
+
+    }
+  }
+
+}

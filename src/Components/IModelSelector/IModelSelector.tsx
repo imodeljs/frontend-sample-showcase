@@ -4,13 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../common/samples-common.scss";
-
-export enum SampleIModels {
-  RetailBuilding = "Retail Building Sample",
-  BayTown = "Bay Town Process Plant",
-  House = "House Sample",
-}
+import "common/samples-common.scss";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {
@@ -19,9 +13,18 @@ interface IModelSelectorProps {
   onIModelChange: (iModelName: string) => void;
 }
 
+export enum SampleIModels {
+  MetroStation = "Metrostation Sample",
+  RetailBuilding = "Retail Building Sample",
+  BayTown = "Bay Town Process Plant",
+  House = "House Sample",
+  Stadium = "Stadium",
+}
+
 export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
 
-  public static defaultModelList = [SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House];
+  public static defaultIModelList = [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium];
+  public static defaultIModel = SampleIModels.MetroStation;
 
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.selectedOptions[0].value, undefined);
@@ -41,8 +44,9 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
 
     return (
       <div>
-        <span>Pick model to view it: </span>
-        <select value={value} onChange={this._handleSelection}>
+        <hr></hr>
+        <span>Select iModel: </span>
+        <select className="imodel-list" value={value} onChange={this._handleSelection}>
           {entries};
         </select>
       </div>

@@ -4,37 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleGallery, SampleGalleryEntry } from "../SampleGallery/SampleGallery";
+import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
-import "../../common/samples-common.scss";
-import { getViewportOnlySpec } from "../../frontend-samples/viewport-only-sample";
-import { getEmphasizeElementsSpec } from "../../frontend-samples/emphasize-elements-sample";
-import { getHeatmapDecoratorSpec } from "../../frontend-samples/heatmap-decorator-sample";
-import { getMarkerPinSpec } from "../../frontend-samples/marker-pin-sample";
-import { getTooltipCustomizeSpec } from "../../frontend-samples/tooltip-customize-sample";
-import { getShadowStudySpec } from "../../frontend-samples/shadow-study-sample";
-import { getViewerOnly2dSpec } from "../../frontend-samples/viewer-only-2d-sample";
-import { getThematicDisplaySpec } from "../../frontend-samples/thematic-display-sample";
-
-import { getButtonSpec } from "../../frontend-samples/component-gallery/button-sample";
-import { getBadgeSpec } from "../../frontend-samples/component-gallery/badge-sample";
-import { getCheckListBoxSpec } from "../../frontend-samples/component-gallery/checklistbox-sample";
-import { getExpandableListSpec } from "../../frontend-samples/component-gallery/expandable-list-sample";
-import { getInputsSpec } from "../../frontend-samples/component-gallery/inputs-sample";
-import { getLoadingSpec } from "../../frontend-samples/component-gallery/loading-sample";
-import { getSearchBoxSpec } from "../../frontend-samples/component-gallery/search-box-sample";
-import { getSliderSpec } from "../../frontend-samples/component-gallery/slider-sample";
-import { getSplitButtonSpec } from "../../frontend-samples/component-gallery/split-button-sample";
-import { getTabsSpec } from "../../frontend-samples/component-gallery/tabs-sample";
-import { getTextSpec } from "../../frontend-samples/component-gallery/text-sample";
-import { getTilesSpec } from "../../frontend-samples/component-gallery/tiles-sample";
-import { getToggleSpec } from "../../frontend-samples/component-gallery/toggle-sample";
-
-import { getViewAttributesSpec } from "../../frontend-samples/view-attributes-sample";
-import { getViewClipSpec } from "../../frontend-samples/view-clip-sample";
-import { getZoomToElementsSpec } from "../../frontend-samples/zoom-to-elements-sample";
+import "common/samples-common.scss";
+import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
-import { getPropertyFormattingSpec } from "../../frontend-samples/property-formatting-sample";
+import SampleEditor from "../SampleEditor/SampleEditor";
+import { InternalFile, SplitScreen } from "@bentley/monaco-editor";
+import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
+import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
+import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
+import SampleApp from "common/SampleApp";
 
 // cSpell:ignore imodels
 
@@ -42,79 +22,113 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
+  files: InternalFile[];
   customModelList?: string[];
-  setup?: (iModelName: string) => Promise<React.ReactNode>;
+  setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 
 interface ShowcaseState {
   iModelName: string;
-  activeSampleSpec?: SampleSpec;
+  activeSampleGroup: string;
+  activeSampleName: string;
   sampleUI?: React.ReactNode;
+  showEditor: boolean;
+  showGallery: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
-  private _samples: SampleSpec[] = [];
+  private _samples = sampleManifest;
+  private _prevSampleSetup?: any;
+  private _prevSampleTeardown?: any;
 
   constructor(props?: any, context?: any) {
     super(props, context);
-    this._samples.push(getViewportOnlySpec());
-    this._samples.push(getPropertyFormattingSpec());
-    this._samples.push(getEmphasizeElementsSpec());
-    this._samples.push(getHeatmapDecoratorSpec());
-    this._samples.push(getMarkerPinSpec());
-    this._samples.push(getShadowStudySpec());
-    this._samples.push(getTooltipCustomizeSpec());
-    this._samples.push(getViewAttributesSpec());
-    this._samples.push(getViewClipSpec());
-    this._samples.push(getViewerOnly2dSpec());
-    this._samples.push(getZoomToElementsSpec());
-    this._samples.push(getThematicDisplaySpec());
 
-    // UI Samples
-    this._samples.push(getBadgeSpec());
-    this._samples.push(getButtonSpec());
-    this._samples.push(getCheckListBoxSpec());
-    this._samples.push(getExpandableListSpec());
-    this._samples.push(getInputsSpec());
-    this._samples.push(getLoadingSpec());
-    this._samples.push(getSearchBoxSpec());
-    this._samples.push(getSliderSpec());
-    this._samples.push(getSplitButtonSpec());
-    this._samples.push(getTabsSpec());
-    this._samples.push(getTextSpec());
-    this._samples.push(getTilesSpec());
-    this._samples.push(getToggleSpec());
+    const names = this.getNamesFromURLParams();
 
     this.state = {
-      iModelName: SampleIModels.RetailBuilding,
+      iModelName: names.imodel,
+      activeSampleGroup: names.group,
+      activeSampleName: names.sample,
+      showEditor: true,
+      showGallery: true,
     };
+
+  }
+
+  private getNamesFromURLParams(): { group: string, sample: string, imodel: string } {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlGroupName = urlParams.get("group");
+    const urlSampleName = urlParams.get("sample");
+    const iModelName = urlParams.get("imodel");
+
+    let namesAreValid = false;
+    let group = "";
+    let sample = "";
+
+    if (urlGroupName && urlSampleName) {
+      namesAreValid = undefined !== this.getSampleByName(urlGroupName, urlSampleName);
+      group = urlGroupName;
+      sample = urlSampleName;
+    }
+
+    let imodel = "";
+
+    if (iModelName) {
+      const sampleImodels: string[] = Object.values(SampleIModels);
+      if (sampleImodels.includes(iModelName)) {
+        imodel = iModelName;
+      } else {
+        imodel = IModelSelector.defaultIModel;
+      }
+    } else {
+      imodel = IModelSelector.defaultIModel;
+    }
+
+    if (!namesAreValid) {
+      group = this._samples[0].groupName;
+      sample = this._samples[0].samples[0].name;
+    }
+
+    return { group, sample, imodel };
   }
 
   public componentDidMount() {
-    const defaultSampleSpec = getViewportOnlySpec();
     // tslint:disable-next-line no-floating-promises
-    this.setupNewSample(defaultSampleSpec.name);
+    this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
+
+    document.documentElement.setAttribute("data-theme", "dark");
   }
 
-  private getSampleByName(name?: string): SampleSpec | undefined {
-    if (!name)
+  private getSampleByName(groupName: string, sampleName: string): SampleSpec | undefined {
+    const group = sampleManifest.find((v) => v.groupName === groupName);
+
+    if (!group)
       return undefined;
 
-    return this._samples.find((entry: SampleSpec) => entry.name === name)!;
+    return group.samples.find((v) => v.name === sampleName)!;
   }
 
   private getIModelList(sampleSpec: SampleSpec): string[] {
     const customModelList = sampleSpec.customModelList;
-    return customModelList ? customModelList : IModelSelector.defaultModelList;
+    return customModelList ? customModelList : IModelSelector.defaultIModelList;
   }
 
-  private async setupNewSample(name: string) {
-    const newSampleSpec = this.getSampleByName(name);
+  private getIModelSelector(iModelName: string, iModelList: string[]): React.ReactNode {
+    if (iModelList && 1 < iModelList.length)
+      return (
+        <div className="model-selector">
+          <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this._onIModelChange} />
+        </div>);
+  }
 
+  private async setupNewSample(groupName: string, sampleName: string) {
+
+    const newSampleSpec = this.getSampleByName(groupName, sampleName);
     if (undefined === newSampleSpec) {
-      this.setState({ activeSampleSpec: newSampleSpec });
+      this.setState({ activeSampleGroup: "", activeSampleName: "" });
       return;
     }
 
@@ -122,53 +136,134 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     let iModelName = this.state.iModelName;
 
     if (newSampleSpec && newSampleSpec.setup) {
-      if (newSampleSpec !== this.state.activeSampleSpec) {
-        iModelName = this.getIModelList(newSampleSpec)[0];
-      }
+      const iModelList = this.getIModelList(newSampleSpec);
 
-      sampleUI = await newSampleSpec.setup(iModelName);
+      if (newSampleSpec.name !== this.state.activeSampleName) {
+        iModelName = iModelList[0];
+      }
+      const iModelSelector = this.getIModelSelector(iModelName, iModelList);
+      sampleUI = await newSampleSpec.setup(iModelName, iModelSelector);
     }
 
-    this.setState({ activeSampleSpec: newSampleSpec, sampleUI, iModelName });
+    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
+      const params = new URLSearchParams();
+      params.append("group", groupName);
+      params.append("sample", sampleName);
+
+      if (iModelName) {
+        params.append("imodel", iModelName);
+      }
+
+      // Detect if editor was enabled in URL params as a semi-backdoor, this
+      // bypasses the ld feature flag
+      const editorEnabled = new URLSearchParams(window.location.search).get("editor");
+      if (editorEnabled) params.append("editor", editorEnabled);
+
+      window.history.replaceState(null, "", "?" + params.toString());
+
+      // Send to parent if within an iframe.
+      if (window.self !== window.top) {
+        window.parent.postMessage("?" + params.toString(), "*");
+      }
+
+    });
   }
 
-  private _onActiveSampleChange = (name: string) => {
-    const oldSample = this.state.activeSampleSpec;
+  private _onGalleryChanged = (groupName: string, sampleName: string) => {
+    if (this._prevSampleSetup) {
+      if (window.confirm("Changes made to the code will not be saved!")) {
+        const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
+        activeSample.setup = this._prevSampleSetup;
+        activeSample.teardown = this._prevSampleTeardown;
+        this._prevSampleSetup = undefined;
+        this._prevSampleTeardown = undefined;
+        this._onActiveSampleChange(groupName, sampleName);
+      }
+    } else {
+      this._onActiveSampleChange(groupName, sampleName);
+    }
+  }
+
+  private _onActiveSampleChange = (groupName: string, sampleName: string) => {
+    const oldSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
     // tslint:disable-next-line no-floating-promises
-    this.setupNewSample(name);
-  }
-
-  private getGalleryList(): SampleGalleryEntry[] {
-    return this._samples.map((val: SampleSpec) => ({ image: val.image, label: val.label, value: val.name }));
+    this.setupNewSample(groupName, sampleName);
   }
 
   private _onIModelChange = (iModelName: string) => {
-    this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleSpec!.name));
+    this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName));
+  }
+
+  private _onEditorButtonClick = () => {
+    this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
+  }
+
+  private _onSampleTranspiled = async (blob: string) => {
+    const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
+    const sampleUi = (await import( /* webpackIgnore: true */ blob)).default as typeof SampleApp;
+
+    if (!this._prevSampleSetup) {
+      this._prevSampleSetup = activeSample.setup;
+    }
+    if (!this._prevSampleTeardown) {
+      this._prevSampleTeardown = activeSample.teardown;
+    }
+
+    activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
+      try {
+        return sampleUi.setup(iModelName, iModelSelector);
+      } catch (err) {
+        return (
+          <DisplayError error={err} />
+        );
+      }
+    };
+
+    activeSample.teardown = sampleUi.teardown || this._prevSampleTeardown;
+
+    const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
+    const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
+    group.samples.splice(sampleIndex, 1, activeSample);
+    this._onActiveSampleChange(group.groupName, activeSample.name);
+  }
+
+  private _onEditorSizeChange = (size: number) => {
+    if (size <= 200 && this.state.showEditor) {
+      this.setState({ showEditor: false });
+    }
+  }
+
+  private _onSampleGallerySizeChange = (size: number) => {
+    if (size <= 100 && this.state.showGallery) {
+      this.setState({ showGallery: false });
+    }
   }
 
   public render() {
-    const activeSampleName = this.state.activeSampleSpec ? this.state.activeSampleSpec.name : "";
-    const modelList = this.state.activeSampleSpec ? this.getIModelList(this.state.activeSampleSpec) : null;
+    const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+    const files = activeSample ? activeSample.files : undefined;
 
     return (
-      <>
-        <div className="showcase">
-          <div id="sample-container" className="sample-content">
-            {this.state.sampleUI}
-          </div>
-          <div className="sample-gallery">
-            <SampleGallery entries={this.getGalleryList()} selected={activeSampleName} onChange={this._onActiveSampleChange} />
-          </div>
-          {modelList && 1 < modelList.length &&
-            <div className="model-selector">
-              <IModelSelector iModelNames={modelList} iModelName={this.state.iModelName} onIModelChange={this._onIModelChange} />
+      <div className="showcase">
+        <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
+          <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
+            <SampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
+            <div style={{ height: "100%" }}>
+              <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
+                {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+                <ErrorBoundary>
+                  {this.state.sampleUI || null}
+                </ErrorBoundary>
+              </div>
+              {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
             </div>
-          }
-        </div>
-      </>
+          </SplitScreen>
+          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryChanged} onCollapse={() => this.setState({ showGallery: false })} />
+        </SplitScreen>
+      </div>
     );
   }
 }

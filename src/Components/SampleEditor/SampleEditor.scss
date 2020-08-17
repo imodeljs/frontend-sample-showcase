@@ -1,0 +1,89 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+.sample-editor {
+  font-family: "Segoe WPC", "Segoe UI", sans-serif !important;
+  font-size: 13px;
+
+  .sample-editor-pane {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+
+    .sample-editor-pane-content {
+      color: #CCCCCC;
+      padding: 8px;
+    }
+
+  }
+
+  #sample-editor-pane-nav {
+    display: flex;
+    background-color: #252526;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-width: thin;
+    height: 35px;
+    flex-shrink: 0;
+
+    &::-webkit-scrollbar {
+      height: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2)
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    &:hover {
+      overflow-x: auto;
+    }
+
+    >.sample-editor-pane-nav-item {
+      padding-right: 10px;
+      padding-left: 10px;
+      line-height: 35px;
+      color: #969696;
+      display: inline-block;
+      cursor: pointer;
+
+      &:hover {
+        color: #CCCCCC;
+      }
+
+      &.active {
+        background-color: #1E1E1E;
+        color: #ffffff;
+      }
+
+      .notification-container {
+        margin-left: 8px;
+        line-height: 11px;
+        display: inline-block;
+
+        .notification {
+          background-color: rgb(77, 77, 77);
+          ;
+          padding: 3px 5px;
+          border-radius: 11px;
+          font-size: 11px;
+          min-width: 18px;
+          min-height: 18px;
+          line-height: 11px;
+          font-weight: 400;
+          text-align: center;
+          display: inline-block;
+          box-sizing: border-box;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+}

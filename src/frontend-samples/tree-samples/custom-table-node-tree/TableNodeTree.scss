@@ -1,0 +1,56 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+.custom-tree {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  .core-tree {
+    height: 100%;
+    overflow-y: hidden;
+  }
+
+  .tree-header {
+    display: flex;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 3px;
+    
+    .col-2, .col-3 {
+      border-left: grey 1px solid;
+    }
+  }
+
+  .tree-wrapper {
+    height: 100%;
+    width: 100%;
+  }
+
+  .table-node {
+    display: flex;
+    
+    .node-offset {
+      display: flex;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex-wrap: nowrap;
+    }
+
+    .col-2, .col-3 {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .col-1 {
+    flex: 2 1 0
+  }
+  .col-2, .col-3 {
+    flex: 1 1 0
+  }
+}
