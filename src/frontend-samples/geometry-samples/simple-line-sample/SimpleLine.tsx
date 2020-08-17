@@ -10,29 +10,31 @@ import { GeometryDecorator2d } from "../GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 export default class SimpleLine implements SampleApp {
 
+  public static decorator2d: GeometryDecorator2d;
+
+
   public static async setup(iModelName: string): Promise<React.ReactNode> {
-    Canvas.decorator2d = new GeometryDecorator2d(SimpleLine.drawingCallback)
-    IModelApp.viewManager.addDecorator(Canvas.decorator2d);
-    console.log(IModelApp.viewManager)
-    return <Canvas drawingCallback={SimpleLine.drawingCallback}></Canvas>;
+    SimpleLine.decorator2d = new GeometryDecorator2d(SimpleLine.drawingCallback)
+    IModelApp.viewManager.addDecorator(SimpleLine.decorator2d);
+    return <Canvas></Canvas>;
   }
 
   public static teardown() {
-    if (null != Canvas.decorator2d) {
-      IModelApp.viewManager.dropDecorator(Canvas.decorator2d);
+    if (null != SimpleLine.decorator2d) {
+      IModelApp.viewManager.dropDecorator(SimpleLine.decorator2d);
     }
   }
 
-  public static drawingCallback(context: CanvasRenderingContext2D) {
+  public static drawingCallback() {
     const circleRadius = 2;
-    const pointA = Point3d.create(100, 50);
-    const pointB = Point3d.create(260, 340);
+    const pointA = Point3d.create(0, 0, 0);
+    const pointB = Point3d.create(300, 500, 100);
     const myLine = LineSegment3d.create(pointA, pointB);
-    Canvas.drawLine(context, myLine);
+    SimpleLine.decorator2d.addLine(myLine);
 
     for (const fractionAlongLine of [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]) {
       const pointAlongLine = myLine.fractionToPoint(fractionAlongLine);
-      Canvas.drawCircle(context, circleRadius, pointAlongLine);
+      SimpleLine.decorator2d.addPoint(pointAlongLine);
     }
   }
 }

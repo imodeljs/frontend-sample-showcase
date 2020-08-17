@@ -5,7 +5,7 @@
 import * as React from "react";
 import "./Canvas.scss";
 import { LineSegment3d, LineString3d, Point3d, GrowableXYZArray, GeometryQuery, Loop, Range3d } from "@bentley/geometry-core";
-import { Viewport, BlankConnection, IModelConnection, ViewState, StandardViewId, SpatialViewState, DisplayStyle3dState, IModelApp } from "@bentley/imodeljs-frontend";
+import { Viewport, BlankConnection, IModelConnection, ViewState, StandardViewId, SpatialViewState, DisplayStyle3dState, IModelApp, FitViewTool, SelectionTool, PanViewTool, RotateViewTool, ZoomViewTool } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "Components/Viewport/ViewportAndNavigation";
 import { Cartographic, ColorDef } from "@bentley/imodeljs-common";
 import { ViewSetup } from "api/viewSetup";
@@ -13,8 +13,10 @@ import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator2d } from "./GeometryDecorator";
 import { timeStamp } from "console";
 import { forEach } from "test/utils/webpack.config";
+import "../../../Components/Viewport/Toolbar.scss";
 
-export class Canvas extends React.Component<{ drawingCallback: (context: CanvasRenderingContext2D) => void }, { imodel: IModelConnection, viewState: ViewState }> {
+
+export class Canvas extends React.Component<{}, { imodel: IModelConnection, viewState: ViewState }> {
 
   public static decorator2d: GeometryDecorator2d;
 
@@ -37,30 +39,34 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
 
     // start with a new "blank" spatial view to show the extents of the project, from top view
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
+    viewState.setAllow3dManipulations(true);
+    viewState.setStandardRotation(StandardViewId.Top);
     const style = viewState.displayStyle as DisplayStyle3dState;
 
-    const viewFlags = style.viewFlags;
-    viewFlags.backgroundMap = true;
-    style.viewFlags = viewFlags; // call to accessor to get the json properties to reflect the changes to ViewFlags
-
     style.backgroundColor = ColorDef.white;
-
-    // turn on the ground and skybox in the environment
-    const env = style.environment;
-    env.ground.display = true;
-    env.sky.display = true;
-    style.environment = env; // call to accessor to get the json properties to reflect the changes
-
-    style.backgroundColor = ColorDef.white;
-
-
 
     return viewState;
   }
 
+  /** Toolbar containing simple navigation tools */
+  public toolbar = () => {
+    /* eslint-disable */
+    return (
+      <div className="toolbar">
+        <a href="#" title={SelectionTool.flyover} onClick={(e) => { e.preventDefault(); select(); }}><span className="icon icon-cursor"></span></a>
+        <a href="#" title={FitViewTool.flyover} onClick={(e) => { e.preventDefault(); fitView(); }}><span className="icon icon-fit-to-view"></span></a>
+        <a href="#" title={RotateViewTool.flyover} onClick={(e) => { e.preventDefault(); rotate(); }}><span className="icon icon-gyroscope"></span></a>
+        <a href="#" title={PanViewTool.flyover} onClick={(e) => { e.preventDefault(); pan(); }}><span className="icon icon-hand-2"></span></a>
+        <a href="#" title={ZoomViewTool.flyover} onClick={(e) => { e.preventDefault(); zoom(); }}><span className="icon icon-zoom"></span></a>
+      </div>
+    );
+    /* eslint-enable */
+  };
+
   public render() {
     return (
       <>
+        {this.toolbar()}
         {this.state && this.state.imodel && this.state.viewState ? <ViewportComponent imodel={this.state.imodel} viewState={this.state.viewState}></ViewportComponent> : undefined}
       </>
     );
@@ -70,17 +76,6 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
     const imodel = this.getBlankConnection();
     const viewState = await Canvas.getViewState(imodel);
     this.setState({ imodel, viewState });
-  }
-
-  public static drawLine(context: CanvasRenderingContext2D, segment: LineSegment3d) {
-    if (context) {
-      context.fillStyle = "#FF0000";
-      context.beginPath();
-      context.moveTo(segment.point0Ref.x, segment.point0Ref.y);
-      context.lineTo(segment.point1Ref.x, segment.point1Ref.y);
-      context.closePath();
-      context.stroke();
-    }
   }
 
   public static drawPolygon(context: CanvasRenderingContext2D, points: GrowableXYZArray | undefined, fill?: boolean) {
@@ -94,15 +89,6 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
       context.closePath();
       if (fill)
         context.fill();
-      context.stroke();
-    }
-  }
-
-  public static drawCircle(context: CanvasRenderingContext2D, radius: number, center: Point3d) {
-    if (context) {
-      context.fillStyle = "#FF0000";
-      context.beginPath();
-      context.arc(center.x, center.y, radius, 0, 2 * Math.PI, false);
       context.stroke();
     }
   }
@@ -137,13 +123,6 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
     }
   }
 
-  public static drawPoints(context: CanvasRenderingContext2D, points: Point3d[], pointSize?: number) {
-    for (const point in points) {
-      if (point)
-        Canvas.drawCircle(context, 2, points[point]);
-    }
-  }
-
   public static drawText(context: CanvasRenderingContext2D, text: string, x: number, y: number, size?: number, font?: string) {
     if (!font) {
       font = "Arial";
@@ -158,12 +137,24 @@ export class Canvas extends React.Component<{ drawingCallback: (context: CanvasR
     }
   }
 
-  public static clearCanvas() {
-    const decorators = IModelApp.viewManager.decorators;
-    decorators.forEach((decorator) => {
-      if (decorator instanceof GeometryDecorator2d) {
-        IModelApp.viewManager.dropDecorator(decorator);
-      }
-    });
-  }
 }
+
+const select = () => {
+  IModelApp.tools.run(SelectionTool.toolId);
+};
+
+const fitView = () => {
+  IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
+};
+
+const rotate = () => {
+  IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
+};
+
+const pan = () => {
+  IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
+};
+
+const zoom = () => {
+  IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
+};
