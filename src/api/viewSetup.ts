@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ColorDef, ContextRealityModelProps } from "@bentley/imodeljs-common";
-import { DrawingViewState, Environment, IModelConnection, SpatialViewState, ViewState, ViewState3d, findAvailableUnattachedRealityModels } from "@bentley/imodeljs-frontend";
+import { ColorDef } from "@bentley/imodeljs-common";
+import { DrawingViewState, Environment, IModelConnection, SpatialViewState, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Id64, Id64String } from "@bentley/bentleyjs-core";
 
 export class ViewSetup {
@@ -68,13 +68,6 @@ export class ViewSetup {
           nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
         },
       });
-    }
-
-    if (viewState.isSpatialView()) {
-      const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
-      for (const crmProp of availableModels) {
-        viewState.displayStyle.attachRealityModel(crmProp);
-      }
     }
 
     return viewState;
