@@ -3,22 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "./Canvas.scss";
-import { LineSegment3d, LineString3d, Point3d, GrowableXYZArray, GeometryQuery, Loop, Range3d } from "@bentley/geometry-core";
-import { Viewport, BlankConnection, IModelConnection, ViewState, StandardViewId, SpatialViewState, DisplayStyle3dState, IModelApp, FitViewTool, SelectionTool, PanViewTool, RotateViewTool, ZoomViewTool } from "@bentley/imodeljs-frontend";
-import { ViewportAndNavigation } from "Components/Viewport/ViewportAndNavigation";
+import { Range3d } from "@bentley/geometry-core";
+import { BlankConnection, DisplayStyle3dState, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
 import { Cartographic, ColorDef } from "@bentley/imodeljs-common";
-import { ViewSetup } from "api/viewSetup";
 import { ViewportComponent } from "@bentley/ui-components";
-import { GeometryDecorator2d } from "./GeometryDecorator";
-import { timeStamp } from "console";
-import { forEach } from "test/utils/webpack.config";
+import { GeometryDecorator } from "./GeometryDecorator";
 import "../../../Components/Viewport/Toolbar.scss";
 
+export class BlankViewport extends React.Component<{ force2d: boolean }, { imodel: IModelConnection, viewState: ViewState }> {
 
-export class Canvas extends React.Component<{}, { imodel: IModelConnection, viewState: ViewState }> {
-
-  public static decorator2d: GeometryDecorator2d;
+  public static decorator: GeometryDecorator;
 
   // create a new blank connection centered on Exton PA
   private getBlankConnection() {
@@ -28,7 +22,7 @@ export class Canvas extends React.Component<{}, { imodel: IModelConnection, view
       // put the center of the connection near Exton, Pennsylvania (Bentley's HQ)
       location: Cartographic.fromDegrees(-75.686694, 40.065757, 0),
       // create the area-of-interest to be 2000 x 2000 x 200 meters, centered around 0,0.0
-      extents: new Range3d(-1000, -1000, -100, 1000, 1000, 100),
+      extents: new Range3d(-1000, -1000, -1000, 1000, 1000, 1000),
     });
     return exton;
   }
@@ -55,13 +49,13 @@ export class Canvas extends React.Component<{}, { imodel: IModelConnection, view
       <div className="toolbar">
         <a href="#" title={SelectionTool.flyover} onClick={(e) => { e.preventDefault(); select(); }}><span className="icon icon-cursor"></span></a>
         <a href="#" title={FitViewTool.flyover} onClick={(e) => { e.preventDefault(); fitView(); }}><span className="icon icon-fit-to-view"></span></a>
-        <a href="#" title={RotateViewTool.flyover} onClick={(e) => { e.preventDefault(); rotate(); }}><span className="icon icon-gyroscope"></span></a>
+        {this.props.force2d ? undefined : <a href="#" title={RotateViewTool.flyover} onClick={(e) => { e.preventDefault(); rotate(); }}><span className="icon icon-gyroscope"></span></a>}
         <a href="#" title={PanViewTool.flyover} onClick={(e) => { e.preventDefault(); pan(); }}><span className="icon icon-hand-2"></span></a>
         <a href="#" title={ZoomViewTool.flyover} onClick={(e) => { e.preventDefault(); zoom(); }}><span className="icon icon-zoom"></span></a>
       </div>
     );
     /* eslint-enable */
-  };
+  }
 
   public render() {
     return (
@@ -74,67 +68,8 @@ export class Canvas extends React.Component<{}, { imodel: IModelConnection, view
 
   public async componentDidMount() {
     const imodel = this.getBlankConnection();
-    const viewState = await Canvas.getViewState(imodel);
+    const viewState = await BlankViewport.getViewState(imodel);
     this.setState({ imodel, viewState });
-  }
-
-  public static drawPolygon(context: CanvasRenderingContext2D, points: GrowableXYZArray | undefined, fill?: boolean) {
-    if (context && points && points.length > 1) {
-      context.fillStyle = "#FF0000";
-      context.beginPath();
-      context.moveTo(points.getXAtUncheckedPointIndex(0), points.getYAtUncheckedPointIndex(0));
-      for (let i = 1; i < points.length; i++) {
-        context.lineTo(points.getXAtUncheckedPointIndex(i), points.getYAtUncheckedPointIndex(i));
-      }
-      context.closePath();
-      if (fill)
-        context.fill();
-      context.stroke();
-    }
-  }
-
-  //  Draws a piece of geometry
-  public static drawGeometry(context: CanvasRenderingContext2D, geometry: GeometryQuery, fill?: boolean) {
-
-    if (geometry instanceof LineSegment3d) {
-
-    } else if (geometry instanceof LineString3d) {
-      const numSegments = geometry.quickLength();
-      if (context) {
-        context.beginPath();
-        for (let i = 0; i < numSegments; i++) {
-          const segment = geometry.getIndexedSegment(i);
-          if (segment) {
-            if (i === 0) {
-              context.moveTo(segment.point0Ref.x, segment.point0Ref.y);
-            } else {
-              context.lineTo(segment.point0Ref.x, segment.point0Ref.y);
-            }
-          }
-        }
-        context.closePath();
-        if (fill)
-          context.fill();
-        context.stroke();
-      }
-    } else if (geometry instanceof Loop) {
-      const strokePoints = geometry.getPackedStrokes();
-      Canvas.drawPolygon(context, strokePoints, fill);
-    }
-  }
-
-  public static drawText(context: CanvasRenderingContext2D, text: string, x: number, y: number, size?: number, font?: string) {
-    if (!font) {
-      font = "Arial";
-    }
-    if (!size) {
-      size = 30;
-    }
-    if (context) {
-      context.font = size + "px " + font;
-
-      context.fillText(text, x, y);
-    }
   }
 
 }

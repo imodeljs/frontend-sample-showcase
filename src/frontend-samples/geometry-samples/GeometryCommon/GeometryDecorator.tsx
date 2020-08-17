@@ -2,18 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Point2d, Point3d, XAndY, XYAndZ, LineSegment3d, Transform, LineString3d, Arc3d } from "@bentley/geometry-core";
-import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, Marker, MarkerSet, HitDetail, GraphicType, RenderGraphic, GraphicBranch } from "@bentley/imodeljs-frontend";
-import { GeometryStreamProps } from "@bentley/imodeljs-common";
+import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Transform, Box } from "@bentley/geometry-core";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, RenderGraphic } from "@bentley/imodeljs-frontend";
 
-export class GeometryDecorator2d implements Decorator {
+export class GeometryDecorator implements Decorator {
 
   public getGeometry: () => void;
   public animated: boolean;
   public graphics: RenderGraphic | undefined;
   public points: Point3d[] = [];
   public lines: LineSegment3d[] = [];
-  public shapes: LineString3d[] = [];
+  public shapes: GeometryQuery[] = [];
   public arcs: Arc3d[] = [];
 
   public constructor(getGeometry: () => void, animated: boolean = false) {
@@ -35,7 +34,7 @@ export class GeometryDecorator2d implements Decorator {
     });
   }
 
-  public addGeometry(geometry: LineString3d) {
+  public addGeometry(geometry: GeometryQuery) {
     this.shapes.push(geometry);
   }
 
@@ -63,8 +62,15 @@ export class GeometryDecorator2d implements Decorator {
       const circle = Arc3d.createXY(point, 3);
       builder.addArc(circle, false, true);
     });
-    this.shapes.forEach((shape) => {
-      builder.addLineString(shape.points);
+    this.shapes.forEach((geometry) => {
+      if (geometry instanceof LineString3d)
+        builder.addLineString(geometry.points);
+      else if (geometry instanceof Loop) {
+        builder.addLoop(geometry);
+      } else if (geometry instanceof Box) {
+        console.log("box")
+        builder.addShape(geometry.getCorners())
+      }
     });
     this.arcs.forEach((arc) => {
       builder.addArc(arc, false, false);

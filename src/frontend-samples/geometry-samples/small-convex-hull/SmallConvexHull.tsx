@@ -4,23 +4,23 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { Canvas } from "../GeometryCommon/Canvas";
-import { LineString3d, Point3d, Point3dArray, Loop } from "@bentley/geometry-core";
+import { BlankViewport } from "../GeometryCommon/BlankViewport";
+import { LineString3d, Loop, Point3d, Point3dArray } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator2d } from "../GeometryCommon/GeometryDecorator";
+import { GeometryDecorator } from "../GeometryCommon/GeometryDecorator";
 export default class SmallConvexHull implements SampleApp {
 
-  public static decorator2d: GeometryDecorator2d;
+  public static decorator: GeometryDecorator;
 
   public static async setup(iModelName: string): Promise<React.ReactNode> {
-    SmallConvexHull.decorator2d = new GeometryDecorator2d(SmallConvexHull.drawingCallback)
-    IModelApp.viewManager.addDecorator(SmallConvexHull.decorator2d);
-    return <Canvas></Canvas>;
+    SmallConvexHull.decorator = new GeometryDecorator(SmallConvexHull.drawingCallback);
+    IModelApp.viewManager.addDecorator(SmallConvexHull.decorator);
+    return <BlankViewport force2d={false}></BlankViewport>;
   }
 
   public static teardown() {
-    if (null != SmallConvexHull.decorator2d)
-      IModelApp.viewManager.dropDecorator(SmallConvexHull.decorator2d);
+    if (null != SmallConvexHull.decorator)
+      IModelApp.viewManager.dropDecorator(SmallConvexHull.decorator);
   }
 
   public static drawingCallback() {
@@ -38,12 +38,11 @@ export default class SmallConvexHull implements SampleApp {
     const hullPoints: Point3d[] = [];
     const interiorPoints: Point3d[] = [];
     Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);
-    SmallConvexHull.decorator2d.addPoints(interiorPoints);
-    const hullGeometry = LineString3d.create(hullPoints)
-    SmallConvexHull.decorator2d.addGeometry(hullGeometry);
-    //const loop = Loop.create(hullGeometry);
-    //loop.tryTranslateInPlace(0, 400, 0);
-    //SmallConvexHull.addGeometry(loop);
-    //Canvas.drawText(context, "test", 200, 200, 60);
+    SmallConvexHull.decorator.addPoints(interiorPoints);
+    const hullGeometry = LineString3d.create(hullPoints);
+    SmallConvexHull.decorator.addGeometry(hullGeometry);
+    const loop = Loop.create(hullGeometry.clone());
+    loop.tryTranslateInPlace(0, 400, 0);
+    SmallConvexHull.decorator.addGeometry(loop);
   }
 }

@@ -8,19 +8,19 @@ import { BlankViewport } from "../GeometryCommon/BlankViewport";
 import { LineSegment3d, Point3d } from "@bentley/geometry-core";
 import { GeometryDecorator } from "../GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-export default class SimpleLine implements SampleApp {
+export default class SimpleAnimated implements SampleApp {
 
   public static decorator: GeometryDecorator;
 
   public static async setup(iModelName: string): Promise<React.ReactNode> {
-    SimpleLine.decorator = new GeometryDecorator(SimpleLine.drawingCallback);
-    IModelApp.viewManager.addDecorator(SimpleLine.decorator);
+    SimpleAnimated.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback);
+    IModelApp.viewManager.addDecorator(SimpleAnimated.decorator);
     return <BlankViewport force2d={false}></BlankViewport>;
   }
 
   public static teardown() {
-    if (null != SimpleLine.decorator) {
-      IModelApp.viewManager.dropDecorator(SimpleLine.decorator);
+    if (null != SimpleAnimated.decorator) {
+      IModelApp.viewManager.dropDecorator(SimpleAnimated.decorator);
     }
   }
 
@@ -28,11 +28,11 @@ export default class SimpleLine implements SampleApp {
     const pointA = Point3d.create(0, 0, 0);
     const pointB = Point3d.create(300, 500, 100);
     const myLine = LineSegment3d.create(pointA, pointB);
-    SimpleLine.decorator.addLine(myLine);
+    SimpleAnimated.decorator.addLine(myLine);
 
     for (const fractionAlongLine of [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]) {
       const pointAlongLine = myLine.fractionToPoint(fractionAlongLine);
-      SimpleLine.decorator.addPoint(pointAlongLine);
+      SimpleAnimated.decorator.addPoint(pointAlongLine);
     }
   }
 }
