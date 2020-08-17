@@ -2,33 +2,43 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
 .toolbar {
-  float: right;
   background-origin: border-box;
   top: 3%;
   right: 1%;
   position: absolute;
-  -webkit-transition: all 500ms ease;
-  -o-transition: all 500ms ease;
-  transition: all 500ms ease;
-  cursor: pointer;
-  z-index: 1;
+  background-color: var(--buic-background-2);
+  height: 42px;
+  border-radius: 3px;
+  display: inline-block;
+  vertical-align: bottom;
+  box-sizing: border-box;
+    z-index: 1;
+
 };
 
 .toolbar a {
-  padding: 12px;
-  color: black;
-  text-decoration: none;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.22)));
-  background-color: #f9f9f9;
-  border: 1px #4d575f solid;
+  display: inline-block;
+  height: 100%;
+  width: 40px;
+  position: relative;
+  align-items: center;
+  vertical-align: bottom;  
+  text-decoration: none;      
 }
 
 .toolbar a:hover {
- color: #0072b8
+ background-color: var(--buic-background-1);
 }
 
-.icon {
-  background: none;
+.toolbar .icon {
+  font-size: 16px;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  color: var(--buic-foreground-body);
+  filter: drop-shadow(0 1px 0 var(--buic-foreground-body-reverse));
+  transition: all 250ms ease;
 }

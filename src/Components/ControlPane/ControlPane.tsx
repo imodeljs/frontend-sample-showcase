@@ -21,7 +21,7 @@ export class ControlPane extends React.Component<{ instructions: string, control
     if (this.state && this.state.collapsed) {
       return (
         <>
-          <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="control-pane-button" onClick={this.switchCollapse.bind(this)}>Show Control Pane</Button>
+          <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-control-pane-button" onClick={this.switchCollapse.bind(this)}>Show Control Pane</Button>
         </>
       );
     }
@@ -32,7 +32,10 @@ export class ControlPane extends React.Component<{ instructions: string, control
             <div className="sample-instructions">
               <span>{this.props.instructions}</span>
             </div>
-            <i className="icon icon-visibility-hide-2 control-pane-toggle" onClick={this.switchCollapse.bind(this)}></i>
+            <svg className="minimize-button control-pane-minimize" onClick={this.switchCollapse.bind(this)}>
+              <use href="icons.svg#minimize"></use>
+              <title>Minimize</title>
+            </svg>
           </div>
           {this.props.iModelSelector ? this.props.iModelSelector : undefined}
           {this.props.controls ? <hr></hr> : undefined}
