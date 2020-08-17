@@ -48,6 +48,10 @@ The recommended way of writing tests is to use watch scripts for the TypeScript 
 
 - `test-certa` - Manually run tests after the previous two operations complete.
 
+## Contributing
+
+ Each sample provided in the frontend sample showcase should be able to run both at runtime and within the online code editor. In order to ensure both instances are possible, there are some considerations take note of. You can learn more on how to contribute to the showcase in the [Contributing Documentation](https://github.com/imodeljs/frontend-sample-showcase/blob/master/docs/Contributing.md).
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).

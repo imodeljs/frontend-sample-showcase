@@ -13,13 +13,10 @@ import SampleApp from "common/SampleApp";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class HeatmapDecoratorApp implements SampleApp {
-
   public static decorator?: HeatmapDecorator;
-  public static range?: Range2d;
-  public static height?: number;
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
-    return <HeatmapDecoratorUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
+    return <HeatmapDecoratorUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {
@@ -27,9 +24,8 @@ export default class HeatmapDecoratorApp implements SampleApp {
     HeatmapDecoratorApp.decorator = undefined;
   }
 
-  public static setupDecorator(points: Point3d[], spreadFactor: number) {
-    HeatmapDecoratorApp.decorator = new HeatmapDecorator(points, this.range!, spreadFactor, this.height!);
-    HeatmapDecoratorApp.enableDecorations();
+  public static setupDecorator(points: Point3d[], range: Range2d, spreadFactor: number, height: number) {
+    HeatmapDecoratorApp.decorator = new HeatmapDecorator(points, range, spreadFactor, height);
   }
 
   public static enableDecorations() {

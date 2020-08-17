@@ -2,62 +2,6 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-.model-selector {
-  -webkit-transition: all 500ms ease;
-  -o-transition: all 500ms ease;
-  transition: all 500ms ease;
-  cursor: pointer;
-
-  .imodel-list {
-    max-width: 100%;
-  }
-}
-
-.sample-ui {
-  display: block;
-  float: right;
-  background-origin: border-box;
-  background-color: #333;
-  color: white;
-  bottom: 2%;
-  right: 2%;
-  -webkit-transition: all 500ms ease;
-  -o-transition: all 500ms ease;
-  transition: all 500ms ease;
-  cursor: pointer;
-  border-radius: 5px;
-  border-color: var(--buic-foreground-body);
-  padding: 10px;
-  border-style: solid;
-  z-index: 1;
-}
-
-.control-pane-header {
-  display: flex;
-  flex-direction: row;
-
-  .control-pane-toggle {
-    color: var(--buic-foreground-body);
-  }
-
-  .control-pane-toggle:hover {
-    color: white;
-  }
-
-  .sample-instructions {
-    display: flex;
-    flex-grow: 1;
-  }
-  
-  .sample-instructions>span {
-    flex-grow: 1;
-    min-width: 100px;
-    width: 100px;
-  }  
-}
-
-
-
 .sample-heading {
   font-weight: bold;
   margin-top: 10px;
