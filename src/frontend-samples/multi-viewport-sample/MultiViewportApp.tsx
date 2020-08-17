@@ -7,7 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import SampleApp from "common/SampleApp";
 import MultiViewportUI from "./MultiViewportUI";
-import { IModelApp, TwoWayViewportSync, Viewport, SelectedViewportChangedArgs, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, ScreenViewport, SelectedViewportChangedArgs, TwoWayViewportSync, Viewport } from "@bentley/imodeljs-frontend";
 import { RenderMode } from "@bentley/imodeljs-common";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
