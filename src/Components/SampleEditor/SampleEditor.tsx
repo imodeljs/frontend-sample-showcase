@@ -70,7 +70,10 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
             {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />
             }
             <TabNavigationAction onClick={this.props.onCloseClick}>
-              <div className="codicon codicon-close" title="Close"></div>
+              <svg className="minimize-button">
+                <use href="icons.svg#minimize"></use>
+                <title>Minimize</title>
+              </svg>
             </TabNavigationAction>
           </TabNavigation>
           <React.Suspense fallback={"Loading..."}>

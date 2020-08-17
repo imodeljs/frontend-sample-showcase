@@ -1,7 +1,8 @@
-.control-pane-button {
+.show-control-pane-button {
   position: absolute;
   bottom: 2%;
   right: 2%;
+  box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25);
   z-index: 1;
 }
 
@@ -17,7 +18,7 @@
   -webkit-transition: all 500ms ease;
   -o-transition: all 500ms ease;
   transition: all 500ms ease;
-  cursor: pointer;
+  cursor: default;
   border-radius: 5px;
   border-color: var(--buic-foreground-body);
   padding: 10px;
@@ -29,12 +30,8 @@
   display: flex;
   flex-direction: row;
 
-  .control-pane-toggle {
-    color: var(--buic-foreground-body);
-  }
-
-  .control-pane-toggle:hover {
-    color: white;
+  .control-pane-minimize {
+    padding: 0;
   }
 
   .sample-instructions {
@@ -47,4 +44,19 @@
     min-width: 100px;
     width: 100px;
   }  
+
+  .control-pane-close-button {
+    float: right;
+    padding-top: 4px;
+  }
+}
+
+.model-selector {
+  -webkit-transition: all 500ms ease;
+  -o-transition: all 500ms ease;
+  transition: all 500ms ease;
+
+  .imodel-list {
+    max-width: 100%;
+  }
 }
