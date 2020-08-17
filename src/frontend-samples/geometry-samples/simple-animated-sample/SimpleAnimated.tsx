@@ -5,17 +5,19 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { BlankViewport } from "../GeometryCommon/BlankViewport";
-import { LineSegment3d, Point3d } from "@bentley/geometry-core";
+import { LineSegment3d, Point3d, LineString3d, Loop } from "@bentley/geometry-core";
 import { GeometryDecorator } from "../GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 export default class SimpleAnimated implements SampleApp {
 
   public static decorator: GeometryDecorator;
+  public static grid: boolean[][] = [];
 
   public static async setup(iModelName: string): Promise<React.ReactNode> {
-    SimpleAnimated.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback);
+    SimpleAnimated.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback, true);
     IModelApp.viewManager.addDecorator(SimpleAnimated.decorator);
-    return <BlankViewport force2d={false}></BlankViewport>;
+    SimpleAnimated.generateGrid();
+    return <BlankViewport force2d={true}></BlankViewport>;
   }
 
   public static teardown() {
@@ -24,15 +26,91 @@ export default class SimpleAnimated implements SampleApp {
     }
   }
 
-  public static drawingCallback() {
-    const pointA = Point3d.create(0, 0, 0);
-    const pointB = Point3d.create(300, 500, 100);
-    const myLine = LineSegment3d.create(pointA, pointB);
-    SimpleAnimated.decorator.addLine(myLine);
-
-    for (const fractionAlongLine of [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]) {
-      const pointAlongLine = myLine.fractionToPoint(fractionAlongLine);
-      SimpleAnimated.decorator.addPoint(pointAlongLine);
+  public static generateGrid(size: number = 50, probLife: number = 0.15) {
+    for (let i: number = 0; i < size; i++) {
+      SimpleAnimated.grid[i] = [];
+      for (let j: number = 0; j < size; j++) {
+        if (Math.random() < probLife) {
+          SimpleAnimated.grid[i][j] = true;
+        } else {
+          SimpleAnimated.grid[i][j] = false;
+        }
+      }
     }
+  }
+
+  public static updateGrid() {
+    const tempGrid: boolean[][] = [];
+    // tslint:disable-next-line: prefer-for-of
+    for (let i: number = 0; i < SimpleAnimated.grid.length; i++) {
+      tempGrid[i] = [];
+      for (let j: number = 0; j < SimpleAnimated.grid[0].length; j++) {
+        const numNeighbors = this.getNumNeighbors(i, j);
+        if (SimpleAnimated.grid[i][j]) {
+          if (numNeighbors < 2 || numNeighbors > 3) {
+            tempGrid[i][j] = false;
+          } else {
+            tempGrid[i][j] = true;
+          }
+        } else {
+          if (numNeighbors === 3) {
+            tempGrid[i][j] = true;
+          } else {
+            tempGrid[i][j] = false;
+          }
+        }
+      }
+    }
+    SimpleAnimated.grid = tempGrid;
+  }
+
+  public static getNumNeighbors(i: number, j: number): number {
+    let numNeighbors = 0;
+    if (i !== 0 && SimpleAnimated.grid[i - 1][j]) {
+      numNeighbors++;
+    }
+    if (i !== 0 && j !== 0 && SimpleAnimated.grid[i - 1][j - 1]) {
+      numNeighbors++;
+    }
+    if (j !== 0 && SimpleAnimated.grid[i][j - 1]) {
+      numNeighbors++;
+    }
+    if (i !== SimpleAnimated.grid.length - 1 && SimpleAnimated.grid[i + 1][j]) {
+      numNeighbors++;
+    }
+    if (j !== SimpleAnimated.grid[0].length - 1 && SimpleAnimated.grid[i][j + 1]) {
+      numNeighbors++;
+    }
+    if (i !== SimpleAnimated.grid.length - 1 && j !== SimpleAnimated.grid[0].length - 1 && SimpleAnimated.grid[i + 1][j + 1]) {
+      numNeighbors++;
+    }
+    if (i !== SimpleAnimated.grid.length - 1 && j !== 0 && SimpleAnimated.grid[i + 1][j - 1]) {
+      numNeighbors++;
+    }
+    if (i !== 0 && j !== SimpleAnimated.grid[0].length - 1 && SimpleAnimated.grid[i - 1][j + 1]) {
+      numNeighbors++;
+    }
+    return numNeighbors;
+  }
+
+  public static drawingCallback() {
+    SimpleAnimated.decorator.clearGeometry();
+    const squareSize = 20;
+    // tslint:disable-next-line: prefer-for-of
+    for (let i: number = 0; i < SimpleAnimated.grid.length; i++) {
+      for (let j: number = 0; j < SimpleAnimated.grid[0].length; j++) {
+        if (SimpleAnimated.grid[i][j]) {
+          const corners: Point3d[] = [];
+          corners.push(Point3d.create(i * squareSize, j * squareSize, 0));
+          corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize, 0));
+          corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize + squareSize, 0));
+          corners.push(Point3d.create(i * squareSize, j * squareSize + squareSize, 0));
+          const square = LineString3d.create(corners);
+          const loop = Loop.create(square.clone());
+          SimpleAnimated.decorator.addGeometry(loop);
+        }
+      }
+    }
+    SimpleAnimated.updateGrid();
   }
 }

@@ -7,17 +7,23 @@ import { DecorateContext, Decorator, GraphicBranch, GraphicType, RenderGraphic }
 
 export class GeometryDecorator implements Decorator {
 
-  public getGeometry: () => void;
-  public animated: boolean;
-  public graphics: RenderGraphic | undefined;
+  private getGeometry: () => void;
+  private animated: boolean;
+  private animationSpeed: number;
+  private graphics: RenderGraphic | undefined;
+  private numFramesElapsed: number = 0;
   public points: Point3d[] = [];
   public lines: LineSegment3d[] = [];
   public shapes: GeometryQuery[] = [];
   public arcs: Arc3d[] = [];
 
-  public constructor(getGeometry: () => void, animated: boolean = false) {
+  public constructor(getGeometry: () => void, animated: boolean = false, animationSpeed: number = 1) {
+    if (animationSpeed < 1) {
+      animationSpeed = 1;
+    }
     this.getGeometry = getGeometry;
     this.animated = animated;
+    this.animationSpeed = animationSpeed;
   }
 
   public addLine(line: LineSegment3d) {
@@ -69,7 +75,7 @@ export class GeometryDecorator implements Decorator {
         builder.addLoop(geometry);
       } else if (geometry instanceof Box) {
         console.log("box")
-        builder.addShape(geometry.getCorners())
+        builder.addShape(geometry.getCorners());
       }
     });
     this.arcs.forEach((arc) => {
@@ -79,8 +85,10 @@ export class GeometryDecorator implements Decorator {
   }
 
   public decorate(context: DecorateContext): void {
-    if (!this.graphics || this.animated)
+    if (!this.graphics || (this.animated && this.numFramesElapsed % this.animationSpeed === 0)) {
       this.graphics = this.createGraphics(context);
+    }
+    this.numFramesElapsed++;
     const branch = new GraphicBranch(false);
     if (this.graphics)
       branch.add(this.graphics);
