@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { ColorDef, ContextRealityModelProps } from "@bentley/imodeljs-common";
-import { DrawingViewState, Environment, IModelConnection, SpatialViewState, ViewState, ViewState3d, ContextRealityModelState, findAvailableUnattachedRealityModels } from "@bentley/imodeljs-frontend";
+import { DrawingViewState, Environment, IModelConnection, SpatialViewState, ViewState, ViewState3d, findAvailableUnattachedRealityModels } from "@bentley/imodeljs-frontend";
 import { Id64, Id64String } from "@bentley/bentleyjs-core";
 
 export class ViewSetup {
