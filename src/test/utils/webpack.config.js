@@ -90,6 +90,7 @@ function createConfig(shouldInstrument) {
     ],
     resolve: {
       extensions: [".js", ".jsx", ".ts", ".tsx"],
+      modules: [frontendLib, "node_modules"],
     },
     stats: "errors-only",
   };

@@ -6,9 +6,10 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "api/viewSetup";
 import ShadowStudyApp from "./ShadowStudyApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface ShadowStudyState {
@@ -17,7 +18,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export default class ShadowStudyUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void }, ShadowStudyState> {
+export default class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -148,9 +149,9 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Select a date and time.", this.getControls());
     return (
       <>
+        <ControlPane instructions="Select a date and time." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />
       </>
     );

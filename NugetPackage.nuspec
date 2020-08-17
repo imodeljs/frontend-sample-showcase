@@ -13,6 +13,6 @@
         <tags></tags>
     </metadata>
     <files>
-      <file src="build\**" target="content\sample-showcase" />
+      <file src="build\**" target="content\sample-showcase\frontend-sample-showcase" />
     </files>
 </package>
