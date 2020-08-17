@@ -2,8 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { RenderMode } from "@bentley/imodeljs-common";
-import { IModelConnection, SelectedViewportChangedArgs, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection, SelectedViewportChangedArgs, Viewport } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "common/samples-common.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -16,9 +15,6 @@ export interface MultiViewportUIState {
   isSynced: boolean;
   viewports: Viewport[];
   selectedViewport?: Viewport;
-  renderMode?: RenderMode;
-  iModel?: IModelConnection;
-  view?: ViewState;
 }
 /** The React props for this UI component */
 export interface MultiViewportUIProps {
@@ -49,15 +45,6 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     this.setState({ selectedViewport: args.current });
   }
 
-  public componentDidUpdate(_prevProps: MultiViewportUIProps, prevState: MultiViewportUIState) {
-    let renderMode: RenderMode;
-    if (undefined !== this.state.selectedViewport
-      && prevState.selectedViewport?.viewportId !== this.state.selectedViewport?.viewportId
-      && prevState.renderMode !== (renderMode = this.state.selectedViewport?.viewFlags.renderMode)) {
-      this.setState({ renderMode });
-    }
-  }
-
   public componentDidMount() {
     this.props.setupControlPane("Use the controls below to effect the highlighted selected viewport. Syncing the viewports will initially match to the selected viewport.", this.getControls());
   }
@@ -84,39 +71,12 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     this.setState({ isSynced: isOn });
   }
 
-  // Handle changes to the render mode.
-  private _onChangeRenderMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (undefined === this.state.selectedViewport)
-      return;
-    const renderMode: RenderMode = Number.parseInt(event.target.value, 10);
-    MultiViewportApp.setRenderMode(this.state.selectedViewport, renderMode);
-    // Since the render mode is set by the view flags, the viewports needs to be synced before it will be reflected on screen.
-    MultiViewportApp.syncViewportWithView(this.state.selectedViewport);
-    this.setState({ renderMode });
-  }
-
   public getControls(): React.ReactNode {
-    // This maps an enum [RenderMode] to the options elements.
-    const entries = Object.keys(RenderMode)
-      .filter((value) => isNaN(Number(value)) === false)
-      .map((str: string) => Number(str))
-      .map((key) => <option key={key} value={key}>{RenderMode[key]}</option>);
-
+    console.debug(`disabled: ${this.state.viewports.length !== 2}`, this.state.viewports.length);
     return (<>
       <div className="sample-options-2col">
         <span>Sync Viewports</span>
         <Toggle disabled={this.state.viewports.length !== 2} isOn={this.state.isSynced} onChange={this._onSyncToggleChange} />
-      </div>
-      <div className="sample-options-2col">
-        <span>Render Mode</span>
-        {undefined !== this.state.renderMode ? <select
-          disabled={undefined === this.state.selectedViewport}
-          value={this.state.renderMode}
-          style={{ width: "fit-content" }}
-          onChange={this._onChangeRenderMode}
-        >
-          {entries}
-        </select> : <></>}
       </div>
     </>);
   }
