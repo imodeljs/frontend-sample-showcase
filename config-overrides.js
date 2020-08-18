@@ -4,7 +4,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 const MonacoWebpackPlugin = require("@bentley/monaco-editor/lib/monaco-webpack-plugin").MonacoEditorWebpackPlugin;
-const TerserPlugin = require('terser-webpack-plugin');
 
 const {
   override,
