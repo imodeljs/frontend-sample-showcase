@@ -5,6 +5,7 @@
 import { IModelConnection, SelectedViewportChangedArgs, Viewport } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "common/samples-common.scss";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import "./multi-view-sample.scss";
@@ -19,7 +20,7 @@ export interface MultiViewportUIState {
 /** The React props for this UI component */
 export interface MultiViewportUIProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode, className?: string) => void;
+  iModelSelector: React.ReactNode;
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -35,26 +36,28 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
       args.current.vpDiv.classList.add("active-viewport");
   }
 
-  // Handles opened View and adds them to the state.
-  private _getViews = (viewport: Viewport) => {
-    this.setState({ viewports: [...this.state.viewports, viewport] });
-  }
-
   // Handles changes to the selected viewport and adds the current to the state.
   private _getSelectedViewport = (args: SelectedViewportChangedArgs) => {
     this.setState({ selectedViewport: args.current });
   }
 
-  public componentDidMount() {
-    this.props.setupControlPane("Use the controls below to effect the highlighted selected viewport. Syncing the viewports will initially match to the selected viewport.", this.getControls());
+  // Handles opened View and adds them to the state.
+  private _getViews = (viewport: Viewport) => {
+    this.setState({ viewports: [...this.state.viewports, viewport] });
+  }
+
+  // Handles when the app teardown is called which signals when the views are all closed.
+  private _viewsClosed = () => {
+    this.setState({ viewports: [], isSynced: false, selectedViewport: undefined });
   }
 
   // Adds listeners after the iModel is loaded.
-  // Note: The [MultiViewportApp] handles removing theses listeners they are irrelevant and insuring no duplicates.
+  // Note: The [MultiViewportApp] handles removing theses listeners when they are irrelevant and insuring no duplicates listeners.
   private _onIModelReady = (_iModel: IModelConnection) => {
     MultiViewportApp.listenForSelectedViewportChange(this._setViewportStyling);
     MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
     MultiViewportApp.listenForViewOpened(this._getViews);
+    MultiViewportApp.listenForAppTeardown(this._viewsClosed);
   }
 
   // Handle changes to the UI sync toggle.
@@ -71,8 +74,8 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     this.setState({ isSynced: isOn });
   }
 
-  public getControls(): React.ReactNode {
-    console.debug(`disabled: ${this.state.viewports.length !== 2}`, this.state.viewports.length);
+  /** Components for rendering the sample's instructions and controls */
+  public getControls() {
     return (<>
       <div className="sample-options-2col">
         <span>Sync Viewports</span>
@@ -81,10 +84,16 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     </>);
   }
 
+  /** The sample's render method */
   public render() {
     return (
       <>
-        { /* Viewport to display the iModel */}
+        <ControlPane
+          controls={this.getControls()}
+          iModelSelector={this.props.iModelSelector}
+          instructions={"Use the controls below to effect the highlighted selected viewport. Syncing the viewports will initially match to the selected viewport."}
+        />
+        { /* Viewports to display the iModel */}
         <div className={"mutli-view-viewport-top"}>
           <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
