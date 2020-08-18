@@ -29,7 +29,7 @@ export default class Simple3d implements SampleApp {
     options.needParams = false;
     options.needNormals = true;
     const builder = PolyfaceBuilder.create(options);
-    const cone = Cone.createAxisPoints(Point3d.create(0, 0, 0), Point3d.create(0, 100, 0), 100, 50, true)!;
+    const cone = Cone.createAxisPoints(Point3d.create(500, 250, 0), Point3d.create(500, 750, 0), 500, 200, true)!;
     builder.addCone(cone);
     const polyface = builder.claimPolyface(true);
     BlankViewport.decorator.addGeometry(polyface);

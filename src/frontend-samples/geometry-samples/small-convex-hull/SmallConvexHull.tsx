@@ -28,8 +28,8 @@ export default class SmallConvexHull implements SampleApp {
     points.push(Point3d.create(100, 0, 0));
     points.push(Point3d.create(200, 100, 0));
     points.push(Point3d.create(100, 300, 0));
-    points.push(Point3d.create(700, 50, 0));
-    points.push(Point3d.create(500, 600, 0));
+    points.push(Point3d.create(900, 50, 0));
+    points.push(Point3d.create(500, 400, 0));
     points.push(Point3d.create(0, 200, 0));
     points.push(Point3d.create(150, 200, 0));
     points.push(Point3d.create(190, 200, 0));
@@ -42,7 +42,7 @@ export default class SmallConvexHull implements SampleApp {
     const hullGeometry = LineString3d.create(hullPoints);
     BlankViewport.decorator.addGeometry(hullGeometry);
     const loop = Loop.create(hullGeometry.clone());
-    loop.tryTranslateInPlace(0, 400, 0);
+    loop.tryTranslateInPlace(0, 500, 0);
     BlankViewport.decorator.addGeometry(loop);
   }
 }

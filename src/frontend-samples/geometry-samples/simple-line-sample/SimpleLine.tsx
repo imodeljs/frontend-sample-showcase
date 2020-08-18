@@ -24,8 +24,8 @@ export default class SimpleLine implements SampleApp {
   }
 
   public static drawingCallback() {
-    const pointA = Point3d.create(0, 0, 0);
-    const pointB = Point3d.create(300, 500, 100);
+    const pointA = Point3d.create(140, 25, 0);
+    const pointB = Point3d.create(680, 800, 0);
     const myLine = LineSegment3d.create(pointA, pointB);
     BlankViewport.decorator.addLine(myLine);
 
