@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "../GeometryCommon/BlankViewport";
-import { LineSegment3d, Point3d, Point3dArray, Box, Vector3d } from "@bentley/geometry-core";
-import { GeometryDecorator } from "../GeometryCommon/GeometryDecorator";
+import { BlankViewport } from "common/GeometryCommon/BlankViewport";
+import { LineSegment3d, Point3d, Point3dArray, Box, Vector3d, StrokeOptions, PolyfaceBuilder, Cone } from "@bentley/geometry-core";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 export default class Simple3d implements SampleApp {
 
@@ -25,13 +25,14 @@ export default class Simple3d implements SampleApp {
   }
 
   public static drawingCallback() {
-    const baseOrigin = Point3d.create(-100, -100, -100);
-    const topOrigin = Point3d.create(100, 100, 100)
-    const vectorX = Vector3d.create(100, 100, 100)
-    const vectorY = Vector3d.create(100, 100, 100)
-    const box = Box.createDgnBox(baseOrigin, vectorX, vectorY, topOrigin, 100, 100, 100, 100, false)
-    if (box) {
-      Simple3d.decorator.addGeometry(box);
-    }
+    // Make a meshed cone . ..
+    const options = new StrokeOptions();
+    options.needParams = false;
+    options.needNormals = true;
+    const builder = PolyfaceBuilder.create(options);
+    const cone = Cone.createAxisPoints(Point3d.create(0, 0, 0), Point3d.create(0, 100, 0), 100, 50, true)!;
+    builder.addCone(cone);
+    const polyface = builder.claimPolyface(true);
+    Simple3d.decorator.addGeometry(polyface);
   }
 }

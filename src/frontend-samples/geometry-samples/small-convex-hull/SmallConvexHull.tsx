@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "../GeometryCommon/BlankViewport";
+import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { LineString3d, Loop, Point3d, Point3dArray } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "../GeometryCommon/GeometryDecorator";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 export default class SmallConvexHull implements SampleApp {
 
   public static decorator: GeometryDecorator;

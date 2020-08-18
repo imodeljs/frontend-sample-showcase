@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Transform, Box } from "@bentley/geometry-core";
+import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Transform, Box, Polyface } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, RenderGraphic } from "@bentley/imodeljs-frontend";
 
 export class GeometryDecorator implements Decorator {
@@ -73,9 +73,8 @@ export class GeometryDecorator implements Decorator {
         builder.addLineString(geometry.points);
       else if (geometry instanceof Loop) {
         builder.addLoop(geometry);
-      } else if (geometry instanceof Box) {
-        console.log("box")
-        builder.addShape(geometry.getCorners());
+      } else if (geometry instanceof Polyface) {
+        builder.addPolyface(geometry, false);
       }
     });
     this.arcs.forEach((arc) => {

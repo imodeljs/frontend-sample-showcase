@@ -133,6 +133,16 @@ export const modules: ModuleBase[] = [
         import: import("!!raw-loader!common/CommonComponentTools/index.scss"),
     } as InternalModule),
     ({
+        name: "common/GeometryCommon/BlankViewport",
+        import: import("../../common/GeometryCommon/BlankViewport"),
+        typedef: import("!!raw-loader!../../common/GeometryCommon/BlankViewport.d.ts"),
+    } as InternalModule),
+    ({
+        name: "common/GeometryCommon/GeometryDecorator",
+        import: import("../../common/GeometryCommon/GeometryDecorator"),
+        typedef: import("!!raw-loader!../../common/GeometryCommon/GeometryDecorator.d.ts"),
+    } as InternalModule),
+    ({
         name: "common/DataProvider/Trees.scss",
         import: import("!!raw-loader!common/DataProvider/Trees.scss"),
     } as InternalModule),

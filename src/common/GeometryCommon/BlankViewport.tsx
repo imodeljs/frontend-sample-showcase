@@ -8,7 +8,7 @@ import { BlankConnection, DisplayStyle3dState, FitViewTool, IModelApp, IModelCon
 import { Cartographic, ColorDef } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
-import "../../../Components/Viewport/Toolbar.scss";
+import "Components/Viewport/Toolbar.scss";
 
 export class BlankViewport extends React.Component<{ force2d: boolean }, { imodel: IModelConnection, viewState: ViewState }> {
 
