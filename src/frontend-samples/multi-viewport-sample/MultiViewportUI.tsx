@@ -91,7 +91,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
         <ControlPane
           controls={this.getControls()}
           iModelSelector={this.props.iModelSelector}
-          instructions={"Use the controls below to effect the highlighted selected viewport. Syncing the viewports will initially match to the selected viewport."}
+          instructions={"Use the toolbar at the top-right to navigate the model.  Toggle to sync the viewports."}
         />
         { /* Viewports to display the iModel */}
         <div className={"mutli-view-viewport-top"}>

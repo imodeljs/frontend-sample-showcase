@@ -9,6 +9,13 @@ import "common/samples-common.scss";
 import * as React from "react";
 import MultiViewportUI from "./MultiViewportUI";
 
+/** The purpose of this sample is to highlight the easy creation of multiple viewports and the two-way viewport sync
+ * feature to link them together. When views are synchronized any changes to the properties [ViewState] of either viewport
+ * will be immediately applied to the other. One intended use of this feature is for comparing different changesets of the
+ * same IModel. Using it that way has the potential for showing the changes over time.
+ * Note: [TwoWayViewportSync] is currently in beta.
+ */
+
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApp implements SampleApp {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();
@@ -23,7 +30,6 @@ export default class MultiViewportApp implements SampleApp {
     MultiViewportApp._viewOpenedListeners.length = 0;
     return <MultiViewportUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
-
   /** Called by the showcase before swapping to another sample. */
   public static async teardown() {
     MultiViewportApp.disconnectViewports();
@@ -31,9 +37,10 @@ export default class MultiViewportApp implements SampleApp {
     MultiViewportApp._selectedViewportChangedListeners.length = 0;
     MultiViewportApp._viewOpenedListeners.forEach((removeListener) => removeListener());
     MultiViewportApp._viewOpenedListeners.length = 0;
-    MultiViewportApp._teardownListener.forEach((removeListener) => removeListener());
+    MultiViewportApp._teardownListener.forEach((removeView) => removeView());
     MultiViewportApp._teardownListener.length = 0;
   }
+
   /** Connects the views of the two provided viewports, overriding the second parameter's view with the first's view. */
   public static connectViewports(vp1: Viewport, vp2: Viewport) {
     MultiViewportApp.twoWaySync.connect(vp1, vp2);
@@ -59,7 +66,7 @@ export default class MultiViewportApp implements SampleApp {
     }
   }
 
-  /** Adds a adds a callback for when the app teardown is called. */
+  /** Adds a adds a callback for when the app teardown is called. See note below for typical implementation */
   public static listenForAppTeardown(listener: () => void) {
     MultiViewportApp._teardownListener.push(listener);
   }
@@ -75,8 +82,8 @@ export default class MultiViewportApp implements SampleApp {
  *  These event can be used to track the currently open viewports.  Any Listeners added to these
  *  events will need to removed else they will continue to be called.
  *
- *  This sample in above [listenForAppTeardown] is used in place of [onViewClose] due to limitations
- *  from running as part of a suite of samples.  If it was used, it would be implemented the same as the
- *  [onViewOpen], but the UI would only removed the viewport matching the viewportId from the state
+ *  This sample uses [listenForAppTeardown] to track the when the view closes instead of the typical [onViewClose] due
+ *  to limitations from running as part of a suite of samples.  If [onViewClose] was used, it would be implemented the
+ *  same as the [onViewOpen], but the sample UI would only remove the viewport with the matching viewportId from the state
  *  instead of resetting the whole state.
  */
