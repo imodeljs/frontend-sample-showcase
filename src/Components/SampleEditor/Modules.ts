@@ -124,6 +124,11 @@ export const modules: ModuleBase[] = [
         typedef: import("!!raw-loader!../Viewport/ReloadableViewport.d.ts"),
     } as InternalModule),
     ({
+        name: "Components/ControlPane/ControlPane",
+        import: import("../ControlPane/ControlPane"),
+        typedef: import("!!raw-loader!../ControlPane/ControlPane.d.ts"),
+    } as InternalModule),
+    ({
         name: "common/SampleApp",
         import: import("../../common/SampleApp"),
         typedef: import("!!raw-loader!../../common/SampleApp.d.ts"),
