@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 .show-control-pane-button {
   position: absolute;
   bottom: 2%;
@@ -38,12 +42,12 @@
     display: flex;
     flex-grow: 1;
   }
-  
-  .sample-instructions>span {
+
+  .sample-instructions > span {
     flex-grow: 1;
     min-width: 100px;
     width: 100px;
-  }  
+  }
 
   .control-pane-close-button {
     float: right;
