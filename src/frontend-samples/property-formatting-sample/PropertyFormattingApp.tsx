@@ -4,29 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { GithubLink } from "../../Components/GithubLink";
+
 import "../../common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider";
+import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
 import { KeySet, Field } from "@bentley/presentation-common";
-
-export function getPropertyFormattingSpec(): SampleSpec {
-  return ({
-    name: "property-formatting-sample",
-    label: "Property Formatting",
-    image: "zoom-to-elements-thumbnail.png",
-    setup: async (iModelName: string) => {
-      PropertyFormattingAPI.addSelectionListener();
-      return <PropertyFormattingUI iModelName={iModelName} />;
-    },
-    teardown: async () => {
-      PropertyFormattingAPI.removeSelectionListener();
-    }
-  });
-}
+import SampleApp from "common/SampleApp";
+import { PropertyFormattingUI } from "./PropertyFormattingUI";
 
 /*
 These are instructions on how to use the PresentationManager API to essentially duplicate the property display
@@ -52,85 +37,53 @@ you to supply a ClientRequestContext. You should have one of these that you used
 
 */
 
-class PropertyFormattingAPI {
+export class PropertyFormattingApp implements SampleApp {
+  public static async setup(iModelName: string) {
+    PropertyFormattingApp.addSelectionListener();
+    return <PropertyFormattingUI iModelName={iModelName} />;
+  }
+
+  public static teardown() {
+    PropertyFormattingApp.removeSelectionListener();
+  }
+
   public static async addSelectionListener() {
-    Presentation.selection.selectionChange.addListener(PropertyFormattingAPI._onSelectionChanged);
+    Presentation.selection.selectionChange.addListener(PropertyFormattingApp._onSelectionChanged);
   }
 
   public static async removeSelectionListener() {
-    Presentation.selection.selectionChange.removeListener(PropertyFormattingAPI._onSelectionChanged);
+    Presentation.selection.selectionChange.removeListener(PropertyFormattingApp._onSelectionChanged);
   }
 
   private static _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     const keys = new KeySet(selection);
-    const requestContext = { imodel: evt.imodel, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
-    const descriptor = await Presentation.presentation.getContentDescriptor(requestContext, "Grid", keys, undefined);
+    const requestOptions = { imodel: evt.imodel, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
+    const descriptor = await Presentation.presentation.getContentDescriptor(requestOptions, "Grid", keys, undefined);
 
     if (undefined === descriptor)
       return;
 
-    const content = await Presentation.presentation.getContent(requestContext, descriptor, keys);
+    const content = await Presentation.presentation.getContent(requestOptions, descriptor, keys);
 
     if (undefined === content)
       return;
 
-    /*
-    descriptor.fields.forEach((f: Field) => {
-      content.contentSet.find()
-    });
-    */
     console.log(content);
+
+    const item = content.contentSet[0];
+    const stuff: any[] = [];
+    descriptor.fields.forEach((f: Field) => {
+      const fieldName = f.name;
+      const catName = f.category.label;
+      const displayValue = item.displayValues[fieldName];
+
+      stuff.push({ fieldName, catName, displayValue });
+    });
+
+    console.log(stuff);
   }
 
   public static async formatProperties(elementIds: string[], imodel: IModelConnection) {
-  }
-}
-
-/** React props */
-interface PropertyFormattingProps {
-  iModelName: string;
-}
-
-/** React state */
-interface PropertyFormattingState {
-  imodel?: IModelConnection;
-}
-
-/** A React component that renders the UI specific for this sample */
-export class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
-
-  /** Creates an Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
-  }
-
-  private onIModelReady = (imodel: IModelConnection) => {
-    this.setState({ imodel });
-  }
-
-  /** Components for rendering the sample's instructions and controls */
-  private getControlPane() {
-    return (
-      <>
-        <div className="sample-ui">
-          <div className="sample-instructions">
-            <span>Instructions for property formatting sample.</span>
-            <GithubLink linkTarget="https://github.com/imodeljs/imodeljs-samples/tree/master/frontend-samples/zoom-to-elements-sample" />
-          </div>
-          <hr></hr>
-        </div>
-      </>
-    );
-  }
-
-  /** The sample's render method */
-  public render() {
-    return (
-      <>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
-        {this.getControlPane()}
-      </>
-    );
   }
 }

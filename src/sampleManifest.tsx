@@ -8,6 +8,7 @@ import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sam
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
+import { getPropertyFormattingSpec } from "./frontend-samples/property-formatting-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
@@ -54,6 +55,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "Viewer Features", samples: [
+    getPropertyFormattingSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
     getMarkerPinSpec(),
