@@ -15,9 +15,11 @@ const {
 
 module.exports = function (config, env) {
 
-  config.optimization.minimizer[0] = new TerserPlugin({ 
-    extractComments: false,
-  })
+  config.optimization.minimizer.find(minimizer => {
+    if (minimizer.options.extractComments) {
+      minimizer.options.extractComments = false;
+    }
+  });
 
   return Object.assign(config, override(
     addWebpackPlugin(new MonacoWebpackPlugin({
