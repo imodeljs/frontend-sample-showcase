@@ -128,6 +128,11 @@
       "typedef": true
     },
     {
+      "name": "Components/ControlPane/ControlPane",
+      "import": "./src/Components/ControlPane/ControlPane",
+      "typedef": true
+    },
+    {
       "name": "common/SampleApp",
       "import": "./src/common/SampleApp",
       "typedef": true
