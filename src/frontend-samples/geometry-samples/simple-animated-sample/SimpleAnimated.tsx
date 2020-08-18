@@ -5,24 +5,25 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { LineSegment3d, Point3d, LineString3d, Loop } from "@bentley/geometry-core";
+import { LineSegment3d, Point3d, LineString3d, Loop, Range3d } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 export default class SimpleAnimated implements SampleApp {
 
-  public static decorator: GeometryDecorator;
   public static grid: boolean[][] = [];
+  public static sampleDimensions = new Range3d(-10, -10, 0, 1010, 1010, 0);
 
-  public static async setup(iModelName: string): Promise<React.ReactNode> {
-    SimpleAnimated.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback, true);
-    IModelApp.viewManager.addDecorator(SimpleAnimated.decorator);
+  public static async setup(): Promise<React.ReactNode> {
+    await BlankViewport.setup(SimpleAnimated.sampleDimensions);
+    BlankViewport.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback, true);
+    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     SimpleAnimated.generateGrid();
     return <BlankViewport force2d={true}></BlankViewport>;
   }
 
   public static teardown() {
-    if (null != SimpleAnimated.decorator) {
-      IModelApp.viewManager.dropDecorator(SimpleAnimated.decorator);
+    if (null != BlankViewport.decorator) {
+      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
     }
   }
 
@@ -94,7 +95,7 @@ export default class SimpleAnimated implements SampleApp {
   }
 
   public static drawingCallback() {
-    SimpleAnimated.decorator.clearGeometry();
+    BlankViewport.decorator.clearGeometry();
     const squareSize = 20;
     // tslint:disable-next-line: prefer-for-of
     for (let i: number = 0; i < SimpleAnimated.grid.length; i++) {
@@ -107,7 +108,7 @@ export default class SimpleAnimated implements SampleApp {
           corners.push(Point3d.create(i * squareSize, j * squareSize + squareSize, 0));
           const square = LineString3d.create(corners);
           const loop = Loop.create(square.clone());
-          SimpleAnimated.decorator.addGeometry(loop);
+          BlankViewport.decorator.addGeometry(loop);
         }
       }
     }

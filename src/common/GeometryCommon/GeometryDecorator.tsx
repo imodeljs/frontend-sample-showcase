@@ -12,10 +12,10 @@ export class GeometryDecorator implements Decorator {
   private animationSpeed: number;
   private graphics: RenderGraphic | undefined;
   private numFramesElapsed: number = 0;
-  public points: Point3d[] = [];
-  public lines: LineSegment3d[] = [];
-  public shapes: GeometryQuery[] = [];
-  public arcs: Arc3d[] = [];
+  private points: Point3d[] = [];
+  private lines: LineSegment3d[] = [];
+  private shapes: GeometryQuery[] = [];
+  private arcs: Arc3d[] = [];
 
   public constructor(getGeometry: () => void, animated: boolean = false, animationSpeed: number = 1) {
     if (animationSpeed < 1) {

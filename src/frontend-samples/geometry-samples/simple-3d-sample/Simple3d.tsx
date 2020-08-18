@@ -10,17 +10,16 @@ import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 export default class Simple3d implements SampleApp {
 
-  public static decorator: GeometryDecorator;
-
-  public static async setup(iModelName: string): Promise<React.ReactNode> {
-    Simple3d.decorator = new GeometryDecorator(Simple3d.drawingCallback);
-    IModelApp.viewManager.addDecorator(Simple3d.decorator);
+  public static async setup(): Promise<React.ReactNode> {
+    await BlankViewport.setup();
+    BlankViewport.decorator = new GeometryDecorator(Simple3d.drawingCallback);
+    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <BlankViewport force2d={false}></BlankViewport>;
   }
 
   public static teardown() {
-    if (null != Simple3d.decorator) {
-      IModelApp.viewManager.dropDecorator(Simple3d.decorator);
+    if (null != BlankViewport.decorator) {
+      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
     }
   }
 
@@ -33,6 +32,6 @@ export default class Simple3d implements SampleApp {
     const cone = Cone.createAxisPoints(Point3d.create(0, 0, 0), Point3d.create(0, 100, 0), 100, 50, true)!;
     builder.addCone(cone);
     const polyface = builder.claimPolyface(true);
-    Simple3d.decorator.addGeometry(polyface);
+    BlankViewport.decorator.addGeometry(polyface);
   }
 }

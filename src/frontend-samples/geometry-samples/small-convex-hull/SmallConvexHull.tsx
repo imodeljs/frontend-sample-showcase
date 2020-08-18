@@ -10,17 +10,17 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 export default class SmallConvexHull implements SampleApp {
 
-  public static decorator: GeometryDecorator;
-
-  public static async setup(iModelName: string): Promise<React.ReactNode> {
-    SmallConvexHull.decorator = new GeometryDecorator(SmallConvexHull.drawingCallback);
-    IModelApp.viewManager.addDecorator(SmallConvexHull.decorator);
+  public static async setup(): Promise<React.ReactNode> {
+    await BlankViewport.setup();
+    BlankViewport.decorator = new GeometryDecorator(SmallConvexHull.drawingCallback);
+    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <BlankViewport force2d={false}></BlankViewport>;
   }
 
   public static teardown() {
-    if (null != SmallConvexHull.decorator)
-      IModelApp.viewManager.dropDecorator(SmallConvexHull.decorator);
+    if (null != BlankViewport.decorator) {
+      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
+    }
   }
 
   public static drawingCallback() {
@@ -38,11 +38,11 @@ export default class SmallConvexHull implements SampleApp {
     const hullPoints: Point3d[] = [];
     const interiorPoints: Point3d[] = [];
     Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);
-    SmallConvexHull.decorator.addPoints(interiorPoints);
+    BlankViewport.decorator.addPoints(interiorPoints);
     const hullGeometry = LineString3d.create(hullPoints);
-    SmallConvexHull.decorator.addGeometry(hullGeometry);
+    BlankViewport.decorator.addGeometry(hullGeometry);
     const loop = Loop.create(hullGeometry.clone());
     loop.tryTranslateInPlace(0, 400, 0);
-    SmallConvexHull.decorator.addGeometry(loop);
+    BlankViewport.decorator.addGeometry(loop);
   }
 }
