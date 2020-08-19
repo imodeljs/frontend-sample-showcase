@@ -6,12 +6,13 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
-import { KeySet, Field } from "@bentley/presentation-common";
+import { Field, KeySet } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
+import { SimpleTableDataProvider } from "@bentley/ui-components";
+import { PropertyRecord } from "@bentley/ui-abstract";
 
 /*
 These are instructions on how to use the PresentationManager API to essentially duplicate the property display
@@ -56,6 +57,10 @@ export class PropertyFormattingApp implements SampleApp {
   }
 
   private static _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
+    return PropertyFormattingApp.getFormattedProperties(evt, selectionProvider);
+  }
+
+  public static async getFormattedProperties(evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider): Promise<SimpleTableDataProvider | undefined> {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     const keys = new KeySet(selection);
     const requestOptions = { imodel: evt.imodel, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
@@ -74,16 +79,27 @@ export class PropertyFormattingApp implements SampleApp {
     const item = content.contentSet[0];
     const stuff: any[] = [];
     descriptor.fields.forEach((f: Field) => {
-      const fieldName = f.name;
+      const fieldLabel = f.label;
       const catName = f.category.label;
-      const displayValue = item.displayValues[fieldName];
+      const displayValue = item.displayValues[f.name];
 
-      stuff.push({ fieldName, catName, displayValue });
+      stuff.push({ fieldLabel, catName, displayValue });
     });
 
     console.log(stuff);
-  }
 
-  public static async formatProperties(elementIds: string[], imodel: IModelConnection) {
+    const columns = [{ key: "col0", label: "field" }, { key: "col1", label: "value" }];
+    const data = new SimpleTableDataProvider(columns);
+
+    let i = 0;
+    for (const item of stuff) {
+      const cells = [
+        { key: "col0", record: PropertyRecord.fromString(item.fieldLabel) },
+        { key: "col1", record: PropertyRecord.fromString(item.displayValue) },
+      ];
+      data.addRow({ key: "row" + i++, cells });
+    }
+
+    return data;
   }
 }
