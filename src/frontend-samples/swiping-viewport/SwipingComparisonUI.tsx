@@ -4,15 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { Point3d } from "@bentley/geometry-core";
-import { Frustum, RenderMode } from "@bentley/imodeljs-common";
-import { ScreenViewport, ViewClipTool, ViewPose } from "@bentley/imodeljs-frontend";
+import { Frustum } from "@bentley/imodeljs-common";
+import { ScreenViewport } from "@bentley/imodeljs-frontend";
 import React from "react";
 import { DividerComponent } from "./Divider";
 import SwipingViewportApp, { TiledGraphicsOverrider } from "./SwipingComparisonApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 export interface SwipingComparisonUIProps {
   viewport: ScreenViewport;
-  setupControlPane: (instructions: string, controls: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 interface SampleState {
@@ -86,7 +87,6 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   public componentDidUpdate(_prevProps: SwipingComparisonUIProps, prevState: SampleState, _snapshot: any) {
     let updateCompare = false;
-    // let updateState = false;
     if (this.state.bounds.height !== prevState.bounds.height
       || this.state.bounds.width !== prevState.bounds.width
       || this.state.bounds.left !== prevState.bounds.left)
@@ -96,8 +96,6 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     if (this.state.dividerLeft !== prevState.dividerLeft)
       updateCompare = true;
 
-    // if (updateState)
-    //   this.updateState();
     if (updateCompare)
       this.updateCompare();
   }
@@ -113,17 +111,14 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     this.updateCompare();
   }
 
-  public getControls(): React.ReactNode {
-    return (<>
-      <div>Sup Dog</div>
-    </>);
-  }
-
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Compare with the Wireframe", this.getControls());
     return (<>
       { /* Viewport to display the iModel */}
+      <ControlPane
+        iModelSelector={this.props.iModelSelector}
+        instructions={""}
+      />
       <DividerComponent sideL={this.state.dividerLeft} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
     </>);
   }

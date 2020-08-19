@@ -14,8 +14,8 @@ import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 export default class SwipingViewportApp implements SampleApp {
 
   /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void): Promise<React.ReactNode> {
-    return <ViewportLoader iModelName={iModelName} setupControlPane={setupControlPane} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
+    return <ViewportLoader iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   /** Called by the showcase before swapping to another sample. */
@@ -47,7 +47,7 @@ export default class SwipingViewportApp implements SampleApp {
   }
 }
 /** A simple component to load the viewport before starting the sample app. */
-interface ViewportLoaderProps { iModelName: string; setupControlPane: (instructions: string, controls?: React.ReactNode) => void }
+interface ViewportLoaderProps { iModelName: string; iModelSelector: React.ReactNode }
 class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: ScreenViewport }> {
   public state = { viewport: undefined };
   private _onIModelReady = () => {
@@ -62,7 +62,7 @@ class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: S
   public render() {
     return (<>
       <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-      {undefined !== this.state.viewport ? <SwipingComparisonUI viewport={this.state.viewport!} setupControlPane={this.props.setupControlPane} /> : <></>}
+      {undefined !== this.state.viewport ? <SwipingComparisonUI viewport={this.state.viewport!} iModelSelector={this.props.iModelSelector} /> : <></>}
     </>);
   }
 }
