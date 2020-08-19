@@ -6,13 +6,14 @@ import * as React from "react";
 import "common/DataProvider/Trees.scss";
 
 import { CustomCheckboxesTree } from "./CustomCheckboxesTreeApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
-export class CustomCheckboxesTreeUI extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> {
+export class CustomCheckboxesTreeUI extends React.Component<{}> {
 
   public render() {
-    this.props.setupControlPane("This tree demonstrates the ability to render customized icons as the checkboxes for the nodes in a tree.");
     return (
       <>
+        <ControlPane instructions="This tree demonstrates the ability to render customized icons as the checkboxes for the nodes in a tree."></ControlPane>
         <div className="sample-tree tree">
           <CustomCheckboxesTree></CustomCheckboxesTree>
         </div>

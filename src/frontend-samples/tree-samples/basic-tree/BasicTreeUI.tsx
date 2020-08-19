@@ -5,13 +5,14 @@
 import * as React from "react";
 
 import { BasicTree } from "./BasicTreeApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
-export class BasicTreeUI extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> {
+export class BasicTreeUI extends React.Component<{}> {
 
   public render() {
-    this.props.setupControlPane("This is the default tree, allowing for the nesting of nodes within other nodes, which can be expanded or collapsed.");
     return (
       <>
+        <ControlPane instructions="This is the default tree, allowing for the nesting of nodes within other nodes, which can be expanded or collapsed."></ControlPane>
         <div className="sample-tree">
           <BasicTree></BasicTree>
         </div>

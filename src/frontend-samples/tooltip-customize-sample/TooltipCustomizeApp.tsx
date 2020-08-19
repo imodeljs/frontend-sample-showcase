@@ -109,11 +109,11 @@ export default class TooltipCustomizeApp implements SampleApp {
     elemProperty: ElemProperty.Origin,
   };
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     // ToolAdmin is typically initialized at application start.
     // See Notes at bottom of this file.
     ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin());
-    return <TooltipCustomizeUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+    return <TooltipCustomizeUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {

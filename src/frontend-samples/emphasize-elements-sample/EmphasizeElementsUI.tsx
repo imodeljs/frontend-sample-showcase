@@ -6,13 +6,14 @@ import * as React from "react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 import { ColorDef } from "@bentley/imodeljs-common";
 import {
   ClearEmphasizeAction, ClearHideAction, ClearIsolateAction, ClearOverrideAction,
   EmphasizeAction, HideAction, IsolateAction, OverrideAction,
 } from "./EmphasizeElementsApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface EmphasizeElementsState {
@@ -33,7 +34,7 @@ enum ActionType {
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class EmphasizeElementsUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void }, EmphasizeElementsState> {
+export default class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -145,9 +146,9 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Select one or more elements.  Click one of the Apply buttons.", this.getControls());
     return (
       <>
+        <ControlPane instructions="Select one or more elements.  Click one of the Apply buttons." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} />
       </>
     );

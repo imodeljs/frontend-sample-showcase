@@ -13,11 +13,12 @@ import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import HeatmapDecoratorApp from "./HeatmapDecoratorApp";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ViewSetup } from "api/viewSetup";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface HeatmapDecoratorUIProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 interface HeatmapDecoratorUIState {
@@ -25,6 +26,9 @@ interface HeatmapDecoratorUIState {
   vp?: Viewport;
   showDecorator: boolean;
   spreadFactor: number;
+  points: Point3d[];
+  range: Range2d;
+  height: number;
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -35,21 +39,22 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     this.state = {
       showDecorator: true,
       spreadFactor: 10,
+      points: [],
+      range: Range2d.createNull(),
+      height: 0,
     };
   }
 
   private _onPointsChanged = (points: Point3d[]) => {
-    if (undefined === HeatmapDecoratorApp.decorator) {
-      HeatmapDecoratorApp.setupDecorator(points, this.state.spreadFactor);
-      return;
-    }
-
-    HeatmapDecoratorApp.decorator.setPoints(points);
+    this.setState({ points }, () => {
+      if (HeatmapDecoratorApp.decorator)
+        HeatmapDecoratorApp.decorator.setPoints(this.state.points);
+    });
   }
 
   private _onChangeSpreadFactor = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ spreadFactor: Number(event.target.value) }, () => {
-      if (undefined !== HeatmapDecoratorApp.decorator)
+      if (HeatmapDecoratorApp.decorator)
         HeatmapDecoratorApp.decorator.setSpreadFactor(this.state.spreadFactor);
     });
   }
@@ -89,13 +94,18 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
 
       // Grab range of the contents of the view. We'll use this to size the heatmap.
-      const range = vp.view.computeFitRange();
-      HeatmapDecoratorApp.range = Range2d.createFrom(range);
+      const range3d = vp.view.computeFitRange();
+      const range = Range2d.createFrom(range3d);
 
       // We'll draw the heatmap as an overlay in the center of the view's Z extents.
-      HeatmapDecoratorApp.height = range.high.interpolate(0.5, range.low).z;
+      const height = range3d.high.interpolate(0.5, range3d.low).z;
 
-      this.setState({ imodel, vp });
+      this.setState({ imodel, vp, range, height }, () => {
+        if (this.state.showDecorator) {
+          HeatmapDecoratorApp.setupDecorator(this.state.points, this.state.range, this.state.spreadFactor, this.state.height);
+          HeatmapDecoratorApp.enableDecorations();
+        }
+      });
     });
   }
 
@@ -106,7 +116,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
         <div className="sample-options-2col">
           <span>Show Heatmap</span>
           <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowHeatmap} />
-          <PointSelector onPointsChanged={this._onPointsChanged} range={HeatmapDecoratorApp.range} />
+          <PointSelector onPointsChanged={this._onPointsChanged} range={this.state.range} />
           <span>Spread Factor</span>
           <input type="range" min="1" max="100" value={this.state.spreadFactor} onChange={this._onChangeSpreadFactor}></input>
         </div>
@@ -116,9 +126,9 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Use the options below to control the heatmap visualization.", this.getControls());
     return (
       <>
+        <ControlPane instructions="Use the options below to control the heatmap visualization." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={HeatmapDecoratorUI.getTopView} />
       </>
     );

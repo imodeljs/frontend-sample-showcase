@@ -8,13 +8,14 @@ import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "api/viewSetup";
 import ViewClipApp from "./ViewClipApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 interface ViewClipUIProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 interface ViewClipUIState {
@@ -138,9 +139,9 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Use the options below to control the view clip.", this.getControls());
     return (
       <>
+        <ControlPane instructions="Use the options below to control the view clip." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
       </>
     );

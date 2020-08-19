@@ -11,11 +11,12 @@ import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
 import { ViewSetup } from "api/viewSetup";
 import { ViewCreator2d } from "./ViewCreator2d";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // The Props and State for this sample component
 interface ViewerOnly2dProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 interface ViewerOnly2dState {
@@ -41,7 +42,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     return (
       <div style={{ marginTop: "20px" }}>
         <span>Select Drawing or Sheet: </span>
-        <select onChange={this._handleSelection}>
+        <select onChange={this._handleSelection} className="2d-model-selector">
           {(drawingViews.length > 0) ? <optgroup label="Drawings" /> : null};
           {drawingViews};
           {(sheetViews.length > 0) ? <optgroup label="Sheets" /> : null};
@@ -103,14 +104,18 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     }
 
     await ViewerOnly2dApp.changeViewportView(imodel, firstModel);
+
+    const modelSelector2d = document.getElementsByClassName("2d-model-selector")[0] as HTMLSelectElement;
+    modelSelector2d.selectedIndex = 0;
+
     return viewState;
   }
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("The picker below shows a list of 2D models in this iModel.", this.getControls());
     return (
       <>
+        <ControlPane instructions="The picker below shows a list of 2D models in this iModel." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} getCustomViewState={this.getInitialView} />
       </>
     );

@@ -15,6 +15,7 @@ import { PointSelector } from "common/PointSelector/PointSelector";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
 import MarkerPinApp from "./MarkerPinApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 interface ManualPinSelection {
   name: string;
@@ -25,10 +26,13 @@ interface MarkerPinsUIState {
   imodel?: IModelConnection;
   showDecorator: boolean;
   manualPin: ManualPinSelection;
+  points: Point3d[];
+  range: Range2d;
+  height: number;
 }
 
 export default class MarkerPinsUI extends React.Component<{
-  iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelName: string, iModelSelector: React.ReactNode;
 }, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
@@ -37,6 +41,9 @@ export default class MarkerPinsUI extends React.Component<{
     this.state = {
       showDecorator: true,
       manualPin: MarkerPinsUI.getManualPinSelections()[0],
+      points: [],
+      range: Range2d.createNull(),
+      height: 0,
     };
   }
 
@@ -46,12 +53,12 @@ export default class MarkerPinsUI extends React.Component<{
   private _onPointsChanged = async (points: Point3d[]): Promise<void> => {
 
     for (const point of points)
-      point.z = MarkerPinApp.height!;
+      point.z = this.state.height;
 
-    if (!MarkerPinApp.decoratorIsSetup())
-      return MarkerPinApp.setupDecorator(points);
-    else
-      MarkerPinApp.setMarkerPoints(points);
+    this.setState({ points }, () => {
+      if (MarkerPinApp.decoratorIsSetup())
+        MarkerPinApp.setMarkerPoints(points);
+    });
   }
 
   /** Called when the user changes the showMarkers toggle. */
@@ -114,13 +121,18 @@ export default class MarkerPinsUI extends React.Component<{
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
 
       // Grab range of the contents of the view. We'll use this to position the random markers.
-      const range = vp.view.computeFitRange();
-      MarkerPinApp.range = Range2d.createFrom(range);
+      const range3d = vp.view.computeFitRange();
+      const range = Range2d.createFrom(range3d);
 
       // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
-      MarkerPinApp.height = range.zHigh;
+      const height = range3d.zHigh;
 
-      this.setState({ imodel });
+      this.setState({ imodel, range, height }, () => {
+        if (this.state.showDecorator) {
+          MarkerPinApp.setupDecorator(this.state.points);
+          MarkerPinApp.enableDecorations();
+        }
+      });
     });
   }
 
@@ -138,7 +150,7 @@ export default class MarkerPinsUI extends React.Component<{
           <span>Auto-generate locations</span>
         </div>
         <div className="sample-options-2col">
-          <PointSelector onPointsChanged={this._onPointsChanged} range={MarkerPinApp.range} />
+          <PointSelector onPointsChanged={this._onPointsChanged} range={this.state.range} />
         </div>
         <hr></hr>
         <div className="sample-heading">
@@ -154,9 +166,9 @@ export default class MarkerPinsUI extends React.Component<{
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Use the options below to control the marker pins.  Click a marker to open a menu of options.", this.getControls());
     return (
       <>
+        <ControlPane instructions="Use the options below to control the marker pins.  Click a marker to open a menu of options." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsUI.getTopView} />      </>
     );
   }
