@@ -5,9 +5,10 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { LineSegment3d, Point3d, LineString3d, Loop, Range3d } from "@bentley/geometry-core";
+import { LineString3d, Loop, Point3d, Range3d } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { BeDuration } from "@bentley/bentleyjs-core";
 export default class SimpleAnimated implements SampleApp {
 
   public static grid: boolean[][] = [];
@@ -113,5 +114,6 @@ export default class SimpleAnimated implements SampleApp {
       }
     }
     SimpleAnimated.updateGrid();
+    IModelApp.viewManager.invalidateDecorationsAllViews();
   }
 }

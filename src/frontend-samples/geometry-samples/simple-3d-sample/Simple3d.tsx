@@ -5,7 +5,7 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { LineSegment3d, Point3d, Point3dArray, Box, Vector3d, StrokeOptions, PolyfaceBuilder, Cone } from "@bentley/geometry-core";
+import { Cone, Point3d, PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 export default class Simple3d implements SampleApp {
@@ -24,7 +24,7 @@ export default class Simple3d implements SampleApp {
   }
 
   public static drawingCallback() {
-    // Make a meshed cone . ..
+    // Make a meshed cone
     const options = new StrokeOptions();
     options.needParams = false;
     options.needNormals = true;

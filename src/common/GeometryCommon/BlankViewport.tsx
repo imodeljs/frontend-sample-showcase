@@ -69,7 +69,7 @@ const toolbar = (allowRotate: boolean) => {
     </div>
   );
   /* eslint-enable */
-}
+};
 
 const select = () => {
   IModelApp.tools.run(SelectionTool.toolId);

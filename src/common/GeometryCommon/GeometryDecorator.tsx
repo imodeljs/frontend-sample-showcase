@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Transform, Box, Polyface } from "@bentley/geometry-core";
+import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Polyface, Transform } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, RenderGraphic } from "@bentley/imodeljs-frontend";
 
 export class GeometryDecorator implements Decorator {
@@ -13,9 +13,7 @@ export class GeometryDecorator implements Decorator {
   private graphics: RenderGraphic | undefined;
   private numFramesElapsed: number = 0;
   private points: Point3d[] = [];
-  private lines: LineSegment3d[] = [];
   private shapes: GeometryQuery[] = [];
-  private arcs: Arc3d[] = [];
 
   public constructor(getGeometry: () => void, animated: boolean = false, animationSpeed: number = 1) {
     if (animationSpeed < 1) {
@@ -27,7 +25,7 @@ export class GeometryDecorator implements Decorator {
   }
 
   public addLine(line: LineSegment3d) {
-    this.lines.push(line);
+    this.shapes.push(line);
   }
 
   public addPoint(point: Point3d) {
@@ -45,25 +43,17 @@ export class GeometryDecorator implements Decorator {
   }
 
   public addArc(arc: Arc3d) {
-    this.arcs.push(arc);
+    this.shapes.push(arc);
   }
 
   public clearGeometry() {
     this.points = [];
-    this.lines = [];
     this.shapes = [];
-    this.arcs = [];
   }
 
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
     this.getGeometry();
     const builder = context.createGraphicBuilder(GraphicType.WorldOverlay);
-    this.lines.forEach((line) => {
-      const pointA = line.point0Ref;
-      const pointB = line.point1Ref;
-      const lineString = [pointA, pointB];
-      builder.addLineString(lineString);
-    });
     this.points.forEach((point) => {
       const circle = Arc3d.createXY(point, 3);
       builder.addArc(circle, false, true);
@@ -75,10 +65,14 @@ export class GeometryDecorator implements Decorator {
         builder.addLoop(geometry);
       } else if (geometry instanceof Polyface) {
         builder.addPolyface(geometry, false);
+      } else if (geometry instanceof LineSegment3d) {
+        const pointA = geometry.point0Ref;
+        const pointB = geometry.point1Ref;
+        const lineString = [pointA, pointB];
+        builder.addLineString(lineString);
+      } else if (geometry instanceof Arc3d) {
+        builder.addArc(geometry, false, false);
       }
-    });
-    this.arcs.forEach((arc) => {
-      builder.addArc(arc, false, false);
     });
     return builder.finish();
   }

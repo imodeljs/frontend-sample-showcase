@@ -5,7 +5,7 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { LineString3d, Loop, Point3d, Point3dArray } from "@bentley/geometry-core";
+import { Arc3d, LineString3d, Loop, Point3d, Point3dArray } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 export default class SmallConvexHull implements SampleApp {
@@ -14,7 +14,7 @@ export default class SmallConvexHull implements SampleApp {
     await BlankViewport.setup();
     BlankViewport.decorator = new GeometryDecorator(SmallConvexHull.drawingCallback);
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <BlankViewport force2d={false}></BlankViewport>;
+    return <BlankViewport force2d={true}></BlankViewport>;
   }
 
   public static teardown() {
@@ -44,5 +44,7 @@ export default class SmallConvexHull implements SampleApp {
     const loop = Loop.create(hullGeometry.clone());
     loop.tryTranslateInPlace(0, 500, 0);
     BlankViewport.decorator.addGeometry(loop);
+    const circle = Arc3d.createXY(Point3d.create(200, 200, 0), 50);
+    BlankViewport.decorator.addGeometry(circle);
   }
 }

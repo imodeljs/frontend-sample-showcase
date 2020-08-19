@@ -14,7 +14,7 @@ export default class SimpleLine implements SampleApp {
     await BlankViewport.setup();
     BlankViewport.decorator = new GeometryDecorator(SimpleLine.drawingCallback);
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <BlankViewport force2d={false}></BlankViewport>;
+    return <BlankViewport force2d={true}></BlankViewport>;
   }
 
   public static teardown() {
@@ -27,7 +27,7 @@ export default class SimpleLine implements SampleApp {
     const pointA = Point3d.create(140, 25, 0);
     const pointB = Point3d.create(680, 800, 0);
     const myLine = LineSegment3d.create(pointA, pointB);
-    BlankViewport.decorator.addLine(myLine);
+    BlankViewport.decorator.addGeometry(myLine);
 
     for (const fractionAlongLine of [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]) {
       const pointAlongLine = myLine.fractionToPoint(fractionAlongLine);
