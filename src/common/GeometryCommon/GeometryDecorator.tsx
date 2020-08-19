@@ -3,25 +3,29 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Polyface, Transform } from "@bentley/geometry-core";
-import { DecorateContext, Decorator, GraphicBranch, GraphicType, RenderGraphic } from "@bentley/imodeljs-frontend";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, RenderGraphic, IModelApp } from "@bentley/imodeljs-frontend";
+import { Timer } from "@bentley/ui-core";
 
 export class GeometryDecorator implements Decorator {
 
   private getGeometry: () => void;
   private animated: boolean;
-  private animationSpeed: number;
+  private timer: Timer | undefined;
   private graphics: RenderGraphic | undefined;
-  private numFramesElapsed: number = 0;
   private points: Point3d[] = [];
   private shapes: GeometryQuery[] = [];
 
-  public constructor(getGeometry: () => void, animated: boolean = false, animationSpeed: number = 1) {
+  public constructor(getGeometry: () => void, animated: boolean = false, animationSpeed: number = 10) {
     if (animationSpeed < 1) {
       animationSpeed = 1;
     }
     this.getGeometry = getGeometry;
     this.animated = animated;
-    this.animationSpeed = animationSpeed;
+    if (animated) {
+      this.timer = new Timer(animationSpeed);
+      this.timer.setOnExecute(this.handleTimer.bind(this));
+      this.timer.start();
+    }
   }
 
   public addLine(line: LineSegment3d) {
@@ -78,16 +82,26 @@ export class GeometryDecorator implements Decorator {
   }
 
   public decorate(context: DecorateContext): void {
-    if (!this.graphics || (this.animated && this.numFramesElapsed % this.animationSpeed === 0)) {
+    if (!this.graphics || this.animated) {
       this.graphics = this.createGraphics(context);
     }
-    this.numFramesElapsed++;
     const branch = new GraphicBranch(false);
     if (this.graphics)
       branch.add(this.graphics);
 
     const graphic = context.createBranch(branch, Transform.identity);
     context.addDecoration(GraphicType.WorldOverlay, graphic);
+  }
+
+  public toggleAnimation() {
+    this.animated = !this.animated;
+  }
+
+  public handleTimer() {
+    if (this.timer && this.animated) {
+      this.timer.start();
+    }
+    IModelApp.viewManager.invalidateDecorationsAllViews();
   }
 
 }

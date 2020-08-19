@@ -8,7 +8,7 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { LineString3d, Loop, Point3d, Range3d } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { BeDuration } from "@bentley/bentleyjs-core";
+
 export default class SimpleAnimated implements SampleApp {
 
   public static grid: boolean[][] = [];
@@ -16,13 +16,14 @@ export default class SimpleAnimated implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup(SimpleAnimated.sampleDimensions);
-    BlankViewport.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback, true);
+    BlankViewport.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback, true, 100);
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     SimpleAnimated.generateGrid();
     return <BlankViewport force2d={true}></BlankViewport>;
   }
 
   public static teardown() {
+    BlankViewport.decorator.toggleAnimation();
     if (null != BlankViewport.decorator) {
       IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
     }
