@@ -25,12 +25,14 @@ interface SwipingComparisonUIState {
 }
 
 export default class SwipingComparisonUI extends React.Component<SwipingComparisonUIProps, SwipingComparisonUIState> {
-  public static getScreenPoint(bounds: ClientRect, dividerLeft: number): Point3d {
+  public static getScreenPoint(bounds: ClientRect, leftInWindowSpace: number): Point3d {
     const y = bounds.top + (bounds.height / 2);
-    return new Point3d(dividerLeft, y, 0);
+    // The point needs to be returned relative to the canvas.
+    const left = leftInWindowSpace - bounds.left;
+    return new Point3d(left, y, 0);
   }
 
-  private _dividerLeft?: number; // position relative to the viewport
+  private _dividerLeft?: number; // position relative to the window
 
   public state: SwipingComparisonUIState = {};
 
@@ -102,10 +104,11 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   }
 
   private readonly _onDividerMoved = (leftWidth: number, rightWidth: number) => {
+    // leftWidth is relative to the canvas.  We need to track left based on the window
     const sliderWidth = this.state.bounds!.width - (leftWidth + rightWidth);
     const left = leftWidth + (sliderWidth / 2);
 
-    this._dividerLeft = left;
+    this._dividerLeft = left + this.state.bounds!.left;
     this.updateState();
   }
 
