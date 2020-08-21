@@ -8,6 +8,7 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { Cone, Point3d, PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorDef } from "@bentley/imodeljs-common";
 export default class Simple3d implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
@@ -29,9 +30,11 @@ export default class Simple3d implements SampleApp {
     options.needParams = false;
     options.needNormals = true;
     const builder = PolyfaceBuilder.create(options);
-    const cone = Cone.createAxisPoints(Point3d.create(500, 250, 0), Point3d.create(500, 750, 0), 500, 200, true)!;
+    const cone = Cone.createAxisPoints(Point3d.create(500, 350, 500), Point3d.create(500, 650, 500), 250, 100, true)!;
     builder.addCone(cone);
     const polyface = builder.claimPolyface(true);
+    BlankViewport.decorator.setColor(ColorDef.blue);
+    //BlankViewport.decorator.setFill(false);
     BlankViewport.decorator.addGeometry(polyface);
   }
 }

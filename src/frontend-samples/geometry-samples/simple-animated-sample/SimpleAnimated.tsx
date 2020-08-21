@@ -8,6 +8,7 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { LineString3d, Loop, Point3d, Range3d } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorDef } from "@bentley/imodeljs-common";
 
 export default class SimpleAnimated implements SampleApp {
 
@@ -23,7 +24,8 @@ export default class SimpleAnimated implements SampleApp {
   }
 
   public static teardown() {
-    BlankViewport.decorator.toggleAnimation();
+    if (BlankViewport.decorator)
+      BlankViewport.decorator.toggleAnimation();
     if (null != BlankViewport.decorator) {
       IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
     }

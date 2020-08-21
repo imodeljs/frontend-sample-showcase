@@ -3,8 +3,23 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Polyface, Transform } from "@bentley/geometry-core";
-import { DecorateContext, Decorator, GraphicBranch, GraphicType, RenderGraphic, IModelApp } from "@bentley/imodeljs-frontend";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { Timer } from "@bentley/ui-core";
+import { ColorDef, TextStringPrimitive, GeometryStreamBuilder } from "@bentley/imodeljs-common";
+
+interface CustomGeometryQuery {
+  geometry: GeometryQuery;
+  color: ColorDef;
+  fill: boolean;
+  lineThickness: number;
+}
+
+interface CustomPoint {
+  point: Point3d;
+  color: ColorDef;
+  fill: boolean;
+  lineThickness: number;
+}
 
 export class GeometryDecorator implements Decorator {
 
@@ -12,8 +27,12 @@ export class GeometryDecorator implements Decorator {
   private animated: boolean;
   private timer: Timer | undefined;
   private graphics: RenderGraphic | undefined;
-  private points: Point3d[] = [];
-  private shapes: GeometryQuery[] = [];
+  private points: CustomPoint[] = [];
+  private shapes: CustomGeometryQuery[] = [];
+  private text: TextStringPrimitive[] = [];
+  private fill: boolean = true;
+  private color: ColorDef = ColorDef.black;
+  private lineThickness: number = 1;
 
   public constructor(getGeometry: () => void, animated: boolean = false, animationSpeed: number = 10) {
     if (animationSpeed < 1) {
@@ -29,25 +48,53 @@ export class GeometryDecorator implements Decorator {
   }
 
   public addLine(line: LineSegment3d) {
-    this.shapes.push(line);
+    const styledGeometry: CustomGeometryQuery = ({
+      geometry: line,
+      color: this.color,
+      fill: this.fill,
+      lineThickness: this.lineThickness,
+    });
+    this.shapes.push(styledGeometry);
+  }
+
+  public addText(text: TextStringPrimitive) {
+    this.text.push(text);
   }
 
   public addPoint(point: Point3d) {
-    this.points.push(point);
+    const styledPoint: CustomPoint = ({
+      point,
+      color: this.color,
+      fill: this.fill,
+      lineThickness: this.lineThickness,
+    });
+    this.points.push(styledPoint);
   }
 
   public addPoints(points: Point3d[]) {
     points.forEach((point) => {
-      this.points.push(point);
+      this.addPoint(point);
     });
   }
 
   public addGeometry(geometry: GeometryQuery) {
-    this.shapes.push(geometry);
+    const styledGeometry: CustomGeometryQuery = ({
+      geometry,
+      color: this.color,
+      fill: this.fill,
+      lineThickness: this.lineThickness,
+    });
+    this.shapes.push(styledGeometry);
   }
 
   public addArc(arc: Arc3d) {
-    this.shapes.push(arc);
+    const styledGeometry: CustomGeometryQuery = ({
+      geometry: arc,
+      color: this.color,
+      fill: this.fill,
+      lineThickness: this.lineThickness,
+    });
+    this.shapes.push(styledGeometry);
   }
 
   public clearGeometry() {
@@ -55,17 +102,38 @@ export class GeometryDecorator implements Decorator {
     this.shapes = [];
   }
 
+  public setColor(color: ColorDef) {
+    this.color = color;
+  }
+
+  public setFill(fill: boolean) {
+    this.fill = fill;
+  }
+
+  public setLineThickness(lineThickness: number) {
+    this.lineThickness = lineThickness;
+  }
+
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
     this.getGeometry();
     const builder = context.createGraphicBuilder(GraphicType.WorldOverlay);
-    this.points.forEach((point) => {
+    const builder2 = new GeometryStreamBuilder();
+
+    this.points.forEach((styledPoint) => {
+      builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
+      const point = styledPoint.point;
       const circle = Arc3d.createXY(point, 3);
-      builder.addArc(circle, false, true);
+      builder.addArc(circle, false, styledPoint.fill);
     });
-    this.shapes.forEach((geometry) => {
-      if (geometry instanceof LineString3d)
+    this.text.forEach((text) => {
+      builder2.appendTextString(text.textString)
+    });
+    this.shapes.forEach((styledGeometry) => {
+      const geometry = styledGeometry.geometry;
+      builder.setSymbology(styledGeometry.color, styledGeometry.fill ? styledGeometry.color : ColorDef.white, styledGeometry.lineThickness);
+      if (geometry instanceof LineString3d) {
         builder.addLineString(geometry.points);
-      else if (geometry instanceof Loop) {
+      } else if (geometry instanceof Loop) {
         builder.addLoop(geometry);
       } else if (geometry instanceof Polyface) {
         builder.addPolyface(geometry, false);
@@ -97,6 +165,9 @@ export class GeometryDecorator implements Decorator {
     this.animated = !this.animated;
   }
 
+  // We are making use of a timer to consistently render animated geometry
+  // Since a viewport only re-renders a frame when it needs or receives new information,
+  // We must invalidate the old decorations on every timer tick
   public handleTimer() {
     if (this.timer && this.animated) {
       this.timer.start();

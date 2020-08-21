@@ -5,7 +5,7 @@
 import * as React from "react";
 import { Range3d } from "@bentley/geometry-core";
 import { BlankConnection, DisplayStyle3dState, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
-import { Cartographic, ColorDef } from "@bentley/imodeljs-common";
+import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
@@ -33,6 +33,9 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, {}> {
     viewState.setAllow3dManipulations(true);
     viewState.setStandardRotation(StandardViewId.Top);
     const style = viewState.displayStyle as DisplayStyle3dState;
+    const viewFlags = style.viewFlags;
+    viewFlags.renderMode = RenderMode.Wireframe;
+    style.viewFlags = viewFlags;
     style.backgroundColor = ColorDef.white;
     return viewState;
   }
