@@ -38,6 +38,7 @@ import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/c
 import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
 import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
+import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
@@ -57,6 +58,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
     getMarkerPinSpec(),
+    getMultiViewportSpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
