@@ -58,7 +58,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   // Returns the position the divider will start at based on the bounds of the divider
   private initPositionDivider(bounds: ClientRect): number {
-    return (bounds.width / 2);
+    return bounds.left + (bounds.width / 2);
   }
 
   // Should be called when the Viewport is ready.
@@ -144,12 +144,12 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     return (<>
       <ControlPane
         iModelSelector={this.props.iModelSelector}
-        instructions={""}
+        instructions={"Drag the divider to compare the iModel with its wireframe rendering."}
       />
       { /* Viewport to display the iModel */}
       <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       {undefined !== this.state.bounds && undefined !== this.state.dividerLeft ?
-        <DividerComponent sideL={this.state.dividerLeft} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
+        <DividerComponent sideL={this.state.dividerLeft - this.state.bounds.left} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
         : <></>}
     </>);
   }
