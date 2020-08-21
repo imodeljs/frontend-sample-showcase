@@ -34,7 +34,6 @@ export default class Simple3d implements SampleApp {
     builder.addCone(cone);
     const polyface = builder.claimPolyface(true);
     BlankViewport.decorator.setColor(ColorDef.blue);
-    //BlankViewport.decorator.setFill(false);
     BlankViewport.decorator.addGeometry(polyface);
   }
 }

@@ -5,7 +5,7 @@
 import * as React from "react";
 import { Range3d } from "@bentley/geometry-core";
 import { BlankConnection, DisplayStyle3dState, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
-import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
+import { Cartographic, ColorDef } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
@@ -27,15 +27,14 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, {}> {
   }
 
   // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
+  // TODO: Modify background color to be more appealing
+  // TODO: Enable a style of lighting that makes 3d objects more obviously 3d
   public static async getViewState(imodel: IModelConnection): Promise<ViewState> {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
     viewState.setAllow3dManipulations(true);
     viewState.setStandardRotation(StandardViewId.Top);
     const style = viewState.displayStyle as DisplayStyle3dState;
-    const viewFlags = style.viewFlags;
-    viewFlags.renderMode = RenderMode.Wireframe;
-    style.viewFlags = viewFlags;
     style.backgroundColor = ColorDef.white;
     return viewState;
   }
@@ -60,6 +59,7 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, {}> {
 }
 
 // The toolbar that is used the various geometry samples
+// The rotate tool is available depending on whether the viewport is 2d or 3d
 const toolbar = (allowRotate: boolean) => {
   /* eslint-disable */
   return (

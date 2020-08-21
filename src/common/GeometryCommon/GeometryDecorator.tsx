@@ -5,8 +5,9 @@
 import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Polyface, Transform } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { Timer } from "@bentley/ui-core";
-import { ColorDef, TextStringPrimitive, GeometryStreamBuilder } from "@bentley/imodeljs-common";
+import { ColorDef } from "@bentley/imodeljs-common";
 
+// Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
 interface CustomGeometryQuery {
   geometry: GeometryQuery;
   color: ColorDef;
@@ -24,12 +25,14 @@ interface CustomPoint {
 export class GeometryDecorator implements Decorator {
 
   private getGeometry: () => void;
+
   private animated: boolean;
   private timer: Timer | undefined;
   private graphics: RenderGraphic | undefined;
+
   private points: CustomPoint[] = [];
   private shapes: CustomGeometryQuery[] = [];
-  private text: TextStringPrimitive[] = [];
+
   private fill: boolean = true;
   private color: ColorDef = ColorDef.black;
   private lineThickness: number = 1;
@@ -40,6 +43,7 @@ export class GeometryDecorator implements Decorator {
     }
     this.getGeometry = getGeometry;
     this.animated = animated;
+    // When using animation, we enable a timer to re-render the graphic every animationSpeed interval in ms
     if (animated) {
       this.timer = new Timer(animationSpeed);
       this.timer.setOnExecute(this.handleTimer.bind(this));
@@ -55,10 +59,6 @@ export class GeometryDecorator implements Decorator {
       lineThickness: this.lineThickness,
     });
     this.shapes.push(styledGeometry);
-  }
-
-  public addText(text: TextStringPrimitive) {
-    this.text.push(text);
   }
 
   public addPoint(point: Point3d) {
@@ -114,19 +114,18 @@ export class GeometryDecorator implements Decorator {
     this.lineThickness = lineThickness;
   }
 
+  // Iterate through the geometry and point lists, extracting each geometry and point, along with their styles
+  // Adding them to the graphic builder which then creates new graphics
+  // TODO: Add the ability to support text rendering
+  // TODO: Fix defects with the fill command on certain geometry types(Loops, Polyfaces)
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
     this.getGeometry();
     const builder = context.createGraphicBuilder(GraphicType.WorldOverlay);
-    const builder2 = new GeometryStreamBuilder();
-
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
       const point = styledPoint.point;
       const circle = Arc3d.createXY(point, 3);
       builder.addArc(circle, false, styledPoint.fill);
-    });
-    this.text.forEach((text) => {
-      builder2.appendTextString(text.textString)
     });
     this.shapes.forEach((styledGeometry) => {
       const geometry = styledGeometry.geometry;

@@ -8,7 +8,7 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { Arc3d, LineString3d, Loop, Point3d, Point3dArray } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { ColorDef, TextStringPrimitive, TextString } from "@bentley/imodeljs-common";
+import { ColorDef } from "@bentley/imodeljs-common";
 export default class SmallConvexHull implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
@@ -25,14 +25,6 @@ export default class SmallConvexHull implements SampleApp {
   }
 
   public static drawingCallback() {
-    const text: TextStringPrimitive = {
-      type: "textString",
-      textString: new TextString({
-        font: 10,
-        height: 10,
-        text: "egg",
-      }),
-    };
     const points: Point3d[] = [];
     points.push(Point3d.create(100, 0, 0));
     points.push(Point3d.create(200, 100, 0));
@@ -48,12 +40,9 @@ export default class SmallConvexHull implements SampleApp {
     const interiorPoints: Point3d[] = [];
     Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);
     BlankViewport.decorator.setColor(ColorDef.blue);
-    //BlankViewport.decorator.setFill(true);
     BlankViewport.decorator.addPoints(interiorPoints);
-    BlankViewport.decorator.addText(text);
     const hullGeometry = LineString3d.create(hullPoints);
     BlankViewport.decorator.setColor(ColorDef.green);
-    //BlankViewport.decorator.setFill(false);
     BlankViewport.decorator.setLineThickness(5);
     BlankViewport.decorator.addGeometry(hullGeometry);
     const loop = Loop.create(hullGeometry.clone());
