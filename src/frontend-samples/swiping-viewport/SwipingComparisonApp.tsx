@@ -22,7 +22,7 @@ export default class SwipingViewportApp implements SampleApp {
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
-    this.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider);
+    SwipingViewportApp.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider);
     if (undefined !== SwipingViewportApp._viewport) {
       SwipingViewportApp._viewport.view.setViewClip(undefined);
       SwipingViewportApp._viewport.synchWithView();
@@ -42,8 +42,7 @@ export default class SwipingViewportApp implements SampleApp {
   /** Adds a listener that will be triggered when the viewport is updated. Returns a functions to remove that listener. */
   public static listerForViewportUpdate(viewport: Viewport, onUpdate: (viewport: Viewport) => void): () => void {
     // There is event in the viewport called onViewChanged.  As stated in the js docs, the function is invoked, VERY frequently.
-    //  Using that event, any rare extra frames of the divider not aligning with the viewport should be removed, but the
-    //  performance can start to suffer.
+    //  Using that event when doing heavy changes in that event, performance can start to suffer.
     return viewport.onRender.addListener(onUpdate);
   }
 
@@ -81,12 +80,10 @@ export default class SwipingViewportApp implements SampleApp {
       return;
 
     if (undefined === provider) {
-      this.initProvider(screenPoint, viewport);
+      SwipingViewportApp.initProvider(screenPoint, viewport);
       vp.synchWithView();
-      return;
-    }
-    if (!this._prevPoint?.isAlmostEqual(screenPoint)) {
-      this.updateProvider(screenPoint, viewport, provider);
+    } else if (!SwipingViewportApp._prevPoint?.isAlmostEqual(screenPoint)) {
+      SwipingViewportApp.updateProvider(screenPoint, viewport, provider);
     }
     vp.invalidateScene();
   }
@@ -104,27 +101,29 @@ export default class SwipingViewportApp implements SampleApp {
     const vp = viewport;
     const normal = SwipingViewportApp.getPerpendicularNormal(vp, screenPoint);
     const worldPoint = SwipingViewportApp.getWorldPoint(vp, screenPoint);
-    const clip = this.createClip(normal.clone().negate(), worldPoint);
+    const clip = SwipingViewportApp.createClip(normal.clone().negate(), worldPoint);
 
     provider.clipVolume?.dispose();
     provider.setClipVector(clip);
 
-    viewport.view.setViewClip(this.createClip(normal.clone(), worldPoint));
+    viewport.view.setViewClip(SwipingViewportApp.createClip(normal.clone(), worldPoint));
     viewport.synchWithView();
   }
 
   /** Creates a [TiledGraphicsProvider] and adds it to the viewport.  This also sets the clipping plane used for the comparison. */
   private static initProvider(screenPoint: Point3d, viewport: Viewport) {
-    this._prevPoint = screenPoint;
+    SwipingViewportApp._prevPoint = screenPoint;
     const vp = viewport;
     const normal = SwipingViewportApp.getPerpendicularNormal(viewport, screenPoint);
 
     // Note the normal is negated, this is flip the clipping plane created from it.
-    this._provider = new ComparisonProvider(this.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(viewport, screenPoint)));
-    vp.addTiledGraphicsProvider(this._provider);
+    const negatedClip = SwipingViewportApp.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(viewport, screenPoint));
+    SwipingViewportApp._provider = new ComparisonProvider(negatedClip);
+    vp.addTiledGraphicsProvider(SwipingViewportApp._provider);
 
     // Note the normal is NOT negated.  These opposite facing clipping planes will create a effect we can use to compare views.
-    vp.view.setViewClip(this.createClip(normal.clone(), SwipingViewportApp.getWorldPoint(viewport, screenPoint)));
+    const clip = SwipingViewportApp.createClip(normal.clone(), SwipingViewportApp.getWorldPoint(viewport, screenPoint));
+    vp.view.setViewClip(clip);
     vp.viewFlags.clipVolume = true;
   }
 
