@@ -61,7 +61,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   // Should be called when the Viewport is ready.
   private readonly _initViewport = (viewport: ScreenViewport) => {
-    viewport.onRender.addListener(this._onViewUpdate);
+    SwipingViewportApp.listerForViewportUpdate(viewport, this._onViewUpdate);
     if (undefined === this._dividerLeft)
       this._dividerLeft = this.initPositionDivider(SwipingViewportApp.getClientRect(viewport));
     this.setState({ viewport });
