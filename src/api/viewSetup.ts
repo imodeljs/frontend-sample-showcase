@@ -2,9 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ColorDef } from "@bentley/imodeljs-common";
-import { DrawingViewState, Environment, IModelConnection, SpatialViewState, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Id64, Id64String } from "@bentley/bentleyjs-core";
+import { BackgroundMapProps, ColorDef } from "@bentley/imodeljs-common";
+import {
+  AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection,
+  SpatialViewState, ViewState, ViewState3d,
+} from "@bentley/imodeljs-frontend";
+import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
 export class ViewSetup {
 
@@ -60,6 +64,10 @@ export class ViewSetup {
       const displayStyle = viewState3d.getDisplayStyle3d();
 
       displayStyle.changeBackgroundMapProps({ useDepthBuffer: true });
+      const groundBias: number | undefined = await ViewSetup.getGroundBias(imodel);
+      if (groundBias) {
+        displayStyle.changeBackgroundMapProps({ groundBias });
+      }
 
       // Enable the sky-box, but override the ugly brown color.
       displayStyle.environment = new Environment({
@@ -71,5 +79,34 @@ export class ViewSetup {
     }
 
     return viewState;
+  }
+
+  /*
+  * groundBias can be stored in Product Settings Service. This method retrieves it.
+  */
+  public static getGroundBias = async (imodel: IModelConnection): Promise<number | undefined> => {
+    const requestContext = await AuthorizedFrontendRequestContext.create();
+
+    const allSettings: SettingsMapResult = await IModelApp.settings.getSharedSettingsByNamespace(
+      requestContext,
+      "bingMapSettings",
+      true,
+      imodel.contextId!,
+      imodel.iModelId,
+    );
+    if (
+      allSettings.status === SettingsStatus.Success &&
+      allSettings.settingsMap &&
+      allSettings.settingsMap.has("backgroundMapSetting")
+    ) {
+      const bgMapSettings = allSettings.settingsMap.get(
+        "backgroundMapSetting",
+      ) as BackgroundMapProps;
+
+      if (undefined !== bgMapSettings.groundBias)
+        return bgMapSettings.groundBias;
+    }
+
+    return undefined;
   }
 }
