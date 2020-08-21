@@ -4,102 +4,169 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
-import { FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, EditManipulator, Viewport } from "@bentley/imodeljs-frontend";
+import { Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { EditManipulator, FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
 import SwipingComparisonUI from "./SwipingComparisonUI";
-import { Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 
 export default class SwipingViewportApp implements SampleApp {
+  private static _prevPoint: Point3d | undefined;
+  private static _provider: ComparisonProvider | undefined;
+  private static _viewport?: Viewport;
 
   /** Called by the showcase before the sample is started. */
   public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <ViewportLoader iModelName={iModelName} iModelSelector={iModelSelector} />;
+    return <SwipingComparisonUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
+    this.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider);
+    if (undefined !== SwipingViewportApp._viewport) {
+      SwipingViewportApp._viewport.view.setViewClip(undefined);
+      SwipingViewportApp._viewport.synchWithView();
+    }
   }
 
+  /** Gets the selected viewport using the IModelApp API. */
+  public static getSelectedViewport(): ScreenViewport | undefined {
+    return IModelApp.viewManager.selectedView;
+  }
+
+  /** Adds a listener that will be triggered only once for the next opened view.  Returns a functions to remove that listener. */
+  public static listenOnceForViewOpen(onOpen: (viewport: ScreenViewport) => void): () => void {
+    return IModelApp.viewManager.onViewOpen.addOnce(onOpen);
+  }
+
+  /** Adds a listener that will be triggered when the viewport is updated. Returns a functions to remove that listener. */
+  public static listerForViewportUpdate(viewport: Viewport, onUpdate: (viewport: Viewport) => void): () => void {
+    // There is event in the viewport called onViewChanged.  As stated in the js docs, the function is invoked, VERY frequently.
+    //  Using that event, any rare extra frames of the divider not aligning with the viewport should be removed, but the
+    //  performance can start to suffer.
+    return viewport.onRender.addListener(onUpdate);
+  }
+
+  /** Get the frustum of the camera using the viewport API. */
   public static getFrustum(vp: Viewport): Frustum {
     return vp.getFrustum().clone();
   }
 
+  /** Get the rectangle defining the area of the HTML canvas using the viewport API. */
   public static getClientRect(vp: ScreenViewport): ClientRect {
     return vp.getClientRect();
   }
 
+  /** Convert a point in the view space to the world space using the viewport API. */
   public static getWorldPoint(vp: Viewport, screenPoint: Point3d): Point3d {
     return vp.viewToWorld(screenPoint);
   }
 
-  // TODO: Need better name than getNormal
-  public static getNormal(vp: Viewport, screenPoint: Point3d): Vector3d {
-    const point = this.getWorldPoint(vp, screenPoint);
+  /** Return a vector perpendicular to the view considering the camera's perspective. */
+  public static getPerpendicularNormal(vp: Viewport, screenPoint: Point3d): Vector3d {
+    const point = SwipingViewportApp.getWorldPoint(vp, screenPoint);
 
     const boresite = EditManipulator.HandleUtils.getBoresite(point, vp);
     const viewY = vp.rotation.rowY();
-    let normal = viewY.crossProduct(boresite.direction);
-    // if (this.swapSides)
-    //   normal = normal.negate();
+    const normal = viewY.crossProduct(boresite.direction);
     return normal;
   }
-}
-/** A simple component to load the viewport before starting the sample app. */
-interface ViewportLoaderProps { iModelName: string; iModelSelector: React.ReactNode }
-class ViewportLoader extends React.Component<ViewportLoaderProps, { viewport?: ScreenViewport }> {
-  public state = { viewport: undefined };
-  private _onIModelReady = () => {
-    const vp = IModelApp.viewManager.selectedView;
-    this.setState({ viewport: vp });
-    if (undefined === vp)
-      IModelApp.viewManager.onViewOpen.addOnce((args) => {
-        this.setState({ viewport: args });
-      });
+
+  /** Will create an effect allowing for different views on either side of an arbitrary point in the view space.  This will allows us to compare the effect the views have on the iModel. */
+  public static compare(screenPoint: Point3d, viewport: Viewport) {
+    SwipingViewportApp._viewport = viewport;
+    const provider = SwipingViewportApp._provider;
+    const vp = viewport;
+    if (!vp.view.isSpatialView())
+      return;
+
+    if (undefined === provider) {
+      this.initProvider(screenPoint, viewport);
+      vp.synchWithView();
+      return;
+    }
+    if (!this._prevPoint?.isAlmostEqual(screenPoint)) {
+      this.updateProvider(screenPoint, viewport, provider);
+    }
+    vp.invalidateScene();
   }
 
-  public render() {
-    return (<>
-      <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-      {undefined !== this.state.viewport ? <SwipingComparisonUI viewport={this.state.viewport!} iModelSelector={this.props.iModelSelector} /> : <></>}
-    </>);
+  /** Creates a [ClipVector] based on the arguments. */
+  private static createClip(vec: Vector3d, pt: Point3d): ClipVector {
+    const plane = ClipPlane.createNormalAndPoint(vec, pt)!;
+    const planes = ConvexClipPlaneSet.createPlanes([plane]);
+    return ClipVector.createCapture([ClipPrimitive.createCapture(planes)]);
+  }
+
+  /** Updates the location of the clipping plane in both the provider and viewport. */
+  private static updateProvider(screenPoint: Point3d, viewport: Viewport, provider: ComparisonProvider) {
+    // Update Clipping plane in provider and in the view.
+    const vp = viewport;
+    const normal = SwipingViewportApp.getPerpendicularNormal(vp, screenPoint);
+    const worldPoint = SwipingViewportApp.getWorldPoint(vp, screenPoint);
+    const clip = this.createClip(normal.clone().negate(), worldPoint);
+
+    provider.clipVolume?.dispose();
+    provider.setClipVector(clip);
+
+    viewport.view.setViewClip(this.createClip(normal.clone(), worldPoint));
+    viewport.synchWithView();
+  }
+
+  /** Creates a [TiledGraphicsProvider] and adds it to the viewport.  This also sets the clipping plane used for the comparison. */
+  private static initProvider(screenPoint: Point3d, viewport: Viewport) {
+    this._prevPoint = screenPoint;
+    const vp = viewport;
+    const normal = SwipingViewportApp.getPerpendicularNormal(viewport, screenPoint);
+
+    // Note the normal is negated, this is flip the clipping plane created from it.
+    this._provider = new ComparisonProvider(this.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(viewport, screenPoint)));
+    vp.addTiledGraphicsProvider(this._provider);
+
+    // Note the normal is NOT negated.  These opposite facing clipping planes will create a effect we can use to compare views.
+    vp.view.setViewClip(this.createClip(normal.clone(), SwipingViewportApp.getWorldPoint(viewport, screenPoint)));
+    vp.viewFlags.clipVolume = true;
+  }
+
+  /** Removes the provider from the viewport, and disposed of any resources it has. */
+  private static disposeProvider(viewport?: Viewport, provider?: ComparisonProvider) {
+    if (undefined === viewport || undefined === provider)
+      return;
+    viewport.dropTiledGraphicsProvider(provider);
+    provider.dispose();
+    provider = undefined;
   }
 }
 
 class ComparisonProvider implements TiledGraphicsProvider {
-  public clipVolume?: RenderClipVolume;
+  public clipVolume: RenderClipVolume | undefined;
   public viewFlagOverrides = new ViewFlagOverrides();
 
   constructor(clip: ClipVector) {
-    this.clipVolume = IModelApp.renderSystem.createClipVolume(clip);
+    // Create the objects that will be used later by the "addToScene" method.
+    this.setClipVector(clip);
     this.viewFlagOverrides.setRenderMode(RenderMode.Wireframe);
   }
 
-  public dispose(): void {
-    this.clipVolume?.dispose();
-  }
-
+  /** Apply the supplied function to each [[TileTreeReference]] to be drawn in the specified [[Viewport]]. */
   public forEachTileTreeRef(viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
     viewport.view.forEachTileTreeRef(func);
   }
 
-  public setClipVector(clip: ClipVector) {
-    this.clipVolume = IModelApp.renderSystem.createClipVolume(clip);
-  }
-
+  /** Overrides the logic for adding this provider's graphics into the scene. */
   public addToScene(output: SceneContext): void {
 
-    // save view to replaces after comparison drawing
+    // Save view to be replaced after comparison is drawn
     const vp = output.viewport;
     const clip = vp.view.getViewClip();
 
-    // update for comparison drawing
+    // Replace the clipping plane with a flipped one.
     vp.view.setViewClip(this.clipVolume?.clipVector);  // TODO: Have Paul review
 
     const context = vp.createSceneContext();
     vp.view.createScene(context);
 
+    // This graphics branch contains the graphics that were excluded by the flipped clipping plane
     const gfx = context.graphics;
     if (0 < gfx.length) {
       const ovrs = new FeatureSymbology.Overrides(vp);
@@ -109,86 +176,25 @@ class ComparisonProvider implements TiledGraphicsProvider {
       for (const gf of gfx)
         branch.entries.push(gf);
 
+      // Overwrites the view flags for this view branch.
       branch.setViewFlagOverrides(this.viewFlagOverrides);
+      // Draw the graphics to the screen.
       output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
     }
 
+    // Return the old clip to the view.
     vp.view.setViewClip(clip);
   }
-}
 
-export class TiledGraphicsOverrider {
-  public provider: ComparisonProvider | undefined;
-  private _prevPoint: Point3d | undefined;
-
-  constructor(private _viewport: ScreenViewport) { }
-
-  private setBackgroundMap(enable: boolean) {
-    const vf = this._viewport.viewFlags.clone();
-    vf.backgroundMap = enable;
-    this._viewport.viewFlags = vf;
+  /** The clip vector passed in should be flipped with respect to the normally applied clip vector.
+   * It could be calculated in the "addToScene(...)" but we want to optimize that method.
+   */
+  public setClipVector(clipVector: ClipVector): void {
+    this.clipVolume = IModelApp.renderSystem.createClipVolume(clipVector);
   }
 
-  public compare(screenPoint: Point3d) {
-    this.setBackgroundMap(true);
-
-    const vp = this._viewport;
-    if (!vp.view.isSpatialView())
-      return;
-
-    this.updateProvider(screenPoint);
-
-    vp.invalidateScene();
+  /** Disposes of any WebGL resources owned by this volume. */
+  public dispose(): void {
+    this.clipVolume?.dispose();
   }
-  private createClip(vec: Vector3d, pt: Point3d) {
-    const plane = ClipPlane.createNormalAndPoint(vec, pt)!;
-    const planes = ConvexClipPlaneSet.createPlanes([plane]);
-    return ClipVector.createCapture([ClipPrimitive.createCapture(planes)]);
-  }
-
-  public updateProvider(screenPoint: Point3d) {
-    if (undefined === this.provider) {
-      this.initProvider(screenPoint);
-      this._viewport.synchWithView();
-      return;
-    }
-    if (!this._prevPoint?.isAlmostEqual(screenPoint)) {
-      const vp = this._viewport;
-      const normal = SwipingViewportApp.getNormal(vp, screenPoint);
-      const worldPoint = SwipingViewportApp.getWorldPoint(vp, screenPoint);
-      const clip = this.createClip(normal.clone().negate(), worldPoint);
-      this.provider.clipVolume?.dispose();
-      this.provider.setClipVector(clip);
-      this._viewport.view.setViewClip(this.createClip(normal.clone(), worldPoint));
-      this._viewport.synchWithView();
-    }
-  }
-
-  public initProvider(screenPoint: Point3d) {
-    this._prevPoint = screenPoint;
-    const vp = this._viewport;
-    // vp.onRender.addListener((vp) => { vp.viewFlags.clipVolume = false; vp.synchWithView(); })
-    const normal = SwipingViewportApp.getNormal(this._viewport, screenPoint);
-
-    this.provider = new ComparisonProvider(this.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
-    vp.addTiledGraphicsProvider(this.provider);
-    vp.view.setViewClip(this.createClip(normal.clone(), SwipingViewportApp.getWorldPoint(this._viewport, screenPoint)));
-    vp.viewFlags.clipVolume = true;
-  }
-
-  public clearProvider() {
-    if (undefined === this.provider) return;
-    const vp = this._viewport;
-    vp.dropTiledGraphicsProvider(this.provider);
-    this.provider.dispose();
-    this.provider = undefined;
-  }
-
-  public clear() {
-    const vp = this._viewport;
-    this.clearProvider();
-    vp.view.setViewClip(undefined);
-    vp.synchWithView();
-  }
-
 }

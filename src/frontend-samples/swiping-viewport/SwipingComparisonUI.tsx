@@ -5,72 +5,96 @@
 
 import { Point3d } from "@bentley/geometry-core";
 import { Frustum } from "@bentley/imodeljs-common";
-import { ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
+import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import React from "react";
 import { DividerComponent } from "./Divider";
-import SwipingViewportApp, { TiledGraphicsOverrider } from "./SwipingComparisonApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import SwipingViewportApp from "./SwipingComparisonApp";
 
 export interface SwipingComparisonUIProps {
-  viewport: ScreenViewport;
+  iModelName: string;
   iModelSelector: React.ReactNode;
 }
 
-interface SampleState {
-  bounds: ClientRect;
-  frustum: Frustum;
-  dividerLeft: number;
+interface SwipingComparisonUIState {
+  viewport?: ScreenViewport;
+  bounds?: ClientRect;
+  frustum?: Frustum;
+  dividerLeft?: number;
 }
 
-export default class SwipingComparisonUI extends React.Component<SwipingComparisonUIProps, SampleState> {
-  public get screenPoint(): Point3d {
-    const y = this.state.bounds.top + (this.state.bounds.height / 2);
-    return new Point3d(this.state.dividerLeft, y, 0);
-  }
-  private _overrider: TiledGraphicsOverrider;
-  private _dividerLeft: number; // position relative to the viewport
-
-  /** Creates a Sample instance */
-  constructor(props: SwipingComparisonUIProps, context?: any) {
-    super(props, context);
-    const vp = this.props.viewport;
-    this._overrider = new TiledGraphicsOverrider(vp);
-    this._dividerLeft = this.initPositionDivider(vp);
-    this.state = {
-      bounds: SwipingViewportApp.getClientRect(vp),
-      frustum: SwipingViewportApp.getFrustum(vp),
-      dividerLeft: this._dividerLeft,
-    };
+export default class SwipingComparisonUI extends React.Component<SwipingComparisonUIProps, SwipingComparisonUIState> {
+  public static getScreenPoint(bounds: ClientRect, dividerLeft: number): Point3d {
+    const y = bounds.top + (bounds.height / 2);
+    return new Point3d(dividerLeft, y, 0);
   }
 
+  private _dividerLeft?: number; // position relative to the viewport
+
+  public state: SwipingComparisonUIState = {};
+
+  // Update the state of the sample react component by querying the API.
   private updateState() {
-    const vp = this.props.viewport;
-    this.setState({
-      bounds: SwipingViewportApp.getClientRect(vp),
-      frustum: SwipingViewportApp.getFrustum(vp),
-      dividerLeft: this._dividerLeft,
-    });
+    const vp = SwipingViewportApp.getSelectedViewport();
+    if (undefined !== vp)
+      this.setState({
+        viewport: vp,
+        bounds: SwipingViewportApp.getClientRect(vp),
+        frustum: SwipingViewportApp.getFrustum(vp),
+        dividerLeft: this._dividerLeft,
+      });
   }
 
+  // Passes the relevant information to the APP for the changing the comparison
   private updateCompare() {
-    this._overrider.compare(this.screenPoint);
+    if (undefined === this.state.viewport || undefined === this.state.bounds || undefined === this.state.dividerLeft)
+      return;
+    const screenPoint = SwipingComparisonUI.getScreenPoint(this.state.bounds, this.state.dividerLeft);
+    SwipingViewportApp.compare(screenPoint, this.state.viewport);
   }
 
-  private initPositionDivider(vp: ScreenViewport): number {
-    const bounds = SwipingViewportApp.getClientRect(vp);
+  // Returns the position the divider will start at based on the bounds of the divider
+  private initPositionDivider(bounds: ClientRect): number {
     return (bounds.width / 2);
   }
 
-  private _onViewTick = () => {
+  // Should be called when the Viewport is ready.
+  private readonly _initViewport = (viewport: ScreenViewport) => {
+    viewport.onRender.addListener(this._onViewUpdate);
+    if (undefined === this._dividerLeft)
+      this._dividerLeft = this.initPositionDivider(SwipingViewportApp.getClientRect(viewport));
+    this.setState({ viewport });
+  }
+
+  // Should be called when the iModel is ready.
+  private _onIModelReady = (_iModel: IModelConnection) => {
+    const vp = SwipingViewportApp.getSelectedViewport();
+    if (undefined === vp)
+      SwipingViewportApp.listenOnceForViewOpen(this._initViewport);
+    else
+      this._initViewport(vp);
+  }
+
+  // Called by the viewport.  Tests if the camera has been moved, or the canvas has been resized.
+  private readonly _onViewUpdate = (_vp: Viewport) => {
+    // While, typically, we would use the argument to check for changes, we need a [ScreenViewport] for the bounds.
     let updateState = false;
-    const vp = this.props.viewport;
+    const vp = this.state.viewport;
+    if (undefined === vp)
+      return;
+
     const newBounds = SwipingViewportApp.getClientRect(vp);
     const newFrustum = SwipingViewportApp.getFrustum(vp);
-    if (this.state.bounds.height !== newBounds.height
+    // Has the viewport been resized?
+    if (undefined === this.state.bounds
+      || this.state.bounds.height !== newBounds.height
       || this.state.bounds.width !== newBounds.width
       || this.state.bounds.left !== newBounds.left)
       updateState = true;
-    if (!this.state.frustum.isSame(newFrustum))
+    // Has the camera been moved?
+    if (undefined === this.state.frustum
+      || !this.state.frustum.isSame(newFrustum))
       updateState = true;
 
     if (updateState)
@@ -85,41 +109,45 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     this.updateState();
   }
 
-  public componentDidUpdate(_prevProps: SwipingComparisonUIProps, prevState: SampleState, _snapshot: any) {
+  public componentDidUpdate(_prevProps: SwipingComparisonUIProps, prevState: SwipingComparisonUIState, _snapshot: any) {
     let updateCompare = false;
-    if (this.state.bounds.height !== prevState.bounds.height
-      || this.state.bounds.width !== prevState.bounds.width
-      || this.state.bounds.left !== prevState.bounds.left)
+    let updateState = false;
+    if (this.state.viewport?.viewportId !== prevState.viewport?.viewportId)
+      updateState = true;
+    if (undefined !== this.state.bounds
+      && (undefined === prevState.bounds
+        || this.state.bounds.height !== prevState.bounds.height
+        || this.state.bounds.width !== prevState.bounds.width
+        || this.state.bounds.left !== prevState.bounds.left
+      )
+    )
       updateCompare = true;
-    if (!this.state.frustum.isSame(prevState.frustum))
+    if (undefined !== this.state.frustum
+      && (undefined === prevState.frustum
+        || !this.state.frustum.isSame(prevState.frustum))
+    )
       updateCompare = true;
     if (this.state.dividerLeft !== prevState.dividerLeft)
       updateCompare = true;
 
+    if (updateState)
+      this.updateState();
     if (updateCompare)
       this.updateCompare();
-  }
-
-  public componentWillUnmount() {
-    this.props.viewport.onRender.removeListener(this._onViewTick);
-    this._overrider.clear();
-  }
-
-  public componentDidMount() {
-    this.updateState();
-    this.props.viewport.onRender.addListener(this._onViewTick);
-    this.updateCompare();
   }
 
   /** The sample's render method */
   public render() {
     return (<>
-      { /* Viewport to display the iModel */}
       <ControlPane
         iModelSelector={this.props.iModelSelector}
         instructions={""}
       />
-      <DividerComponent sideL={this.state.dividerLeft} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
+      { /* Viewport to display the iModel */}
+      <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+      {undefined !== this.state.bounds && undefined !== this.state.dividerLeft ?
+        <DividerComponent sideL={this.state.dividerLeft} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
+        : <></>}
     </>);
   }
 }

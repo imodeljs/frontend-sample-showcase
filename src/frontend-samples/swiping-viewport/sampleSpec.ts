@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 import SwipingComparisonApp from "./SwipingComparisonApp";
 
 export function getSwipingComparisonSpec(): SampleSpec {
@@ -18,8 +17,7 @@ export function getSwipingComparisonSpec(): SampleSpec {
       { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
       { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
     ],
-    // customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     setup: SwipingComparisonApp.setup,
-    // teardown: ThematicDisplaySampleApp.teardown,
+    teardown: SwipingComparisonApp.teardown,
   });
 }
