@@ -11,8 +11,8 @@ import * as React from "react";
 import SwipingComparisonUI from "./SwipingComparisonUI";
 
 export default class SwipingViewportApp implements SampleApp {
-  private static _prevPoint: Point3d | undefined;
   private static _provider: ComparisonProvider | undefined;
+  private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
 
   /** Called by the showcase before the sample is started. */
@@ -22,11 +22,16 @@ export default class SwipingViewportApp implements SampleApp {
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
-    SwipingViewportApp.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider);
+    if (undefined !== SwipingViewportApp._viewport && undefined !== SwipingViewportApp._provider) {
+      SwipingViewportApp.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider);
+      SwipingViewportApp._provider = undefined;
+    }
     if (undefined !== SwipingViewportApp._viewport) {
       SwipingViewportApp._viewport.view.setViewClip(undefined);
       SwipingViewportApp._viewport.synchWithView();
+      SwipingViewportApp._viewport = undefined;
     }
+    SwipingViewportApp._prevPoint = undefined;
   }
 
   /** Gets the selected viewport using the IModelApp API. */
@@ -73,6 +78,8 @@ export default class SwipingViewportApp implements SampleApp {
 
   /** Will create an effect allowing for different views on either side of an arbitrary point in the view space.  This will allows us to compare the effect the views have on the iModel. */
   public static compare(screenPoint: Point3d, viewport: Viewport) {
+    if (viewport.viewportId !== SwipingViewportApp._viewport?.viewportId)
+      SwipingViewportApp.teardown();
     SwipingViewportApp._viewport = viewport;
     const provider = SwipingViewportApp._provider;
     const vp = viewport;
@@ -128,12 +135,10 @@ export default class SwipingViewportApp implements SampleApp {
   }
 
   /** Removes the provider from the viewport, and disposed of any resources it has. */
-  private static disposeProvider(viewport?: Viewport, provider?: ComparisonProvider) {
-    if (undefined === viewport || undefined === provider)
-      return;
+  private static disposeProvider(viewport: Viewport, provider: ComparisonProvider) {
     viewport.dropTiledGraphicsProvider(provider);
+    // Not all [TiledGraphicsProvider] are disposable.
     provider.dispose();
-    provider = undefined;
   }
 }
 
