@@ -41,6 +41,7 @@ import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/present
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
+import { getPresetDisplaySpec } from "frontend-samples/preset-display-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -59,6 +60,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getHeatmapDecoratorSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
+    getPresetDisplaySpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
