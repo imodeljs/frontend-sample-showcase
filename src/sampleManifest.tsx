@@ -8,6 +8,8 @@ import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sam
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
+import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
+import { getPresetDisplaySpec } from "frontend-samples/preset-display-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
@@ -38,10 +40,8 @@ import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/c
 import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
 import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
-import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
-import { getPresetDisplaySpec } from "frontend-samples/preset-display-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
