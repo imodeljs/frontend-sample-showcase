@@ -35,11 +35,15 @@ export default class PresetDisplayUI extends React.Component<{ iModelName: strin
 
   public state = { activePresetIndex: 0 };
 
+  private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    this.setState({ activePresetIndex: Number.parseInt(event.target.value, 10) });
+  }
+
   public getControls(): React.ReactNode {
     const entries = renderingStyles
       .map((styles) => styles.name)
       .map((name, index) => <option key={index} value={index}>{name}</option>);
-    return <select value={this.state.activePresetIndex} className={"sample-options-2col"}>
+    return <select value={this.state.activePresetIndex} className={"sample-options-2col"} onChange={this._onChange}>
       {entries}
     </select>;
   }
@@ -49,7 +53,7 @@ export default class PresetDisplayUI extends React.Component<{ iModelName: strin
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Use the toolbar at the top-right to navigate the model." iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Use the toolbar at the top-right to navigate the model." iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
         { /* Viewport to display the iModel */}
         <ReloadableViewport iModelName={this.props.iModelName} />
       </>
