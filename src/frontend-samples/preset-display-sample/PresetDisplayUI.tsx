@@ -2,50 +2,62 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { DisplayStyle3dSettingsProps } from "@bentley/imodeljs-common";
-
-interface RenderingStyle extends DisplayStyle3dSettingsProps {
-  name: string;
-}
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import * as React from "react";
+import PresetDisplayApp from "./PresetDisplayApp";
+import { RenderingStyle } from "./Styles";
 
 interface PresetDisplayUIState {
   activePresetIndex: number;
+  viewport?: Viewport;
 }
 
-// const renderingStyleViewFlags = {
-//   noCameraLights: false,
-//   noSourceLights: false,
-//   noSolarLight: false,
-//   visEdges: false,
-//   hidEdges: false,
-//   shadows: false,
-//   monochrome: false,
-//   ambientOcclusion: false,
-//   thematicDisplay: false,
-//   renderMode: RenderMode.SmoothShade,
-// };
+interface PresetDisplayUIProps {
+  iModelName: string;
+  iModelSelector: React.ReactNode;
+  renderingStyles: RenderingStyle[];
+}
 
-const renderingStyles: RenderingStyle[] = [{ name: "None" }];
+export default class PresetDisplayUI extends React.Component<PresetDisplayUIProps, PresetDisplayUIState> {
 
-export default class PresetDisplayUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, PresetDisplayUIState> {
+  public state: PresetDisplayUIState = { activePresetIndex: 0 };
 
-  public state = { activePresetIndex: 0 };
+  private readonly _onChangeAll = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (undefined === this.state.viewport)
+      return;
+    const index = Number.parseInt(event.target.value, 10);
+    PresetDisplayApp.setPresetRenderingStyle(this.state.viewport, this.props.renderingStyles[index]);
+    this.setState({ activePresetIndex: index });
+  }
+  private readonly _onChangePreset = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (undefined === this.state.viewport)
+      return;
+    const index = Number.parseInt(event.target.value, 10);
+    PresetDisplayApp.setPresetRenderingStyle(this.state.viewport, this.props.renderingStyles[index]);
+    this.setState({ activePresetIndex: index });
+  }
 
-  private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setState({ activePresetIndex: Number.parseInt(event.target.value, 10) });
+  private readonly _onIModelReady = (_iModel: IModelConnection) => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (undefined === vp)
+      IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
+        this.setState({ viewport });
+      });
+    else
+      this.setState({ viewport: vp });
   }
 
   public getControls(): React.ReactNode {
-    const entries = renderingStyles
-      .map((styles) => styles.name)
-      .map((name, index) => <option key={index} value={index}>{name}</option>);
-    return <select value={this.state.activePresetIndex} className={"sample-options-2col"} onChange={this._onChange}>
-      {entries}
-    </select>;
+    return <select value={this.state.activePresetIndex} className={"sample-options-2col"} onChange={this._onChangeAll}>
+        {
+          this.props.renderingStyles
+            .map((styles) => styles.name)
+            .map((name, index) => <option key={index} value={index}>{name}</option>)
+        }
+      </select>;
   }
 
   /** The sample's render method */
@@ -55,7 +67,7 @@ export default class PresetDisplayUI extends React.Component<{ iModelName: strin
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions="Use the toolbar at the top-right to navigate the model." iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
         { /* Viewport to display the iModel */}
-        <ReloadableViewport iModelName={this.props.iModelName} />
+        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );
   }

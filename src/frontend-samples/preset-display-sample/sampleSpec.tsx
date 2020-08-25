@@ -14,6 +14,7 @@ export function getPresetDisplaySpec(): SampleSpec {
     files: [
       { name: "PresetDisplayApp.tsx", import: import("!!raw-loader!./PresetDisplayApp"), entry: true },
       { name: "PresetDisplayUI.tsx", import: import("!!raw-loader!./PresetDisplayUI") },
+      { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
     ],
     setup: PresetDisplayApp.setup,
   });
