@@ -8,6 +8,7 @@ import {
 } from "@bentley/imodeljs-common";
 
 const renderingStyleViewFlags: ViewFlagProps = {
+  noConstruct: true,
   noCameraLights: false,
   noSourceLights: false,
   noSolarLight: false,
@@ -20,11 +21,11 @@ const renderingStyleViewFlags: ViewFlagProps = {
   renderMode: RenderMode.SmoothShade,
 };
 
-export interface RenderingStyle extends DisplayStyle3dSettingsProps {
+export interface DisplayStyle extends DisplayStyle3dSettingsProps {
   name: string;
 }
 
-export const renderingStyles: RenderingStyle[] = [{
+export const displayStyles: DisplayStyle[] = [{
   name: "Custom",
   // Add style here
 
@@ -32,7 +33,7 @@ export const renderingStyles: RenderingStyle[] = [{
   name: "Default",
   environment: {
     sky: {
-      display: true, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303,
+      display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303,
     },
     ground: {
       display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987,
@@ -59,7 +60,7 @@ export const renderingStyles: RenderingStyle[] = [{
   name: "Sun-dappled",
   environment: {
     sky: {
-      display: true, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303,
+      display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303,
     },
     ground: {
       display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987,
@@ -74,7 +75,7 @@ export const renderingStyles: RenderingStyle[] = [{
 }, {
   name: "Comic Book",
   environment: {
-    sky: { display: true, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
+    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, noWeight: false, visEdges: true },
@@ -92,7 +93,7 @@ export const renderingStyles: RenderingStyle[] = [{
 }, {
   name: "Outdoorsy",
   environment: {
-    sky: { display: true, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
+    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: renderingStyleViewFlags,
@@ -124,7 +125,7 @@ export const renderingStyles: RenderingStyle[] = [{
 }, {
   name: "Soft",
   environment: {
-    sky: { display: true, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
+    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, ambientOcclusion: true },
@@ -139,7 +140,7 @@ export const renderingStyles: RenderingStyle[] = [{
 }, {
   name: "Moonlit",
   environment: {
-    sky: { display: true, groundColor: 2435876, zenithColor: 0, nadirColor: 3880, skyColor: 3481088 },
+    sky: { display: true, twoColor: false, groundColor: 2435876, zenithColor: 0, nadirColor: 3880, skyColor: 3481088 },
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, visEdges: true },
@@ -185,7 +186,7 @@ export const renderingStyles: RenderingStyle[] = [{
 }, {
   name: "Gloss",
   environment: {
-    sky: { display: true, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
+    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, visEdges: true },
@@ -197,5 +198,44 @@ export const renderingStyles: RenderingStyle[] = [{
     visible: { ovrColor: true, color: 8026756, pattern: 0, width: 1 },
     hidden: { ovrColor: false, color: 16777215, pattern: 3435973836, width: 0 },
     transThreshold: 1,
+  },
+},
+{
+  name: "Gray",
+  ao: {
+    bias: 0.25,
+    blurDelta: 1,
+    blurSigma: 2,
+    blurTexelStepSize: 1,
+    intensity: 1,
+    maxDistance: 100,
+    texelStepSize: 1,
+    zLengthCap: 0.0025,
+  },
+  backgroundColor: 16777215,
+  environment: {
+    ground: { aboveColor: 25600, belowColor: 2179941, display: false, elevation: -0.01 },
+    sky: { display: true, groundColor: 8228728, nadirColor: 13428479, skyColor: 16764303, twoColor: true, zenithColor: 16765341 },
+  },
+  hline: {
+    hidden: { color: 16777215, ovrColor: false, pattern: 3435973836, width: 0 },
+    transThreshold: 1,
+    visible: {color: 6118749, ovrColor: true, pattern: 0, width: 1 }
+  },
+  lights: {
+    ambient: {color: {b: 244, g: 244, r: 244}, intensity: 0.35},
+    hemisphere: {
+      lowerColor: {b: 204, g: 230, r: 255},
+      upperColor: {b: 255, g: 209, r: 157}
+    },
+    portrait: {intensity: 0},
+    solar: { alwaysEnabled: true, direction: [0.886852, 0.083601, -0.454427], intensity: 1.95 },
+    specularIntensity: 0,
+  },
+  monochromeColor: 16777215,
+  monochromeMode: 1,
+  viewflags: {
+    ...renderingStyleViewFlags,
+    noConstruct: false,
   },
 }];

@@ -7,26 +7,26 @@ import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
-import PresetDisplayApp from "./PresetDisplayApp";
-import { RenderingStyle } from "./Styles";
+import DisplayStylesApp from "./DisplayStylesApp";
+import { DisplayStyle } from "./Styles";
 
-interface PresetDisplayUIState {
+interface DisplayStylesUIState {
   activePresetIndex: number;
   viewport?: Viewport;
 }
 
-interface PresetDisplayUIProps {
+interface DisplayStylesUIProps {
   iModelName: string;
   iModelSelector: React.ReactNode;
-  renderingStyles: RenderingStyle[];
+  displayStyles: DisplayStyle[];
 }
 
-export default class PresetDisplayUI extends React.Component<PresetDisplayUIProps, PresetDisplayUIState> {
+export default class DisplayStylesUI extends React.Component<DisplayStylesUIProps, DisplayStylesUIState> {
 
-  public state: PresetDisplayUIState = { activePresetIndex: 1 };
+  public state: DisplayStylesUIState = { activePresetIndex: 2 };
 
   private initViewport(viewport: Viewport) {
-    PresetDisplayApp.setPresetRenderingStyle(viewport, this.props.renderingStyles[this.state.activePresetIndex]);
+    DisplayStylesApp.applyDisplayStyle(viewport, this.props.displayStyles[this.state.activePresetIndex]);
     this.setState({ viewport });
   }
 
@@ -35,7 +35,7 @@ export default class PresetDisplayUI extends React.Component<PresetDisplayUIProp
     if (undefined === this.state.viewport)
       return;
     const index = Number.parseInt(event.target.value, 10);
-    PresetDisplayApp.setPresetRenderingStyle(this.state.viewport, this.props.renderingStyles[index]);
+    DisplayStylesApp.applyDisplayStyle(this.state.viewport, this.props.displayStyles[index]);
     this.setState({ activePresetIndex: index });
   }
 
@@ -51,13 +51,16 @@ export default class PresetDisplayUI extends React.Component<PresetDisplayUIProp
   }
 
   private getControls(): React.ReactNode {
-    return <select value={this.state.activePresetIndex} className={"sample-options-2col"} onChange={this._onChange}>
+    return <span className={"sample-options-2col"}>
+      <span>Select Style:</span>
+      <select value={this.state.activePresetIndex} onChange={this._onChange}>
         {
-          this.props.renderingStyles
+          this.props.displayStyles
             .map((styles) => styles.name)
             .map((name, index) => <option key={index} value={index}>{name}</option>)
         }
-      </select>;
+      </select>
+    </span>;
   }
 
   /** The sample's render method */
@@ -65,7 +68,7 @@ export default class PresetDisplayUI extends React.Component<PresetDisplayUIProp
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Use the toolbar at the top-right to navigate the model." iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
+        <ControlPane instructions="Use the dropdown bellow to change the display styles." iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
         { /* Viewport to display the iModel */}
         <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>

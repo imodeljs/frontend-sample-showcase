@@ -3,19 +3,19 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import PresetDisplayApp from "./PresetDisplayApp";
+import DisplayStylesApp from "./DisplayStylesApp";
 
 export function getPresetDisplaySpec(): SampleSpec {
   return ({
-    name: "preset-display-sample",
-    label: "Preset Display",
+    name: "display-styles-sample",
+    label: "Display Styles",
     image: "viewport-only-thumbnail.png",
-    // image: "preset-display-thumbnail.png",
+    // image: "display-styles-thumbnail.png",
     files: [
-      { name: "PresetDisplayApp.tsx", import: import("!!raw-loader!./PresetDisplayApp"), entry: true },
-      { name: "PresetDisplayUI.tsx", import: import("!!raw-loader!./PresetDisplayUI") },
+      { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp"), entry: true },
+      { name: "DisplayStylesUI.tsx", import: import("!!raw-loader!./DisplayStylesUI") },
       { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
     ],
-    setup: PresetDisplayApp.setup,
+    setup: DisplayStylesApp.setup,
   });
 }
