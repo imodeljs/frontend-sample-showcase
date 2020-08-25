@@ -131,7 +131,6 @@ export class AllPrimitivePropertiesUI extends React.Component<{ content: Content
 class SelectedPrimitivePropertiesUI extends React.Component<{ content: Content }, {}> {
 
   private createTableData(content: Content) {
-
     const fieldNames = ["pc_bis_Element_Model", "pc_bis_Element_CodeValue", "pc_bis_Element_UserLabel"];
 
     const item = content.contentSet[0];
@@ -158,11 +157,19 @@ class SelectedPrimitivePropertiesUI extends React.Component<{ content: Content }
 }
 
 export class ByCategoryPrimitivePropertyUI extends React.Component<{ content: Content }, { categoryName: string }> {
-  private createTableData(content: Content) {
+
+  constructor(props?: any, context?: any) {
+    super(props, context);
+    this.state = { categoryName: this.props.content.descriptor.categories[0].name };
+  }
+
+  private createTableData(content: Content, categoryName: string) {
 
     const item = content.contentSet[0];
     const data: NameValuePair[] = [];
-    content.descriptor.fields.forEach((f: Field) => {
+
+    const filtered = content.descriptor.fields.filter((f: Field) => f.category.name === categoryName);
+    filtered.forEach((f: Field) => {
       const fieldLabel = f.label;
       const displayValue = item.displayValues[f.name];
 
@@ -175,15 +182,20 @@ export class ByCategoryPrimitivePropertyUI extends React.Component<{ content: Co
     return data;
   }
 
+  private _onCategoryChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const categoryName = event.target.selectedOptions[0].value;
+    this.setState({ categoryName });
+  }
+
   public render() {
     const categories = this.props.content.descriptor.categories;
     const categoryOpts = categories.map((cat, index) => <option key={index} value={cat.name}>{cat.label}</option>);
 
-    const tableData = this.createTableData(this.props.content);
+    const tableData = this.createTableData(this.props.content, this.state.categoryName);
     return (
       <>
         <span>Categories:</span>
-        <select>{categoryOpts}</select>
+        <select onChange={this._onCategoryChange}>{categoryOpts}</select>
         <PropertiesTable data={tableData} />
       </>
     );
