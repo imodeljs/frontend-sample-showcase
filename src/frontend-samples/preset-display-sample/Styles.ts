@@ -4,9 +4,10 @@ import {
   ThematicDisplayMode,
   ThematicGradientColorScheme,
   ThematicGradientMode,
+  ViewFlagProps,
 } from "@bentley/imodeljs-common";
 
-const renderingStyleViewFlags = {
+const renderingStyleViewFlags: ViewFlagProps = {
   noCameraLights: false,
   noSourceLights: false,
   noSolarLight: false,
@@ -24,6 +25,10 @@ export interface RenderingStyle extends DisplayStyle3dSettingsProps {
 }
 
 export const renderingStyles: RenderingStyle[] = [{
+  name: "Custom",
+  // Add style here
+
+}, {
   name: "Default",
   environment: {
     sky: {

@@ -11,6 +11,13 @@ import * as React from "react";
 import PresetDisplayUI from "./PresetDisplayUI";
 import { renderingStyles } from "./Styles";
 
+/** This sample highlights the ability to override the current display settings with a JObject
+ * or JSON describing the desired settings. All the descriptions are in the Styles.ts file.
+ *
+ * We invite you to create your own settings using the "Custom" tag provided.
+ * You can copy and paste parts of your favorite styles as a start.
+ */
+
 export default class PresetDisplayApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <PresetDisplayUI renderingStyles={renderingStyles} iModelName={iModelName} iModelSelector={iModelSelector} />;
