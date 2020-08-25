@@ -24,8 +24,6 @@ export interface RenderingStyle extends DisplayStyle3dSettingsProps {
 }
 
 export const renderingStyles: RenderingStyle[] = [{
-  name: "None",
-}, {
   name: "Default",
   environment: {
     sky: {
