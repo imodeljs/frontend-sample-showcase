@@ -23,35 +23,35 @@ interface PresetDisplayUIProps {
 
 export default class PresetDisplayUI extends React.Component<PresetDisplayUIProps, PresetDisplayUIState> {
 
-  public state: PresetDisplayUIState = { activePresetIndex: 0 };
+  public state: PresetDisplayUIState = { activePresetIndex: 1 };
 
-  private readonly _onChangeAll = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  private initViewport(viewport: Viewport) {
+    PresetDisplayApp.setPresetRenderingStyle(viewport, this.props.renderingStyles[this.state.activePresetIndex]);
+    this.setState({ viewport });
+  }
+
+  // Called by the control and will update the state and viewport.
+  private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (undefined === this.state.viewport)
       return;
     const index = Number.parseInt(event.target.value, 10);
     PresetDisplayApp.setPresetRenderingStyle(this.state.viewport, this.props.renderingStyles[index]);
     this.setState({ activePresetIndex: index });
   }
-  private readonly _onChangePreset = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (undefined === this.state.viewport)
-      return;
-    const index = Number.parseInt(event.target.value, 10);
-    PresetDisplayApp.setPresetRenderingStyle(this.state.viewport, this.props.renderingStyles[index]);
-    this.setState({ activePresetIndex: index });
-  }
 
+  // Will be triggered once when the iModel is loaded.
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     const vp = IModelApp.viewManager.selectedView;
     if (undefined === vp)
       IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
-        this.setState({ viewport });
+        this.initViewport(viewport);
       });
     else
-      this.setState({ viewport: vp });
+      this.initViewport(vp);
   }
 
-  public getControls(): React.ReactNode {
-    return <select value={this.state.activePresetIndex} className={"sample-options-2col"} onChange={this._onChangeAll}>
+  private getControls(): React.ReactNode {
+    return <select value={this.state.activePresetIndex} className={"sample-options-2col"} onChange={this._onChange}>
         {
           this.props.renderingStyles
             .map((styles) => styles.name)
