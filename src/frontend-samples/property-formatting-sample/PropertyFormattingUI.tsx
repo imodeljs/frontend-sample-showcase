@@ -17,6 +17,7 @@ import { PropertyRecord } from "@bentley/ui-abstract";
 enum PropertyMode {
   SelectedPrimitive = "SelectedPrimitive",
   AllPrimitive = "AllPrimitive",
+  ByCategoryPrimitive = "ByCategoryPrimitive",
 }
 
 /** React props */
@@ -56,15 +57,14 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
 
   /** Components for rendering the sample's instructions and controls */
   private getControlPane() {
-    let tableData;
-    if (this.state.content)
-      tableData = SelectedPropertiesTable.createTableData(this.state.content);
+    let propertiesUI: React.ReactNode;
 
     if (this.state.content) {
       switch (this.state.mode) {
         default:
-        case PropertyMode.SelectedPrimitive: { tableData = SelectedPropertiesTable.createTableData(this.state.content); break; }
-        case PropertyMode.AllPrimitive: { tableData = FromCategoryPropertiesTable.createTableData(this.state.content); break; }
+        case PropertyMode.AllPrimitive: { propertiesUI = <AllPrimitivePropertiesUI content={this.state.content} />; break; }
+        case PropertyMode.SelectedPrimitive: { propertiesUI = <SelectedPrimitivePropertiesUI content={this.state.content} />; break; }
+        case PropertyMode.ByCategoryPrimitive: { propertiesUI = <ByCategoryPrimitivePropertyUI content={this.state.content} />; break; }
       }
     }
 
@@ -76,11 +76,12 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
           </div>
           <hr></hr>
           <select onChange={this._onPropertyModeChange}>
-            <option value={PropertyMode.SelectedPrimitive}>Selected Primitive</option>
             <option value={PropertyMode.AllPrimitive}>All Primitive</option>
+            <option value={PropertyMode.SelectedPrimitive}>Selected Primitive</option>
+            <option value={PropertyMode.ByCategoryPrimitive}>By Category Primitive</option>
           </select>
           <div style={{ flex: "1", height: "200px" }}>
-            {tableData && <PropertiesTable data={tableData} />}
+            {propertiesUI}
           </div>
         </div>
       </>
@@ -99,12 +100,8 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
   }
 }
 
-class FromCategoryPropertiesTable {
-
-  public static createTableData(content: Content) {
-
-    //const categories = content.descriptor.categories;  // Needs package upgrade
-    //console.log(categories);
+export class AllPrimitivePropertiesUI extends React.Component<{ content: Content }, { categoryName: string }> {
+  private createTableData(content: Content) {
 
     const item = content.contentSet[0];
     const data: NameValuePair[] = [];
@@ -120,11 +117,20 @@ class FromCategoryPropertiesTable {
 
     return data;
   }
+
+  public render() {
+    const tableData = this.createTableData(this.props.content);
+    return (
+      <>
+        <PropertiesTable data={tableData} />
+      </>
+    );
+  }
 }
 
-class SelectedPropertiesTable {
+class SelectedPrimitivePropertiesUI extends React.Component<{ content: Content }, {}> {
 
-  public static createTableData(content: Content) {
+  private createTableData(content: Content) {
 
     const fieldNames = ["pc_bis_Element_Model", "pc_bis_Element_CodeValue", "pc_bis_Element_UserLabel"];
 
@@ -143,6 +149,44 @@ class SelectedPropertiesTable {
     });
 
     return data;
+  }
+
+  public render() {
+    const tableData = this.createTableData(this.props.content);
+    return (<PropertiesTable data={tableData} />);
+  }
+}
+
+export class ByCategoryPrimitivePropertyUI extends React.Component<{ content: Content }, { categoryName: string }> {
+  private createTableData(content: Content) {
+
+    const item = content.contentSet[0];
+    const data: NameValuePair[] = [];
+    content.descriptor.fields.forEach((f: Field) => {
+      const fieldLabel = f.label;
+      const displayValue = item.displayValues[f.name];
+
+      if (DisplayValue.isPrimitive(displayValue)) {
+        const displayValueString = (undefined !== displayValue) ? displayValue.toString() : "";
+        data.push({ fieldLabel, displayValue: displayValueString });
+      }
+    });
+
+    return data;
+  }
+
+  public render() {
+    const categories = this.props.content.descriptor.categories;
+    const categoryOpts = categories.map((cat, index) => <option key={index} value={cat.name}>{cat.label}</option>);
+
+    const tableData = this.createTableData(this.props.content);
+    return (
+      <>
+        <span>Categories:</span>
+        <select>{categoryOpts}</select>
+        <PropertiesTable data={tableData} />
+      </>
+    );
   }
 }
 
