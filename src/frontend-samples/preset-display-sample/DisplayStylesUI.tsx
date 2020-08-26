@@ -29,10 +29,6 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
 
   public state: DisplayStylesUIState = { activePresetIndex: 2, merge: false };
 
-  private initViewport(viewport: Viewport) {
-    this.setState({ viewport });
-  }
-
   // Called by the control and will update the active display style.
   private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.value, 10);
@@ -49,10 +45,10 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
     const vp = IModelApp.viewManager.selectedView;
     if (undefined === vp)
       IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
-        this.initViewport(viewport);
+        this.setState({ viewport });
       });
     else
-      this.initViewport(vp);
+      this.setState({ viewport: vp });
   }
 
   /** A render method called when the state or props are changed. */
