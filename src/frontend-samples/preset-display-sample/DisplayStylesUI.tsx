@@ -72,23 +72,20 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
   }
 
   private getControls(): React.ReactNode {
+    const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after apply the selected style.";
+    const entries = this.props.displayStyles
+      .map((styles) => styles.name)
+      .map((name, index) => <option key={index} value={index}>{name}</option>);
     return (
-      <div
-        className={"sample-options-2col"}
-        style={{ gridTemplateColumns: "1fr 1fr" }}
-      >
+      <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Select Style:</span>
-        <select style={{ width: "fit-content" }}
-          value={this.state.activePresetIndex}
-          onChange={this._onChange}
-        >
-          {
-            this.props.displayStyles
-              .map((styles) => styles.name)
-              .map((name, index) => <option key={index} value={index}>{name}</option>)
-          }
+        <select value={this.state.activePresetIndex} onChange={this._onChange} style={{ width: "fit-content" }}>
+          {entries}
         </select>
-        <span>Merge with Custom:</span>
+        <span>
+          <span style={{ marginRight: "1em" }} className="icon icon-help" title={toggleTooltip}></span>
+          <span>Merge with Custom:</span>
+        </span>
         <Toggle isOn={this.state.merge} onChange={this._onToggle} />
       </div>
     );
@@ -96,10 +93,11 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
 
   /** The sample's render method */
   public render() {
+    const instruction = "Use the drop down below to change the display styles. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.";
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Use the dropdown bellow to change the display styles." iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
+        <ControlPane instructions={instruction} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
         { /* Viewport to display the iModel */}
         <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
