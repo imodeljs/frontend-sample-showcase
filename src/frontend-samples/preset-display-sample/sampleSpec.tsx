@@ -10,8 +10,7 @@ export function getPresetDisplaySpec(): SampleSpec {
   return ({
     name: "display-styles-sample",
     label: "Display Styles",
-    image: "viewport-only-thumbnail.png",
-    // image: "display-styles-thumbnail.png",
+    image: "display-styles-thumbnail.png",
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     files: [
       { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp"), entry: true },
