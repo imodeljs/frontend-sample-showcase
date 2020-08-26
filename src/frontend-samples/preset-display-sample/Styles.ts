@@ -27,8 +27,17 @@ export interface DisplayStyle extends DisplayStyle3dSettingsProps {
 
 export const displayStyles: DisplayStyle[] = [{
   name: "Custom",
-  // Add style here
+  // Edit your style here and re-run the sample.
 
+  // To get you started
+  environment: {
+    sky: {
+      display: true, twoColor: true, nadirColor: 3880, skyColor: 16764303,
+    },
+    ground: {
+      display: false,
+    },
+  },
 }, {
   name: "Default",
   environment: {
