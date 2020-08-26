@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import DisplayStylesApp from "./DisplayStylesApp";
+import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 
 export function getPresetDisplaySpec(): SampleSpec {
   return ({
@@ -11,6 +12,7 @@ export function getPresetDisplaySpec(): SampleSpec {
     label: "Display Styles",
     image: "viewport-only-thumbnail.png",
     // image: "display-styles-thumbnail.png",
+    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     files: [
       { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp"), entry: true },
       { name: "DisplayStylesUI.tsx", import: import("!!raw-loader!./DisplayStylesUI") },
