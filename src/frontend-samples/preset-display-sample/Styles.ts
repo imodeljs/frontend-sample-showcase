@@ -201,7 +201,7 @@ export const displayStyles: DisplayStyle[] = [{
   },
 },
 {
-  name: "Gray",
+  name: "Forge Inspired",
   ao: {
     bias: 0.25,
     blurDelta: 1,
