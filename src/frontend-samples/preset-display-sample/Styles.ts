@@ -229,13 +229,13 @@ export const displayStyles: DisplayStyle[] = [{
   hline: {
     hidden: { color: 16777215, ovrColor: false, pattern: 3435973836, width: 0 },
     transThreshold: 1,
-    visible: {color: 6118749, ovrColor: true, pattern: 0, width: 1 }
+    visible: {color: 6118749, ovrColor: true, pattern: 0, width: 1 },
   },
   lights: {
     ambient: {color: {b: 244, g: 244, r: 244}, intensity: 0.35},
     hemisphere: {
       lowerColor: {b: 204, g: 230, r: 255},
-      upperColor: {b: 255, g: 209, r: 157}
+      upperColor: {b: 255, g: 209, r: 157},
     },
     portrait: {intensity: 0},
     solar: { alwaysEnabled: true, direction: [0.886852, 0.083601, -0.454427], intensity: 1.95 },
