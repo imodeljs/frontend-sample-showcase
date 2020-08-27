@@ -5,13 +5,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* tslint:disable:no-console */
 import { expect } from "chai";
+import RealityDataApp from "frontend-samples/reality-data-sample/RealityDataApp";
 // tslint:disable-next-line:no-direct-imports
 import * as TypeMoq from "typemoq";
-
 import { Range3d } from "@bentley/geometry-core";
+import { ContextRealityModelProps } from "@bentley/imodeljs-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-
 import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApp";
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApp";
 import ThematicDisplayApp from "../frontend-samples/thematic-display-sample/ThematicDisplayApp";
@@ -136,6 +136,50 @@ describe("Emphasize Elements", () => {
 
       // Expect emphasized elements to be changed
       expect(emphasizeElem.getEmphasizedElements(vp)).to.not.equal(oldEmphasizedElms);
+    } else {
+      expect(false).to.be.true;
+    }
+  });
+});
+
+describe("Reality Data", () => {
+  const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
+
+  before(async () => {
+    await TestApp.startup();
+    imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
+  });
+
+  after(() => TestApp.shutdown());
+
+  it("Removes reality data models", () => {
+    IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (vp) {
+      // First attach a fake reality model so the remove behavior can be tested
+      const crmProp: ContextRealityModelProps = { tilesetUrl: "FakeURL", name: "FakeName" };
+      vp.displayStyle.attachRealityModel(crmProp);
+      let models: number = 0;
+      let style = vp.displayStyle.clone();
+      style.forEachRealityModel(
+        () => models++,
+      );
+
+      // Expect the fake reality model to be added
+      expect(models).to.equal(1);
+      models = 0;
+
+      // Toggle off all reality models
+      // tslint:disable-next-line: no-floating-promises
+      RealityDataApp.toggleRealityModel(false, vp, imodelMock.object as IModelConnection);
+      style = vp.displayStyle.clone();
+      style.forEachRealityModel(
+        () => models++,
+      );
+
+      // Expect no reality models
+      expect(models).to.equal(0);
     } else {
       expect(false).to.be.true;
     }
