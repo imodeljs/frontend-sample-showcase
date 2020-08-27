@@ -6,7 +6,7 @@ import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import DisplayStylesApp from "./DisplayStylesApp";
 import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 
-export function getPresetDisplaySpec(): SampleSpec {
+export function getDisplayStylesSpec(): SampleSpec {
   return ({
     name: "display-styles-sample",
     label: "Display Styles",
