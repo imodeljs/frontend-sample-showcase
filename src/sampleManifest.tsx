@@ -10,6 +10,7 @@ import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sa
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
+import { getThematicModesSpec } from "frontend-samples/thematic-modes-sample/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
@@ -63,6 +64,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMultiViewportSpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
+    getThematicModesSpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
     getZoomToElementsSpec(),
