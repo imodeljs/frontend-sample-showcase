@@ -11,7 +11,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import SampleApp from "common/SampleApp";
 import { CustomWebfontIconsTreeUI } from "./CustomWebfontIconsTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json"); // tslint:disable-line: no-var-requires
+const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json");  // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;

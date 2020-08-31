@@ -8,8 +8,8 @@ import { featureFlags, FeatureToggleClient } from "../../FeatureToggleClient";
 import { modules } from "./Modules";
 import "@bentley/monaco-editor/lib/editor/icons/codicon.css";
 import "./SampleEditor.scss";
-// tslint:disable-next-line: variable-name
-const MonacoEditor = React.lazy(() => import("@bentley/monaco-editor"));
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 
 export interface SampleEditorProps {
   files?: any[];
@@ -42,7 +42,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
   }
 
   private _onNavItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement | null;
+    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement;
     if (target && target.title && target.title.toLowerCase() !== this.state.active) {
       this.setState({ active: target.title.toLowerCase() });
     } else {

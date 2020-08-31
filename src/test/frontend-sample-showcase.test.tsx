@@ -3,10 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-/* tslint:disable:no-console */
 import { expect } from "chai";
 import RealityDataApp from "frontend-samples/reality-data-sample/RealityDataApp";
-// tslint:disable-next-line:no-direct-imports
 import * as TypeMoq from "typemoq";
 import { Range3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps } from "@bentley/imodeljs-common";
@@ -26,12 +24,12 @@ describe("View Clipping Sample", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Adds a view clip plane to the viewport", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
     if (vp) {
-      ViewClipApp.setClipPlane(vp, "0", imodelMock.object as IModelConnection);
+      ViewClipApp.setClipPlane(vp, "0", imodelMock.object);
       expect(vp.view.getViewClip()).to.not.be.undefined;
       ViewClipApp.clearClips(vp);
     } else {
@@ -59,7 +57,7 @@ describe("Thematic display", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Turns thematic display on/off", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
@@ -79,7 +77,7 @@ describe("Shadow Study", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Sets sun time", () => {
     const time: number = 123;
@@ -116,7 +114,7 @@ describe("Emphasize Elements", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Emphasizes some elements", () => {
     IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
@@ -150,7 +148,7 @@ describe("Reality Data", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Removes reality data models", () => {
     IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
@@ -171,8 +169,7 @@ describe("Reality Data", () => {
       models = 0;
 
       // Toggle off all reality models
-      // tslint:disable-next-line: no-floating-promises
-      RealityDataApp.toggleRealityModel(false, vp, imodelMock.object as IModelConnection);
+      RealityDataApp.toggleRealityModel(false, vp, imodelMock.object);
       style = vp.displayStyle.clone();
       style.forEachRealityModel(
         () => models++,

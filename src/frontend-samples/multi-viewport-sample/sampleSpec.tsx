@@ -15,7 +15,7 @@ export function getMultiViewportSpec(): SampleSpec {
       { name: "MultiViewportUI.tsx", import: import("!!raw-loader!./MultiViewportUI") },
       { name: "multi-view-sample.scss", import: import("!!raw-loader!./multi-view-sample.scss") },
     ],
-    setup: MultiViewportApp.setup,
-    teardown: MultiViewportApp.teardown,
+    setup: MultiViewportApp.setup.bind(MultiViewportApp),
+    teardown: MultiViewportApp.teardown.bind(MultiViewportApp),
   });
 }

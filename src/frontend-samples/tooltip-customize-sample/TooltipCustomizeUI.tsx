@@ -32,59 +32,42 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iM
   /** Creates a Sample instance */
   constructor(props?: any, context?: any) {
     super(props, context);
-    // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of this file.
+    // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of TooltipCustomizeApp.tsx.
     const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
     this.state = { ...toolAdmin.settings };
   }
 
+  public componentDidUpdate(_prevProps: {}, prevState: TooltipCustomizeSettings) {
+    // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of TooltipCustomizeApp.tsx.
+    const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
+    if (prevState !== this.state)
+      toolAdmin.settings = this.state;
+  }
+
   private _onChangeShowImage = (checked: boolean) => {
-    this.setState({ showImage: checked }, () => {
-      // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of this file.
-      const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-      toolAdmin.settings.showImage = checked;
-    });
+    this.setState({ showImage: checked });
   }
 
   private _onChangeShowCustomText = (checked: boolean) => {
-    this.setState({ showCustomText: checked }, () => {
-      // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of this file.
-      const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-      toolAdmin.settings.showCustomText = checked;
-    });
+    this.setState({ showCustomText: checked });
   }
 
   private _onChangeShowElementProperty = (checked: boolean) => {
-    this.setState({ showElementProperty: checked }, () => {
-      // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of this file.
-      const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-      toolAdmin.settings.showElementProperty = checked;
-    });
+    this.setState({ showElementProperty: checked });
   }
 
   private _onChangeShowDefaultToolTip = (checked: boolean) => {
-    this.setState({ showDefaultToolTip: checked }, () => {
-      // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of this file.
-      const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-      toolAdmin.settings.showDefaultToolTip = checked;
-    });
+    this.setState({ showDefaultToolTip: checked });
   }
 
   private _onChangeCustomText = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = event.target.value;
-    this.setState({ customText: value }, () => {
-      // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of this file.
-      const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-      toolAdmin.settings.customText = value;
-    });
+    this.setState({ customText: value });
   }
 
   private _onChangeElementProperty = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as ElemProperty;
-    this.setState({ elemProperty: value }, () => {
-      // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of this file.
-      const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-      toolAdmin.settings.elemProperty = value;
-    });
+    this.setState({ elemProperty: value });
   }
 
   /** Components for rendering the sample's instructions and controls */

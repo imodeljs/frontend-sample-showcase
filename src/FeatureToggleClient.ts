@@ -38,7 +38,7 @@ export class FeatureToggleClient {
 
   private static evaluateFeature(featureKey: string, defaultValue?: LDFlagValue): LDFlagValue {
     assert(!!FeatureToggleClient._ldClient, "FeatureToggleClient.initialize hasn't been called yet.");
-    return FeatureToggleClient._ldClient!.variation(featureKey, defaultValue);
+    return FeatureToggleClient._ldClient.variation(featureKey, defaultValue);
 
   }
 }

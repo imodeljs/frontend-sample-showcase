@@ -103,11 +103,11 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     const minute = this.state.date.getMinutes();
     let minString: string;
     if (minute < 10)
-      minString = "0" + String(minute);
+      minString = `0${String(minute)}`;
     else
       minString = String(minute);
     const hour = this.state.date.getHours();
-    return String(hour) + ":" + minString;
+    return `${String(hour)}:${minString}`;
   }
 
   // Initialize the data view when a new iModel is loaded
@@ -140,7 +140,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
         <div className="sample-options-3col">
           <div>Date</div>
           <input type="date" id="date_picker" onChange={this._updateDate}></input>
-          <div id="date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear()}</div>
+          <div id="date">{`${String(this.state.date.getMonth() + 1)}/${this.state.date.getDate()}/${this.state.date.getFullYear()}`}</div>
         </div>
         <div id="date_invalid" ></div>
       </>

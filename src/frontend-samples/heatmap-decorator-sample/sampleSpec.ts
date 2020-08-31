@@ -15,7 +15,7 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
       { name: "HeatmapDecoratorUI.tsx", import: import("!!raw-loader!./HeatmapDecoratorUI") },
       { name: "HeatmapDecorator.tsx", import: import("!!raw-loader!./HeatmapDecorator") },
     ],
-    setup: HeatmapDecoratorApp.setup,
-    teardown: HeatmapDecoratorApp.teardown,
+    setup: HeatmapDecoratorApp.setup.bind(HeatmapDecoratorApp),
+    teardown: HeatmapDecoratorApp.teardown.bind(HeatmapDecoratorApp),
   });
 }
