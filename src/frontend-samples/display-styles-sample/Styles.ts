@@ -247,4 +247,56 @@ export const displayStyles: DisplayStyle[] = [{
     ...renderingStyleViewFlags,
     noConstruct: false,
   },
+},
+{
+  name: "Chalk",
+  ao:
+  {
+    bias: 0.25,
+    zLengthCap: 0.0025,
+    maxDistance: 100,
+    intensity: 1,
+    texelStepSize: 1,
+    blurDelta: 1,
+    blurSigma: 2,
+    blurTexelStepSize: 1,
+  },
+  viewflags:
+    {
+      ...renderingStyleViewFlags,
+      monochrome: true,
+    },
+    backgroundColor: 0,
+    monochromeColor: 14475225,
+    monochromeMode: 0,
+    environment: { sky: { display: false }, ground: { display: false } },
+    hline:
+    {
+      visible:
+      {
+        ovrColor: true,
+        color: 8421504,
+        pattern: -1,
+        width: 0,
+      },
+      hidden:
+      {
+        ovrColor: false,
+        color: 16777215,
+        pattern: 3435973836,
+        width: 0,
+      },
+      transThreshold: 1,
+    },
+    solarShadows: { color: 16776960 },
+    lights:
+    {
+      solar:
+      {
+        direction: [-0.37150030963375785, 0.46257080595080885, -0.8049942667025903],
+        alwaysEnabled: true,
+      },
+      ambient: { intensity: 0.3 },
+      specularIntensity: 0.2,
+    },
 }];
