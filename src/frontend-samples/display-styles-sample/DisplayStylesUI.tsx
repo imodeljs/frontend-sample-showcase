@@ -42,13 +42,9 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
 
   // Will be triggered once when the iModel is loaded.
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp)
-      IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
-        this.setState({ viewport });
-      });
-    else
-      this.setState({ viewport: vp });
+    IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
+      this.setState({ viewport });
+    });
   }
 
   /** A render method called when the state or props are changed. */
