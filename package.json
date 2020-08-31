@@ -90,6 +90,9 @@
   "homepage": "./",
   "eslintConfig": {
     "extends": "./node_modules/@bentley/build-tools/.eslintrc.js",
+    "ignorePatterns": [
+      "*.d.ts"
+    ],
     "rules": {
       "deprecation/deprecation": "off"
     },
