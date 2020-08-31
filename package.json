@@ -93,6 +93,25 @@
     "rules": {
       "deprecation/deprecation": "off"
     },
+    "overrides": [
+      {
+        "files": [
+          "*.tsx"
+        ],
+        "rules": {
+          "@typescript-eslint/naming-convention": [
+            "warn",
+            {
+              "selector": "function",
+              "format": [
+                "camelCase",
+                "PascalCase"
+              ]
+            }
+          ]
+        }
+      }
+    ],
     "settings": {
       "react": {
         "version": "detect"
