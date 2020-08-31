@@ -4,13 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
+import { ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
-import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import ThematicModesApp from "./ThematicModesApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import * as React from "react";
+import ThematicModesApp from "./ThematicModesApp";
 
 /** React state of the Sample component */
 interface ThematicModesUIState {
@@ -18,6 +18,8 @@ interface ThematicModesUIState {
   range: Range1dProps;
   extents: Range1dProps;
   colorScheme: ThematicGradientColorScheme;
+  gradientMode: ThematicGradientMode;
+  displayMode: ThematicDisplayMode;
 }
 
 /** React props for the Sample component */
@@ -32,7 +34,11 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
   // defining the Thematic Display Props values that are not what is need at default,
   private static readonly _defaultProps: ThematicDisplayProps = {
     axis: [0.0, 0.0, 1.0],
-    gradientSettings: { marginColor: ColorDef.white.toJSON() },
+    gradientSettings: {
+      marginColor: ColorDef.white.toJSON(),
+      mode: ThematicGradientMode.SteppedWithDelimiter,
+    },
+    displayMode: ThematicDisplayMode.Height,
   };
 
   /** Creates a Sample instance */
@@ -45,11 +51,13 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
       range: [0, 1],
       extents: [0, 1],
       colorScheme: ThematicGradientColorScheme.Custom,
+      displayMode: ThematicDisplayMode.Height,
+      gradientMode: ThematicGradientMode.SteppedWithDelimiter,
     };
   }
 
   /** This method is called when the iModel is loaded by the react component */
-  private _onIModelReady = (_iModel: IModelConnection) => {
+  private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
       ThematicModesUI.init(vp);
       this.updateState();
@@ -159,7 +167,7 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
   }
 
   // Handle changes to the display mode.
-  private  readonly _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  private readonly _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (undefined === vp)

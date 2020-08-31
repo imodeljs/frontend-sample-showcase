@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
+import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
@@ -32,7 +32,11 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   // defining the Thematic Display Props values that are not what is need at default,
   private static readonly _defaultProps: ThematicDisplayProps = {
     axis: [0.0, 0.0, 1.0],
-    gradientSettings: { marginColor: ColorDef.white.toJSON() },
+    gradientSettings: {
+      marginColor: ColorDef.white.toJSON(),
+      mode: ThematicGradientMode.SteppedWithDelimiter,
+      stepCount: 10,
+    },
   };
 
   /** Creates a Sample instance */
@@ -49,7 +53,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   }
 
   /** This method is called when the iModel is loaded by the react component */
-  private _onIModelReady = (_iModel: IModelConnection) => {
+  private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
       ThematicDisplaySampleUIComponent.init(vp);
       this.updateState();
@@ -115,7 +119,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   }
 
   // Handle changes to the thematic display toggle.
-  private _onChangeThematicDisplayToggle = (checked: boolean) => {
+  private readonly _onChangeThematicDisplayToggle = (checked: boolean) => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (undefined === vp)
@@ -132,7 +136,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   }
 
   // Handles updates to the thematic range slider
-  private _onUpdateRangeSlider = (values: readonly number[]) => {
+  private readonly _onUpdateRangeSlider = (values: readonly number[]) => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (undefined === vp)
@@ -159,7 +163,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   }
 
   // Handle changes to the display mode.
-  private _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  private readonly _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (undefined === vp)
