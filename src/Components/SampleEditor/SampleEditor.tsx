@@ -67,8 +67,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
       <SplitScreen split={"horizontal"} size={this.state.active ? 201 : 35} minSize={35} className="sample-editor" primary="second" pane2Style={this.state.active ? undefined : { height: "35px" }} onChange={this._onSplitChange} allowResize={!!this.state.active}>
         <div style={{ height: "100%" }}>
           <TabNavigation>
-            {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />
-            }
+            {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />}
             <TabNavigationAction onClick={this.props.onCloseClick}>
               <svg className="minimize-button">
                 <use href="icons.svg#minimize"></use>
@@ -77,7 +76,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
             </TabNavigationAction>
           </TabNavigation>
           <React.Suspense fallback={"Loading..."}>
-            <MonacoEditor />
+            <MonacoEditor height={"calc(100% - 35px)"} />
           </React.Suspense>
         </div>
         <div className="sample-editor-pane">
