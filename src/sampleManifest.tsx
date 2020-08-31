@@ -5,7 +5,7 @@
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
-import { getDisplayStylesSpec } from "frontend-samples/preset-display-sample/sampleSpec";
+import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
