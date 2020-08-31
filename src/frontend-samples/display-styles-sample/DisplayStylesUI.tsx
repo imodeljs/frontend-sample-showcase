@@ -74,8 +74,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
   private getControls(): React.ReactNode {
     const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after apply the selected style.";
     const entries = this.props.displayStyles
-      .map((styles) => styles.name)
-      .map((name, index) => <option key={index} value={index}>{name}</option>);
+      .map((styles, index) => <option key={index} value={index}>{styles.name}</option>);
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Select Style:</span>
