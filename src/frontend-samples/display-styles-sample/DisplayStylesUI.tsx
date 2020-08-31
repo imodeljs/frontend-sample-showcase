@@ -68,7 +68,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
   }
 
   private getControls(): React.ReactNode {
-    const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after apply the selected style.";
+    const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after the selected style is applied.";
     const entries = this.props.displayStyles
       .map((styles, index) => <option key={index} value={index}>{styles.name}</option>);
     return (
@@ -88,7 +88,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
 
   /** The sample's render method */
   public render() {
-    const instruction = "Use the drop down below to change the display styles. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.";
+    const instruction = "Use the drop down below to change the display style. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.";
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}

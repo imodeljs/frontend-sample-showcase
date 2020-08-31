@@ -17,9 +17,9 @@ import { displayStyles } from "./Styles";
  * We invite you to create your own settings using the "Custom" tag provided in Styles.ts.
  * You can copy and paste parts of your favorite styles as a start.
  *
- * Only the features specificized by the style will be changed. This can be seen with the "Custom"
- * style you can create. Use the "Merge with Custom" toggle to apply both the custom and the specified
- * styles.
+ * Only the features specified by the style will be changed. This can be seen with the "Custom"
+ * style you can create. Use the "Merge with Custom" toggle to apply both the custom style and the specified
+ * style.
  */
 export default class DisplayStylesApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
