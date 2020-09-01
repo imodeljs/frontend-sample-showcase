@@ -66,6 +66,57 @@ export const displayStyles: DisplayStyle[] = [{
     transThreshold: 1,
   },
 }, {
+  name: "Chalk",
+  ao:
+  {
+    bias: 0.25,
+    zLengthCap: 0.0025,
+    maxDistance: 100,
+    intensity: 1,
+    texelStepSize: 1,
+    blurDelta: 1,
+    blurSigma: 2,
+    blurTexelStepSize: 1,
+  },
+  viewflags:
+    {
+      ...renderingStyleViewFlags,
+      monochrome: true,
+    },
+    backgroundColor: 0,
+    monochromeColor: 14475225,
+    monochromeMode: 0,
+    environment: { sky: { display: false }, ground: { display: false } },
+    hline:
+    {
+      visible:
+      {
+        ovrColor: true,
+        color: 8421504,
+        pattern: -1,
+        width: 0,
+      },
+      hidden:
+      {
+        ovrColor: false,
+        color: 16777215,
+        pattern: 3435973836,
+        width: 0,
+      },
+      transThreshold: 1,
+    },
+    solarShadows: { color: 16776960 },
+    lights:
+    {
+      solar:
+      {
+        direction: [-0.37150030963375785, 0.46257080595080885, -0.8049942667025903],
+        alwaysEnabled: true,
+      },
+      ambient: { intensity: 0.3 },
+      specularIntensity: 0.2,
+    },
+  }, {
   name: "Sun-dappled",
   environment: {
     sky: {
@@ -249,54 +300,59 @@ export const displayStyles: DisplayStyle[] = [{
   },
 },
 {
-  name: "Chalk",
-  ao:
-  {
+  name: "Architectural Alt.",
+  viewflags: {
+    ...renderingStyleViewFlags,
+    visEdges: true,
+    monochrome: true,
+    ambientOcclusion: true,
+  },
+  monochromeColor: 14475225,
+  monochromeMode: 0,
+  environment: {
+    sky: { display: true, twoColor: true, nadirColor: 13428479, skyColor: 16764303 },
+    ground: { display: false },
+  },
+  hline: {
+    visible: {
+      ovrColor: true,
+      color: 6118749,
+      pattern: 0,
+      width: 1,
+    },
+    hidden: {
+      ovrColor: false,
+      color: 16777215,
+      pattern: 3435973836,
+      width: 0,
+    },
+    transThreshold: 1,
+  },
+  ao: {
     bias: 0.25,
-    zLengthCap: 0.0025,
+    zLengthCap: 0.02315,
     maxDistance: 100,
-    intensity: 1,
+    intensity: 0.3,
     texelStepSize: 1,
     blurDelta: 1,
     blurSigma: 2,
     blurTexelStepSize: 1,
   },
-  viewflags:
-    {
-      ...renderingStyleViewFlags,
-      monochrome: true,
+  lights: {
+    solar: {
+      direction: [ 0.8868521744639655, 0.08360117539208102, -0.4544271824193604 ],
+      intensity: 0,
+      alwaysEnabled: true,
     },
-    backgroundColor: 0,
-    monochromeColor: 14475225,
-    monochromeMode: 0,
-    environment: { sky: { display: false }, ground: { display: false } },
-    hline:
-    {
-      visible:
-      {
-        ovrColor: true,
-        color: 8421504,
-        pattern: -1,
-        width: 0,
-      },
-      hidden:
-      {
-        ovrColor: false,
-        color: 16777215,
-        pattern: 3435973836,
-        width: 0,
-      },
-      transThreshold: 1,
+    ambient: { color: {r: 255, g: 255, b: 255 }},
+    hemisphere: {
+      upperColor: { r: 242, g: 233, b: 213},
+      lowerColor: { r: 213, g: 225, b: 235},
+      intensity: 0.6,
     },
-    solarShadows: { color: 16776960 },
-    lights:
-    {
-      solar:
-      {
-        direction: [-0.37150030963375785, 0.46257080595080885, -0.8049942667025903],
-        alwaysEnabled: true,
-      },
-      ambient: { intensity: 0.3 },
-      specularIntensity: 0.2,
+    portrait: {
+      intensity: 1.9,
     },
+    specularIntensity: 0,
+  },
 }];

@@ -24,10 +24,11 @@ interface DisplayStylesUIProps {
 }
 
 const CUSTOM_STYLE_INDEX = 0;
+const DEFAULT_STYLE_INDEX = 14;
 
 export default class DisplayStylesUI extends React.Component<DisplayStylesUIProps, DisplayStylesUIState> {
 
-  public state: DisplayStylesUIState = { activePresetIndex: 2, merge: false };
+  public state: DisplayStylesUIState = { activePresetIndex: DEFAULT_STYLE_INDEX, merge: false };
 
   // Called by the control and will update the active display style.
   private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
