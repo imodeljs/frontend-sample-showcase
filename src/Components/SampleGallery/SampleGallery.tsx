@@ -31,7 +31,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     super(props, context);
 
     this.state = {
-      expandedGroups: (this.props.samples.map(this.mapPred, this)),
+      expandedGroups: (this.props.samples.map(this.mapPred.bind(this), this)),
     };
   }
 
@@ -40,7 +40,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
   }
 
   private _idFromNames(sample: string, group: string): string {
-    return sample + "#" + group;
+    return `${sample}#${group}`;
   }
 
   private _namesFromId(idString: string): { sampleName: string, groupName: string } {
@@ -59,7 +59,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     const image = sample.image;
     const imageBase = image.split(".").slice(0, -1).join(".");
     const imageExt = image.split(".").pop();
-    const image2x = imageBase + "@2x." + imageExt + " 2x";
+    const image2x = `${imageBase}@2x.${imageExt} 2x`;
 
     return (
       <label className="gallery-card-radio-btn">

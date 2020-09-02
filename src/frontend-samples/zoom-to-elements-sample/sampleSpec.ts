@@ -17,6 +17,6 @@ export function getZoomToElementsSpec(): SampleSpec {
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
-    setup: ZoomToElementsApp.setup,
+    setup: ZoomToElementsApp.setup.bind(ZoomToElementsApp),
   });
 }

@@ -95,11 +95,43 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return { group, sample, imodel };
   }
 
+  private updateURLParams() {
+    const params = new URLSearchParams();
+    params.append("group", this.state.activeSampleGroup);
+    params.append("sample", this.state.activeSampleName);
+
+    if (this.state.iModelName) {
+      params.append("imodel", this.state.iModelName);
+    }
+
+    // Detect if editor was enabled in URL params as a semi-backdoor, this
+    // bypasses the ld feature flag
+    const editorEnabled = new URLSearchParams(window.location.search).get("editor");
+    if (editorEnabled) params.append("editor", editorEnabled);
+
+    window.history.replaceState(null, "", `?${params.toString()}`);
+
+    // Send to parent if within an iframe.
+    if (window.self !== window.top) {
+      window.parent.postMessage(`?${params.toString()}`, "*");
+    }
+  }
+
   public componentDidMount() {
-    // tslint:disable-next-line no-floating-promises
     this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
 
     document.documentElement.setAttribute("data-theme", "dark");
+  }
+
+  public componentDidUpdate(_prevProps: {}, prevState: ShowcaseState) {
+    if (prevState.activeSampleGroup !== this.state.activeSampleGroup ||
+      prevState.activeSampleName !== this.state.activeSampleName ||
+      prevState.iModelName !== this.state.iModelName) {
+      this.updateURLParams();
+    }
+
+    if (prevState.iModelName !== this.state.iModelName)
+      this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
   }
 
   private getSampleByName(groupName: string, sampleName: string): SampleSpec | undefined {
@@ -145,28 +177,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       sampleUI = await newSampleSpec.setup(iModelName, iModelSelector);
     }
 
-    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName }, () => {
-      const params = new URLSearchParams();
-      params.append("group", groupName);
-      params.append("sample", sampleName);
-
-      if (iModelName) {
-        params.append("imodel", iModelName);
-      }
-
-      // Detect if editor was enabled in URL params as a semi-backdoor, this
-      // bypasses the ld feature flag
-      const editorEnabled = new URLSearchParams(window.location.search).get("editor");
-      if (editorEnabled) params.append("editor", editorEnabled);
-
-      window.history.replaceState(null, "", "?" + params.toString());
-
-      // Send to parent if within an iframe.
-      if (window.self !== window.top) {
-        window.parent.postMessage("?" + params.toString(), "*");
-      }
-
-    });
+    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName });
   }
 
   private _onGalleryChanged = (groupName: string, sampleName: string) => {
@@ -189,12 +200,11 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
-    // tslint:disable-next-line no-floating-promises
     this.setupNewSample(groupName, sampleName);
   }
 
   private _onIModelChange = (iModelName: string) => {
-    this.setState({ iModelName }, () => this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName));
+    this.setState({ iModelName });
   }
 
   private _onEditorButtonClick = () => {

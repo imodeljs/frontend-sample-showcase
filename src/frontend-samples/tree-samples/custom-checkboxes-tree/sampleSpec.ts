@@ -15,6 +15,6 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     files: [
       { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp"), entry: true },
     ],
-    setup: CustomCheckboxesTreeApp.setup,
+    setup: CustomCheckboxesTreeApp.setup.bind(CustomCheckboxesTreeApp),
   });
 }

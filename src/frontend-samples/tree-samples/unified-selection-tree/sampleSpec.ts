@@ -13,6 +13,6 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     files: [
       { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
     ],
-    setup: UnifiedSelectionTreeApp.setup,
+    setup: UnifiedSelectionTreeApp.setup.bind(UnifiedSelectionTreeApp),
   });
 }

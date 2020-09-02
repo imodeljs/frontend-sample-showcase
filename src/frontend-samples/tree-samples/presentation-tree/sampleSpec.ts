@@ -13,6 +13,6 @@ export function getPresentationTreeSpec(): SampleSpec {
     files: [
       { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp"), entry: true },
     ],
-    setup: PresentationTreeApp.setup,
+    setup: PresentationTreeApp.setup.bind(PresentationTreeApp),
   });
 }

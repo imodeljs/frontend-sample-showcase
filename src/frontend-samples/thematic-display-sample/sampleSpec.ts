@@ -16,7 +16,7 @@ export function getThematicDisplaySpec(): SampleSpec {
       { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI") },
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: ThematicDisplaySampleApp.setup,
-    teardown: ThematicDisplaySampleApp.teardown,
+    setup: ThematicDisplaySampleApp.setup.bind(ThematicDisplaySampleApp),
+    teardown: ThematicDisplaySampleApp.teardown.bind(ThematicDisplaySampleApp),
   });
 }
