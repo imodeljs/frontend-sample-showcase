@@ -17,6 +17,6 @@ export function getDisplayStylesSpec(): SampleSpec {
       { name: "DisplayStylesUI.tsx", import: import("!!raw-loader!./DisplayStylesUI") },
       { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
     ],
-    setup: DisplayStylesApp.setup,
+    setup: DisplayStylesApp.setup.bind(DisplayStylesApp),
   });
 }
