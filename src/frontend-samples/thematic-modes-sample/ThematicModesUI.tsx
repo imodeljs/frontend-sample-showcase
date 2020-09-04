@@ -5,12 +5,14 @@
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import ThematicModesApp from "./ThematicModesApp";
+import { ViewSetup } from "api/viewSetup";
+import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 
 /** React state of the Sample component */
 interface ThematicModesUIState {
@@ -20,6 +22,7 @@ interface ThematicModesUIState {
   colorScheme: ThematicGradientColorScheme;
   gradientMode: ThematicGradientMode;
   displayMode: ThematicDisplayMode;
+  viewList: IModelConnection.ViewSpec[];
 }
 
 /** React props for the Sample component */
@@ -53,6 +56,7 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
       colorScheme: ThematicGradientColorScheme.Custom,
       displayMode: ThematicDisplayMode.Height,
       gradientMode: ThematicGradientMode.SteppedWithDelimiter,
+      viewList: [],
     };
   }
 
@@ -97,18 +101,30 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
       return;
 
     const props = ThematicModesApp.getThematicDisplayProps(vp);
-    const extents = ThematicModesApp.getProjectExtents(vp);
+    let extents = ThematicModesApp.getProjectExtents(vp);
     const range = props.range;
+    if (this.props.iModelName === SampleIModels.CoffsHarborDemo)
+      extents = [-4.8088836669921875, 127.30888366699219];
 
     let colorScheme = props.gradientSettings?.colorScheme;
     if (undefined === colorScheme)
       colorScheme = ThematicGradientColorScheme.BlueRed;
+
+    let displayMode = props.displayMode;
+    if (undefined === displayMode)
+      displayMode = ThematicModesUI._defaultProps.displayMode!;
+
+    let gradientMode = props.gradientSettings?.mode;
+    if (undefined === gradientMode)
+      gradientMode = ThematicModesUI._defaultProps.gradientSettings!.mode!;
 
     this.setState({
       on: ThematicModesApp.isThematicDisplayOn(vp),
       extents: undefined === extents ? [0, 1] : extents,
       range: undefined === range ? [0, 1] : range,
       colorScheme,
+      displayMode,
+      gradientMode,
     });
   }
 
@@ -135,7 +151,7 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
 
   // Creates the react components for the thematic display toggle row.
   private createThematicDisplayToggle(label: string, info: string) {
-    const element = <Toggle isOn={this.state.on} onChange={(checked: boolean) => this._onChangeThematicDisplayToggle(checked)} />;
+    const element = <Toggle isOn={this.state.on} onChange={this._onChangeThematicDisplayToggle} />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 
@@ -197,18 +213,105 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     return this.createJSXElementForAttribute(label, info, element);
   }
 
+  // Handle changes to the display mode.
+  private readonly _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (undefined === vp)
+      return;
+
+    // Convert the value back to number represented by enum.
+    const displayMode: ThematicDisplayMode = Number.parseInt(event.target.value, 10);
+
+    ThematicModesApp.setThematicDisplayMode(vp, displayMode);
+    ThematicModesApp.syncViewport(vp);
+    this.updateState();
+  }
+
+  // Create the react components for the display mode row.
+  private createDisplayModePicker(label: string, info: string) {
+    const element =
+      <select style={{ width: "fit-content" }} onChange={this._onChangeDisplayMode}
+        value={this.state.displayMode}>
+        <option value={ThematicDisplayMode.Height}> Height </option>
+        <option value={ThematicDisplayMode.HillShade}> Hill Shade </option>
+        <option value={ThematicDisplayMode.InverseDistanceWeightedSensors}> Sensors </option>
+        <option value={ThematicDisplayMode.Slope}> Sea Mountain </option>
+      </select>;
+
+    return this.createJSXElementForAttribute(label, info, element);
+  }
+
+  // Handle changes to the display mode.
+  private readonly _onChangeGradientMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (undefined === vp)
+      return;
+
+    // Convert the value back to number represented by enum.
+    const gradientMode: ThematicGradientMode = Number.parseInt(event.target.value, 10);
+
+    ThematicModesApp.setThematicDisplayGradientMode(vp, gradientMode);
+    ThematicModesApp.syncViewport(vp);
+    this.updateState();
+  }
+
+  // Create the react components for the display mode row.
+  private createGradientModePicker(label: string, info: string) {
+    const element =
+      <select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode}
+        value={this.state.gradientMode}>
+        <option value={ThematicGradientMode.Smooth}> Smooth </option>
+        <option value={ThematicGradientMode.Stepped}> Stepped </option>
+        <option value={ThematicGradientMode.SteppedWithDelimiter}> Stepped With Delimiter </option>
+        <option value={ThematicGradientMode.IsoLines}> Isolated Line </option>
+      </select>;
+
+    return this.createJSXElementForAttribute(label, info, element);
+  }
+
+  public getViewSelector(): React.ReactNode {
+    const activeViewId = IModelApp.viewManager.selectedView?.view.id;
+    let viewSelector: React.ReactNode = <></>;
+    if (undefined !== activeViewId && this.state.viewList.length > 0)
+      viewSelector = (
+        <select value={activeViewId} onChange={async (event) => {
+          const iModel = IModelApp.viewManager.selectedView!.iModel;
+          const state = await iModel.views.load(event.target.value);
+          IModelApp.viewManager.selectedView?.changeView(state);
+          this.updateState();
+        }}>
+          {this.state.viewList.map((viewSpec, index) =>
+            <option key={index} value={viewSpec.id}>{viewSpec.name}</option>)}
+        </select>
+      );
+    return viewSelector;
+  }
+
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
     return (
       <>
         { /* This is the ui specific for this sample.*/}
+        {this.getViewSelector()}
         <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
           {this.createThematicDisplayToggle("Thematic Display", "Turn off to see the original model without decorations.")}
           {this.createColorSchemePicker("Color Scheme", "Control the thematic color scheme.")}
+          {this.createDisplayModePicker("Display Mode", "Control the thematic mode displayed.")}
+          {this.createGradientModePicker("Gradient Mode", "Control the gradient of the thematic display.")}
           {this.createThematicDisplayRangeSlider("Change Range", "Control the effective area of the thematic display.")}
         </div>
       </>
     );
+  }
+
+  private readonly _getCoffsHarbourView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewList = await imodel.views.getViewList({ wantPrivate: false });
+    // console.debug(viewList);
+    // imodel.views.load();
+    this.setState({ viewList });
+    return ViewSetup.getDefaultView(imodel);
   }
 
   /** The sample's render method */
@@ -216,7 +319,7 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     return (
       <>
         <ControlPane instructions="Use the controls below to change the thematic display attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+        <ReloadableViewport getCustomViewState={this._getCoffsHarbourView} iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );
   }

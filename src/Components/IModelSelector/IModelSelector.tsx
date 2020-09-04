@@ -14,6 +14,7 @@ interface IModelSelectorProps {
 }
 
 export enum SampleIModels {
+  CoffsHarborDemo = "CoffsHarborDemo",
   MetroStation = "Metrostation Sample",
   RetailBuilding = "Retail Building Sample",
   BayTown = "Bay Town Process Plant",

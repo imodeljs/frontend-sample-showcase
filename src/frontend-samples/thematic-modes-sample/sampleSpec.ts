@@ -16,7 +16,8 @@ export function getThematicModesSpec(): SampleSpec {
       { name: "ThematicModesApp.tsx", import: import("!!raw-loader!./ThematicModesApp"), entry: true },
       { name: "ThematicModesUI.tsx", import: import("!!raw-loader!./ThematicModesUI") },
     ],
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
+    customModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.MetroStation],
+    // customModelList: ["CoffsHarborDemo", SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     setup: ThematicModesApp.setup,
     teardown: ThematicModesApp.teardown,
   });

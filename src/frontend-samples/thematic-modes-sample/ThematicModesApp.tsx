@@ -2,13 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import * as React from "react";
 import { Range1dProps } from "@bentley/geometry-core";
-import { ThematicDisplay, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
+import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import { ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import ThematicModesUI from "./ThematicModesUI";
 import SampleApp from "common/SampleApp";
+import * as React from "react";
+import ThematicModesUI from "./ThematicModesUI";
 
 // cSpell:ignore imodels
 
@@ -88,6 +88,20 @@ export default class ThematicModesApp implements SampleApp {
     if (undefined === props.gradientSettings)
       props.gradientSettings = {};
     props.gradientSettings.colorScheme = colorScheme;
+    this.setThematicDisplayProps(vp, props);
+  }
+
+  public static setThematicDisplayMode(vp: Viewport, displayMode: ThematicDisplayMode) {
+    const props = this.getThematicDisplayProps(vp);
+    props.displayMode = displayMode;
+    this.setThematicDisplayProps(vp, props);
+  }
+
+  public static setThematicDisplayGradientMode(vp: Viewport, gradientMode: ThematicGradientMode) {
+    const props = this.getThematicDisplayProps(vp);
+    if (undefined === props.gradientSettings)
+      props.gradientSettings = {};
+    props.gradientSettings.mode = gradientMode;
     this.setThematicDisplayProps(vp, props);
   }
 }
