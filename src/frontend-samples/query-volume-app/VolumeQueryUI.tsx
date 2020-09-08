@@ -233,27 +233,32 @@ export default class VolumeQueryUI extends React.Component<
           <Button buttonType={ButtonType.Blue} disabled={!this.state.isVolumeBoxOn} onClick={this._onClickApplyColoring}>Apply</Button>
           <Button buttonType={ButtonType.Blue} onClick={this._onClickClearColoring}>Clear</Button>
         </div>
-        <div className="sample-options-7col">
-          <span></span>
-          <span style={{ marginLeft: "35px" }}>{ElementPosition.InsideTheBox}</span>
-          <ColorPickerButton style={{ marginLeft: "10px" }}
-            initialColor={this.state.spatialElementsColors.insideColor}
-            onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.InsideTheBox)}
-          />
-          <span style={{ marginLeft: "35px" }}>{ElementPosition.OutsideTheBox}</span>
-          <ColorPickerButton style={{ marginLeft: "10px" }}
-            initialColor={this.state.spatialElementsColors.outsideColor}
-            onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.OutsideTheBox)}
-          />
-          <span style={{ marginLeft: "35px" }}>{ElementPosition.Overlap}</span>
-          <ColorPickerButton style={{ marginLeft: "10px" }}
-            initialColor={this.state.spatialElementsColors.overlapColor}
-            onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.Overlap)}
-          />
+        <div className="sample-options-3col">
+          <div style={{ display: "flex", alignItems: "center", marginLeft: "20px", marginRight: "20px" }}>
+            <span>{ElementPosition.InsideTheBox}</span>
+            <ColorPickerButton style={{ marginLeft: "10px" }}
+              initialColor={this.state.spatialElementsColors.insideColor}
+              onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.InsideTheBox)}
+            />
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>{ElementPosition.OutsideTheBox}</span>
+            <ColorPickerButton style={{ marginLeft: "10px" }}
+              initialColor={this.state.spatialElementsColors.outsideColor}
+              onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.OutsideTheBox)}
+            />
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span>{ElementPosition.Overlap}</span>
+            <ColorPickerButton style={{ marginLeft: "10px" }}
+              initialColor={this.state.spatialElementsColors.overlapColor}
+              onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.Overlap)}
+            />
+          </div>
         </div>
         <hr></hr>
         <div className="sample-options-2col">
-          <span>List Elements:</span>
+          <span style={{ whiteSpace: "nowrap" }}>List Colored Elements:</span>
           <select onChange={this._onSelectionListElements.bind(this)} value={this.state.elementsToShow.position}>
             <option value={ElementPosition.InsideTheBox}> {ElementPosition.InsideTheBox} </option>
             <option value={ElementPosition.OutsideTheBox}> {ElementPosition.OutsideTheBox} </option>
