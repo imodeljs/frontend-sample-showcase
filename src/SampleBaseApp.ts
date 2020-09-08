@@ -6,7 +6,7 @@ import { ClientRequestContext, Config, Id64String } from "@bentley/bentleyjs-cor
 import { /* BrowserAuthorizationCallbackHandler */ BrowserAuthorizationClient /* BrowserAuthorizationClientConfiguration */ } from "@bentley/frontend-authorization-client";
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
 import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
-import { BentleyCloudRpcManager, BentleyCloudRpcParams, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
+import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
 import { MarkupApp } from "@bentley/imodeljs-markup";
 import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
@@ -73,12 +73,10 @@ export class SampleBaseApp {
     const rpcInterfaces = [IModelReadRpcInterface, IModelTileRpcInterface, PresentationRpcInterface];
 
     // initialize RPC for web apps
-    let rpcParams: BentleyCloudRpcParams;
-
     const urlClient = new UrlDiscoveryClient();
     const requestContext = new FrontendRequestContext();
     const orchestratorUrl = await urlClient.discoverUrl(requestContext, "iModelJsOrchestrator.K8S", undefined);
-    rpcParams = { info: { title: "general-purpose-imodeljs-backend", version: "v2.0" }, uriPrefix: orchestratorUrl };
+    const rpcParams = { info: { title: "general-purpose-imodeljs-backend", version: "v2.0" }, uriPrefix: orchestratorUrl };
 
     BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
   }

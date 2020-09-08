@@ -14,6 +14,6 @@ export function getViewAttributesSpec(): SampleSpec {
       { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp"), entry: true },
       { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI") },
     ],
-    setup: ViewAttributesApp.setup,
+    setup: ViewAttributesApp.setup.bind(ViewAttributesApp),
   });
 }

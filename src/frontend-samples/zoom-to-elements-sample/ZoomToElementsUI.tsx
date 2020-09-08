@@ -111,7 +111,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
   private _elementIdSelector = () => {
     return (
       <select ref={this._listRef} multiple onChange={this._handleSelectorChange}>
-        {this.state.elementList.map((item: string) => <option>{item}</option>)}
+        {this.state.elementList.map((item, i) => <option key={i}>{item}</option>)}
       </select>
     );
   }
@@ -149,7 +149,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
         </div>
         <hr></hr>
         <div style={{ textAlign: "center" }}>
-          <Button buttonType={ButtonType.Primary} onClick={() => ZoomToElementsApp.zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
+          <Button buttonType={ButtonType.Primary} onClick={async () => ZoomToElementsApp.zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
         </div>
       </>
     );

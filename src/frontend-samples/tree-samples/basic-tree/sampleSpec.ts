@@ -15,6 +15,6 @@ export function getBasicTreeSpec(): SampleSpec {
     files: [
       { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp"), entry: true },
     ],
-    setup: BasicTreeApp.setup,
+    setup: BasicTreeApp.setup.bind(BasicTreeApp),
   });
 }

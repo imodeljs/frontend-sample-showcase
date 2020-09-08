@@ -60,19 +60,21 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
       case PointMode.Random: { pointGenerator = new RandomPointGenerator(); break; }
     }
 
-    this.setState({ pointGenerator }, () => this.notifyChange());
+    this.setState({ pointGenerator });
   }
 
   private _onChangePointCount = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ pointCount: Number(event.target.value) }, () => this.notifyChange());
+    this.setState({ pointCount: Number(event.target.value) });
   }
 
   public componentDidMount() {
     this.notifyChange();
   }
 
-  public componentDidUpdate(prevProps: PointSelectorProps) {
-    if (undefined !== this.props.range && this.props.range !== prevProps.range) {
+  public componentDidUpdate(prevProps: PointSelectorProps, prevState: PointSelectorState) {
+    if (undefined !== this.props.range && (this.props.range !== prevProps.range ||
+      prevState.pointCount !== this.state.pointCount ||
+      prevState.pointGenerator !== this.state.pointGenerator)) {
       this.notifyChange();
     }
   }

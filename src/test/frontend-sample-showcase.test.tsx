@@ -3,15 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-/* tslint:disable:no-console */
 import { expect } from "chai";
-// tslint:disable-next-line:no-direct-imports
+import RealityDataApp from "frontend-samples/reality-data-sample/RealityDataApp";
 import * as TypeMoq from "typemoq";
-
 import { Range3d } from "@bentley/geometry-core";
+import { ContextRealityModelProps } from "@bentley/imodeljs-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-
 import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApp";
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApp";
 import ThematicDisplayApp from "../frontend-samples/thematic-display-sample/ThematicDisplayApp";
@@ -26,12 +24,12 @@ describe("View Clipping Sample", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Adds a view clip plane to the viewport", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
     if (vp) {
-      ViewClipApp.setClipPlane(vp, "0", imodelMock.object as IModelConnection);
+      ViewClipApp.setClipPlane(vp, "0", imodelMock.object);
       expect(vp.view.getViewClip()).to.not.be.undefined;
       ViewClipApp.clearClips(vp);
     } else {
@@ -59,7 +57,7 @@ describe("Thematic display", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Turns thematic display on/off", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
@@ -79,7 +77,7 @@ describe("Shadow Study", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Sets sun time", () => {
     const time: number = 123;
@@ -116,7 +114,7 @@ describe("Emphasize Elements", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(() => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Emphasizes some elements", () => {
     IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
@@ -136,6 +134,49 @@ describe("Emphasize Elements", () => {
 
       // Expect emphasized elements to be changed
       expect(emphasizeElem.getEmphasizedElements(vp)).to.not.equal(oldEmphasizedElms);
+    } else {
+      expect(false).to.be.true;
+    }
+  });
+});
+
+describe("Reality Data", () => {
+  const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
+
+  before(async () => {
+    await TestApp.startup();
+    imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
+  });
+
+  after(async () => TestApp.shutdown());
+
+  it("Removes reality data models", () => {
+    IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (vp) {
+      // First attach a fake reality model so the remove behavior can be tested
+      const crmProp: ContextRealityModelProps = { tilesetUrl: "FakeURL", name: "FakeName" };
+      vp.displayStyle.attachRealityModel(crmProp);
+      let models: number = 0;
+      let style = vp.displayStyle.clone();
+      style.forEachRealityModel(
+        () => models++,
+      );
+
+      // Expect the fake reality model to be added
+      expect(models).to.equal(1);
+      models = 0;
+
+      // Toggle off all reality models
+      RealityDataApp.toggleRealityModel(false, vp, imodelMock.object);
+      style = vp.displayStyle.clone();
+      style.forEachRealityModel(
+        () => models++,
+      );
+
+      // Expect no reality models
+      expect(models).to.equal(0);
     } else {
       expect(false).to.be.true;
     }

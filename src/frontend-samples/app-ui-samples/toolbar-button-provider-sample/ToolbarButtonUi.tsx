@@ -12,7 +12,7 @@ export class ToolbarButtonProvider implements UiItemsProvider {
    */
   public provideToolbarButtonItems(_stageId: string, stageUsage: string, toolbarUsage: ToolbarUsage, toolbarOrientation: ToolbarOrientation): CommonToolbarItem[] {
     if (stageUsage === StageUsage.General && toolbarUsage === ToolbarUsage.ContentManipulation && toolbarOrientation === ToolbarOrientation.Horizontal) {
-      const simpleActionSpec = ToolbarItemUtilities.createActionButton("Open message box", 1000, "icon-lightbulb", "Added Tool", this.startTool);
+      const simpleActionSpec = ToolbarItemUtilities.createActionButton("Open message box", 1000, "icon-lightbulb", "Added Tool", () => this.startTool());
       return [simpleActionSpec];
     }
     return [];

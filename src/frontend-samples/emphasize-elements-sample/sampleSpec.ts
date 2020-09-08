@@ -17,7 +17,7 @@ export function getEmphasizeElementsSpec(): SampleSpec {
 
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: EmphasizeElementsApp.setup,
-    teardown: EmphasizeElementsApp.teardown,
+    setup: EmphasizeElementsApp.setup.bind(EmphasizeElementsApp),
+    teardown: EmphasizeElementsApp.teardown.bind(EmphasizeElementsApp),
   });
 }

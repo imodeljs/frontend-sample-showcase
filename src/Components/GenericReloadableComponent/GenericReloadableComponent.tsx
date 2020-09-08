@@ -39,13 +39,22 @@ export class ReloadableConnection extends React.PureComponent<ReloadableConnecti
     );
   }
 
-  public componentWillReceiveProps(nextProps: ReloadableConnectionProps) {
-    if (this.props.iModelName !== nextProps.iModelName) {
-      this.setState({ imodel: undefined });
+  public static getDerivedStateFromProps(props: ReloadableConnectionProps, state: ReloadableConnectionState) {
+    if (state.imodel && props.iModelName !== state.imodel.name) {
+      return ({ ...state, imodel: undefined, viewState: undefined });
+    }
+
+    return null;
+  }
+
+  public componentDidUpdate(prevProps: ReloadableConnectionProps, prevState: ReloadableConnectionState) {
+    if (this.state.imodel && prevState.imodel !== this.state.imodel) {
+      if (this.props.onIModelReady)
+        this.props.onIModelReady(this.state.imodel);
     }
   }
 
   private _onIModelReady = async (imodel: IModelConnection) => {
-    this.setState({ imodel }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel); });
+    this.setState({ imodel });
   }
 }
