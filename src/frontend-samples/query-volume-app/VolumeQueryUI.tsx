@@ -267,10 +267,10 @@ export default class VolumeQueryUI extends React.Component<
         </div>
         <div className="table-wrapper">
           <select multiple style={{ maxHeight: "100px", overflowY: "scroll", overflowX: "hidden", whiteSpace: "nowrap" }}>
-            {Array.from(this.state.elementsToShow.elements).map((element) => <option key={element.id} style={{ listStyleType: "none", textAlign: "left" }}>{element.name}</option>)}
+            {this.state.elementsToShow.elements.slice(99).map((element) => <option key={element.id} style={{ listStyleType: "none", textAlign: "left" }}>{element.name}</option>)}
           </select>
         </div>
-        <span style={{ color: "grey" }} className="table-caption">{this.state.elementsToShow.elements.length} elements in list</span>
+        <span style={{ color: "grey" }} className="table-caption">Selected {this.state.elementsToShow.elements.length} elements, showing top 100.</span>
       </div>
     );
   }
