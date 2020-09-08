@@ -8,11 +8,11 @@ import "common/samples-common.scss";
 import { ViewClipUI } from "./ViewClipUI";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, Viewport } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
-import SampleApp from "../../common/SampleApp";
+import SampleApp from "common/SampleApp";
 
 export default class ViewClipApp implements SampleApp {
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <ViewClipUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <ViewClipUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   /* Method for clearing all clips in the viewport */
@@ -73,17 +73,15 @@ export default class ViewClipApp implements SampleApp {
   public static setClipPlane(vp: ScreenViewport, clipPlane: string, imodel: IModelConnection) {
     let rotationType: EditManipulator.RotationType;
     switch (clipPlane) {
+      default:
       case "0": rotationType = EditManipulator.RotationType.Top; break;
       case "1": rotationType = EditManipulator.RotationType.Front; break;
       case "2": rotationType = EditManipulator.RotationType.Left; break;
-      case "None": {
-        this.clearClips(vp);
-        return true;
-      } default: rotationType = EditManipulator.RotationType.Top; break;
+      case "None": return true;
     }
 
     // Get the center point of the displayed extents as a starting point for the clip plane
-    const point: Point3d = imodel!.displayedExtents.center;
+    const point: Point3d = imodel.displayedExtents.center;
     const normal: Vector3d | undefined = this.getPlaneInwardNormal(rotationType, vp);
     const plane: Plane3dByOriginAndUnitNormal | undefined = Plane3dByOriginAndUnitNormal.create(point, normal!);
     if (undefined === plane)

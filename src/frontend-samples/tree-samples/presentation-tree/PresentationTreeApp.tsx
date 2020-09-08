@@ -10,15 +10,15 @@ import { Ruleset } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PresentationTreeUI } from "./PresentationTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
+const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json");  // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface PresentationTreeProps {
   imodel: IModelConnection;
 }
 
 export default class PresentationTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <PresentationTreeUI iModelName={iModelName} setupControlPane={setupControlPane}></PresentationTreeUI>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <PresentationTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></PresentationTreeUI>;
   }
 }
 

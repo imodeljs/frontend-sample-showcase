@@ -5,9 +5,11 @@
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
+import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
+import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
@@ -15,6 +17,7 @@ import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sa
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
+import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
 import { getBadgeSpec } from "./frontend-samples/component-gallery/badge-sample/sampleSpec";
@@ -51,13 +54,16 @@ export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
+    getRealityDataSpec(),
     getViewAttributesSpec(),
   ],
 }, {
   groupName: "Viewer Features", samples: [
+    getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
     getMarkerPinSpec(),
+    getMultiViewportSpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),

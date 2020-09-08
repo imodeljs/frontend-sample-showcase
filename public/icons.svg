@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0">
+  <defs>
+    <svg width="16" height="16" viewBox="0 0 16 16" id="minimize">
+      <path d="m15 3v10h-14v-10zm1-1h-16v12h16zm-3 8h-10v2h10z"/>
+    </svg>
+  </defs>
+</svg>

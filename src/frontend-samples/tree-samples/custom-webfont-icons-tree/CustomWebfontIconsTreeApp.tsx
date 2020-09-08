@@ -11,15 +11,15 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import SampleApp from "common/SampleApp";
 import { CustomWebfontIconsTreeUI } from "./CustomWebfontIconsTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json"); // tslint:disable-line: no-var-requires
+const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json");  // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
 export default class CustomWebfontIconsTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <CustomWebfontIconsTreeUI iModelName={iModelName} setupControlPane={setupControlPane}></CustomWebfontIconsTreeUI>;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <CustomWebfontIconsTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomWebfontIconsTreeUI>;
   }
 }
 /**

@@ -9,26 +9,27 @@ import "common/CommonComponentTools/index.scss";
 import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
 import { FeaturedTile, MinimalFeaturedTile, MinimalTile, Tile } from "@bentley/ui-core";
 import SampleApp from "common/SampleApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
-export default class TilesList extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> implements SampleApp {
+export default class TilesList extends React.Component<{}> implements SampleApp {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getTilesData(): ComponentExampleProps[] {
     return [
       createComponentExample("Normal Tile", undefined,
         <Tile title="Normal Tile" icon="icon-placeholder">
-          <a>Link 1</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
-          <a>Link 2</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
+          <a>Link 1</a>
+          <a>Link 2</a>
         </Tile>),
       createComponentExample("Featured Tile", undefined,
         <FeaturedTile title="Featured Tile" icon="icon-placeholder">
-          <a>Link 1</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
-          <a>Link 2</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
+          <a>Link 1</a>
+          <a>Link 2</a>
         </FeaturedTile>),
       createComponentExample("Minimal Tile", undefined, <MinimalTile title="Minimal Tile" icon="icon-placeholder" />),
       createComponentExample("Featured Minimal Tile", undefined, <MinimalFeaturedTile title="Minimal Featured Tile" icon="icon-placeholder" />),
@@ -39,16 +40,16 @@ export default class TilesList extends React.Component<{ setupControlPane: (inst
     ];
   }
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <TilesList setupControlPane={setupControlPane}></TilesList>;
+  public static async setup(_iModelName: string) {
+    return <TilesList></TilesList>;
   }
 
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
-    this.props.setupControlPane("Different styles of tiles that can be used in iModel.js applications.");
     return (
       <>
+        <ControlPane instructions="Different styles of tiles that can be used in iModel.js applications."></ControlPane>
         <ComponentContainer data={TilesList.getTilesData()}></ComponentContainer>
       </>
     );

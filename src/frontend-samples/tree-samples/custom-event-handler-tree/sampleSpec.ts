@@ -15,6 +15,6 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     files: [
       { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp"), entry: true },
     ],
-    setup: CustomEventHandlerTreeApp.setup,
+    setup: CustomEventHandlerTreeApp.setup.bind(CustomEventHandlerTreeApp),
   });
 }

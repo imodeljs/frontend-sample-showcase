@@ -178,7 +178,7 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
 
     let index = 1;
     for (const point of points) {
-      this.markers.add(new SamplePinMarker(point, "Marker " + index++, image, this));
+      this.markers.add(new SamplePinMarker(point, `Marker ${index++}`, image, this));
     }
   }
 

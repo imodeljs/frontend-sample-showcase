@@ -10,6 +10,7 @@ import { ElemProperty, TooltipCustomizeSettings, TooltipCustomizeUI } from "./To
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 
+
 // SampleToolAdmin would typically extend ToolAdmin
 //  See Notes on use of ProxyToolAdmin at the bottom of this file.
 //  Do this: "class YourToolAdmin extends ToolAdmin"
@@ -28,7 +29,7 @@ export class SampleToolAdmin extends ProxyToolAdmin {
     if (!this.settings.showImage && !this.settings.showCustomText && !this.settings.showElementProperty && !this.settings.showDefaultToolTip)
       return "";
 
-    const tip = document.createElement("div") as HTMLDivElement;
+    const tip = document.createElement("div");
     let needHR = false;
     if (this.settings.showImage) {
       const img = await imageElementFromUrl(".\\iModeljs-logo.png");
@@ -39,7 +40,7 @@ export class SampleToolAdmin extends ProxyToolAdmin {
     if (this.settings.showCustomText) {
       if (needHR)
         tip.appendChild(document.createElement("hr"));
-      const customText = document.createElement("span") as HTMLSpanElement;
+      const customText = document.createElement("span");
       customText.innerHTML = this.settings.customText;
       tip.appendChild(customText);
       needHR = true;
@@ -50,7 +51,7 @@ export class SampleToolAdmin extends ProxyToolAdmin {
         tip.appendChild(document.createElement("hr"));
 
       const propertyName = this.settings.elemProperty as string;
-      let msg = "<b>" + propertyName + ":</b> ";
+      let msg = `<b>${propertyName}:</b> `;
 
       if (hit.isElementHit) {
         const query = `SELECT ${propertyName} AS val FROM BisCore.SpatialElement
@@ -68,16 +69,16 @@ export class SampleToolAdmin extends ProxyToolAdmin {
               break;
             case ElemProperty.Origin:
               msg += "<ul>";
-              msg += "<li><b>x:</b> " + row.val.x + "</li>";
-              msg += "<li><b>y:</b> " + row.val.y + "</li>";
-              msg += "<li><b>z:</b> " + row.val.z + "</li>";
+              msg += `<li><b>x:</b> ${row.val.x}</li>`;
+              msg += `<li><b>y:</b> ${row.val.y}</li>`;
+              msg += `<li><b>z:</b> ${row.val.z}</li>`;
               msg += "</ul>";
               break;
           }
         }
       }
 
-      const htmlTip = document.createElement("span") as HTMLSpanElement;
+      const htmlTip = document.createElement("span");
       htmlTip.innerHTML = msg;
       tip.appendChild(htmlTip);
       needHR = true;
@@ -88,7 +89,7 @@ export class SampleToolAdmin extends ProxyToolAdmin {
         tip.appendChild(document.createElement("hr"));
       let defaultTip = await super.getToolTip(hit);
       if (typeof defaultTip === "string") {
-        const htmlTip = document.createElement("span") as HTMLSpanElement;
+        const htmlTip = document.createElement("span");
         htmlTip.innerHTML = defaultTip;
         defaultTip = htmlTip;
       }
@@ -109,11 +110,11 @@ export default class TooltipCustomizeApp implements SampleApp {
     elemProperty: ElemProperty.Origin,
   };
 
-  public static async setup(iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     // ToolAdmin is typically initialized at application start.
     // See Notes at bottom of this file.
     ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin());
-    return <TooltipCustomizeUI iModelName={iModelName} setupControlPane={setupControlPane} />;
+    return <TooltipCustomizeUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {

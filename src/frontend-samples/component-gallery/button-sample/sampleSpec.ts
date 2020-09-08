@@ -15,6 +15,6 @@ export function getButtonSpec(): SampleSpec {
     files: [
       { name: "Button.tsx", import: import("!!raw-loader!./Button"), entry: true },
     ],
-    setup: ButtonList.setup,
+    setup: ButtonList.setup.bind(ButtonList),
   });
 }

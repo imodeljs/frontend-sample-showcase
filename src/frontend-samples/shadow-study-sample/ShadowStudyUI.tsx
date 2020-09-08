@@ -6,9 +6,10 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "../../api/viewSetup";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ViewSetup } from "api/viewSetup";
 import ShadowStudyApp from "./ShadowStudyApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface ShadowStudyState {
@@ -17,7 +18,7 @@ interface ShadowStudyState {
 
 /** A React component that renders the UI specific for this sample */
 
-export default class ShadowStudyUI extends React.Component<{ iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void }, ShadowStudyState> {
+export default class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
 
   /** Creates an Sample instance */
   constructor(props?: any, context?: any) {
@@ -102,11 +103,11 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     const minute = this.state.date.getMinutes();
     let minString: string;
     if (minute < 10)
-      minString = "0" + String(minute);
+      minString = `0${String(minute)}`;
     else
       minString = String(minute);
     const hour = this.state.date.getHours();
-    return String(hour) + ":" + minString;
+    return `${String(hour)}:${minString}`;
   }
 
   // Initialize the data view when a new iModel is loaded
@@ -139,7 +140,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
         <div className="sample-options-3col">
           <div>Date</div>
           <input type="date" id="date_picker" onChange={this._updateDate}></input>
-          <div id="date">{String(this.state.date.getMonth() + 1) + "/" + this.state.date.getDate() + "/" + this.state.date.getFullYear()}</div>
+          <div id="date">{`${String(this.state.date.getMonth() + 1)}/${this.state.date.getDate()}/${this.state.date.getFullYear()}`}</div>
         </div>
         <div id="date_invalid" ></div>
       </>
@@ -148,9 +149,9 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Select a date and time.", this.getControls());
     return (
       <>
+        <ControlPane instructions="Select a date and time." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />
       </>
     );

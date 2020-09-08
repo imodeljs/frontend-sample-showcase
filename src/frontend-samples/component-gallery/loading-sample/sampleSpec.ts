@@ -15,6 +15,6 @@ export function getLoadingSpec(): SampleSpec {
     files: [
       { name: "Loading.tsx", import: import("!!raw-loader!./Loading"), entry: true },
     ],
-    setup: LoadingList.setup,
+    setup: LoadingList.setup.bind(LoadingList),
   });
 }

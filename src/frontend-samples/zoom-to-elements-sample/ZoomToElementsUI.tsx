@@ -11,11 +11,12 @@ import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ZoomToElementsApp from "./ZoomToElementsApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React props */
 interface ZoomToProps {
   iModelName: string;
-  setupControlPane: (instructions: string, controls?: React.ReactNode) => void;
+  iModelSelector: React.ReactNode;
 }
 
 /** React state */
@@ -110,7 +111,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
   private _elementIdSelector = () => {
     return (
       <select ref={this._listRef} multiple onChange={this._handleSelectorChange}>
-        {this.state.elementList.map((item: string) => <option>{item}</option>)}
+        {this.state.elementList.map((item, i) => <option key={i}>{item}</option>)}
       </select>
     );
   }
@@ -148,7 +149,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
         </div>
         <hr></hr>
         <div style={{ textAlign: "center" }}>
-          <Button buttonType={ButtonType.Primary} onClick={() => ZoomToElementsApp.zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
+          <Button buttonType={ButtonType.Primary} onClick={async () => ZoomToElementsApp.zoomToElements(this.state)} disabled={0 === this.state.elementList.length}>Zoom to Elements</Button>
         </div>
       </>
     );
@@ -156,9 +157,9 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
 
   /** The sample's render method */
   public render() {
-    this.props.setupControlPane("Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements.", this.getControls());
     return (
       <>
+        <ControlPane instructions="Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );

@@ -10,13 +10,14 @@ import { ComponentContainer, ComponentExampleProps } from "common/CommonComponen
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
 import SampleApp from "common/SampleApp";
+import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
 };
 
-export default class ExpandableListList extends React.Component<{ setupControlPane: (instructions: string, controls?: React.ReactNode) => void }> implements SampleApp {
+export default class ExpandableListList extends React.Component<{}> implements SampleApp {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getExpandableListData(): ComponentExampleProps[] {
@@ -25,30 +26,30 @@ export default class ExpandableListList extends React.Component<{ setupControlPa
         <ExpandableList className="uicore-full-width">
           <SampleExpandableBlock title="Test" isExpanded={true} onClick={() => { }}>
             Hello World!
-              </SampleExpandableBlock>
+          </SampleExpandableBlock>
         </ExpandableList>),
       createComponentExample("ExpandableList w/ singleExpandOnly", "ExpandableList with singleExpandOnly prop",
         <ExpandableList className="uicore-full-width" singleExpandOnly={true} defaultActiveBlock={0}>
           <ExpandableBlock title="Test1" isExpanded={false} onClick={() => { }}>
             Hello World 1
-              </ExpandableBlock>
+          </ExpandableBlock>
           <ExpandableBlock title="Test2" isExpanded={false} onClick={() => { }}>
             Hello World 2
-              </ExpandableBlock>
+          </ExpandableBlock>
         </ExpandableList>),
     ];
   }
 
-  public static async setup(_iModelName: string, setupControlPane: (instructions: string, controls?: React.ReactNode) => void) {
-    return <ExpandableListList setupControlPane={setupControlPane}></ExpandableListList>;
+  public static async setup(_iModelName: string) {
+    return <ExpandableListList></ExpandableListList>;
   }
 
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
-    this.props.setupControlPane("Different styles of expandable lists that can be used in iModel.js applications.");
     return (
       <>
+        <ControlPane instructions="Different styles of expandable lists that can be used in iModel.js applications."></ControlPane>
         <ComponentContainer data={ExpandableListList.getExpandableListData()}></ComponentContainer>
       </>
     );
