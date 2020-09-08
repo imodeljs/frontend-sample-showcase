@@ -119,7 +119,7 @@ export const displayStyles: DisplayStyle[] = [{
     ground: { display: false },
   },
   viewflags: { ...renderingStyleViewFlags, shadows: true },
-  solarShadows: { color: Number.parseInt("524f44", 16) },
+  solarShadows: { color: 0x524f44 },
   lights: {
     solar: { direction: [0.9391245716329828, 0.10165764029437066, -0.3281931795832247] },
     hemisphere: { intensity: 0.2 },
@@ -127,7 +127,7 @@ export const displayStyles: DisplayStyle[] = [{
   },
 }, {
   name: "Comic Book",
-  backgroundColor: Number.parseInt("FFFFFF", 16),
+  backgroundColor: 0xFFFFFF,
   environment: { sky: { display: false }, ground: { display: false } },
   viewflags: { ...renderingStyleViewFlags, noWeight: false, visEdges: true },
   hline: {
