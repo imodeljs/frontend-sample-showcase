@@ -16,7 +16,7 @@ export function getSwipingComparisonSpec(): SampleSpec {
       { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
       { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
     ],
-    setup: SwipingComparisonApp.setup,
-    teardown: SwipingComparisonApp.teardown,
+    setup: SwipingComparisonApp.setup.bind(SwipingComparisonApp),
+    teardown: SwipingComparisonApp.teardown.bind(SwipingComparisonApp),
   });
 }
