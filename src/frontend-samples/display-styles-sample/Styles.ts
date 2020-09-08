@@ -1,6 +1,7 @@
 import {
   DisplayStyle3dSettingsProps,
   RenderMode,
+  SkyBoxProps,
   ThematicDisplayMode,
   ThematicGradientColorScheme,
   ThematicGradientMode,
@@ -20,6 +21,8 @@ const renderingStyleViewFlags: ViewFlagProps = {
   thematicDisplay: false,
   renderMode: RenderMode.SmoothShade,
 };
+
+const defaultSkyBox: SkyBoxProps = { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 };
 
 export interface DisplayStyle extends DisplayStyle3dSettingsProps {
   name: string;
@@ -41,7 +44,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Default",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: renderingStyleViewFlags,
@@ -115,7 +118,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Sun-dappled",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 },
+    sky: defaultSkyBox,
     ground: { display: false },
   },
   viewflags: { ...renderingStyleViewFlags, shadows: true },
@@ -144,7 +147,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Outdoorsy",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: renderingStyleViewFlags,
@@ -176,7 +179,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Soft",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, ambientOcclusion: true },
@@ -191,7 +194,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Moonlit",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, visEdges: true },
@@ -237,7 +240,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Gloss",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, visEdges: true },
