@@ -40,6 +40,7 @@ import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/uni
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
+import { getReadSettingsSpec } from "frontend-samples/read-settings-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -62,6 +63,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
     getZoomToElementsSpec(),
+    getReadSettingsSpec(),
   ],
 }, {
   groupName: "UI Components", samples: [
