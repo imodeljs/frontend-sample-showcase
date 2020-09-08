@@ -8,8 +8,8 @@ import { featureFlags, FeatureToggleClient } from "../../FeatureToggleClient";
 import { modules } from "./Modules";
 import "@bentley/monaco-editor/lib/editor/icons/codicon.css";
 import "./SampleEditor.scss";
-// tslint:disable-next-line: variable-name
-const MonacoEditor = React.lazy(() => import("@bentley/monaco-editor"));
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 
 export interface SampleEditorProps {
   files?: any[];
@@ -42,7 +42,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
   }
 
   private _onNavItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement | null;
+    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement;
     if (target && target.title && target.title.toLowerCase() !== this.state.active) {
       this.setState({ active: target.title.toLowerCase() });
     } else {
@@ -67,8 +67,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
       <SplitScreen split={"horizontal"} size={this.state.active ? 201 : 35} minSize={35} className="sample-editor" primary="second" pane2Style={this.state.active ? undefined : { height: "35px" }} onChange={this._onSplitChange} allowResize={!!this.state.active}>
         <div style={{ height: "100%" }}>
           <TabNavigation>
-            {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />
-            }
+            {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />}
             <TabNavigationAction onClick={this.props.onCloseClick}>
               <svg className="minimize-button">
                 <use href="icons.svg#minimize"></use>
@@ -77,7 +76,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
             </TabNavigationAction>
           </TabNavigation>
           <React.Suspense fallback={"Loading..."}>
-            <MonacoEditor />
+            <MonacoEditor height={"calc(100% - 35px)"} />
           </React.Suspense>
         </div>
         <div className="sample-editor-pane">

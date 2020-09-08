@@ -45,9 +45,13 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
     }
 
     const response = await fetch(userURL);
+    const body = await response.json();
     const tokenJson = {
-      ...await response.json(),
+      ...await body,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       _userInfo: { id: "MockId" },
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _tokenString: body._jwt,
     };
     this._accessToken = AccessToken.fromJson(tokenJson);
 

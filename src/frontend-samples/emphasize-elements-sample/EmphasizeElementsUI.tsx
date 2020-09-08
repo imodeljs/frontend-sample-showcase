@@ -136,7 +136,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Isolate)} disabled={this.state.selectionIsEmpty}>Apply</Button>
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Isolate)} disabled={!this.state.isolateIsActive}>Clear</Button>
           <span>Override</span>
-          <ColorPickerButton activeColor={this.state.colorValue} onColorPick={this._onColorPick} disabled={this.state.selectionIsEmpty} />
+          <ColorPickerButton initialColor={this.state.colorValue} onColorPick={this._onColorPick} disabled={this.state.selectionIsEmpty} />
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Override)} disabled={this.state.selectionIsEmpty}>Apply</Button>
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Override)} disabled={!this.state.overrideIsActive}>Clear</Button>
         </div>

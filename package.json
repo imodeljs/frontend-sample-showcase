@@ -3,31 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@bentley/bentleyjs-core": "2.2.0",
-    "@bentley/context-registry-client": "2.2.0",
-    "@bentley/frontend-authorization-client": "2.2.0",
-    "@bentley/geometry-core": "2.2.0",
+    "@bentley/bentleyjs-core": "2.5.3",
+    "@bentley/context-registry-client": "2.5.3",
+    "@bentley/frontend-authorization-client": "2.5.3",
+    "@bentley/geometry-core": "2.5.3",
     "@bentley/icons-generic-webfont": "^1.0.15",
-    "@bentley/imodelhub-client": "2.2.0",
-    "@bentley/imodeljs-common": "2.2.0",
-    "@bentley/imodeljs-frontend": "2.2.0",
-    "@bentley/imodeljs-i18n": "2.2.0",
-    "@bentley/imodeljs-markup": "2.2.0",
-    "@bentley/imodeljs-quantity": "2.2.0",
-    "@bentley/itwin-client": "2.2.0",
+    "@bentley/imodelhub-client": "2.5.3",
+    "@bentley/imodeljs-common": "2.5.3",
+    "@bentley/imodeljs-frontend": "2.5.3",
+    "@bentley/imodeljs-i18n": "2.5.3",
+    "@bentley/imodeljs-markup": "2.5.3",
+    "@bentley/imodeljs-quantity": "2.5.3",
+    "@bentley/itwin-client": "2.5.3",
     "@bentley/monaco-editor": "^1.5.0",
-    "@bentley/orbitgt-core": "2.2.0",
-    "@bentley/presentation-common": "2.2.0",
-    "@bentley/presentation-components": "2.2.0",
-    "@bentley/presentation-frontend": "2.2.0",
-    "@bentley/product-settings-client": "2.2.0",
+    "@bentley/orbitgt-core": "2.5.3",
+    "@bentley/presentation-common": "2.5.3",
+    "@bentley/presentation-components": "2.5.3",
+    "@bentley/presentation-frontend": "2.5.3",
+    "@bentley/product-settings-client": "2.5.3",
+    "@bentley/rbac-client": "^2.5.3",
     "@bentley/react-scripts": "^3.4.2",
-    "@bentley/ui-abstract": "2.2.0",
-    "@bentley/ui-components": "2.2.0",
-    "@bentley/ui-core": "2.2.0",
-    "@bentley/ui-framework": "2.2.0",
-    "@bentley/ui-ninezone": "2.2.0",
-    "@bentley/webgl-compatibility": "2.2.0",
+    "@bentley/ui-abstract": "2.5.3",
+    "@bentley/ui-components": "2.5.3",
+    "@bentley/ui-core": "2.5.3",
+    "@bentley/ui-framework": "2.5.3",
+    "@bentley/ui-ninezone": "2.5.3",
+    "@bentley/webgl-compatibility": "2.5.3",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -42,7 +43,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.10.1",
-    "@bentley/build-tools": "^2.2.0",
+    "@bentley/build-tools": "^2.5.3",
     "@bentley/certa": "^2.0.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -66,8 +67,7 @@
     "react-app-rewired": "^2.1.6",
     "rimraf": "^2.7.1",
     "ts-jest": "^24.3.0",
-    "tslint": "^5.20.1",
-    "tslint-etc": "^1.11.1",
+    "eslint": "^6.8.0",
     "typemoq": "^2.1.0",
     "webpack": "4.42.0",
     "webpack-cli": "^3.3.11",
@@ -80,7 +80,7 @@
     "build:typedefs": "generate-modules ./Modules.json ./src/Components/SampleEditor/Modules.ts",
     "test": "react-app-rewired test --scripts-version @bentley/react-scripts",
     "eject": "react-app-rewired eject --scripts-version @bentley/react-scripts",
-    "lint": "tslint -p . 1>&2",
+    "lint": "eslint ./src/**/*.{ts,tsx} 1>&2",
     "test-build": "tsc 1>&2 --noEmit false --jsx preserve --outDir ./lib",
     "test-build:watch": "tsc 1>&2 --noEmit false --jsx preserve --outDir ./lib -w",
     "test-certa": "certa -r chrome",
@@ -89,7 +89,37 @@
   },
   "homepage": "./",
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "./node_modules/@bentley/build-tools/.eslintrc.js",
+    "ignorePatterns": [
+      "*.d.ts"
+    ],
+    "rules": {
+      "deprecation/deprecation": "off"
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.tsx"
+        ],
+        "rules": {
+          "@typescript-eslint/naming-convention": [
+            "warn",
+            {
+              "selector": "function",
+              "format": [
+                "camelCase",
+                "PascalCase"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   },
   "browserslist": [
     "electron 6.0.0",

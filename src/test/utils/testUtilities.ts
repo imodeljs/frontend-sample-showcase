@@ -13,8 +13,8 @@ import { BlankConnection, IModelConnection, ScreenViewport, SpatialViewState } f
 function createViewDiv() {
   const div = document.createElement("div");
   assert(null !== div);
-  div!.style.width = div!.style.height = "1000px";
-  document.body.appendChild(div!);
+  div.style.width = div.style.height = "1000px";
+  document.body.appendChild(div);
   return div;
 }
 
