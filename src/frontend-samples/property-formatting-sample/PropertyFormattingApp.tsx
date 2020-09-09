@@ -8,9 +8,12 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs, SelectionChangesListener } from "@bentley/presentation-frontend";
 import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
-import { Content, KeySet } from "@bentley/presentation-common";
+import { Content, KeySet, Field, DisplayValue } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
+import { OverlySimpleProperyRecord } from "./SimplifiedUI";
+import { PropertyRecord } from "@bentley/ui-abstract";
+import { ContentBuilder } from "@bentley/presentation-components";
 
 /*
 These are instructions on how to use the PresentationManager API to essentially duplicate the property display
@@ -39,8 +42,8 @@ you to supply a ClientRequestContext. You should have one of these that you used
 export class PropertyFormattingApp implements SampleApp {
   private static selectionListener: SelectionChangesListener;
 
-  public static async setup(iModelName: string) {
-    return <PropertyFormattingUI iModelName={iModelName} />;
+  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    return <PropertyFormattingUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   public static teardown() {
@@ -66,5 +69,48 @@ export class PropertyFormattingApp implements SampleApp {
       return;
 
     return Presentation.presentation.getContent(requestOptions, descriptor, keys);
+  }
+
+  public static createOverlySimplePropertyRecords(content: Content, propertyNameFilter: string[] = []) {
+    const item = content.contentSet[0];
+    const data: OverlySimpleProperyRecord[] = [];
+    let fields = content.descriptor.fields;
+
+    if (0 !== propertyNameFilter.length) {
+      fields = fields.filter((f: Field) => propertyNameFilter.includes(f.name));
+    }
+
+    fields.forEach((f: Field) => {
+      const fieldName = f.name;                           // Unique name for this field
+      const fieldLabel = f.label;                         // User facing label for this field
+      const displayValue = item.displayValues[f.name];    // Value to display to user
+
+      if (DisplayValue.isPrimitive(displayValue)) {
+        const displayValueString = (undefined !== displayValue) ? displayValue.toString() : "";
+        data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: displayValueString });
+      } else if (DisplayValue.isArray(displayValue)) {
+        data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: "[" + displayValue.length + "] " + f.type.typeName });
+      } else if (DisplayValue.isMap(displayValue)) {
+        data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: f.type.typeName });
+      }
+    });
+
+    return data;
+  }
+
+  public static createPropertyRecordsUsingContentBuilder(content: Content, categoryNameFilter: string = "") {
+
+    const item = content.contentSet[0];
+    const data: PropertyRecord[] = [];
+    let fields = content.descriptor.fields;
+
+    if (categoryNameFilter)
+      fields = content.descriptor.fields.filter((f: Field) => f.category.name === categoryNameFilter);
+
+    fields.forEach((f: Field) => {
+      data.push(ContentBuilder.createPropertyRecord(f, item));
+    });
+
+    return data;
   }
 }
