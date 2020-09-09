@@ -6,7 +6,7 @@ import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import "common/samples-common.scss";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { PhysicalElement, SpatialElements, SpatialElementsColors, VolumeQueryApp } from "./VolumeQueryApp";
+import { ClassifiedElements, ClassifiedElementsColors, PhysicalElement, VolumeQueryApp } from "./VolumeQueryApp";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
@@ -28,9 +28,10 @@ interface VolumeQueryUIState {
   imodel?: IModelConnection;
   isVolumeBoxOn: boolean;
   isClipVolumeOn: boolean;
-  spatialElements: SpatialElements;
-  spatialElementsColors: SpatialElementsColors;
+  classifiedElements: ClassifiedElements;
+  classifiedElementsColors: ClassifiedElementsColors;
   elementsToShow: { elements: PhysicalElement[], position: ElementPosition };
+  physicalElements: PhysicalElement[];
 }
 
 export default class VolumeQueryUI extends React.Component<
@@ -42,9 +43,10 @@ export default class VolumeQueryUI extends React.Component<
     this.state = {
       isVolumeBoxOn: false,
       isClipVolumeOn: false,
-      spatialElements: {} as SpatialElements,
-      spatialElementsColors: { insideColor: ColorDef.green, outsideColor: ColorDef.red, overlapColor: ColorDef.blue },
+      classifiedElements: {} as ClassifiedElements,
+      classifiedElementsColors: { insideColor: ColorDef.green, outsideColor: ColorDef.red, overlapColor: ColorDef.blue },
       elementsToShow: { elements: [], position: ElementPosition.InsideTheBox },
+      physicalElements: [],
     };
   }
 
@@ -59,7 +61,7 @@ export default class VolumeQueryUI extends React.Component<
     if (isToggleOn) {
       if (!vp.view.getViewClip()) {
         this._emptyListOfElements();
-        VolumeQueryApp.clearColoredSelection(vp);
+        VolumeQueryApp.clearColorOverrides(vp);
         VolumeQueryApp.addBoxRange(vp);
       }
     } else {
@@ -85,40 +87,44 @@ export default class VolumeQueryUI extends React.Component<
   }
 
   /* Coloring elements that are inside, outside the box or overlaping */
-  private _onClickApplyColoring = async () => {
+  private _onClickApplyColorOverrides = async () => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (undefined === vp) {
       return false;
     }
     /* Clearing colors so they don't stack when pressing apply button multiple times */
-    VolumeQueryApp.clearColoredSelection(vp);
+    VolumeQueryApp.clearColorOverrides(vp);
 
     /* Getting elements that are going to be colored */
-    const candidates = await VolumeQueryApp.getAllSpacialElements(vp);
-    const spatialElements = await VolumeQueryApp.getSortedSpatialElements(vp, candidates) as SpatialElements;
-    await VolumeQueryApp.colorSpatialElements(vp, spatialElements, this.state.spatialElementsColors);
-    this.setState({ spatialElements });
+    if (!this.state.physicalElements.length) {
+      const physicalElements = await VolumeQueryApp.getAllPhysicalElements(vp);
+      this.setState({ physicalElements });
+    }
+
+    const classifiedElements = await VolumeQueryApp.getClassifiedElements(vp, this.state.physicalElements) as ClassifiedElements;
+    await VolumeQueryApp.colorClassifiedElements(vp, classifiedElements, this.state.classifiedElementsColors);
+    this.setState({ classifiedElements });
     await this._setListOfElements(vp);
   }
 
-  private _onClickClearColoring = () => {
+  private _onClickClearColorOverrides = () => {
     const vp = IModelApp.viewManager.selectedView;
     if (undefined === vp) {
       return false;
     }
 
-    VolumeQueryApp.clearColoredSelection(vp);
+    VolumeQueryApp.clearColorOverrides(vp);
     /* Emptying elements to show list*/
     this._emptyListOfElements();
   }
 
-  /* Changing colors of elements that are going to be selected */
+  /* Changing colors of elements that are going to be overridden */
   private _onColorPick = (colorValue: ColorDef, position: ElementPosition) => {
-    const prevState = this.state.spatialElementsColors;
+    const prevState = this.state.classifiedElementsColors;
     if (position === ElementPosition.InsideTheBox)
       this.setState({
-        spatialElementsColors: {
+        classifiedElementsColors: {
           ...prevState,
           insideColor: colorValue,
         },
@@ -126,7 +132,7 @@ export default class VolumeQueryUI extends React.Component<
 
     if (position === ElementPosition.OutsideTheBox)
       this.setState({
-        spatialElementsColors: {
+        classifiedElementsColors: {
           ...prevState,
           outsideColor: colorValue,
         },
@@ -134,7 +140,7 @@ export default class VolumeQueryUI extends React.Component<
 
     if (position === ElementPosition.Overlap)
       this.setState({
-        spatialElementsColors: {
+        classifiedElementsColors: {
           ...prevState,
           overlapColor: colorValue,
         },
@@ -152,14 +158,13 @@ export default class VolumeQueryUI extends React.Component<
 
   /* Coloring and listing elements when iModel is loaded */
   private _onIModelReady = (imodel: IModelConnection) => {
-    this.setState({ imodel });
-
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
       this.setState({ imodel, isVolumeBoxOn: true }, () => { this._onToggleVolumeBox(true); });
       // tslint:disable-next-line no-floating-promises
-      this._onClickApplyColoring();
+      this._onClickApplyColorOverrides();
     });
   }
+
   /* Setting elements that are going to be showed, based of given position*/
   private async _setListOfElements(vp: ScreenViewport, elementPosition?: ElementPosition) {
     if (elementPosition === undefined) {
@@ -169,15 +174,15 @@ export default class VolumeQueryUI extends React.Component<
 
     switch (elementPosition) {
       case ElementPosition.InsideTheBox:
-        physicalElements = this.state.spatialElements.insideTheBox;
+        physicalElements = this.state.classifiedElements.insideTheBox;
         break;
 
       case ElementPosition.OutsideTheBox:
-        physicalElements = this.state.spatialElements.outsideTheBox;
+        physicalElements = this.state.classifiedElements.outsideTheBox;
         break;
 
       case ElementPosition.Overlap:
-        physicalElements = this.state.spatialElements.overlap;
+        physicalElements = this.state.classifiedElements.overlap;
         break;
     }
 
@@ -193,7 +198,7 @@ export default class VolumeQueryUI extends React.Component<
         ...prevState,
         elements: [],
       },
-      spatialElements: { insideTheBox: [], outsideTheBox: [], overlap: [] },
+      classifiedElements: { insideTheBox: [], outsideTheBox: [], overlap: [] },
     });
   }
 
@@ -230,28 +235,28 @@ export default class VolumeQueryUI extends React.Component<
         <hr></hr>
         <div className="sample-options-3col">
           <span>Coloring:</span>
-          <Button buttonType={ButtonType.Blue} disabled={!this.state.isVolumeBoxOn} onClick={this._onClickApplyColoring}>Apply</Button>
-          <Button buttonType={ButtonType.Blue} onClick={this._onClickClearColoring}>Clear</Button>
+          <Button buttonType={ButtonType.Blue} disabled={!this.state.isVolumeBoxOn} onClick={this._onClickApplyColorOverrides}>Apply</Button>
+          <Button buttonType={ButtonType.Blue} onClick={this._onClickClearColorOverrides}>Clear</Button>
         </div>
         <div className="sample-options-3col">
           <div style={{ display: "flex", alignItems: "center", marginLeft: "20px", marginRight: "20px" }}>
             <span>{ElementPosition.InsideTheBox}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              initialColor={this.state.spatialElementsColors.insideColor}
+              initialColor={this.state.classifiedElementsColors.insideColor}
               onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.InsideTheBox)}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span>{ElementPosition.OutsideTheBox}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              initialColor={this.state.spatialElementsColors.outsideColor}
+              initialColor={this.state.classifiedElementsColors.outsideColor}
               onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.OutsideTheBox)}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span>{ElementPosition.Overlap}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              initialColor={this.state.spatialElementsColors.overlapColor}
+              initialColor={this.state.classifiedElementsColors.overlapColor}
               onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.Overlap)}
             />
           </div>
@@ -267,19 +272,22 @@ export default class VolumeQueryUI extends React.Component<
         </div>
         <div className="table-wrapper">
           <select multiple style={{ maxHeight: "100px", overflowY: "scroll", overflowX: "hidden", whiteSpace: "nowrap" }}>
-            {this.state.elementsToShow.elements.slice(99).map((element) => <option key={element.id} style={{ listStyleType: "none", textAlign: "left" }}>{element.name}</option>)}
+            {this.state.elementsToShow.elements.slice(0, 99).map((element) => <option key={element.id} style={{ listStyleType: "none", textAlign: "left" }}>{element.name}</option>)}
           </select>
         </div>
-        <span style={{ color: "grey" }} className="table-caption">Selected {this.state.elementsToShow.elements.length} elements, showing top 100.</span>
+        <span style={{ color: "grey" }} className="table-caption">
+          List contains {this.state.elementsToShow.elements.length} elements{(this.state.elementsToShow.elements.length <= 100) ? "." : ", showing first 100."}
+        </span>
       </div>
     );
   }
+
   /* The sample's render method */
   public render() {
     return (
       <>
         { /* Viewport to display the iModel */}
-        <ControlPane instructions='Select elements using "Volume Box" and applying coloring. You can see selected elements in "List Elements" section.' controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions='Choose elements using "Volume Box" and apply coloring. You can see overridden elements in "List Colored Elements" section.' controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this._getIsoView} />
       </>
     );

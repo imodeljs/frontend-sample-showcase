@@ -13,13 +13,13 @@ import { BentleyStatus, Id64Array } from "@bentley/bentleyjs-core";
 import { PresentationLabelsProvider } from "@bentley/presentation-components";
 import { InstanceKey } from "@bentley/presentation-common";
 
-export interface SpatialElements {
+export interface ClassifiedElements {
   insideTheBox: PhysicalElement[];
   outsideTheBox: PhysicalElement[];
   overlap: PhysicalElement[];
 }
 
-export interface SpatialElementsColors {
+export interface ClassifiedElementsColors {
   insideColor: ColorDef;
   outsideColor: ColorDef;
   overlapColor: ColorDef;
@@ -88,8 +88,8 @@ export class VolumeQueryApp implements SampleApp {
     return undefined;
   }
 
-  /* Getting all elements that are spatially represented in iModel*/
-  public static async getAllSpacialElements(vp: ScreenViewport): Promise<PhysicalElement[]> {
+  /* Getting all physical elements from iModel*/
+  public static async getAllPhysicalElements(vp: ScreenViewport): Promise<PhysicalElement[]> {
     const esqlQuery = "SELECT ECInstanceId, ECClassId FROM BisCore.PhysicalElement";
     const elementsAsync = vp.iModel.query(esqlQuery);
     const elements: PhysicalElement[] = [];
@@ -103,7 +103,8 @@ export class VolumeQueryApp implements SampleApp {
       return { className: element.className.replace(".", ":"), id: element.id };
     });
 
-    /* Sorting elements into packages. Instead of one 3000 length array I will have 3 x 1000 lenght arrays */
+    /* Breaking one array of 3000 keys into 3 arrays with 1000 keys each*/
+    /* This is being done because API has a limit for how many keys you can send at one time*/
     const packsOfInstanceKeys = Math.floor(instanceKeys.length / 1000);
     for (let i = 0; i <= packsOfInstanceKeys; i++) {
       if (i !== packsOfInstanceKeys) {
@@ -127,12 +128,12 @@ export class VolumeQueryApp implements SampleApp {
   }
 
   /* Clear color from colored elements */
-  public static clearColoredSelection(vp: ScreenViewport) {
+  public static clearColorOverrides(vp: ScreenViewport) {
     EmphasizeElements.getOrCreate(vp).clearOverriddenElements(vp);
   }
 
-  /* Sort given elements - inside, outside the box and overlap */
-  public static async getSortedSpatialElements(vp: ScreenViewport, candidates: PhysicalElement[]): Promise<SpatialElements | undefined> {
+  /* Classify given elements - inside, outside the box and overlap */
+  public static async getClassifiedElements(vp: ScreenViewport, candidates: PhysicalElement[]): Promise<ClassifiedElements | undefined> {
     const clip = vp.view.getViewClip();
     if (clip === undefined)
       return;
@@ -170,10 +171,10 @@ export class VolumeQueryApp implements SampleApp {
     return { insideTheBox, outsideTheBox, overlap };
   }
 
-  public static async colorSpatialElements(vp: ScreenViewport, spatialElements: SpatialElements, colors: SpatialElementsColors) {
-    EmphasizeElements.getOrCreate(vp).overrideElements(spatialElements.insideTheBox.map((x) => x.id), vp, colors.insideColor);
-    EmphasizeElements.getOrCreate(vp).overrideElements(spatialElements.outsideTheBox.map((x) => x.id), vp, colors.outsideColor);
-    EmphasizeElements.getOrCreate(vp).overrideElements(spatialElements.overlap.map((x) => x.id), vp, colors.overlapColor);
+  public static async colorClassifiedElements(vp: ScreenViewport, classifiedElements: ClassifiedElements, colors: ClassifiedElementsColors) {
+    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements.insideTheBox.map((x) => x.id), vp, colors.insideColor);
+    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements.outsideTheBox.map((x) => x.id), vp, colors.outsideColor);
+    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements.overlap.map((x) => x.id), vp, colors.overlapColor);
     EmphasizeElements.getOrCreate(vp).defaultAppearance = EmphasizeElements.getOrCreate(vp).createDefaultAppearance();
   }
 }

@@ -20,6 +20,6 @@ export function getVolumeQuerySpec(): SampleSpec {
       SampleIModels.BayTown,
       SampleIModels.House,
     ],
-    setup: VolumeQueryApp.setup,
+    setup: VolumeQueryApp.setup.bind(VolumeQueryApp),
   });
 }
