@@ -103,8 +103,9 @@ export class VolumeQueryApp implements SampleApp {
       return { className: element.className.replace(".", ":"), id: element.id };
     });
 
-    /* Breaking one array of 3000 keys into 3 arrays with 1000 keys each*/
-    /* This is being done because API has a limit for how many keys you can send at one time*/
+    /* Break up the potential large array into smaller arrays with a maximum of 1000 keys each.
+    For example, if there are 3000 physical elements, this will create 3 arrays with 1000 keys each.
+    This is being done because API has a limit for how many keys you can send at one time */
     const packsOfInstanceKeys = Math.floor(instanceKeys.length / 1000);
     for (let i = 0; i <= packsOfInstanceKeys; i++) {
       if (i !== packsOfInstanceKeys) {

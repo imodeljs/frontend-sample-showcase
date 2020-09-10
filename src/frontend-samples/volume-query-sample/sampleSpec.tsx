@@ -10,7 +10,7 @@ export function getVolumeQuerySpec(): SampleSpec {
   return ({
     name: "Volume Query",
     label: "Volume Query",
-    image: "view-clip-thumbnail.png",
+    image: "volume-query-thumbnail.png",
     files: [
       { name: "VolumeQueryApp.tsx", import: import("!!raw-loader!./VolumeQueryApp"), entry: true },
       { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI") },

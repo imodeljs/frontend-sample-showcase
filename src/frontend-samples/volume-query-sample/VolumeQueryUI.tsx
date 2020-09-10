@@ -159,7 +159,7 @@ export default class VolumeQueryUI extends React.Component<
   /* Coloring and listing elements when iModel is loaded */
   private _onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      this.setState({ imodel, isVolumeBoxOn: true }, () => { this._onToggleVolumeBox(true); });
+      this.setState({ imodel, isVolumeBoxOn: true, physicalElements: [] }, () => { this._onToggleVolumeBox(true); });
       // tslint:disable-next-line no-floating-promises
       this._onClickApplyColorOverrides();
     });

@@ -18,7 +18,7 @@ import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
-import { getVolumeQuerySpec } from "./frontend-samples/query-volume-app/sampleSpec";
+import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
 import { getBadgeSpec } from "./frontend-samples/component-gallery/badge-sample/sampleSpec";
