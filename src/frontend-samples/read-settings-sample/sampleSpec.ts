@@ -13,10 +13,11 @@ export function getReadSettingsSpec(): SampleSpec {
     image: "zoom-to-elements-thumbnail.png",
     files: [
       { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp"), entry: true },
-      { name: "ZoomToElementsUI.tsx", import: import("!!raw-loader!./ZoomToElementsUI") },
+      { name: "ExternalSettingsUI.tsx", import: import("!!raw-loader!./ExternalSettingsUI") },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
-    customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
+    customModelList: [SampleIModels.BayTown],
+    // customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
     setup: ReadSettingsApp.setup,
   });
 }
