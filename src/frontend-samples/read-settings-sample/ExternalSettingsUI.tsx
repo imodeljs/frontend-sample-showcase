@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
-import { Button, LabeledTextarea, Spinner, SpinnerSize, LabeledSelect, SmallText } from "@bentley/ui-core";
+import { Button, LabeledTextarea, Spinner, SpinnerSize, LabeledSelect, SmallText, DisabledText } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -151,6 +151,8 @@ export default class ExternalSettingsUI extends React.Component<ExternalSettings
             <Button onClick={this.saveSettings} disabled={!this.state.settingKey}>Save settings</Button>
           }
         </div>
+        <DisabledText>Note: save doesn't work in this read-only environment.</DisabledText><br />
+        <DisabledText>Forbidden error is expected.</DisabledText>
       </>
     );
   }
