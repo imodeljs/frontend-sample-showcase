@@ -2,15 +2,15 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
+import React, { ChangeEvent } from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { Button, LabeledTextarea, Spinner, SpinnerSize, LabeledSelect, SmallText, DisabledText } from "@bentley/ui-core";
+import { Button, DisabledText, LabeledSelect, LabeledTextarea, SmallText, Spinner, SpinnerSize } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ChangeEvent } from "react";
+
 import { SettingsResult, SettingsStatus } from "@bentley/product-settings-client";
 import ReadSettingsApp from "./ReadSettingsApp";
 
@@ -37,7 +37,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
   constructor(props: ReadSettingsProps) {
     super(props);
     this.state = {
-      saveInProgress: false
+      saveInProgress: false,
     };
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleSettingsValueChange = this.handleSettingsValueChange.bind(this);
@@ -49,54 +49,54 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
   }
 
   // Handler to read external settings when name in dropdown changes
-  handleSettingsChange(event: ChangeEvent<HTMLSelectElement>) {
+  private handleSettingsChange(event: ChangeEvent<HTMLSelectElement>) {
     const settingKey = event.target.value;
-    this.setState({ settingKey: settingKey });
+    this.setState({ settingKey });
 
-    ReadSettingsApp.readSettings(settingKey).then(response => {
+    ReadSettingsApp.readSettings(settingKey).then((response) => {
       let value;
 
       switch (settingKey) {
-        case 'Json_Data':
-          value = JSON.stringify(response.setting || '', null, '   ');
+        case "Json_Data":
+          value = JSON.stringify(response.setting || "", null, "   ");
           break;
         default:
-          value = response.setting || ''
+          value = response.setting || ""
       }
 
       this.setState({
         settingResult: response,
-        settingValue: value
+        settingValue: value,
       });
     });
   }
 
   // Handler to get settings value into state, when you modify textarea element in the dialog
-  handleSettingsValueChange(event: any) {
+  private handleSettingsValueChange(event: any) {
     const settingValue = event.target.value;
-    this.setState({ settingValue: settingValue });
+    this.setState({ settingValue });
   }
 
-  // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden. 
-  saveSettings() {
+  // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden.
+  private saveSettings() {
     this.setState({ saveInProgress: true });
-    ReadSettingsApp.saveSettings(this.state.settingKey!, this.state.settingValue!).then(response => {
+    ReadSettingsApp.saveSettings(this.state.settingKey!, this.state.settingValue!).then((response) => {
       this.setState({
         settingResult: response,
-        saveInProgress: false
+        saveInProgress: false,
       });
     });
   }
 
   // Helper method to show status get/write operations with external setting in the dialog
   private showStatus() {
-    if (!this.state.settingResult || this.state.settingResult.status == SettingsStatus.Success) {
+    if (!this.state.settingResult || this.state.settingResult.status === SettingsStatus.Success) {
       return (<div></div>);
     }
 
     return (
-      <div style={{ lineBreak: 'anywhere', overflowWrap: 'break-word', maxWidth: '30vw' }}>
-        <SmallText style={{ color: 'var(--foreground-alert)' }}>
+      <div style={{ lineBreak: "anywhere", overflowWrap: "break-word", maxWidth: "30vw" }}>
+        <SmallText style={{ color: "var(--foreground-alert)" }}>
           {`${this.state.settingResult.status} ${this.state.settingResult.errorMessage}`}
         </SmallText>
       </div>
@@ -116,7 +116,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
             <Button onClick={this.saveSettings} disabled={!this.state.settingKey}>Save settings</Button>
           }
         </div>
-        <DisabledText>Note: save doesn't work in this read-only environment.</DisabledText><br />
+        <DisabledText>Note: save does not work in this read-only environment.</DisabledText><br />
         <DisabledText>Forbidden error is expected.</DisabledText>
       </>
     );

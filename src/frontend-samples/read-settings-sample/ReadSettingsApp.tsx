@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
+import React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import ReadSettingsUI from "./ReadSettingsUI";
@@ -17,13 +17,13 @@ interface ProjectContext {
   requestContext: AuthorizedFrontendRequestContext;
 }
 
-const namespace = 'showcase';
+const namespace = "showcase";
 
 export default class ReadSettingsApp implements SampleApp {
 
   public static projectContext: ProjectContext;
 
-  // This method serves to query projectId of project where iModel is stored in this example, 
+  // This method serves to query projectId of project where iModel is stored in this example,
   // however in real application you might have it upfront already
   public static async getIModelInfo(iModelName: string): Promise<ProjectContext> {
     // In testdrive the projectName matches iModelName.  That's not true in general.
@@ -51,14 +51,14 @@ export default class ReadSettingsApp implements SampleApp {
   // Read settings from ProductSettingsService
   public static async readSettings(settingName: string) {
     const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
-    return await IModelApp.settings.getSetting(requestContext, namespace, settingName, true, projectId, imodelId);
+    return IModelApp.settings.getSetting(requestContext, namespace, settingName, true, projectId, imodelId);
   }
 
-  // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden. 
+  // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden.
   // However saveSetting method will work in your project with signed-in user, who has required permissions in the project.
   public static async saveSettings(settingName: string, settingValue: string) {
     const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
-    return await IModelApp.settings.saveSetting(requestContext, settingValue, namespace, settingName, true, projectId, imodelId);
+    return IModelApp.settings.saveSetting(requestContext, settingValue, namespace, settingName, true, projectId, imodelId);
   }
 
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
