@@ -13,7 +13,7 @@ export function getReadSettingsSpec(): SampleSpec {
     image: "read-settings-thumbnail.png",
     files: [
       { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp"), entry: true },
-      { name: "ExternalSettingsUI.tsx", import: import("!!raw-loader!./ExternalSettingsUI") },
+      { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI") },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown],

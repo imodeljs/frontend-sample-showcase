@@ -5,42 +5,37 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelConnection, AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { Button, LabeledTextarea, Spinner, SpinnerSize, LabeledSelect, SmallText, DisabledText } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
-import { IModelQuery } from "@bentley/imodelhub-client";
 import { ChangeEvent } from "react";
 import { SettingsResult, SettingsStatus } from "@bentley/product-settings-client";
+import ReadSettingsApp from "./ReadSettingsApp";
 
 /** React props */
-interface ExternalSettingsProps {
+interface ReadSettingsProps {
   iModelName: string;
   iModelSelector: React.ReactNode;
 }
 
 /** React state */
-export interface ExternalSettingsState {
+export interface ReadSettingsState {
   settingKey?: string;
   settingValue?: string;
   settingResult?: SettingsResult;
   imodel?: IModelConnection;
-  projectId?: string;
-  imodelId?: string;
   saveInProgress: boolean;
   status?: string;
 }
 
-const namespace = 'showcase';
-
 /** A React component that renders the UI specific for this sample */
-export default class ExternalSettingsUI extends React.Component<ExternalSettingsProps, ExternalSettingsState> {
+export default class ReadSettingsUI extends React.Component<ReadSettingsProps, ReadSettingsState> {
 
   /** Creates an Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props: ReadSettingsProps) {
+    super(props);
     this.state = {
       saveInProgress: false
     };
@@ -51,33 +46,6 @@ export default class ExternalSettingsUI extends React.Component<ExternalSettings
 
   private onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
-    AuthorizedFrontendRequestContext.create().then(async context => {
-      const imodelInfo = await this.getIModelInfo(this.props.iModelName, context);
-      this.setState({ projectId: imodelInfo.projectId, imodelId: imodelInfo.imodelId });
-    });
-  }
-
-  // This method serves to query projectId of project where iModel is stored in this example, 
-  // however in real application you might have it upfront
-  private async getIModelInfo(iModelName: string, context: AuthorizedFrontendRequestContext): Promise<{ projectId: string, imodelId: string }> {
-    // In testdrive the projectName matches iModelName.  That's not true in general.
-    const projectName = iModelName;
-    const connectClient = new ContextRegistryClient();
-    let project: Project;
-
-    try {
-      project = await connectClient.getProject(context, { $filter: `Name+eq+'${iModelName}'` });
-    } catch (e) {
-      throw new Error(`Project with name "${projectName}" does not exist`);
-    }
-
-    const imodelQuery = new IModelQuery();
-    imodelQuery.byName(iModelName);
-    const imodels = await IModelApp.iModelClient.iModels.get(context, project.wsgId, imodelQuery);
-    if (imodels.length === 0)
-      throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
-
-    return { projectId: project.wsgId, imodelId: imodels[0].wsgId };
   }
 
   // Handler to read external settings when name in dropdown changes
@@ -85,8 +53,7 @@ export default class ExternalSettingsUI extends React.Component<ExternalSettings
     const settingKey = event.target.value;
     this.setState({ settingKey: settingKey });
 
-    AuthorizedFrontendRequestContext.create().then(async context => {
-      const response = await IModelApp.settings.getSetting(context, namespace, settingKey, true, this.state.projectId, this.state.imodelId);
+    ReadSettingsApp.readSettings(settingKey).then(response => {
       let value;
 
       switch (settingKey) {
@@ -111,11 +78,9 @@ export default class ExternalSettingsUI extends React.Component<ExternalSettings
   }
 
   // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden. 
-  // However saveSetting method will work in your project with signed-in user, who has required permissions in the project.
   saveSettings() {
     this.setState({ saveInProgress: true });
-    AuthorizedFrontendRequestContext.create().then(async context => {
-      const response = await IModelApp.settings.saveSetting(context, this.state.settingValue, namespace, this.state.settingKey!, true, this.state.projectId, this.state.imodelId);
+    ReadSettingsApp.saveSettings(this.state.settingKey!, this.state.settingValue!).then(response => {
       this.setState({
         settingResult: response,
         saveInProgress: false
@@ -161,7 +126,7 @@ export default class ExternalSettingsUI extends React.Component<ExternalSettings
   public render() {
     return (
       <>
-        <ControlPane instructions="Demonstrating read and write of custom settings" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Choose a Setting Name below to read that setting from the ProductSettingsService" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );

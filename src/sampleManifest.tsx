@@ -64,12 +64,12 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getHeatmapDecoratorSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
+    getReadSettingsSpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
     getZoomToElementsSpec(),
-    getReadSettingsSpec(),
   ],
 }, {
   groupName: "UI Components", samples: [
