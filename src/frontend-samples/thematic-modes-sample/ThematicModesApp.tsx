@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Range1dProps } from "@bentley/geometry-core";
+import { Range1dProps, Range3d } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
@@ -52,9 +52,8 @@ export default class ThematicModesApp implements SampleApp {
   }
 
   /** Query project extents using the Viewport API. */
-  public static getProjectExtents(vp: Viewport): Range1dProps {
-    const extents = vp.iModel.projectExtents;
-    return { low: extents.zLow, high: extents.zHigh };
+  public static getProjectExtents(vp: Viewport): Range3d {
+    return vp.iModel.projectExtents;
   }
 
   /** Modify the view flags using the Viewport API. */
