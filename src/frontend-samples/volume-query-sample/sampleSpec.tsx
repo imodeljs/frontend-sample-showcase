@@ -19,6 +19,8 @@ export function getVolumeQuerySpec(): SampleSpec {
       SampleIModels.RetailBuilding,
       SampleIModels.BayTown,
       SampleIModels.House,
+      SampleIModels.Stadium,
+      SampleIModels.MetroStation,
     ],
     setup: VolumeQueryApp.setup.bind(VolumeQueryApp),
   });

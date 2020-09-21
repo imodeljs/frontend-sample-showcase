@@ -5,19 +5,15 @@
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import "common/samples-common.scss";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { ClassifiedElements, ClassifiedElementsColors, PhysicalElement, VolumeQueryApp } from "./VolumeQueryApp";
-import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { Button, ButtonType, Toggle, UnderlinedButton } from "@bentley/ui-core";
+import { ElementPosition, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
+import { IModelApp, IModelConnection, NotifyMessageDetails, OutputMessageAlert, OutputMessagePriority, OutputMessageType, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ViewSetup } from "api/viewSetup";
-
-enum ElementPosition {
-  InsideTheBox = "Inside",
-  OutsideTheBox = "Outside",
-  Overlap = "Overlap",
-}
+import { ProgressBar } from "./VolumeQueryHelper";
+import { AppNotificationManager, MessageManager, ReactNotifyMessageDetails } from "@bentley/ui-framework";
 
 interface VolumeQueryUIProps {
   iModelName: string;
@@ -28,29 +24,48 @@ interface VolumeQueryUIState {
   imodel?: IModelConnection;
   isVolumeBoxOn: boolean;
   isClipVolumeOn: boolean;
-  classifiedElements: ClassifiedElements;
-  classifiedElementsColors: ClassifiedElementsColors;
-  elementsToShow: { elements: PhysicalElement[], position: ElementPosition };
-  physicalElements: PhysicalElement[];
+  coloredElements: Record<ElementPosition, SpatialElement[]>;
+  classifiedElementsColors: Record<ElementPosition, ColorDef>;
+  elementsToShow: Record<ElementPosition, SpatialElement[]>;
+  selectedPosition: ElementPosition;
+  spatialElements: SpatialElement[];
+  progress: { isLoading: boolean, percentage: number };
 }
 
 export default class VolumeQueryUI extends React.Component<
   VolumeQueryUIProps,
   VolumeQueryUIState
   > {
+  private _progressBarRefrence = React.createRef<ProgressBar>();
+
   constructor(props?: any, context?: any) {
     super(props, context);
+    this._progressBarRefrence = React.createRef();
     this.state = {
       isVolumeBoxOn: false,
       isClipVolumeOn: false,
-      classifiedElements: {} as ClassifiedElements,
-      classifiedElementsColors: { insideColor: ColorDef.green, outsideColor: ColorDef.red, overlapColor: ColorDef.blue },
-      elementsToShow: { elements: [], position: ElementPosition.InsideTheBox },
-      physicalElements: [],
+      coloredElements: {
+        [ElementPosition.InsideTheBox]: [],
+        [ElementPosition.OutsideTheBox]: [],
+        [ElementPosition.Overlap]: [],
+      },
+      classifiedElementsColors: {
+        [ElementPosition.InsideTheBox]: ColorDef.green,
+        [ElementPosition.OutsideTheBox]: ColorDef.red,
+        [ElementPosition.Overlap]: ColorDef.blue,
+      },
+      elementsToShow: {
+        [ElementPosition.InsideTheBox]: [],
+        [ElementPosition.OutsideTheBox]: [],
+        [ElementPosition.Overlap]: [],
+      },
+      spatialElements: [],
+      selectedPosition: ElementPosition.InsideTheBox,
+      progress: { isLoading: false, percentage: 0 },
     };
   }
 
-  /* Turining Volume Box on and off  */
+  /* Turining Volume Box on and off */
   private _onToggleVolumeBox = (isToggleOn: boolean) => {
     this.setState({ isVolumeBoxOn: isToggleOn });
     const vp = IModelApp.viewManager.selectedView;
@@ -60,7 +75,7 @@ export default class VolumeQueryUI extends React.Component<
 
     if (isToggleOn) {
       if (!vp.view.getViewClip()) {
-        this._emptyListOfElements();
+        this._emptyElementsToShow();
         VolumeQueryApp.clearColorOverrides(vp);
         VolumeQueryApp.addBoxRange(vp);
       }
@@ -95,17 +110,14 @@ export default class VolumeQueryUI extends React.Component<
     }
     /* Clearing colors so they don't stack when pressing apply button multiple times */
     VolumeQueryApp.clearColorOverrides(vp);
-
+    let spatialElements = this.state.spatialElements;
     /* Getting elements that are going to be colored */
-    if (!this.state.physicalElements.length) {
-      const physicalElements = await VolumeQueryApp.getAllPhysicalElements(vp);
-      this.setState({ physicalElements });
+    if (!spatialElements.length) {
+      spatialElements = await VolumeQueryApp.getAllSpatialElements(vp);
+      this.setState({ spatialElements });
     }
-
-    const classifiedElements = await VolumeQueryApp.getClassifiedElements(vp, this.state.physicalElements) as ClassifiedElements;
-    await VolumeQueryApp.colorClassifiedElements(vp, classifiedElements, this.state.classifiedElementsColors);
-    this.setState({ classifiedElements });
-    await this._setListOfElements(vp);
+    const progressBar = this._progressBarRefrence.current!;
+    await progressBar.processElements(this.state.classifiedElementsColors, spatialElements, vp);
   }
 
   private _onClickClearColorOverrides = () => {
@@ -115,36 +127,23 @@ export default class VolumeQueryUI extends React.Component<
     }
 
     VolumeQueryApp.clearColorOverrides(vp);
-    /* Emptying elements to show list*/
-    this._emptyListOfElements();
+    /* Emptying elements to show list */
+    this._emptyElementsToShow();
+    this.setState({
+      coloredElements: {
+        [ElementPosition.InsideTheBox]: [],
+        [ElementPosition.OutsideTheBox]: [],
+        [ElementPosition.Overlap]: [],
+      },
+      progress: { isLoading: false, percentage: 0 },
+    });
   }
 
   /* Changing colors of elements that are going to be overridden */
   private _onColorPick = (colorValue: ColorDef, position: ElementPosition) => {
-    const prevState = this.state.classifiedElementsColors;
-    if (position === ElementPosition.InsideTheBox)
-      this.setState({
-        classifiedElementsColors: {
-          ...prevState,
-          insideColor: colorValue,
-        },
-      });
-
-    if (position === ElementPosition.OutsideTheBox)
-      this.setState({
-        classifiedElementsColors: {
-          ...prevState,
-          outsideColor: colorValue,
-        },
-      });
-
-    if (position === ElementPosition.Overlap)
-      this.setState({
-        classifiedElementsColors: {
-          ...prevState,
-          overlapColor: colorValue,
-        },
-      });
+    const previousColors = this.state.classifiedElementsColors;
+    previousColors[position] = colorValue;
+    this.setState({ classifiedElementsColors: previousColors });
   }
 
   /* Selecting which elements are going to be showed in the element list */
@@ -152,53 +151,28 @@ export default class VolumeQueryUI extends React.Component<
     const vp = IModelApp.viewManager.selectedView;
     if (vp === undefined)
       return false;
-    const position = event.target.value as ElementPosition;
-    await this._setListOfElements(vp, position);
+    const selectedPosition = event.target.value as ElementPosition;
+    this.setState({ selectedPosition });
   }
 
   /* Coloring and listing elements when iModel is loaded */
   private _onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      this.setState({ imodel, isVolumeBoxOn: true, physicalElements: [] }, () => { this._onToggleVolumeBox(true); });
+      this.setState({ imodel, isVolumeBoxOn: true, spatialElements: [] }, () => { this._onToggleVolumeBox(true); });
+      this._emptyElementsToShow();
       // tslint:disable-next-line no-floating-promises
       this._onClickApplyColorOverrides();
     });
   }
 
-  /* Setting elements that are going to be showed, based of given position*/
-  private async _setListOfElements(vp: ScreenViewport, elementPosition?: ElementPosition) {
-    if (elementPosition === undefined) {
-      elementPosition = this.state.elementsToShow.position;
-    }
-    let physicalElements: PhysicalElement[] = [];
-
-    switch (elementPosition) {
-      case ElementPosition.InsideTheBox:
-        physicalElements = this.state.classifiedElements.insideTheBox;
-        break;
-
-      case ElementPosition.OutsideTheBox:
-        physicalElements = this.state.classifiedElements.outsideTheBox;
-        break;
-
-      case ElementPosition.Overlap:
-        physicalElements = this.state.classifiedElements.overlap;
-        break;
-    }
-
-    this.setState({
-      elementsToShow: { elements: physicalElements, position: elementPosition },
-    });
-  }
-
-  private _emptyListOfElements() {
-    const prevState = this.state.elementsToShow;
+  /* Clear elements to show list */
+  private _emptyElementsToShow() {
     this.setState({
       elementsToShow: {
-        ...prevState,
-        elements: [],
+        [ElementPosition.InsideTheBox]: [],
+        [ElementPosition.OutsideTheBox]: [],
+        [ElementPosition.Overlap]: [],
       },
-      classifiedElements: { insideTheBox: [], outsideTheBox: [], overlap: [] },
     });
   }
 
@@ -218,45 +192,72 @@ export default class VolumeQueryUI extends React.Component<
     return viewState;
   }
 
+  public getProgress = () => {
+    return this.state.progress;
+  }
+
+  public setProgress = (progress: { isLoading: boolean, percentage: number }) => {
+    this.setState({ progress });
+  }
+
+  public setColoredElements = (coloredElements: Record<ElementPosition, SpatialElement[]>) => {
+    this.setState({ coloredElements });
+  }
+
+  /* Setting elements that are going to be showed */
+  public async setElementsToShow() {
+    const vp = IModelApp.viewManager.selectedView!;
+    const coloredElements = this.state.coloredElements;
+    const elementsToShow = this.state.elementsToShow;
+
+    /* Updating list only when it has less than 100 elements */
+    for (const position of Object.values(ElementPosition))
+      if (elementsToShow[position].length <= 100)
+        elementsToShow[position] = await VolumeQueryApp.getSpatailElementsWithName(vp, coloredElements[position].slice(0, 99));
+
+    this.setState({ elementsToShow });
+  }
+
   public getControls() {
+    const position = this.state.selectedPosition;
+    const colors = this.state.classifiedElementsColors;
+    const coloredElements = this.state.coloredElements;
     return (
       <div style={{ maxWidth: "340px" }} >
         <div className="sample-options-2col">
           <span>Volume Box</span>
-          <Toggle
-            isOn={this.state.isVolumeBoxOn}
-            onChange={this._onToggleVolumeBox} />
+          <Toggle disabled={this.state.progress.isLoading} isOn={this.state.isVolumeBoxOn} onChange={this._onToggleVolumeBox} />
           <span>Clip Volume</span>
-          <Toggle
-            isOn={this.state.isClipVolumeOn}
-            onChange={this._onToggleClipping}
-          />
+          <Toggle disabled={this.state.progress.isLoading} isOn={this.state.isClipVolumeOn} onChange={this._onToggleClipping} />
         </div>
         <hr></hr>
         <div className="sample-options-3col">
           <span>Coloring:</span>
-          <Button buttonType={ButtonType.Blue} disabled={!this.state.isVolumeBoxOn} onClick={this._onClickApplyColorOverrides}>Apply</Button>
-          <Button buttonType={ButtonType.Blue} onClick={this._onClickClearColorOverrides}>Clear</Button>
+          <Button buttonType={ButtonType.Blue} disabled={!this.state.isVolumeBoxOn || this.state.progress.isLoading} onClick={this._onClickApplyColorOverrides}>Apply</Button>
+          <Button buttonType={ButtonType.Blue} disabled={this.state.progress.isLoading} onClick={this._onClickClearColorOverrides}>Clear</Button>
         </div>
         <div className="sample-options-3col">
           <div style={{ display: "flex", alignItems: "center", marginLeft: "20px", marginRight: "20px" }}>
             <span>{ElementPosition.InsideTheBox}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              initialColor={this.state.classifiedElementsColors.insideColor}
+              disabled={this.state.progress.isLoading}
+              initialColor={colors[ElementPosition.InsideTheBox]}
               onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.InsideTheBox)}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span>{ElementPosition.OutsideTheBox}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              initialColor={this.state.classifiedElementsColors.outsideColor}
+              disabled={this.state.progress.isLoading}
+              initialColor={colors[ElementPosition.OutsideTheBox]}
               onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.OutsideTheBox)}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <span>{ElementPosition.Overlap}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              initialColor={this.state.classifiedElementsColors.overlapColor}
+              disabled={this.state.progress.isLoading}
+              initialColor={colors[ElementPosition.Overlap]}
               onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.Overlap)}
             />
           </div>
@@ -264,7 +265,7 @@ export default class VolumeQueryUI extends React.Component<
         <hr></hr>
         <div className="sample-options-2col">
           <span style={{ whiteSpace: "nowrap" }}>List Colored Elements:</span>
-          <select onChange={this._onSelectionListElements.bind(this)} value={this.state.elementsToShow.position}>
+          <select onChange={this._onSelectionListElements.bind(this)} value={position}>
             <option value={ElementPosition.InsideTheBox}> {ElementPosition.InsideTheBox} </option>
             <option value={ElementPosition.OutsideTheBox}> {ElementPosition.OutsideTheBox} </option>
             <option value={ElementPosition.Overlap}> {ElementPosition.Overlap} </option>
@@ -272,12 +273,20 @@ export default class VolumeQueryUI extends React.Component<
         </div>
         <div className="table-wrapper">
           <select multiple style={{ maxHeight: "100px", overflowY: "scroll", overflowX: "hidden", whiteSpace: "nowrap" }}>
-            {this.state.elementsToShow.elements.slice(0, 99).map((element) => <option key={element.id} style={{ listStyleType: "none", textAlign: "left" }}>{element.name}</option>)}
+            {this.state.elementsToShow[position].map((element) => <option key={element.id} style={{ listStyleType: "none", textAlign: "left" }}>{element.name}</option>)}
           </select>
         </div>
         <span style={{ color: "grey" }} className="table-caption">
-          List contains {this.state.elementsToShow.elements.length} elements{(this.state.elementsToShow.elements.length <= 100) ? "." : ", showing first 100."}
+          List contains {coloredElements[position].length} elements
+          {(coloredElements[position].length <= 100) ? "." : ", showing first 100."}
         </span>
+        <ProgressBar
+          ref={this._progressBarRefrence}
+          getProgress={this.getProgress.bind(this)}
+          setProgress={this.setProgress.bind(this)}
+          setColoredElements={this.setColoredElements.bind(this)}
+          setElementsToShow={this.setElementsToShow.bind(this)}
+        />
       </div>
     );
   }
