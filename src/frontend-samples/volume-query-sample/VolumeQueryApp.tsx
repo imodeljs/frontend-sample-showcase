@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { EmphasizeElements, IModelApp, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, Viewport } from "@bentley/imodeljs-frontend";
+import { EmphasizeElements, IModelApp, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@bentley/geometry-core";
 import SampleApp from "common/SampleApp";
 import VolumeQueryUI from "./VolumeQueryUI";
@@ -12,7 +12,6 @@ import { ColorDef, GeometryContainmentRequestProps } from "@bentley/imodeljs-com
 import { BentleyStatus, Id64Array } from "@bentley/bentleyjs-core";
 import { PresentationLabelsProvider } from "@bentley/presentation-components";
 import { InstanceKey } from "@bentley/presentation-common";
-import { AppNotificationManager } from "@bentley/ui-framework";
 
 export enum ElementPosition {
   InsideTheBox = "Inside",

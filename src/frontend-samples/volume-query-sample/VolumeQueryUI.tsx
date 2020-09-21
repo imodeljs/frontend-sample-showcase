@@ -5,15 +5,14 @@
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import "common/samples-common.scss";
-import { Button, ButtonType, Toggle, UnderlinedButton } from "@bentley/ui-core";
+import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ElementPosition, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
-import { IModelApp, IModelConnection, NotifyMessageDetails, OutputMessageAlert, OutputMessagePriority, OutputMessageType, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ViewSetup } from "api/viewSetup";
 import { ProgressBar } from "./VolumeQueryHelper";
-import { AppNotificationManager, MessageManager, ReactNotifyMessageDetails } from "@bentley/ui-framework";
 
 interface VolumeQueryUIProps {
   iModelName: string;
@@ -33,9 +32,9 @@ interface VolumeQueryUIState {
 }
 
 export default class VolumeQueryUI extends React.Component<
-  VolumeQueryUIProps,
-  VolumeQueryUIState
-  > {
+VolumeQueryUIProps,
+VolumeQueryUIState
+> {
   private _progressBarRefrence = React.createRef<ProgressBar>();
 
   constructor(props?: any, context?: any) {
@@ -158,7 +157,8 @@ export default class VolumeQueryUI extends React.Component<
   /* Coloring and listing elements when iModel is loaded */
   private _onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      this.setState({ imodel, isVolumeBoxOn: true, spatialElements: [] }, () => { this._onToggleVolumeBox(true); });
+      this.setState({ imodel, isVolumeBoxOn: true, spatialElements: [] });
+      this._onToggleVolumeBox(true);
       this._emptyElementsToShow();
       // tslint:disable-next-line no-floating-promises
       this._onClickApplyColorOverrides();
