@@ -15,9 +15,9 @@ export function getPropertyFormattingSpec(): SampleSpec {
     files: [
       { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp"), entry: true },
       { name: "PropertyFormattingUI.tsx", import: import("!!raw-loader!./PropertyFormattingUI") },
-      { name: "SimplifiedUI.tsx", import: import("!!raw-loader!./SimplifiedUI") },
-      { name: "UseContentBuilderUI.tsx", import: import("!!raw-loader!./UseContentBuilderUI") },
-      { name: "UsePresentationDataProvider.tsx", import: import("!!raw-loader!./UsePresentationDataProvider") },
+      { name: "approach-1-UI.tsx", import: import("!!raw-loader!./approach-1-UI") },
+      { name: "approach-2-UI.tsx", import: import("!!raw-loader!./approach-2-UI") },
+      { name: "approach-3-UI.tsx", import: import("!!raw-loader!./approach-3-UI") },
     ],
     setup: PropertyFormattingApp.setup,
     teardown: PropertyFormattingApp.teardown,

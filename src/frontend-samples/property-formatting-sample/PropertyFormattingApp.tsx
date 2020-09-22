@@ -6,39 +6,36 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
-import { ISelectionProvider, Presentation, SelectionChangeEventArgs, SelectionChangesListener } from "@bentley/presentation-frontend";
-import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
-import { Content, KeySet, Field, DisplayValue } from "@bentley/presentation-common";
+import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
+import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
+import { Content, KeySet, Field, DisplayValue, CategoryDescription } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
-import { OverlySimpleProperyRecord } from "./SimplifiedUI";
+import { OverlySimpleProperyRecord } from "./approach-3-UI";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { ContentBuilder } from "@bentley/presentation-components";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+
+export interface PropertyProps {
+  keys: KeySet;
+  imodel?: IModelConnection;
+}
 
 /*
-These are instructions on how to use the PresentationManager API to essentially duplicate the property display
-from DesignReview.  Doing this yourself gives you lots of flexibility to customize the display and to use your
-own UI controls.
+   This sample illustrates three approaches for showing element properties.  Which approach
+   to choose depends on what if any customization you need for your use case.
 
-There are three major steps. First is to compute the set of related elements from which to source the
-properties, second is to extract the properties, and third is to get something presentable to the user
-(includes formatting, grouping, etc.) In all, it’s a pretty big job once you consider all the complexity
-surrounding all the different types of primitive properties, array properties, and nested structures, not
-to mention grouping, sorting, and filtering.
-1.	Use PresentationManager.getSelectionScopes to get a list of available scopes. Pick a scope and pass
-    it to PresentationManager.computeSelection along with a list of elementIds. This will give you a KeySet.
-2.	Pass the keyset to PresentationManager.getContent. You will need to supply a ruleset. For properties,
-    usually this ruleset is what you want.
-3.	Using logic like this, build a set of PropertyRecords that are appropriate to display to the user.
+   Approach 1: The easiest way.  If you want to show the properties in the default way.
+   Approach 2: Use your own UI components.  If you are not using the @bentley/ui-components package.
+   Approach 3: Do it all yourself.  If you want to customize which properties to show and/or use your own ui components. */
 
-For step 2, you will need a content descriptor, which you can get by calling PresentationManager.getContentDescriptor.
-For that method, the tricky argument is ‘Display Type’ for which I suggest you start with DefaultContentDisplayTypes.PropertyPane.
+/* This class demonstrates the key APIs needed to access formatted property information
+   suitable to present to end users.
 
-At each of these steps there are lots of options to control the process.  Also, all the backend methods require
-you to supply a ClientRequestContext. You should have one of these that you used to call IModelDb.open.
-
-*/
-
+   In summary, the process can be broken down to three steps:
+   1. Query the backend for the information on a set of elements.  This is called Content.
+   2. Process the Content and create a set of PropertyRecords suitable for the user interface.
+   3. Use the PropertyRecords to populate a UI component. */
 export class PropertyFormattingApp implements SampleApp {
   private static selectionListener: SelectionChangesListener;
 
@@ -59,10 +56,13 @@ export class PropertyFormattingApp implements SampleApp {
     Presentation.selection.selectionChange.removeListener(this.selectionListener);
   }
 
-  public static async getFormattedProperties(evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider): Promise<Content | undefined> {
-    const selection = selectionProvider.getSelection(evt.imodel, evt.level);
-    const keys = new KeySet(selection);
-    const requestOptions = { imodel: evt.imodel, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
+  /* This method uses the Presentation API to query for the Content of the selected elements.  The Content object contains
+     everything needed to show the property information in a user interface.  This includes the property names, types, and
+     values formatted as strings.
+
+     This method is used by approaches two and three below.  The first approach makes the same query internally. */
+  public static async queryForContent(keys: KeySet, imodel: IModelConnection): Promise<Content | undefined> {
+    const requestOptions = { imodel, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
     const descriptor = await Presentation.presentation.getContentDescriptor(requestOptions, "Grid", keys, undefined);
 
     if (undefined === descriptor)
@@ -71,7 +71,58 @@ export class PropertyFormattingApp implements SampleApp {
     return Presentation.presentation.getContent(requestOptions, descriptor, keys);
   }
 
-  public static createOverlySimplePropertyRecords(content: Content, propertyNameFilter: string[] = []) {
+  /* Approach 1: Using PresentationPropertyDataProvider
+
+  This approach uses the PresentationPropertyDataProvider to fully handle all the work of querying the content,
+  and processing it to create the PropertyRecords.  Finally, this data provider is compatible with the PropertyGrid
+  UI component which fully handles grouping and sorting properties, and a better presentation of arrays and structs. */
+  public static createPresentationDataProvider(keys: KeySet, imodel: IModelConnection) {
+    const dataProvider = new PresentationPropertyDataProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
+    dataProvider.keys = keys;
+
+    return dataProvider;
+  }
+
+  /* Approach 2: Using ContentBuilder
+
+  This approach uses the ContentBuilder API to handle the task of processing the Content object and
+  creating a set of PropertyRecords for all the properties.  It correctly handles properties which are
+  arrays and structs.
+     
+  A full implementation would consider all the items within the contentSet, not just the first one. */
+  public static createPropertyRecordsUsingContentBuilder(content: Content) {
+    const item = content.contentSet[0];
+    let fields = content.descriptor.fields;
+    const records = new Map<CategoryDescription, PropertyRecord[]>();
+
+    fields.forEach((f: Field) => {
+      const propertyRecord = ContentBuilder.createPropertyRecord(f, item);
+
+      if (records.has(f.category))
+        records.get(f.category)?.push(propertyRecord);
+      else
+        records.set(f.category, [propertyRecord]);
+    });
+
+    return records;
+  }
+
+  /* Approach 3: Do it all yourself.  If you want to customize which properties to show.
+
+  This approach shows how to process the Content object yourself.  This is an oversimplified implementation that
+  does not handle the difficult cases like properties which are arrays or structs.  Instead it represents
+  every property value as a single string.
+   
+  A full implementation would handle arrays and structs.  Also, a full implementation would consider all the items
+  within the contentSet, not just the first one.
+
+  The end result of this method is a list of name, label, value for each property. */
+  public static async createOverlySimplePropertyRecords(keys: KeySet, imodel: IModelConnection, propertyNameFilter: string[] = []) {
+    const content = await this.queryForContent(keys, imodel);
+
+    if (!content)
+      return [];
+
     const item = content.contentSet[0];
     const data: OverlySimpleProperyRecord[] = [];
     let fields = content.descriptor.fields;
@@ -93,22 +144,6 @@ export class PropertyFormattingApp implements SampleApp {
       } else if (DisplayValue.isMap(displayValue)) {
         data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: f.type.typeName });
       }
-    });
-
-    return data;
-  }
-
-  public static createPropertyRecordsUsingContentBuilder(content: Content, categoryNameFilter: string = "") {
-
-    const item = content.contentSet[0];
-    const data: PropertyRecord[] = [];
-    let fields = content.descriptor.fields;
-
-    if (categoryNameFilter)
-      fields = content.descriptor.fields.filter((f: Field) => f.category.name === categoryNameFilter);
-
-    fields.forEach((f: Field) => {
-      data.push(ContentBuilder.createPropertyRecord(f, item));
     });
 
     return data;

@@ -6,19 +6,15 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
-import { Content, KeySet } from "@bentley/presentation-common";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { PresentationPropertyDataProvider } from "@bentley/presentation-components";
-import { DEFAULT_PROPERTY_GRID_RULESET } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider";
 import { PropertyGrid } from "@bentley/ui-components";
+import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
 
-export class UsePresentationDataProvider extends React.Component<{ imodel?: IModelConnection, content?: Content }, {}> {
+export class Approach1UI extends React.Component<PropertyProps, {}> {
 
   public render() {
     let dataProvider;
-    if (this.props.imodel && this.props.content) {
-      dataProvider = new PresentationPropertyDataProvider({ imodel: this.props.imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
-      dataProvider.keys = new KeySet(this.props.content.contentSet[0].primaryKeys);
+    if (this.props.imodel && !this.props.keys.isEmpty) {
+      dataProvider = PropertyFormattingApp.createPresentationDataProvider(this.props.keys, this.props.imodel);
     }
 
     return (

@@ -9,8 +9,7 @@ import "../../common/samples-common.scss";
 import { SelectionMode, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { Toggle } from "@bentley/ui-core";
-import { PropertyFormattingApp } from "./PropertyFormattingApp";
-import { Content } from "@bentley/presentation-common";
+import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
 
 export interface OverlySimpleProperyRecord {
   name: string;
@@ -18,7 +17,12 @@ export interface OverlySimpleProperyRecord {
   displayValue: string;
 }
 
-export class SimplifiedPropertiesUI extends React.Component<{ content?: Content }, { showAll: boolean }> {
+interface Approach3State {
+  records: OverlySimpleProperyRecord[];
+  showAll: boolean;
+}
+
+export class Approach3UI extends React.Component<PropertyProps, Approach3State> {
 
   private static favoriteFieldNames = ["pc_bis_Element_Model", "pc_bis_Element_CodeValue", "pc_bis_Element_UserLabel"];
 
@@ -26,28 +30,45 @@ export class SimplifiedPropertiesUI extends React.Component<{ content?: Content 
     super(props, context);
     this.state = {
       showAll: false,
+      records: [],
     };
   }
 
-  public render() {
+  private async createPropertyRecords() {
+    if (!this.props.imodel)
+      return;
+
     let fieldNames;
 
     if (!this.state.showAll)
-      fieldNames = SimplifiedPropertiesUI.favoriteFieldNames;
+      fieldNames = Approach3UI.favoriteFieldNames;
 
-    let tableData;
-    if (this.props.content)
-      tableData = PropertyFormattingApp.createOverlySimplePropertyRecords(this.props.content, fieldNames);
+    const records = await PropertyFormattingApp.createOverlySimplePropertyRecords(this.props.keys, this.props.imodel, fieldNames);
+    this.setState({ records });
+  }
 
+  public componentDidMount() {
+    this.createPropertyRecords();
+  }
+
+  public componentDidUpdate(prevProps: PropertyProps, prevState: Approach3State) {
+    if (prevProps.keys === this.props.keys && prevState.showAll === this.state.showAll)
+      return;
+
+    this.createPropertyRecords();
+  }
+
+  public render() {
+    const haveRecords = 0 < this.state.records.length;
     return (
       <>
         <div className="sample-options-2col">
           <span>Show All</span>
-          <Toggle isOn={this.state.showAll} onChange={(checked: boolean) => this.setState({ showAll: checked })} disabled={!tableData} />
+          <Toggle isOn={this.state.showAll} onChange={(checked: boolean) => this.setState({ showAll: checked })} disabled={!haveRecords} />
         </div>
         <div className={"table-box"}>
-          {tableData && <TableOfStrings data={tableData} />}
-          {!tableData && <span>Select an element to see its properties.</span>}
+          {haveRecords && <TableOfStrings records={this.state.records} />}
+          {!haveRecords && <span>Select an element to see its properties.</span>}
         </div>
       </>
     );
@@ -55,10 +76,10 @@ export class SimplifiedPropertiesUI extends React.Component<{ content?: Content 
 }
 
 interface PropertiesTableProps {
-  data: OverlySimpleProperyRecord[];
+  records: OverlySimpleProperyRecord[];
 }
 
-/** A React component that renders the UI specific for this sample */
+/** A very simple Table component that takes a list of strings as input. */
 export class TableOfStrings extends React.Component<PropertiesTableProps, {}> {
 
   private createDataProvider(records: OverlySimpleProperyRecord[]) {
@@ -77,7 +98,7 @@ export class TableOfStrings extends React.Component<PropertiesTableProps, {}> {
   }
 
   public render() {
-    const dataProvider = this.createDataProvider(this.props.data);
+    const dataProvider = this.createDataProvider(this.props.records);
     return (<Table dataProvider={dataProvider} selectionMode={SelectionMode.Single} />);
   }
 }
