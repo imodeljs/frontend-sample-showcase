@@ -42,7 +42,7 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
     super(props, context);
     this.state = {
       method: Approach.UsePresentationDataProvider_1,
-      keys: new KeySet()
+      keys: new KeySet(),
     };
   }
 

@@ -8,7 +8,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
-import { Content, KeySet, Field, DisplayValue, CategoryDescription } from "@bentley/presentation-common";
+import { CategoryDescription, Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
 import { OverlySimpleProperyRecord } from "./approach-3-UI";
@@ -88,11 +88,11 @@ export class PropertyFormattingApp implements SampleApp {
   This approach uses the ContentBuilder API to handle the task of processing the Content object and
   creating a set of PropertyRecords for all the properties.  It correctly handles properties which are
   arrays and structs.
-     
+
   A full implementation would consider all the items within the contentSet, not just the first one. */
   public static createPropertyRecordsUsingContentBuilder(content: Content) {
     const item = content.contentSet[0];
-    let fields = content.descriptor.fields;
+    const fields = content.descriptor.fields;
     const records = new Map<CategoryDescription, PropertyRecord[]>();
 
     fields.forEach((f: Field) => {
@@ -112,7 +112,7 @@ export class PropertyFormattingApp implements SampleApp {
   This approach shows how to process the Content object yourself.  This is an oversimplified implementation that
   does not handle the difficult cases like properties which are arrays or structs.  Instead it represents
   every property value as a single string.
-   
+
   A full implementation would handle arrays and structs.  Also, a full implementation would consider all the items
   within the contentSet, not just the first one.
 
@@ -140,7 +140,7 @@ export class PropertyFormattingApp implements SampleApp {
         const displayValueString = (undefined !== displayValue) ? displayValue.toString() : "";
         data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: displayValueString });
       } else if (DisplayValue.isArray(displayValue)) {
-        data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: "[" + displayValue.length + "] " + f.type.typeName });
+        data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: `[${displayValue.length}] ${f.type.typeName}` });
       } else if (DisplayValue.isMap(displayValue)) {
         data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: f.type.typeName });
       }

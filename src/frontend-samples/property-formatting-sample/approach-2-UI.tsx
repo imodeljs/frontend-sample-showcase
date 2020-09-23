@@ -24,7 +24,7 @@ export class Approach2UI extends React.Component<PropertyProps, Approach2State> 
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
-      categoryName: ""
+      categoryName: "",
     };
   }
 

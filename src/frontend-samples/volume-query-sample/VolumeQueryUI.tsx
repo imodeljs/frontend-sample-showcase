@@ -34,10 +34,7 @@ interface VolumeQueryUIState {
   physicalElements: PhysicalElement[];
 }
 
-export default class VolumeQueryUI extends React.Component<
-  VolumeQueryUIProps,
-  VolumeQueryUIState
-  > {
+export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, VolumeQueryUIState> {
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
