@@ -6,6 +6,7 @@
 import { Point3d } from "@bentley/geometry-core";
 import { Frustum } from "@bentley/imodeljs-common";
 import { IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
+import { Toggle } from "@bentley/ui-core";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import React from "react";
@@ -22,6 +23,7 @@ interface SwipingComparisonUIState {
   bounds?: ClientRect;
   frustum?: Frustum;
   dividerLeft?: number;
+  isLocked: boolean;
 }
 
 export default class SwipingComparisonUI extends React.Component<SwipingComparisonUIProps, SwipingComparisonUIState> {
@@ -34,7 +36,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   private _dividerLeft?: number; // position relative to the window
 
-  public state: SwipingComparisonUIState = {};
+  public state: SwipingComparisonUIState = { isLocked: false};
 
   // Update the state of the sample react component by querying the API.
   private updateState() {
@@ -50,7 +52,10 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   // Passes the relevant information to the APP for the changing the comparison
   private updateCompare() {
-    if (undefined === this.state.viewport || undefined === this.state.bounds || undefined === this.state.dividerLeft)
+    if (undefined === this.state.viewport
+      || undefined === this.state.bounds
+      || undefined === this.state.dividerLeft
+      || this.state.isLocked)
       return;
     const screenPoint = SwipingComparisonUI.getScreenPoint(this.state.bounds, this.state.dividerLeft);
     SwipingViewportApp.compare(screenPoint, this.state.viewport);
@@ -132,11 +137,23 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       updateCompare = true;
     if (this.state.dividerLeft !== prevState.dividerLeft)
       updateCompare = true;
+    if (!this.state.isLocked && prevState.isLocked)
+      updateCompare = true;
 
     if (updateState)
       this.updateState();
     if (updateCompare)
       this.updateCompare();
+  }
+
+  private _onLockToggle = (isOn: boolean) => {
+    this.setState({isLocked: isOn});
+  }
+
+  public getControls(): React.ReactNode {
+    return (<>
+      <Toggle title={"Lock dividing plane"} isOn={this.state.isLocked} onChange={this._onLockToggle}></Toggle>
+    </>);
   }
 
   /** The sample's render method */
@@ -145,10 +162,11 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       <ControlPane
         iModelSelector={this.props.iModelSelector}
         instructions={"Drag the divider to compare the iModel with its wireframe rendering."}
+        controls={this.getControls()}
       />
       { /* Viewport to display the iModel */}
       <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-      {undefined !== this.state.bounds && undefined !== this.state.dividerLeft ?
+      {undefined !== this.state.bounds && undefined !== this.state.dividerLeft && !this.state.isLocked ?
         <DividerComponent sideL={this.state.dividerLeft - this.state.bounds.left} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
         : <></>}
     </>);
