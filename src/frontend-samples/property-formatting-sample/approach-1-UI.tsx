@@ -9,6 +9,8 @@ import "../../common/samples-common.scss";
 import { PropertyGrid } from "@bentley/ui-components";
 import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
 
+/* This approach uses PresentationPropertyDataProvider to all the work of querying the backend and
+   providing the content to the PropertyGrid component. */
 export class Approach1UI extends React.Component<PropertyProps, {}> {
 
   public render() {

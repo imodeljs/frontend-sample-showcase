@@ -16,6 +16,9 @@ interface Approach2State {
   categoryName: string;
 }
 
+/* This approach shows how to query for property content and then process the content using ContentBuilder
+   to put it in a form suitable for the user interface.  That data is then used to build a SimpleTableDataProvider
+   which provides the data to a Table component. */
 export class Approach2UI extends React.Component<PropertyProps, Approach2State> {
 
   constructor(props?: any, context?: any) {
