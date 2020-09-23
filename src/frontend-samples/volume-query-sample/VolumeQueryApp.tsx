@@ -89,7 +89,7 @@ export class VolumeQueryApp implements SampleApp {
   }
 
   /* Getting elements names */
-  public static async getSpatailElementsWithName(vp: ScreenViewport, elements: SpatialElement[]): Promise<SpatialElement[]> {
+  public static async getSpatialElementsWithName(vp: ScreenViewport, elements: SpatialElement[]): Promise<SpatialElement[]> {
     const presentationProvider = new PresentationLabelsProvider({ imodel: vp.iModel });
     const instanceKeys: InstanceKey[] = elements.map((element) => {
       return { className: element.className.replace(".", ":"), id: element.id };

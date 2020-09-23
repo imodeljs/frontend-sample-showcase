@@ -12,7 +12,7 @@ import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ViewSetup } from "api/viewSetup";
-import { ProgressBar } from "./VolumeQueryHelper";
+import { ProgressBar } from "./ProgressBar";
 
 interface VolumeQueryUIProps {
   iModelName: string;
@@ -213,7 +213,7 @@ VolumeQueryUIState
     /* Updating list only when it has less than 100 elements */
     for (const position of Object.values(ElementPosition))
       if (elementsToShow[position].length <= 100)
-        elementsToShow[position] = await VolumeQueryApp.getSpatailElementsWithName(vp, coloredElements[position].slice(0, 99));
+        elementsToShow[position] = await VolumeQueryApp.getSpatialElementsWithName(vp, coloredElements[position].slice(0, 99));
 
     this.setState({ elementsToShow });
   }
