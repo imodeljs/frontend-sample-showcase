@@ -15,6 +15,6 @@ export function getToggleSpec(): SampleSpec {
     files: [
       { name: "Toggle.tsx", import: import("!!raw-loader!./Toggle"), entry: true },
     ],
-    setup: ToggleList.setup,
+    setup: ToggleList.setup.bind(ToggleList),
   });
 }

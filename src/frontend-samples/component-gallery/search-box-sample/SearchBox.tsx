@@ -22,7 +22,7 @@ export default class SearchBoxList extends React.Component<{}> implements Sample
   public static getSearchBoxData(): ComponentExampleProps[] {
     return [
       createComponentExample("SearchBox", undefined,
-        // tslint:disable-next-line: no-console
+        // eslint-disable-next-line no-console
         <SearchBox placeholder="Search" onValueChanged={(value: string) => console.log(`Search text: ${value}`)} />),
     ];
   }

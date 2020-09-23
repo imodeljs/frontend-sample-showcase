@@ -16,13 +16,15 @@ import {
 import { StageUsage } from "@bentley/ui-abstract";
 import { SmallStatusBarWidgetControl } from "../Widgets/SmallStatusBar";
 
+/* eslint-disable react/jsx-key */
+
 /**
  * Startup Component Stage for AppUi samples
  */
 export class StartupComponentFrontstage extends FrontstageProvider {
 
   /** Define the Frontstage properties */
-  public get frontstage(): React.ReactElement<FrontstageProps>  {
+  public get frontstage(): React.ReactElement<FrontstageProps> {
 
     return (
       <Frontstage id="StartupComponentFrontstage"
@@ -37,7 +39,7 @@ export class StartupComponentFrontstage extends FrontstageProvider {
         contentManipulationTools={
           <Zone
             widgets={[
-              <Widget isFreeform={true} element={<BasicToolWidget/>} />,
+              <Widget isFreeform={true} element={<BasicToolWidget />} />,
             ]}
           />
         }
@@ -51,7 +53,7 @@ export class StartupComponentFrontstage extends FrontstageProvider {
         viewNavigationTools={
           <Zone
             widgets={[
-              <Widget isFreeform={true} element={<BasicNavigationWidget/>} />,
+              <Widget isFreeform={true} element={<BasicNavigationWidget />} />,
             ]}
           />
         }

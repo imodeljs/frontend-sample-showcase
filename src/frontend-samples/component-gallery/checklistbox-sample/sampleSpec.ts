@@ -15,6 +15,6 @@ export function getCheckListBoxSpec(): SampleSpec {
     files: [
       { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },
     ],
-    setup: CheckListBoxList.setup,
+    setup: CheckListBoxList.setup.bind(CheckListBoxList),
   });
 }

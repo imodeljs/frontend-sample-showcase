@@ -10,7 +10,7 @@ import { Ruleset } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { UnifiedSelectionTreeUI } from "./UnifiedSelectionTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
+const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
 
 export default class UnifiedSelectionTreeApp extends React.Component<{}> implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
@@ -31,6 +31,7 @@ export interface UnifiedSelectionTreeProps {
  * is used. It extends default `TreeEventHandler` and additionally adds/removes keys to/from Unified Selection
  * when nodes are selected/deselected and changes tree selection to match Unified Selection.
  */
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function UnifiedSelectionTree(props: UnifiedSelectionTreeProps) {
   // create tree node loader to load nodes using presentation rules. It loads nodes to tree model
   // in pages using supplied iModel and presentation ruleset.

@@ -10,7 +10,7 @@ import { Ruleset } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PresentationTreeUI } from "./PresentationTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // tslint:disable-line: no-var-requires
+const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json");  // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface PresentationTreeProps {
   imodel: IModelConnection;

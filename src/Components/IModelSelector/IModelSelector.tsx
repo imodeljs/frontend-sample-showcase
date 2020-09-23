@@ -19,15 +19,16 @@ export enum SampleIModels {
   BayTown = "Bay Town Process Plant",
   House = "House Sample",
   Stadium = "Stadium",
+  ExtonCampus = "Exton Campus",
 }
 
 export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
 
-  public static defaultIModelList = [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium];
+  public static defaultIModelList = [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium, SampleIModels.ExtonCampus];
   public static defaultIModel = SampleIModels.MetroStation;
 
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = Number.parseInt(event.target.selectedOptions[0].value, undefined);
+    const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
     const iModelName = this.props.iModelNames[index];
 
     this.props.onIModelChange(iModelName);

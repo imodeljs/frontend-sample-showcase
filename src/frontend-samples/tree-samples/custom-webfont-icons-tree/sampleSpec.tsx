@@ -13,6 +13,6 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
     files: [
       { name: "CustomWebfontIconsTreeApp.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeApp"), entry: true },
     ],
-    setup: CustomWebfontIconsTreeApp.setup,
+    setup: CustomWebfontIconsTreeApp.setup.bind(CustomWebfontIconsTreeApp),
   });
 }

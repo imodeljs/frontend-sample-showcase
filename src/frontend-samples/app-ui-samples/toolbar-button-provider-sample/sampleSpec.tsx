@@ -17,7 +17,7 @@ export function getToolbarButtonSample(): SampleSpec {
       { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi") },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: ToolbarButtonSample.setup,
-    teardown: ToolbarButtonSample.teardown,
+    setup: ToolbarButtonSample.setup.bind(ToolbarButtonSample),
+    teardown: ToolbarButtonSample.teardown.bind(ToolbarButtonSample),
   });
 }
