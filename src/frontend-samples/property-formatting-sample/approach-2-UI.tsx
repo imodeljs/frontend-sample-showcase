@@ -41,7 +41,7 @@ export class Approach2UI extends React.Component<PropertyProps, Approach2State> 
       categoryName = content?.descriptor.categories[0].name ?? "none";
     }
 
-    let records = new Map<CategoryDescription, PropertyRecord[]>();
+    let records;
 
     if (content)
       records = PropertyFormattingApp.createPropertyRecordsUsingContentBuilder(content);
@@ -97,7 +97,7 @@ export class Approach2UI extends React.Component<PropertyProps, Approach2State> 
     return (
       <>
         <div className="sample-options-2col">
-          <span>Categories:</span>
+          <span>Category:</span>
           <select onChange={this._onCategoryChange} value={this.state.categoryName} disabled={0 === categoryOpts.length}>{categoryOpts}</select>
         </div>
         <div className={"table-box"}>
