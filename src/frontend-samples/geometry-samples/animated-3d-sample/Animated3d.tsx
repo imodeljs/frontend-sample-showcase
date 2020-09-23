@@ -9,11 +9,11 @@ import { Cone, Point3d, PolyfaceBuilder, StrokeOptions } from "@bentley/geometry
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
-export default class Simple3d implements SampleApp {
+export default class Animated3d implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup();
-    BlankViewport.decorator = new GeometryDecorator(Simple3d.drawingCallback);
+    BlankViewport.decorator = new GeometryDecorator(Animated3d.drawingCallback);
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <BlankViewport force2d={false}></BlankViewport>;
   }
@@ -25,8 +25,6 @@ export default class Simple3d implements SampleApp {
   }
 
   public static drawingCallback() {
-    //if (!IModelApp.viewManager.getFirstOpenView()!.view.isCameraEnabled())
-    //  IModelApp.viewManager.getFirstOpenView()!.turnCameraOn()
     // Make a meshed cone
     const options = new StrokeOptions();
     options.needParams = false;

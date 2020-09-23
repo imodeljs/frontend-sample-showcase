@@ -8,7 +8,7 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { Arc3d, LineString3d, Loop, Point3d, Point3dArray } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { ColorDef, TextString } from "@bentley/imodeljs-common";
 export default class SmallConvexHull implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
@@ -54,5 +54,7 @@ export default class SmallConvexHull implements SampleApp {
     BlankViewport.decorator.setColor(ColorDef.red);
     BlankViewport.decorator.setFill(true);
     BlankViewport.decorator.addGeometry(circle);
+    const text = new TextString({ font: 12, height: 12, text: "test" });
+    BlankViewport.decorator.addText(text)
   }
 }

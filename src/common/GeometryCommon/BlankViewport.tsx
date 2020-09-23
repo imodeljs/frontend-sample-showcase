@@ -4,13 +4,28 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Range3d } from "@bentley/geometry-core";
-import { BlankConnection, DisplayStyle3dState, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
-import { Cartographic, ColorDef } from "@bentley/imodeljs-common";
+import { BlankConnection, DisplayStyle3dState, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool, Environment, DisplayStyleState, Viewport, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { Cartographic, ColorDef, RenderMode, LightSettings, ViewFlagProps, DisplayStyle3dSettingsProps, DisplayStyle3dSettings } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
+import { DisplayStyle } from "frontend-samples/display-styles-sample/Styles";
 
-export class BlankViewport extends React.Component<{ force2d: boolean }, {}> {
+const renderingStyleViewFlags: ViewFlagProps = {
+  noConstruct: true,
+  noCameraLights: false,
+  noSourceLights: false,
+  noSolarLight: false,
+  visEdges: false,
+  hidEdges: false,
+  shadows: false,
+  monochrome: false,
+  ambientOcclusion: false,
+  thematicDisplay: false,
+  renderMode: RenderMode.SmoothShade,
+};
+
+export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: Viewport }> {
 
   public static decorator: GeometryDecorator;
   public static imodel: IModelConnection;
@@ -35,7 +50,28 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, {}> {
     viewState.setAllow3dManipulations(true);
     viewState.setStandardRotation(StandardViewId.Top);
     const style = viewState.displayStyle as DisplayStyle3dState;
+    const viewFlags = style.viewFlags;
+    //viewFlags.noConstruct = true;
+    viewFlags.cameraLights = true;
+    viewFlags.sourceLights = true;
+    viewFlags.solarLight = true;
+    viewFlags.shadows = false;
+    viewFlags.visibleEdges = true;
+    viewFlags.monochrome = false;
+    viewFlags.ambientOcclusion = false;
+    viewFlags.thematicDisplay = false;
+    viewFlags.renderMode = RenderMode.SmoothShade;
+    style.viewFlags = viewFlags;
+    const lights = style.lights.clone({ ambient: { color: { r: 100, g: 100, b: 100 }, intensity: 0.5 } });
+    style.lights = lights;
     style.backgroundColor = ColorDef.white;
+    //style.environment = new Environment({
+    //  sky: {
+    //   display: true,
+    //    nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
+    //  },
+    //});
+    viewState.displayStyle = style;
     return viewState;
   }
 
@@ -46,6 +82,22 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, {}> {
     const viewState = await BlankViewport.getViewState(imodel);
     BlankViewport.imodel = imodel;
     BlankViewport.viewState = viewState;
+    IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
+      const style2: DisplayStyle3dSettingsProps = {
+        environment: {},
+        backgroundColor: 10921638,
+        viewflags: { ...renderingStyleViewFlags, noCameraLights: false, noSourceLights: false, noSolarLight: false, visEdges: true },
+        lights: {
+          solar: { direction: [-0.9833878378071199, -0.18098510351728977, 0.013883542698953828] },
+        },
+        hline: {
+          visible: { ovrColor: true, color: 0, pattern: 0, width: 1 },
+          hidden: { ovrColor: false, color: 16777215, pattern: 3435973836, width: 0 },
+          transThreshold: 1,
+        },
+      };
+      viewport.overrideDisplayStyle(style2);
+    });
   }
 
   public render() {
