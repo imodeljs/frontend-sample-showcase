@@ -33,12 +33,20 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
 
   private _oldPosition: number = 0;
   private _elem?: HTMLElement;
-  private _left: number;
+  private _container: HTMLElement | null = null;
 
   private get _buffer(): number {
     return undefined === this.props.buffer ? 0 : this.props.buffer;
   }
-
+  private get _width(): number {
+    let width: number = 0;
+    if (null === this._container)
+      return width;
+    const widthStr = window.getComputedStyle(this._container)?.getPropertyValue("width");
+    if (undefined !== widthStr && widthStr)
+      width = parseInt(widthStr, 10);
+    return width;
+  }
   private limitToBounds(n: number): number {
     n = Math.min(n, this.props.bounds.right - (this._elem!.clientWidth + this._buffer));
     n = Math.max(n, this.props.bounds.left + this._buffer);
@@ -59,32 +67,22 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     left = Math.min(left, this.props.bounds.right - this._buffer);
     left = Math.max(left, this.props.bounds.left + this._buffer);
 
-    this._left = left;
-
     this.state = {
       left,
       bounds: props.bounds,
     };
   }
 
-  private updateState() {
-    this.setState({
-      left: this._left,
-      bounds: this.props.bounds,
-    });
-  }
-
   public componentDidUpdate(prevProps: DividerComponentProps, prevState: DividerComponentState) {
-    let shouldUpdateState = false;
     const currentBounds = this.props.bounds;
     if (currentBounds.height !== prevProps.bounds.height
-      || currentBounds.width !== prevProps.bounds.width)
-      shouldUpdateState = true;
-    if (prevState.left !== this._left) {
-      shouldUpdateState = true;
+      || currentBounds.width !== prevProps.bounds.width) {
+      const left = ((this.state.left - prevProps.bounds.left) / prevProps.bounds.width) * this.props.bounds.width + this.props.bounds.left;
+      this.setState({ bounds: this.props.bounds, left });
     }
-    if (shouldUpdateState)
-      this.updateState();
+
+    if (this.state.left !== prevState.left)
+      this.onDraggedCallback();
   }
 
   private _mouseDownDraggable = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -103,12 +101,12 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     const newPosition = this.limitToBounds(this._elem.offsetLeft - (this._oldPosition - e.clientX));
     this._oldPosition = this.limitToBounds(e.clientX);
 
-    this._left = newPosition;
+    this.setState({ left: newPosition });
+  }
 
-    this.updateState();
-
-    const left = newPosition - this.props.bounds.left;
-    const right = this.props.bounds.width - left - this._elem.clientWidth;
+  private onDraggedCallback(): void {
+    const left = this.state.left - this.props.bounds.left;
+    const right = this.props.bounds.width - left - this._width;
     if (undefined !== this.props.onDragged)
       this.props.onDragged(left, right);
   }
@@ -133,6 +131,7 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
           {this.props.leftChildren}
         </div>
         <div className={"dividing-line"}
+          ref={(element) => this._container = element}
           style={{
             left: this.state.left,
             top: this.state.bounds.top,
