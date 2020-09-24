@@ -47,12 +47,12 @@ export class PropertyFormattingApp implements SampleApp {
     PropertyFormattingApp.removeSelectionListener();
   }
 
-  public static async addSelectionListener(listener: SelectionChangesListener) {
+  public static addSelectionListener(listener: SelectionChangesListener) {
     this.selectionListener = listener;
     Presentation.selection.selectionChange.addListener(this.selectionListener);
   }
 
-  public static async removeSelectionListener() {
+  public static removeSelectionListener() {
     Presentation.selection.selectionChange.removeListener(this.selectionListener);
   }
 
@@ -62,13 +62,12 @@ export class PropertyFormattingApp implements SampleApp {
 
      This method is used by approaches two and three below.  The first approach makes the same query internally. */
   public static async queryForContent(keys: KeySet, imodel: IModelConnection): Promise<Content | undefined> {
-    const requestOptions = { imodel, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
-    const descriptor = await Presentation.presentation.getContentDescriptor(requestOptions, "Grid", keys, undefined);
-
+    const options = { imodel, keys, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
+    const descriptor = await Presentation.presentation.getContentDescriptor({ ...options, displayType: "Grid" });
     if (undefined === descriptor)
       return;
 
-    return Presentation.presentation.getContent(requestOptions, descriptor, keys);
+    return Presentation.presentation.getContent({ ...options, descriptor });
   }
 
   /* Approach 1: Using PresentationPropertyDataProvider
@@ -79,7 +78,6 @@ export class PropertyFormattingApp implements SampleApp {
   public static createPresentationDataProvider(keys: KeySet, imodel: IModelConnection) {
     const dataProvider = new PresentationPropertyDataProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
     dataProvider.keys = keys;
-
     return dataProvider;
   }
 
