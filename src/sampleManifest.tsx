@@ -44,6 +44,7 @@ import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/uni
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
+import { getImageExportSpec } from "frontend-samples/image-export/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -62,6 +63,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
+    getImageExportSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getShadowStudySpec(),
