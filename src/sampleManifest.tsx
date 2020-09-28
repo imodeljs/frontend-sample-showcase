@@ -8,7 +8,7 @@ import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sam
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
-import { getImageExportSpec } from "frontend-samples/image-export/sampleSpec";
+import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
