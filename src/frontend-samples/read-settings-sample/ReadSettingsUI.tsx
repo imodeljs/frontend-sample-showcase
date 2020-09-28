@@ -28,7 +28,7 @@ export interface ReadSettingsState {
   imodel?: IModelConnection;
   saveInProgress: boolean;
   status?: string;
-  settingsInitialized: boolean
+  settingsInitialized: boolean;
 }
 
 const settingsKeys = ["Json_Data", "Arbitrary_Text", "CSV_Data"];
@@ -52,7 +52,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
 
     ReadSettingsApp.readSettings(settingsKeys[0]).then((response) => {
       this.setState({
-        imodel: imodel,
+        imodel,
         settingResult: response,
         settingValue: this.parseSettingsValue(settingsKeys[0], response.setting),
         settingsInitialized: true,
