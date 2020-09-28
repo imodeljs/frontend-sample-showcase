@@ -19,7 +19,7 @@ export default class ImageExportApp implements SampleApp {
       const imageUrl = canvas!.toDataURL("image/png");
       const link = document.createElement("a");
       link.setAttribute("download", "viewport.png")
-      link.setAttribute('href', imageUrl);
+      link.setAttribute("href", imageUrl);
       link.click();
     }
   }
