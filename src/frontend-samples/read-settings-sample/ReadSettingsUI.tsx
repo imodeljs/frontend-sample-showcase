@@ -6,7 +6,7 @@ import React, { ChangeEvent } from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { Button, DisabledText, LabeledSelect, LabeledTextarea, SmallText, Spinner, SpinnerSize } from "@bentley/ui-core";
+import { Button, DisabledText, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -28,7 +28,10 @@ export interface ReadSettingsState {
   imodel?: IModelConnection;
   saveInProgress: boolean;
   status?: string;
+  settingsInitialized: boolean
 }
+
+const settingsKeys = ["Json_Data", "Arbitrary_Text", "CSV_Data"];
 
 /** A React component that renders the UI specific for this sample */
 export default class ReadSettingsUI extends React.Component<ReadSettingsProps, ReadSettingsState> {
@@ -38,6 +41,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
     super(props);
     this.state = {
       saveInProgress: false,
+      settingsInitialized: false,
     };
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleSettingsValueChange = this.handleSettingsValueChange.bind(this);
@@ -45,28 +49,37 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
   }
 
   private onIModelReady = (imodel: IModelConnection) => {
-    this.setState({ imodel });
+
+    ReadSettingsApp.readSettings(settingsKeys[0]).then((response) => {
+      this.setState({
+        imodel: imodel,
+        settingResult: response,
+        settingValue: this.parseSettingsValue(settingsKeys[0], response.setting),
+        settingsInitialized: true,
+      });
+    })
+  }
+
+  private parseSettingsValue(name: string, value: string) {
+    let _value;
+    switch (name) {
+      case settingsKeys[0]:
+        _value = JSON.stringify(value || "", null, "   ");
+        break;
+      default:
+        _value = value || "";
+    }
+    return _value
   }
 
   // Handler to read external settings when name in dropdown changes
   private handleSettingsChange(event: ChangeEvent<HTMLSelectElement>) {
     const settingKey = event.target.value;
     this.setState({ settingKey });
-
     ReadSettingsApp.readSettings(settingKey).then((response) => {
-      let value;
-
-      switch (settingKey) {
-        case "Json_Data":
-          value = JSON.stringify(response.setting || "", null, "   ");
-          break;
-        default:
-          value = response.setting || ""
-      }
-
       this.setState({
         settingResult: response,
-        settingValue: value,
+        settingValue: this.parseSettingsValue(settingKey, response.setting),
       });
     });
   }
@@ -105,10 +118,16 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
-    return (
+    const entries = settingsKeys.map((value, index) => <option key={index} value={value}>{value}</option>);
+    return !this.state.settingsInitialized ? (<div style={{ width: "395px" }}><Spinner size={SpinnerSize.Small} /> loading...</div>) : (
       <>
-        <LabeledSelect label="Settings Name:" options={["Json_Data", "Arbitrary_Text", "CSV_Data"]} placeholder="Browse by name..." value={this.state.settingKey} onChange={this.handleSettingsChange} />
-        <LabeledTextarea rows={10} key="test" label="Settings Value:" placeholder="" className="uicore-full-width" value={this.state.settingValue} onChange={this.handleSettingsValueChange} />
+        <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
+          <span>Settings Name:</span>
+          <select placeholder="Browse by name..." value={this.state.settingKey} onChange={this.handleSettingsChange} style={{ width: "fit-content" }}>
+            {entries}
+          </select>
+        </div>
+        <Textarea rows={10} key="test" placeholder="" className="uicore-full-width" value={this.state.settingValue} onChange={this.handleSettingsValueChange} />
         {this.showStatus()}
         <div style={{ height: "35px", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {this.state.saveInProgress ?
