@@ -17,6 +17,7 @@ import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sa
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
+import { getReadSettingsSpec } from "frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
@@ -43,7 +44,6 @@ import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/uni
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
-import { getReadSettingsSpec } from "frontend-samples/read-settings-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
