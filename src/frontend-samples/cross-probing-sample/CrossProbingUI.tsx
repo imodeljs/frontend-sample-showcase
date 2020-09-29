@@ -23,9 +23,9 @@ export default class CrossProbingUI extends React.Component<{ iModelName: string
 
   // When iModel is ready, initialize element selection listener and assign initial 2D view.
   private _onIModelReady = async (imodel: IModelConnection) => {
-    imodel.selectionSet.onChanged.addListener(CrossProbingApp.elementSelected)
-    const viewState2d = await this.getFirst2DView(imodel);
+    CrossProbingApp.addElementSelectionListener(imodel);
     await CrossProbingApp.loadElementMap(imodel);
+    const viewState2d = await this.getFirst2DView(imodel);
     this.setState({ imodel, viewState2d });
   }
 

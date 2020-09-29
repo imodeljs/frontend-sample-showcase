@@ -25,7 +25,13 @@ export default class CrossProbingApp implements SampleApp {
   // array to keep track of all 3D/2D connections.
   private static elementMap?: any[];
 
-  public static elementSelected = async (ev: SelectionSetEvent) => {
+  // add listener to capture element selection events.
+  public static addElementSelectionListener(imodel: IModelConnection) {
+    imodel.selectionSet.onChanged.addListener(CrossProbingApp.elementSelected);
+  }
+
+  // this method is called when an element is selected on a viewport.
+  private static elementSelected = async (ev: SelectionSetEvent) => {
 
     if (CrossProbingApp.elementMap === null) return;
 
@@ -88,8 +94,15 @@ export default class CrossProbingApp implements SampleApp {
   }
 
   // query to get all 3D/2D connections in iModel.
+  // covered in-depth in this blog post: https://medium.com/imodeljs/hablas-bis-90e6f99c8ac2
   public static async loadElementMap(imodel: IModelConnection) {
-    const elementMapQuery = "SELECT physToFunc.SourceECInstanceId as physElementId, drawToFunc.SourceECInstanceId as drawElementId, drawing.Model.Id as drawModelId FROM Functional.PhysicalElementFulfillsFunction physToFunc JOIN Functional.DrawingGraphicRepresentsFunctionalElement drawToFunc ON physToFunc.TargetECInstanceId = drawToFunc.TargetECInstanceId JOIN Bis.DrawingGraphic drawing ON drawToFunc.SourceECInstanceId = drawing.ECInstanceId";
+    const elementMapQuery = `
+    SELECT physToFunc.SourceECInstanceId as physElementId, drawToFunc.SourceECInstanceId as drawElementId, drawing.Model.Id as drawModelId 
+      FROM Functional.PhysicalElementFulfillsFunction physToFunc 
+      JOIN Functional.DrawingGraphicRepresentsFunctionalElement drawToFunc 
+        ON physToFunc.TargetECInstanceId = drawToFunc.TargetECInstanceId 
+      JOIN Bis.DrawingGraphic drawing 
+        ON drawToFunc.SourceECInstanceId = drawing.ECInstanceId`;
     CrossProbingApp.elementMap = await this._executeQuery(imodel, elementMapQuery);
   }
 
