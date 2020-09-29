@@ -7,14 +7,14 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import SampleApp from "common/SampleApp";
 import CrossProbingUI from "./CrossProbingUI";
-import { SelectionSetEvent, IModelApp, Viewport, IModelConnection, SelectionSetEventType } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, Viewport } from "@bentley/imodeljs-frontend";
 import { ViewCreator2d } from "./ViewCreator2d";
 import { ColorDef } from "@bentley/imodeljs-common";
 
 /** This sample showcases how to implement cross-probing between 3D and 2D elements.
  * At startup, it fetches all 2D/3D connections in the iModel and and maps them into an array.
  * When the user clicks on an element, this map is used to lookup any corresponding 2D/3D element.
- * If the target element is 2D, its model is opened. 
+ * If the target element is 2D, its model is opened.
  * The target element is then zoomed into.
  */
 

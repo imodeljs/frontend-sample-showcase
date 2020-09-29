@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Id64Array, Id64String, Logger, IModelStatus } from "@bentley/bentleyjs-core";
-import { Code, ColorDef, IModel, SheetProps, ViewDefinition2dProps, ViewStateProps, IModelError, DisplayStyleProps, ModelSelectorProps, CategorySelectorProps } from "@bentley/imodeljs-common";
+import { Id64Array, Id64String, IModelStatus, Logger } from "@bentley/bentleyjs-core";
+import { CategorySelectorProps, Code, ColorDef, DisplayStyleProps, IModel, IModelError, ModelSelectorProps, SheetProps, ViewDefinition2dProps, ViewStateProps } from "@bentley/imodeljs-common";
 import { Range3d } from "@bentley/geometry-core";
-import { DrawingModelState, DrawingViewState, IModelConnection, SectionDrawingModelState, SheetModelState, SheetViewState, ViewState, ViewState2d, loggerCategory } from "@bentley/imodeljs-frontend";
+import { DrawingModelState, DrawingViewState, IModelConnection, loggerCategory, SectionDrawingModelState, SheetModelState, SheetViewState, ViewState, ViewState2d } from "@bentley/imodeljs-frontend";
 
-/**@beta Interface providing options for 2D view creation. */
+/** @beta Interface providing options for 2D view creation. */
 export interface ViewCreator2dOptions {
   /** vpAspect aspect ratio of vp to create fit view. */
   vpAspect?: number;
@@ -18,7 +18,7 @@ export interface ViewCreator2dOptions {
   useSeedView?: boolean;
 }
 
-/**@beta API for creating a 2D view for a model. */
+/** @beta API for creating a 2D view for a model. */
 export class ViewCreator2d {
 
   // Types of 2D models the API supports
@@ -178,7 +178,7 @@ export class ViewCreator2d {
     };
 
     // merge seed view props if needed
-    return options?.useSeedView ? await this._mergeSeedView(modelId, viewStateProps) : viewStateProps;
+    return options?.useSeedView ? this._mergeSeedView(modelId, viewStateProps) : viewStateProps;
   }
 
   /**
