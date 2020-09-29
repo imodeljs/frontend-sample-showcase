@@ -18,6 +18,7 @@ import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sam
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
+import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 
@@ -66,6 +67,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getCrossProbingSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
+    getReadSettingsSpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
