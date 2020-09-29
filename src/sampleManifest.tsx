@@ -14,6 +14,7 @@ import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampl
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
+import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sampleSpec";
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
@@ -63,6 +64,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
+    getCrossProbingSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getReadSettingsSpec(),
