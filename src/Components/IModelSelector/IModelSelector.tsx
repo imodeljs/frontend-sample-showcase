@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
+import { Select } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 
@@ -35,21 +36,16 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
   }
 
   public render() {
-
-    const value = this.props.iModelNames.findIndex((v: string) => v === this.props.iModelName);
-    const entries: JSX.Element[] = [];
-
-    this.props.iModelNames.forEach((name: string, index) => {
-      entries.push(<option key={index} value={index}>{name}</option>);
-    });
+    const { iModelNames } = this.props;
+    const value = iModelNames.findIndex((v: string) => v === this.props.iModelName);
+    const dropdownOptions: { [key: string]: string } = {};
+    iModelNames.forEach((value, index) => dropdownOptions[`${index}`] = value);
 
     return (
       <div>
         <hr></hr>
         <span>Select iModel: </span>
-        <select className="imodel-list" value={value} onChange={this._handleSelection}>
-          {entries};
-        </select>
+        <Select className="imodel-list" value={value} onChange={this._handleSelection} options={dropdownOptions} />
       </div>
     );
   }

@@ -7,6 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
+import { OptionsType, OptionType, ThemedSelect } from "@bentley/ui-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
 import { ViewSetup } from "api/viewSetup";
@@ -38,16 +39,26 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     const sheetViews: JSX.Element[] = this.getSheetModelList(this.state.sheets);
     const drawingViews: JSX.Element[] = this.getDrawingModelList(this.state.drawings);
 
+    const dropDownOptions: any = [];
+    if (drawingViews.length > 0) {
+      dropDownOptions.push({
+        "label": "Drawings",
+        "options": this.getDrawingModelList2(this.state.drawings),
+      });
+    }
+    if (sheetViews.length > 0) {
+      dropDownOptions.push({
+        "label": "Sheets",
+        "options": this.getSheetModelList2(this.state.drawings),
+      });
+    }
+    console.log(dropDownOptions);
+
     // Display drawing and sheet options in separate sections.
     return (
       <div style={{ marginTop: "20px" }}>
         <span>Select Drawing or Sheet: </span>
-        <select onChange={this._handleSelection} className="2d-model-selector">
-          {(drawingViews.length > 0) ? <optgroup label="Drawings" /> : null};
-          {drawingViews};
-          {(sheetViews.length > 0) ? <optgroup label="Sheets" /> : null};
-          {sheetViews};
-        </select>
+        <ThemedSelect onChange={this._handleSelection} className="2d-model-selector" options={dropDownOptions} styles={{ top: 'auto', bottom: '100%' }} />
       </div>
     );
   }
@@ -60,10 +71,26 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     return drawingViews;
   }
 
+  public getDrawingModelList2(models: ModelProps[]) {
+    const drawingViews: any = []
+    models.forEach((model, index) => {
+      drawingViews.push({ value: `${index}drawing`, label: model.name });
+    });
+    return drawingViews;
+  }
+
   public getSheetModelList(models: ModelProps[]) {
     const sheetViews: JSX.Element[] = [];
     models.forEach((model: ModelProps, index) => {
       sheetViews.push(<option key={`${index}sheet`} value={`${index}sheet`}>{model.name}</option>);
+    });
+    return sheetViews;
+  }
+
+  public getSheetModelList2(models: ModelProps[]) {
+    const sheetViews: any = [];
+    models.forEach((model: ModelProps, index) => {
+      sheetViews.push({ value: `${index}sheet`, label: model.name });
     });
     return sheetViews;
   }
