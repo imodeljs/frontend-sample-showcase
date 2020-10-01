@@ -6,7 +6,7 @@ import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import "common/samples-common.scss";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { ElementPosition, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
+import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
@@ -24,7 +24,7 @@ interface VolumeQueryUIState {
   isVolumeBoxOn: boolean;
   isClipVolumeOn: boolean;
   coloredElements: Record<ElementPosition, SpatialElement[]>;
-  classifiedElementsColors: Record<ElementPosition, ColorDef>;
+  classifiedElementsColors: Record<SectionOfColoring, ColorDef>;
   elementsToShow: Record<ElementPosition, SpatialElement[]>;
   selectedPosition: ElementPosition;
   spatialElements: SpatialElement[];
@@ -45,17 +45,15 @@ VolumeQueryUIState
       isClipVolumeOn: false,
       coloredElements: {
         [ElementPosition.InsideTheBox]: [],
-        [ElementPosition.OutsideTheBox]: [],
         [ElementPosition.Overlap]: [],
       },
       classifiedElementsColors: {
-        [ElementPosition.InsideTheBox]: ColorDef.green,
-        [ElementPosition.OutsideTheBox]: ColorDef.red,
-        [ElementPosition.Overlap]: ColorDef.blue,
+        [SectionOfColoring.InsideTheBox]: ColorDef.green,
+        [SectionOfColoring.Overlap]: ColorDef.blue,
+        [SectionOfColoring.OutsideTheBox]: ColorDef.red,
       },
       elementsToShow: {
         [ElementPosition.InsideTheBox]: [],
-        [ElementPosition.OutsideTheBox]: [],
         [ElementPosition.Overlap]: [],
       },
       spatialElements: [],
@@ -88,58 +86,51 @@ VolumeQueryUIState
   /* Turning Clip Volume feature on and off */
   private _onToggleClipping = (isToggleOn: boolean) => {
     const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp) {
-      return false;
+    if (undefined !== vp) {
+      this.setState({ isClipVolumeOn: isToggleOn });
+      const range = VolumeQueryApp.computeClipRange(vp);
+      VolumeQueryApp.clearClips(vp);
+      VolumeQueryApp.addBoxRange(vp, range, isToggleOn);
+      /* If Volume box is off - turning it on */
+      if (isToggleOn && !this.state.isVolumeBoxOn)
+        this.setState({ isVolumeBoxOn: true });
     }
-    this.setState({ isClipVolumeOn: isToggleOn });
-    const range = VolumeQueryApp.getRangeOfBox(vp);
-    VolumeQueryApp.clearClips(vp);
-    VolumeQueryApp.addBoxRange(vp, range, isToggleOn);
-    /* If Volume box is off - turning it on */
-    if (isToggleOn && !this.state.isVolumeBoxOn)
-      this.setState({ isVolumeBoxOn: true });
   }
 
   /* Coloring elements that are inside, outside the box or overlaping */
   private _onClickApplyColorOverrides = async () => {
     const vp = IModelApp.viewManager.selectedView;
+    if (undefined !== vp) {
+      /* Clearing colors so they don't stack when pressing apply button multiple times */
+      VolumeQueryApp.clearColorOverrides(vp);
+      const range = VolumeQueryApp.computeClipRange(vp);
 
-    if (undefined === vp) {
-      return false;
-    }
-    /* Clearing colors so they don't stack when pressing apply button multiple times */
-    VolumeQueryApp.clearColorOverrides(vp);
-    let spatialElements = this.state.spatialElements;
-    /* Getting elements that are going to be colored */
-    if (!spatialElements.length) {
-      spatialElements = await VolumeQueryApp.getAllSpatialElements(vp);
+      /* Getting elements that are going to be colored */
+      const spatialElements = await VolumeQueryApp.getSpatialElements(vp, range);
       this.setState({ spatialElements });
+      const progressBar = this._progressBarRefrence.current!;
+      await progressBar.processElements(this.state.classifiedElementsColors, spatialElements, vp);
     }
-    const progressBar = this._progressBarRefrence.current!;
-    await progressBar.processElements(this.state.classifiedElementsColors, spatialElements, vp);
   }
 
   private _onClickClearColorOverrides = () => {
     const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp) {
-      return false;
+    if (undefined !== vp) {
+      VolumeQueryApp.clearColorOverrides(vp);
+      /* Emptying elements to show list */
+      this._emptyElementsToShow();
+      this.setState({
+        coloredElements: {
+          [ElementPosition.InsideTheBox]: [],
+          [ElementPosition.Overlap]: [],
+        },
+        progress: { isLoading: false, percentage: 0 },
+      });
     }
-
-    VolumeQueryApp.clearColorOverrides(vp);
-    /* Emptying elements to show list */
-    this._emptyElementsToShow();
-    this.setState({
-      coloredElements: {
-        [ElementPosition.InsideTheBox]: [],
-        [ElementPosition.OutsideTheBox]: [],
-        [ElementPosition.Overlap]: [],
-      },
-      progress: { isLoading: false, percentage: 0 },
-    });
   }
 
   /* Changing colors of elements that are going to be overridden */
-  private _onColorPick = (colorValue: ColorDef, position: ElementPosition) => {
+  private _onColorPick = (colorValue: ColorDef, position: SectionOfColoring) => {
     const previousColors = this.state.classifiedElementsColors;
     previousColors[position] = colorValue;
     this.setState({ classifiedElementsColors: previousColors });
@@ -148,10 +139,10 @@ VolumeQueryUIState
   /* Selecting which elements are going to be showed in the element list */
   private async _onSelectionListElements(event: React.ChangeEvent<HTMLSelectElement>) {
     const vp = IModelApp.viewManager.selectedView;
-    if (vp === undefined)
-      return false;
-    const selectedPosition = event.target.value as ElementPosition;
-    this.setState({ selectedPosition });
+    if (vp !== undefined) {
+      const selectedPosition = event.target.value as ElementPosition;
+      this.setState({ selectedPosition });
+    }
   }
 
   /* Coloring and listing elements when iModel is loaded */
@@ -170,7 +161,6 @@ VolumeQueryUIState
     this.setState({
       elementsToShow: {
         [ElementPosition.InsideTheBox]: [],
-        [ElementPosition.OutsideTheBox]: [],
         [ElementPosition.Overlap]: [],
       },
     });
@@ -211,16 +201,17 @@ VolumeQueryUIState
     const elementsToShow = this.state.elementsToShow;
 
     /* Updating list only when it has less than 100 elements */
-    for (const position of Object.values(ElementPosition))
-      if (elementsToShow[position].length <= 100)
-        elementsToShow[position] = await VolumeQueryApp.getSpatialElementsWithName(vp, coloredElements[position].slice(0, 99));
+    if (elementsToShow[ElementPosition.InsideTheBox].length <= 100)
+      elementsToShow[ElementPosition.InsideTheBox] = await VolumeQueryApp.getSpatialElementsWithName(vp, coloredElements[ElementPosition.InsideTheBox].slice(0, 99));
+
+    if (elementsToShow[ElementPosition.Overlap].length <= 100)
+      elementsToShow[ElementPosition.Overlap] = await VolumeQueryApp.getSpatialElementsWithName(vp, coloredElements[ElementPosition.Overlap].slice(0, 99));
 
     this.setState({ elementsToShow });
   }
 
   public getControls() {
     const position = this.state.selectedPosition;
-    const colors = this.state.classifiedElementsColors;
     const coloredElements = this.state.coloredElements;
     return (
       <div style={{ maxWidth: "340px" }} >
@@ -238,27 +229,24 @@ VolumeQueryUIState
         </div>
         <div className="sample-options-3col">
           <div style={{ display: "flex", alignItems: "center", marginLeft: "20px", marginRight: "20px" }}>
-            <span>{ElementPosition.InsideTheBox}</span>
+            <span>{SectionOfColoring.InsideTheBox}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              disabled={this.state.progress.isLoading}
-              initialColor={colors[ElementPosition.InsideTheBox]}
-              onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.InsideTheBox)}
+              initialColor={this.state.classifiedElementsColors.Inside}
+              onColorPick={(color: ColorDef) => this._onColorPick(color, SectionOfColoring.InsideTheBox)}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span>{ElementPosition.OutsideTheBox}</span>
+            <span>{SectionOfColoring.OutsideTheBox}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              disabled={this.state.progress.isLoading}
-              initialColor={colors[ElementPosition.OutsideTheBox]}
-              onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.OutsideTheBox)}
+              initialColor={this.state.classifiedElementsColors.Outside}
+              onColorPick={(color: ColorDef) => this._onColorPick(color, SectionOfColoring.OutsideTheBox)}
             />
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span>{ElementPosition.Overlap}</span>
+            <span>{SectionOfColoring.Overlap}</span>
             <ColorPickerButton style={{ marginLeft: "10px" }}
-              disabled={this.state.progress.isLoading}
-              initialColor={colors[ElementPosition.Overlap]}
-              onColorPick={(color: ColorDef) => this._onColorPick(color, ElementPosition.Overlap)}
+              initialColor={this.state.classifiedElementsColors.Overlap}
+              onColorPick={(color: ColorDef) => this._onColorPick(color, SectionOfColoring.Overlap)}
             />
           </div>
         </div>
@@ -267,7 +255,6 @@ VolumeQueryUIState
           <span style={{ whiteSpace: "nowrap" }}>List Colored Elements:</span>
           <select onChange={this._onSelectionListElements.bind(this)} value={position}>
             <option value={ElementPosition.InsideTheBox}> {ElementPosition.InsideTheBox} </option>
-            <option value={ElementPosition.OutsideTheBox}> {ElementPosition.OutsideTheBox} </option>
             <option value={ElementPosition.Overlap}> {ElementPosition.Overlap} </option>
           </select>
         </div>

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ElementPosition, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
+import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
 import { ScreenViewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { Button, ButtonType, LoadingPrompt } from "@bentley/ui-core";
@@ -28,11 +28,10 @@ export class ProgressBar extends React.Component<ProgressBarProps, ProgressBarSt
   }
 
   /* Classifying, coloring and setting progress bar */
-  public async processElements(classifiedElementsColors: Record<ElementPosition, ColorDef>, spatialElements: SpatialElement[], vp: ScreenViewport) {
+  public async processElements(classifiedElementsColors: Record<SectionOfColoring, ColorDef>, spatialElements: SpatialElement[], vp: ScreenViewport) {
     let classifiedElements: Record<ElementPosition, SpatialElement[]> | undefined;
     const coloredElements: Record<ElementPosition, SpatialElement[]> = {
       [ElementPosition.InsideTheBox]: [],
-      [ElementPosition.OutsideTheBox]: [],
       [ElementPosition.Overlap]: [],
     };
 
@@ -56,20 +55,22 @@ export class ProgressBar extends React.Component<ProgressBarProps, ProgressBarSt
         classifiedElements = await VolumeQueryApp.getClassifiedElements(vp, spatialElements.slice(i * 6000, spatialElements.length + 1));
         progress.isLoading = false;
       }
-
       /* Coloring classified elements */
       if (classifiedElements !== undefined) {
         await VolumeQueryApp.colorClassifiedElements(vp, classifiedElements, classifiedElementsColors);
         coloredElements.Inside = coloredElements.Inside.concat(classifiedElements.Inside);
-        coloredElements.Outside = coloredElements.Outside.concat(classifiedElements.Outside);
         coloredElements.Overlap = coloredElements.Overlap.concat(classifiedElements.Overlap);
         this.props.setColoredElements(coloredElements);
         this.props.setElementsToShow();
       }
 
       /* Calculating and setting progress percentage */
-      const coloredElementsCount = coloredElements.Inside.length + coloredElements.Outside.length + coloredElements.Overlap.length;
-      progress.percentage = Math.floor(coloredElementsCount / spatialElements.length * 100);
+      const coloredElementsCount = coloredElements.Inside.length + coloredElements.Overlap.length;
+      if (i === packsOfIds) {
+        progress.percentage = 100;
+      } else {
+        progress.percentage = Math.floor(coloredElementsCount / spatialElements.length * 100);
+      }
       progress.isLoading = true;
       if (progress.percentage === 100) progress.isLoading = false;
       this.props.setProgress(progress);

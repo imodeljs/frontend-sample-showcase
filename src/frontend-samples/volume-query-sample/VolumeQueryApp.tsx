@@ -8,14 +8,21 @@ import { EmphasizeElements, IModelApp, ScreenViewport, ViewClipClearTool, ViewCl
 import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@bentley/geometry-core";
 import SampleApp from "common/SampleApp";
 import VolumeQueryUI from "./VolumeQueryUI";
-import { ColorDef, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
+import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
 import { BentleyStatus, Id64Array } from "@bentley/bentleyjs-core";
 import { PresentationLabelsProvider } from "@bentley/presentation-components";
 import { InstanceKey } from "@bentley/presentation-common";
 
-export enum ElementPosition {
+/* Going to color elements from three different sections of volume box */
+export enum SectionOfColoring {
   InsideTheBox = "Inside",
   OutsideTheBox = "Outside",
+  Overlap = "Overlap",
+}
+
+/* Going to query and show elements only from two different sections of volume box */
+export enum ElementPosition {
+  InsideTheBox = "Inside",
   Overlap = "Overlap",
 }
 
@@ -70,19 +77,6 @@ export class VolumeQueryApp implements SampleApp {
     IModelApp.toolAdmin.startDefaultTool();
   }
 
-  /* Getting the range of currect box */
-  public static getRangeOfBox(vp: ScreenViewport): Range3d | undefined {
-    const viewClip = vp.view.getViewClip();
-    if (viewClip !== undefined) {
-      return ClipUtilities.rangeOfClipperIntersectionWithRange(
-        viewClip,
-        vp.view.computeFitRange(),
-      );
-    }
-
-    return undefined;
-  }
-
   /* Clear color from colored elements */
   public static clearColorOverrides(vp: ScreenViewport) {
     EmphasizeElements.getOrCreate(vp).clearOverriddenElements(vp);
@@ -102,9 +96,9 @@ export class VolumeQueryApp implements SampleApp {
     return elements;
   }
 
-  /* Getting all spatial elements from iModel*/
-  public static async getAllSpatialElements(vp: ScreenViewport): Promise<SpatialElement[]> {
-    const esqlQuery = "SELECT ECInstanceId, ECClassId FROM BisCore.SpatialElement";
+  /* Getting elements that are inside or overlaping the given range*/
+  public static async getSpatialElements(vp: ScreenViewport, range: Range3d): Promise<SpatialElement[]> {
+    const esqlQuery = `SELECT e.ECInstanceId, e.ECClassId FROM bis.SpatialElement e JOIN bis.SpatialIndex i ON e.ECInstanceId=i.ECInstanceId WHERE i.MinX<=${range.xHigh} AND i.MinY<=${range.yHigh} AND i.MinZ<=${range.zHigh} AND i.MaxX >= ${range.xLow} AND i.MaxY >= ${range.yLow} AND i.MaxZ >= ${range.zLow}`;
     const elementsAsync = vp.iModel.query(esqlQuery);
     const elements: SpatialElement[] = [];
     for await (const element of elementsAsync) {
@@ -114,7 +108,7 @@ export class VolumeQueryApp implements SampleApp {
     return elements;
   }
 
-  /* Classify given elements - inside, outside the box and overlap */
+  /* Classify given elements - inside and overlaping. What is left are going to be outside the box*/
   public static async getClassifiedElements(vp: ScreenViewport, candidates: SpatialElement[]): Promise<Record<ElementPosition, SpatialElement[]> | undefined> {
     const clip = vp.view.getViewClip();
     if (clip === undefined)
@@ -124,7 +118,6 @@ export class VolumeQueryApp implements SampleApp {
 
     const classifiedElements = {
       [ElementPosition.InsideTheBox]: [] as SpatialElement[],
-      [ElementPosition.OutsideTheBox]: [] as SpatialElement[],
       [ElementPosition.Overlap]: [] as SpatialElement[],
     };
 
@@ -147,19 +140,30 @@ export class VolumeQueryApp implements SampleApp {
         case ClipPlaneContainment.Ambiguous:
           classifiedElements[ElementPosition.Overlap].push(candidates[index]);
           break;
-        case ClipPlaneContainment.StronglyOutside:
-          classifiedElements[ElementPosition.OutsideTheBox].push(candidates[index]);
-          break;
       }
     });
 
     return classifiedElements;
   }
 
-  public static async colorClassifiedElements(vp: ScreenViewport, classifiedElements: Record<ElementPosition, SpatialElement[]>, colors: Record<ElementPosition, ColorDef>) {
-    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements[ElementPosition.InsideTheBox].map((x) => x.id), vp, colors[ElementPosition.InsideTheBox]);
-    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements[ElementPosition.OutsideTheBox].map((x) => x.id), vp, colors[ElementPosition.OutsideTheBox]);
-    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements[ElementPosition.Overlap].map((x) => x.id), vp, colors[ElementPosition.Overlap]);
-    EmphasizeElements.getOrCreate(vp).defaultAppearance = EmphasizeElements.getOrCreate(vp).createDefaultAppearance();
+  /* Getting range of the clip */
+  public static computeClipRange(viewport: ScreenViewport): Range3d {
+    const range = viewport.computeViewRange();
+    const clip = viewport.view.getViewClip();
+    if (undefined !== clip) {
+      const clipRange = ClipUtilities.rangeOfClipperIntersectionWithRange(clip, range);
+      if (!clipRange.isNull)
+        range.setFrom(clipRange);
+    }
+
+    return range;
+  }
+
+  public static async colorClassifiedElements(vp: ScreenViewport, classifiedElements: Record<ElementPosition, SpatialElement[]>, colors: Record<SectionOfColoring, ColorDef>) {
+    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements[SectionOfColoring.InsideTheBox].map((x) => x.id), vp, colors[SectionOfColoring.InsideTheBox]);
+    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements[SectionOfColoring.Overlap].map((x) => x.id), vp, colors[SectionOfColoring.Overlap]);
+    /* All elements that are not overridden are outside the box by default. So to color them we don't need to have elements ids.
+    This is done so we would not need to query large amount of elements that are outside the box */
+    EmphasizeElements.getOrCreate(vp).defaultAppearance = FeatureAppearance.fromRgb(colors[SectionOfColoring.OutsideTheBox]);
   }
 }
