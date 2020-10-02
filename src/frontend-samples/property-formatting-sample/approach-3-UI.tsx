@@ -6,9 +6,9 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
+import { Toggle } from "@bentley/ui-core";
 import { SelectionMode, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { PropertyRecord } from "@bentley/ui-abstract";
-import { Toggle } from "@bentley/ui-core";
 import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
 
 export interface OverlySimpleProperyRecord {
@@ -67,7 +67,8 @@ export class Approach3UI extends React.Component<PropertyProps, Approach3State> 
       <>
         <div className="sample-options-2col">
           <span>Show All</span>
-          <Toggle isOn={this.state.showAll} onChange={(checked: boolean) => this.setState({ showAll: checked })} disabled={!haveRecords} />
+          <Toggle isOn={this.state.showAll} onChange={(checked) => this.setState({ showAll: checked })} disabled={!haveRecords} />
+
         </div>
         <div className={"table-box"}>
           {haveRecords && <TableOfStrings records={this.state.records} />}

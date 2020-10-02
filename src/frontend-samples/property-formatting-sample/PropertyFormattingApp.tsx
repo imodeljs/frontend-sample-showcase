@@ -75,8 +75,16 @@ export class PropertyFormattingApp implements SampleApp {
   This approach uses the PresentationPropertyDataProvider to fully handle all the work of querying the content,
   and processing it to create the PropertyRecords.  Finally, this data provider is compatible with the PropertyGrid
   UI component which fully handles grouping and sorting properties, and a better presentation of arrays and structs. */
-  public static createPresentationDataProvider(keys: KeySet, imodel: IModelConnection) {
-    const dataProvider = new PresentationPropertyDataProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
+  public static createPresentationDataProvider(keys: KeySet, imodel: IModelConnection, customized: boolean) {
+    let dataProvider;
+
+    if (!customized)
+      // Use the default property records
+      dataProvider = new PresentationPropertyDataProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
+    else
+      // Customize the property records
+      dataProvider = new MyCustomProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
+
     dataProvider.keys = keys;
     return dataProvider;
   }
@@ -143,6 +151,29 @@ export class PropertyFormattingApp implements SampleApp {
         data.push({ name: fieldName, displayLabel: fieldLabel, displayValue: f.type.typeName });
       }
     });
+
+    return data;
+  }
+}
+
+/* This data provider demonstrates how to customize the properties which are displayed by the
+   property grid.  By overriding the getData method, it is possible to add, modify, or delete
+   from the list of property records returned from the default provider logic. */
+class MyCustomProvider extends PresentationPropertyDataProvider {
+  public async getData() {
+    const data = await super.getData();
+
+    // Add a custom category
+    const customCategoryName = "/custom-category-name/";
+    data.categories.unshift({ name: customCategoryName, label: "Custom Category", expand: true });
+
+    const customRecords = [
+      PropertyRecord.fromString("Value 1", "Property 1"),
+      PropertyRecord.fromString("Value 2", "Property 2"),
+      PropertyRecord.fromString("Value 3", "Property 3"),
+    ]
+
+    data.records[customCategoryName] = customRecords;
 
     return data;
   }
