@@ -32,7 +32,7 @@ export class Approach1UI extends React.Component<PropertyProps, Approach1State> 
       return;
     }
 
-    const dataProvider = PropertyFormattingApp.createPresentationDataProvider(this.props.keys, this.props.imodel, this.state.enableCustomize);
+    const dataProvider = PropertyFormattingApp.createPropertyDataProvider(this.props.keys, this.props.imodel, this.state.enableCustomize);
     this.setState({ dataProvider });
   }
 

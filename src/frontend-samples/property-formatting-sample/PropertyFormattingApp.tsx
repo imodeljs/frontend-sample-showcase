@@ -61,7 +61,7 @@ export class PropertyFormattingApp implements SampleApp {
   This approach uses the PresentationPropertyDataProvider to fully handle all the work of querying the content,
   and processing it to create the PropertyRecords.  Finally, this data provider is compatible with the PropertyGrid
   UI component which fully handles grouping and sorting properties, and a better presentation of arrays and structs. */
-  public static createPresentationDataProvider(keys: KeySet, imodel: IModelConnection, customized: boolean) {
+  public static createPropertyDataProvider(keys: KeySet, imodel: IModelConnection, customized: boolean) {
     let dataProvider;
 
     if (!customized)
@@ -69,10 +69,33 @@ export class PropertyFormattingApp implements SampleApp {
       dataProvider = new PresentationPropertyDataProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
     else
       // (optional) Customize the property records
-      dataProvider = new MyCustomPropertyProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
+      dataProvider = new PropertyFormattingApp.MyCustomPropertyProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
 
     dataProvider.keys = keys;
     return dataProvider;
+  }
+
+  /* This data provider (declared here as a nested class) demonstrates how to customize the properties which
+     are displayed by the property grid.  By overriding the getData method, it is possible to add, modify,
+     or delete from the list of property records returned from the default provider logic. */
+  private static MyCustomPropertyProvider = class extends PresentationPropertyDataProvider {
+    public async getData() {
+      const data = await super.getData();
+
+      // Add a custom category
+      const customCategoryName = "/custom-category-name/";
+      data.categories.unshift({ name: customCategoryName, label: "Custom Category", expand: true });
+
+      const customRecords = [
+        PropertyRecord.fromString("Value 1", "Property 1"),
+        PropertyRecord.fromString("Value 2", "Property 2"),
+        PropertyRecord.fromString("Value 3", "Property 3"),
+      ]
+
+      data.records[customCategoryName] = customRecords;
+
+      return data;
+    }
   }
 
   /* Approach 2: Using PresentationTableDataProvider
@@ -145,25 +168,3 @@ export class PropertyFormattingApp implements SampleApp {
 
 }
 
-/* This data provider demonstrates how to customize the properties which are displayed by the
-   property grid.  By overriding the getData method, it is possible to add, modify, or delete
-   from the list of property records returned from the default provider logic. */
-class MyCustomPropertyProvider extends PresentationPropertyDataProvider {
-  public async getData() {
-    const data = await super.getData();
-
-    // Add a custom category
-    const customCategoryName = "/custom-category-name/";
-    data.categories.unshift({ name: customCategoryName, label: "Custom Category", expand: true });
-
-    const customRecords = [
-      PropertyRecord.fromString("Value 1", "Property 1"),
-      PropertyRecord.fromString("Value 2", "Property 2"),
-      PropertyRecord.fromString("Value 3", "Property 3"),
-    ]
-
-    data.records[customCategoryName] = customRecords;
-
-    return data;
-  }
-}
