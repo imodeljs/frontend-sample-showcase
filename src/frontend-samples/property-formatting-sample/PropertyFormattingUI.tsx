@@ -12,15 +12,15 @@ import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentat
 import { KeySet } from "@bentley/presentation-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import "./PropertyFormatting.scss";
-import { Approach3UI } from "./approach-3-UI";
-import { Approach2UI } from "./approach-2-UI";
-import { Approach1UI } from "./approach-1-UI";
 import { PropertyFormattingApp } from "./PropertyFormattingApp";
+import { Approach1UI } from "./approach-1-UI";
+import { Approach2UI } from "./approach-2-UI";
+import { Approach3UI } from "./approach-3-UI";
 
 enum Approach {
-  UsePresentationDataProvider_1 = "UsePresentationDataProvider",
-  UseContentBuilder_2 = "UseContentBuilder",
-  DoItAllYourself_3 = "DoItAllYourself",
+  UsePropertyDataProvider_1 = "UsePropertyDataProvider",
+  UseTableDataProvider_2 = "UseTableDataProvider",
+  DoItYourself_3 = "DoItAllYourself",
 }
 
 /** React props */
@@ -41,7 +41,7 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
-      method: Approach.UsePresentationDataProvider_1,
+      method: Approach.UsePropertyDataProvider_1,
       keys: new KeySet(),
     };
   }
@@ -67,9 +67,9 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
 
     switch (this.state.method) {
       default:
-      case Approach.UsePresentationDataProvider_1: { propertiesUI = <Approach1UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
-      case Approach.UseContentBuilder_2: { propertiesUI = <Approach2UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
-      case Approach.DoItAllYourself_3: { propertiesUI = <Approach3UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
+      case Approach.UsePropertyDataProvider_1: { propertiesUI = <Approach1UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
+      case Approach.UseTableDataProvider_2: { propertiesUI = <Approach2UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
+      case Approach.DoItYourself_3: { propertiesUI = <Approach3UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
     }
 
     return (
@@ -77,9 +77,9 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
         <div className="sample-options-2col">
           <span>Approach:</span>
           <select onChange={this._onPropertyModeChange} value={this.state.method}>
-            <option value={Approach.UsePresentationDataProvider_1}>1. The easiest way</option>
-            <option value={Approach.UseContentBuilder_2}>2. Use your own UI component</option>
-            <option value={Approach.DoItAllYourself_3}>3. Do it all yourself</option>
+            <option value={Approach.UsePropertyDataProvider_1}>1. Use Property Grid</option>
+            <option value={Approach.UseTableDataProvider_2}>2. Use Property Table</option>
+            <option value={Approach.DoItYourself_3}>3. Do it yourself</option>
           </select>
         </div>
         {propertiesUI}

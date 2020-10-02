@@ -8,12 +8,12 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "../../common/samples-common.scss";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
-import { CategoryDescription, Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
+import { Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
 import { OverlySimpleProperyRecord } from "./approach-3-UI";
 import { PropertyRecord } from "@bentley/ui-abstract";
-import { ContentBuilder } from "@bentley/presentation-components";
+import { PresentationTableDataProvider } from "@bentley/presentation-components";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 export interface PropertyProps {
@@ -23,11 +23,11 @@ export interface PropertyProps {
 
 /*
    This sample illustrates three approaches for showing element properties.  Which approach
-   to choose depends on what if any customization you need for your use case.
+   to choose depends on you goal and what if any customization you need for your use case.
 
-   Approach 1: The easiest way.  If you want to show the properties in the default way.
-   Approach 2: Use your own UI components.  If you are not using the @bentley/ui-components package.
-   Approach 3: Do it all yourself.  If you want to customize which properties to show and/or use your own ui components. */
+   Approach 1: Using PropertyGrid.  If you want to show the properties in the default way.
+   Approach 2: Using Table.  To see properties from multiple elements at the same time.
+   Approach 3: Do it all yourself.  If you want to use your own ui components. */
 
 /* This class demonstrates the key APIs needed to access formatted property information
    suitable to present to end users.
@@ -56,20 +56,6 @@ export class PropertyFormattingApp implements SampleApp {
     Presentation.selection.selectionChange.removeListener(this.selectionListener);
   }
 
-  /* This method uses the Presentation API to query for the Content of the selected elements.  The Content object contains
-     everything needed to show the property information in a user interface.  This includes the property names, types, and
-     values formatted as strings.
-
-     This method is used by approaches two and three below.  The first approach makes the same query internally. */
-  public static async queryForContent(keys: KeySet, imodel: IModelConnection): Promise<Content | undefined> {
-    const options = { imodel, keys, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
-    const descriptor = await Presentation.presentation.getContentDescriptor({ ...options, displayType: "Grid" });
-    if (undefined === descriptor)
-      return;
-
-    return Presentation.presentation.getContent({ ...options, descriptor });
-  }
-
   /* Approach 1: Using PresentationPropertyDataProvider
 
   This approach uses the PresentationPropertyDataProvider to fully handle all the work of querying the content,
@@ -82,45 +68,33 @@ export class PropertyFormattingApp implements SampleApp {
       // Use the default property records
       dataProvider = new PresentationPropertyDataProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
     else
-      // Customize the property records
-      dataProvider = new MyCustomProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
+      // (optional) Customize the property records
+      dataProvider = new MyCustomPropertyProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
 
     dataProvider.keys = keys;
     return dataProvider;
   }
 
-  /* Approach 2: Using ContentBuilder
+  /* Approach 2: Using PresentationTableDataProvider
 
-  This approach uses the ContentBuilder API to handle the task of processing the Content object and
-  creating a set of PropertyRecords for all the properties.  It correctly handles properties which are
-  arrays and structs.
-
-  A full implementation would consider all the items within the contentSet, not just the first one. */
-  public static createPropertyRecordsUsingContentBuilder(content: Content) {
-    const item = content.contentSet[0];
-    const fields = content.descriptor.fields;
-    const records = new Map<CategoryDescription, PropertyRecord[]>();
-
-    fields.forEach((f: Field) => {
-      const propertyRecord = ContentBuilder.createPropertyRecord(f, item);
-
-      if (records.has(f.category))
-        records.get(f.category)?.push(propertyRecord);
-      else
-        records.set(f.category, [propertyRecord]);
-    });
-
-    return records;
+  This approach uses the PresentationTableDataProvider to fully handle all the work of querying the content,
+  and processing it to create the PropertyRecords.  Finally, this data provider is compatible with the Table
+  UI component which can show results for many elements without merging them together. */
+  public static createTableDataProvider(keys: KeySet, imodel: IModelConnection) {
+    const dataProvider = new PresentationTableDataProvider({ imodel, ruleset: DEFAULT_PROPERTY_GRID_RULESET });
+    dataProvider.keys = keys;
+    return dataProvider;
   }
 
-  /* Approach 3: Do it all yourself.  If you want to customize which properties to show.
+  /* Approach 3: Do it all yourself.  If you want to use your own UI components.
 
   This approach shows how to process the Content object yourself.  This is an oversimplified implementation that
   does not handle the difficult cases like properties which are arrays or structs.  Instead it represents
   every property value as a single string.
 
   A full implementation would handle arrays and structs.  Also, a full implementation would consider all the items
-  within the contentSet, not just the first one.
+  within the contentSet, not just the first one.  For an example of a full implementation see ContentBuilder.createPropertyRecord:
+  https://github.com/imodeljs/imodeljs/blob/master/presentation/components/src/presentation-components/common/ContentBuilder.ts
 
   The end result of this method is a list of name, label, value for each property. */
   public static async createOverlySimplePropertyRecords(keys: KeySet, imodel: IModelConnection, propertyNameFilter: string[] = []) {
@@ -154,12 +128,27 @@ export class PropertyFormattingApp implements SampleApp {
 
     return data;
   }
+
+  /* This method uses the Presentation API to query for the Content of the selected elements.  The Content object contains
+     everything needed to show the property information in a user interface.  This includes the property names, types, and
+     values formatted as strings.
+
+     This method is used only by approach three.  The other approaches make the same query internally. */
+  public static async queryForContent(keys: KeySet, imodel: IModelConnection): Promise<Content | undefined> {
+    const options = { imodel, keys, rulesetOrId: DEFAULT_PROPERTY_GRID_RULESET };
+    const descriptor = await Presentation.presentation.getContentDescriptor({ ...options, displayType: "Grid" });
+    if (undefined === descriptor)
+      return;
+
+    return Presentation.presentation.getContent({ ...options, descriptor });
+  }
+
 }
 
 /* This data provider demonstrates how to customize the properties which are displayed by the
    property grid.  By overriding the getData method, it is possible to add, modify, or delete
    from the list of property records returned from the default provider logic. */
-class MyCustomProvider extends PresentationPropertyDataProvider {
+class MyCustomPropertyProvider extends PresentationPropertyDataProvider {
   public async getData() {
     const data = await super.getData();
 

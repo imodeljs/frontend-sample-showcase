@@ -23,8 +23,8 @@ interface Approach3State {
 }
 
 /* This approach shows how to query for property content and then process the content yourself.  The processing
-   yields a simplified record consisting of name, label, and value for each propertry. That data is then
-   used to build a SimpleTableDataProvider which provides the data to a Table component. */
+   we do in for this sample yields a simplified record consisting of name, label, and value for each propertry.
+   That data is then used to build a SimpleTableDataProvider which provides the data to a Table component. */
 export class Approach3UI extends React.Component<PropertyProps, Approach3State> {
 
   private static favoriteFieldNames = ["pc_bis_Element_Model", "pc_bis_Element_CodeValue", "pc_bis_Element_UserLabel"];
