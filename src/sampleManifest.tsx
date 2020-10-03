@@ -8,6 +8,7 @@ import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sam
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
+import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getPropertyFormattingSpec } from "./frontend-samples/property-formatting-sample/sampleSpec";
@@ -15,9 +16,11 @@ import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampl
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
+import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sampleSpec";
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
+import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 
@@ -46,6 +49,7 @@ import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/present
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
+
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
@@ -63,9 +67,12 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
+    getImageExportSpec(),
+    getCrossProbingSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getPropertyFormattingSpec(),
+    getReadSettingsSpec(),
     getShadowStudySpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
