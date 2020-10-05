@@ -16,7 +16,7 @@ export default class SimpleAnimated implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup(SimpleAnimated.sampleDimensions);
-    BlankViewport.decorator = new GeometryDecorator(SimpleAnimated.drawingCallback, true, 100);
+    BlankViewport.decorator = new GeometryDecorator(true, 100);
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     SimpleAnimated.generateGrid();
     return <BlankViewport force2d={true}></BlankViewport>;

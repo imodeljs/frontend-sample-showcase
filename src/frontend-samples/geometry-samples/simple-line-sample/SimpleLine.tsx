@@ -12,7 +12,7 @@ export default class SimpleLine implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup();
-    BlankViewport.decorator = new GeometryDecorator(SimpleLine.drawingCallback);
+    BlankViewport.decorator = new GeometryDecorator();
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <BlankViewport force2d={true}></BlankViewport>;
   }

@@ -6,34 +6,6 @@ import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Polyf
 import { DecorateContext, Decorator, FeatureSymbology, GraphicBranch, GraphicType, IModelApp, RenderGraphic, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference } from "@bentley/imodeljs-frontend";
 import { Timer } from "@bentley/ui-core";
 import { ColorDef, GeometryStreamBuilder, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { ValidationTextbox } from "@bentley/ui-framework";
-
-class geometryGraphicsProvider implements TiledGraphicsProvider {
-  public forEachTileTreeRef(viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
-    viewport.view.forEachTileTreeRef(func);
-  }
-
-  public addToScene(context: SceneContext) {
-    const gfx = context.graphics;
-    console.log(gfx)
-    if (0 < gfx.length) {
-      const ovrs = new FeatureSymbology.Overrides(context.viewport);
-      const branch = new GraphicBranch();
-      branch.symbologyOverrides = ovrs;
-      for (const gf of gfx)
-        branch.entries.push(gf);
-      // Overwrites the view flags for this view branch.
-      const overrides = new ViewFlagOverrides();
-      overrides.setShowVisibleEdges(true);
-      overrides.setApplyLighting(true);
-      branch.setViewFlagOverrides(overrides);
-      // Draw the graphics to the screen.
-      context.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity()));
-
-    }
-  }
-
-}
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
 interface CustomGeometryQuery {
@@ -52,7 +24,7 @@ interface CustomPoint {
 
 export class GeometryDecorator implements Decorator {
 
-  private getGeometry: () => void;
+  //private getGeometry: () => void;
 
   private animated: boolean;
   private timer: Timer | undefined;
@@ -67,11 +39,11 @@ export class GeometryDecorator implements Decorator {
   private color: ColorDef = ColorDef.black;
   private lineThickness: number = 1;
 
-  public constructor(getGeometry: () => void, animated: boolean = false, animationSpeed: number = 10) {
+  public constructor(animated: boolean = false, animationSpeed: number = 10) {
     if (animationSpeed < 1) {
       animationSpeed = 1;
     }
-    this.getGeometry = getGeometry;
+    //this.getGeometry = getGeometry;
     this.animated = animated;
     // When using animation, we enable a timer to re-render the graphic every animationSpeed interval in ms
     if (animated) {
@@ -153,22 +125,16 @@ export class GeometryDecorator implements Decorator {
   // TODO: Add the ability to support text rendering
   // TODO: Fix defects with the fill command on certain geometry types(Loops, Polyfaces)
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
-    this.getGeometry();
+    //this.getGeometry();
     const builder = context.createGraphicBuilder(GraphicType.Scene);
-    const builder2 = new GeometryStreamBuilder();
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
       const point = styledPoint.point;
       const circle = Arc3d.createXY(point, 3);
       builder.addArc(circle, false, styledPoint.fill);
     });
-    this.text.forEach((text) => {
-      builder2.appendTextString(text);
-    });
     this.shapes.forEach((styledGeometry) => {
       const geometry = styledGeometry.geometry;
-      builder2.appendGeometry(geometry);
-
       builder.setSymbology(styledGeometry.color, styledGeometry.fill ? styledGeometry.color : ColorDef.white, styledGeometry.lineThickness);
       if (geometry instanceof LineString3d) {
         builder.addLineString(geometry.points);
@@ -186,13 +152,10 @@ export class GeometryDecorator implements Decorator {
       }
     });
     const graphic = builder.finish();
-    return graphic
+    return graphic;
   }
 
   public decorate(context: DecorateContext): void {
-    const graphicsProvider = new geometryGraphicsProvider();
-    context.viewport.addTiledGraphicsProvider(graphicsProvider);
-
     const overrides = new ViewFlagOverrides();
     overrides.setShowVisibleEdges(true);
     overrides.setApplyLighting(true);

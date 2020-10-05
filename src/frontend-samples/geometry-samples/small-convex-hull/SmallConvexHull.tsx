@@ -13,7 +13,7 @@ export default class SmallConvexHull implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup();
-    BlankViewport.decorator = new GeometryDecorator(SmallConvexHull.drawingCallback);
+    BlankViewport.decorator = new GeometryDecorator();
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <BlankViewport force2d={true}></BlankViewport>;
   }
