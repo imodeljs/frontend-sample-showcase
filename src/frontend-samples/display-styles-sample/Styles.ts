@@ -1,6 +1,7 @@
 import {
   DisplayStyle3dSettingsProps,
   RenderMode,
+  SkyBoxProps,
   ThematicDisplayMode,
   ThematicGradientColorScheme,
   ThematicGradientMode,
@@ -20,6 +21,8 @@ const renderingStyleViewFlags: ViewFlagProps = {
   thematicDisplay: false,
   renderMode: RenderMode.SmoothShade,
 };
+
+const defaultSkyBox: SkyBoxProps = { display: true, twoColor: false, groundColor: 9741199, nadirColor: 5464143, skyColor: 16764303, zenithColor: 16741686 };
 
 export interface DisplayStyle extends DisplayStyle3dSettingsProps {
   name: string;
@@ -41,12 +44,8 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Default",
   environment: {
-    sky: {
-      display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303,
-    },
-    ground: {
-      display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987,
-    },
+    sky: defaultSkyBox,
+    ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: renderingStyleViewFlags,
   lights: {
@@ -79,54 +78,51 @@ export const displayStyles: DisplayStyle[] = [{
     blurTexelStepSize: 1,
   },
   viewflags:
+  {
+    ...renderingStyleViewFlags,
+    monochrome: true,
+  },
+  backgroundColor: 16777215,
+  monochromeColor: 14475225,
+  monochromeMode: 0,
+  environment: { sky: { display: false }, ground: { display: false } },
+  hline:
+  {
+    visible:
     {
-      ...renderingStyleViewFlags,
-      monochrome: true,
+      ovrColor: true,
+      color: 8421504,
+      pattern: -1,
+      width: 0,
     },
-    backgroundColor: 0,
-    monochromeColor: 14475225,
-    monochromeMode: 0,
-    environment: { sky: { display: false }, ground: { display: false } },
-    hline:
+    hidden:
     {
-      visible:
-      {
-        ovrColor: true,
-        color: 8421504,
-        pattern: -1,
-        width: 0,
-      },
-      hidden:
-      {
-        ovrColor: false,
-        color: 16777215,
-        pattern: 3435973836,
-        width: 0,
-      },
-      transThreshold: 1,
+      ovrColor: false,
+      color: 16777215,
+      pattern: 3435973836,
+      width: 0,
     },
-    solarShadows: { color: 16776960 },
-    lights:
+    transThreshold: 1,
+  },
+  solarShadows: { color: 16776960 },
+  lights:
+  {
+    solar:
     {
-      solar:
-      {
-        direction: [-0.37150030963375785, 0.46257080595080885, -0.8049942667025903],
-        alwaysEnabled: true,
-      },
-      ambient: { intensity: 0.3 },
-      specularIntensity: 0.2,
+      direction: [-0.37150030963375785, 0.46257080595080885, -0.8049942667025903],
+      alwaysEnabled: true,
     },
-  }, {
+    ambient: { intensity: 0.3 },
+    specularIntensity: 0.2,
+  },
+}, {
   name: "Sun-dappled",
   environment: {
-    sky: {
-      display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303,
-    },
-    ground: {
-      display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987,
-    },
+    sky: defaultSkyBox,
+    ground: { display: false },
   },
   viewflags: { ...renderingStyleViewFlags, shadows: true },
+  solarShadows: { color: 0x524f44 },
   lights: {
     solar: { direction: [0.9391245716329828, 0.10165764029437066, -0.3281931795832247] },
     hemisphere: { intensity: 0.2 },
@@ -134,10 +130,8 @@ export const displayStyles: DisplayStyle[] = [{
   },
 }, {
   name: "Comic Book",
-  environment: {
-    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
-    ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
-  },
+  backgroundColor: 0xFFFFFF,
+  environment: { sky: { display: false }, ground: { display: false } },
   viewflags: { ...renderingStyleViewFlags, noWeight: false, visEdges: true },
   hline: {
     visible: { ovrColor: true, color: 0, pattern: 0, width: 3 },
@@ -153,7 +147,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Outdoorsy",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: renderingStyleViewFlags,
@@ -185,7 +179,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Soft",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, ambientOcclusion: true },
@@ -200,7 +194,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Moonlit",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 2435876, zenithColor: 0, nadirColor: 3880, skyColor: 3481088 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, visEdges: true },
@@ -246,7 +240,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Gloss",
   environment: {
-    sky: { display: true, twoColor: false, groundColor: 8228728, zenithColor: 16741686, nadirColor: 3880, skyColor: 16764303 },
+    sky: defaultSkyBox,
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, visEdges: true },
@@ -280,15 +274,15 @@ export const displayStyles: DisplayStyle[] = [{
   hline: {
     hidden: { color: 16777215, ovrColor: false, pattern: 3435973836, width: 0 },
     transThreshold: 1,
-    visible: {color: 6118749, ovrColor: true, pattern: 0, width: 1 },
+    visible: { color: 6118749, ovrColor: true, pattern: 0, width: 1 },
   },
   lights: {
-    ambient: {color: {b: 244, g: 244, r: 244}, intensity: 0.35},
+    ambient: { color: { b: 244, g: 244, r: 244 }, intensity: 0.35 },
     hemisphere: {
-      lowerColor: {b: 204, g: 230, r: 255},
-      upperColor: {b: 255, g: 209, r: 157},
+      lowerColor: { b: 204, g: 230, r: 255 },
+      upperColor: { b: 255, g: 209, r: 157 },
     },
-    portrait: {intensity: 0},
+    portrait: { intensity: 0 },
     solar: { alwaysEnabled: true, direction: [0.886852, 0.083601, -0.454427], intensity: 1.95 },
     specularIntensity: 0,
   },
@@ -297,10 +291,11 @@ export const displayStyles: DisplayStyle[] = [{
   viewflags: {
     ...renderingStyleViewFlags,
     noConstruct: false,
+    visEdges: true,
   },
 },
 {
-  name: "Architectural Alt.",
+  name: "Architectural: Monochrome",
   viewflags: {
     ...renderingStyleViewFlags,
     visEdges: true,
@@ -340,14 +335,14 @@ export const displayStyles: DisplayStyle[] = [{
   },
   lights: {
     solar: {
-      direction: [ 0.8868521744639655, 0.08360117539208102, -0.4544271824193604 ],
+      direction: [0.8868521744639655, 0.08360117539208102, -0.4544271824193604],
       intensity: 0,
       alwaysEnabled: true,
     },
-    ambient: { color: {r: 255, g: 255, b: 255 }},
+    ambient: { color: { r: 255, g: 255, b: 255 } },
     hemisphere: {
-      upperColor: { r: 242, g: 233, b: 213},
-      lowerColor: { r: 213, g: 225, b: 235},
+      upperColor: { r: 242, g: 233, b: 213 },
+      lowerColor: { r: 213, g: 225, b: 235 },
       intensity: 0.6,
     },
     portrait: {
