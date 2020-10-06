@@ -11,7 +11,7 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import React from "react";
 import { DividerComponent } from "./Divider";
-import SwipingViewportApp from "./SwipingComparisonApp";
+import SwipingViewportApp, { ComparisonType } from "./SwipingComparisonApp";
 
 export interface SwipingComparisonUIProps {
   iModelName: string;
@@ -24,6 +24,9 @@ interface SwipingComparisonUIState {
   frustum?: Frustum;
   dividerLeft?: number;
   isLocked: boolean;
+  isRealityData: boolean;
+  iModel?: IModelConnection;
+  comparison: ComparisonType;
 }
 
 export default class SwipingComparisonUI extends React.Component<SwipingComparisonUIProps, SwipingComparisonUIState> {
@@ -36,7 +39,11 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   private _dividerLeft?: number; // position relative to the window
 
-  public state: SwipingComparisonUIState = { isLocked: false};
+  public state: SwipingComparisonUIState = {
+    isLocked: false,
+    isRealityData: true,
+    comparison: ComparisonType.RealityData,
+  };
 
   // Update the state of the sample react component by querying the API.
   private updateState() {
@@ -55,10 +62,16 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     if (undefined === this.state.viewport
       || undefined === this.state.bounds
       || undefined === this.state.dividerLeft
-      || this.state.isLocked)
+      || this.state.isLocked
+    )
       return;
     const screenPoint = SwipingComparisonUI.getScreenPoint(this.state.bounds, this.state.dividerLeft);
-    SwipingViewportApp.compare(screenPoint, this.state.viewport);
+
+    // const isRealityCompare = this.state.comparison === ComparisonType.RealityData;
+    // if (undefined !== this.state.viewport && undefined !== this.state.iModel)
+    //   SwipingViewportApp.toggleRealityModel(isRealityCompare, this.state.viewport, this.state.iModel);
+
+    SwipingViewportApp.compare(screenPoint, this.state.viewport, this.state.comparison);
   }
 
   // Returns the position the divider will start at based on the bounds of the divider
@@ -75,8 +88,10 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   }
 
   // Should be called when the iModel is ready.
-  private _onIModelReady = (_iModel: IModelConnection) => {
+  private _onIModelReady = (iModel: IModelConnection) => {
+    this.setState({ iModel });
     const vp = SwipingViewportApp.getSelectedViewport();
+    // SwipingViewportApp.attachRealityData(iModel);
     if (undefined === vp)
       SwipingViewportApp.listenOnceForViewOpen(this._initViewport);
     else
@@ -130,6 +145,8 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       )
     )
       updateCompare = true;
+    if (this.state.comparison !== prevState.comparison)
+      updateCompare = true;
     if (undefined !== this.state.frustum
       && (undefined === prevState.frustum
         || !this.state.frustum.isSame(prevState.frustum))
@@ -140,6 +157,11 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     if (!this.state.isLocked && prevState.isLocked)
       updateCompare = true;
 
+    if (this.state.isRealityData !== prevState.isRealityData && undefined !== this.state.viewport && undefined !== this.state.iModel) {
+      // SwipingViewportApp.(this.state.isRealityData, this.state.viewport, this.state.iModel);
+      SwipingViewportApp.setTransparency(this.state.viewport, this.state.isRealityData);
+    }
+
     if (updateState)
       this.updateState();
     if (updateCompare)
@@ -147,12 +169,46 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   }
 
   private _onLockToggle = (isOn: boolean) => {
-    this.setState({isLocked: isOn});
+    this.setState({ isLocked: isOn });
+  }
+  private _onRealityToggle = (isOn: boolean) => {
+    if (undefined !== this.state.iModel && undefined !== this.state.viewport)
+      SwipingViewportApp.toggleRealityModel(isOn, this.state.viewport, this.state.iModel);
+        // .then((props) => { console.debug(props.length); })
+        // .catch((error) => { console.debug(error); });
+    this.setState({ isRealityData: isOn });
+  }
+  private _onDropProvider = (isOn: boolean) => {
+    SwipingViewportApp.toggleProvider(isOn);
+  }
+  private _onComparisonType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const type: ComparisonType = Number.parseInt(event.target.value, 10);
+    this.setState({ comparison: type });
   }
 
   public getControls(): React.ReactNode {
+
     return (<>
-      <Toggle title={"Lock dividing plane"} isOn={this.state.isLocked} onChange={this._onLockToggle}></Toggle>
+      <div>
+        <label>Lock Plane</label>
+        <Toggle title={"Lock dividing plane"} isOn={this.state.isLocked} onChange={this._onLockToggle}></Toggle>
+      </div>
+      <div>
+        <label>Reality Data</label>
+        <Toggle title={"Toggle Reality data"} isOn={this.state.isLocked} onChange={this._onRealityToggle}></Toggle>
+      </div>
+      <div>
+        <label>Drop Provider</label>
+        <Toggle title={"Toggle Provider"} isOn={this.state.isLocked} onChange={this._onDropProvider}></Toggle>
+      </div>
+      <div>
+        <label>Comparison Type</label>
+        <select value={this.state.comparison} onChange={this._onComparisonType}
+          disabled={undefined === this.state.viewport && undefined === this.state.iModel}>
+          <option value={ComparisonType.RealityData}>Reality Data</option>
+          <option value={ComparisonType.Wireframe}>Wireframe</option>
+        </select>
+      </div>
     </>);
   }
 
