@@ -8,13 +8,14 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { LineSegment3d, Point3d } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-export default class SimpleLine implements SampleApp {
+import { ControlPane } from "Components/ControlPane/ControlPane";
+export default class SimpleLine extends React.Component<{}, {}> implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup();
     BlankViewport.decorator = new GeometryDecorator();
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <BlankViewport force2d={true}></BlankViewport>;
+    return <SimpleLine></SimpleLine>;
   }
 
   public static teardown() {
@@ -23,7 +24,20 @@ export default class SimpleLine implements SampleApp {
     }
   }
 
-  public static drawingCallback() {
+  public render() {
+    return (
+      <>
+        <ControlPane instructions="Creating a line segments and some points along it"></ControlPane>
+        <BlankViewport force2d={true}></BlankViewport>
+      </>
+    );
+  }
+
+  public componentDidMount() {
+    this.setGeometry();
+  }
+
+  public setGeometry() {
     const pointA = Point3d.create(140, 25, 0);
     const pointB = Point3d.create(680, 800, 0);
     const myLine = LineSegment3d.create(pointA, pointB);

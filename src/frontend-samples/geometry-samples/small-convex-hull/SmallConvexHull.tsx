@@ -9,13 +9,14 @@ import { Arc3d, LineString3d, Loop, Point3d, Point3dArray } from "@bentley/geome
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { ColorDef, TextString } from "@bentley/imodeljs-common";
-export default class SmallConvexHull implements SampleApp {
+import { ControlPane } from "Components/ControlPane/ControlPane";
+export default class SmallConvexHull extends React.Component<{}, {}> implements SampleApp {
 
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup();
     BlankViewport.decorator = new GeometryDecorator();
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <BlankViewport force2d={true}></BlankViewport>;
+    return <SmallConvexHull></SmallConvexHull>;
   }
 
   public static teardown() {
@@ -24,7 +25,20 @@ export default class SmallConvexHull implements SampleApp {
     }
   }
 
-  public static drawingCallback() {
+  public render() {
+    return (
+      <>
+        <ControlPane instructions="Creating a set of points, and constructing a convex shape from them"></ControlPane>
+        <BlankViewport force2d={true}></BlankViewport>
+      </>
+    );
+  }
+
+  public componentDidMount() {
+    this.setGeometry();
+  }
+
+  public setGeometry() {
     const points: Point3d[] = [];
     points.push(Point3d.create(100, 0, 0));
     points.push(Point3d.create(200, 100, 0));
