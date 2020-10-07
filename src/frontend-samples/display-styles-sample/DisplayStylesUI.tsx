@@ -74,8 +74,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Select Style:</span>
-        <Select value={this.state.activePresetIndex} onChange={this._onChange} style={{ width: "fit-content" }} options={options}>
-        </Select>
+        <Select value={this.state.activePresetIndex} onChange={this._onChange} style={{ width: "fit-content" }} options={options} />
         <span>
           <span style={{ marginRight: "1em" }} className="icon icon-help" title={toggleTooltip}></span>
           <span>Merge with Custom:</span>

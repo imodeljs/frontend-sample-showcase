@@ -85,7 +85,7 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
     return (
       <>
         <span>Points</span>
-        <Select onChange={this._onChangePointMode} options={{ 1: "Random", 2: "Circle", 3: "Cross" }} />
+        <Select onChange={this._onChangePointMode} options={{ [PointMode.Random]: "Random", [PointMode.Circle]: "Circle", [PointMode.Cross]: "Cross" }} />
         <span>Point Count</span>
         <input type="range" min="1" max="500" value={this.state.pointCount} onChange={this._onChangePointCount}></input>
       </>
