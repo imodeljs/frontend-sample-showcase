@@ -38,14 +38,16 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
   public render() {
     const { iModelNames } = this.props;
     const value = iModelNames.findIndex((v: string) => v === this.props.iModelName);
-    const dropdownOptions: { [key: string]: string } = {};
-    iModelNames.forEach((imodelName, index) => dropdownOptions[`${index}`] = imodelName);
 
     return (
       <div>
         <hr></hr>
         <span>Select iModel: </span>
-        <Select className="imodel-list" value={value} onChange={this._handleSelection} options={dropdownOptions} />
+        <Select
+          className="imodel-list"
+          value={value}
+          onChange={this._handleSelection}
+          options={Object.fromEntries(iModelNames.map((name, index) => [index, name]))} />
       </div>
     );
   }
