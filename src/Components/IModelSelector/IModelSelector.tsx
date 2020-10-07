@@ -28,7 +28,7 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
   public static defaultIModel = SampleIModels.MetroStation;
 
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = Number.parseInt(event.target.selectedOptions[0].value, undefined);
+    const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
     const iModelName = this.props.iModelNames[index];
 
     this.props.onIModelChange(iModelName);

@@ -24,11 +24,19 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
     };
   }
 
+  public componentDidUpdate(_prevProps: {}, prevState: RealityDataState) {
+    if (prevState.showRealityData !== this.state.showRealityData) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp)
+        RealityDataApp.toggleRealityModel(this.state.showRealityData, vp, this.state.imodel!);
+    }
+  }
+
   // Create the react components for the toggle
   private createToggle(label: string, info: string) {
     const show: boolean = this.state.showRealityData;
 
-    const element = <Toggle isOn={show} onChange={(checked: boolean) => this._onChangeToggle(checked)} />;
+    const element = <Toggle isOn={show} onChange={async (checked: boolean) => this._onChangeToggle(checked)} />;
     return (
       <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
         <>
@@ -41,18 +49,7 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
 
   // Handle changes to the toggle.
   private _onChangeToggle = async (checked: boolean) => {
-    if (this.state.imodel) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (undefined === vp) {
-        return false;
-      }
-
-      this.setState({ showRealityData: checked }, async () => {
-        await RealityDataApp.toggleRealityModel(checked, vp, this.state.imodel!);
-      });
-    }
-
-    return false;
+    this.setState({ showRealityData: checked });
   }
 
   /**
@@ -62,9 +59,9 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
   private _onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
 
-    IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      // tslint:disable-next-line no-floating-promises
-      this.setState({ imodel, showRealityData: true }, () => { RealityDataApp.toggleRealityModel(true, _vp, imodel); });
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
+      this.setState({ imodel, showRealityData: true });
+      await RealityDataApp.toggleRealityModel(true, _vp, imodel);
     });
   }
 

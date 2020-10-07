@@ -16,7 +16,7 @@ export const featureFlags = {
 
 export class FeatureToggleClient {
   private static readonly _ldClientSideIds: { [deploymentEnv: string]: string } = {
-    DEPLOYED: "5beb1872d4851c306086a4fc",
+    DEPLOYED: "5beb1872d4851c306086a4fc",  // eslint-disable-line @typescript-eslint/naming-convention
   };
 
   private static _ldClient?: LDClient;
@@ -38,7 +38,7 @@ export class FeatureToggleClient {
 
   private static evaluateFeature(featureKey: string, defaultValue?: LDFlagValue): LDFlagValue {
     assert(!!FeatureToggleClient._ldClient, "FeatureToggleClient.initialize hasn't been called yet.");
-    return FeatureToggleClient._ldClient!.variation(featureKey, defaultValue);
+    return FeatureToggleClient._ldClient.variation(featureKey, defaultValue);
 
   }
 }

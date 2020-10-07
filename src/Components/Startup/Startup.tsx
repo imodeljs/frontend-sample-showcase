@@ -37,7 +37,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     this.state = {
       user: {
         isLoading: false,
-        isAuthorized: SampleBaseApp.oidcClient.isAuthorized,
+        isAuthorized: false,
       },
     };
   }
@@ -46,14 +46,24 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     // Initialize authorization state, and add listener to changes
     SampleBaseApp.oidcClient.onUserStateChanged.addListener(this._onUserStateChanged);
     if (SampleBaseApp.oidcClient.isAuthorized)
-      this.setState((prev) => ({ user: { ...prev.user, isLoading: false } }), () => {
-        this.openIModel(); // tslint:disable-line no-floating-promises
-      });
+      this.setState((prev) => ({ user: { ...prev.user, isLoading: false, isAuthorized: true } }));
   }
 
   public componentWillUnmount() {
     // unsubscribe from user state changes
     SampleBaseApp.oidcClient.onUserStateChanged.removeListener(this._onUserStateChanged);
+  }
+
+  public componentDidUpdate(_prevProps: {}, prevState: StartupState) {
+    // When the user.authorized goes from false to true, try to open the iModel.
+    if (!prevState.user.isAuthorized && this.state.user.isAuthorized) {
+      this.openIModel();
+    }
+
+    // When the iModel goes from invalid to valid, send the notification
+    if (!prevState.imodel && this.state.imodel) {
+      this.props.onIModelReady(this.state.imodel);
+    }
   }
 
   private _onStartSignin = async () => {
@@ -62,8 +72,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
   }
 
   private _onUserStateChanged = () => {
-    this.setState((prev) => ({ user: { ...prev.user, isLoading: false, isAuthorized: SampleBaseApp.oidcClient.isAuthorized } }),
-      () => { if (this.state.user.isAuthorized) { this.openIModel(); } }); // tslint:disable-line no-floating-promises
+    this.setState((prev) => ({ user: { ...prev.user, isLoading: false, isAuthorized: SampleBaseApp.oidcClient.isAuthorized } }));
   }
 
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
@@ -100,10 +109,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
       alert(e.message);
     }
 
-    this.setState({ imodel }, () => {
-      if (imodel)
-        this.props.onIModelReady(imodel);
-    });
+    this.setState({ imodel });
   }
 
   /** The component's render method */
@@ -114,7 +120,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
       // if user is currently being loaded, just tell that
       ui = `signing-in...`;
     } else if (!this.state.user.isAuthorized) {
-      // if user doesn't have and access token, show sign in page
+      // if user doesn't have an access token, show sign in page
       ui = (<SignIn onSignIn={this._onStartSignin} />);
     } else if (!this.state.imodel) {
       // if we don't have an imodel yet - render a spinner while we are waiting

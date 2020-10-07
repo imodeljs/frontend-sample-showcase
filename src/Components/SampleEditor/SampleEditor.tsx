@@ -10,7 +10,7 @@ import "./SampleEditor.scss";
 import { editorFileActivityContext } from "@bentley/monaco-editor/editor/lib/providers/editor-file-activity-provider/EditorFileActivityContext";
 import { EditorFileActivityState } from "@bentley/monaco-editor/editor/lib/providers/editor-file-activity-provider/EditorFileActivityContextReducer";
 import { IEditorCommonActions } from "@bentley/monaco-editor/editor/lib/providers/editor-common-provider/EditorCommonContext";
-// tslint:disable-next-line: variable-name
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const MonacoEditor = React.lazy(() => import("@bentley/monaco-editor/editor"));
 
 export interface ConnectedSampleEditor {
@@ -63,7 +63,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
   }
 
   private _onNavItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement | null;
+    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement;
     if (target && target.title && target.title.toLowerCase() !== this.state.active) {
       this.setState({ active: target.title.toLowerCase() });
     } else {

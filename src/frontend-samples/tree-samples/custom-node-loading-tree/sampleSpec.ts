@@ -13,6 +13,6 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     files: [
       { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp"), entry: true },
     ],
-    setup: CustomNodeLoadingTreeApp.setup,
+    setup: CustomNodeLoadingTreeApp.setup.bind(CustomNodeLoadingTreeApp),
   });
 }

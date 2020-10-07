@@ -73,17 +73,15 @@ export default class ViewClipApp implements SampleApp {
   public static setClipPlane(vp: ScreenViewport, clipPlane: string, imodel: IModelConnection) {
     let rotationType: EditManipulator.RotationType;
     switch (clipPlane) {
+      default:
       case "0": rotationType = EditManipulator.RotationType.Top; break;
       case "1": rotationType = EditManipulator.RotationType.Front; break;
       case "2": rotationType = EditManipulator.RotationType.Left; break;
-      case "None": {
-        this.clearClips(vp);
-        return true;
-      } default: rotationType = EditManipulator.RotationType.Top; break;
+      case "None": return true;
     }
 
     // Get the center point of the displayed extents as a starting point for the clip plane
-    const point: Point3d = imodel!.displayedExtents.center;
+    const point: Point3d = imodel.displayedExtents.center;
     const normal: Vector3d | undefined = this.getPlaneInwardNormal(rotationType, vp);
     const plane: Plane3dByOriginAndUnitNormal | undefined = Plane3dByOriginAndUnitNormal.create(point, normal!);
     if (undefined === plane)

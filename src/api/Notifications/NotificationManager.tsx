@@ -40,16 +40,16 @@ export class ShowcaseNotificationManager extends AppNotificationManager {
     const height = 20;
     const width = 20;
     location.style.position = "absolute";
-    location.style.top = (pt.y - height / 2) + "px";
-    location.style.left = (pt.x - width / 2) + "px";
-    location.style.width = width + "px";
-    location.style.height = height + "px";
+    location.style.top = `${pt.y - height / 2}px`;
+    location.style.left = `${pt.x - width / 2}px`;
+    location.style.width = `${width}px`;
+    location.style.height = `${height}px`;
 
     el.appendChild(location);
 
     this._el = el;
     this._tooltipDiv = location;
     this._toolTip = new ToolTip(location, { trigger: "manual", html: true, placement: (options && options.placement) ? options.placement as any : "right-start", title: message });
-    this._toolTip!.show();
+    this._toolTip.show();
   }
 }

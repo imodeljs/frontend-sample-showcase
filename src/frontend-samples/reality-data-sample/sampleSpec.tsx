@@ -16,6 +16,6 @@ export function getRealityDataSpec(): SampleSpec {
       { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI") },
     ],
     customModelList: [SampleIModels.ExtonCampus],
-    setup: RealityDataApp.setup,
+    setup: RealityDataApp.setup.bind(RealityDataApp),
   });
 }

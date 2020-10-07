@@ -48,7 +48,8 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     if (undefined === this.state.vp)
       return;
 
-    this.setState({ attrValues: ViewAttributesApp.getAttrValues(this.state.vp) });
+    const attrValues = ViewAttributesApp.getAttrValues(this.state.vp);
+    this.setState({ attrValues });
   }
 
   // This common function is used to create the react components for each row of the UI.
