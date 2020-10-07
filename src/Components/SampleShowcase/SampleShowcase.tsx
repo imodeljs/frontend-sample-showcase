@@ -9,8 +9,8 @@ import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
-import SampleEditor from "../SampleEditor/SampleEditor";
-import { InternalFile, SplitScreen } from "@bentley/monaco-editor";
+import SampleEditor, { ConnectedSampleEditor } from "../SampleEditor/SampleEditor";
+import { editorCommonActionContext, IFile, IInternalFile, SplitScreen } from "@bentley/monaco-editor/editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
@@ -22,7 +22,7 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
-  files: InternalFile[];
+  files: IInternalFile[];
   customModelList?: string[];
   setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
@@ -39,6 +39,8 @@ interface ShowcaseState {
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
+  public static contextType = editorCommonActionContext;
+  public context!: React.ContextType<typeof editorCommonActionContext>;
   private _samples = sampleManifest;
   private _prevSampleSetup?: any;
   private _prevSampleTeardown?: any;
@@ -250,7 +252,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       <div className="showcase">
         <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
           <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
-            <SampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
+            <ConnectedSampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
             <div style={{ height: "100%" }}>
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}

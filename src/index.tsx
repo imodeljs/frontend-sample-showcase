@@ -14,9 +14,7 @@ import { SampleBaseApp } from "./SampleBaseApp";
   await SampleBaseApp.startup();
 
   ReactDOM.render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
+    <App />,
     document.getElementById("root"),
   );
 })(); // tslint:disable-line:no-floating-promises
