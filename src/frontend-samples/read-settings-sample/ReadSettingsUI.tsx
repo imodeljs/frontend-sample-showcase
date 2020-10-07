@@ -6,7 +6,7 @@ import React, { ChangeEvent } from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { Button, DisabledText, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
+import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -42,6 +42,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
     this.state = {
       saveInProgress: false,
       settingsInitialized: false,
+      settingKey: settingsKeys[0],
     };
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleSettingsValueChange = this.handleSettingsValueChange.bind(this);
@@ -123,11 +124,9 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
       <>
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <span>Settings Name:</span>
-          <select placeholder="Browse by name..." value={this.state.settingKey} onChange={this.handleSettingsChange} style={{ width: "fit-content" }}>
-            {entries}
-          </select>
+          <Select value={this.state.settingKey} onChange={this.handleSettingsChange} style={{ width: "fit-content" }} options={settingsKeys} />
         </div>
-        <Textarea rows={10} key="test" placeholder="" className="uicore-full-width" value={this.state.settingValue} onChange={this.handleSettingsValueChange} />
+        <Textarea rows={10} key="test" className="uicore-full-width" value={this.state.settingValue} onChange={this.handleSettingsValueChange} />
         {this.showStatus()}
         <div style={{ height: "35px", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {this.state.saveInProgress ?
