@@ -18,7 +18,7 @@ interface SampleSpec {
   /** The url relative to the public folder for the image that appears in the navigation carousel. */
   image: string;
   /** A list of files that will be imported by the code editor of the showcase. */
-  files: InternalFile[];
+  files: IInternalFile[];
   /** The list of models this sample can use, in the case that the sample cannot use all available models */
   customModelList?: string[];
   /** The function that will setup and return the UI component of the sample. */
@@ -30,10 +30,10 @@ interface SampleSpec {
 
 Below are more in-depth explanations for some of the SampleSpec properties.
 
-```files```: This property determines which files the editor will import to allow editing and previewing. It should be noted that each SampleSpec requires exactly one ```InternalFile``` to have the ```entry``` property set to ```true```. Without this property, the code editor will not be able to run the code it has been provided. Each ```InternalFile``` also requires a dynamic import statement which returns the raw text content. This can be achieved by using the webpack raw-loader  (e.g. ```import(!raw-loader!!./example.tsx);``` ).
+```files```: This property determines which files the editor will import to allow editing and previewing. It should be noted that each SampleSpec requires exactly one ```IInternalFile``` to have the ```entry``` property set to ```true```. Without this property, the code editor will not be able to run the code it has been provided. Each ```IInternalFile``` also requires a dynamic import statement which returns the raw text content. This can be achieved by using the webpack raw-loader  (e.g. ```import(!raw-loader!!./example.tsx);``` ).
 
 ```ts
-interface InternalFile {
+interface IInternalFile {
   /** The name of the file */
   name: string;
   /** The import statement that returns the raw text content of the file. */
