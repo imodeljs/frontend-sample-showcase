@@ -3,16 +3,42 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ErrorIndicator, ErrorList, Module, MonacoEditorUtility, RunCodeButton, SplitScreen, TabNavigation, TabNavigationAction } from "@bentley/monaco-editor";
+import { ActivityContextActions, editorCommonActionContext, editorFileActivityActionContext, editorFileActivityContext, ErrorIndicator, ErrorList, IEditorCommonActions, IFile, IInternalFile, RunCodeButton, SplitScreen, TabNavigation, TabNavigationAction } from "@bentley/monaco-editor/editor";
 import { featureFlags, FeatureToggleClient } from "../../FeatureToggleClient";
-import { modules } from "./Modules";
-import "@bentley/monaco-editor/lib/editor/icons/codicon.css";
 import "./SampleEditor.scss";
+import { EditorFileActivityState } from "@bentley/monaco-editor/editor/lib/providers/editor-file-activity-provider/EditorFileActivityContextReducer";
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
+const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor/editor"));
+
+export interface ConnectedSampleEditor {
+  files?: IInternalFile[];
+  onCloseClick: () => void;
+  onTranspiled: ((blobUrl: string) => void);
+}
+
+export function ConnectedSampleEditor(props: ConnectedSampleEditor) {
+  return (
+    <editorCommonActionContext.Consumer>
+      {(editorActions) => (
+        <editorFileActivityActionContext.Consumer>
+          {(fileActivityActions) => (
+            <editorFileActivityContext.Consumer>
+              {(fileActivity) => (
+                <SampleEditor {...props} editorActions={editorActions!} fileActivity={fileActivity!} fileActivityActions={fileActivityActions!} />
+              )}
+            </editorFileActivityContext.Consumer>
+          )}
+        </editorFileActivityActionContext.Consumer>
+      )}
+    </editorCommonActionContext.Consumer >
+  );
+}
 
 export interface SampleEditorProps {
-  files?: any[];
+  editorActions: IEditorCommonActions;
+  fileActivity: EditorFileActivityState;
+  fileActivityActions: ActivityContextActions;
+  files?: IInternalFile[];
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
 }
@@ -22,22 +48,19 @@ interface SampledEditorState {
 }
 
 export default class SampleEditor extends React.Component<SampleEditorProps, SampledEditorState> {
-  private _monacoEditorUtility: MonacoEditorUtility;
   constructor(props: SampleEditorProps) {
     super(props);
 
     this.state = {};
-    this._monacoEditorUtility = new MonacoEditorUtility();
   }
 
   public async componentDidMount() {
-    await this._monacoEditorUtility.setFiles(this.props.files, true);
-    await this._monacoEditorUtility.setModules(modules as Module[]);
+    await this.props.editorActions.setFiles(this.props.files as IFile[]);
   }
 
   public async componentDidUpdate(prevProps: SampleEditorProps) {
     if (prevProps.files !== this.props.files) {
-      await this._monacoEditorUtility.setFiles(this.props.files, true);
+      await this.props.editorActions.setFiles(this.props.files as IFile[]);
     }
   }
 
@@ -66,7 +89,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
     return (
       <SplitScreen split={"horizontal"} size={this.state.active ? 201 : 35} minSize={35} className="sample-editor" primary="second" pane2Style={this.state.active ? undefined : { height: "35px" }} onChange={this._onSplitChange} allowResize={!!this.state.active}>
         <div style={{ height: "100%" }}>
-          <TabNavigation>
+          <TabNavigation showClose={false}>
             {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />}
             <TabNavigationAction onClick={this.props.onCloseClick}>
               <svg className="minimize-button">

@@ -3,7 +3,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-const MonacoWebpackPlugin = require("@bentley/monaco-editor/lib/monaco-webpack-plugin").MonacoEditorWebpackPlugin;
+const MonacoWebpackPlugin = require("@bentley/monaco-editor/monaco-webpack-plugin");
 
 const {
   override,
@@ -22,7 +22,7 @@ module.exports = function (config, env) {
 
   return Object.assign(config, override(
     addWebpackPlugin(new MonacoWebpackPlugin({
-      languages: ["typescript", "javascript", "css", "scss", "html"]
+      nodeModulesLocations: ["node_modules"]
     })),
   )(config, env))
 }
