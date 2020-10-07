@@ -40,8 +40,7 @@
     "react-redux": "^7.2.0",
     "redux": "^4.0.3",
     "tooltip.js": "^1.2.0",
-    "typescript": "^3.9.6",
-    "vscode-codicons": "0.0.12"
+    "typescript": "^3.9.6"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.10.1",

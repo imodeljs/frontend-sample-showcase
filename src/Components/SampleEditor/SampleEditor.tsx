@@ -5,7 +5,6 @@
 import * as React from "react";
 import { ActivityContextActions, editorCommonActionContext, editorFileActivityActionContext, editorFileActivityContext, ErrorIndicator, ErrorList, IEditorCommonActions, IFile, IInternalFile, RunCodeButton, SplitScreen, TabNavigation, TabNavigationAction } from "@bentley/monaco-editor/editor";
 import { featureFlags, FeatureToggleClient } from "../../FeatureToggleClient";
-// import "vscode-codicons/dist/codicon.css";
 import "./SampleEditor.scss";
 import { EditorFileActivityState } from "@bentley/monaco-editor/editor/lib/providers/editor-file-activity-provider/EditorFileActivityContextReducer";
 // eslint-disable-next-line @typescript-eslint/naming-convention
