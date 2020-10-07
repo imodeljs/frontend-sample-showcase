@@ -3,15 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { editorCommonActionContext, ErrorIndicator, ErrorList, IFile, IInternalFile, RunCodeButton, SplitScreen, TabNavigation, TabNavigationAction } from "@bentley/monaco-editor/editor";
+import { ActivityContextActions, editorCommonActionContext, editorFileActivityActionContext, editorFileActivityContext, ErrorIndicator, ErrorList, IEditorCommonActions, IFile, IInternalFile, RunCodeButton, SplitScreen, TabNavigation, TabNavigationAction } from "@bentley/monaco-editor/editor";
 import { featureFlags, FeatureToggleClient } from "../../FeatureToggleClient";
-import "vscode-codicons/dist/codicon.css";
+// import "vscode-codicons/dist/codicon.css";
 import "./SampleEditor.scss";
-import { editorFileActivityContext } from "@bentley/monaco-editor/editor/lib/providers/editor-file-activity-provider/EditorFileActivityContext";
 import { EditorFileActivityState } from "@bentley/monaco-editor/editor/lib/providers/editor-file-activity-provider/EditorFileActivityContextReducer";
-import { IEditorCommonActions } from "@bentley/monaco-editor/editor/lib/providers/editor-common-provider/EditorCommonContext";
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const MonacoEditor = React.lazy(() => import("@bentley/monaco-editor/editor"));
+const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor/editor"));
 
 export interface ConnectedSampleEditor {
   files?: IInternalFile[];
@@ -23,19 +21,24 @@ export function ConnectedSampleEditor(props: ConnectedSampleEditor) {
   return (
     <editorCommonActionContext.Consumer>
       {(editorActions) => (
-        <editorFileActivityContext.Consumer>
-          {(fileActivity) => (
-            <SampleEditor {...props} editorActions={editorActions!} fileActivity={fileActivity!} />
+        <editorFileActivityActionContext.Consumer>
+          {(fileActivityActions) => (
+            <editorFileActivityContext.Consumer>
+              {(fileActivity) => (
+                <SampleEditor {...props} editorActions={editorActions!} fileActivity={fileActivity!} fileActivityActions={fileActivityActions!} />
+              )}
+            </editorFileActivityContext.Consumer>
           )}
-        </editorFileActivityContext.Consumer>
+        </editorFileActivityActionContext.Consumer>
       )}
-    </editorCommonActionContext.Consumer>
+    </editorCommonActionContext.Consumer >
   );
 }
 
 export interface SampleEditorProps {
   editorActions: IEditorCommonActions;
   fileActivity: EditorFileActivityState;
+  fileActivityActions: ActivityContextActions;
   files?: IInternalFile[];
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
