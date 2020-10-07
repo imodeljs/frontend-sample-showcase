@@ -9,7 +9,7 @@ import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import DisplayStylesApp from "./DisplayStylesApp";
 import { DisplayStyle } from "./Styles";
-import { Toggle } from "@bentley/ui-core";
+import { Select, Toggle } from "@bentley/ui-core";
 
 interface DisplayStylesUIState {
   activePresetIndex: number;
@@ -70,14 +70,12 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
 
   private getControls(): React.ReactNode {
     const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after the selected style is applied.";
-    const entries = this.props.displayStyles
-      .map((styles, index) => <option key={index} value={index}>{styles.name}</option>);
+    const options = Object.assign({}, this.props.displayStyles.map((style) => style.name));
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Select Style:</span>
-        <select value={this.state.activePresetIndex} onChange={this._onChange} style={{ width: "fit-content" }}>
-          {entries}
-        </select>
+        <Select value={this.state.activePresetIndex} onChange={this._onChange} style={{ width: "fit-content" }} options={options}>
+        </Select>
         <span>
           <span style={{ marginRight: "1em" }} className="icon icon-help" title={toggleTooltip}></span>
           <span>Merge with Custom:</span>

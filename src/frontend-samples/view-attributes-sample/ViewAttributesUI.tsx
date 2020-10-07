@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
-import { Toggle } from "@bentley/ui-core";
+import { Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
@@ -83,14 +83,13 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
   // Create the react components for the render mode row.
   private createRenderModePicker(label: string, info: string) {
-    const element =
-      <select style={{ width: "fit-content" }} onChange={this._onChangeRenderMode}>
-        <option value={"HiddenLine"}> Hidden Line </option>
-        <option value={"SmoothShade"}> Smooth Shade </option>
-        <option value={"SolidFill"}> Solid Fill </option>
-        <option selected={true} value={"Wireframe"}> Wireframe </option>
-      </select>;
-
+    const options = {
+      HiddenLine: "Hidden Line",
+      SmoothShade: "Smooth Shade",
+      SolidFill: "Solid Fill",
+      Wireframe: "Wireframe",
+    }
+    const element = <Select style={{ width: "fit-content" }} onChange={this._onChangeRenderMode} options={options} />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 

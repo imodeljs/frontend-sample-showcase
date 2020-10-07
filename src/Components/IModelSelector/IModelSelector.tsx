@@ -39,7 +39,7 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
     const { iModelNames } = this.props;
     const value = iModelNames.findIndex((v: string) => v === this.props.iModelName);
     const dropdownOptions: { [key: string]: string } = {};
-    iModelNames.forEach((value, index) => dropdownOptions[`${index}`] = value);
+    iModelNames.forEach((imodelName, index) => dropdownOptions[`${index}`] = imodelName);
 
     return (
       <div>

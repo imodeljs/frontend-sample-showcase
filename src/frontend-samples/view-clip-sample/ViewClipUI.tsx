@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
+import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
@@ -123,6 +123,12 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
+    const options = {
+      None: "None",
+      [EditManipulator.RotationType.Left]: "X",
+      [EditManipulator.RotationType.Front]: "Y",
+      [EditManipulator.RotationType.Top]: "Z",
+    }
     return (
       <>
         <div className="sample-options-3col even-3col">
@@ -130,12 +136,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
           <Toggle isOn={this.state.showClipBlock} onChange={this._onToggleRangeClip} />
           <span />
           <span>Clip Plane</span>
-          <select onChange={this._onPlaneSelectChange} value={this.state.clipPlane}>
-            <option value={"None"}> None </option>
-            <option value={EditManipulator.RotationType.Left}> X </option>
-            <option value={EditManipulator.RotationType.Front}> Y </option>
-            <option value={EditManipulator.RotationType.Top}> Z </option>
-          </select>
+          <Select onChange={this._onPlaneSelectChange} value={this.state.clipPlane} options={options} />
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleFlipButton()} disabled={this.state.clipPlane === "None"}>Flip</Button>
         </div>
       </>

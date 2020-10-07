@@ -5,7 +5,7 @@
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import "common/samples-common.scss";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
+import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
 import { ClassifiedElements, ClassifiedElementsColors, PhysicalElement, VolumeQueryApp } from "./VolumeQueryApp";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
@@ -34,10 +34,7 @@ interface VolumeQueryUIState {
   physicalElements: PhysicalElement[];
 }
 
-export default class VolumeQueryUI extends React.Component<
-  VolumeQueryUIProps,
-  VolumeQueryUIState
-  > {
+export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, VolumeQueryUIState> {
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
@@ -219,6 +216,11 @@ export default class VolumeQueryUI extends React.Component<
   }
 
   public getControls() {
+    const positionOptions = {
+      [ElementPosition.InsideTheBox]: ElementPosition.InsideTheBox,
+      [ElementPosition.OutsideTheBox]: ElementPosition.OutsideTheBox,
+      [ElementPosition.Overlap]: ElementPosition.Overlap,
+    }
     return (
       <div style={{ maxWidth: "340px" }} >
         <div className="sample-options-2col">
@@ -264,16 +266,13 @@ export default class VolumeQueryUI extends React.Component<
         <hr></hr>
         <div className="sample-options-2col">
           <span style={{ whiteSpace: "nowrap" }}>List Colored Elements:</span>
-          <select onChange={this._onSelectionListElements.bind(this)} value={this.state.elementsToShow.position}>
-            <option value={ElementPosition.InsideTheBox}> {ElementPosition.InsideTheBox} </option>
-            <option value={ElementPosition.OutsideTheBox}> {ElementPosition.OutsideTheBox} </option>
-            <option value={ElementPosition.Overlap}> {ElementPosition.Overlap} </option>
-          </select>
+          <Select onChange={this._onSelectionListElements.bind(this)} value={this.state.elementsToShow.position} options={positionOptions} />
         </div>
         <div className="table-wrapper">
-          <select multiple style={{ maxHeight: "100px", overflowY: "scroll", overflowX: "hidden", whiteSpace: "nowrap" }}>
-            {this.state.elementsToShow.elements.slice(0, 99).map((element) => <option key={element.id} style={{ listStyleType: "none", textAlign: "left" }}>{element.name}</option>)}
-          </select>
+          <Select
+            multiple style={{ maxHeight: "100px", overflowY: "scroll", overflowX: "hidden", whiteSpace: "nowrap" }}
+            options={Object.assign({}, this.state.elementsToShow.elements.slice(0, 99).map((element) => element.name))}
+          />
         </div>
         <span style={{ color: "grey" }} className="table-caption">
           List contains {this.state.elementsToShow.elements.length} elements{(this.state.elementsToShow.elements.length <= 100) ? "." : ", showing first 100."}
