@@ -22,6 +22,7 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
+  readme?: InternalFile;
   files: InternalFile[];
   customModelList?: string[];
   setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
@@ -254,13 +255,14 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+    const readme = activeSample ? activeSample.readme : undefined;
     const files = activeSample ? activeSample.files : undefined;
 
     return (
       <div className="showcase">
         <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
           <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
-            <SampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
+            <SampleEditor readme={readme} files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
             <div style={{ height: "100%" }}>
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
