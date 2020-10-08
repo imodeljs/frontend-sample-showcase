@@ -11,7 +11,7 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import React from "react";
 import { DividerComponent } from "./Divider";
-import SwipingViewportApp, { ComparisonType } from "./SwipingComparisonApp";
+import SwipingViewportApp, { ComparisonType, EmphasizeRealityData } from "./SwipingComparisonApp";
 
 export interface SwipingComparisonUIProps {
   iModelName: string;
@@ -39,11 +39,51 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   private _dividerLeft?: number; // position relative to the window
 
+  // Returns the position the divider will start at based on the bounds of the divider
+  private initPositionDivider(bounds: ClientRect): number {
+    return bounds.left + (bounds.width / 2);
+  }
   public state: SwipingComparisonUIState = {
     isLocked: false,
     isRealityData: true,
     comparison: ComparisonType.RealityData,
   };
+
+  public componentDidUpdate(_prevProps: SwipingComparisonUIProps, prevState: SwipingComparisonUIState, _snapshot: any) {
+    let updateCompare = false;
+    let updateState = false;
+    if (this.state.viewport?.viewportId !== prevState.viewport?.viewportId)
+      updateState = true;
+    if (undefined !== this.state.bounds
+      && (undefined === prevState.bounds
+        || this.state.bounds.height !== prevState.bounds.height
+        || this.state.bounds.width !== prevState.bounds.width
+        || this.state.bounds.left !== prevState.bounds.left
+      )
+    )
+      updateCompare = true;
+    if (this.state.comparison !== prevState.comparison)
+      updateCompare = true;
+    if (undefined !== this.state.frustum
+      && (undefined === prevState.frustum
+        || !this.state.frustum.isSame(prevState.frustum))
+    )
+      updateCompare = true;
+    if (this.state.dividerLeft !== prevState.dividerLeft)
+      updateCompare = true;
+    if (!this.state.isLocked && prevState.isLocked)
+      updateCompare = true;
+
+    if (this.state.isRealityData !== prevState.isRealityData && undefined !== this.state.viewport && undefined !== this.state.iModel) {
+      // SwipingViewportApp.(this.state.isRealityData, this.state.viewport, this.state.iModel);
+      SwipingViewportApp.setTransparency(this.state.viewport, this.state.isRealityData);
+    }
+
+    if (updateState)
+      this.updateState();
+    if (updateCompare)
+      this.updateCompare();
+  }
 
   // Update the state of the sample react component by querying the API.
   private updateState() {
@@ -70,19 +110,17 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     // const isRealityCompare = this.state.comparison === ComparisonType.RealityData;
     // if (undefined !== this.state.viewport && undefined !== this.state.iModel)
     //   SwipingViewportApp.toggleRealityModel(isRealityCompare, this.state.viewport, this.state.iModel);
-
+    SwipingViewportApp.setTransparency(this.state.viewport, ComparisonType.RealityData !== this.state.comparison);
     SwipingViewportApp.compare(screenPoint, this.state.viewport, this.state.comparison);
-  }
-
-  // Returns the position the divider will start at based on the bounds of the divider
-  private initPositionDivider(bounds: ClientRect): number {
-    return bounds.left + (bounds.width / 2);
   }
 
   // Should be called when the Viewport is ready.
   private readonly _initViewport = (viewport: ScreenViewport) => {
     SwipingViewportApp.listerForViewportUpdate(viewport, this._onViewUpdate);
-    if (undefined === this._dividerLeft)
+    SwipingViewportApp.toggleRealityModel(true, viewport, this.state.iModel!);
+    EmphasizeRealityData.addProvider(viewport);
+    SwipingViewportApp.setTransparency(viewport, ComparisonType.RealityData !== this.state.comparison);
+      if (undefined === this._dividerLeft)
       this._dividerLeft = this.initPositionDivider(SwipingViewportApp.getClientRect(viewport));
     this.setState({ viewport });
   }
@@ -132,50 +170,12 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     this.updateState();
   }
 
-  public componentDidUpdate(_prevProps: SwipingComparisonUIProps, prevState: SwipingComparisonUIState, _snapshot: any) {
-    let updateCompare = false;
-    let updateState = false;
-    if (this.state.viewport?.viewportId !== prevState.viewport?.viewportId)
-      updateState = true;
-    if (undefined !== this.state.bounds
-      && (undefined === prevState.bounds
-        || this.state.bounds.height !== prevState.bounds.height
-        || this.state.bounds.width !== prevState.bounds.width
-        || this.state.bounds.left !== prevState.bounds.left
-      )
-    )
-      updateCompare = true;
-    if (this.state.comparison !== prevState.comparison)
-      updateCompare = true;
-    if (undefined !== this.state.frustum
-      && (undefined === prevState.frustum
-        || !this.state.frustum.isSame(prevState.frustum))
-    )
-      updateCompare = true;
-    if (this.state.dividerLeft !== prevState.dividerLeft)
-      updateCompare = true;
-    if (!this.state.isLocked && prevState.isLocked)
-      updateCompare = true;
-
-    if (this.state.isRealityData !== prevState.isRealityData && undefined !== this.state.viewport && undefined !== this.state.iModel) {
-      // SwipingViewportApp.(this.state.isRealityData, this.state.viewport, this.state.iModel);
-      SwipingViewportApp.setTransparency(this.state.viewport, this.state.isRealityData);
-    }
-
-    if (updateState)
-      this.updateState();
-    if (updateCompare)
-      this.updateCompare();
-  }
-
   private _onLockToggle = (isOn: boolean) => {
     this.setState({ isLocked: isOn });
   }
   private _onRealityToggle = (isOn: boolean) => {
     if (undefined !== this.state.iModel && undefined !== this.state.viewport)
-      SwipingViewportApp.toggleRealityModel(isOn, this.state.viewport, this.state.iModel);
-        // .then((props) => { console.debug(props.length); })
-        // .catch((error) => { console.debug(error); });
+      SwipingViewportApp.setTransparency(this.state.viewport, isOn);
     this.setState({ isRealityData: isOn });
   }
   private _onDropProvider = (isOn: boolean) => {

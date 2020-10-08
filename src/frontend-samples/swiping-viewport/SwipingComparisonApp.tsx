@@ -183,9 +183,28 @@ export default class SwipingViewportApp implements SampleApp {
     }
   }
 
+  private static getMatchingIndex(realityModel: ContextRealityModelState, vp: Viewport): number {
+    let matchingIndex = -1;
+    let index = 0;
+    vp.displayStyle.forEachRealityModel((modelState: ContextRealityModelState) => {
+      if (modelState.matchesNameAndUrl(realityModel.name, realityModel.url)) {
+        matchingIndex = index;
+      }
+      index++;
+    });
+    return matchingIndex;
+  }
+
   public static setTransparency(vp: Viewport, transparency: boolean | undefined): void {
-    EmphasizeRealityData.isVisible = transparency ?? false;
-    vp.setFeatureOverrideProviderChanged();
+    // EmphasizeRealityData.isVisible = transparency ?? false;
+    // vp.setFeatureOverrideProviderChanged();
+    const override = { transparency: (transparency ?? false) ? 1.0 : 0.0 };
+    const style = vp.displayStyle.clone();
+    style.forEachRealityModel((model) => {
+      const index = SwipingViewportApp.getMatchingIndex(model, vp);
+      const existingOverrides = vp.getRealityModelAppearanceOverride(index);
+      return vp.overrideRealityModelAppearance(index, existingOverrides ? existingOverrides.clone(override) : FeatureAppearance.fromJSON(override));
+    });
   }
 
   /** Creates a [ClipVector] based on the arguments. */
@@ -271,7 +290,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   }
 }
 
-class EmphasizeRealityData implements FeatureOverrideProvider {
+export class EmphasizeRealityData implements FeatureOverrideProvider {
   public static isVisible: boolean = false;
 
   /** Establish active feature overrides to emphasize elements and apply color/transparency overrides.
@@ -287,14 +306,6 @@ class EmphasizeRealityData implements FeatureOverrideProvider {
           overrides.overrideModel(modelState.modelId, FeatureAppearance.fromJSON(prop));
       },
     );
-    // RealityDataManager.get().realityDataEntries.forEach((entry) => {
-    //   if (entry.fsa) {
-    //     const modelId = RealityDataManager.get().getModelId(vp, entry);
-    //     if (modelId) {
-    //       overrides.overrideModel(modelId, FeatureAppearance.fromJSON(prop));
-    //     }
-    //   }
-    // });
   }
 
   public emphasizeRealityData(vp: Viewport): boolean {
@@ -391,7 +402,7 @@ class ComparisonRealityDataProvider extends SampleTiledGraphicsProvider {
 
     // vp.changeModelDisplay([...vp.iModel.models.loaded.keys()], ChannelType.Schedule === this.leftChannel.channelType);
 
-    EmphasizeRealityData.isVisible = false;
+    SwipingViewportApp.setTransparency(vp, true);
 
     const context = vp.createSceneContext();
     vp.view.createScene(context);
@@ -409,8 +420,8 @@ class ComparisonRealityDataProvider extends SampleTiledGraphicsProvider {
     }
 
     vp.view.setViewClip(clip);
-    // SwipingViewportApp.(vp, this.props);
-    EmphasizeRealityData.isVisible = true;
+
+    SwipingViewportApp.setTransparency(vp, false);
     // if (ChannelType.RealityData === this.rightChannel.channelType && this.rightChannel.realityDataEntries) {
     //   this.rightChannel.realityDataEntries.forEach(rde => RealityDataManager.get().setTransparency(vp, rde, 0.0));
     // }

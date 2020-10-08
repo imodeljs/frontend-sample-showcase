@@ -1,3 +1,4 @@
+import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 /*---------------------------------------------------------------------------------------------
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
@@ -10,6 +11,7 @@ export function getSwipingComparisonSpec(): SampleSpec {
     name: "swiping-viewport-sample",
     label: "Swiping Comparison",
     image: "swiping-viewport-thumbnail.png",
+    customModelList: [SampleIModels.ExtonCampus],
     files: [
       { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp"), entry: true },
       { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI") },
