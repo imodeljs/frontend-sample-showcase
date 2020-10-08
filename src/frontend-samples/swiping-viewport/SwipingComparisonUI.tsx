@@ -74,9 +74,8 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     if (!this.state.isLocked && prevState.isLocked)
       updateCompare = true;
 
-    if (this.state.isRealityData !== prevState.isRealityData && undefined !== this.state.viewport && undefined !== this.state.iModel) {
-      // SwipingViewportApp.(this.state.isRealityData, this.state.viewport, this.state.iModel);
-      SwipingViewportApp.setTransparency(this.state.viewport, this.state.isRealityData);
+    if (this.state.isRealityData !== prevState.isRealityData && undefined !== this.state.viewport) {
+      SwipingViewportApp.setRealityModelTransparent(this.state.viewport, this.state.isRealityData);
     }
 
     if (updateState)
@@ -107,20 +106,17 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       return;
     const screenPoint = SwipingComparisonUI.getScreenPoint(this.state.bounds, this.state.dividerLeft);
 
-    // const isRealityCompare = this.state.comparison === ComparisonType.RealityData;
-    // if (undefined !== this.state.viewport && undefined !== this.state.iModel)
-    //   SwipingViewportApp.toggleRealityModel(isRealityCompare, this.state.viewport, this.state.iModel);
-    SwipingViewportApp.setTransparency(this.state.viewport, ComparisonType.RealityData !== this.state.comparison);
+    // SwipingViewportApp.setTransparency(this.state.viewport, ComparisonType.RealityData !== this.state.comparison);
     SwipingViewportApp.compare(screenPoint, this.state.viewport, this.state.comparison);
   }
 
   // Should be called when the Viewport is ready.
   private readonly _initViewport = (viewport: ScreenViewport) => {
     SwipingViewportApp.listerForViewportUpdate(viewport, this._onViewUpdate);
-    SwipingViewportApp.toggleRealityModel(true, viewport, this.state.iModel!);
+    SwipingViewportApp.attachRealityData(true, viewport, this.state.iModel!);
     EmphasizeRealityData.addProvider(viewport);
-    SwipingViewportApp.setTransparency(viewport, ComparisonType.RealityData !== this.state.comparison);
-      if (undefined === this._dividerLeft)
+    SwipingViewportApp.setRealityModelTransparent(viewport, ComparisonType.RealityData !== this.state.comparison);
+    if (undefined === this._dividerLeft)
       this._dividerLeft = this.initPositionDivider(SwipingViewportApp.getClientRect(viewport));
     this.setState({ viewport });
   }
@@ -175,7 +171,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   }
   private _onRealityToggle = (isOn: boolean) => {
     if (undefined !== this.state.iModel && undefined !== this.state.viewport)
-      SwipingViewportApp.setTransparency(this.state.viewport, isOn);
+      SwipingViewportApp.setRealityModelTransparent(this.state.viewport, isOn);
     this.setState({ isRealityData: isOn });
   }
   private _onDropProvider = (isOn: boolean) => {

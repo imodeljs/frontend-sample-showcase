@@ -10,7 +10,7 @@ import {
   ConvexClipPlaneSet,
   Point3d,
   Transform,
-  Vector3d,
+  Vector3d
 } from "@bentley/geometry-core";
 import {
   ContextRealityModelProps,
@@ -33,7 +33,6 @@ import {
   TiledGraphicsProvider,
   TileTreeReference,
   Viewport,
-  FeatureOverrideProvider,
 } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
@@ -48,21 +47,6 @@ export default class SwipingViewportApp implements SampleApp {
   private static _provider: SampleTiledGraphicsProvider | undefined;
   private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
-  private static _realityModelProps: ContextRealityModelProps[] = [];
-
-  public static toggleProvider(isOn: boolean): void {
-    const vp = SwipingViewportApp._viewport;
-    const p = SwipingViewportApp._provider;
-    if (!vp || !p)
-      return;
-    if (isOn) {
-
-      vp.addTiledGraphicsProvider(p);
-    } else {
-
-      vp.dropTiledGraphicsProvider(p);
-    }
-  }
 
   /** Called by the showcase before the sample is started. */
   public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
@@ -71,7 +55,6 @@ export default class SwipingViewportApp implements SampleApp {
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
-    SwipingViewportApp._realityModelProps = [];
     if (undefined !== SwipingViewportApp._viewport && undefined !== SwipingViewportApp._provider) {
       SwipingViewportApp.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider);
       SwipingViewportApp._provider = undefined;
@@ -150,63 +133,6 @@ export default class SwipingViewportApp implements SampleApp {
     vp.invalidateScene();
   }
 
-  public static async attachRealityData(imodel: IModelConnection) {
-    const promise = findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
-    promise.then((props: ContextRealityModelProps[]) => {
-      if (undefined !== SwipingViewportApp._provider && SwipingViewportApp._provider.comparisonType === ComparisonType.RealityData) {
-        (SwipingViewportApp._provider as ComparisonRealityDataProvider).props = props;
-      }
-      SwipingViewportApp._realityModelProps = props;
-    }).catch();
-    return promise;
-  }
-
-  public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
-    const style = viewPort.displayStyle.clone();
-
-    if (showReality) {
-      // Get all available reality models and attach them to displayStyle
-      const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
-      for (const crmProp of availableModels) {
-        style.attachRealityModel(crmProp);
-        viewPort.displayStyle = style;
-      }
-    } else {
-      // Collect reality models on displayStyle and detach
-      const models: ContextRealityModelState[] = [];
-      style.forEachRealityModel(
-        (modelState: ContextRealityModelState) => { models.push(modelState); },
-      );
-      for (const model of models)
-        style.detachRealityModelByNameAndUrl(model.name, model.url);
-      viewPort.displayStyle = style;
-    }
-  }
-
-  private static getMatchingIndex(realityModel: ContextRealityModelState, vp: Viewport): number {
-    let matchingIndex = -1;
-    let index = 0;
-    vp.displayStyle.forEachRealityModel((modelState: ContextRealityModelState) => {
-      if (modelState.matchesNameAndUrl(realityModel.name, realityModel.url)) {
-        matchingIndex = index;
-      }
-      index++;
-    });
-    return matchingIndex;
-  }
-
-  public static setTransparency(vp: Viewport, transparency: boolean | undefined): void {
-    // EmphasizeRealityData.isVisible = transparency ?? false;
-    // vp.setFeatureOverrideProviderChanged();
-    const override = { transparency: (transparency ?? false) ? 1.0 : 0.0 };
-    const style = vp.displayStyle.clone();
-    style.forEachRealityModel((model) => {
-      const index = SwipingViewportApp.getMatchingIndex(model, vp);
-      const existingOverrides = vp.getRealityModelAppearanceOverride(index);
-      return vp.overrideRealityModelAppearance(index, existingOverrides ? existingOverrides.clone(override) : FeatureAppearance.fromJSON(override));
-    });
-  }
-
   /** Creates a [ClipVector] based on the arguments. */
   private static createClip(vec: Vector3d, pt: Point3d): ClipVector {
     const plane = ClipPlane.createNormalAndPoint(vec, pt)!;
@@ -220,11 +146,13 @@ export default class SwipingViewportApp implements SampleApp {
     const vp = viewport;
     const normal = SwipingViewportApp.getPerpendicularNormal(vp, screenPoint);
     const worldPoint = SwipingViewportApp.getWorldPoint(vp, screenPoint);
-    const clip = SwipingViewportApp.createClip(normal.clone().negate(), worldPoint);
 
+    // Update in Provider
+    const clip = SwipingViewportApp.createClip(normal.clone().negate(), worldPoint);
     provider.clipVolume?.dispose();
     provider.setClipVector(clip);
 
+    // Update in Viewport
     viewport.view.setViewClip(SwipingViewportApp.createClip(normal.clone(), worldPoint));
     viewport.synchWithView();
   }
@@ -243,7 +171,7 @@ export default class SwipingViewportApp implements SampleApp {
         SwipingViewportApp._provider = new ComparisonWireframeProvider(negatedClip);
         break;
       case ComparisonType.RealityData:
-        SwipingViewportApp._provider = new ComparisonRealityDataProvider(negatedClip, SwipingViewportApp._realityModelProps);
+        SwipingViewportApp._provider = new ComparisonRealityModelProvider(negatedClip);
         break;
     }
     vp.addTiledGraphicsProvider(SwipingViewportApp._provider);
@@ -260,10 +188,42 @@ export default class SwipingViewportApp implements SampleApp {
     // Not all [TiledGraphicsProvider] are disposable the ones used in this sample are.
     provider.dispose();
   }
+
+  public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
+    const style = viewport.displayStyle.clone();
+    const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
+    for (const crmProp of availableModels) {
+      style.attachRealityModel(crmProp);
+      viewport.displayStyle = style;
+    }
+  }
+
+  private static getMatchingIndex(realityModel: ContextRealityModelState, vp: Viewport): number {
+    let matchingIndex = -1;
+    let index = 0;
+    vp.displayStyle.forEachRealityModel((modelState: ContextRealityModelState) => {
+      if (modelState.matchesNameAndUrl(realityModel.name, realityModel.url)) {
+        matchingIndex = index;
+      }
+      index++;
+    });
+    return matchingIndex;
+  }
+
+  public static setRealityModelTransparent(vp: Viewport, transparency: boolean | undefined): void {
+    const override = { transparency: (transparency ?? false) ? 1.0 : 0.0 };
+    const style = vp.displayStyle.clone();
+    style.forEachRealityModel((model) => {
+      const index = SwipingViewportApp.getMatchingIndex(model, vp);
+      const existingOverrides = vp.getRealityModelAppearanceOverride(index);
+      return vp.overrideRealityModelAppearance(index, existingOverrides ? existingOverrides.clone(override) : FeatureAppearance.fromJSON(override));
+    });
+  }
 }
 
 abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   public readonly abstract comparisonType: ComparisonType;
+  public viewFlagOverrides = new ViewFlagOverrides();
   public clipVolume: RenderClipVolume | undefined;
   constructor(clipVector: ClipVector) {
     // Create the object that will be used later by the "addToScene" method.
@@ -276,63 +236,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
-  public abstract addToScene(output: SceneContext): void;
-  /** The clip vector passed in should be flipped with respect to the normally applied clip vector.
-   * It could be calculated in the "addToScene(...)" but we want to optimize that method.
-   */
-  public setClipVector(clipVector: ClipVector): void {
-    this.clipVolume = IModelApp.renderSystem.createClipVolume(clipVector);
-  }
-
-  /** Disposes of any WebGL resources owned by this volume. */
-  public dispose(): void {
-    this.clipVolume?.dispose();
-  }
-}
-
-export class EmphasizeRealityData implements FeatureOverrideProvider {
-  public static isVisible: boolean = false;
-
-  /** Establish active feature overrides to emphasize elements and apply color/transparency overrides.
-   * @see [[Viewport.featureOverrideProvider]]
-   */
-  public addFeatureOverrides(overrides: FeatureSymbology.Overrides, vp: Viewport): void {
-    // super.addFeatureOverrides(overrides,vp);
-    const style = vp.displayStyle.clone();
-    const prop = {transparency: (EmphasizeRealityData.isVisible ? 0.0 : 1.0)};
-    style.forEachRealityModel(
-      (modelState: ContextRealityModelState) => {
-        if (undefined !== modelState.modelId)
-          overrides.overrideModel(modelState.modelId, FeatureAppearance.fromJSON(prop));
-      },
-    );
-  }
-
-  public emphasizeRealityData(vp: Viewport): boolean {
-    EmphasizeRealityData.isVisible = true;
-    vp.setFeatureOverrideProviderChanged();
-    return true;
-  }
-
-  public static addProvider(vp: Viewport) {
-    vp.addFeatureOverrideProvider(new EmphasizeRealityData());
-  }
-  public static dropProvider(vp: Viewport) {
-    vp.dropFeatureOverrideProvider(new EmphasizeRealityData());
-  }
-}
-
-class ComparisonWireframeProvider extends SampleTiledGraphicsProvider {
-  public viewFlagOverrides = new ViewFlagOverrides();
-  public comparisonType = ComparisonType.Wireframe;
-
-  constructor(clip: ClipVector) {
-    super(clip);
-    // Create the objects that will be used later by the "addToScene" method.
-    this.viewFlagOverrides.setRenderMode(RenderMode.Wireframe);
-  }
-
-  /** Overrides the logic for adding this provider's graphics into the scene. */
+  // public abstract addToScene(output: SceneContext): void;
   public addToScene(output: SceneContext): void {
 
     // Save view to be replaced after comparison is drawn
@@ -341,6 +245,8 @@ class ComparisonWireframeProvider extends SampleTiledGraphicsProvider {
 
     // Replace the clipping plane with a flipped one.
     vp.view.setViewClip(this.clipVolume?.clipVector);  // TODO: Have Paul review
+
+    this.prepareNewBranch(vp);
 
     const context = vp.createSceneContext();
     vp.view.createScene(context);
@@ -363,7 +269,12 @@ class ComparisonWireframeProvider extends SampleTiledGraphicsProvider {
 
     // Return the old clip to the view.
     vp.view.setViewClip(clip);
+
+    this.resetOldView(vp);
   }
+
+  protected abstract prepareNewBranch(vp: Viewport): void;
+  protected abstract resetOldView(vp: Viewport): void;
 
   /** The clip vector passed in should be flipped with respect to the normally applied clip vector.
    * It could be calculated in the "addToScene(...)" but we want to optimize that method.
@@ -378,57 +289,28 @@ class ComparisonWireframeProvider extends SampleTiledGraphicsProvider {
   }
 }
 
-class ComparisonRealityDataProvider extends SampleTiledGraphicsProvider {
-  public comparisonType = ComparisonType.RealityData;
-  public props: ContextRealityModelProps[];
+class ComparisonWireframeProvider extends SampleTiledGraphicsProvider {
+  public comparisonType = ComparisonType.Wireframe;
 
-  constructor(clip: ClipVector, props: ContextRealityModelProps[]) {
+  constructor(clip: ClipVector) {
     super(clip);
-    this.props = props;
+    // Create the objects that will be used later by the "addToScene" method.
+    this.viewFlagOverrides.setRenderMode(RenderMode.Wireframe);
   }
 
-  public addToScene(output: SceneContext): void {
-    const vp = output.viewport;
-    const clip = vp.view.getViewClip();
-    vp.view.setViewClip(this.clipVolume?.clipVector);
+  protected prepareNewBranch(_vp: Viewport): void {}
+  protected resetOldView(_vp: Viewport): void {}
+}
 
-    // if (ChannelType.RealityData === this.rightChannel.channelType && this.rightChannel.realityDataEntries) {
-    //   this.rightChannel.realityDataEntries.forEach(rde => RealityDataManager.get().setTransparency(vp, rde, 1.0)); //1.0 invisible
-    // }
+class ComparisonRealityModelProvider extends SampleTiledGraphicsProvider {
+  public comparisonType = ComparisonType.RealityData;
 
-    // if (ChannelType.RealityData === this.leftChannel.channelType && this.leftChannel.realityDataEntries) {
-    //   this.leftChannel.realityDataEntries.forEach(rde => RealityDataManager.get().setTransparency(vp, rde, 0.0)); //0.0 visible
-    // }
-
-    // vp.changeModelDisplay([...vp.iModel.models.loaded.keys()], ChannelType.Schedule === this.leftChannel.channelType);
-
-    SwipingViewportApp.setTransparency(vp, true);
-
-    const context = vp.createSceneContext();
-    vp.view.createScene(context);
-
-    const gfx = context.graphics;
-    if (0 < gfx.length) {
-      const ovrs = new FeatureSymbology.Overrides(vp);
-
-      const branch = new GraphicBranch();
-      branch.symbologyOverrides = ovrs;
-      for (const gf of gfx)
-        branch.entries.push(gf);
-
-      output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
-    }
-
-    vp.view.setViewClip(clip);
-
-    SwipingViewportApp.setTransparency(vp, false);
-    // if (ChannelType.RealityData === this.rightChannel.channelType && this.rightChannel.realityDataEntries) {
-    //   this.rightChannel.realityDataEntries.forEach(rde => RealityDataManager.get().setTransparency(vp, rde, 0.0));
-    // }
-    // if (ChannelType.RealityData === this.leftChannel.channelType && this.leftChannel.realityDataEntries) {
-    //   this.leftChannel.realityDataEntries.forEach(rde => RealityDataManager.get().setTransparency(vp, rde, 1.0));
-    // }
-
-    // vp.changeModelDisplay([...vp.iModel.models.loaded.keys()], ChannelType.Schedule === this.rightChannel.channelType);
+  protected prepareNewBranch(vp: Viewport): void {
+    // Hides the reality model while rendering the other graphics branch.
+    SwipingViewportApp.setRealityModelTransparent(vp, true);
+  }
+  protected resetOldView(vp: Viewport): void {
+    // Makes the reality model visible again in the viewport.
+    SwipingViewportApp.setRealityModelTransparent(vp, false);
   }
 }
