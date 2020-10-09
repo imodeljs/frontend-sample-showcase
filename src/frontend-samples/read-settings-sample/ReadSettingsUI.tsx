@@ -119,7 +119,6 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
-    const entries = settingsKeys.map((value, index) => <option key={index} value={value}>{value}</option>);
     return !this.state.settingsInitialized ? (<div style={{ width: "395px" }}><Spinner size={SpinnerSize.Small} /> loading...</div>) : (
       <>
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
