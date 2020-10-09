@@ -42,12 +42,16 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     return (
       <div style={{ marginTop: "20px" }}>
         <span>Select Drawing or Sheet: </span>
-        <select onChange={this._handleSelection} className="2d-model-selector">
-          {(drawingViews.length > 0) ? <optgroup label="Drawings" /> : null};
-          {drawingViews};
-          {(sheetViews.length > 0) ? <optgroup label="Sheets" /> : null};
-          {sheetViews};
-        </select>
+        <div className="select-up">
+          <select className="uicore-inputs-select 2d-model-selector" onChange={this._handleSelection}>
+            {drawingViews.length > 0 && (
+              <optgroup label="Drawings">{this.getDrawingModelList(this.state.drawings)}</optgroup>
+            )}
+            {sheetViews.length > 0 && (
+              <optgroup label="Sheets">{this.getSheetModelList(this.state.drawings)}</optgroup>
+            )}
+          </select>
+        </div>
       </div>
     );
   }
