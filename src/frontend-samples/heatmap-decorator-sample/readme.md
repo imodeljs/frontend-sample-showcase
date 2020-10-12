@@ -6,10 +6,10 @@ This sample demonstrates how to create custom decorator graphics.  Those graphic
 
 ## Purpose
 
-The purpose of this application is to demonstrate the following:
+The purpose of this sample is to demonstrate the following:
 
-* Adding a custom [Decorator](./src/Sample.tsx) to the render pipeline.
-* Building a custom [Render Graphic](./src/HeatmapDecorator.tsx) and managing its lifecycle.
+* Adding a custom [Decorator](./HeatmapDecoratorApp.tsx) to the render pipeline.
+* Building a custom [Render Graphic](./HeatmapDecorator.ts) and managing its lifecycle.
 
 ## Description
 

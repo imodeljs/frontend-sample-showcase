@@ -183,7 +183,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName });
   }
 
-  private _onGalleryChanged = (groupName: string, sampleName: string) => {
+  private _onGalleryCardClicked = (groupName: string, sampleName: string) => {
     if (this._prevSampleSetup) {
       if (window.confirm("Changes made to the code will not be saved!")) {
         const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
@@ -264,7 +264,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       <div className="showcase">
         <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
           <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
-            <ConnectedSampleEditor files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
+            <ConnectedSampleEditor files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
             <div style={{ height: "100%" }}>
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
@@ -275,7 +275,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
               {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
             </div>
           </SplitScreen>
-          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryChanged} onCollapse={() => this.setState({ showGallery: false })} />
+          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryCardClicked} onCollapse={() => this.setState({ showGallery: false })} />
         </SplitScreen>
       </div>
     );

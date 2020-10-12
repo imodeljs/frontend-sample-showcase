@@ -9,6 +9,7 @@ import Markdown from "markdown-to-jsx";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleEditor.scss";
 import { EditorFileActivityState } from "@bentley/monaco-editor/editor/lib/providers/editor-file-activity-provider/EditorFileActivityContextReducer";
+import { findSpecBySampleName } from "sampleManifest";
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor/editor"));
 
@@ -17,6 +18,7 @@ export interface ConnectedSampleEditor {
   readme?: IInternalFile;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
+  onSampleClicked: (groupName: string, sampleName: string) => void;
 }
 
 export function ConnectedSampleEditor(props: ConnectedSampleEditor) {
@@ -45,15 +47,16 @@ export interface SampleEditorProps {
   readme?: IInternalFile;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
+  onSampleClicked: (groupName: string, sampleName: string) => void;
 }
 
-interface SampledEditorState {
+interface SampleEditorState {
   active?: string;
   readme?: string;
   showReadme: boolean;
 }
 
-export default class SampleEditor extends React.Component<SampleEditorProps, SampledEditorState> {
+export default class SampleEditor extends React.Component<SampleEditorProps, SampleEditorState> {
   constructor(props: SampleEditorProps) {
     super(props);
 
@@ -67,7 +70,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
     this.updateReadme();
   }
 
-  public async componentDidUpdate(prevProps: SampleEditorProps) {
+  public async componentDidUpdate(prevProps: SampleEditorProps, prevState: SampleEditorState) {
     if (prevProps.files !== this.props.files) {
       await this.props.editorActions.setFiles(this.props.files as IFile[]);
     }
@@ -75,24 +78,44 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
     if (prevProps.readme !== this.props.readme) {
       this.updateReadme();
     }
+
+    if (prevState.showReadme !== this.state.showReadme) {
+      if (this.state.showReadme)
+        this.props.fileActivityActions.setCurrent(undefined);
+    }
+
+    if (prevProps.fileActivity.activeModel !== this.props.fileActivity.activeModel) {
+      if (this.props.fileActivity.activeModel && this.state.showReadme)
+        this.setState({ showReadme: false });
+    }
   }
 
   public async updateReadme() {
+    let showReadme = false;
     let newReadme = "# Placeholder for missing readme";
 
     if (this.props.readme) {
       const fileData = await parseFileData([this.props.readme]);
 
-      if (1 === fileData.length)
+      if (1 === fileData.length) {
         newReadme = fileData[0].content;
+        showReadme = true;
+      }
     }
 
-    this.setState({ readme: newReadme });
+    this.setState({ readme: newReadme, showReadme });
   }
 
   private onShowReadme = () => {
+    if (!this.state.readme)
+      return;
+
     const showReadme = !this.state.showReadme;
     this.setState({ showReadme });
+  }
+
+  private setActiveFile = (fileName: string) => {
+    this.props.fileActivityActions.setCurrent(fileName);
   }
 
   private _onNavItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -123,7 +146,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
         <div style={{ height: "100%" }}>
           <TabNavigation showClose={false}>
             <TabNavigationAction onClick={this.onShowReadme}>
-              <div className="icon icon-info" style={{ display: "inline-block" }}></div>
+              <div className="icon icon-info" style={wantReadme ? { display: "inline-block", color: "white" } : { display: "inline-block" }}></div>
             </TabNavigationAction>
             {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />}
             <TabNavigationAction onClick={this.props.onCloseClick}>
@@ -140,7 +163,11 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
           </div>
           {wantReadme &&
             <div style={{ height: "100%", backgroundColor: "#dddddd" }}>
-              <Markdown options={{ overrides: { a: { component: MyLink } } }}>{this.state.readme!}</Markdown>
+              <Markdown options={{
+                overrides: {
+                  a: { component: MyLink, props: { fileClicked: this.setActiveFile, sampleClicked: this.props.onSampleClicked } },
+                },
+              }}>{this.state.readme!}</Markdown>
             </div>
           }
         </div>
@@ -157,13 +184,52 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
     );
   }
 }
-interface Props {
+interface MyLinkProps {
   href: string;
-  onClick: () => void;
+  fileClicked: (fileName: string) => void;
+  sampleClicked: (groupName: string, sampleName: string) => void;
+  onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
-const MyLink: React.FC<Props> = ({ children, ...props }) => {
-  props.href = "#";
-  props.onClick = () => { console.log("onClick!"); }
-  return (<a {...props}>{children}</a>);
+class MyLink extends React.Component<MyLinkProps> {
+  private onClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const substrings = this.props.href.split("/");
+
+    if (0 >= substrings.length)
+      return; // throw an error?
+
+    if ("." === substrings[0]) {
+      // We are expecting something like: ./filename
+      if (1 >= substrings.length)
+        return; // throw an error?
+
+      const fileName = this.props.href;
+      event.preventDefault();
+      this.props.fileClicked(fileName);
+
+    } else if (".." === substrings[0]) {
+      // We are expecting something like: ../path/sample-name/filename
+      if (2 >= substrings.length)
+        return; // throw an error?
+
+      const fileArg = substrings.length - 1;
+      const sampleArg = substrings.length - 2;
+
+      const fileName = substrings[fileArg];
+      const fromManifest = findSpecBySampleName(substrings[sampleArg]);
+
+      if (undefined === fromManifest)
+        return; // throw an error?
+
+      event.preventDefault();
+      this.props.sampleClicked(fromManifest.group.groupName, fromManifest.spec.name);
+      // NEEDSWORK: need to wait for the sample before selecting the file.  How?
+      this.props.fileClicked(fileName);
+    }
+  }
+
+  public render() {
+    const anchorProps = { ...this.props, onClick: this.onClick, target: "_blank" };
+    return (<a {...anchorProps}>{this.props.children}</a>);
+  }
 }
