@@ -156,20 +156,21 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
               </svg>
             </TabNavigationAction>
           </TabNavigation>
-          <div style={wantReadme ? { display: "none" } : { height: "100%" }}>
-            <React.Suspense fallback={"Loading..."}>
-              <MonacoEditor height={"calc(100% - 35px)"} />
-            </React.Suspense>
+          <div style={{ height: "100%" }}>
+            {wantReadme &&
+              <div className="sample-editor-readme">
+                <Markdown options={{
+                  overrides: {
+                    a: { component: MyLink, props: { fileClicked: this.setActiveFile, sampleClicked: this.props.onSampleClicked } },
+                  },
+                }}>{this.state.readme!}</Markdown>
+              </div>
+            }
+            {!wantReadme &&
+              <React.Suspense fallback={"Loading..."}>
+                <MonacoEditor height={"calc(100% - 35px)"} />
+              </React.Suspense>}
           </div>
-          {wantReadme &&
-            <div style={{ height: "100%", backgroundColor: "#dddddd" }}>
-              <Markdown options={{
-                overrides: {
-                  a: { component: MyLink, props: { fileClicked: this.setActiveFile, sampleClicked: this.props.onSampleClicked } },
-                },
-              }}>{this.state.readme!}</Markdown>
-            </div>
-          }
         </div>
         <div className="sample-editor-pane" style={wantReadme ? { display: "none" } : { height: "100%" }}>
           <div id="sample-editor-pane-nav">

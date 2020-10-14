@@ -15,7 +15,7 @@ The main purpose is to illustrate the structure we use for samples.  Specificall
 
 Besides this very basic first sample, you can use the gallery at the right side of the application to browse through many others.  Samples are provided to demonstrate:
 
-* How to display [reality data](../reality-data-sample/realitydataui.tsx) and [2D models](../viewer-only-2d-sample/readme.md)
+* How to display [reality data](../reality-data-sample/readme.md) and [2D models](../viewer-only-2d-sample/readme.md)
 * How to change the [view attributes](../view-attributes-sample/readme.md) to control things like render mode, background map, and sky box.
 * Using decorators to draw your own graphics such as a [heatmap](../heatmap-decorator-sample/readme.md) or location [markers](../marker-pin-sample/readme.md).
 * Querying imodel elements based on [volume](../volume-query-sample/readme.md) criteria.

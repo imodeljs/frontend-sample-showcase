@@ -20,6 +20,13 @@
 
   }
 
+  .sample-editor-readme {
+    height: calc(100% - 35px);
+    background-color: #dddddd;
+    padding: 1px 1em 1px 1em;
+    overflow-y: auto;
+  }
+
   #sample-editor-pane-nav {
     display: flex;
     background-color: #252526;
