@@ -24,8 +24,6 @@ interface CustomPoint {
 
 export class GeometryDecorator implements Decorator {
 
-  //private getGeometry: () => void;
-
   private animated: boolean;
   private timer: Timer | undefined;
   private graphics: RenderGraphic | undefined;
@@ -33,7 +31,6 @@ export class GeometryDecorator implements Decorator {
   private points: CustomPoint[] = [];
   private shapes: CustomGeometryQuery[] = [];
   private text: TextString[] = [];
-
 
   private fill: boolean = true;
   private color: ColorDef = ColorDef.black;
@@ -43,7 +40,6 @@ export class GeometryDecorator implements Decorator {
     if (animationSpeed < 1) {
       animationSpeed = 1;
     }
-    //this.getGeometry = getGeometry;
     this.animated = animated;
     // When using animation, we enable a timer to re-render the graphic every animationSpeed interval in ms
     if (animated) {
@@ -125,8 +121,8 @@ export class GeometryDecorator implements Decorator {
   // TODO: Add the ability to support text rendering
   // TODO: Fix defects with the fill command on certain geometry types(Loops, Polyfaces)
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
-    //this.getGeometry();
     const builder = context.createGraphicBuilder(GraphicType.Scene);
+    builder.wantNormals = true;
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
       const point = styledPoint.point;

@@ -9,7 +9,6 @@ import { Cartographic, ColorDef, RenderMode, LightSettings, ViewFlagProps, Displ
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
-import { DisplayStyle } from "frontend-samples/display-styles-sample/Styles";
 
 const renderingStyleViewFlags: ViewFlagProps = {
   noConstruct: true,
@@ -49,29 +48,6 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: V
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
     viewState.setAllow3dManipulations(true);
     viewState.setStandardRotation(StandardViewId.Top);
-    const style = viewState.displayStyle as DisplayStyle3dState;
-    const viewFlags = style.viewFlags;
-    //viewFlags.noConstruct = true;
-    viewFlags.cameraLights = true;
-    viewFlags.sourceLights = true;
-    viewFlags.solarLight = true;
-    viewFlags.shadows = false;
-    viewFlags.visibleEdges = true;
-    viewFlags.monochrome = false;
-    viewFlags.ambientOcclusion = false;
-    viewFlags.thematicDisplay = false;
-    viewFlags.renderMode = RenderMode.SmoothShade;
-    style.viewFlags = viewFlags;
-    const lights = style.lights.clone({ ambient: { color: { r: 100, g: 100, b: 100 }, intensity: 0.5 } });
-    style.lights = lights;
-    style.backgroundColor = ColorDef.white;
-    //style.environment = new Environment({
-    //  sky: {
-    //   display: true,
-    //    nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
-    //  },
-    //});
-    viewState.displayStyle = style;
     return viewState;
   }
 
@@ -84,9 +60,14 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: V
     BlankViewport.viewState = viewState;
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       const style2: DisplayStyle3dSettingsProps = {
-        environment: {},
+        environment: {
+          sky: {
+            display: true,
+            nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
+          },
+        },
         backgroundColor: 10921638,
-        viewflags: { ...renderingStyleViewFlags, noCameraLights: false, noSourceLights: false, noSolarLight: false, visEdges: true },
+        viewflags: { ...renderingStyleViewFlags, noSolarLight: false, visEdges: true },
         lights: {
           solar: { direction: [-0.9833878378071199, -0.18098510351728977, 0.013883542698953828] },
         },

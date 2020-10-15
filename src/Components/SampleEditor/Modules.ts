@@ -141,12 +141,12 @@ export const modules: IModule[] = [
         name: "common/GeometryCommon/BlankViewport",
         import: import("../../common/GeometryCommon/BlankViewport"),
         typedef: import("!!raw-loader!../../common/GeometryCommon/BlankViewport.d.ts"),
-    } as InternalModule),
+    } as IInternalModule),
     ({
         name: "common/GeometryCommon/GeometryDecorator",
         import: import("../../common/GeometryCommon/GeometryDecorator"),
         typedef: import("!!raw-loader!../../common/GeometryCommon/GeometryDecorator.d.ts"),
-    } as InternalModule),
+    } as IInternalModule),
     ({
         name: "common/DataProvider/Trees.scss",
         import: import("!!raw-loader!common/DataProvider/Trees.scss"),

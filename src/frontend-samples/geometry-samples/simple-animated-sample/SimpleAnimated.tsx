@@ -9,9 +9,11 @@ import { LineString3d, Loop, Point3d, Range3d } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { Timer } from "@bentley/ui-core";
+import { NumericInput, Timer } from "@bentley/ui-core";
+import { ColorPickerButton } from "@bentley/ui-components";
+import { ColorDef } from "@bentley/imodeljs-common";
 
-export default class SimpleAnimated extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer }> implements SampleApp {
+export default class SimpleAnimated extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number }> implements SampleApp {
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -19,7 +21,8 @@ export default class SimpleAnimated extends React.Component<{}, { grid: boolean[
       grid: this.generateGrid(),
       dimensions: new Range3d(-10, -10, 0, 1010, 1010, 0),
       timer: new Timer(100),
-
+      clockSpeed: 100,
+      color: ColorDef.black,
     };
   }
 
@@ -42,11 +45,11 @@ export default class SimpleAnimated extends React.Component<{}, { grid: boolean[
     this.setGeometry()
     this.state.timer.setOnExecute(this.handleTimer.bind(this));
     this.state.timer.start();
-
   }
 
   public componentWillUnmount() {
     this.state.timer.setOnExecute(undefined)
+
   }
 
   public generateGrid(size: number = 50, probLife: number = 0.15) {
@@ -91,10 +94,31 @@ export default class SimpleAnimated extends React.Component<{}, { grid: boolean[
     });
   }
 
+  public setNewTimer(clockSpeed: number) {
+    const timer = new Timer(clockSpeed)
+    timer.setOnExecute(this.handleTimer.bind(this))
+    timer.start()
+    this.setState({ clockSpeed, timer });
+  }
+
+  public getControls() {
+    return (
+      <>
+        <div className="sample-options-2col">
+          <span>Color:</span>
+          <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }) }} />
+          <span>Clock Speed(ms):</span>
+          <NumericInput defaultValue={this.state.clockSpeed} min={1} onChange={(value) => { if (value) { this.setNewTimer(value) } }}></NumericInput>
+
+        </div>
+      </>
+    );
+  }
+
   public render() {
     return (
       <>
-        <ControlPane instructions="An implementation of Conway's game of life"></ControlPane>
+        <ControlPane instructions="An implementation of Conway's game of life" controls={this.getControls()}></ControlPane>
         <BlankViewport force2d={true}></BlankViewport>
       </>
     );
@@ -131,6 +155,7 @@ export default class SimpleAnimated extends React.Component<{}, { grid: boolean[
 
   public setGeometry() {
     BlankViewport.decorator.clearGeometry();
+    BlankViewport.decorator.setColor(this.state.color);
     const squareSize = 20;
     // tslint:disable-next-line: prefer-for-of
     for (let i: number = 0; i < this.state.grid.length; i++) {

@@ -52,8 +52,10 @@ import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/v
 import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
 import { getSmallConvexHullSpec } from "./frontend-samples/geometry-samples/small-convex-hull/sampleSpec";
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
-import { getAnimated3dSpec } from "./frontend-samples/geometry-samples/animated-3d-sample/sampleSpec";
+import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
+import { getAnimated3dSpec } from "./frontend-samples/geometry-samples/animated-3d-sample/sampleSpec";
+
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -121,6 +123,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSimpleLineSpec(),
     getSmallConvexHullSpec(),
     getSimple3dSpec(),
+    getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
     getAnimated3dSpec(),
 
