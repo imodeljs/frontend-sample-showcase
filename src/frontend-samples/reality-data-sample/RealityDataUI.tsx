@@ -59,8 +59,9 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
   private _onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
 
-    IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
       this.setState({ imodel, showRealityData: true });
+      await RealityDataApp.toggleRealityModel(true, _vp, imodel);
     });
   }
 

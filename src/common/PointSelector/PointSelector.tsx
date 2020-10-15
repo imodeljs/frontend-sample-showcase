@@ -5,6 +5,7 @@
 import * as React from "react";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { BasePointGenerator, CirclePointGenerator, CrossPointGenerator, RandomPointGenerator } from "./PointGenerators";
+import { Select } from "@bentley/ui-core";
 
 export enum PointMode {
   Random = "1",
@@ -84,11 +85,7 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
     return (
       <>
         <span>Points</span>
-        <select onChange={this._onChangePointMode}>
-          <option value={PointMode.Random}> Random </option>
-          <option value={PointMode.Circle}> Circle </option>
-          <option value={PointMode.Cross}> Cross </option>
-        </select>
+        <Select onChange={this._onChangePointMode} options={{ [PointMode.Random]: "Random", [PointMode.Circle]: "Circle", [PointMode.Cross]: "Cross" }} />
         <span>Point Count</span>
         <input type="range" min="1" max="500" value={this.state.pointCount} onChange={this._onChangePointCount}></input>
       </>

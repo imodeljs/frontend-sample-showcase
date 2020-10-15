@@ -213,6 +213,7 @@ VolumeQueryUIState
   public getControls() {
     const position = this.state.selectedPosition;
     const coloredElements = this.state.coloredElements;
+
     return (
       <div style={{ maxWidth: "340px" }} >
         <div className="sample-options-2col">

@@ -3,9 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-
 import "./App.css";
 import { SampleShowcase } from "../SampleShowcase/SampleShowcase";
+import { modules } from "../SampleEditor/Modules";
+import { EditorEnvironmentContextProvider, Module } from "@bentley/monaco-editor/editor";
 
 export class App extends React.Component<{}, {}> {
 
@@ -17,7 +18,9 @@ export class App extends React.Component<{}, {}> {
 
   public render() {
     return (
-      <SampleShowcase />
+      <EditorEnvironmentContextProvider defaultModules={modules as Module[]}>
+        <SampleShowcase />
+      </EditorEnvironmentContextProvider>
     );
   }
 }

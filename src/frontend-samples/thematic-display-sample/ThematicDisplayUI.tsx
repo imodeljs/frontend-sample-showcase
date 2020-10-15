@@ -6,7 +6,7 @@ import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
-import { Slider, Toggle } from "@bentley/ui-core";
+import { Select, Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ThematicDisplayApp from "./ThematicDisplayApp";
@@ -175,16 +175,9 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
 
   // Create the react components for the render mode row.
   private createColorSchemePicker(label: string, info: string) {
+    const options = Object.assign({}, ["Blue & Red", "Monochrome", "Red & Blue", "Sea Mountain", "Topographic"]);
     const element =
-      <select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme}
-        value={this.state.colorScheme}>
-        <option value={ThematicGradientColorScheme.BlueRed}> Blue & Red </option>
-        <option value={ThematicGradientColorScheme.Monochrome}> Monochrome </option>
-        <option value={ThematicGradientColorScheme.RedBlue}> Red & Blue </option>
-        <option value={ThematicGradientColorScheme.SeaMountain}> Sea Mountain </option>
-        <option value={ThematicGradientColorScheme.Topographic}> Topographic </option>
-        {/* <option value={ThematicGradientColorScheme.Custom}> Custom </option> */}
-      </select>;
+      <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={options} />;
 
     return this.createJSXElementForAttribute(label, info, element);
   }
