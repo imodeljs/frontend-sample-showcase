@@ -12,7 +12,7 @@ export function getDisplayStylesSpec(): SampleSpec {
     label: "Display Styles",
     image: "display-styles-thumbnail.png",
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    readme: { name: "readme.md", import: import("!!raw-loader!./README.md") },
+    readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp"), entry: true },
       { name: "DisplayStylesUI.tsx", import: import("!!raw-loader!./DisplayStylesUI") },
