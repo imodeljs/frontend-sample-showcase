@@ -10,7 +10,7 @@ import {
   ConvexClipPlaneSet,
   Point3d,
   Transform,
-  Vector3d
+  Vector3d,
 } from "@bentley/geometry-core";
 import {
   ContextRealityModelProps,
@@ -20,7 +20,6 @@ import {
   ViewFlagOverrides,
 } from "@bentley/imodeljs-common";
 import {
-  ContextRealityModelState,
   EditManipulator,
   FeatureSymbology,
   findAvailableUnattachedRealityModels,
@@ -41,12 +40,13 @@ import SwipingComparisonUI from "./SwipingComparisonUI";
 export enum ComparisonType {
   Wireframe,
   RealityData,
-}
+};
 
 export default class SwipingViewportApp implements SampleApp {
   private static _provider: SampleTiledGraphicsProvider | undefined;
   private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
+
 
   /** Called by the showcase before the sample is started. */
   public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
@@ -189,6 +189,7 @@ export default class SwipingViewportApp implements SampleApp {
     provider.dispose();
   }
 
+  /** Get all available reality models and attach them to displayStyle. */
   public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
     const style = viewport.displayStyle.clone();
     const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
@@ -198,25 +199,15 @@ export default class SwipingViewportApp implements SampleApp {
     }
   }
 
-  private static getMatchingIndex(realityModel: ContextRealityModelState, vp: Viewport): number {
-    let matchingIndex = -1;
-    let index = 0;
-    vp.displayStyle.forEachRealityModel((modelState: ContextRealityModelState) => {
-      if (modelState.matchesNameAndUrl(realityModel.name, realityModel.url)) {
-        matchingIndex = index;
-      }
-      index++;
-    });
-    return matchingIndex;
-  }
-
+  /** Set the transparency of the reality models using the Feature Override API. */
   public static setRealityModelTransparent(vp: Viewport, transparency: boolean | undefined): void {
     const override = { transparency: (transparency ?? false) ? 1.0 : 0.0 };
     const style = vp.displayStyle.clone();
-    style.forEachRealityModel((model) => {
-      const index = SwipingViewportApp.getMatchingIndex(model, vp);
+    let index = 0;
+    style.forEachRealityModel((_model) => {
       const existingOverrides = vp.getRealityModelAppearanceOverride(index);
-      return vp.overrideRealityModelAppearance(index, existingOverrides ? existingOverrides.clone(override) : FeatureAppearance.fromJSON(override));
+      vp.overrideRealityModelAppearance(index, existingOverrides ? existingOverrides.clone(override) : FeatureAppearance.fromJSON(override));
+      index++;
     });
   }
 }
@@ -236,7 +227,6 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
-  // public abstract addToScene(output: SceneContext): void;
   public addToScene(output: SceneContext): void {
 
     // Save view to be replaced after comparison is drawn

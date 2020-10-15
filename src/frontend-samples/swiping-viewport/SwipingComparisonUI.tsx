@@ -11,7 +11,7 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import React from "react";
 import { DividerComponent } from "./Divider";
-import SwipingViewportApp, { ComparisonType, EmphasizeRealityData } from "./SwipingComparisonApp";
+import SwipingComparisonApp, { ComparisonType } from "./SwipingComparisonApp";
 
 export interface SwipingComparisonUIProps {
   iModelName: string;
@@ -75,7 +75,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       updateCompare = true;
 
     if (this.state.isRealityData !== prevState.isRealityData && undefined !== this.state.viewport) {
-      SwipingViewportApp.setRealityModelTransparent(this.state.viewport, this.state.isRealityData);
+      SwipingComparisonApp.setRealityModelTransparent(this.state.viewport, this.state.isRealityData);
     }
 
     if (updateState)
@@ -86,12 +86,12 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   // Update the state of the sample react component by querying the API.
   private updateState() {
-    const vp = SwipingViewportApp.getSelectedViewport();
+    const vp = SwipingComparisonApp.getSelectedViewport();
     if (undefined !== vp)
       this.setState({
         viewport: vp,
-        bounds: SwipingViewportApp.getClientRect(vp),
-        frustum: SwipingViewportApp.getFrustum(vp),
+        bounds: SwipingComparisonApp.getClientRect(vp),
+        frustum: SwipingComparisonApp.getFrustum(vp),
         dividerLeft: this._dividerLeft,
       });
   }
@@ -106,28 +106,26 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       return;
     const screenPoint = SwipingComparisonUI.getScreenPoint(this.state.bounds, this.state.dividerLeft);
 
-    // SwipingViewportApp.setTransparency(this.state.viewport, ComparisonType.RealityData !== this.state.comparison);
-    SwipingViewportApp.compare(screenPoint, this.state.viewport, this.state.comparison);
+    SwipingComparisonApp.compare(screenPoint, this.state.viewport, this.state.comparison);
   }
 
   // Should be called when the Viewport is ready.
   private readonly _initViewport = (viewport: ScreenViewport) => {
-    SwipingViewportApp.listerForViewportUpdate(viewport, this._onViewUpdate);
-    SwipingViewportApp.attachRealityData(true, viewport, this.state.iModel!);
-    EmphasizeRealityData.addProvider(viewport);
-    SwipingViewportApp.setRealityModelTransparent(viewport, ComparisonType.RealityData !== this.state.comparison);
+    SwipingComparisonApp.listerForViewportUpdate(viewport, this._onViewUpdate);
+    SwipingComparisonApp.attachRealityData(viewport, this.state.iModel!).then().catch();
+    SwipingComparisonApp.setRealityModelTransparent(viewport, ComparisonType.RealityData !== this.state.comparison);
     if (undefined === this._dividerLeft)
-      this._dividerLeft = this.initPositionDivider(SwipingViewportApp.getClientRect(viewport));
+      this._dividerLeft = this.initPositionDivider(SwipingComparisonApp.getClientRect(viewport));
     this.setState({ viewport });
   }
 
   // Should be called when the iModel is ready.
   private _onIModelReady = (iModel: IModelConnection) => {
     this.setState({ iModel });
-    const vp = SwipingViewportApp.getSelectedViewport();
+    const vp = SwipingComparisonApp.getSelectedViewport();
     // SwipingViewportApp.attachRealityData(iModel);
     if (undefined === vp)
-      SwipingViewportApp.listenOnceForViewOpen(this._initViewport);
+      SwipingComparisonApp.listenOnceForViewOpen(this._initViewport);
     else
       this._initViewport(vp);
   }
@@ -140,8 +138,8 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     if (undefined === vp)
       return;
 
-    const newBounds = SwipingViewportApp.getClientRect(vp);
-    const newFrustum = SwipingViewportApp.getFrustum(vp);
+    const newBounds = SwipingComparisonApp.getClientRect(vp);
+    const newFrustum = SwipingComparisonApp.getFrustum(vp);
     // Has the viewport been resized?
     if (undefined === this.state.bounds
       || this.state.bounds.height !== newBounds.height
@@ -169,14 +167,6 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   private _onLockToggle = (isOn: boolean) => {
     this.setState({ isLocked: isOn });
   }
-  private _onRealityToggle = (isOn: boolean) => {
-    if (undefined !== this.state.iModel && undefined !== this.state.viewport)
-      SwipingViewportApp.setRealityModelTransparent(this.state.viewport, isOn);
-    this.setState({ isRealityData: isOn });
-  }
-  private _onDropProvider = (isOn: boolean) => {
-    SwipingViewportApp.toggleProvider(isOn);
-  }
   private _onComparisonType = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const type: ComparisonType = Number.parseInt(event.target.value, 10);
     this.setState({ comparison: type });
@@ -188,14 +178,6 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       <div>
         <label>Lock Plane</label>
         <Toggle title={"Lock dividing plane"} isOn={this.state.isLocked} onChange={this._onLockToggle}></Toggle>
-      </div>
-      <div>
-        <label>Reality Data</label>
-        <Toggle title={"Toggle Reality data"} isOn={this.state.isLocked} onChange={this._onRealityToggle}></Toggle>
-      </div>
-      <div>
-        <label>Drop Provider</label>
-        <Toggle title={"Toggle Provider"} isOn={this.state.isLocked} onChange={this._onDropProvider}></Toggle>
       </div>
       <div>
         <label>Comparison Type</label>
@@ -213,7 +195,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     return (<>
       <ControlPane
         iModelSelector={this.props.iModelSelector}
-        instructions={"Drag the divider to compare the iModel with its wireframe rendering."}
+        instructions={"Drag the divider to compare the iModel with either the wireframe rendering or the reality ."}
         controls={this.getControls()}
       />
       { /* Viewport to display the iModel */}
