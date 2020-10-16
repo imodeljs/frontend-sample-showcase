@@ -11,6 +11,8 @@ import { FeaturedTile, MinimalFeaturedTile, MinimalTile, Tile } from "@bentley/u
 import SampleApp from "common/SampleApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
   return { title, description, content };
@@ -54,5 +56,4 @@ export default class TilesList extends React.Component<{}> implements SampleApp 
       </>
     );
   }
-
 }

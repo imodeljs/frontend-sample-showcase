@@ -10,6 +10,7 @@ export function getMarkerPinSpec(): SampleSpec {
     name: "marker-pin-sample",
     label: "Marker Pins",
     image: "marker-pin-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "MarkerPinApp.tsx", import: import("!!raw-loader!./MarkerPinApp.tsx"), entry: true },
       { name: "MarkerPinUI.tsx", import: import("!!raw-loader!./MarkerPinUI.tsx") },
