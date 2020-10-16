@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-The UI Component Samples are showcasing a variety of different user interface components that are able to be used in your imodel.js applications.
+The UI Component Samples demonstrate a variety of user interface components that can be used in your imodel.js applications.
 
 ## Purpose
 

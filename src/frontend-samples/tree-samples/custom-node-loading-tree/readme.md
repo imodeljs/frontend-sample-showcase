@@ -12,4 +12,4 @@ The purpose of this sample is to show off some of the fundamentals of working wi
 
 ## Description
 
-Trees are able to be constructed from a variety of different data sources, and are able to be used alongside one another. This sample showcases creating two different trees, one using a hardcoded data source and the other using presentation rules pulled from the currently selected imodel.
+Trees can be constructed from a variety of data sources, and can be used alongside one another. This sample showcases creating two different trees, one using a hardcoded data source and the other using presentation rules pulled from the currently selected imodel.

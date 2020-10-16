@@ -2,6 +2,8 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
+This sample demonstrates displaying two viewports displaying the same 3d models.
+
 ## Purpose
 
 The purpose of this sample is to demonstrate the following:
