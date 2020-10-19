@@ -8,28 +8,30 @@ import { EmphasizeElements, IModelApp, ScreenViewport, ViewClipClearTool, ViewCl
 import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@bentley/geometry-core";
 import SampleApp from "common/SampleApp";
 import VolumeQueryUI from "./VolumeQueryUI";
-import { ColorDef, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
+import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
 import { BentleyStatus, Id64Array } from "@bentley/bentleyjs-core";
 import { PresentationLabelsProvider } from "@bentley/presentation-components";
 import { InstanceKey } from "@bentley/presentation-common";
 
-export interface ClassifiedElements {
-  insideTheBox: PhysicalElement[];
-  outsideTheBox: PhysicalElement[];
-  overlap: PhysicalElement[];
+/* Going to color elements from three different sections of volume box */
+export enum SectionOfColoring {
+  InsideTheBox = "Inside",
+  OutsideTheBox = "Outside",
+  Overlap = "Overlap",
 }
 
-export interface ClassifiedElementsColors {
-  insideColor: ColorDef;
-  outsideColor: ColorDef;
-  overlapColor: ColorDef;
+/* Going to query and show elements only from two different sections of volume box */
+export enum ElementPosition {
+  InsideTheBox = "Inside",
+  Overlap = "Overlap",
 }
 
-export interface PhysicalElement {
+export interface SpatialElement {
   id: string;
-  name: string;
+  name: string | undefined;
   className: string;
 }
+
 export class VolumeQueryApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <VolumeQueryUI iModelName={iModelName} iModelSelector={iModelSelector} />;
@@ -75,71 +77,50 @@ export class VolumeQueryApp implements SampleApp {
     IModelApp.toolAdmin.startDefaultTool();
   }
 
-  /* Getting the range of currect box */
-  public static getRangeOfBox(vp: ScreenViewport): Range3d | undefined {
-    const viewClip = vp.view.getViewClip();
-    if (viewClip !== undefined) {
-      return ClipUtilities.rangeOfClipperIntersectionWithRange(
-        viewClip,
-        vp.view.computeFitRange(),
-      );
-    }
-
-    return undefined;
-  }
-
-  /* Getting all physical elements from iModel*/
-  public static async getAllPhysicalElements(vp: ScreenViewport): Promise<PhysicalElement[]> {
-    const esqlQuery = "SELECT ECInstanceId, ECClassId FROM BisCore.PhysicalElement";
-    const elementsAsync = vp.iModel.query(esqlQuery);
-    const elements: PhysicalElement[] = [];
-    for await (const element of elementsAsync) {
-      elements.push({ id: element.id, className: element.className, name: "" });
-    }
-
-    const presentationProvider = new PresentationLabelsProvider({ imodel: vp.iModel });
-    const packedInstancesKeys: InstanceKey[][] = [];
-    const instanceKeys: InstanceKey[] = elements.map((element) => {
-      return { className: element.className.replace(".", ":"), id: element.id };
-    });
-
-    /* Break up the potential large array into smaller arrays with a maximum of 1000 keys each.
-    For example, if there are 3000 physical elements, this will create 3 arrays with 1000 keys each.
-    This is being done because API has a limit for how many keys you can send at one time */
-    const packsOfInstanceKeys = Math.floor(instanceKeys.length / 1000);
-    for (let i = 0; i <= packsOfInstanceKeys; i++) {
-      if (i !== packsOfInstanceKeys) {
-        packedInstancesKeys.push(instanceKeys.slice(i * 1000, (i + 1) * 1000));
-      } else {
-        packedInstancesKeys.push(instanceKeys.slice(i * 1000, instanceKeys.length + 1));
-      }
-    }
-
-    /* Getting elements names */
-    const elementNames: string[] = [];
-    for (const keysArray of packedInstancesKeys) {
-      const names = await presentationProvider.getLabels(keysArray);
-      elementNames.push(...names);
-    }
-
-    for (let i = 0; i < elementNames.length; i++)
-      elements[i].name = elementNames[i];
-
-    return elements;
-  }
-
   /* Clear color from colored elements */
   public static clearColorOverrides(vp: ScreenViewport) {
     EmphasizeElements.getOrCreate(vp).clearOverriddenElements(vp);
   }
 
-  /* Classify given elements - inside, outside the box and overlap */
-  public static async getClassifiedElements(vp: ScreenViewport, candidates: PhysicalElement[]): Promise<ClassifiedElements | undefined> {
+  /* Getting elements names */
+  public static async getSpatialElementsWithName(vp: ScreenViewport, elements: SpatialElement[]): Promise<SpatialElement[]> {
+    const presentationProvider = new PresentationLabelsProvider({ imodel: vp.iModel });
+    const instanceKeys: InstanceKey[] = elements.map((element) => {
+      return { className: element.className.replace(".", ":"), id: element.id };
+    });
+
+    const elementsNames: string[] = await presentationProvider.getLabels(instanceKeys);
+    for (let i = 0; i < elements.length; i++)
+      elements[i].name = elementsNames[i];
+
+    return elements;
+  }
+
+  /* Getting elements that are inside or overlaping the given range*/
+  public static async getSpatialElements(vp: ScreenViewport, range: Range3d): Promise<SpatialElement[]> {
+    const esqlQuery = `SELECT e.ECInstanceId, e.ECClassId FROM bis.SpatialElement e JOIN bis.SpatialIndex i ON e.ECInstanceId=i.ECInstanceId WHERE i.MinX<=${range.xHigh} AND i.MinY<=${range.yHigh} AND i.MinZ<=${range.zHigh} AND i.MaxX >= ${range.xLow} AND i.MaxY >= ${range.yLow} AND i.MaxZ >= ${range.zLow}`;
+    const elementsAsync = vp.iModel.query(esqlQuery);
+    const elements: SpatialElement[] = [];
+    for await (const element of elementsAsync) {
+      elements.push({ id: element.id, className: element.className, name: undefined });
+    }
+
+    return elements;
+  }
+
+  /* Classify given elements - inside and overlaping. What is left are going to be outside the box*/
+  public static async getClassifiedElements(vp: ScreenViewport, candidates: SpatialElement[]): Promise<Record<ElementPosition, SpatialElement[]> | undefined> {
     const clip = vp.view.getViewClip();
     if (clip === undefined)
       return;
 
     const candidatesId = candidates.map((candidate) => candidate.id) as Id64Array;
+
+    const classifiedElements = {
+      [ElementPosition.InsideTheBox]: [] as SpatialElement[],
+      [ElementPosition.Overlap]: [] as SpatialElement[],
+    };
+
     const requestProps: GeometryContainmentRequestProps = {
       candidates: candidatesId,
       clip: clip.toJSON(),
@@ -151,31 +132,38 @@ export class VolumeQueryApp implements SampleApp {
     if (BentleyStatus.SUCCESS !== result.status || undefined === result.candidatesContainment)
       return;
 
-    const insideTheBox: PhysicalElement[] = [];
-    const outsideTheBox: PhysicalElement[] = [];
-    const overlap: PhysicalElement[] = [];
-
     result.candidatesContainment.forEach((val: ClipPlaneContainment, index: number) => {
       switch (val) {
         case ClipPlaneContainment.StronglyInside:
-          insideTheBox.push(candidates[index]);
+          classifiedElements[ElementPosition.InsideTheBox].push(candidates[index]);
           break;
         case ClipPlaneContainment.Ambiguous:
-          overlap.push(candidates[index]);
-          break;
-        case ClipPlaneContainment.StronglyOutside:
-          outsideTheBox.push(candidates[index]);
+          classifiedElements[ElementPosition.Overlap].push(candidates[index]);
           break;
       }
     });
 
-    return { insideTheBox, outsideTheBox, overlap };
+    return classifiedElements;
   }
 
-  public static async colorClassifiedElements(vp: ScreenViewport, classifiedElements: ClassifiedElements, colors: ClassifiedElementsColors) {
-    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements.insideTheBox.map((x) => x.id), vp, colors.insideColor);
-    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements.outsideTheBox.map((x) => x.id), vp, colors.outsideColor);
-    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements.overlap.map((x) => x.id), vp, colors.overlapColor);
-    EmphasizeElements.getOrCreate(vp).defaultAppearance = EmphasizeElements.getOrCreate(vp).createDefaultAppearance();
+  /* Getting range of the clip */
+  public static computeClipRange(viewport: ScreenViewport): Range3d {
+    const range = viewport.computeViewRange();
+    const clip = viewport.view.getViewClip();
+    if (undefined !== clip) {
+      const clipRange = ClipUtilities.rangeOfClipperIntersectionWithRange(clip, range);
+      if (!clipRange.isNull)
+        range.setFrom(clipRange);
+    }
+
+    return range;
+  }
+
+  public static async colorClassifiedElements(vp: ScreenViewport, classifiedElements: Record<ElementPosition, SpatialElement[]>, colors: Record<SectionOfColoring, ColorDef>) {
+    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements[SectionOfColoring.InsideTheBox].map((x) => x.id), vp, colors[SectionOfColoring.InsideTheBox]);
+    EmphasizeElements.getOrCreate(vp).overrideElements(classifiedElements[SectionOfColoring.Overlap].map((x) => x.id), vp, colors[SectionOfColoring.Overlap]);
+    /* All elements that are not overridden are outside the box by default. So to color them we don't need to have elements ids.
+    This is done so we would not need to query large amount of elements that are outside the box */
+    EmphasizeElements.getOrCreate(vp).defaultAppearance = FeatureAppearance.fromRgb(colors[SectionOfColoring.OutsideTheBox]);
   }
 }
