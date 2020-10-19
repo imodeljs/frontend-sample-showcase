@@ -9,7 +9,7 @@ export function getSimple3dSpec(): SampleSpec {
   return ({
     name: "simple-3d-sample",
     label: "Simple 3d",
-    image: "heatmap-decorator-thumbnail.png",
+    image: "simple-3d-thumbnail.png",
     files: [
       { name: "Simple3d.tsx", import: import("!!raw-loader!./Simple3d"), entry: true },
     ],

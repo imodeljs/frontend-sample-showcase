@@ -9,11 +9,8 @@ import { Angle, AngleSweep, Arc3d, Box, Cone, Point3d, PolyfaceBuilder, Range3d,
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { Select } from "@bentley/ui-core";
+import { ControlPane } from "Components/ControlPane/ControlPane"; import { NumericInput, Select } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
-import { Input } from "@bentley/ui-core";
-import { NumericInput } from "@bentley/ui-core";
 
 interface Simple3dState {
   shape: string;
@@ -51,11 +48,11 @@ export default class Simple3d extends React.Component<{}, Simple3dState> impleme
   }
 
   public componentDidMount() {
-    this.setGeometry(this.state.shape)
+    this.setGeometry(this.state.shape);
   }
 
   public componentDidUpdate() {
-    this.setGeometry(this.state.shape)
+    this.setGeometry(this.state.shape);
   }
 
   public getControls() {
@@ -115,7 +112,6 @@ export default class Simple3d extends React.Component<{}, Simple3dState> impleme
       IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
     }
   }
-
 
   public setGeometry(shape: string) {
     BlankViewport.decorator.clearGeometry();

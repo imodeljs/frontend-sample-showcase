@@ -9,7 +9,7 @@ export function getSimpleLineSpec(): SampleSpec {
   return ({
     name: "simple-line-sample",
     label: "Simple Line",
-    image: "heatmap-decorator-thumbnail.png",
+    image: "simple-line-thumbnail.png",
     files: [
       { name: "SimpleLine.tsx", import: import("!!raw-loader!./SimpleLine"), entry: true },
     ],

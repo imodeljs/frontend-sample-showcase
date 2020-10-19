@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Point3d, Polyface, Transform } from "@bentley/geometry-core";
-import { DecorateContext, Decorator, FeatureSymbology, GraphicBranch, GraphicType, IModelApp, RenderGraphic, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference } from "@bentley/imodeljs-frontend";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { Timer } from "@bentley/ui-core";
-import { ColorDef, GeometryStreamBuilder, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { ColorDef, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
 interface CustomGeometryQuery {

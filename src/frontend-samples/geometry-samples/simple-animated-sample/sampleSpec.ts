@@ -9,7 +9,7 @@ export function getSimpleAnimatedSpec(): SampleSpec {
   return ({
     name: "simple-animated-sample",
     label: "Simple Animated",
-    image: "heatmap-decorator-thumbnail.png",
+    image: "simple-animated-thumbnail.png",
     files: [
       { name: "SimpleAnimated.tsx", import: import("!!raw-loader!./SimpleAnimated"), entry: true },
     ],

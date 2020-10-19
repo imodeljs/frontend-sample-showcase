@@ -9,7 +9,7 @@ export function getAdvanced3dSpec(): SampleSpec {
   return ({
     name: "advanced-3d-sample",
     label: "Advanced 3d",
-    image: "heatmap-decorator-thumbnail.png",
+    image: "advanced-3d-thumbnail.png",
     files: [
       { name: "Advanced3d.tsx", import: import("!!raw-loader!./Advanced3d"), entry: true },
     ],

@@ -30,7 +30,6 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> imp
     };
   }
 
-
   public static async setup(): Promise<React.ReactNode> {
     await BlankViewport.setup();
     BlankViewport.decorator = new GeometryDecorator(true, 10);
@@ -76,7 +75,6 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> imp
 
   public componentDidUpdate() {
     this.setGeometry();
-    console.log("updated")
   }
 
   public setGeometry() {

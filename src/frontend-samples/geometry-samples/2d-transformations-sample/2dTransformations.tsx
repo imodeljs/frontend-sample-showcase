@@ -5,10 +5,10 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { Arc3d, LineString3d, Loop, Point3d, Point3dArray, Polyface, Range3d, Transform } from "@bentley/geometry-core";
+import { Arc3d, LineString3d, Loop, Point3d, Point3dArray, Range3d, Transform } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { ColorDef, TextString } from "@bentley/imodeljs-common";
+import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
 
@@ -21,7 +21,7 @@ interface TransformationState {
   geometry: Loop | undefined;
 }
 
-export default class SmallConvexHull extends React.Component<{}, TransformationState> implements SampleApp {
+export default class TwoDimTransformations extends React.Component<{}, TransformationState> implements SampleApp {
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -39,7 +39,7 @@ export default class SmallConvexHull extends React.Component<{}, TransformationS
     await BlankViewport.setup(new Range3d(-500, -500, 0, 500, 500, 0));
     BlankViewport.decorator = new GeometryDecorator(true, 10);
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <SmallConvexHull></SmallConvexHull>;
+    return <TwoDimTransformations></TwoDimTransformations>;
   }
 
   public static teardown() {
@@ -54,57 +54,56 @@ export default class SmallConvexHull extends React.Component<{}, TransformationS
 
   public handleLeftXTranslation() {
     if (this.state.geometry) {
-      const newGeometry = this.state.geometry
+      const newGeometry = this.state.geometry;
       if (newGeometry)
         if (newGeometry.tryTranslateInPlace(-this.state.xTrans, 0, 0)) {
-
-          this.setState({ geometry: newGeometry })
+          this.setState({ geometry: newGeometry });
         }
     }
   }
 
   public handleRightXTranslation() {
     if (this.state.geometry) {
-      const newGeometry = this.state.geometry
+      const newGeometry = this.state.geometry;
       if (newGeometry)
         if (newGeometry.tryTranslateInPlace(this.state.xTrans, 0, 0)) {
 
-          this.setState({ geometry: newGeometry })
+          this.setState({ geometry: newGeometry });
         }
     }
   }
 
   public handleUpYTranslation() {
     if (this.state.geometry) {
-      const newGeometry = this.state.geometry
+      const newGeometry = this.state.geometry;
       if (newGeometry)
         if (newGeometry.tryTranslateInPlace(0, this.state.yTrans, 0)) {
 
-          this.setState({ geometry: newGeometry })
+          this.setState({ geometry: newGeometry });
         }
     }
   }
 
   public handleDownYTranslation() {
     if (this.state.geometry) {
-      const newGeometry = this.state.geometry
+      const newGeometry = this.state.geometry;
       if (newGeometry)
         if (newGeometry.tryTranslateInPlace(0, -this.state.yTrans, 0)) {
 
-          this.setState({ geometry: newGeometry })
+          this.setState({ geometry: newGeometry });
         }
     }
   }
 
   public handleLeftRotation() {
     if (this.state.geometry) {
-      const newGeometry = this.state.geometry
+      const newGeometry = this.state.geometry;
       if (newGeometry) {
-        const radians = this.state.rotationDeg / 57.2958
-        const rotation = Transform.createRowValues(Math.cos(radians), -Math.sin(radians), 0, 0, Math.sin(radians), Math.cos(radians), 0, 0, 0, 0, 1, 0)
+        const radians = this.state.rotationDeg / 57.2958;
+        const rotation = Transform.createRowValues(Math.cos(radians), -Math.sin(radians), 0, 0, Math.sin(radians), Math.cos(radians), 0, 0, 0, 0, 1, 0);
         if (newGeometry.tryTransformInPlace(rotation)) {
 
-          this.setState({ geometry: newGeometry })
+          this.setState({ geometry: newGeometry });
         }
       }
     }
@@ -112,13 +111,13 @@ export default class SmallConvexHull extends React.Component<{}, TransformationS
 
   public handleRightRotation() {
     if (this.state.geometry) {
-      const newGeometry = this.state.geometry
+      const newGeometry = this.state.geometry;
       if (newGeometry) {
-        const radians = -this.state.rotationDeg / 57.2958
-        const rotation = Transform.createRowValues(Math.cos(radians), -Math.sin(radians), 0, 0, Math.sin(radians), Math.cos(radians), 0, 0, 0, 0, 1, 0)
+        const radians = -this.state.rotationDeg / 57.2958;
+        const rotation = Transform.createRowValues(Math.cos(radians), -Math.sin(radians), 0, 0, Math.sin(radians), Math.cos(radians), 0, 0, 0, 0, 1, 0);
         if (newGeometry.tryTransformInPlace(rotation)) {
 
-          this.setState({ geometry: newGeometry })
+          this.setState({ geometry: newGeometry });
         }
       }
     }
@@ -126,32 +125,31 @@ export default class SmallConvexHull extends React.Component<{}, TransformationS
   public getControls() {
     return (
       <>
-        <div className="sample-options-2col">
+        <div className="sample-options-2col" style={{ maxWidth: "350px" }}>
           <span>Shape:</span>
-          <Select options={["Square", "Circle", "Triangle", "Convex Hull"]} onChange={(event) => { this.setState({ shape: event.target.value }); this.generateBaseGeometry(event.target.value) }} />
+          <Select options={["Square", "Circle", "Triangle", "Convex Hull"]} onChange={(event) => { this.setState({ shape: event.target.value }); this.generateBaseGeometry(event.target.value); }} />
         </div>
-        <div className="sample-options-4col">
+        <div className="sample-options-4col" style={{ maxWidth: "350px" }}>
           <span>Translate X</span>
-          <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ xTrans: value }) }}></NumericInput>
-          <Button onClick={(event) => { this.handleLeftXTranslation() }}>Shift Left</Button>
-          <Button onClick={(event) => { this.handleRightXTranslation() }}>Shift Right</Button>
+          <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ xTrans: value }); }}></NumericInput>
+          <Button onClick={() => { this.handleLeftXTranslation(); }}>Shift Left</Button>
+          <Button onClick={() => { this.handleRightXTranslation(); }}>Shift Right</Button>
 
           <span>Translate Y</span>
-          <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ yTrans: value }) }}></NumericInput>
-          <Button onClick={(event) => { this.handleUpYTranslation() }}>Shift Up</Button>
-          <Button onClick={(event) => { this.handleDownYTranslation() }}>Shift Down</Button>
+          <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ yTrans: value }); }}></NumericInput>
+          <Button onClick={() => { this.handleUpYTranslation(); }}>Shift Up</Button>
+          <Button onClick={() => { this.handleDownYTranslation(); }}>Shift Down</Button>
 
-          <span>Rotate About Origin:</span>
-          <NumericInput defaultValue={180} onChange={(value) => { if (value) this.setState({ rotationDeg: value }) }}></NumericInput>
-          <Button onClick={(event) => { this.handleLeftRotation() }}>Rotate Left</Button>
-          <Button onClick={(event) => { this.handleRightRotation() }}>Rotate Right</Button>
+          <span>Rotate:</span>
+          <NumericInput defaultValue={180} onChange={(value) => { if (value) this.setState({ rotationDeg: value }); }}></NumericInput>
+          <Button onClick={() => { this.handleLeftRotation(); }}>Rotate Left</Button>
+          <Button onClick={() => { this.handleRightRotation(); }}>Rotate Right</Button>
 
         </div>
-        <Button onClick={(event) => { this.generateBaseGeometry() }}>Reset</Button>
+        <Button onClick={() => { this.generateBaseGeometry(); }}>Reset</Button>
       </>
     );
   }
-
 
   public render() {
     return (
@@ -168,27 +166,27 @@ export default class SmallConvexHull extends React.Component<{}, TransformationS
 
   public generateBaseGeometry(shape: string = this.state.shape) {
     if (shape === "Square") {
-      const points: Point3d[] = []
+      const points: Point3d[] = [];
       points.push(Point3d.create(-200, -200, 0));
       points.push(Point3d.create(-200, 200, 0));
       points.push(Point3d.create(200, 200, 0));
       points.push(Point3d.create(200, -200, 0));
-      const linestring = LineString3d.create(points)
+      const linestring = LineString3d.create(points);
       const loop = Loop.create(linestring.clone());
-      this.setState({ geometry: loop })
+      this.setState({ geometry: loop });
 
     } else if (shape === "Circle") {
       const circle = Arc3d.createXY(Point3d.create(0, 0, 0), 200);
       const loop = Loop.create(circle.clone());
-      this.setState({ geometry: loop })
+      this.setState({ geometry: loop });
     } else if (shape === "Triangle") {
-      const points: Point3d[] = []
+      const points: Point3d[] = [];
       points.push(Point3d.create(0, 200, 0));
       points.push(Point3d.create(-250, -100, 0));
       points.push(Point3d.create(250, -100, 0));
-      const linestring = LineString3d.create(points)
+      const linestring = LineString3d.create(points);
       const loop = Loop.create(linestring.clone());
-      this.setState({ geometry: loop })
+      this.setState({ geometry: loop });
 
     } else if (shape === "Convex Hull") {
       const points: Point3d[] = [];
@@ -207,15 +205,15 @@ export default class SmallConvexHull extends React.Component<{}, TransformationS
       Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);
       const hullGeometry = LineString3d.create(hullPoints);
       const loop = Loop.create(hullGeometry.clone());
-      this.setState({ geometry: loop })
+      this.setState({ geometry: loop });
     }
   }
 
   public setGeometry() {
-    BlankViewport.decorator.clearGeometry()
+    BlankViewport.decorator.clearGeometry();
     BlankViewport.decorator.setColor(ColorDef.red);
     BlankViewport.decorator.setLineThickness(5);
     if (this.state.geometry)
-      BlankViewport.decorator.addGeometry(this.state.geometry)
+      BlankViewport.decorator.addGeometry(this.state.geometry);
   }
 }

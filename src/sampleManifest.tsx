@@ -50,11 +50,10 @@ import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolba
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
 import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
-import { getSmallConvexHullSpec } from "./frontend-samples/geometry-samples/small-convex-hull/sampleSpec";
+import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d-transformations-sample/sampleSpec";
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
-import { getAnimated3dSpec } from "./frontend-samples/geometry-samples/animated-3d-sample/sampleSpec";
 
 
 export interface SampleSpecGroup {
@@ -121,12 +120,10 @@ export const sampleManifest: SampleSpecGroup[] = [{
 }, {
   groupName: "Geometry Samples", samples: [
     getSimpleLineSpec(),
-    getSmallConvexHullSpec(),
+    get2dTransformationsSpec(),
     getSimple3dSpec(),
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
-    getAnimated3dSpec(),
-
   ],
 },
 ];

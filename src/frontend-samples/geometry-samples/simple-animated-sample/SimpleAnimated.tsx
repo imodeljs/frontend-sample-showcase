@@ -42,13 +42,13 @@ export default class SimpleAnimated extends React.Component<{}, { grid: boolean[
   }
 
   public componentDidMount() {
-    this.setGeometry()
+    this.setGeometry();
     this.state.timer.setOnExecute(this.handleTimer.bind(this));
     this.state.timer.start();
   }
 
   public componentWillUnmount() {
-    this.state.timer.setOnExecute(undefined)
+    this.state.timer.setOnExecute(undefined);
 
   }
 

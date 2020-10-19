@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Range3d } from "@bentley/geometry-core";
-import { BlankConnection, DisplayStyle3dState, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool, Environment, DisplayStyleState, Viewport, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { Cartographic, ColorDef, RenderMode, LightSettings, ViewFlagProps, DisplayStyle3dSettingsProps, DisplayStyle3dSettings } from "@bentley/imodeljs-common";
+import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, ScreenViewport, SelectionTool, SpatialViewState, StandardViewId, Viewport, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
+import { Cartographic, ColorDef, DisplayStyle3dSettingsProps, RenderMode, ViewFlagProps } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
@@ -41,8 +41,6 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: V
   }
 
   // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  // TODO: Modify background color to be more appealing
-  // TODO: Enable a style of lighting that makes 3d objects more obviously 3d
   public static async getViewState(imodel: IModelConnection): Promise<ViewState> {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
@@ -60,21 +58,10 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: V
     BlankViewport.viewState = viewState;
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       const style2: DisplayStyle3dSettingsProps = {
-        environment: {
-          sky: {
-            display: true,
-            nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
-          },
-        },
-        backgroundColor: 10921638,
+        backgroundColor: ColorDef.computeTbgrFromComponents(100, 100, 200),
         viewflags: { ...renderingStyleViewFlags, noSolarLight: false, visEdges: true },
         lights: {
           solar: { direction: [-0.9833878378071199, -0.18098510351728977, 0.013883542698953828] },
-        },
-        hline: {
-          visible: { ovrColor: true, color: 0, pattern: 0, width: 1 },
-          hidden: { ovrColor: false, color: 16777215, pattern: 3435973836, width: 0 },
-          transThreshold: 1,
         },
       };
       viewport.overrideDisplayStyle(style2);
