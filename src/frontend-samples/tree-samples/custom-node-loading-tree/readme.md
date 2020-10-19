@@ -1,8 +1,8 @@
-# Custom Node Tree Sample
+# Custom Node Loading Tree Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-The Tree Samples showcase different ways to construct and utilize an interactive visual tree through imodel.js.
+The Tree Samples showcase different ways to construct and utilize an interactive visual tree through iModel.js.
 
 ## Purpose
 
