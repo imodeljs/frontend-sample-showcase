@@ -11,16 +11,6 @@ import * as React from "react";
 import DisplayStylesUI from "./DisplayStylesUI";
 import { displayStyles } from "./Styles";
 
-/** This sample highlights the ability to override the current display settings with a JObject or
- * JSON describing the desired settings. All the descriptions are in the Styles.ts file.
- *
- * We invite you to create your own settings using the "Custom" tag provided in Styles.ts.
- * You can copy and paste parts of your favorite styles as a start.
- *
- * Only the features specified by the style will be changed. This can be seen with the "Custom"
- * style you can create. Use the "Merge with Custom" toggle to apply both the custom style and the specified
- * style.
- */
 export default class DisplayStylesApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <DisplayStylesUI displayStyles={displayStyles} iModelName={iModelName} iModelSelector={iModelSelector} />;

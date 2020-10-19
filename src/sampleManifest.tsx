@@ -48,7 +48,6 @@ import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/present
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
-
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
@@ -112,3 +111,14 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 },
 ];
+
+export function findSpecBySampleName(nameIn: string) {
+  for (const group of sampleManifest) {
+    for (const spec of group.samples) {
+      if (nameIn === spec.name) {
+        return { group, spec }
+      }
+    }
+  }
+  return undefined;
+}

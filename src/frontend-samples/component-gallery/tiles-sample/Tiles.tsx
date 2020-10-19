@@ -54,5 +54,4 @@ export default class TilesList extends React.Component<{}> implements SampleApp 
       </>
     );
   }
-
 }

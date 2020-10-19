@@ -10,6 +10,7 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     name: "unified-selection-tree-sample",
     label: "Unified Selection Tree",
     image: "unified-selection-tree-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
     ],
