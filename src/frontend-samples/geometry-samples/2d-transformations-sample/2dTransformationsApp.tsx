@@ -30,45 +30,31 @@ export default class Transformations2dApp implements SampleApp {
     return undefined;
   }
 
-  public static generateSquare(): Loop {
+  public static generateSquare(center: Point3d, sideLength: number): Loop {
     const points: Point3d[] = [];
-    points.push(Point3d.create(-200, -200, 0));
-    points.push(Point3d.create(-200, 200, 0));
-    points.push(Point3d.create(200, 200, 0));
-    points.push(Point3d.create(200, -200, 0));
+    points.push(Point3d.create(center.x - sideLength / 2, center.y - sideLength / 2));
+    points.push(Point3d.create(center.x - sideLength / 2, center.y + sideLength / 2));
+    points.push(Point3d.create(center.x + sideLength / 2, center.y + sideLength / 2));
+    points.push(Point3d.create(center.x + sideLength / 2, center.y - sideLength / 2));
     const linestring = LineString3d.create(points);
     const loop = Loop.create(linestring.clone());
     return loop;
   }
 
-  public static generateCircle(): Loop {
-    const circle = Arc3d.createXY(Point3d.create(0, 0, 0), 200);
+  public static generateCircle(center: Point3d, radius: number): Loop {
+    const circle = Arc3d.createXY(center, radius);
     const loop = Loop.create(circle.clone());
     return loop;
   }
 
-  public static generateTriangle(): Loop {
-    const points: Point3d[] = [];
-    points.push(Point3d.create(0, 200, 0));
-    points.push(Point3d.create(-250, -100, 0));
-    points.push(Point3d.create(250, -100, 0));
+  public static generateTriangle(point1: Point3d, point2: Point3d, point3: Point3d): Loop {
+    const points: Point3d[] = [point1, point2, point3];
     const linestring = LineString3d.create(points);
     const loop = Loop.create(linestring.clone());
     return loop;
   }
 
-  public static generateConvexHull(): Loop {
-    const points: Point3d[] = [];
-    points.push(Point3d.create(-400, -250, 0));
-    points.push(Point3d.create(-300, -150, 0));
-    points.push(Point3d.create(-400, 50, 0));
-    points.push(Point3d.create(400, -200, 0));
-    points.push(Point3d.create(0, 150, 0));
-    points.push(Point3d.create(-500, -50, 0));
-    points.push(Point3d.create(-350, -50, 0));
-    points.push(Point3d.create(-310, -50, 0));
-    points.push(Point3d.create(-320, -50, 0));
-    points.push(Point3d.create(-200, 150, 0));
+  public static generateConvexHull(points: Point3d[]): Loop {
     const hullPoints: Point3d[] = [];
     const interiorPoints: Point3d[] = [];
     Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);

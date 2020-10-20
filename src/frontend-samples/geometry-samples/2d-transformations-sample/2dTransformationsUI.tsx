@@ -9,6 +9,7 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
 import Transformations2dApp from "./2dTransformationsApp";
+import { Point3d } from "@bentley/geometry-core";
 
 interface TransformationState {
   shape: string;
@@ -29,7 +30,7 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
       xTrans: 100,
       yTrans: 100,
       rotationDeg: 180,
-      geometry: Transformations2dApp.generateSquare(),
+      geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400),
     };
   }
 
@@ -44,13 +45,25 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
 
   public generateBaseGeometry(shape: string) {
     if (shape === "Square") {
-      this.setState({ geometry: Transformations2dApp.generateSquare() });
+      this.setState({ geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400) });
     } else if (shape === "Circle") {
-      this.setState({ geometry: Transformations2dApp.generateCircle() });
+      this.setState({ geometry: Transformations2dApp.generateCircle(Point3d.create(0, 0), 200) });
     } else if (shape === "Triangle") {
-      this.setState({ geometry: Transformations2dApp.generateTriangle() });
+      this.setState({ geometry: Transformations2dApp.generateTriangle(Point3d.create(0, 200, 0), Point3d.create(-250, -100, 0), Point3d.create(250, -100, 0)) });
     } else if (shape === "Convex Hull") {
-      this.setState({ geometry: Transformations2dApp.generateConvexHull() });
+      const points = [
+        Point3d.create(-400, -250, 0),
+        Point3d.create(-300, -150, 0),
+        Point3d.create(-400, 50, 0),
+        Point3d.create(400, -200, 0),
+        Point3d.create(0, 150, 0),
+        Point3d.create(-500, -50, 0),
+        Point3d.create(-350, -50, 0),
+        Point3d.create(-310, -50, 0),
+        Point3d.create(-320, -50, 0),
+        Point3d.create(-200, 150, 0),
+      ]
+      this.setState({ geometry: Transformations2dApp.generateConvexHull(points) });
     }
   }
 

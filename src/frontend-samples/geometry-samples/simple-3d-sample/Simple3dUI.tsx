@@ -8,7 +8,7 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane"; import { NumericInput, Select } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import Simple3dApp from "./Simple3dApp";
-import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
+import { Point3d, PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 
 interface Simple3dState {
   shape: string;
@@ -60,20 +60,22 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
     options.needParams = false;
     options.needNormals = true;
     const builder = PolyfaceBuilder.create(options);
+    const centerPt = Point3d.create(500, 500, 500);
+
     if (this.state.shape === "Cone") {
-      const cone = Simple3dApp.createCone(this.state.coneHeight, this.state.coneLowerRadius, this.state.coneUpperRadius);
+      const cone = Simple3dApp.createCone(centerPt, this.state.coneHeight, this.state.coneLowerRadius, this.state.coneUpperRadius);
       if (cone)
         builder.addCone(cone);
     } else if (this.state.shape === "Sphere") {
-      const sphere = Simple3dApp.createSphere(this.state.sphereRadius);
+      const sphere = Simple3dApp.createSphere(centerPt, this.state.sphereRadius);
       if (sphere)
         builder.addSphere(sphere);
     } else if (this.state.shape === "Box") {
-      const box = Simple3dApp.createBox(this.state.boxLength, this.state.boxWidth, this.state.boxHeight);
+      const box = Simple3dApp.createBox(centerPt, this.state.boxLength, this.state.boxWidth, this.state.boxHeight);
       if (box)
         builder.addBox(box);
     } else if (this.state.shape === "Torus Pipe") {
-      const torusPipe = Simple3dApp.createTorusPipe(this.state.tpOuterRadius, this.state.tpInnerRadius, this.state.tpSweep);
+      const torusPipe = Simple3dApp.createTorusPipe(centerPt, this.state.tpOuterRadius, this.state.tpInnerRadius, this.state.tpSweep);
       if (torusPipe)
         builder.addTorusPipe(torusPipe);
     }
