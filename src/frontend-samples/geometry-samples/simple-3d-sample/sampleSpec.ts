@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import Simple3d from "./Simple3d";
+import Simple3dApp from "./Simple3dApp";
 
 export function getSimple3dSpec(): SampleSpec {
   return ({
@@ -11,9 +11,10 @@ export function getSimple3dSpec(): SampleSpec {
     label: "Simple 3d",
     image: "simple-3d-thumbnail.png",
     files: [
-      { name: "Simple3d.tsx", import: import("!!raw-loader!./Simple3d"), entry: true },
+      { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp"), entry: true },
+      { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI") },
     ],
-    setup: Simple3d.setup,
-    teardown: Simple3d.teardown,
+    setup: Simple3dApp.setup,
+    teardown: Simple3dApp.teardown,
   });
 }

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import Advanced3d from "./Advanced3d";
+import Advanced3dApp from "./Advanced3dApp";
 
 export function getAdvanced3dSpec(): SampleSpec {
   return ({
@@ -11,9 +11,11 @@ export function getAdvanced3dSpec(): SampleSpec {
     label: "Advanced 3d",
     image: "advanced-3d-thumbnail.png",
     files: [
-      { name: "Advanced3d.tsx", import: import("!!raw-loader!./Advanced3d"), entry: true },
+      { name: "Advanced3dApp.tsx", import: import("!!raw-loader!./Advanced3dApp"), entry: true },
+      { name: "Advanced3dUI.tsx", import: import("!!raw-loader!./Advanced3dUI") },
+
     ],
-    setup: Advanced3d.setup,
-    teardown: Advanced3d.teardown,
+    setup: Advanced3dApp.setup,
+    teardown: Advanced3dApp.teardown,
   });
 }

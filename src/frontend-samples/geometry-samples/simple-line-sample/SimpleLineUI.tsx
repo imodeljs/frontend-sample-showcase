@@ -3,13 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import SampleApp from "common/SampleApp";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { LineSegment3d, Point3d } from "@bentley/geometry-core";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { NumericInput } from "@bentley/ui-core";
+import SimpleLineApp from "./SimpleLineApp";
 
 interface SimpleLineState {
   point1X: number;
@@ -18,7 +15,7 @@ interface SimpleLineState {
   point2Y: number;
 }
 
-export default class SimpleLine extends React.Component<{}, SimpleLineState> implements SampleApp {
+export default class SimpleLine extends React.Component<{}, SimpleLineState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -28,19 +25,6 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> imp
       point2X: 680,
       point2Y: 800,
     };
-  }
-
-  public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup();
-    BlankViewport.decorator = new GeometryDecorator(true, 10);
-    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <SimpleLine></SimpleLine>;
-  }
-
-  public static teardown() {
-    if (null != BlankViewport.decorator) {
-      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
-    }
   }
 
   public getControls() {
@@ -70,23 +54,11 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> imp
   }
 
   public componentDidMount() {
-    this.setGeometry();
+    SimpleLineApp.setGeometry(this.state);
   }
 
   public componentDidUpdate() {
-    this.setGeometry();
+    SimpleLineApp.setGeometry(this.state);
   }
 
-  public setGeometry() {
-    BlankViewport.decorator.clearGeometry();
-    const pointA = Point3d.create(this.state.point1X, this.state.point1Y, 0);
-    const pointB = Point3d.create(this.state.point2X, this.state.point2Y, 0);
-    const myLine = LineSegment3d.create(pointA, pointB);
-    BlankViewport.decorator.addGeometry(myLine);
-
-    for (const fractionAlongLine of [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]) {
-      const pointAlongLine = myLine.fractionToPoint(fractionAlongLine);
-      BlankViewport.decorator.addPoint(pointAlongLine);
-    }
-  }
 }

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import TwoDimTransformations from "./2dTransformations";
+import Transformations2dApp from "./2dTransformationsApp";
 
 export function get2dTransformationsSpec(): SampleSpec {
   return ({
@@ -11,9 +11,11 @@ export function get2dTransformationsSpec(): SampleSpec {
     label: "2d Transformations",
     image: "2d-transformations-thumbnail.png",
     files: [
-      { name: "2dTransformations.tsx", import: import("!!raw-loader!./2dTransformations"), entry: true },
+      { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp"), entry: true },
+      { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI") },
+
     ],
-    setup: TwoDimTransformations.setup,
-    teardown: TwoDimTransformations.teardown,
+    setup: Transformations2dApp.setup,
+    teardown: Transformations2dApp.teardown,
   });
 }
