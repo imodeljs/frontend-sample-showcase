@@ -10,6 +10,7 @@ export function getSimpleAnimatedSpec(): SampleSpec {
     name: "simple-animated-sample",
     label: "Simple Animated",
     image: "simple-animated-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "SimpleAnimatedApp.tsx", import: import("!!raw-loader!./SimpleAnimatedApp"), entry: true },
       { name: "SimpleAnimatedUI.tsx", import: import("!!raw-loader!./SimpleAnimatedUI") },
