@@ -6,7 +6,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
-import { ContextRealityModelProps } from "@bentley/imodeljs-common";
+import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
 import {
   ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport,
 } from "@bentley/imodeljs-frontend";
@@ -37,5 +37,12 @@ export default class RealityDataApp implements SampleApp {
         style.detachRealityModelByNameAndUrl(model.name, model.url);
       viewPort.displayStyle = style;
     }
+  }
+
+  // Modify reality data background transparency using the Viewport API
+  public static async setRealityDataTransparency(vp: ScreenViewport, transparency: number) {
+    // For this example we want to affect the appearance of *all* reality models. Therefore, we use -1 as the index.
+    const existingOverrides = vp.getRealityModelAppearanceOverride(-1);
+    return vp.overrideRealityModelAppearance(-1, existingOverrides ? existingOverrides.clone({ transparency }) : FeatureAppearance.fromJSON({ transparency }));
   }
 }
