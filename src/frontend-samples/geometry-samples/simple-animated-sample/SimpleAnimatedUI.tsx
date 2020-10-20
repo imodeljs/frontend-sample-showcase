@@ -11,6 +11,7 @@ import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 import SimpleAnimatedApp from "./SimpleAnimatedApp";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 
 export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number }> {
 
@@ -26,7 +27,7 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
   }
 
   public componentDidMount() {
-    SimpleAnimatedApp.setGeometry(this.state.grid, this.state.color);
+    this.setGeometry();
     const newGrid = ConwaysHelpers.updateGrid(this.state.grid);
     this.setState({ grid: newGrid });
     this.state.timer.setOnExecute(this.handleTimer.bind(this));
@@ -52,7 +53,6 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
           <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }); }} />
           <span>Clock Speed(ms):</span>
           <NumericInput defaultValue={this.state.clockSpeed} min={1} onChange={(value) => { if (value) { this.setNewTimer(value); } }}></NumericInput>
-
         </div>
       </>
     );
@@ -67,12 +67,22 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
     );
   }
 
+  public setGeometry() {
+    BlankViewport.decorator.clearGeometry();
+    BlankViewport.decorator.setColor(this.state.color);
+    const graphicalGrid = SimpleAnimatedApp.createGridSquares(this.state.grid);
+    for (const square of graphicalGrid)
+      BlankViewport.decorator.addGeometry(square);
+
+    IModelApp.viewManager.invalidateDecorationsAllViews();
+  }
+
   // We are making use of a timer to consistently render animated geometry
   // Since a viewport only re-renders a frame when it needs or receives new information,
   // We must invalidate the old decorations on every timer tick
   public handleTimer() {
     this.state.timer.start();
-    SimpleAnimatedApp.setGeometry(this.state.grid, this.state.color);
+    this.setGeometry();
     const newGrid = ConwaysHelpers.updateGrid(this.state.grid);
     this.setState({ grid: newGrid });
   }

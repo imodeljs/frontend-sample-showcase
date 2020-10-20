@@ -16,7 +16,7 @@ interface TransformationState {
   xTrans: number;
   yTrans: number;
   rotationDeg: number;
-  geometry: Loop | undefined;
+  geometry: Loop;
 }
 
 export default class Transformations2dUI extends React.Component<{}, TransformationState> {
@@ -29,13 +29,29 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
       xTrans: 100,
       yTrans: 100,
       rotationDeg: 180,
-      geometry: undefined,
+      geometry: Transformations2dApp.generateSquare(),
     };
   }
 
   public componentDidUpdate() {
-    if (this.state.geometry)
-      Transformations2dApp.setGeometry(this.state.geometry);
+    if (this.state.geometry) {
+      BlankViewport.decorator.clearGeometry();
+      BlankViewport.decorator.setColor(ColorDef.red);
+      BlankViewport.decorator.setLineThickness(5);
+      BlankViewport.decorator.addGeometry(this.state.geometry);
+    }
+  }
+
+  public generateBaseGeometry(shape: string) {
+    if (shape === "Square") {
+      this.setState({ geometry: Transformations2dApp.generateSquare() });
+    } else if (shape === "Circle") {
+      this.setState({ geometry: Transformations2dApp.generateCircle() });
+    } else if (shape === "Triangle") {
+      this.setState({ geometry: Transformations2dApp.generateTriangle() });
+    } else if (shape === "Convex Hull") {
+      this.setState({ geometry: Transformations2dApp.generateConvexHull() });
+    }
   }
 
   public getControls() {
@@ -43,26 +59,26 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
       <>
         <div className="sample-options-2col" style={{ maxWidth: "350px" }}>
           <span>Shape:</span>
-          <Select options={["Square", "Circle", "Triangle", "Convex Hull"]} onChange={(event) => { this.setState({ shape: event.target.value }); const newGeo = Transformations2dApp.generateBaseGeometry(event.target.value); this.setState({ geometry: newGeo }); }} />
+          <Select options={["Square", "Circle", "Triangle", "Convex Hull"]} onChange={(event) => { this.setState({ shape: event.target.value }); this.generateBaseGeometry(event.target.value); }} />
         </div>
         <div className="sample-options-4col" style={{ maxWidth: "350px" }}>
           <span>Translate X</span>
           <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ xTrans: value }); }}></NumericInput>
-          <Button onClick={() => { Transformations2dApp.handleLeftXTranslation(this.state); }}>Shift Left</Button>
-          <Button onClick={() => { Transformations2dApp.handleRightXTranslation(this.state); }}>Shift Right</Button>
+          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, -this.state.xTrans, 0); }}>Shift Left</Button>
+          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, this.state.xTrans, 0); }}>Shift Right</Button>
 
           <span>Translate Y</span>
           <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ yTrans: value }); }}></NumericInput>
-          <Button onClick={() => { Transformations2dApp.handleUpYTranslation(this.state); }}>Shift Up</Button>
-          <Button onClick={() => { Transformations2dApp.handleDownYTranslation(this.state); }}>Shift Down</Button>
+          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, 0, this.state.yTrans); }}>Shift Up</Button>
+          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, 0, -this.state.yTrans); }}>Shift Down</Button>
 
           <span>Rotate:</span>
           <NumericInput defaultValue={180} onChange={(value) => { if (value) this.setState({ rotationDeg: value }); }}></NumericInput>
-          <Button onClick={() => { Transformations2dApp.handleLeftRotation(this.state); }}>Rotate Left</Button>
-          <Button onClick={() => { Transformations2dApp.handleRightRotation(this.state); }}>Rotate Right</Button>
+          <Button onClick={() => { Transformations2dApp.handleRotation(this.state.geometry, this.state.rotationDeg); }}>Rotate Left</Button>
+          <Button onClick={() => { Transformations2dApp.handleRotation(this.state.geometry, -this.state.rotationDeg); }}>Rotate Right</Button>
 
         </div>
-        <Button onClick={() => { const newGeo = Transformations2dApp.generateBaseGeometry(this.state.shape); this.setState({ geometry: newGeo }); }}>Reset</Button>
+        <Button onClick={() => { this.generateBaseGeometry(this.state.shape); }}>Reset</Button>
       </>
     );
   }
@@ -77,10 +93,7 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
   }
 
   public componentDidMount() {
-    const newGeo = Transformations2dApp.generateBaseGeometry(this.state.shape);
-    this.setState({
-      geometry: newGeo,
-    });
+    this.generateBaseGeometry(this.state.shape);
   }
 
 }

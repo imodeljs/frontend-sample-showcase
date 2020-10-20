@@ -54,11 +54,19 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
   }
 
   public componentDidMount() {
-    SimpleLineApp.setGeometry(this.state);
+    this.setGeometry();
   }
 
   public componentDidUpdate() {
-    SimpleLineApp.setGeometry(this.state);
+    this.setGeometry();
+  }
+
+  public setGeometry() {
+    BlankViewport.decorator.clearGeometry();
+    const myLine = SimpleLineApp.createLineSegmentFromXY(this.state.point1X, this.state.point1Y, this.state.point2X, this.state.point2Y);
+    BlankViewport.decorator.addGeometry(myLine);
+    const points = SimpleLineApp.createPointsAlongLine(myLine, [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]);
+    BlankViewport.decorator.addPoints(points);
   }
 
 }

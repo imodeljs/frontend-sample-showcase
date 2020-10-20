@@ -8,11 +8,12 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane"; import { NumericInput, Select } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import Simple3dApp from "./Simple3dApp";
+import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 
 interface Simple3dState {
   shape: string;
   color: ColorDef;
-  circleRadius: number;
+  sphereRadius: number;
   boxLength: number;
   boxWidth: number;
   boxHeight: number;
@@ -31,7 +32,7 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
     this.state = {
       shape: "Box",
       color: ColorDef.red,
-      circleRadius: 200,
+      sphereRadius: 200,
       boxLength: 500,
       boxWidth: 500,
       boxHeight: 500,
@@ -45,11 +46,40 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
   }
 
   public componentDidMount() {
-    Simple3dApp.setGeometry(this.state);
+    this.setGeometry();
   }
 
   public componentDidUpdate() {
-    Simple3dApp.setGeometry(this.state);
+    this.setGeometry();
+  }
+
+  public setGeometry() {
+    BlankViewport.decorator.clearGeometry();
+
+    const options = StrokeOptions.createForCurves();
+    options.needParams = false;
+    options.needNormals = true;
+    const builder = PolyfaceBuilder.create(options);
+    if (this.state.shape === "Cone") {
+      const cone = Simple3dApp.createCone(this.state.coneHeight, this.state.coneLowerRadius, this.state.coneUpperRadius);
+      if (cone)
+        builder.addCone(cone);
+    } else if (this.state.shape === "Sphere") {
+      const sphere = Simple3dApp.createSphere(this.state.sphereRadius);
+      if (sphere)
+        builder.addSphere(sphere);
+    } else if (this.state.shape === "Box") {
+      const box = Simple3dApp.createBox(this.state.boxLength, this.state.boxWidth, this.state.boxHeight);
+      if (box)
+        builder.addBox(box);
+    } else if (this.state.shape === "Torus Pipe") {
+      const torusPipe = Simple3dApp.createTorusPipe(this.state.tpOuterRadius, this.state.tpInnerRadius, this.state.tpSweep);
+      if (torusPipe)
+        builder.addTorusPipe(torusPipe);
+    }
+    const polyface = builder.claimPolyface(false);
+    BlankViewport.decorator.setColor(this.state.color);
+    BlankViewport.decorator.addGeometry(polyface);
   }
 
   public getControls() {
@@ -61,7 +91,7 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
           <span>Color:</span>
           <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }); }} />
           {this.state.shape === "Sphere" ? <span>Radius:</span> : undefined}
-          {this.state.shape === "Sphere" ? <NumericInput defaultValue={this.state.circleRadius} min={0} max={500} onChange={(value) => { if (value) this.setState({ circleRadius: value }); }}></NumericInput> : undefined}
+          {this.state.shape === "Sphere" ? <NumericInput defaultValue={this.state.sphereRadius} min={0} max={500} onChange={(value) => { if (value) this.setState({ sphereRadius: value }); }}></NumericInput> : undefined}
 
           {this.state.shape === "Box" ? <span>Length:</span> : undefined}
           {this.state.shape === "Box" ? <NumericInput defaultValue={this.state.boxLength} min={0} max={1000} onChange={(value) => { if (value) this.setState({ boxLength: value }); }}></NumericInput> : undefined}
