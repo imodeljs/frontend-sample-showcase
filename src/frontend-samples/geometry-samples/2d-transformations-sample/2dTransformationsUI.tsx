@@ -4,12 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { Loop } from "@bentley/geometry-core";
+import { Loop, Point3d } from "@bentley/geometry-core";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
 import Transformations2dApp from "./2dTransformationsApp";
-import { Point3d } from "@bentley/geometry-core";
 
 interface TransformationState {
   shape: string;
