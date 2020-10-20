@@ -11,6 +11,7 @@ export function getBadgeSpec(): SampleSpec {
     name: "badge-sample",
     label: "UI-Badges",
     image: "ui-badge-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     customModelList: [],
     files: [
       { name: "Badge.tsx", import: import("!!raw-loader!./Badge"), entry: true },

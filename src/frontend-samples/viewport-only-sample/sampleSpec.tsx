@@ -10,6 +10,7 @@ export function getViewportOnlySpec(): SampleSpec {
     name: "viewport-only-sample",
     label: "3d",
     image: "viewport-only-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ViewportOnlyApp.tsx", import: import("!!raw-loader!./ViewportOnlyApp"), entry: true },
       { name: "ViewportOnlyUI.tsx", import: import("!!raw-loader!./ViewportOnlyUI") },

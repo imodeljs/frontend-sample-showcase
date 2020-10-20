@@ -55,7 +55,6 @@ import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-s
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
 
-
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
@@ -127,3 +126,14 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 },
 ];
+
+export function findSpecBySampleName(nameIn: string) {
+  for (const group of sampleManifest) {
+    for (const spec of group.samples) {
+      if (nameIn === spec.name) {
+        return { group, spec }
+      }
+    }
+  }
+  return undefined;
+}
