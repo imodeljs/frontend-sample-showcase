@@ -12,6 +12,7 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     image: "unified-selection-tree-thumbnail.png",
     files: [
       { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
+      { name: "UnifiedSelectionTreeUI.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeUI"), entry: true },
     ],
     setup: UnifiedSelectionTreeApp.setup.bind(UnifiedSelectionTreeApp),
   });

@@ -12,6 +12,7 @@ export function getPresentationTreeSpec(): SampleSpec {
     image: "presentation-tree-thumbnail.png",
     files: [
       { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp"), entry: true },
+      { name: "PresentationTreeUI.tsx", import: import("!!raw-loader!./PresentationTreeUI"), entry: true },
     ],
     setup: PresentationTreeApp.setup.bind(PresentationTreeApp),
   });

@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "../../../common/samples-common.scss";
-import "../../../common/AppUi/app-ui.scss";
-import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
-import { AppUi } from "../../../common/AppUi/AppUi";
+import "common/samples-common.scss";
+import "common/AppUi/app-ui.scss";
+import { SampleAppUiComponent } from "common/AppUi/SampleAppUiComponent";
+import { AppUi } from "common/AppUi/AppUi";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // The Props and State for this sample component

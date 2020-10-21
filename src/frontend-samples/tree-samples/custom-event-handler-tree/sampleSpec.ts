@@ -14,6 +14,7 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     customModelList: [],
     files: [
       { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp"), entry: true },
+      { name: "CustomEventHandlerTreeUI.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeUI"), entry: true },
     ],
     setup: CustomEventHandlerTreeApp.setup.bind(CustomEventHandlerTreeApp),
   });

@@ -12,6 +12,7 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     image: "custom-node-loading-tree-thumbnail.png",
     files: [
       { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp"), entry: true },
+      { name: "CustomNodeLoadingTreeUI.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
     ],
     setup: CustomNodeLoadingTreeApp.setup.bind(CustomNodeLoadingTreeApp),
   });

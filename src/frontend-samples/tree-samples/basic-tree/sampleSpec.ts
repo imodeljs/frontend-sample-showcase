@@ -14,6 +14,7 @@ export function getBasicTreeSpec(): SampleSpec {
     customModelList: [],
     files: [
       { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp"), entry: true },
+      { name: "BasicTreeUI.tsx", import: import("!!raw-loader!./BasicTreeUI"), entry: true },
     ],
     setup: BasicTreeApp.setup.bind(BasicTreeApp),
   });
