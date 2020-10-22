@@ -195,7 +195,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     return (<>
       <ControlPane
         iModelSelector={this.props.iModelSelector}
-        instructions={"Drag the divider to compare the iModel with either the wireframe rendering or the reality ."}
+        instructions={"Drag the divider to compare the two halves of the view.  Try rotating the view with the 'Lock Plane' toggle on and off."}
         controls={this.getControls()}
       />
       { /* Viewport to display the iModel */}
