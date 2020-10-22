@@ -47,7 +47,6 @@ export default class SwipingViewportApp implements SampleApp {
   private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
 
-
   /** Called by the showcase before the sample is started. */
   public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
     return <SwipingComparisonUI iModelName={iModelName} iModelSelector={iModelSelector} />;
