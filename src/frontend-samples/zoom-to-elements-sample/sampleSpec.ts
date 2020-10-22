@@ -11,6 +11,7 @@ export function getZoomToElementsSpec(): SampleSpec {
     name: "zoom-to-elements-sample",
     label: "Zoom to Elements",
     image: "zoom-to-elements-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ZoomToElementsApp.tsx", import: import("!!raw-loader!./ZoomToElementsApp"), entry: true },
       { name: "ZoomToElementsUI.tsx", import: import("!!raw-loader!./ZoomToElementsUI") },

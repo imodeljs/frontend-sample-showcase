@@ -12,6 +12,7 @@ export function getExpandableListSpec(): SampleSpec {
     label: "UI-Expandable Lists",
     image: "ui-expandable-list-thumbnail.png",
     customModelList: [],
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ExpandableList.tsx", import: import("!!raw-loader!./ExpandableList"), entry: true },
       { name: "SampleExpandableBlock.tsx", import: import("!!raw-loader!./SampleExpandableBlock") },

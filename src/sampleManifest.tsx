@@ -46,9 +46,15 @@ import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/c
 import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
 import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
+
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
+import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
+import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d-transformations-sample/sampleSpec";
+import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
+import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
+import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -112,5 +118,24 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getViewportFrontstageSample(),
     getToolbarButtonSample(),
   ],
+}, {
+  groupName: "Geometry Samples", samples: [
+    getSimpleLineSpec(),
+    get2dTransformationsSpec(),
+    getSimple3dSpec(),
+    getAdvanced3dSpec(),
+    getSimpleAnimatedSpec(),
+  ],
 },
 ];
+
+export function findSpecBySampleName(nameIn: string) {
+  for (const group of sampleManifest) {
+    for (const spec of group.samples) {
+      if (nameIn === spec.name) {
+        return { group, spec }
+      }
+    }
+  }
+  return undefined;
+}

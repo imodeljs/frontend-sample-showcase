@@ -15,6 +15,7 @@ export function getViewportFrontstageSample(): SampleSpec {
     files: [
       { name: "ViewportFrontstageApp.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
       { name: "ViewportFrontstageUi.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage") },
+      { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     setup: ViewportFrontstageSample.setup.bind(ViewportFrontstageSample),

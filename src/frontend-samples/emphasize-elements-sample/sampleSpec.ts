@@ -11,6 +11,7 @@ export function getEmphasizeElementsSpec(): SampleSpec {
     name: "emphasize-elements-sample",
     label: "Emphasize Elements",
     image: "emphasize-elements-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp"), entry: true },
       { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI") },
