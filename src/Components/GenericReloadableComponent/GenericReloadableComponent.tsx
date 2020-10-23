@@ -47,7 +47,7 @@ export class ReloadableConnection extends React.PureComponent<ReloadableConnecti
     return null;
   }
 
-  public componentDidUpdate(prevProps: ReloadableConnectionProps, prevState: ReloadableConnectionState) {
+  public componentDidUpdate(_prevProps: ReloadableConnectionProps, prevState: ReloadableConnectionState) {
     if (this.state.imodel && prevState.imodel !== this.state.imodel) {
       if (this.props.onIModelReady)
         this.props.onIModelReady(this.state.imodel);

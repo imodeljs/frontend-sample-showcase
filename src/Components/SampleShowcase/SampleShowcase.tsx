@@ -156,6 +156,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         <div className="model-selector">
           <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this._onIModelChange} />
         </div>);
+
+    return undefined;
   }
 
   private async setupNewSample(groupName: string, sampleName: string) {
