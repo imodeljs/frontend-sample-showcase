@@ -20,8 +20,8 @@ export interface ReloadableConnectionState {
 }
 
 export class ReloadableConnection extends React.PureComponent<ReloadableConnectionProps, ReloadableConnectionState> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     this.state = {};
   }

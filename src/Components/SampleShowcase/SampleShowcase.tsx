@@ -46,8 +46,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private _prevSampleSetup?: any;
   private _prevSampleTeardown?: any;
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     const names = this.getNamesFromURLParams();
 

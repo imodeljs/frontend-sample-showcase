@@ -18,8 +18,8 @@ interface Advanced3dState {
 
 export default class Advanced3d extends React.Component<{}, Advanced3dState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       shape: "Sweeps",
       color: ColorDef.red,

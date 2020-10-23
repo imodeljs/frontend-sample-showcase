@@ -32,13 +32,13 @@ interface VolumeQueryUIState {
 }
 
 export default class VolumeQueryUI extends React.Component<
-VolumeQueryUIProps,
-VolumeQueryUIState
-> {
+  VolumeQueryUIProps,
+  VolumeQueryUIState
+  > {
   private _progressBarRefrence = React.createRef<ProgressBar>();
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this._progressBarRefrence = React.createRef();
     this.state = {
       isVolumeBoxOn: false,

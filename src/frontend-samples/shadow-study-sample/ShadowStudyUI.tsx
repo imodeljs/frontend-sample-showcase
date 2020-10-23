@@ -22,8 +22,8 @@ interface ShadowStudyState {
 export default class ShadowStudyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ShadowStudyState> {
 
   /** Creates an Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     // Get date object for current time of day
     const today = new Date();

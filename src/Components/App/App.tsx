@@ -11,8 +11,8 @@ import { EditorEnvironmentContextProvider, Module } from "@bentley/monaco-editor
 export class App extends React.Component<{}, {}> {
 
   /** Creates an App instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {};
   }
 

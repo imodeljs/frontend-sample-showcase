@@ -17,8 +17,8 @@ interface SimpleLineState {
 
 export default class SimpleLine extends React.Component<{}, SimpleLineState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       point1X: 140,
       point1Y: 25,

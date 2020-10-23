@@ -36,8 +36,8 @@ export default class MarkerPinsUI extends React.Component<{
 }, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       showDecorator: true,
       manualPin: MarkerPinsUI.getManualPinSelections()[0],

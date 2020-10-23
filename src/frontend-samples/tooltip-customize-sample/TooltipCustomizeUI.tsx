@@ -30,8 +30,8 @@ export interface TooltipCustomizeSettings {
 export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of TooltipCustomizeApp.tsx.
     const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
     this.state = { ...toolAdmin.settings };

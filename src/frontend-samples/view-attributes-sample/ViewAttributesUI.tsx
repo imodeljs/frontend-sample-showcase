@@ -24,8 +24,8 @@ interface ViewAttributesState {
 export default class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       attrValues: {
         renderMode: RenderMode.Wireframe,
