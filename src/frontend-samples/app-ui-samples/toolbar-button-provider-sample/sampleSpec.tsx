@@ -12,10 +12,10 @@ export function getToolbarButtonSample(): SampleSpec {
     name: "toolbar-button-sample",
     label: "Add Toolbar Button (Dynamically)",
     image: "toolbar-button-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp"), entry: true },
       { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi") },
-      { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     setup: ToolbarButtonSample.setup.bind(ToolbarButtonSample),
