@@ -12,6 +12,7 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     label: "Custom Table Node Tree",
     image: "custom-table-node-tree-thumbnail.png",
     customModelList: [],
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp"), entry: true },
       { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },

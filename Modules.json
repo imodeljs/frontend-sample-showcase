@@ -181,6 +181,16 @@
       "import": "!!raw-loader!common/CommonComponentTools/index.scss"
     },
     {
+      "name": "common/GeometryCommon/BlankViewport",
+      "import": "./src/common/GeometryCommon/BlankViewport",
+      "typedef": true
+    },
+    {
+      "name": "common/GeometryCommon/GeometryDecorator",
+      "import": "./src/common/GeometryCommon/GeometryDecorator",
+      "typedef": true
+    },
+    {
       "name": "common/DataProvider/Trees.scss",
       "import": "!!raw-loader!common/DataProvider/Trees.scss"
     },
