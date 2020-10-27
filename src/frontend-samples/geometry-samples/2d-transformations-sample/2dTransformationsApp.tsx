@@ -5,7 +5,7 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { Arc3d, LineString3d, Loop, Point3d, Point3dArray, Range3d, Transform } from "@bentley/geometry-core";
+import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Range3d, Transform } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import Transformations2dUI from "./2dTransformationsUI";
@@ -22,7 +22,7 @@ export default class Transformations2dApp implements SampleApp {
 
   public static handleRotation(geometry: Loop, rotationDeg: number): Loop | undefined {
     const newGeometry = geometry;
-    const radians = rotationDeg * 180 / Math.PI;
+    const radians = Angle.degreesToRadians(rotationDeg);
     const rotation = Transform.createRowValues(Math.cos(radians), -Math.sin(radians), 0, 0, Math.sin(radians), Math.cos(radians), 0, 0, 0, 0, 1, 0);
     if (newGeometry.tryTransformInPlace(rotation)) {
       return newGeometry;
@@ -32,26 +32,26 @@ export default class Transformations2dApp implements SampleApp {
 
   public static generateSquare(): Loop {
     const points: Point3d[] = [];
-    points.push(Point3d.create(-200, -200, 0));
-    points.push(Point3d.create(-200, 200, 0));
-    points.push(Point3d.create(200, 200, 0));
-    points.push(Point3d.create(200, -200, 0));
+    points.push(Point3d.create(-5, -5, 1));
+    points.push(Point3d.create(-5, 5, 1));
+    points.push(Point3d.create(5, 5, 1));
+    points.push(Point3d.create(5, -5, 1));
     const linestring = LineString3d.create(points);
     const loop = Loop.create(linestring.clone());
     return loop;
   }
 
   public static generateCircle(): Loop {
-    const circle = Arc3d.createXY(Point3d.create(0, 0, 0), 200);
+    const circle = Arc3d.createXY(Point3d.create(0, 0, 1), 5);
     const loop = Loop.create(circle.clone());
     return loop;
   }
 
   public static generateTriangle(): Loop {
     const points: Point3d[] = [];
-    points.push(Point3d.create(0, 200, 0));
-    points.push(Point3d.create(-250, -100, 0));
-    points.push(Point3d.create(250, -100, 0));
+    points.push(Point3d.create(0, 5, 1));
+    points.push(Point3d.create(-5, -3, 1));
+    points.push(Point3d.create(5, -3, 1));
     const linestring = LineString3d.create(points);
     const loop = Loop.create(linestring.clone());
     return loop;
@@ -59,16 +59,16 @@ export default class Transformations2dApp implements SampleApp {
 
   public static generateConvexHull(): Loop {
     const points: Point3d[] = [];
-    points.push(Point3d.create(-400, -250, 0));
-    points.push(Point3d.create(-300, -150, 0));
-    points.push(Point3d.create(-400, 50, 0));
-    points.push(Point3d.create(400, -200, 0));
-    points.push(Point3d.create(0, 150, 0));
-    points.push(Point3d.create(-500, -50, 0));
-    points.push(Point3d.create(-350, -50, 0));
-    points.push(Point3d.create(-310, -50, 0));
-    points.push(Point3d.create(-320, -50, 0));
-    points.push(Point3d.create(-200, 150, 0));
+    points.push(Point3d.create(-8, -5, 1));
+    points.push(Point3d.create(-6, -3, 1));
+    points.push(Point3d.create(-8, 1, 1));
+    points.push(Point3d.create(8, -4, 1));
+    points.push(Point3d.create(0, 3, 1));
+    points.push(Point3d.create(-10, -1, 1));
+    points.push(Point3d.create(-7, -1, 1));
+    points.push(Point3d.create(-7, -1, 1));
+    points.push(Point3d.create(-7, -1, 1));
+    points.push(Point3d.create(-4, 3, 1));
     const hullPoints: Point3d[] = [];
     const interiorPoints: Point3d[] = [];
     Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);
@@ -78,8 +78,8 @@ export default class Transformations2dApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup(new Range3d(-500, -500, 0, 500, 500, 0));
-    BlankViewport.decorator = new GeometryDecorator(true, 10);
+    await BlankViewport.setup(undefined, true, true);
+    BlankViewport.decorator = new GeometryDecorator();
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <Transformations2dUI></Transformations2dUI>;
   }

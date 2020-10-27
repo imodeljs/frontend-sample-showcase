@@ -3,24 +3,15 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Range3d } from "@bentley/geometry-core";
-import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, ScreenViewport, SelectionTool, SpatialViewState, StandardViewId, Viewport, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
+import { Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
+import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, ScreenViewport, SelectionTool, SpatialViewState, StandardViewId, Viewport, ViewState, ViewState2d, ZoomViewTool } from "@bentley/imodeljs-frontend";
 import { Cartographic, ColorDef, DisplayStyle3dSettingsProps, RenderMode, ViewFlagProps } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
 
 const renderingStyleViewFlags: ViewFlagProps = {
-  noConstruct: true,
-  noCameraLights: false,
-  noSourceLights: false,
   noSolarLight: false,
-  visEdges: false,
-  hidEdges: false,
-  shadows: false,
-  monochrome: false,
-  ambientOcclusion: false,
-  thematicDisplay: false,
   renderMode: RenderMode.SmoothShade,
 };
 
@@ -40,26 +31,39 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: V
     return exton;
   }
 
-  // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public static async getViewState(imodel: IModelConnection): Promise<ViewState> {
+  // Generates a simple 3d viewState with a plain white background to be used in conjunction with the blank iModelConnection
+  public static async get3dViewState(imodel: IModelConnection): Promise<ViewState> {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
     viewState.setAllow3dManipulations(true);
+    viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
+    return viewState;
+  }
+
+  // Generates a simple 2d viewState with a plain white background to be used in conjunction with the blank iModelConnection
+  public static async get2dViewState(imodel: IModelConnection): Promise<ViewState> {
+    const ext = imodel.projectExtents;
+    const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
+    viewState.setAllow3dManipulations(false);
     viewState.setStandardRotation(StandardViewId.Top);
     return viewState;
   }
 
   // Initializes the iModel and ViewState for the Blank Viewport
-  public static async setup(sampleDimensions: Range3d = new Range3d(-10, -10, -10, 1010, 1010, 1010)) {
-    select();
+  public static async setup(sampleDimensions: Range3d = new Range3d(-30, -30, -30, 30, 30, 30), twoDim: boolean = false, grid: boolean = false) {
     const imodel = BlankViewport.getBlankConnection(sampleDimensions);
-    const viewState = await BlankViewport.getViewState(imodel);
+    let viewState;
+    if (twoDim) {
+      viewState = await BlankViewport.get2dViewState(imodel);
+    } else {
+      viewState = await BlankViewport.get3dViewState(imodel);
+    }
     BlankViewport.imodel = imodel;
     BlankViewport.viewState = viewState;
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       const style2: DisplayStyle3dSettingsProps = {
-        backgroundColor: ColorDef.computeTbgrFromComponents(100, 100, 200),
-        viewflags: { ...renderingStyleViewFlags, noSolarLight: false, visEdges: true },
+        backgroundColor: ColorDef.white.tbgr,
+        viewflags: { ...renderingStyleViewFlags, grid },
         lights: {
           solar: { direction: [-0.9833878378071199, -0.18098510351728977, 0.013883542698953828] },
         },

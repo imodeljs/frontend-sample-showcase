@@ -24,8 +24,6 @@ interface CustomPoint {
 
 export class GeometryDecorator implements Decorator {
 
-  private animated: boolean;
-  private timer: Timer | undefined;
   private graphics: RenderGraphic | undefined;
 
   private points: CustomPoint[] = [];
@@ -35,19 +33,6 @@ export class GeometryDecorator implements Decorator {
   private fill: boolean = true;
   private color: ColorDef = ColorDef.black;
   private lineThickness: number = 1;
-
-  public constructor(animated: boolean = false, animationSpeed: number = 10) {
-    if (animationSpeed < 1) {
-      animationSpeed = 1;
-    }
-    this.animated = animated;
-    // When using animation, we enable a timer to re-render the graphic every animationSpeed interval in ms
-    if (animated) {
-      this.timer = new Timer(animationSpeed);
-      this.timer.setOnExecute(this.handleTimer.bind(this));
-      this.timer.start();
-    }
-  }
 
   public addLine(line: LineSegment3d) {
     const styledGeometry: CustomGeometryQuery = ({
@@ -102,6 +87,8 @@ export class GeometryDecorator implements Decorator {
   public clearGeometry() {
     this.points = [];
     this.shapes = [];
+    this.graphics = undefined;
+    IModelApp.viewManager.invalidateDecorationsAllViews();
   }
 
   public setColor(color: ColorDef) {
@@ -119,14 +106,13 @@ export class GeometryDecorator implements Decorator {
   // Iterate through the geometry and point lists, extracting each geometry and point, along with their styles
   // Adding them to the graphic builder which then creates new graphics
   // TODO: Add the ability to support text rendering
-  // TODO: Fix defects with the fill command on certain geometry types(Loops, Polyfaces)
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
     const builder = context.createGraphicBuilder(GraphicType.Scene);
     builder.wantNormals = true;
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
       const point = styledPoint.point;
-      const circle = Arc3d.createXY(point, 3);
+      const circle = Arc3d.createXY(point, 1);
       builder.addArc(circle, false, styledPoint.fill);
     });
     this.shapes.forEach((styledGeometry) => {
@@ -151,6 +137,7 @@ export class GeometryDecorator implements Decorator {
     return graphic;
   }
 
+  // Generates new graphics if needed, and adds them to the scene
   public decorate(context: DecorateContext): void {
     const overrides = new ViewFlagOverrides();
     overrides.setShowVisibleEdges(true);
@@ -160,7 +147,7 @@ export class GeometryDecorator implements Decorator {
     branch.setViewFlagOverrides(overrides);
 
     context.viewFlags.visibleEdges = true;
-    if (!this.graphics || this.animated) {
+    if (!this.graphics) {
       this.graphics = this.createGraphics(context);
     }
     if (this.graphics)
@@ -171,18 +158,17 @@ export class GeometryDecorator implements Decorator {
     context.addDecoration(GraphicType.Scene, graphic);
   }
 
-  public toggleAnimation() {
-    this.animated = !this.animated;
-  }
-
-  // We are making use of a timer to consistently render animated geometry
-  // Since a viewport only re-renders a frame when it needs or receives new information,
-  // We must invalidate the old decorations on every timer tick
-  public handleTimer() {
-    if (this.timer && this.animated) {
-      this.timer.start();
-    }
-    IModelApp.viewManager.invalidateDecorationsAllViews();
+  // Draws a base for the 3d geometry
+  public drawBase(origin: Point3d = new Point3d(0, 0, 0), width: number = 20, length: number = 20) {
+    const points: Point3d[] = [];
+    points.push(Point3d.create(origin.x - width / 2, origin.y - length / 2, origin.z - 0.05));
+    points.push(Point3d.create(origin.x - width / 2, origin.y + length / 2, origin.z - 0.05));
+    points.push(Point3d.create(origin.x + width / 2, origin.y + length / 2, origin.z - 0.05));
+    points.push(Point3d.create(origin.x + width / 2, origin.y - length / 2, origin.z - 0.05));
+    const linestring = LineString3d.create(points);
+    const loop = Loop.create(linestring.clone());
+    this.setColor(ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.green.tbgr, 150)))
+    this.addGeometry(loop);
   }
 
 }

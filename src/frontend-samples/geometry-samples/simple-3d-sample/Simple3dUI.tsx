@@ -32,15 +32,15 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
     this.state = {
       shape: "Box",
       color: ColorDef.red,
-      sphereRadius: 200,
-      boxLength: 500,
-      boxWidth: 500,
-      boxHeight: 500,
-      coneUpperRadius: 100,
-      coneLowerRadius: 200,
-      coneHeight: 300,
-      tpInnerRadius: 100,
-      tpOuterRadius: 300,
+      sphereRadius: 4,
+      boxLength: 4,
+      boxWidth: 4,
+      boxHeight: 4,
+      coneUpperRadius: 3,
+      coneLowerRadius: 5,
+      coneHeight: 5,
+      tpInnerRadius: 2,
+      tpOuterRadius: 5,
       tpSweep: 360,
     };
   }
@@ -80,6 +80,7 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
     const polyface = builder.claimPolyface(false);
     BlankViewport.decorator.setColor(this.state.color);
     BlankViewport.decorator.addGeometry(polyface);
+    BlankViewport.decorator.drawBase()
   }
 
   public getControls() {
@@ -112,7 +113,7 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
           {this.state.shape === "Torus Pipe" ? <span>Inner Radius:</span> : undefined}
           {this.state.shape === "Torus Pipe" ? <NumericInput defaultValue={this.state.tpInnerRadius} min={0} max={1000} onChange={(value) => { if (value) this.setState({ tpInnerRadius: value }); }}></NumericInput> : undefined}
           {this.state.shape === "Torus Pipe" ? <span>Sweep:</span> : undefined}
-          {this.state.shape === "Torus Pipe" ? <NumericInput defaultValue={this.state.tpSweep} min={0} max={1000} onChange={(value) => { if (value) this.setState({ tpSweep: value }); }}></NumericInput> : undefined}
+          {this.state.shape === "Torus Pipe" ? <NumericInput defaultValue={this.state.tpSweep} min={0} max={360} onChange={(value) => { if (value) this.setState({ tpSweep: value }); }}></NumericInput> : undefined}
         </div>
       </>
     );

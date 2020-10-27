@@ -20,10 +20,10 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
   constructor(props?: any, context?: any) {
     super(props, context);
     this.state = {
-      point1X: 140,
-      point1Y: 25,
-      point2X: 680,
-      point2Y: 800,
+      point1X: -25,
+      point1Y: -25,
+      point2X: 20,
+      point2Y: 20,
     };
   }
 
@@ -32,13 +32,13 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
       <>
         <div className="sample-options-2col">
           <span>Point 1 X:</span>
-          <NumericInput defaultValue={this.state.point1X} min={0} max={1000} onChange={(value) => { if (value) this.setState({ point1X: value }); }}></NumericInput>
+          <NumericInput defaultValue={this.state.point1X} onChange={(value) => { if (value) this.setState({ point1X: value }); }}></NumericInput>
           <span>Point 1 Y:</span>
-          <NumericInput defaultValue={this.state.point1Y} min={0} max={1000} onChange={(value) => { if (value) this.setState({ point1Y: value }); }}></NumericInput>
+          <NumericInput defaultValue={this.state.point1Y} onChange={(value) => { if (value) this.setState({ point1Y: value }); }}></NumericInput>
           <span>Point 2 X:</span>
-          <NumericInput defaultValue={this.state.point2X} min={0} max={1000} onChange={(value) => { if (value) this.setState({ point2X: value }); }}></NumericInput>
+          <NumericInput defaultValue={this.state.point2X} onChange={(value) => { if (value) this.setState({ point2X: value }); }}></NumericInput>
           <span>Point 2 Y:</span>
-          <NumericInput defaultValue={this.state.point2Y} min={0} max={1000} onChange={(value) => { if (value) this.setState({ point2Y: value }); }}></NumericInput>
+          <NumericInput defaultValue={this.state.point2Y} onChange={(value) => { if (value) this.setState({ point2Y: value }); }}></NumericInput>
         </div>
       </>
     );

@@ -28,8 +28,8 @@ export default class SimpleLineApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup();
-    BlankViewport.decorator = new GeometryDecorator(true, 10);
+    await BlankViewport.setup(undefined, true, true);
+    BlankViewport.decorator = new GeometryDecorator();
     IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <SimpleLineUI></SimpleLineUI>;
   }

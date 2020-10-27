@@ -32,6 +32,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
     BlankViewport.decorator.setColor(this.state.color);
     BlankViewport.decorator.addGeometry(polyface)
+    BlankViewport.decorator.drawBase()
   }
 
   public componentDidUpdate() {
@@ -39,6 +40,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
     BlankViewport.decorator.setColor(this.state.color);
     BlankViewport.decorator.addGeometry(polyface);
+    BlankViewport.decorator.drawBase()
   }
 
   public getControls() {
@@ -46,7 +48,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
       <>
         <div className="sample-options-2col">
           <span>Shape:</span>
-          <Select options={["Sweeps", "Triangulation", "Mitered Pipes"]} onChange={(event) => { this.setState({ shape: event.target.value }); }} />
+          <Select options={["Sweeps", "Mitered Pipes"]} onChange={(event) => { this.setState({ shape: event.target.value }); }} />
           <span>Color:</span>
           <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }); }} />
           {this.state.shape === "Sweeps" ? <span>Sweep Type:</span> : undefined}

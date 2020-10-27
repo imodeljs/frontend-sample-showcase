@@ -26,8 +26,8 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
     this.state = {
       shape: "Square",
       color: ColorDef.red,
-      xTrans: 100,
-      yTrans: 100,
+      xTrans: 1,
+      yTrans: 1,
       rotationDeg: 180,
       geometry: Transformations2dApp.generateSquare(),
     };
@@ -63,19 +63,19 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
         </div>
         <div className="sample-options-4col" style={{ maxWidth: "350px" }}>
           <span>Translate X</span>
-          <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ xTrans: value }); }}></NumericInput>
-          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, -this.state.xTrans, 0); }}>Shift Left</Button>
-          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, this.state.xTrans, 0); }}>Shift Right</Button>
+          <NumericInput defaultValue={1} onChange={(value) => { if (value) this.setState({ xTrans: value }); }}></NumericInput>
+          <Button onClick={() => { const geometry = Transformations2dApp.handleTranslation(this.state.geometry, -this.state.xTrans, 0); if (geometry) this.setState({ geometry }); }}>Shift Left</Button>
+          <Button onClick={() => { const geometry = Transformations2dApp.handleTranslation(this.state.geometry, this.state.xTrans, 0); if (geometry) this.setState({ geometry }); }}>Shift Right</Button>
 
           <span>Translate Y</span>
-          <NumericInput defaultValue={100} onChange={(value) => { if (value) this.setState({ yTrans: value }); }}></NumericInput>
-          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, 0, this.state.yTrans); }}>Shift Up</Button>
-          <Button onClick={() => { Transformations2dApp.handleTranslation(this.state.geometry, 0, -this.state.yTrans); }}>Shift Down</Button>
+          <NumericInput defaultValue={1} onChange={(value) => { if (value) this.setState({ yTrans: value }); }}></NumericInput>
+          <Button onClick={() => { const geometry = Transformations2dApp.handleTranslation(this.state.geometry, 0, this.state.yTrans); if (geometry) this.setState({ geometry }); }}>Shift Up</Button>
+          <Button onClick={() => { const geometry = Transformations2dApp.handleTranslation(this.state.geometry, 0, -this.state.yTrans); if (geometry) this.setState({ geometry }); }}>Shift Down</Button>
 
           <span>Rotate:</span>
           <NumericInput defaultValue={180} onChange={(value) => { if (value) this.setState({ rotationDeg: value }); }}></NumericInput>
-          <Button onClick={() => { Transformations2dApp.handleRotation(this.state.geometry, this.state.rotationDeg); }}>Rotate Left</Button>
-          <Button onClick={() => { Transformations2dApp.handleRotation(this.state.geometry, -this.state.rotationDeg); }}>Rotate Right</Button>
+          <Button onClick={() => { const geometry = Transformations2dApp.handleRotation(this.state.geometry, this.state.rotationDeg); if (geometry) this.setState({ geometry }); }}>Rotate Left</Button>
+          <Button onClick={() => { const geometry = Transformations2dApp.handleRotation(this.state.geometry, -this.state.rotationDeg); if (geometry) this.setState({ geometry }); }}>Rotate Right</Button>
 
         </div>
         <Button onClick={() => { this.generateBaseGeometry(this.state.shape); }}>Reset</Button>
