@@ -29,8 +29,8 @@ export interface PointSelectorState {
 export class PointSelector extends React.Component<PointSelectorProps, PointSelectorState> {
 
   /** Creates a PointSelector instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       pointGenerator: new RandomPointGenerator(),
       pointCount: 10,

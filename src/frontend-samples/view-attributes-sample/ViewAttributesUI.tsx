@@ -24,8 +24,8 @@ interface ViewAttributesState {
 export default class ViewAttributesUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       attrValues: {
         renderMode: RenderMode.Wireframe,
@@ -150,15 +150,16 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
   // Create the react component for the transparency slider
   private createTransparencySlider(label: string, info: string) {
-    if (this.state.vp) {
-      const element = <input type={"range"} min={0} max={99} defaultValue={99} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        if (this.state.vp)
-          // The calculation used here converts the whole number range 0 to 99 into a range from 1 to 0
-          // This allows the rightmost value of the slider to be opaque, while the leftmost value is completely transparent
-          ViewAttributesApp.setBackgroundTransparency(this.state.vp, Math.abs((Number(event.target.value) / 100) - 1));
-      }} />;
-      return this.createJSXElementForAttribute(label, info, element);
-    }
+    if (!this.state.vp)
+      return undefined;
+
+    const element = <input type={"range"} min={0} max={99} defaultValue={99} onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+      if (this.state.vp)
+        // The calculation used here converts the whole number range 0 to 99 into a range from 1 to 0
+        // This allows the rightmost value of the slider to be opaque, while the leftmost value is completely transparent
+        ViewAttributesApp.setBackgroundTransparency(this.state.vp, Math.abs((Number(event.target.value) / 100) - 1));
+    }} />;
+    return this.createJSXElementForAttribute(label, info, element);
   }
 
   public getControls(): React.ReactNode {

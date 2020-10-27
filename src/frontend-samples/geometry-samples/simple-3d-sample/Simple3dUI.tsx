@@ -27,8 +27,8 @@ interface Simple3dState {
 
 export default class Simple3dUI extends React.Component<{}, Simple3dState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       shape: "Box",
       color: ColorDef.red,

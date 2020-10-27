@@ -24,8 +24,8 @@ export interface ReloadableViewportState {
 /** Renders viewport, toolbar, and associated elements */
 export class ReloadableViewport extends React.PureComponent<ReloadableViewportProps, ReloadableViewportState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     this.state = {};
   }

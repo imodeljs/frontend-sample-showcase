@@ -13,6 +13,7 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp"), entry: true },
+      { name: "CustomNodeLoadingTreeUI.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
     ],
     setup: CustomNodeLoadingTreeApp.setup.bind(CustomNodeLoadingTreeApp),
   });

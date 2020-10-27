@@ -13,6 +13,7 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
+      { name: "UnifiedSelectionTreeUI.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeUI"), entry: true },
     ],
     setup: UnifiedSelectionTreeApp.setup.bind(UnifiedSelectionTreeApp),
   });

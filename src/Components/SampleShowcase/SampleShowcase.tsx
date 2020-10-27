@@ -46,8 +46,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private _prevSampleSetup?: any;
   private _prevSampleTeardown?: any;
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     const names = this.getNamesFromURLParams();
 
@@ -157,6 +157,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         <div className="model-selector">
           <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this._onIModelChange} />
         </div>);
+
+    return undefined;
   }
 
   private async setupNewSample(groupName: string, sampleName: string) {

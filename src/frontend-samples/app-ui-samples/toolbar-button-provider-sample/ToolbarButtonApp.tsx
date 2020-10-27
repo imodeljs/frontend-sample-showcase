@@ -6,11 +6,11 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { UiItemsManager } from "@bentley/ui-abstract";
 import { ToolbarButtonProvider } from "./ToolbarButtonUi";
-import "../../../common/samples-common.scss";
-import "../../../common/AppUi/app-ui.scss";
-import { SampleAppUiComponent } from "../../../common/AppUi/SampleAppUiComponent";
-import { AppUi } from "../../../common/AppUi/AppUi";
-import SampleApp from "../../../common/SampleApp";
+import "common/samples-common.scss";
+import "common/AppUi/app-ui.scss";
+import { SampleAppUiComponent } from "common/AppUi/SampleAppUiComponent";
+import { AppUi } from "common/AppUi/AppUi";
+import SampleApp from "common/SampleApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 
 // The Props and State for this sample component

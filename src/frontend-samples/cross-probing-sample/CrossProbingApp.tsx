@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import SampleApp from "common/SampleApp";
 import CrossProbingUI from "./CrossProbingUI";
 import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, Viewport } from "@bentley/imodeljs-frontend";
-import { ViewCreator2d } from "./ViewCreator2d";
+import { ViewCreator2d } from "frontend-samples/cross-probing-sample/ViewCreator2d";
 import { ColorDef } from "@bentley/imodeljs-common";
 
 /** This sample showcases how to implement cross-probing between 3D and 2D elements.

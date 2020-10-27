@@ -28,8 +28,8 @@ interface ViewerOnly2dState {
 /** A React component that renders the UI specific for this sample */
 export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnly2dState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = { drawings: [], sheets: [] };
   }
 
