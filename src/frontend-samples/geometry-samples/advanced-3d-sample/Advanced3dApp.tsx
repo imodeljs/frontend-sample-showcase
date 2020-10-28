@@ -19,9 +19,9 @@ export default class Advanced3dApp implements SampleApp {
   }
 
   public static createRotationalSweep() {
-    const contour = Arc3d.createXYEllipse(new Point3d(5, 0, 5), 0.8, 0.2);
+    const contour = Arc3d.createXYEllipse(new Point3d(5, -5, 5), 0.8, 0.2);
     const curveChain = Path.create(contour);
-    return RotationalSweep.create(curveChain, Ray3d.create(new Point3d(0, 5, 5), new Vector3d(0, 1, 0)), Angle.createDegrees(180), false);
+    return RotationalSweep.create(curveChain, Ray3d.create(new Point3d(5, 5, 5), new Vector3d(1, 1, 0)), Angle.createDegrees(180), false);
   }
 
   public static createRuledSweep() {
@@ -56,7 +56,7 @@ export default class Advanced3dApp implements SampleApp {
           builder.addRuledSweep(sweep);
       }
     } else if (geometryType === "Mitered Pipes") {
-      const centerLine = LineString3d.create([[0, 0, 0], [1, 0, 0], [2, 1, 0], [1, 1, 10], [0, 1, 10]]);
+      const centerLine = LineString3d.create([[5, -5, 0], [2, -2, 2], [0, 0, 5], [-5, 5, 5], [-5, 5, 0]]);
       builder.addMiteredPipes(centerLine, 0.5);
     }
     return builder.claimPolyface(true);

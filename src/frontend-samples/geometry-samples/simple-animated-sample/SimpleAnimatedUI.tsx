@@ -70,6 +70,7 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
   public setGeometry() {
     BlankViewport.decorator.clearGeometry();
     BlankViewport.decorator.setColor(this.state.color);
+    BlankViewport.decorator.setEdges(false)
     const graphicalGrid = SimpleAnimatedApp.createGridSquares(this.state.grid);
     for (const square of graphicalGrid)
       BlankViewport.decorator.addGeometry(square);
