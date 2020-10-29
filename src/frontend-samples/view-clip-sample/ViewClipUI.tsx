@@ -27,8 +27,8 @@ interface ViewClipUIState {
 /** A React component that renders the UI specific for this sample */
 export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
   /** Creates an Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       showClipBlock: false,
       clipPlane: "None",

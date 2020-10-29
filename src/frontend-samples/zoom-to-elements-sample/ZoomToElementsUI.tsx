@@ -40,8 +40,8 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
   private _ignoreSelectionChanged = false;
 
   /** Creates an Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       elementsAreSelected: false,
       elementList: [],

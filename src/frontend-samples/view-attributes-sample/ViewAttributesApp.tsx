@@ -64,8 +64,6 @@ export default class ViewAttributesApp implements SampleApp {
       case ViewFlag.Shadows: return vp.viewFlags.shadows;
       case ViewFlag.VisibleEdges: return vp.viewFlags.visibleEdges;
     }
-
-    return false;
   }
 
   // Modify flag values using the Viewport API.

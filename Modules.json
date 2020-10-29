@@ -69,6 +69,10 @@
       "import": "@bentley/ui-core"
     },
     {
+      "name": "@bentley/ui-framework",
+      "import": "@bentley/ui-framework"
+    },
+    {
       "name": "@bentley/presentation-frontend",
       "import": "@bentley/presentation-frontend"
     },
@@ -123,8 +127,23 @@
       "typedef": true
     },
     {
+      "name": "Components/Viewport/ViewportAndNavigation",
+      "import": "./src/Components/Viewport/ViewportAndNavigation",
+      "typedef": true
+    },
+    {
       "name": "Components/Viewport/ReloadableViewport",
       "import": "./src/Components/Viewport/ReloadableViewport",
+      "typedef": true
+    },
+    {
+      "name": "Components/GenericReloadableComponent/GenericReloadableComponent",
+      "import": "./src/Components/GenericReloadableComponent/GenericReloadableComponent",
+      "typedef": true
+    },
+    {
+      "name": "Components/Widgets/SmallStatusBar",
+      "import": "./src/Components/Widgets/SmallStatusBar",
       "typedef": true
     },
     {
@@ -135,6 +154,26 @@
     {
       "name": "common/SampleApp",
       "import": "./src/common/SampleApp",
+      "typedef": true
+    },
+    {
+      "name": "frontend-samples/cross-probing-sample/ViewCreator2d",
+      "import": "./src/frontend-samples/cross-probing-sample/ViewCreator2d",
+      "typedef": true
+    },
+    {
+      "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "typedef": true
+    },
+    {
+      "name": "common/AppUi/SampleAppUiComponent",
+      "import": "./src/common/AppUi/SampleAppUiComponent",
+      "typedef": true
+    },
+    {
+      "name": "common/AppUi/AppUi",
+      "import": "./src/common/AppUi/AppUi",
       "typedef": true
     },
     {

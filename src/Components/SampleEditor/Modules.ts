@@ -65,6 +65,10 @@ export const modules: IModule[] = [
         import: import("@bentley/ui-core"),
     } as IInternalModule),
     ({
+        name: "@bentley/ui-framework",
+        import: import("@bentley/ui-framework"),
+    } as IInternalModule),
+    ({
         name: "@bentley/presentation-frontend",
         import: import("@bentley/presentation-frontend"),
     } as IInternalModule),
@@ -119,9 +123,24 @@ export const modules: IModule[] = [
         typedef: import("!!raw-loader!../../common/PointSelector/PointSelector.d.ts"),
     } as IInternalModule),
     ({
+        name: "Components/Viewport/ViewportAndNavigation",
+        import: import("../Viewport/ViewportAndNavigation"),
+        typedef: import("!!raw-loader!../Viewport/ViewportAndNavigation.d.ts"),
+    } as IInternalModule),
+    ({
         name: "Components/Viewport/ReloadableViewport",
         import: import("../Viewport/ReloadableViewport"),
         typedef: import("!!raw-loader!../Viewport/ReloadableViewport.d.ts"),
+    } as IInternalModule),
+    ({
+        name: "Components/GenericReloadableComponent/GenericReloadableComponent",
+        import: import("../GenericReloadableComponent/GenericReloadableComponent"),
+        typedef: import("!!raw-loader!../GenericReloadableComponent/GenericReloadableComponent.d.ts"),
+    } as IInternalModule),
+    ({
+        name: "Components/Widgets/SmallStatusBar",
+        import: import("../Widgets/SmallStatusBar"),
+        typedef: import("!!raw-loader!../Widgets/SmallStatusBar.d.ts"),
     } as IInternalModule),
     ({
         name: "Components/ControlPane/ControlPane",
@@ -132,6 +151,26 @@ export const modules: IModule[] = [
         name: "common/SampleApp",
         import: import("../../common/SampleApp"),
         typedef: import("!!raw-loader!../../common/SampleApp.d.ts"),
+    } as IInternalModule),
+    ({
+        name: "frontend-samples/cross-probing-sample/ViewCreator2d",
+        import: import("../../frontend-samples/cross-probing-sample/ViewCreator2d"),
+        typedef: import("!!raw-loader!../../frontend-samples/cross-probing-sample/ViewCreator2d.d.ts"),
+    } as IInternalModule),
+    ({
+        name: "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+        import: import("../../frontend-samples/marker-pin-sample/RadioCard/RadioCard"),
+        typedef: import("!!raw-loader!../../frontend-samples/marker-pin-sample/RadioCard/RadioCard.d.ts"),
+    } as IInternalModule),
+    ({
+        name: "common/AppUi/SampleAppUiComponent",
+        import: import("../../common/AppUi/SampleAppUiComponent"),
+        typedef: import("!!raw-loader!../../common/AppUi/SampleAppUiComponent.d.ts"),
+    } as IInternalModule),
+    ({
+        name: "common/AppUi/AppUi",
+        import: import("../../common/AppUi/AppUi"),
+        typedef: import("!!raw-loader!../../common/AppUi/AppUi.d.ts"),
     } as IInternalModule),
     ({
         name: "common/CommonComponentTools/index.scss",

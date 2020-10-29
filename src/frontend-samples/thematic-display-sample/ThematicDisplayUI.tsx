@@ -36,8 +36,8 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   };
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     // placeholder state till set based on the view
     this.state = {

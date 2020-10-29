@@ -12,7 +12,6 @@ export default class BasicTreeApp extends React.Component<{}> implements SampleA
   public static async setup(_iModelName: string) {
     return <BasicTreeUI></BasicTreeUI>;
   }
-
 }
 
 export function BasicTree() {

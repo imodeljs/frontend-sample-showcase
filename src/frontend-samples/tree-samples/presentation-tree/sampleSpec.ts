@@ -13,6 +13,7 @@ export function getPresentationTreeSpec(): SampleSpec {
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp"), entry: true },
+      { name: "PresentationTreeUI.tsx", import: import("!!raw-loader!./PresentationTreeUI"), entry: true },
     ],
     setup: PresentationTreeApp.setup.bind(PresentationTreeApp),
   });

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { Loop } from "@bentley/geometry-core";
+import { Loop, Point3d } from "@bentley/geometry-core";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
@@ -21,15 +21,15 @@ interface TransformationState {
 
 export default class Transformations2dUI extends React.Component<{}, TransformationState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       shape: "Square",
       color: ColorDef.red,
       xTrans: 1,
       yTrans: 1,
       rotationDeg: 180,
-      geometry: Transformations2dApp.generateSquare(),
+      geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400),
     };
   }
 
@@ -44,13 +44,24 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
 
   public generateBaseGeometry(shape: string) {
     if (shape === "Square") {
-      this.setState({ geometry: Transformations2dApp.generateSquare() });
+      this.setState({ geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400) });
     } else if (shape === "Circle") {
-      this.setState({ geometry: Transformations2dApp.generateCircle() });
+      this.setState({ geometry: Transformations2dApp.generateCircle(Point3d.create(0, 0), 200) });
     } else if (shape === "Triangle") {
-      this.setState({ geometry: Transformations2dApp.generateTriangle() });
+      this.setState({ geometry: Transformations2dApp.generateTriangle(Point3d.create(0, 200, 0), Point3d.create(-250, -100, 0), Point3d.create(250, -100, 0)) });
     } else if (shape === "Convex Hull") {
-      this.setState({ geometry: Transformations2dApp.generateConvexHull() });
+      const points: Point3d[] = [];
+      points.push(Point3d.create(-8, -5, 1));
+      points.push(Point3d.create(-6, -3, 1));
+      points.push(Point3d.create(-8, 1, 1));
+      points.push(Point3d.create(8, -4, 1));
+      points.push(Point3d.create(0, 3, 1));
+      points.push(Point3d.create(-10, -1, 1));
+      points.push(Point3d.create(-7, -1, 1));
+      points.push(Point3d.create(-7, -1, 1));
+      points.push(Point3d.create(-7, -1, 1));
+      points.push(Point3d.create(-4, 3, 1));
+      this.setState({ geometry: Transformations2dApp.generateConvexHull(points) });
     }
   }
 

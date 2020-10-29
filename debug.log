@@ -7,7 +7,10 @@
 [1020/083424.241:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
 [1020/083943.176:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
 [1020/084341.820:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
+<<<<<<< HEAD
 [1021/144825.007:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
 [1022/144610.559:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
 [1027/090511.494:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
 [1027/094359.341:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
+=======
+>>>>>>> 6352c9b210c375b12bae0e6daa11cd80a256ca70

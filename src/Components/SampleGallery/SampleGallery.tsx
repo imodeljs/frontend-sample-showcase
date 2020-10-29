@@ -27,8 +27,8 @@ interface SampleGalleryState {
 }
 
 export class SampleGallery extends React.Component<SampleGalleryProps, SampleGalleryState> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     this.state = {
       expandedGroups: (this.props.samples.map(this.mapPred.bind(this), this)),

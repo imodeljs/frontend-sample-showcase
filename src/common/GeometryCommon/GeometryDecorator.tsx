@@ -190,11 +190,7 @@ export class GeometryDecorator implements Decorator {
     branch.setViewFlagOverrides(overrides);
 
     context.viewFlags.visibleEdges = true;
-    if (!this.graphics) {
-      this.graphics = this.createGraphics(context);
-    }
-    if (this.graphics)
-      branch.add(this.graphics);
+    this.graphics = this.createGraphics(context);
 
     const graphic = context.createBranch(branch, Transform.identity);
 

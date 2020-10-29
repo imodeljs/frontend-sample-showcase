@@ -20,8 +20,8 @@ export interface ReloadableConnectionState {
 }
 
 export class ReloadableConnection extends React.PureComponent<ReloadableConnectionProps, ReloadableConnectionState> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     this.state = {};
   }
@@ -47,7 +47,7 @@ export class ReloadableConnection extends React.PureComponent<ReloadableConnecti
     return null;
   }
 
-  public componentDidUpdate(prevProps: ReloadableConnectionProps, prevState: ReloadableConnectionState) {
+  public componentDidUpdate(_prevProps: ReloadableConnectionProps, prevState: ReloadableConnectionState) {
     if (this.state.imodel && prevState.imodel !== this.state.imodel) {
       if (this.props.onIModelReady)
         this.props.onIModelReady(this.state.imodel);
