@@ -37,7 +37,7 @@ export class GeometryDecorator implements Decorator {
   private text: TextString[] = [];
   private markers: Marker[] = [];
 
-  private fill: boolean = true;
+  private fill: boolean = false;
   private color: ColorDef = ColorDef.black;
   private fillColor: ColorDef = ColorDef.white;
   private lineThickness: number = 1;
@@ -157,7 +157,7 @@ export class GeometryDecorator implements Decorator {
     });
     this.shapes.forEach((styledGeometry) => {
       const geometry = styledGeometry.geometry;
-      builder.setSymbology(styledGeometry.color, styledGeometry.fill ? styledGeometry.fillColor : ColorDef.white, styledGeometry.lineThickness, styledGeometry.linePixels);
+      builder.setSymbology(styledGeometry.color, styledGeometry.fill ? styledGeometry.fillColor : styledGeometry.color, styledGeometry.lineThickness, styledGeometry.linePixels);
       if (geometry instanceof LineString3d) {
         builder.addLineString(geometry.points);
       } else if (geometry instanceof Loop) {

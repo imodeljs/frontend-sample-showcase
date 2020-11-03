@@ -40,13 +40,13 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
 
         </div>
         <hr></hr>
-        <div className="sample-options-3col" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
+        <div className="sample-options-3col" style={{ gridTemplateColumns: "1fr 5rem 5rem" }}>
           <span>Space Point:</span>
-          <NumericInput style={{ width: "5em" }} value={this.state.spacePoint.x} maxLength={8} precision={2} step={10} onChange={(value) => { if (value) this.setSpacePoint({ x: value }); }}></NumericInput>
-          <NumericInput style={{ width: "5em" }} value={this.state.spacePoint.y} maxLength={8} precision={2} step={10} onChange={(value) => { if (value) this.setSpacePoint({ y: value }); }}></NumericInput>
+          <NumericInput value={this.state.spacePoint.x} maxLength={8} precision={2} step={10} onChange={(value) => { if (value) this.setSpacePoint({ x: value }); }}></NumericInput>
+          <NumericInput value={this.state.spacePoint.y} maxLength={8} precision={2} step={10} onChange={(value) => { if (value) this.setSpacePoint({ y: value }); }}></NumericInput>
           <span>Curve Point:</span>
-          <Input style={{ width: "5em" }} value={this.state.closePoint.x.toFixed(2)} maxLength={8}></Input>
-          <Input style={{ width: "5em" }} value={this.state.closePoint.y.toFixed(2)} maxLength={8}></Input>
+          <Input value={this.state.closePoint.x.toFixed(2)} maxLength={8}></Input>
+          <Input value={this.state.closePoint.y.toFixed(2)} maxLength={8}></Input>
         </div>
       </>
     );
@@ -131,6 +131,5 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
     BlankViewport.decorator.setLinePixels(LinePixels.Code2);
     BlankViewport.decorator.addLine(LineSegment3d.create(this.state.spacePoint, this.state.closePoint))
   }
-
 }
 
