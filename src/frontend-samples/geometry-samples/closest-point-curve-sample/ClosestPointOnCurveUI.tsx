@@ -83,7 +83,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
 
   public async componentDidMount() {
     this.curveChain = ClosestPointOnCurveApp.createPath(this.state.curveType);
-    this.setSpacePoint({ x: 400, y: 1000 });
+    this.setSpacePoint({ x: 400, y: 800 });
     await this.createPointMarkers();
     this.updateVisualization();
   }
