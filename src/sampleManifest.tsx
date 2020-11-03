@@ -119,9 +119,9 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "Geometry Samples", samples: [
-    getClosestPointOnCurveSpec(),
     getSimpleLineSpec(),
     get2dTransformationsSpec(),
+    getClosestPointOnCurveSpec(),
     getSimple3dSpec(),
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
