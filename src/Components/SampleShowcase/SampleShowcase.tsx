@@ -15,6 +15,9 @@ import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { I18NNamespace } from "@bentley/imodeljs-i18n";
+import { MoveSpacePointTool as MovePointTool } from "common/InteractivePointMarker";
 
 // cSpell:ignore imodels
 
@@ -40,6 +43,7 @@ interface ShowcaseState {
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
+  private static _sampleNamespace: I18NNamespace;
   public static contextType = editorCommonActionContext;
   public context!: React.ContextType<typeof editorCommonActionContext>;
   private _samples = sampleManifest;
@@ -120,10 +124,18 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
   }
 
+  public componentWillUnmount() {
+    IModelApp.i18n.unregisterNamespace("sample-showcase-i18n-namespace");
+    IModelApp.tools.unRegister(MovePointTool.toolId);
+  }
+
   public componentDidMount() {
     this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
 
     document.documentElement.setAttribute("data-theme", "dark");
+
+    SampleShowcase._sampleNamespace = IModelApp.i18n.registerNamespace("sample-showcase-i18n-namespace");
+    MovePointTool.register(SampleShowcase._sampleNamespace);
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: ShowcaseState) {

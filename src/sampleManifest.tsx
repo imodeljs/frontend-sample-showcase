@@ -49,6 +49,7 @@ import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/present
 import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolbar-button-provider-sample/sampleSpec";
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
+import { getClosestPointOnCurveSpec } from "./frontend-samples/geometry-samples/closest-point-curve-sample/sampleSpec";
 import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
 import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d-transformations-sample/sampleSpec";
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
@@ -118,6 +119,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "Geometry Samples", samples: [
+    getClosestPointOnCurveSpec(),
     getSimpleLineSpec(),
     get2dTransformationsSpec(),
     getSimple3dSpec(),
