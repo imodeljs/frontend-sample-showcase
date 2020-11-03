@@ -21,8 +21,8 @@ interface TransformationState {
 
 export default class Transformations2dUI extends React.Component<{}, TransformationState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       shape: "Square",
       color: ColorDef.red,

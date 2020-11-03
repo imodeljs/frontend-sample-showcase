@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
+import { ReloadableConnection } from "Components/GenericReloadableComponent/GenericReloadableComponent";
 import { PresentationTree } from "./PresentationTreeApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "../../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { UnifiedSelectionTree } from "./UnifiedSelectionTreeApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 

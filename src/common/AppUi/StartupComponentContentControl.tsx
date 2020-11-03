@@ -19,16 +19,20 @@ export class StartupComponentContentControl extends ContentControl {
     super(info, _options);
 
   }
+
   public onInitialize() {
     super.onInitialize();
     this.reactNode = this.getReactNode();
   }
+
   public getReactNode(): React.ReactNode {
     const newIModelName = AppUi.iModelName;
-    if (undefined !== newIModelName)
-      return (<StartupComponent iModelName={newIModelName} onIModelReady={this._onIModelReady} />);
+    if (undefined === newIModelName)
+      return undefined;
 
+    return (<StartupComponent iModelName={newIModelName} onIModelReady={this._onIModelReady} />);
   }
+
   private _onIModelReady = async (imodel: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(imodel);
     UiFramework.setIModelConnection(imodel);

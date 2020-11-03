@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "Components/Viewport/ViewportAndNavigation";
-import { ViewCreator2d } from "./ViewCreator2d";
+import { ViewCreator2d } from "frontend-samples/cross-probing-sample/ViewCreator2d";
 import { ColorDef } from "@bentley/imodeljs-common";
 import CrossProbingApp from "./CrossProbingApp";
 

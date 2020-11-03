@@ -34,8 +34,8 @@ interface HeatmapDecoratorUIState {
 /** A React component that renders the UI specific for this sample */
 export default class HeatmapDecoratorUI extends React.Component<HeatmapDecoratorUIProps, HeatmapDecoratorUIState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       showDecorator: true,
       spreadFactor: 10,

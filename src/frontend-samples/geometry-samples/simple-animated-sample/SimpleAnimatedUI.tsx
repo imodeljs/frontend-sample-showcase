@@ -15,8 +15,8 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 
 export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number }> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       grid: ConwaysHelpers.generateGrid(),
       dimensions: new Range3d(-10, -10, 0, 1010, 1010, 0),

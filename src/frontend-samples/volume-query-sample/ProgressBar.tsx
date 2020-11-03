@@ -20,8 +20,8 @@ interface ProgressBarStates {
 }
 
 export class ProgressBar extends React.Component<ProgressBarProps, ProgressBarStates> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       isCanceled: false,
     };

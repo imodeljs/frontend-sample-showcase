@@ -13,6 +13,7 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "CustomWebfontIconsTreeApp.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeApp"), entry: true },
+      { name: "CustomWebfontIconsTreeUI.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeUI"), entry: true },
     ],
     setup: CustomWebfontIconsTreeApp.setup.bind(CustomWebfontIconsTreeApp),
   });
