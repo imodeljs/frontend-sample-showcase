@@ -7,6 +7,8 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { NumericInput } from "@bentley/ui-core";
 import SimpleLineApp from "./SimpleLineApp";
+import { InteractivePointMarker } from "common/InteractivePointMarker";
+import { ColorDef } from "@bentley/imodeljs-common";
 
 interface SimpleLineState {
   point1X: number;
@@ -65,8 +67,12 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
     BlankViewport.decorator.clearGeometry();
     const myLine = SimpleLineApp.createLineSegmentFromXY(this.state.point1X, this.state.point1Y, this.state.point2X, this.state.point2Y);
     BlankViewport.decorator.addGeometry(myLine);
-    const points = SimpleLineApp.createPointsAlongLine(myLine, [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]);
-    BlankViewport.decorator.addPoints(points);
+    const fractions = [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1];
+    const points = SimpleLineApp.createPointsAlongLine(myLine, fractions);
+    points.forEach((point, i) => {
+      const marker = new InteractivePointMarker(point, `Fraction = ${fractions[i]}`, ColorDef.red, () => { });
+      BlankViewport.decorator.addMarker(marker);
+    })
   }
 
 }
