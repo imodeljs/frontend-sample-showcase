@@ -161,8 +161,9 @@ export class GeometryDecorator implements Decorator {
             for (let i = 0; i < numIndices - 1; i++) {
               const point1 = visitor.getPoint(i);
               const point2 = visitor.getPoint(i + 1);
-              if (point1 && point2)
+              if (point1 && point2) {
                 builder.addLineString([point1, point2]);
+              }
             }
             flag = visitor.moveToNextFacet();
           }
@@ -190,10 +191,13 @@ export class GeometryDecorator implements Decorator {
     branch.setViewFlagOverrides(overrides);
 
     context.viewFlags.visibleEdges = true;
-    this.graphics = this.createGraphics(context);
+    if (!this.graphics)
+      this.graphics = this.createGraphics(context);
+
+    if (this.graphics)
+      branch.add(this.graphics);
 
     const graphic = context.createBranch(branch, Transform.identity);
-
     context.addDecoration(GraphicType.Scene, graphic);
   }
 

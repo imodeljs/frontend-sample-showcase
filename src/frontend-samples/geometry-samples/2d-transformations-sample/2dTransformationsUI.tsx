@@ -44,11 +44,11 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
 
   public generateBaseGeometry(shape: string) {
     if (shape === "Square") {
-      this.setState({ geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400) });
+      this.setState({ geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 4) });
     } else if (shape === "Circle") {
-      this.setState({ geometry: Transformations2dApp.generateCircle(Point3d.create(0, 0), 200) });
+      this.setState({ geometry: Transformations2dApp.generateCircle(Point3d.create(0, 0), 2) });
     } else if (shape === "Triangle") {
-      this.setState({ geometry: Transformations2dApp.generateTriangle(Point3d.create(0, 200, 0), Point3d.create(-250, -100, 0), Point3d.create(250, -100, 0)) });
+      this.setState({ geometry: Transformations2dApp.generateTriangle(Point3d.create(0, 2, 0), Point3d.create(-2.5, -1, 0), Point3d.create(2.5, -1, 0)) });
     } else if (shape === "Convex Hull") {
       const points: Point3d[] = [];
       points.push(Point3d.create(-8, -5, 1));
