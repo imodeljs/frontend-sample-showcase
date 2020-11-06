@@ -36,7 +36,7 @@ export class InteractivePointMarker extends Marker {
   public onMouseButton(ev: BeButtonEvent) {
     if (BeButton.Data === ev.button && ev.isDown) {
       this._canPick = false;
-      IModelApp.tools.run(MoveSpacePointTool.toolId, this.worldLocation, this._setPointFunc, () => { this._canPick = true; });
+      IModelApp.tools.run(MovePointTool.toolId, this.worldLocation, this._setPointFunc, () => { this._canPick = true; });
       return true;
     }
     return false;
@@ -62,8 +62,8 @@ export class InteractivePointMarker extends Marker {
   }
 }
 
-export class MoveSpacePointTool extends InputCollector {
-  public static toolId = "MovePointTool"; // <== Used to find flyover (tool name), description, and keyin from namespace tool registered with...see CoreTools.json for example...
+export class MovePointTool extends InputCollector {
+  public static toolId = "MovePointTool";
   private _resetPt: Point3d;
   private _setPointFunc: (pt: Point3d) => void;
   private _toolCompleteFunc: () => void;

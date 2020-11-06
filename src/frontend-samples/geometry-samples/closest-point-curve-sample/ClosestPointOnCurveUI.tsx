@@ -22,8 +22,8 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
   private closePointMarker?: InteractivePointMarker;
   private curveChain?: CurveChain;
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       spacePoint: Point3d.create(),
       closePoint: Point3d.create(),
