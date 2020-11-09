@@ -12,8 +12,10 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     label: "Custom Event Handler Tree",
     image: "custom-event-handler-tree-thumbnail.png",
     customModelList: [],
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp"), entry: true },
+      { name: "CustomEventHandlerTreeUI.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeUI"), entry: true },
     ],
     setup: CustomEventHandlerTreeApp.setup.bind(CustomEventHandlerTreeApp),
   });

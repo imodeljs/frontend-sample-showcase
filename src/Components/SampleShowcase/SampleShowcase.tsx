@@ -9,12 +9,15 @@ import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
-import SampleEditor from "../SampleEditor/SampleEditor";
-import { InternalFile, SplitScreen } from "@bentley/monaco-editor";
+import { ConnectedSampleEditor } from "../SampleEditor/SampleEditor";
+import { editorCommonActionContext, IInternalFile, SplitScreen } from "@bentley/monaco-editor/editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { I18NNamespace } from "@bentley/imodeljs-i18n";
+import { MovePointTool as MovePointTool } from "common/InteractivePointMarker";
 
 // cSpell:ignore imodels
 
@@ -22,7 +25,8 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
-  files: InternalFile[];
+  readme?: IInternalFile;
+  files: IInternalFile[];
   customModelList?: string[];
   setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
   teardown?: () => void;
@@ -39,12 +43,15 @@ interface ShowcaseState {
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
+  private static _sampleNamespace: I18NNamespace;
+  public static contextType = editorCommonActionContext;
+  public context!: React.ContextType<typeof editorCommonActionContext>;
   private _samples = sampleManifest;
   private _prevSampleSetup?: any;
   private _prevSampleTeardown?: any;
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     const names = this.getNamesFromURLParams();
 
@@ -117,10 +124,18 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
   }
 
+  public componentWillUnmount() {
+    IModelApp.i18n.unregisterNamespace("sample-showcase-i18n-namespace");
+    IModelApp.tools.unRegister(MovePointTool.toolId);
+  }
+
   public componentDidMount() {
     this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
 
     document.documentElement.setAttribute("data-theme", "dark");
+
+    SampleShowcase._sampleNamespace = IModelApp.i18n.registerNamespace("sample-showcase-i18n-namespace");
+    MovePointTool.register(SampleShowcase._sampleNamespace);
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: ShowcaseState) {
@@ -154,6 +169,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         <div className="model-selector">
           <IModelSelector iModelNames={iModelList} iModelName={iModelName} onIModelChange={this._onIModelChange} />
         </div>);
+
+    return undefined;
   }
 
   private async setupNewSample(groupName: string, sampleName: string) {
@@ -180,7 +197,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName });
   }
 
-  private _onGalleryChanged = (groupName: string, sampleName: string) => {
+  private _onGalleryCardClicked = (groupName: string, sampleName: string) => {
     if (this._prevSampleSetup) {
       if (window.confirm("Changes made to the code will not be saved!")) {
         const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
@@ -254,13 +271,14 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+    const readme = activeSample ? activeSample.readme : undefined;
     const files = activeSample ? activeSample.files : undefined;
 
     return (
       <div className="showcase">
         <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
           <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
-            <SampleEditor files={files} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} />
+            <ConnectedSampleEditor files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
             <div style={{ height: "100%" }}>
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
                 {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
@@ -271,7 +289,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
               {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
             </div>
           </SplitScreen>
-          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryChanged} onCollapse={() => this.setState({ showGallery: false })} />
+          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryCardClicked} onCollapse={() => this.setState({ showGallery: false })} />
         </SplitScreen>
       </div>
     );

@@ -10,7 +10,7 @@ import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState 
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { PopupMenu } from "./PopupMenu";
-import { RadioCard, RadioCardEntry } from "./RadioCard/RadioCard";
+import { RadioCard, RadioCardEntry } from "frontend-samples/marker-pin-sample/RadioCard/RadioCard";
 import { PointSelector } from "common/PointSelector/PointSelector";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
@@ -36,8 +36,8 @@ export default class MarkerPinsUI extends React.Component<{
 }, MarkerPinsUIState> {
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       showDecorator: true,
       manualPin: MarkerPinsUI.getManualPinSelections()[0],

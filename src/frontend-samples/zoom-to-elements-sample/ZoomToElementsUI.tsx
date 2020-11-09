@@ -7,7 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
+import { Button, ButtonType, Input, Select, Toggle } from "@bentley/ui-core";
 import "./index.scss";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ZoomToElementsApp from "./ZoomToElementsApp";
@@ -38,11 +38,10 @@ export interface ZoomToState {
 /** A React component that renders the UI specific for this sample */
 export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomToState> {
   private _ignoreSelectionChanged = false;
-  private _listRef = React.createRef<HTMLSelectElement>();
 
   /** Creates an Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       elementsAreSelected: false,
       elementList: [],
@@ -68,9 +67,9 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
 
   private _handleCaptureIdsButton = () => {
     const toAdd: string[] = [];
-    for (const e of this.state.imodel!.selectionSet.elements) {
-      if (this.state.elementList.indexOf(e) < 0) {
-        toAdd.push(e);
+    for (const element of this.state.imodel!.selectionSet.elements) {
+      if (!this.state.elementList.includes(element)) {
+        toAdd.push(element);
       }
     }
     this.setState((prevState) => ({ elementList: [...prevState.elementList, ...toAdd] }));
@@ -79,18 +78,6 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
 
   private _handleRemoveIdsButton = () => {
     const filteredList = this.state.elementList.filter((e) => this.state.selectedList.indexOf(e) < 0);
-    const tableElement = this._listRef.current;
-    if (!tableElement)
-      return;
-
-    this._ignoreSelectionChanged = true;
-    tableElement.selectedIndex = -1;
-
-    for (const option of tableElement.selectedOptions) {
-      option.selected = false;
-    }
-    this._ignoreSelectionChanged = false;
-
     this.setState({ elementList: filteredList, selectedList: [] });
     this.state.imodel!.selectionSet.emptyAll();
   }
@@ -110,9 +97,12 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
   /** Selector for list of elementIds */
   private _elementIdSelector = () => {
     return (
-      <select ref={this._listRef} multiple onChange={this._handleSelectorChange}>
-        {this.state.elementList.map((item, i) => <option key={i}>{item}</option>)}
-      </select>
+      <Select
+        multiple
+        value={this.state.selectedList}
+        onChange={this._handleSelectorChange}
+        options={Object.fromEntries(this.state.elementList.map((element) => [element, element]))}
+      />
     );
   }
 
@@ -139,7 +129,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
           <Toggle isOn={this.state.animateVal} onChange={() => this.setState((prevState) => ({ animateVal: !prevState.animateVal }))} disabled={!this.state.animateEnable} />
           <Toggle isOn={this.state.marginEnable} onChange={() => this.setState((prevState) => ({ marginEnable: !prevState.marginEnable }))} />
           <span>Margin</span>
-          <input type="range" min="0" max="0.25" step="0.01" value={this.state.marginVal} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState({ marginVal: Number(event.target.value) })} disabled={!this.state.marginEnable}></input>
+          <Input type="range" min="0" max="0.25" step="0.01" value={this.state.marginVal} onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.setState({ marginVal: Number(event.target.value) })} disabled={!this.state.marginEnable} />
           <Toggle isOn={this.state.standardViewEnable} onChange={() => this.setState((prevState) => ({ standardViewEnable: !prevState.standardViewEnable }))} />
           <span>Standard View</span>
           <ViewPicker onViewPick={(viewId: StandardViewId) => { this.setState({ standardViewVal: viewId }); }} disabled={!this.state.standardViewEnable} />
@@ -194,17 +184,18 @@ class ViewPicker extends React.PureComponent<ViewPickerProps> {
   }
 
   public render() {
+    const options = {
+      [StandardViewId.Top]: "Top",
+      [StandardViewId.Bottom]: "Bottom",
+      [StandardViewId.Left]: "Left",
+      [StandardViewId.Right]: "Right",
+      [StandardViewId.Front]: "Front",
+      [StandardViewId.Back]: "Back",
+      [StandardViewId.Iso]: "Iso",
+      [StandardViewId.RightIso]: "RightIso",
+    }
     return (
-      <select onChange={this._handleViewPick} disabled={this.props.disabled}>
-        <option value={StandardViewId.Top}>Top</option>
-        <option value={StandardViewId.Bottom}>Bottom</option>
-        <option value={StandardViewId.Left}>Left</option>
-        <option value={StandardViewId.Right}>Right</option>
-        <option value={StandardViewId.Front}>Front</option>
-        <option value={StandardViewId.Back}>Back</option>
-        <option value={StandardViewId.Iso}>Iso</option>
-        <option value={StandardViewId.RightIso}>RightIso</option>
-      </select>
+      <Select onChange={this._handleViewPick} disabled={this.props.disabled} options={options} />
     );
   }
 }

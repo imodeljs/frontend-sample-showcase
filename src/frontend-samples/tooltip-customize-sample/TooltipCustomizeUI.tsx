@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { Toggle } from "@bentley/ui-core";
+import { Input, Select, Toggle } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "api/showcasetooladmin";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { SampleToolAdmin } from "./TooltipCustomizeApp";
@@ -30,8 +30,8 @@ export interface TooltipCustomizeSettings {
 export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of TooltipCustomizeApp.tsx.
     const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
     this.state = { ...toolAdmin.settings };
@@ -72,6 +72,11 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iM
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
+    const options = {
+      [ElemProperty.Origin]: "Origin",
+      [ElemProperty.LastModified]: "Last Modified",
+      [ElemProperty.CodeValue]: "Code value",
+    };
     return (
       <>
         <div className="sample-options-3col">
@@ -80,14 +85,10 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iM
           <span></span>
           <Toggle isOn={this.state.showCustomText} onChange={this._onChangeShowCustomText} />
           <span>Show Custom Text</span>
-          <input type="text" value={this.state.customText} onChange={this._onChangeCustomText} disabled={!this.state.showCustomText} />
+          <Input type="text" value={this.state.customText} onChange={this._onChangeCustomText} disabled={!this.state.showCustomText} />
           <Toggle isOn={this.state.showElementProperty} onChange={this._onChangeShowElementProperty} />
           <span>Show Element Property</span>
-          <select onChange={this._onChangeElementProperty} value={this.state.elemProperty} disabled={!this.state.showElementProperty}>
-            <option value={ElemProperty.Origin}> Origin </option>
-            <option value={ElemProperty.LastModified}> Last Modified </option>
-            <option value={ElemProperty.CodeValue}> Code value </option>
-          </select>
+          <Select onChange={this._onChangeElementProperty} value={this.state.elemProperty} disabled={!this.state.showElementProperty} options={options} />
           <Toggle isOn={this.state.showDefaultToolTip} onChange={this._onChangeShowDefaultToolTip} />
           <span>Show Default ToolTip</span>
           <span></span>

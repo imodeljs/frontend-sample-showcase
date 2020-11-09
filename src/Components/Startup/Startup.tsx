@@ -32,8 +32,8 @@ export interface StartupState {
 export class StartupComponent extends React.Component<StartupProps, StartupState> {
 
   /** Creates an StartupComponent instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       user: {
         isLoading: false,

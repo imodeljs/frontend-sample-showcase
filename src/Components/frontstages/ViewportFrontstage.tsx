@@ -8,7 +8,7 @@ import {
   CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone,
 } from "@bentley/ui-framework";
 import { StageUsage } from "@bentley/ui-abstract";
-import { SmallStatusBarWidgetControl } from "../Widgets/SmallStatusBar";
+import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
 
 /* eslint-disable react/jsx-key */
 

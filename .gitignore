@@ -28,3 +28,4 @@ yarn-error.log*
 
 # generated
 /src/**/*.d.ts
+/src/Components/SampleEditor/Modules.ts

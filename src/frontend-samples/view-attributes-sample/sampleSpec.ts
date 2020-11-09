@@ -10,6 +10,7 @@ export function getViewAttributesSpec(): SampleSpec {
     name: "view-attributes-sample",
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp"), entry: true },
       { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI") },
