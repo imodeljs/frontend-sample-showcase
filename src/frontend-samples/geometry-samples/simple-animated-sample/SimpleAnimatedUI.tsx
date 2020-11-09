@@ -23,7 +23,7 @@ export default class SimpleAnimatedUI extends React.Component<{ decorator: Geome
       dimensions: new Range3d(-10, -10, 0, 1010, 1010, 0),
       timer: new Timer(100),
       clockSpeed: 100,
-      color: ColorDef.black,
+      color: ColorDef.fromString("yellow"),
     };
   }
 
@@ -72,8 +72,10 @@ export default class SimpleAnimatedUI extends React.Component<{ decorator: Geome
 
   public setGeometry() {
     this.props.decorator.clearGeometry();
-    this.props.decorator.setColor(this.state.color);
-    this.props.decorator.setEdges(false)
+    this.props.decorator.setColor(ColorDef.white);
+    this.props.decorator.setFill(true);
+    this.props.decorator.setFillColor(this.state.color);
+    this.props.decorator.setLineThickness(2);
     const graphicalGrid = SimpleAnimatedApp.createGridSquares(this.state.grid);
     for (const square of graphicalGrid)
       this.props.decorator.addGeometry(square);

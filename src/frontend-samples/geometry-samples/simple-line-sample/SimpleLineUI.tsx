@@ -9,6 +9,8 @@ import { NumericInput } from "@bentley/ui-core";
 import SimpleLineApp from "./SimpleLineApp";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { InteractivePointMarker } from "common/InteractivePointMarker";
+import { ColorDef } from "@bentley/imodeljs-common";
 
 interface SimpleLineState {
   point1X: number;
@@ -71,8 +73,12 @@ export default class SimpleLine extends React.Component<{ decorator: GeometryDec
     this.props.decorator.clearGeometry();
     const myLine = SimpleLineApp.createLineSegmentFromXY(this.state.point1X, this.state.point1Y, this.state.point2X, this.state.point2Y);
     this.props.decorator.addGeometry(myLine);
-    const points = SimpleLineApp.createPointsAlongLine(myLine, [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]);
-    this.props.decorator.addPoints(points);
+    const fractions = [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1];
+    const points = SimpleLineApp.createPointsAlongLine(myLine, fractions);
+    points.forEach((point, i) => {
+      const marker = new InteractivePointMarker(point, `Fraction = ${fractions[i]}`, ColorDef.red, () => { });
+      this.props.decorator.addMarker(marker);
+    })
   }
 
 }

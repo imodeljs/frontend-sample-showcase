@@ -24,6 +24,7 @@ export default class SimpleAnimatedApp implements SampleApp {
           corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize, 0));
           corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize + squareSize, 0));
           corners.push(Point3d.create(i * squareSize, j * squareSize + squareSize, 0));
+          corners.push(Point3d.create(i * squareSize, j * squareSize, 0));
           const square = LineString3d.create(corners);
           const loop = Loop.create(square.clone());
           squares.push(loop);

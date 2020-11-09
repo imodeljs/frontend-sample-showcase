@@ -36,6 +36,7 @@ export default class Transformations2dApp implements SampleApp {
     points.push(Point3d.create(center.x - sideLength / 2, center.y + sideLength / 2));
     points.push(Point3d.create(center.x + sideLength / 2, center.y + sideLength / 2));
     points.push(Point3d.create(center.x + sideLength / 2, center.y - sideLength / 2));
+    points.push(Point3d.create(center.x - sideLength / 2, center.y - sideLength / 2));
     const linestring = LineString3d.create(points);
     const loop = Loop.create(linestring.clone());
     return loop;

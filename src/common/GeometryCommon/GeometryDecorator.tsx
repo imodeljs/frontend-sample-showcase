@@ -2,17 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
-import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
-import { ColorDef, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Polyface, Transform, Vector3d } from "@bentley/geometry-core";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
+import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
 interface CustomGeometryQuery {
   geometry: GeometryQuery;
   color: ColorDef;
   fill: boolean;
+  fillColor: ColorDef;
   lineThickness: number;
   edges: boolean;
+  linePixels: LinePixels;
 }
 
 interface CustomPoint {
@@ -24,24 +26,35 @@ interface CustomPoint {
 
 export class GeometryDecorator implements Decorator {
 
+  private image: HTMLImageElement | undefined;
+
   private graphics: RenderGraphic | undefined;
 
   private points: CustomPoint[] = [];
   private shapes: CustomGeometryQuery[] = [];
   private text: TextString[] = [];
+  private markers: Marker[] = [];
 
-  private fill: boolean = true;
+  private fill: boolean = false;
   private color: ColorDef = ColorDef.black;
+  private fillColor: ColorDef = ColorDef.white;
   private lineThickness: number = 1;
   private edges: boolean = true;
+  private linePixels = LinePixels.Solid;
+
+  public addMarker(marker: Marker) {
+    this.markers.push(marker);
+  }
 
   public addLine(line: LineSegment3d) {
     const styledGeometry: CustomGeometryQuery = ({
       geometry: line,
       color: this.color,
       fill: this.fill,
+      fillColor: this.fillColor,
       lineThickness: this.lineThickness,
       edges: this.edges,
+      linePixels: this.linePixels,
     });
     this.shapes.push(styledGeometry);
   }
@@ -71,8 +84,10 @@ export class GeometryDecorator implements Decorator {
       geometry,
       color: this.color,
       fill: this.fill,
+      fillColor: this.fillColor,
       lineThickness: this.lineThickness,
       edges: this.edges,
+      linePixels: this.linePixels,
     });
     this.shapes.push(styledGeometry);
   }
@@ -82,13 +97,16 @@ export class GeometryDecorator implements Decorator {
       geometry: arc,
       color: this.color,
       fill: this.fill,
+      fillColor: this.fillColor,
       lineThickness: this.lineThickness,
       edges: this.edges,
+      linePixels: this.linePixels,
     });
     this.shapes.push(styledGeometry);
   }
 
   public clearGeometry() {
+    this.markers = [];
     this.points = [];
     this.shapes = [];
     this.graphics = undefined;
@@ -103,12 +121,20 @@ export class GeometryDecorator implements Decorator {
     this.fill = fill;
   }
 
+  public setFillColor(color: ColorDef) {
+    this.fillColor = color;
+  }
+
   public setLineThickness(lineThickness: number) {
     this.lineThickness = lineThickness;
   }
 
   public setEdges(edges: boolean) {
     this.edges = edges;
+  }
+
+  public setLinePixels(linePixels: LinePixels) {
+    this.linePixels = linePixels;
   }
 
   // Iterate through the geometry and point lists, extracting each geometry and point, along with their styles
@@ -125,7 +151,7 @@ export class GeometryDecorator implements Decorator {
     });
     this.shapes.forEach((styledGeometry) => {
       const geometry = styledGeometry.geometry;
-      builder.setSymbology(styledGeometry.color, styledGeometry.fill ? styledGeometry.color : ColorDef.white, styledGeometry.lineThickness);
+      builder.setSymbology(styledGeometry.color, styledGeometry.fill ? styledGeometry.fillColor : styledGeometry.color, styledGeometry.lineThickness, styledGeometry.linePixels);
       if (geometry instanceof LineString3d) {
         builder.addLineString(geometry.points);
       } else if (geometry instanceof Loop) {
@@ -148,6 +174,8 @@ export class GeometryDecorator implements Decorator {
             }
           });
         }
+      } else if (geometry instanceof Path) {
+        builder.addPath(geometry);
       } else if (geometry instanceof IndexedPolyface) {
         builder.addPolyface(geometry, false);
         if (styledGeometry.edges) {
@@ -188,7 +216,7 @@ export class GeometryDecorator implements Decorator {
         const lineString = [pointA, pointB];
         builder.addLineString(lineString);
       } else if (geometry instanceof Arc3d) {
-        builder.addArc(geometry, false, false);
+        builder.addArc(geometry, false, styledGeometry.fill);
       }
     });
     const graphic = builder.finish();
@@ -213,6 +241,10 @@ export class GeometryDecorator implements Decorator {
 
     const graphic = context.createBranch(branch, Transform.identity);
     context.addDecoration(GraphicType.Scene, graphic);
+
+    this.markers.forEach((marker) => {
+      marker.addDecoration(context);
+    });
   }
 
   // Draws a base for the 3d geometry
