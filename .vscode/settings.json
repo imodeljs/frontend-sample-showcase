@@ -14,9 +14,19 @@
     "Reloadable",
     "bentleyjs",
     "exton",
+    "fontawesome",
     "imodel",
+    "imodelhub",
     "imodeljs",
-    "typemoq"
+    "itwin",
+    "launchdarkly",
+    "ninezone",
+    "orbitgt",
+    "rbac",
+    "typedefs",
+    "typemoq",
+    "webfont",
+    "webgl"
   ],
   "json.schemas": [
     {
