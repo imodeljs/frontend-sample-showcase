@@ -12,8 +12,9 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import SimpleAnimatedApp from "./SimpleAnimatedApp";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 
-export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number }> {
+export default class SimpleAnimatedUI extends React.Component<{ decorator: GeometryDecorator }, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number }> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -36,6 +37,8 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
 
   public componentWillUnmount() {
     this.state.timer.setOnExecute(undefined);
+    IModelApp.viewManager.dropDecorator(this.props.decorator);
+
   }
 
   public setNewTimer(clockSpeed: number) {
@@ -62,18 +65,18 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
     return (
       <>
         <ControlPane instructions="An implementation of Conway's game of life" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true}></BlankViewport>
+        <BlankViewport force2d={true} sampleSpace={new Range3d(-10, -10, 0, 1010, 1010, 0)}></BlankViewport>
       </>
     );
   }
 
   public setGeometry() {
-    BlankViewport.decorator.clearGeometry();
-    BlankViewport.decorator.setColor(this.state.color);
-    BlankViewport.decorator.setEdges(false)
+    this.props.decorator.clearGeometry();
+    this.props.decorator.setColor(this.state.color);
+    this.props.decorator.setEdges(false)
     const graphicalGrid = SimpleAnimatedApp.createGridSquares(this.state.grid);
     for (const square of graphicalGrid)
-      BlankViewport.decorator.addGeometry(square);
+      this.props.decorator.addGeometry(square);
 
     IModelApp.viewManager.invalidateDecorationsAllViews();
   }
@@ -87,5 +90,6 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
     const newGrid = ConwaysHelpers.updateGrid(this.state.grid);
     this.setState({ grid: newGrid });
   }
+
 
 }

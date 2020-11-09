@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Point3d, Transform } from "@bentley/geometry-core";
+import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { ColorDef, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
@@ -153,19 +153,33 @@ export class GeometryDecorator implements Decorator {
         if (styledGeometry.edges) {
           // Since decorators don't natively support visual edges,
           // We draw them manually as lines along each facet edge
-          builder.setSymbology(ColorDef.black, ColorDef.black, 3);
-          const visitor = IndexedPolyfaceVisitor.create(geometry, 1);
-          let flag = true;
-          while (flag) {
-            const numIndices = visitor.pointCount;
-            for (let i = 0; i < numIndices - 1; i++) {
-              const point1 = visitor.getPoint(i);
-              const point2 = visitor.getPoint(i + 1);
-              if (point1 && point2) {
-                builder.addLineString([point1, point2]);
-              }
+          // Need to offset polyface edges to ensure they don't overlap with the shape itself
+          const frustum = new Point3d(0, 0, 0)
+          if (IModelApp && IModelApp.viewManager && IModelApp.viewManager.selectedView && IModelApp.viewManager.selectedView.view) {
+            const viewState = IModelApp.viewManager.selectedView.view;
+            let eyePoint = new Point3d(15, 15, 15);
+            if (viewState.is3d()) {
+              eyePoint = viewState.camera.getEyePoint();
             }
-            flag = visitor.moveToNextFacet();
+            let dir = new Vector3d(eyePoint.x - frustum.x, eyePoint.y - frustum.y, eyePoint.z - frustum.z)
+            dir = dir.scale(0.001)
+            builder.setSymbology(ColorDef.black, ColorDef.black, 3);
+            const visitor = IndexedPolyfaceVisitor.create(geometry, 1);
+            let flag = true;
+            while (flag) {
+              const numIndices = visitor.pointCount;
+              for (let i = 0; i < numIndices - 1; i++) {
+
+                let point1 = visitor.getPoint(i);
+                let point2 = visitor.getPoint(i + 1);
+                if (point1 && point2) {
+                  point1 = point1.plus(dir);
+                  point2 = point2.plus(dir);
+                  builder.addLineString([point1, point2]);
+                }
+              }
+              flag = visitor.moveToNextFacet();
+            }
           }
         }
       } else if (geometry instanceof LineSegment3d) {

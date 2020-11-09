@@ -9,6 +9,8 @@ import { ControlPane } from "Components/ControlPane/ControlPane"; import { Numer
 import { ColorPickerButton } from "@bentley/ui-components";
 import Simple3dApp from "./Simple3dApp";
 import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 
 interface Simple3dState {
   shape: string;
@@ -25,7 +27,7 @@ interface Simple3dState {
   tpSweep: number;
 }
 
-export default class Simple3dUI extends React.Component<{}, Simple3dState> {
+export default class Simple3dUI extends React.Component<{ decorator: GeometryDecorator }, Simple3dState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -54,7 +56,7 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
   }
 
   public setGeometry() {
-    BlankViewport.decorator.clearGeometry();
+    this.props.decorator.clearGeometry();
 
     const options = StrokeOptions.createForCurves();
     options.needParams = false;
@@ -78,9 +80,9 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
         builder.addTorusPipe(torusPipe);
     }
     const polyface = builder.claimPolyface(false);
-    BlankViewport.decorator.setColor(this.state.color);
-    BlankViewport.decorator.addGeometry(polyface);
-    BlankViewport.decorator.drawBase()
+    this.props.decorator.setColor(this.state.color);
+    this.props.decorator.addGeometry(polyface);
+    this.props.decorator.drawBase()
   }
 
   public getControls() {
@@ -123,9 +125,13 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
     return (
       <>
         <ControlPane instructions="Select a shape" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={false}></BlankViewport>
+        <BlankViewport force2d={false} sampleSpace={undefined}></BlankViewport>
       </>
     );
+  }
+
+  public componentWillUnmount() {
+    IModelApp.viewManager.dropDecorator(this.props.decorator);
   }
 
 }

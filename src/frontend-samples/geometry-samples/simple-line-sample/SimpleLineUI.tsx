@@ -7,6 +7,8 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { NumericInput } from "@bentley/ui-core";
 import SimpleLineApp from "./SimpleLineApp";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 
 interface SimpleLineState {
   point1X: number;
@@ -15,7 +17,7 @@ interface SimpleLineState {
   point2Y: number;
 }
 
-export default class SimpleLine extends React.Component<{}, SimpleLineState> {
+export default class SimpleLine extends React.Component<{ decorator: GeometryDecorator }, SimpleLineState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -48,7 +50,7 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
     return (
       <>
         <ControlPane instructions="Creating a line segments and some points along it" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true}></BlankViewport>
+        <BlankViewport force2d={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }
@@ -61,12 +63,16 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
     this.setGeometry();
   }
 
+  public componentWillUnmount() {
+    IModelApp.viewManager.dropDecorator(this.props.decorator);
+  }
+
   public setGeometry() {
-    BlankViewport.decorator.clearGeometry();
+    this.props.decorator.clearGeometry();
     const myLine = SimpleLineApp.createLineSegmentFromXY(this.state.point1X, this.state.point1Y, this.state.point2X, this.state.point2Y);
-    BlankViewport.decorator.addGeometry(myLine);
+    this.props.decorator.addGeometry(myLine);
     const points = SimpleLineApp.createPointsAlongLine(myLine, [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1]);
-    BlankViewport.decorator.addPoints(points);
+    this.props.decorator.addPoints(points);
   }
 
 }

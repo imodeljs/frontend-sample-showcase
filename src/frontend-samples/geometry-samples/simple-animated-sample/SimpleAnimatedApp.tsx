@@ -34,16 +34,10 @@ export default class SimpleAnimatedApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup(new Range3d(-10, -10, 0, 1010, 1010, 0), true, false);
-    BlankViewport.decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <SimpleAnimatedUI></SimpleAnimatedUI>;
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
+    return <SimpleAnimatedUI decorator={decorator}></SimpleAnimatedUI>;
   }
 
-  public static teardown() {
-    if (null != BlankViewport.decorator) {
-      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
-    }
-  }
 
 }

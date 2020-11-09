@@ -17,6 +17,5 @@ export function get2dTransformationsSpec(): SampleSpec {
 
     ],
     setup: Transformations2dApp.setup,
-    teardown: Transformations2dApp.teardown,
   });
 }

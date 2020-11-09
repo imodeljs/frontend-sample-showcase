@@ -9,6 +9,8 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
 import Transformations2dApp from "./2dTransformationsApp";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 
 interface TransformationState {
   shape: string;
@@ -17,9 +19,10 @@ interface TransformationState {
   yTrans: number;
   rotationDeg: number;
   geometry: Loop;
+  vp: BlankViewport | undefined;
 }
 
-export default class Transformations2dUI extends React.Component<{}, TransformationState> {
+export default class Transformations2dUI extends React.Component<{ decorator: GeometryDecorator }, TransformationState> {
 
   constructor(props?: any) {
     super(props);
@@ -30,15 +33,16 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
       yTrans: 1,
       rotationDeg: 180,
       geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400),
+      vp: undefined,
     };
   }
 
   public componentDidUpdate() {
     if (this.state.geometry) {
-      BlankViewport.decorator.clearGeometry();
-      BlankViewport.decorator.setColor(ColorDef.red);
-      BlankViewport.decorator.setLineThickness(5);
-      BlankViewport.decorator.addGeometry(this.state.geometry);
+      this.props.decorator.clearGeometry();
+      this.props.decorator.setColor(ColorDef.red);
+      this.props.decorator.setLineThickness(5);
+      this.props.decorator.addGeometry(this.state.geometry);
     }
   }
 
@@ -98,13 +102,17 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
     return (
       <>
         <ControlPane instructions="Select a shape, and apply transformations to it." controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true}></BlankViewport>
+        <BlankViewport force2d={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }
 
   public componentDidMount() {
     this.generateBaseGeometry(this.state.shape);
+  }
+
+  public componentWillUnmount() {
+    IModelApp.viewManager.dropDecorator(this.props.decorator);
   }
 
 }

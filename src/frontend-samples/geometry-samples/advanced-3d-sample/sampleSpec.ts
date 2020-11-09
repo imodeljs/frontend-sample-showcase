@@ -17,6 +17,5 @@ export function getAdvanced3dSpec(): SampleSpec {
 
     ],
     setup: Advanced3dApp.setup,
-    teardown: Advanced3dApp.teardown,
   });
 }

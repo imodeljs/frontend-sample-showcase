@@ -63,16 +63,9 @@ export default class Advanced3dApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup(undefined, false, true);
-    BlankViewport.decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <Advanced3dUI></Advanced3dUI>;
-  }
-
-  public static teardown() {
-    if (null != BlankViewport.decorator) {
-      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
-    }
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
+    return <Advanced3dUI decorator={decorator}></Advanced3dUI>;
   }
 
 }

@@ -29,16 +29,9 @@ export default class Simple3dApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup(undefined, false, true);
-    BlankViewport.decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
-    return <Simple3dUI></Simple3dUI>;
-  }
-
-  public static teardown() {
-    if (null != BlankViewport.decorator) {
-      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
-    }
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
+    return <Simple3dUI decorator={decorator}></Simple3dUI>;
   }
 
 }

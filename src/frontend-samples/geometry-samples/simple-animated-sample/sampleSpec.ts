@@ -17,6 +17,5 @@ export function getSimpleAnimatedSpec(): SampleSpec {
       { name: "ConwaysGameOfLife.ts", import: import("!!raw-loader!./ConwaysGameOfLife") },
     ],
     setup: SimpleAnimatedApp.setup,
-    teardown: SimpleAnimatedApp.teardown,
   });
 }

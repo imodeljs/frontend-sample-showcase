@@ -15,14 +15,43 @@ const renderingStyleViewFlags: ViewFlagProps = {
   renderMode: RenderMode.SmoothShade,
 };
 
-export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: Viewport }> {
+interface BlankViewportProps {
+  force2d: boolean;
+  sampleSpace: Range3d | undefined;
+}
 
-  public static decorator: GeometryDecorator;
-  public static imodel: IModelConnection;
-  public static viewState: ViewState;
+export class BlankViewport extends React.Component<BlankViewportProps, { imodel: IModelConnection | undefined, viewState: ViewState | undefined }> {
+
+  public decorator: GeometryDecorator | undefined;
+
+  public componentDidMount() {
+    let imodel;
+    if (this.props.sampleSpace) {
+      imodel = this.getBlankConnection(this.props.sampleSpace);
+    } else {
+      imodel = this.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
+    }
+    let viewState;
+    if (this.props.force2d) {
+      viewState = this.get2dViewState(imodel);
+    } else {
+      viewState = this.get3dViewState(imodel);
+    }
+    console.log(viewState.camera.getEyePoint())
+    this.setState({
+      viewState,
+      imodel,
+    })
+  }
+
+  public async componentWillUnmount() {
+    if (this.state.imodel) {
+      await this.state.imodel.close()
+    }
+  }
 
   // Creates a blank iModelConnection with the specified dimensions
-  private static getBlankConnection(sampleDimensions: Range3d) {
+  private getBlankConnection(sampleDimensions: Range3d) {
     const exton: BlankConnection = BlankConnection.create({
       name: "GeometryConnection",
       location: Cartographic.fromDegrees(0, 0, 0),
@@ -32,53 +61,40 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: V
   }
 
   // Generates a simple 3d viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public static async get3dViewState(imodel: IModelConnection): Promise<ViewState> {
+  public get3dViewState(imodel: IModelConnection): SpatialViewState {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
     viewState.setAllow3dManipulations(true);
     viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
+    viewState.displayStyle.backgroundColor = ColorDef.white;
+    viewState.viewFlags.grid = true;
+    viewState.viewFlags.renderMode = RenderMode.SmoothShade;
     return viewState;
   }
 
   // Generates a simple 2d viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public static async get2dViewState(imodel: IModelConnection): Promise<ViewState> {
+  public get2dViewState(imodel: IModelConnection): SpatialViewState {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
     viewState.setAllow3dManipulations(false);
     viewState.setStandardRotation(StandardViewId.Top);
+    viewState.displayStyle.backgroundColor = ColorDef.white;
+    viewState.viewFlags.grid = true;
+    viewState.viewFlags.renderMode = RenderMode.SmoothShade;
     return viewState;
-  }
-
-  // Initializes the iModel and ViewState for the Blank Viewport
-  public static async setup(sampleDimensions: Range3d = new Range3d(-30, -30, -30, 30, 30, 30), twoDim: boolean = false, grid: boolean = false) {
-    const imodel = BlankViewport.getBlankConnection(sampleDimensions);
-    let viewState;
-    if (twoDim) {
-      viewState = await BlankViewport.get2dViewState(imodel);
-    } else {
-      viewState = await BlankViewport.get3dViewState(imodel);
-    }
-    BlankViewport.imodel = imodel;
-    BlankViewport.viewState = viewState;
-    IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
-      const style2: DisplayStyle3dSettingsProps = {
-        backgroundColor: ColorDef.white.tbgr,
-        viewflags: { ...renderingStyleViewFlags, grid },
-        lights: {
-          solar: { direction: [-0.9833878378071199, -0.18098510351728977, 0.013883542698953828] },
-        },
-      };
-      viewport.overrideDisplayStyle(style2);
-    });
   }
 
   public render() {
     return (
       <>
-        {toolbar(this.props.force2d)}
-        {BlankViewport.imodel && BlankViewport.viewState ? <ViewportComponent imodel={BlankViewport.imodel} viewState={BlankViewport.viewState}></ViewportComponent> : undefined}
+        {this.state && this.state.imodel && this.state.viewState ? toolbar(this.props.force2d) : undefined}
+        {this.state && this.state.imodel && this.state.viewState ? <ViewportComponent imodel={this.state.imodel} viewState={this.state.viewState} viewportRef={this.getVP}></ViewportComponent> : undefined}
       </>
     );
+  }
+
+  public getVP(vp: ScreenViewport) {
+    IModelApp.viewManager.addViewport(vp)
   }
 }
 

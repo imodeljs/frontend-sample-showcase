@@ -9,6 +9,8 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Select } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import Advanced3dApp from "./Advanced3dApp";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 
 interface Advanced3dState {
   shape: string;
@@ -16,7 +18,7 @@ interface Advanced3dState {
   sweepType: string;
 }
 
-export default class Advanced3d extends React.Component<{}, Advanced3dState> {
+export default class Advanced3d extends React.Component<{ decorator: GeometryDecorator }, Advanced3dState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
@@ -28,19 +30,23 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
   }
 
   public componentDidMount() {
-    BlankViewport.decorator.clearGeometry();
+    this.props.decorator.clearGeometry();
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    BlankViewport.decorator.setColor(this.state.color);
-    BlankViewport.decorator.addGeometry(polyface)
-    BlankViewport.decorator.drawBase()
+    this.props.decorator.setColor(this.state.color);
+    this.props.decorator.addGeometry(polyface)
+    this.props.decorator.drawBase()
   }
 
   public componentDidUpdate() {
-    BlankViewport.decorator.clearGeometry();
+    this.props.decorator.clearGeometry();
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    BlankViewport.decorator.setColor(this.state.color);
-    BlankViewport.decorator.addGeometry(polyface);
-    BlankViewport.decorator.drawBase()
+    this.props.decorator.setColor(this.state.color);
+    this.props.decorator.addGeometry(polyface);
+    this.props.decorator.drawBase()
+  }
+
+  public componentWillUnmount() {
+    IModelApp.viewManager.dropDecorator(this.props.decorator);
   }
 
   public getControls() {
@@ -62,7 +68,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     return (
       <>
         <ControlPane instructions="Select a shape" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={false}></BlankViewport>
+        <BlankViewport force2d={false} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }
