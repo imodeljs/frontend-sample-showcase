@@ -40,7 +40,7 @@ import SwipingComparisonUI from "./SwipingComparisonUI";
 export enum ComparisonType {
   Wireframe,
   RealityData,
-};
+}
 
 export default class SwipingViewportApp implements SampleApp {
   private static _provider: SampleTiledGraphicsProvider | undefined;
@@ -118,18 +118,19 @@ export default class SwipingViewportApp implements SampleApp {
     if (!vp.view.isSpatialView())
       return;
 
-    if (provider?.comparisonType !== comparisonType && undefined !== provider) {
+    if (undefined !== provider && provider.comparisonType !== comparisonType) {
       SwipingViewportApp.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider!);
       SwipingViewportApp._provider = undefined;
     }
 
-    if (undefined === provider) {
-      SwipingViewportApp.initProvider(screenPoint, viewport, comparisonType);
-      vp.synchWithView();
-    } else if (!SwipingViewportApp._prevPoint?.isAlmostEqual(screenPoint)) {
-      SwipingViewportApp.updateProvider(screenPoint, viewport, provider);
+    let didInit = false;
+    if (undefined === SwipingViewportApp._provider) {
+      didInit = true;
+      SwipingViewportApp._provider = SwipingViewportApp.createProvider(screenPoint, viewport, comparisonType);
+      vp.addTiledGraphicsProvider(SwipingViewportApp._provider);
     }
-    vp.invalidateScene();
+    if (didInit || !SwipingViewportApp._prevPoint?.isAlmostEqual(screenPoint))
+      SwipingViewportApp.updateProvider(screenPoint, viewport, SwipingViewportApp._provider);
   }
 
   /** Creates a [ClipVector] based on the arguments. */
@@ -157,28 +158,23 @@ export default class SwipingViewportApp implements SampleApp {
   }
 
   /** Creates a [TiledGraphicsProvider] and adds it to the viewport.  This also sets the clipping plane used for the comparison. */
-  private static initProvider(screenPoint: Point3d, viewport: Viewport, type: ComparisonType) {
+  private static createProvider(screenPoint: Point3d, viewport: Viewport, type: ComparisonType): SampleTiledGraphicsProvider {
     SwipingViewportApp._prevPoint = screenPoint;
-    const vp = viewport;
     const normal = SwipingViewportApp.getPerpendicularNormal(viewport, screenPoint);
+    let rtnProvider;
 
     // Note the normal is negated, this is flip the clipping plane created from it.
     const negatedClip = SwipingViewportApp.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(viewport, screenPoint));
     switch (type) {
       case ComparisonType.Wireframe:
       default:
-        SwipingViewportApp._provider = new ComparisonWireframeProvider(negatedClip);
+        rtnProvider = new ComparisonWireframeProvider(negatedClip);
         break;
       case ComparisonType.RealityData:
-        SwipingViewportApp._provider = new ComparisonRealityModelProvider(negatedClip);
+        rtnProvider = new ComparisonRealityModelProvider(negatedClip);
         break;
     }
-    vp.addTiledGraphicsProvider(SwipingViewportApp._provider);
-
-    // Note the normal is NOT negated.  These opposite facing clipping planes will create a effect we can use to compare views.
-    const clip = SwipingViewportApp.createClip(normal.clone(), SwipingViewportApp.getWorldPoint(viewport, screenPoint));
-    vp.view.setViewClip(clip);
-    vp.viewFlags.clipVolume = true;
+    return rtnProvider;
   }
 
   /** Removes the provider from the viewport, and disposed of any resources it has. */

@@ -30,7 +30,7 @@ interface SwipingComparisonUIState {
 }
 
 export default class SwipingComparisonUI extends React.Component<SwipingComparisonUIProps, SwipingComparisonUIState> {
-  public static getScreenPoint(bounds: ClientRect, leftInWindowSpace: number): Point3d {
+  public static calculateScreenPoint(bounds: ClientRect, leftInWindowSpace: number): Point3d {
     const y = bounds.top + (bounds.height / 2);
     // The point needs to be returned relative to the canvas.
     const left = leftInWindowSpace - bounds.left;
@@ -38,6 +38,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   }
 
   private _dividerLeft?: number; // position relative to the window
+  private _screenPoint?: Point3d;
 
   // Returns the position the divider will start at based on the bounds of the divider
   private initPositionDivider(bounds: ClientRect): number {
@@ -101,12 +102,13 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     if (undefined === this.state.viewport
       || undefined === this.state.bounds
       || undefined === this.state.dividerLeft
-      || this.state.isLocked
     )
       return;
-    const screenPoint = SwipingComparisonUI.getScreenPoint(this.state.bounds, this.state.dividerLeft);
 
-    SwipingComparisonApp.compare(screenPoint, this.state.viewport, this.state.comparison);
+    if (undefined === this._screenPoint || !this.state.isLocked)
+      this._screenPoint = SwipingComparisonUI.calculateScreenPoint(this.state.bounds, this.state.dividerLeft);
+
+    SwipingComparisonApp.compare(this._screenPoint, this.state.viewport, this.state.comparison);
   }
 
   // Should be called when the Viewport is ready.
