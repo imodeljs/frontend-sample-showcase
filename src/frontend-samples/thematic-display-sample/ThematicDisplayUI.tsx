@@ -175,7 +175,10 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
 
   // Create the react components for the render mode row.
   private createColorSchemePicker(label: string, info: string) {
-    const options = Object.assign({}, ["Blue & Red", "Monochrome", "Red & Blue", "Sea Mountain", "Topographic"]);
+    const keys = Object.keys(ThematicGradientColorScheme)
+      .filter((key: any) => isNaN((key)))
+      .filter((key) => key !== "Custom");  // Custom options are not supported for this sample.
+    const options = Object.assign({}, keys);
     const element =
       <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={options} />;
 
