@@ -4,16 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
-import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, ScreenViewport, SelectionTool, SpatialViewState, StandardViewId, Viewport, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
-import { Cartographic, ColorDef, DisplayStyle3dSettingsProps, RenderMode, ViewFlagProps } from "@bentley/imodeljs-common";
+import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
+import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
-
-const renderingStyleViewFlags: ViewFlagProps = {
-  noSolarLight: false,
-  renderMode: RenderMode.SmoothShade,
-};
 
 interface BlankViewportProps {
   force2d: boolean;
@@ -37,16 +32,15 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
     } else {
       viewState = this.get3dViewState(imodel);
     }
-    console.log(viewState.camera.getEyePoint())
     this.setState({
       viewState,
       imodel,
-    })
+    });
   }
 
   public async componentWillUnmount() {
     if (this.state.imodel) {
-      await this.state.imodel.close()
+      await this.state.imodel.close();
     }
   }
 
@@ -88,14 +82,11 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
     return (
       <>
         {this.state && this.state.imodel && this.state.viewState ? toolbar(this.props.force2d) : undefined}
-        {this.state && this.state.imodel && this.state.viewState ? <ViewportComponent imodel={this.state.imodel} viewState={this.state.viewState} viewportRef={this.getVP}></ViewportComponent> : undefined}
+        {this.state && this.state.imodel && this.state.viewState ? <ViewportComponent imodel={this.state.imodel} viewState={this.state.viewState}></ViewportComponent> : undefined}
       </>
     );
   }
 
-  public getVP(vp: ScreenViewport) {
-    IModelApp.viewManager.addViewport(vp)
-  }
 }
 
 // The toolbar that is used the various geometry samples

@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { Angle, AngleSweep, Arc3d, Box, Cone, Point3d, Range3d, Sphere, TorusPipe } from "@bentley/geometry-core";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import Simple3dUI from "./Simple3dUI";
 
 export default class Simple3dApp implements SampleApp {

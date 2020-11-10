@@ -17,6 +17,6 @@ export function get2dTransformationsSpec(): SampleSpec {
       { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI") },
 
     ],
-    setup: Transformations2dApp.setup,
+    setup: Transformations2dApp.setup.bind(Transformations2dApp),
   });
 }

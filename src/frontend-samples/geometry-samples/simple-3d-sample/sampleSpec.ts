@@ -16,6 +16,6 @@ export function getSimple3dSpec(): SampleSpec {
       { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp"), entry: true },
       { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI") },
     ],
-    setup: Simple3dApp.setup,
+    setup: Simple3dApp.setup.bind(Simple3dApp),
   });
 }

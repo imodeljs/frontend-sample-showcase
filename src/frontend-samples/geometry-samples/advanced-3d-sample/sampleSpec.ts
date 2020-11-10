@@ -17,6 +17,6 @@ export function getAdvanced3dSpec(): SampleSpec {
       { name: "Advanced3dUI.tsx", import: import("!!raw-loader!./Advanced3dUI") },
 
     ],
-    setup: Advanced3dApp.setup,
+    setup: Advanced3dApp.setup.bind(Advanced3dApp),
   });
 }

@@ -16,6 +16,6 @@ export function getSimpleLineSpec(): SampleSpec {
       { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp"), entry: true },
       { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI") },
     ],
-    setup: SimpleLineApp.setup,
+    setup: SimpleLineApp.setup.bind(SimpleLineApp),
   });
 }

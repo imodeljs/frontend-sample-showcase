@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Polyface, Transform, Vector3d } from "@bentley/geometry-core";
+import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
@@ -233,8 +233,7 @@ export class GeometryDecorator implements Decorator {
     branch.setViewFlagOverrides(overrides);
 
     context.viewFlags.visibleEdges = true;
-    if (!this.graphics)
-      this.graphics = this.createGraphics(context);
+    this.graphics = this.createGraphics(context);
 
     if (this.graphics)
       branch.add(this.graphics);

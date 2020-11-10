@@ -70,9 +70,7 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
   }
 
   public componentWillUnmount() {
-    console.log(IModelApp.viewManager.decorators)
     IModelApp.viewManager.dropDecorator(this.state.decorator);
-    console.log(IModelApp.viewManager.decorators)
   }
 
   public setGeometry() {

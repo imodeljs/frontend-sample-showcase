@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { Angle, Arc3d, LinearSweep, LineString3d, Path, Point3d, PolyfaceBuilder, Ray3d, RotationalSweep, RuledSweep, StrokeOptions, Vector3d } from "@bentley/geometry-core";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import Advanced3dUI from "./Advanced3dUI";
 
 export default class Advanced3dApp implements SampleApp {

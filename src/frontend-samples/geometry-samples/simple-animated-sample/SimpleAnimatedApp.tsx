@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { LineString3d, Loop, Point3d, Range3d } from "@bentley/geometry-core";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { LineString3d, Loop, Point3d } from "@bentley/geometry-core";
 import SimpleAnimatedUI from "./SimpleAnimatedUI";
 
 export default class SimpleAnimatedApp implements SampleApp {

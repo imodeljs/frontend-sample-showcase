@@ -4,9 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import { CurveChain, CurveChainWithDistanceIndex, CurveFactory, LineString3d, Path, Point3d } from "@bentley/geometry-core";
 import ClosestPointOnCurveUI from "./ClosestPointOnCurveUI";
 

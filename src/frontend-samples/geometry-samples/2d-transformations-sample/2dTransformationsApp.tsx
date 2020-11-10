@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Transform } from "@bentley/geometry-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import Transformations2dUI from "./2dTransformationsUI";
 
 export default class Transformations2dApp implements SampleApp {
