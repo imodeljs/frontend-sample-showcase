@@ -13,6 +13,7 @@ import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpe
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
+import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
 import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sampleSpec";
@@ -79,6 +80,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMultiViewportSpec(),
     getReadSettingsSpec(),
     getShadowStudySpec(),
+    getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
