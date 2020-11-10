@@ -176,12 +176,11 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
   public getControls(): React.ReactNode {
 
-    return (<>
-      <div>
+    return (
+      <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <label>Lock Plane</label>
         <Toggle title={"Lock dividing plane"} isOn={this.state.isLocked} onChange={this._onLockToggle}></Toggle>
-      </div>
-      <div>
+
         <label>Comparison Type</label>
         <select value={this.state.comparison} onChange={this._onComparisonType}
           disabled={undefined === this.state.viewport && undefined === this.state.iModel}>
@@ -189,7 +188,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
           <option value={ComparisonType.Wireframe}>Wireframe</option>
         </select>
       </div>
-    </>);
+    );
   }
 
   /** The sample's render method */
