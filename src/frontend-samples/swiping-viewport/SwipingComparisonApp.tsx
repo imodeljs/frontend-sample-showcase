@@ -3,36 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import {
-  ClipPlane,
-  ClipPrimitive,
-  ClipVector,
-  ConvexClipPlaneSet,
-  Point3d,
-  Transform,
-  Vector3d,
-} from "@bentley/geometry-core";
-import {
-  ContextRealityModelProps,
-  FeatureAppearance,
-  Frustum,
-  RenderMode,
-  ViewFlagOverrides,
-} from "@bentley/imodeljs-common";
-import {
-  EditManipulator,
-  FeatureSymbology,
-  findAvailableUnattachedRealityModels,
-  GraphicBranch,
-  IModelApp,
-  IModelConnection,
-  RenderClipVolume,
-  SceneContext,
-  ScreenViewport,
-  TiledGraphicsProvider,
-  TileTreeReference,
-  Viewport,
-} from "@bentley/imodeljs-frontend";
+import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
+import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { EditManipulator, FeatureSymbology, findAvailableUnattachedRealityModels, GraphicBranch, IModelApp, IModelConnection, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
 import SwipingComparisonUI from "./SwipingComparisonUI";
