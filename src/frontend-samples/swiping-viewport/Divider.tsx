@@ -53,8 +53,8 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     return n;
   }
 
-  constructor(props: DividerComponentProps, context: any) {
-    super(props, context);
+  constructor(props: DividerComponentProps) {
+    super(props);
 
     let left: number;
     if (undefined !== props.sideL)
