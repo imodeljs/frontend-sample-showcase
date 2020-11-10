@@ -6,7 +6,7 @@
 import { Point3d } from "@bentley/geometry-core";
 import { Frustum } from "@bentley/imodeljs-common";
 import { IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
-import { Toggle } from "@bentley/ui-core";
+import { Select, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import React from "react";
@@ -175,6 +175,8 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
   }
 
   public getControls(): React.ReactNode {
+    const keys = Object.keys(ComparisonType).filter((key: any) => isNaN(key));
+    const options = Object.assign({}, keys);
 
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
@@ -182,11 +184,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
         <Toggle title={"Lock dividing plane"} isOn={this.state.isLocked} onChange={this._onLockToggle}></Toggle>
 
         <label>Comparison Type</label>
-        <select value={this.state.comparison} onChange={this._onComparisonType}
-          disabled={undefined === this.state.viewport && undefined === this.state.iModel}>
-          <option value={ComparisonType.RealityData}>Reality Data</option>
-          <option value={ComparisonType.Wireframe}>Wireframe</option>
-        </select>
+        <Select value={this.state.comparison} onChange={this._onComparisonType} disabled={undefined === this.state.viewport && undefined === this.state.iModel} options={options}/>
       </div>
     );
   }
