@@ -29,9 +29,7 @@ export default class Simple3dApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    const decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(decorator);
-    return <Simple3dUI decorator={decorator}></Simple3dUI>;
+    return <Simple3dUI></Simple3dUI>;
   }
 
 }

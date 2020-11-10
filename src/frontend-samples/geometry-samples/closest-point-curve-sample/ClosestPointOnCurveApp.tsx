@@ -50,9 +50,6 @@ export default class ClosestPointOnCurveApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    const decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(decorator);
-
-    return <ClosestPointOnCurveUI decorator={decorator}></ClosestPointOnCurveUI>;
+    return <ClosestPointOnCurveUI></ClosestPointOnCurveUI>;
   }
 }

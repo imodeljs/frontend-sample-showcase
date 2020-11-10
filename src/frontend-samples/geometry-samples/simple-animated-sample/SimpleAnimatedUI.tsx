@@ -14,16 +14,19 @@ import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 
-export default class SimpleAnimatedUI extends React.Component<{ decorator: GeometryDecorator }, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number }> {
+export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number, decorator: GeometryDecorator }> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       grid: ConwaysHelpers.generateGrid(),
       dimensions: new Range3d(-10, -10, 0, 1010, 1010, 0),
       timer: new Timer(100),
       clockSpeed: 100,
       color: ColorDef.fromString("yellow"),
+      decorator,
     };
   }
 
@@ -37,7 +40,7 @@ export default class SimpleAnimatedUI extends React.Component<{ decorator: Geome
 
   public componentWillUnmount() {
     this.state.timer.setOnExecute(undefined);
-    IModelApp.viewManager.dropDecorator(this.props.decorator);
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
 
   }
 
@@ -71,14 +74,14 @@ export default class SimpleAnimatedUI extends React.Component<{ decorator: Geome
   }
 
   public setGeometry() {
-    this.props.decorator.clearGeometry();
-    this.props.decorator.setColor(ColorDef.white);
-    this.props.decorator.setFill(true);
-    this.props.decorator.setFillColor(this.state.color);
-    this.props.decorator.setLineThickness(2);
+    this.state.decorator.clearGeometry();
+    this.state.decorator.setColor(ColorDef.white);
+    this.state.decorator.setFill(true);
+    this.state.decorator.setFillColor(this.state.color);
+    this.state.decorator.setLineThickness(2);
     const graphicalGrid = SimpleAnimatedApp.createGridSquares(this.state.grid);
     for (const square of graphicalGrid)
-      this.props.decorator.addGeometry(square);
+      this.state.decorator.addGeometry(square);
 
     IModelApp.viewManager.invalidateDecorationsAllViews();
   }
@@ -92,6 +95,5 @@ export default class SimpleAnimatedUI extends React.Component<{ decorator: Geome
     const newGrid = ConwaysHelpers.updateGrid(this.state.grid);
     this.setState({ grid: newGrid });
   }
-
 
 }

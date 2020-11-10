@@ -19,13 +19,15 @@ interface TransformationState {
   yTrans: number;
   rotationDeg: number;
   geometry: Loop;
-  vp: BlankViewport | undefined;
+  decorator: GeometryDecorator;
 }
 
-export default class Transformations2dUI extends React.Component<{ decorator: GeometryDecorator }, TransformationState> {
+export default class Transformations2dUI extends React.Component<{}, TransformationState> {
 
   constructor(props?: any) {
     super(props);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       shape: "Square",
       color: ColorDef.red,
@@ -33,26 +35,26 @@ export default class Transformations2dUI extends React.Component<{ decorator: Ge
       yTrans: 1,
       rotationDeg: 180,
       geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400),
-      vp: undefined,
+      decorator,
     };
   }
 
   public componentDidUpdate() {
     if (this.state.geometry) {
-      this.props.decorator.clearGeometry();
-      this.props.decorator.setColor(ColorDef.red);
-      this.props.decorator.setLineThickness(5);
-      this.props.decorator.addGeometry(this.state.geometry);
+      this.state.decorator.clearGeometry();
+      this.state.decorator.setColor(ColorDef.red);
+      this.state.decorator.setLineThickness(5);
+      this.state.decorator.addGeometry(this.state.geometry);
     }
   }
 
   public generateBaseGeometry(shape: string) {
     if (shape === "Square") {
-      this.setState({ geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 4) });
+      this.setState({ geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 8) });
     } else if (shape === "Circle") {
-      this.setState({ geometry: Transformations2dApp.generateCircle(Point3d.create(0, 0), 2) });
+      this.setState({ geometry: Transformations2dApp.generateCircle(Point3d.create(0, 0), 4) });
     } else if (shape === "Triangle") {
-      this.setState({ geometry: Transformations2dApp.generateTriangle(Point3d.create(0, 2, 0), Point3d.create(-2.5, -1, 0), Point3d.create(2.5, -1, 0)) });
+      this.setState({ geometry: Transformations2dApp.generateTriangle(Point3d.create(0, 4, 0), Point3d.create(-5, -2, 0), Point3d.create(5, -2, 0)) });
     } else if (shape === "Convex Hull") {
       const points: Point3d[] = [];
       points.push(Point3d.create(-8, -5, 1));
@@ -112,7 +114,7 @@ export default class Transformations2dUI extends React.Component<{ decorator: Ge
   }
 
   public componentWillUnmount() {
-    IModelApp.viewManager.dropDecorator(this.props.decorator);
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
   }
 
 }

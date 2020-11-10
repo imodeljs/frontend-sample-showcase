@@ -65,9 +65,7 @@ export default class Transformations2dApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    const decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(decorator);
-    return <Transformations2dUI decorator={decorator}></Transformations2dUI>;
+    return <Transformations2dUI></Transformations2dUI>;
   }
 
 }

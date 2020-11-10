@@ -17,17 +17,21 @@ interface SimpleLineState {
   point1Y: number;
   point2X: number;
   point2Y: number;
+  decorator: GeometryDecorator;
 }
 
-export default class SimpleLine extends React.Component<{ decorator: GeometryDecorator }, SimpleLineState> {
+export default class SimpleLine extends React.Component<{}, SimpleLineState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       point1X: -25,
       point1Y: -25,
       point2X: 20,
       point2Y: 20,
+      decorator,
     };
   }
 
@@ -66,18 +70,20 @@ export default class SimpleLine extends React.Component<{ decorator: GeometryDec
   }
 
   public componentWillUnmount() {
-    IModelApp.viewManager.dropDecorator(this.props.decorator);
+    console.log(IModelApp.viewManager.decorators)
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
+    console.log(IModelApp.viewManager.decorators)
   }
 
   public setGeometry() {
-    this.props.decorator.clearGeometry();
+    this.state.decorator.clearGeometry();
     const myLine = SimpleLineApp.createLineSegmentFromXY(this.state.point1X, this.state.point1Y, this.state.point2X, this.state.point2Y);
-    this.props.decorator.addGeometry(myLine);
+    this.state.decorator.addGeometry(myLine);
     const fractions = [0.0, 0.1, 0.15, 0.2, 0.25, 0.5, 0.9, 1.0, 1.1];
     const points = SimpleLineApp.createPointsAlongLine(myLine, fractions);
     points.forEach((point, i) => {
       const marker = new InteractivePointMarker(point, `Fraction = ${fractions[i]}`, ColorDef.red, () => { });
-      this.props.decorator.addMarker(marker);
+      this.state.decorator.addMarker(marker);
     })
   }
 

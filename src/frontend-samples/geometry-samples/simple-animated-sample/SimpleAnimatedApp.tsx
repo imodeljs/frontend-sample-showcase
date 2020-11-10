@@ -35,9 +35,7 @@ export default class SimpleAnimatedApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    const decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(decorator);
-    return <SimpleAnimatedUI decorator={decorator}></SimpleAnimatedUI>;
+    return <SimpleAnimatedUI></SimpleAnimatedUI>;
   }
 
 

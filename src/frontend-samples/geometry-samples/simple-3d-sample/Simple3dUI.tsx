@@ -25,12 +25,15 @@ interface Simple3dState {
   tpInnerRadius: number;
   tpOuterRadius: number;
   tpSweep: number;
+  decorator: GeometryDecorator;
 }
 
-export default class Simple3dUI extends React.Component<{ decorator: GeometryDecorator }, Simple3dState> {
+export default class Simple3dUI extends React.Component<{}, Simple3dState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       shape: "Box",
       color: ColorDef.red,
@@ -44,6 +47,7 @@ export default class Simple3dUI extends React.Component<{ decorator: GeometryDec
       tpInnerRadius: 2,
       tpOuterRadius: 5,
       tpSweep: 360,
+      decorator,
     };
   }
 
@@ -56,7 +60,7 @@ export default class Simple3dUI extends React.Component<{ decorator: GeometryDec
   }
 
   public setGeometry() {
-    this.props.decorator.clearGeometry();
+    this.state.decorator.clearGeometry();
 
     const options = StrokeOptions.createForCurves();
     options.needParams = false;
@@ -80,9 +84,9 @@ export default class Simple3dUI extends React.Component<{ decorator: GeometryDec
         builder.addTorusPipe(torusPipe);
     }
     const polyface = builder.claimPolyface(false);
-    this.props.decorator.setColor(this.state.color);
-    this.props.decorator.addGeometry(polyface);
-    this.props.decorator.drawBase()
+    this.state.decorator.setColor(this.state.color);
+    this.state.decorator.addGeometry(polyface);
+    this.state.decorator.drawBase();
   }
 
   public getControls() {
@@ -131,7 +135,7 @@ export default class Simple3dUI extends React.Component<{ decorator: GeometryDec
   }
 
   public componentWillUnmount() {
-    IModelApp.viewManager.dropDecorator(this.props.decorator);
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
   }
 
 }

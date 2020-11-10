@@ -16,37 +16,41 @@ interface Advanced3dState {
   shape: string;
   color: ColorDef;
   sweepType: string;
+  decorator: GeometryDecorator;
 }
 
-export default class Advanced3d extends React.Component<{ decorator: GeometryDecorator }, Advanced3dState> {
+export default class Advanced3d extends React.Component<{}, Advanced3dState> {
 
   constructor(props?: any, context?: any) {
     super(props, context);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       shape: "Sweeps",
       color: ColorDef.red,
       sweepType: "Linear",
+      decorator,
     };
   }
 
   public componentDidMount() {
-    this.props.decorator.clearGeometry();
+    this.state.decorator.clearGeometry();
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    this.props.decorator.setColor(this.state.color);
-    this.props.decorator.addGeometry(polyface)
-    this.props.decorator.drawBase()
+    this.state.decorator.setColor(this.state.color);
+    this.state.decorator.addGeometry(polyface)
+    this.state.decorator.drawBase()
   }
 
   public componentDidUpdate() {
-    this.props.decorator.clearGeometry();
+    this.state.decorator.clearGeometry();
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    this.props.decorator.setColor(this.state.color);
-    this.props.decorator.addGeometry(polyface);
-    this.props.decorator.drawBase()
+    this.state.decorator.setColor(this.state.color);
+    this.state.decorator.addGeometry(polyface);
+    this.state.decorator.drawBase()
   }
 
   public componentWillUnmount() {
-    IModelApp.viewManager.dropDecorator(this.props.decorator);
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
   }
 
   public getControls() {

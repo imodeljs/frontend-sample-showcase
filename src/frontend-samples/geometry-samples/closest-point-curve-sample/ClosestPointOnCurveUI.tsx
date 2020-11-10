@@ -17,19 +17,23 @@ interface ClosestPointOnCurveState {
   spacePoint: Point3d;
   closePoint: Point3d;
   curveType: string;
+  decorator: GeometryDecorator;
 }
 
-export default class ClosestPointOnCurveUI extends React.Component<{ decorator: GeometryDecorator }, ClosestPointOnCurveState> {
+export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPointOnCurveState> {
   private spacePointMarker?: InteractivePointMarker;
   private closePointMarker?: InteractivePointMarker;
   private curveChain?: CurveChain;
 
   constructor(props?: any) {
     super(props);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       spacePoint: Point3d.create(),
       closePoint: Point3d.create(),
       curveType: "Rounded Rectangle",
+      decorator,
     };
   }
 
@@ -101,42 +105,41 @@ export default class ClosestPointOnCurveUI extends React.Component<{ decorator: 
   public updateVisualization() {
     // This function updates the decorator which draws the geometry in the view.  We call this when this
     // component is first mounted and then any time component's state is changed.
-    this.props.decorator.clearGeometry();
+    this.state.decorator.clearGeometry();
 
     if (!this.curveChain)
       return;
 
     // Add the curvechain
-    this.props.decorator.setColor(ColorDef.white);
-    this.props.decorator.setFill(true);
-    this.props.decorator.setFillColor(ColorDef.red);
-    this.props.decorator.setLineThickness(5);
-    this.props.decorator.setLinePixels(LinePixels.Solid);
-    this.props.decorator.addGeometry(this.curveChain);
+    this.state.decorator.setColor(ColorDef.white);
+    this.state.decorator.setFill(true);
+    this.state.decorator.setFillColor(ColorDef.red);
+    this.state.decorator.setLineThickness(5);
+    this.state.decorator.setLinePixels(LinePixels.Solid);
+    this.state.decorator.addGeometry(this.curveChain);
 
     // Add the marker representing the space point
     if (this.spacePointMarker) {
       this.spacePointMarker.worldLocation = this.state.spacePoint;
-      this.props.decorator.addMarker(this.spacePointMarker);
+      this.state.decorator.addMarker(this.spacePointMarker);
     }
 
     // Add the marker representing the point on the curve
     if (this.closePointMarker) {
       this.closePointMarker.worldLocation = this.state.closePoint;
-      this.props.decorator.addMarker(this.closePointMarker);
+      this.state.decorator.addMarker(this.closePointMarker);
     }
 
     // Add a line connecting the two points
-    this.props.decorator.setColor(ColorDef.black);
-    this.props.decorator.setFill(false);
-    this.props.decorator.setLineThickness(2);
-    this.props.decorator.setLinePixels(LinePixels.Code2);
-    this.props.decorator.addLine(LineSegment3d.create(this.state.spacePoint, this.state.closePoint))
+    this.state.decorator.setColor(ColorDef.black);
+    this.state.decorator.setFill(false);
+    this.state.decorator.setLineThickness(2);
+    this.state.decorator.setLinePixels(LinePixels.Code2);
+    this.state.decorator.addLine(LineSegment3d.create(this.state.spacePoint, this.state.closePoint))
   }
 
   public componentWillUnmount() {
-    IModelApp.viewManager.dropDecorator(this.props.decorator);
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
   }
 
 }
-
