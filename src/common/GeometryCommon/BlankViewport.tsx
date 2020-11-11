@@ -12,6 +12,7 @@ import "Components/Viewport/Toolbar.scss";
 
 interface BlankViewportProps {
   force2d: boolean;
+  grid: boolean;
   sampleSpace: Range3d | undefined;
 }
 
@@ -26,12 +27,7 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
     } else {
       imodel = this.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
     }
-    let viewState;
-    if (this.props.force2d) {
-      viewState = this.get2dViewState(imodel);
-    } else {
-      viewState = this.get3dViewState(imodel);
-    }
+    const viewState = this.getViewState(imodel, this.props.grid, this.props.force2d);
     this.setState({
       viewState,
       imodel,
@@ -54,26 +50,22 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
     return exton;
   }
 
-  // Generates a simple 3d viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public get3dViewState(imodel: IModelConnection): SpatialViewState {
+  // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
+  public getViewState(imodel: IModelConnection, grid: boolean, twoDim: boolean): SpatialViewState {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
-    viewState.setAllow3dManipulations(true);
-    viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
+    if (!twoDim) {
+      viewState.setAllow3dManipulations(true);
+      viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
+    } else {
+      viewState.setAllow3dManipulations(false);
+      viewState.setStandardRotation(StandardViewId.Top);
+    }
     viewState.displayStyle.backgroundColor = ColorDef.white;
-    viewState.viewFlags.grid = true;
-    viewState.viewFlags.renderMode = RenderMode.SmoothShade;
-    return viewState;
-  }
-
-  // Generates a simple 2d viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public get2dViewState(imodel: IModelConnection): SpatialViewState {
-    const ext = imodel.projectExtents;
-    const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
-    viewState.setAllow3dManipulations(false);
-    viewState.setStandardRotation(StandardViewId.Top);
-    viewState.displayStyle.backgroundColor = ColorDef.white;
-    viewState.viewFlags.grid = true;
+    if (grid)
+      viewState.viewFlags.grid = true;
+    else
+      viewState.viewFlags.grid = false;
     viewState.viewFlags.renderMode = RenderMode.SmoothShade;
     return viewState;
   }

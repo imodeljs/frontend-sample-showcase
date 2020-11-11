@@ -68,7 +68,7 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
     return (
       <>
         <ControlPane instructions="An implementation of Conway's game of life" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true} sampleSpace={new Range3d(-10, -10, 0, 1010, 1010, 0)}></BlankViewport>
+        <BlankViewport force2d={true} grid={false} sampleSpace={new Range3d(-10, -10, 0, 1010, 1010, 0)}></BlankViewport>
       </>
     );
   }

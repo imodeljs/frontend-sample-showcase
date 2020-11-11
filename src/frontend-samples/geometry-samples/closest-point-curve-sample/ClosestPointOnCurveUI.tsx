@@ -62,7 +62,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
     return (
       <>
         <ControlPane instructions="Click on the green space point to move it. The program will calculate the closest point on the curve." controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true} sampleSpace={undefined}></BlankViewport>
+        <BlankViewport force2d={true} grid={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }

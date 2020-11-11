@@ -56,7 +56,7 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
     return (
       <>
         <ControlPane instructions="Creating a line segments and some points along it" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true} sampleSpace={undefined}></BlankViewport>
+        <BlankViewport force2d={true} grid={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }

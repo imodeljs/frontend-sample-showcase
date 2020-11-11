@@ -104,7 +104,7 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
     return (
       <>
         <ControlPane instructions="Select a shape, and apply transformations to it." controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true} sampleSpace={undefined}></BlankViewport>
+        <BlankViewport force2d={true} grid={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }

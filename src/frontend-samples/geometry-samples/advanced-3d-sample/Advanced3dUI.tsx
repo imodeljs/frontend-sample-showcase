@@ -72,7 +72,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     return (
       <>
         <ControlPane instructions="Select a shape" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={false} sampleSpace={undefined}></BlankViewport>
+        <BlankViewport force2d={false} grid={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }

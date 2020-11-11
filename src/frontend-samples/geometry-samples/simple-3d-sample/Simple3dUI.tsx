@@ -129,7 +129,7 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
     return (
       <>
         <ControlPane instructions="Select a shape" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={false} sampleSpace={undefined}></BlankViewport>
+        <BlankViewport force2d={false} grid={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }

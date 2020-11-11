@@ -182,7 +182,7 @@ export class GeometryDecorator implements Decorator {
           // Since decorators don't natively support visual edges,
           // We draw them manually as lines along each facet edge
           // Need to offset polyface edges to ensure they don't overlap with the shape itself
-          const frustum = new Point3d(0, 0, 0)
+          const frustum = new Point3d(0, 0, 0);
           if (IModelApp && IModelApp.viewManager && IModelApp.viewManager.selectedView && IModelApp.viewManager.selectedView.view) {
             const viewState = IModelApp.viewManager.selectedView.view;
             let eyePoint = new Point3d(15, 15, 15);
@@ -190,14 +190,13 @@ export class GeometryDecorator implements Decorator {
               eyePoint = viewState.camera.getEyePoint();
             }
             let dir = new Vector3d(eyePoint.x - frustum.x, eyePoint.y - frustum.y, eyePoint.z - frustum.z)
-            dir = dir.scale(0.001)
+            dir = dir.scale(0.001);
             builder.setSymbology(ColorDef.black, ColorDef.black, 3);
             const visitor = IndexedPolyfaceVisitor.create(geometry, 1);
             let flag = true;
             while (flag) {
               const numIndices = visitor.pointCount;
               for (let i = 0; i < numIndices - 1; i++) {
-
                 let point1 = visitor.getPoint(i);
                 let point2 = visitor.getPoint(i + 1);
                 if (point1 && point2) {
