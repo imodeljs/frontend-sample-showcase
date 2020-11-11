@@ -35,20 +35,20 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
 
   /** Create a UI component with all 2D models listed */
   private _modelSelector = () => {
-    const sheetViews: JSX.Element[] = this.getSheetModelList(this.state.sheets);
-    const drawingViews: JSX.Element[] = this.getDrawingModelList(this.state.drawings);
+    const drawings: JSX.Element[] = this.getDrawingModelList(this.state.drawings);
+    const sheets: JSX.Element[] = this.getSheetModelList(this.state.sheets);
 
     // Display drawing and sheet options in separate sections.
     return (
       <div style={{ marginTop: "20px" }}>
-        <span>Select Drawing or Sheet: </span>
+        <span>Select Drawing or Sheet:</span>
         <div className="select-up">
           <select className="uicore-inputs-select 2d-model-selector" onChange={this._handleSelection}>
-            {drawingViews.length > 0 && (
-              <optgroup label="Drawings">{this.getDrawingModelList(this.state.drawings)}</optgroup>
+            {drawings.length > 0 && (
+              <optgroup label="Drawings">{drawings}</optgroup>
             )}
-            {sheetViews.length > 0 && (
-              <optgroup label="Sheets">{this.getSheetModelList(this.state.drawings)}</optgroup>
+            {sheets.length > 0 && (
+              <optgroup label="Sheets">{sheets}</optgroup>
             )}
           </select>
         </div>
