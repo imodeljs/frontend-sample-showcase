@@ -108,7 +108,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
   public render() {
     return (
       <>
-        <ExpandableList className="gallery-card-radio" singleExpandOnly={true} defaultActiveBlock={0}>
+        <ExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={0}>
           {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
         </ExpandableList>
         <svg className="gallery-close-button minimize-button" onClick={this.props.onCollapse}>
