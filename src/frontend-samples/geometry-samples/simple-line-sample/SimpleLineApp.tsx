@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { LineSegment3d, Point3d } from "@bentley/geometry-core";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import SimpleLineUI from "./SimpleLineUI";
 
 export default class SimpleLineApp implements SampleApp {
@@ -28,15 +25,7 @@ export default class SimpleLineApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup();
-    BlankViewport.decorator = new GeometryDecorator(true, 10);
-    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <SimpleLineUI></SimpleLineUI>;
   }
 
-  public static teardown() {
-    if (null != BlankViewport.decorator) {
-      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
-    }
-  }
 }

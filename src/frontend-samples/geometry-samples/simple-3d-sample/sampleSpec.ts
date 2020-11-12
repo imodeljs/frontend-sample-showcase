@@ -10,12 +10,12 @@ export function getSimple3dSpec(): SampleSpec {
     name: "simple-3d-sample",
     label: "Simple 3d",
     image: "simple-3d-thumbnail.png",
+    customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp"), entry: true },
       { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI") },
     ],
-    setup: Simple3dApp.setup,
-    teardown: Simple3dApp.teardown,
+    setup: Simple3dApp.setup.bind(Simple3dApp),
   });
 }

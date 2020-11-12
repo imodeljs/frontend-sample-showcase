@@ -2,9 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, LineSegment3d, LineString3d, Loop, Path, Point3d, Polyface, Transform } from "@bentley/geometry-core";
+import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
-import { Timer } from "@bentley/ui-core";
 import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
@@ -14,6 +13,7 @@ interface CustomGeometryQuery {
   fill: boolean;
   fillColor: ColorDef;
   lineThickness: number;
+  edges: boolean;
   linePixels: LinePixels;
 }
 
@@ -28,8 +28,6 @@ export class GeometryDecorator implements Decorator {
 
   private image: HTMLImageElement | undefined;
 
-  private animated: boolean;
-  private timer: Timer | undefined;
   private graphics: RenderGraphic | undefined;
 
   private points: CustomPoint[] = [];
@@ -41,20 +39,8 @@ export class GeometryDecorator implements Decorator {
   private color: ColorDef = ColorDef.black;
   private fillColor: ColorDef = ColorDef.white;
   private lineThickness: number = 1;
+  private edges: boolean = true;
   private linePixels = LinePixels.Solid;
-
-  public constructor(animated: boolean = false, animationSpeed: number = 10) {
-    if (animationSpeed < 1) {
-      animationSpeed = 1;
-    }
-    this.animated = animated;
-    // When using animation, we enable a timer to re-render the graphic every animationSpeed interval in ms
-    if (animated) {
-      this.timer = new Timer(animationSpeed);
-      this.timer.setOnExecute(this.handleTimer.bind(this));
-      this.timer.start();
-    }
-  }
 
   public addMarker(marker: Marker) {
     this.markers.push(marker);
@@ -67,6 +53,7 @@ export class GeometryDecorator implements Decorator {
       fill: this.fill,
       fillColor: this.fillColor,
       lineThickness: this.lineThickness,
+      edges: this.edges,
       linePixels: this.linePixels,
     });
     this.shapes.push(styledGeometry);
@@ -99,6 +86,7 @@ export class GeometryDecorator implements Decorator {
       fill: this.fill,
       fillColor: this.fillColor,
       lineThickness: this.lineThickness,
+      edges: this.edges,
       linePixels: this.linePixels,
     });
     this.shapes.push(styledGeometry);
@@ -111,6 +99,7 @@ export class GeometryDecorator implements Decorator {
       fill: this.fill,
       fillColor: this.fillColor,
       lineThickness: this.lineThickness,
+      edges: this.edges,
       linePixels: this.linePixels,
     });
     this.shapes.push(styledGeometry);
@@ -120,6 +109,8 @@ export class GeometryDecorator implements Decorator {
     this.markers = [];
     this.points = [];
     this.shapes = [];
+    this.graphics = undefined;
+    IModelApp.viewManager.invalidateDecorationsAllViews();
   }
 
   public setColor(color: ColorDef) {
@@ -138,21 +129,24 @@ export class GeometryDecorator implements Decorator {
     this.lineThickness = lineThickness;
   }
 
+  public setEdges(edges: boolean) {
+    this.edges = edges;
+  }
+
   public setLinePixels(linePixels: LinePixels) {
     this.linePixels = linePixels;
   }
 
   // Iterate through the geometry and point lists, extracting each geometry and point, along with their styles
   // Adding them to the graphic builder which then creates new graphics
-  // TODO: Add the ability to support text rendering
-  // TODO: Fix defects with the fill command on certain geometry types(Loops, Polyfaces)
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
-    const builder = context.createGraphicBuilder(GraphicType.Scene);
+    // Specifying an Id for the graphics tells the display system that all of the geometry belongs to the same entity, so that it knows to make sure the edges draw on top of the surfaces.
+    const builder = context.createGraphicBuilder(GraphicType.Scene, undefined, context.viewport.iModel.transientIds.next);
     builder.wantNormals = true;
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
       const point = styledPoint.point;
-      const circle = Arc3d.createXY(point, 3);
+      const circle = Arc3d.createXY(point, 1);
       builder.addArc(circle, false, styledPoint.fill);
     });
     this.shapes.forEach((styledGeometry) => {
@@ -162,10 +156,46 @@ export class GeometryDecorator implements Decorator {
         builder.addLineString(geometry.points);
       } else if (geometry instanceof Loop) {
         builder.addLoop(geometry);
+        if (styledGeometry.edges) {
+          // Since decorators don't natively support visual edges,
+          // We draw them manually as lines along each loop edge/arc
+          builder.setSymbology(ColorDef.black, ColorDef.black, 2);
+          const curves = geometry.children;
+          curves.forEach((value) => {
+            if (value instanceof LineString3d) {
+              let edges = value.points;
+              const endPoint = value.pointAt(0);
+              if (endPoint) {
+                edges = edges.concat([endPoint]);
+              }
+              builder.addLineString(edges);
+            } else if (value instanceof Arc3d) {
+              builder.addArc(value, false, false);
+            }
+          });
+        }
       } else if (geometry instanceof Path) {
         builder.addPath(geometry);
-      } else if (geometry instanceof Polyface) {
+      } else if (geometry instanceof IndexedPolyface) {
         builder.addPolyface(geometry, false);
+        if (styledGeometry.edges) {
+          // Since decorators don't natively support visual edges,
+          // We draw them manually as lines along each facet edge
+          builder.setSymbology(ColorDef.black, ColorDef.black, 2);
+          const visitor = IndexedPolyfaceVisitor.create(geometry, 1);
+          let flag = true;
+          while (flag) {
+            const numIndices = visitor.pointCount;
+            for (let i = 0; i < numIndices - 1; i++) {
+              const point1 = visitor.getPoint(i);
+              const point2 = visitor.getPoint(i + 1);
+              if (point1 && point2) {
+                builder.addLineString([point1, point2]);
+              }
+            }
+            flag = visitor.moveToNextFacet();
+          }
+        }
       } else if (geometry instanceof LineSegment3d) {
         const pointA = geometry.point0Ref;
         const pointB = geometry.point1Ref;
@@ -179,6 +209,7 @@ export class GeometryDecorator implements Decorator {
     return graphic;
   }
 
+  // Generates new graphics if needed, and adds them to the scene
   public decorate(context: DecorateContext): void {
     const overrides = new ViewFlagOverrides();
     overrides.setShowVisibleEdges(true);
@@ -188,14 +219,13 @@ export class GeometryDecorator implements Decorator {
     branch.setViewFlagOverrides(overrides);
 
     context.viewFlags.visibleEdges = true;
-    if (!this.graphics || this.animated) {
+    if (!this.graphics)
       this.graphics = this.createGraphics(context);
-    }
+
     if (this.graphics)
       branch.add(this.graphics);
 
     const graphic = context.createBranch(branch, Transform.identity);
-
     context.addDecoration(GraphicType.Scene, graphic);
 
     this.markers.forEach((marker) => {
@@ -203,18 +233,22 @@ export class GeometryDecorator implements Decorator {
     });
   }
 
-  public toggleAnimation() {
-    this.animated = !this.animated;
-  }
-
-  // We are making use of a timer to consistently render animated geometry
-  // Since a viewport only re-renders a frame when it needs or receives new information,
-  // We must invalidate the old decorations on every timer tick
-  public handleTimer() {
-    if (this.timer && this.animated) {
-      this.timer.start();
-    }
-    IModelApp.viewManager.invalidateDecorationsAllViews();
+  // Draws a base for the 3d geometry
+  public drawBase(origin: Point3d = new Point3d(0, 0, 0), width: number = 20, length: number = 20) {
+    const oldEdges = this.edges;
+    const oldColor = this.color;
+    this.edges = false;
+    const points: Point3d[] = [];
+    points.push(Point3d.create(origin.x - width / 2, origin.y - length / 2, origin.z - 0.05));
+    points.push(Point3d.create(origin.x - width / 2, origin.y + length / 2, origin.z - 0.05));
+    points.push(Point3d.create(origin.x + width / 2, origin.y + length / 2, origin.z - 0.05));
+    points.push(Point3d.create(origin.x + width / 2, origin.y - length / 2, origin.z - 0.05));
+    const linestring = LineString3d.create(points);
+    const loop = Loop.create(linestring.clone());
+    this.setColor(ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.green.tbgr, 150)));
+    this.addGeometry(loop);
+    this.color = oldColor;
+    this.edges = oldEdges;
   }
 
 }

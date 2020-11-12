@@ -10,6 +10,7 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
     name: "closest-point-curve-sample",
     label: "Closest Point on Curve",
     image: "closest-point-curve-thumbnail.png",
+    customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp"), entry: true },
@@ -17,6 +18,5 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
       { name: "common/InteractivePointMarker.tsx", import: import("!!raw-loader!../../../common/InteractivePointMarker") },
     ],
     setup: ClosestPointOnCurveApp.setup.bind(ClosestPointOnCurveApp),
-    teardown: ClosestPointOnCurveApp.teardown.bind(ClosestPointOnCurveApp),
   });
 }

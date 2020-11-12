@@ -9,36 +9,48 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Select } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import Advanced3dApp from "./Advanced3dApp";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 
 interface Advanced3dState {
   shape: string;
   color: ColorDef;
   sweepType: string;
+  decorator: GeometryDecorator;
 }
 
 export default class Advanced3d extends React.Component<{}, Advanced3dState> {
 
-  constructor(props?: any) {
-    super(props);
+  constructor(props?: any, context?: any) {
+    super(props, context);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       shape: "Sweeps",
       color: ColorDef.red,
       sweepType: "Linear",
+      decorator,
     };
   }
 
   public componentDidMount() {
-    BlankViewport.decorator.clearGeometry();
+    this.state.decorator.clearGeometry();
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    BlankViewport.decorator.setColor(this.state.color);
-    BlankViewport.decorator.addGeometry(polyface)
+    this.state.decorator.setColor(this.state.color);
+    this.state.decorator.addGeometry(polyface)
+    this.state.decorator.drawBase()
   }
 
   public componentDidUpdate() {
-    BlankViewport.decorator.clearGeometry();
+    this.state.decorator.clearGeometry();
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    BlankViewport.decorator.setColor(this.state.color);
-    BlankViewport.decorator.addGeometry(polyface);
+    this.state.decorator.setColor(this.state.color);
+    this.state.decorator.addGeometry(polyface);
+    this.state.decorator.drawBase()
+  }
+
+  public componentWillUnmount() {
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
   }
 
   public getControls() {
@@ -46,7 +58,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
       <>
         <div className="sample-options-2col">
           <span>Shape:</span>
-          <Select options={["Sweeps", "Triangulation", "Mitered Pipes"]} onChange={(event) => { this.setState({ shape: event.target.value }); }} />
+          <Select options={["Sweeps", "Mitered Pipes"]} onChange={(event) => { this.setState({ shape: event.target.value }); }} />
           <span>Color:</span>
           <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }); }} />
           {this.state.shape === "Sweeps" ? <span>Sweep Type:</span> : undefined}
@@ -60,7 +72,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     return (
       <>
         <ControlPane instructions="Select a shape" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={false}></BlankViewport>
+        <BlankViewport force2d={false} grid={true} sampleSpace={undefined}></BlankViewport>
       </>
     );
   }

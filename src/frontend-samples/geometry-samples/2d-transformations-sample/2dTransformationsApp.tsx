@@ -4,10 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { Arc3d, LineString3d, Loop, Point3d, Point3dArray, Range3d, Transform } from "@bentley/geometry-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Transform } from "@bentley/geometry-core";
 import Transformations2dUI from "./2dTransformationsUI";
 
 export default class Transformations2dApp implements SampleApp {
@@ -22,7 +19,7 @@ export default class Transformations2dApp implements SampleApp {
 
   public static handleRotation(geometry: Loop, rotationDeg: number): Loop | undefined {
     const newGeometry = geometry;
-    const radians = rotationDeg * 180 / Math.PI;
+    const radians = Angle.degreesToRadians(rotationDeg);
     const rotation = Transform.createRowValues(Math.cos(radians), -Math.sin(radians), 0, 0, Math.sin(radians), Math.cos(radians), 0, 0, 0, 0, 1, 0);
     if (newGeometry.tryTransformInPlace(rotation)) {
       return newGeometry;
@@ -65,16 +62,7 @@ export default class Transformations2dApp implements SampleApp {
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup(new Range3d(-500, -500, 0, 500, 500, 0));
-    BlankViewport.decorator = new GeometryDecorator(true, 10);
-    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <Transformations2dUI></Transformations2dUI>;
-  }
-
-  public static teardown() {
-    if (null != BlankViewport.decorator) {
-      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
-    }
   }
 
 }

@@ -4,32 +4,29 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import SampleApp from "common/SampleApp";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { Angle, Arc3d, LinearSweep, Path, Point3d, PolyfaceBuilder, Ray3d, RotationalSweep, RuledSweep, StrokeOptions, Vector3d } from "@bentley/geometry-core";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { Angle, Arc3d, LinearSweep, LineString3d, Path, Point3d, PolyfaceBuilder, Ray3d, RotationalSweep, RuledSweep, StrokeOptions, Vector3d } from "@bentley/geometry-core";
 import Advanced3dUI from "./Advanced3dUI";
 
 export default class Advanced3dApp implements SampleApp {
 
   public static createLinearSweep() {
-    const centerLine = Arc3d.createXY(new Point3d(500, 500, 500), 100);
+    const centerLine = Arc3d.createXY(new Point3d(0, 0, 0), 5);
     const curveChain = Path.create(centerLine);
-    return LinearSweep.create(curveChain, new Vector3d(50, 50, 50), false);
+    return LinearSweep.create(curveChain, new Vector3d(-5, 5, 5), false);
   }
 
   public static createRotationalSweep() {
-    const centerLine = Arc3d.createXY(new Point3d(500, 500, 500), 100);
-    const curveChain = Path.create(centerLine);
-    return RotationalSweep.create(curveChain, Ray3d.create(new Point3d(750, 750, 750), new Vector3d(250, 250, 250)), Angle.createDegrees(180), false);
+    const contour = Arc3d.createXYEllipse(new Point3d(5, -5, 7.5), 0.8, 0.2);
+    const curveChain = Path.create(contour);
+    return RotationalSweep.create(curveChain, Ray3d.create(new Point3d(5, 5, 7.5), new Vector3d(1, 1, 0)), Angle.createDegrees(180), false);
   }
 
   public static createRuledSweep() {
-    const centerLine = Arc3d.createXY(new Point3d(500, 500, 500), 100);
+    const centerLine = Arc3d.createXY(new Point3d(-5, -5, 5), 5);
     const curveChain = Path.create(centerLine);
-    const centerLine2 = Arc3d.createXY(new Point3d(650, 650, 650), 300);
+    const centerLine2 = Arc3d.createXY(new Point3d(-10, -10, 10), 10);
     const curveChain2 = Path.create(centerLine2);
-    const centerLine3 = Arc3d.createXY(new Point3d(350, 350, 350), 300);
+    const centerLine3 = Arc3d.createXY(new Point3d(0, 0, 0), 10);
     const curveChain3 = Path.create(centerLine3);
     return RuledSweep.create([curveChain2, curveChain, curveChain3], false);
   }
@@ -55,32 +52,15 @@ export default class Advanced3dApp implements SampleApp {
         if (sweep)
           builder.addRuledSweep(sweep);
       }
-    } else if (geometryType === "Triangulation") {
-      const points1: Point3d[] = [];
-      points1.push(Point3d.create(500, 800, -250));
-      points1.push(Point3d.create(500, 300, -250));
-      const points2: Point3d[] = [];
-      points2.push(Point3d.create(250, 500, 250));
-      points2.push(Point3d.create(700, 500, 250));
-      builder.addGreedyTriangulationBetweenLineStrings(points1, points2);
     } else if (geometryType === "Mitered Pipes") {
-      const centerLine = Arc3d.createXY(new Point3d(500, 500, 500), 100);
-      builder.addMiteredPipes(centerLine, 50);
+      const centerLine = LineString3d.create([[5, -5, 0], [2, -2, 2], [0, 0, 5], [-5, 5, 5], [-5, 5, 0]]);
+      builder.addMiteredPipes(centerLine, 0.5);
     }
     return builder.claimPolyface(true);
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    await BlankViewport.setup();
-    BlankViewport.decorator = new GeometryDecorator(true, 100);
-    IModelApp.viewManager.addDecorator(BlankViewport.decorator);
     return <Advanced3dUI></Advanced3dUI>;
-  }
-
-  public static teardown() {
-    if (null != BlankViewport.decorator) {
-      IModelApp.viewManager.dropDecorator(BlankViewport.decorator);
-    }
   }
 
 }

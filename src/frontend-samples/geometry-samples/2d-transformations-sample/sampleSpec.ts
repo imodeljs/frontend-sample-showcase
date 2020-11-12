@@ -10,13 +10,13 @@ export function get2dTransformationsSpec(): SampleSpec {
     name: "2d-transformations-sample",
     label: "2d Transformations",
     image: "2d-transformations-thumbnail.png",
+    customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp"), entry: true },
       { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI") },
 
     ],
-    setup: Transformations2dApp.setup,
-    teardown: Transformations2dApp.teardown,
+    setup: Transformations2dApp.setup.bind(Transformations2dApp),
   });
 }
