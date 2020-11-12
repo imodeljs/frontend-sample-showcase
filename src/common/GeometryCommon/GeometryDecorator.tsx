@@ -140,7 +140,7 @@ export class GeometryDecorator implements Decorator {
   // Iterate through the geometry and point lists, extracting each geometry and point, along with their styles
   // Adding them to the graphic builder which then creates new graphics
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
-    // We need to provide an Id64 string to our graphic builder to allow for edges to render correctly over different geometry types
+    // Specifying an Id for the graphics tells the display system that all of the geometry belongs to the same entity, so that it knows to make sure the edges draw on top of the surfaces.
     const builder = context.createGraphicBuilder(GraphicType.Scene, undefined, context.viewport.iModel.transientIds.next);
     builder.wantNormals = true;
     this.points.forEach((styledPoint) => {
