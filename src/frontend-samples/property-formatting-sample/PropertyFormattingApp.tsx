@@ -11,7 +11,7 @@ import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from 
 import { Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
-import { OverlySimpleProperyRecord } from "./approach-3-UI";
+import { OverlySimplePropertyRecord } from "./approach-3-UI";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { PresentationTableDataProvider } from "@bentley/presentation-components";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
@@ -127,7 +127,7 @@ export class PropertyFormattingApp implements SampleApp {
       return [];
 
     const item = content.contentSet[0];
-    const data: OverlySimpleProperyRecord[] = [];
+    const data: OverlySimplePropertyRecord[] = [];
     let fields = content.descriptor.fields;
 
     if (0 !== propertyNameFilter.length) {

@@ -7,7 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "../../Components/Viewport/ReloadableViewport";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { KeySet } from "@bentley/presentation-common";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -39,8 +39,8 @@ interface PropertyFormattingState {
 
 /** A React component that renders the UI specific for this sample */
 export class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       method: Approach.UsePropertyDataProvider_1,
       keys: new KeySet(),

@@ -19,8 +19,8 @@ interface Approach1State {
 /* This approach uses PresentationPropertyDataProvider to all the work of querying the backend and
    providing the content to the PropertyGrid component. */
 export class Approach1UI extends React.Component<PropertyProps, Approach1State> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       enableCustomize: false,
     };

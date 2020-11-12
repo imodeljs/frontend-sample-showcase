@@ -17,8 +17,8 @@ interface Approach2State {
 /* This approach uses PresentationTableDataProvider to all the work of querying the backend and
    providing the content to the PropertyGrid component. */
 export class Approach2UI extends React.Component<PropertyProps, Approach2State> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
     };
   }

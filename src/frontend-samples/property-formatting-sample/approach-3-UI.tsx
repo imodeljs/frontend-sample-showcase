@@ -11,26 +11,26 @@ import { SelectionMode, SimpleTableDataProvider, Table } from "@bentley/ui-compo
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
 
-export interface OverlySimpleProperyRecord {
+export interface OverlySimplePropertyRecord {
   name: string;
   displayLabel: string;
   displayValue: string;
 }
 
 interface Approach3State {
-  records: OverlySimpleProperyRecord[];
+  records: OverlySimplePropertyRecord[];
   showAll: boolean;
 }
 
 /* This approach shows how to query for property content and then process the content yourself.  The processing
-   we do in for this sample yields a simplified record consisting of name, label, and value for each propertry.
+   we do in for this sample yields a simplified record consisting of name, label, and value for each property.
    That data is then used to build a SimpleTableDataProvider which provides the data to a Table component. */
 export class Approach3UI extends React.Component<PropertyProps, Approach3State> {
 
   private static favoriteFieldNames = ["pc_bis_Element_Model", "pc_bis_Element_CodeValue", "pc_bis_Element_UserLabel"];
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       showAll: false,
       records: [],
@@ -80,13 +80,13 @@ export class Approach3UI extends React.Component<PropertyProps, Approach3State> 
 }
 
 interface PropertiesTableProps {
-  records: OverlySimpleProperyRecord[];
+  records: OverlySimplePropertyRecord[];
 }
 
 /** A very simple Table component that takes a list of strings as input. */
 export class TableOfStrings extends React.Component<PropertiesTableProps, {}> {
 
-  private createDataProvider(records: OverlySimpleProperyRecord[]) {
+  private createDataProvider(records: OverlySimplePropertyRecord[]) {
     const columns = [{ key: "Name", label: "Property" }, { key: "Value", label: "Value" }];
     const data = new SimpleTableDataProvider(columns);
 
