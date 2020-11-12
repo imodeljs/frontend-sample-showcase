@@ -16,6 +16,7 @@ import { PropertyFormattingApp } from "./PropertyFormattingApp";
 import { Approach1UI } from "./approach-1-UI";
 import { Approach2UI } from "./approach-2-UI";
 import { Approach3UI } from "./approach-3-UI";
+import { Select } from "@bentley/ui-core";
 
 enum Approach {
   UsePropertyDataProvider_1 = "UsePropertyDataProvider",
@@ -76,11 +77,13 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
       <>
         <div className="sample-options-2col">
           <span>Approach:</span>
-          <select onChange={this._onPropertyModeChange} value={this.state.method}>
-            <option value={Approach.UsePropertyDataProvider_1}>1. Use Property Grid</option>
-            <option value={Approach.UseTableDataProvider_2}>2. Use Property Table</option>
-            <option value={Approach.DoItYourself_3}>3. Do it yourself</option>
-          </select>
+          <Select onChange={this._onPropertyModeChange} value={this.state.method}
+            options={{
+              [Approach.UsePropertyDataProvider_1]: "1. Use Property Grid",
+              [Approach.UseTableDataProvider_2]: "2. Use Property Table",
+              [Approach.DoItYourself_3]: "3. Do it yourself",
+            }}>
+          </Select>
         </div>
         {propertiesUI}
       </>

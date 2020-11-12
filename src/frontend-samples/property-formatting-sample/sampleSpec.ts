@@ -10,8 +10,8 @@ export function getPropertyFormattingSpec(): SampleSpec {
   return ({
     name: "property-formatting-sample",
     label: "Property Formatting",
-    image: "zoom-to-elements-thumbnail.png",
-    customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding],
+    image: "property-formatting-thumbnail.png",
+    customModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
     files: [
       { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp"), entry: true },
       { name: "PropertyFormattingUI.tsx", import: import("!!raw-loader!./PropertyFormattingUI") },
