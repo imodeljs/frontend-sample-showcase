@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
+import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
@@ -140,7 +140,7 @@ export class GeometryDecorator implements Decorator {
   // Iterate through the geometry and point lists, extracting each geometry and point, along with their styles
   // Adding them to the graphic builder which then creates new graphics
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
-    const builder = context.createGraphicBuilder(GraphicType.Scene, undefined, "GeometryGraphic");
+    const builder = context.createGraphicBuilder(GraphicType.Scene, undefined, context.viewport.iModel.transientIds.next);
     builder.wantNormals = true;
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
@@ -218,7 +218,8 @@ export class GeometryDecorator implements Decorator {
     branch.setViewFlagOverrides(overrides);
 
     context.viewFlags.visibleEdges = true;
-    this.graphics = this.createGraphics(context);
+    if (!this.graphics)
+      this.graphics = this.createGraphics(context);
 
     if (this.graphics)
       branch.add(this.graphics);

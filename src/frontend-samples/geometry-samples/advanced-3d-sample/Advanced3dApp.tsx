@@ -16,9 +16,9 @@ export default class Advanced3dApp implements SampleApp {
   }
 
   public static createRotationalSweep() {
-    const contour = Arc3d.createXYEllipse(new Point3d(5, -5, 5), 0.8, 0.2);
+    const contour = Arc3d.createXYEllipse(new Point3d(5, -5, 7.5), 0.8, 0.2);
     const curveChain = Path.create(contour);
-    return RotationalSweep.create(curveChain, Ray3d.create(new Point3d(5, 5, 5), new Vector3d(1, 1, 0)), Angle.createDegrees(180), false);
+    return RotationalSweep.create(curveChain, Ray3d.create(new Point3d(5, 5, 7.5), new Vector3d(1, 1, 0)), Angle.createDegrees(180), false);
   }
 
   public static createRuledSweep() {
