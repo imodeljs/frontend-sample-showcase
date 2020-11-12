@@ -31,10 +31,7 @@ interface VolumeQueryUIState {
   progress: { isLoading: boolean, percentage: number };
 }
 
-export default class VolumeQueryUI extends React.Component<
-  VolumeQueryUIProps,
-  VolumeQueryUIState
-  > {
+export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, VolumeQueryUIState> {
   private _progressBarRefrence = React.createRef<ProgressBar>();
 
   constructor(props?: any) {

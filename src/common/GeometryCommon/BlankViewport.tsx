@@ -3,35 +3,45 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Range3d } from "@bentley/geometry-core";
-import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, ScreenViewport, SelectionTool, SpatialViewState, StandardViewId, Viewport, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
-import { Cartographic, ColorDef, DisplayStyle3dSettingsProps, RenderMode, ViewFlagProps } from "@bentley/imodeljs-common";
+import { Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
+import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
+import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "./GeometryDecorator";
 import "Components/Viewport/Toolbar.scss";
 
-const renderingStyleViewFlags: ViewFlagProps = {
-  noConstruct: true,
-  noCameraLights: false,
-  noSourceLights: false,
-  noSolarLight: false,
-  visEdges: false,
-  hidEdges: false,
-  shadows: false,
-  monochrome: false,
-  ambientOcclusion: false,
-  thematicDisplay: false,
-  renderMode: RenderMode.SmoothShade,
-};
+interface BlankViewportProps {
+  force2d: boolean;
+  grid: boolean;
+  sampleSpace: Range3d | undefined;
+}
 
-export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: Viewport }> {
+export class BlankViewport extends React.Component<BlankViewportProps, { imodel: IModelConnection | undefined, viewState: ViewState | undefined }> {
 
-  public static decorator: GeometryDecorator;
-  public static imodel: IModelConnection;
-  public static viewState: ViewState;
+  public decorator: GeometryDecorator | undefined;
+
+  public componentDidMount() {
+    let imodel;
+    if (this.props.sampleSpace) {
+      imodel = this.getBlankConnection(this.props.sampleSpace);
+    } else {
+      imodel = this.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
+    }
+    const viewState = this.getViewState(imodel, this.props.grid, this.props.force2d);
+    this.setState({
+      viewState,
+      imodel,
+    });
+  }
+
+  public async componentWillUnmount() {
+    if (this.state.imodel) {
+      await this.state.imodel.close();
+    }
+  }
 
   // Creates a blank iModelConnection with the specified dimensions
-  private static getBlankConnection(sampleDimensions: Range3d) {
+  private getBlankConnection(sampleDimensions: Range3d) {
     const exton: BlankConnection = BlankConnection.create({
       name: "GeometryConnection",
       location: Cartographic.fromDegrees(0, 0, 0),
@@ -41,41 +51,34 @@ export class BlankViewport extends React.Component<{ force2d: boolean }, { vp: V
   }
 
   // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public static async getViewState(imodel: IModelConnection): Promise<ViewState> {
+  public getViewState(imodel: IModelConnection, grid: boolean, twoDim: boolean): SpatialViewState {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
-    viewState.setAllow3dManipulations(true);
-    viewState.setStandardRotation(StandardViewId.Top);
+    if (!twoDim) {
+      viewState.setAllow3dManipulations(true);
+      viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
+    } else {
+      viewState.setAllow3dManipulations(false);
+      viewState.setStandardRotation(StandardViewId.Top);
+    }
+    viewState.displayStyle.backgroundColor = ColorDef.white;
+    if (grid)
+      viewState.viewFlags.grid = true;
+    else
+      viewState.viewFlags.grid = false;
+    viewState.viewFlags.renderMode = RenderMode.SmoothShade;
     return viewState;
-  }
-
-  // Initializes the iModel and ViewState for the Blank Viewport
-  public static async setup(sampleDimensions: Range3d = new Range3d(-10, -10, -10, 1010, 1010, 1010)) {
-    select();
-    const imodel = BlankViewport.getBlankConnection(sampleDimensions);
-    const viewState = await BlankViewport.getViewState(imodel);
-    BlankViewport.imodel = imodel;
-    BlankViewport.viewState = viewState;
-    IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
-      const style2: DisplayStyle3dSettingsProps = {
-        backgroundColor: ColorDef.computeTbgrFromComponents(100, 100, 200),
-        viewflags: { ...renderingStyleViewFlags, noSolarLight: false, visEdges: true },
-        lights: {
-          solar: { direction: [-0.9833878378071199, -0.18098510351728977, 0.013883542698953828] },
-        },
-      };
-      viewport.overrideDisplayStyle(style2);
-    });
   }
 
   public render() {
     return (
       <>
-        {toolbar(this.props.force2d)}
-        {BlankViewport.imodel && BlankViewport.viewState ? <ViewportComponent imodel={BlankViewport.imodel} viewState={BlankViewport.viewState}></ViewportComponent> : undefined}
+        {this.state && this.state.imodel && this.state.viewState ? toolbar(this.props.force2d) : undefined}
+        {this.state && this.state.imodel && this.state.viewState ? <ViewportComponent imodel={this.state.imodel} viewState={this.state.viewState}></ViewportComponent> : undefined}
       </>
     );
   }
+
 }
 
 // The toolbar that is used the various geometry samples

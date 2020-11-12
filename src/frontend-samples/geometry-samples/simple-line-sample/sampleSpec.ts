@@ -10,12 +10,12 @@ export function getSimpleLineSpec(): SampleSpec {
     name: "simple-line-sample",
     label: "Simple Line",
     image: "simple-line-thumbnail.png",
+    customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp"), entry: true },
       { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI") },
     ],
-    setup: SimpleLineApp.setup,
-    teardown: SimpleLineApp.teardown,
+    setup: SimpleLineApp.setup.bind(SimpleLineApp),
   });
 }

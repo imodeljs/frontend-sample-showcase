@@ -12,17 +12,21 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import SimpleAnimatedApp from "./SimpleAnimatedApp";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 
-export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number }> {
+export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number, decorator: GeometryDecorator }> {
 
-  constructor(props?: any) {
-    super(props);
+  constructor(props?: any, context?: any) {
+    super(props, context);
+    const decorator = new GeometryDecorator();
+    IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       grid: ConwaysHelpers.generateGrid(),
       dimensions: new Range3d(-10, -10, 0, 1010, 1010, 0),
       timer: new Timer(100),
       clockSpeed: 100,
       color: ColorDef.fromString("yellow"),
+      decorator,
     };
   }
 
@@ -36,6 +40,8 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
 
   public componentWillUnmount() {
     this.state.timer.setOnExecute(undefined);
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
+
   }
 
   public setNewTimer(clockSpeed: number) {
@@ -62,20 +68,20 @@ export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolea
     return (
       <>
         <ControlPane instructions="An implementation of Conway's game of life" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true}></BlankViewport>
+        <BlankViewport force2d={true} grid={false} sampleSpace={new Range3d(-10, -10, 0, 1010, 1010, 0)}></BlankViewport>
       </>
     );
   }
 
   public setGeometry() {
-    BlankViewport.decorator.clearGeometry();
-    BlankViewport.decorator.setColor(ColorDef.white);
-    BlankViewport.decorator.setFill(true);
-    BlankViewport.decorator.setFillColor(this.state.color);
-    BlankViewport.decorator.setLineThickness(2);
+    this.state.decorator.clearGeometry();
+    this.state.decorator.setColor(ColorDef.white);
+    this.state.decorator.setFill(true);
+    this.state.decorator.setFillColor(this.state.color);
+    this.state.decorator.setLineThickness(2);
     const graphicalGrid = SimpleAnimatedApp.createGridSquares(this.state.grid);
     for (const square of graphicalGrid)
-      BlankViewport.decorator.addGeometry(square);
+      this.state.decorator.addGeometry(square);
 
     IModelApp.viewManager.invalidateDecorationsAllViews();
   }
