@@ -21,21 +21,8 @@ export interface PropertyProps {
   imodel?: IModelConnection;
 }
 
-/*
-   This sample illustrates three approaches for showing element properties.  Which approach
-   to choose depends on you goal and what if any customization you need for your use case.
-
-   Approach 1: Using PropertyGrid.  If you want to show the properties in the default way.
-   Approach 2: Using Table.  To see properties from multiple elements at the same time.
-   Approach 3: Do it all yourself.  If you want to use your own ui components. */
-
 /* This class demonstrates the key APIs needed to access formatted property information
-   suitable to present to end users.
-
-   In summary, the process can be broken down to three steps:
-   1. Query the backend for the information on a set of elements.  This is called Content.
-   2. Process the Content and create a set of PropertyRecords suitable for the user interface.
-   3. Use the PropertyRecords to populate a UI component. */
+   suitable to present to end users. */
 export class PropertyFormattingApp implements SampleApp {
   private static selectionListener: SelectionChangesListener;
 
@@ -112,7 +99,7 @@ export class PropertyFormattingApp implements SampleApp {
   /* Approach 3: Do it all yourself.  If you want to use your own UI components.
 
   This approach shows how to process the Content object yourself.  This is an oversimplified implementation that
-  does not handle the difficult cases like properties which are arrays or structs.  Instead it represents
+  2does not handle the difficult cases like properties which are arrays or structs.  Instead it represents
   every property value as a single string.
 
   A full implementation would handle arrays and structs.  Also, a full implementation would consider all the items

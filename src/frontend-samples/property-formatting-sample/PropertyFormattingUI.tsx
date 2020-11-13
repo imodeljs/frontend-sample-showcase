@@ -33,7 +33,7 @@ interface PropertyFormattingProps {
 /** React state */
 interface PropertyFormattingState {
   imodel?: IModelConnection;
-  method: Approach;
+  approach: Approach;
   keys: KeySet;
 }
 
@@ -42,7 +42,7 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
   constructor(props?: any) {
     super(props);
     this.state = {
-      method: Approach.UsePropertyDataProvider_1,
+      approach: Approach.UsePropertyDataProvider_1,
       keys: new KeySet(),
     };
   }
@@ -59,14 +59,14 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
   }
 
   private _onPropertyModeChange = ((event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setState({ method: event.target.value as Approach });
+    this.setState({ approach: event.target.value as Approach });
   });
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
     let propertiesUI: React.ReactNode;
 
-    switch (this.state.method) {
+    switch (this.state.approach) {
       default:
       case Approach.UsePropertyDataProvider_1: { propertiesUI = <Approach1UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
       case Approach.UseTableDataProvider_2: { propertiesUI = <Approach2UI keys={this.state.keys} imodel={this.state.imodel} />; break; }
@@ -77,7 +77,7 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
       <>
         <div className="sample-options-2col">
           <span>Approach:</span>
-          <Select onChange={this._onPropertyModeChange} value={this.state.method}
+          <Select onChange={this._onPropertyModeChange} value={this.state.approach}
             options={{
               [Approach.UsePropertyDataProvider_1]: "1. Use Property Grid",
               [Approach.UseTableDataProvider_2]: "2. Use Property Table",
@@ -94,7 +94,7 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
   public render() {
     return (
       <>
-        <ControlPane instructions="Select an element in the view and choose a method to display its properties." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Select an element in the view and choose an approach to display its properties." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
