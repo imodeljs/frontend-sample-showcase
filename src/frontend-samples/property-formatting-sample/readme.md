@@ -8,9 +8,9 @@ This sample demonstrates how to query and present element property data suitable
 
 The purpose of this sample is to demonstrate the following:
 
-- Using [PresentationPropertyDataProvider](https://www.itwinjs.org/reference/presentation-components/propertygrid/presentationpropertydataprovider/) together with the [PropertyGrid](https://www.itwinjs.org/reference/ui-components/propertygrid/propertygrid/) react component to present the default set of properties for an iModel element.
+- Using the [PropertyGrid](https://www.itwinjs.org/reference/ui-components/propertygrid/propertygrid/) react component along with [PresentationPropertyDataProvider](https://www.itwinjs.org/reference/presentation-components/propertygrid/presentationpropertydataprovider/) to present the default set of properties for an iModel element.
 - Creating a subclass of PresentationPropertyDataProvider to customize the properties that are presented in the property grid.
-- Using [PresentationTableDataProvider](https://www.itwinjs.org/reference/presentation-components/table/presentationtabledataprovider/) together with the [Table](https://www.itwinjs.org/reference/ui-components/table/table/) react component to present a table containing the the default set of properties for a set of iModel elements.
+- Using the [Table](https://www.itwinjs.org/reference/ui-components/table/table/) react component together with [PresentationTableDataProvider](https://www.itwinjs.org/reference/presentation-components/table/presentationtabledataprovider/) to present a table containing the the default set of properties for a set of iModel elements.
 - Using [Presentation.getContent](https://www.itwinjs.org/reference/presentation-frontend/core/presentationmanager/getcontent/) to directly query the formatted property data so that you can use it independently of our user interface components.
 
 ## Description
