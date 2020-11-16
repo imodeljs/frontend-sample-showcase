@@ -10,14 +10,14 @@ The purpose of this sample is to demonstrate the following:
 
 - Using the [PropertyGrid](https://www.itwinjs.org/reference/ui-components/propertygrid/propertygrid/) react component along with [PresentationPropertyDataProvider](https://www.itwinjs.org/reference/presentation-components/propertygrid/presentationpropertydataprovider/) to present the default set of properties for an iModel element.
 - Creating a subclass of PresentationPropertyDataProvider to customize the properties that are presented in the property grid.
-- Using the [Table](https://www.itwinjs.org/reference/ui-components/table/table/) react component together with [PresentationTableDataProvider](https://www.itwinjs.org/reference/presentation-components/table/presentationtabledataprovider/) to present a table containing the the default set of properties for a set of iModel elements.
+- Using the [Table](https://www.itwinjs.org/reference/ui-components/table/table/) react component together with [PresentationTableDataProvider](https://www.itwinjs.org/reference/presentation-components/table/presentationtabledataprovider/) to present a table containing the default set of properties for a set of iModel elements.
 - Using [Presentation.getContent](https://www.itwinjs.org/reference/presentation-frontend/core/presentationmanager/getcontent/) to directly query the formatted property data so that you can use it independently of our user interface components.
 
 ## Description
 
 Even though you can access all of an iModel's data via ECSQL queries, the properties returned that way are not directly suitable for presentation to an end user.  For one thing, individual properties must typically be formatted specifically for presentation purposes (ex. unit conversions and date-time conventions).  Also, the user's perception of a single element doesn't always match the raw data storage (ex. [relationships](https://www.itwinjs.org/bis/intro/relationship-fundamentals/) and [element aspects](https://www.itwinjs.org/bis/intro/elementaspect-fundamentals/)).  For these reasons, it is often necessary to use the [Presentation Library](https://www.itwinjs.org/learning/presentation/).
 
-This sample illustrates three approaches for showing element properties.  Which approach to choose depends on you goal and what if any customization you need for your use case.
+This sample illustrates three approaches for showing element properties.  Which approach to choose depends on your goal and what if any customization you need for your use case.
 
 - Approach 1: Using PropertyGrid.  If you want to show the properties using the default user interface control.
 - Approach 2: Using Table.  To see properties from multiple elements at the same time in the default way.

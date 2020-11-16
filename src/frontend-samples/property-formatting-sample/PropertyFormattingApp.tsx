@@ -7,13 +7,12 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
-import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@bentley/presentation-components/lib/presentation-components/propertygrid/DataProvider"; // tslint:disable-line: no-direct-imports
 import { Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
 import SampleApp from "common/SampleApp";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
 import { OverlySimplePropertyRecord } from "./approach-3-UI";
 import { PropertyRecord } from "@bentley/ui-abstract";
-import { PresentationTableDataProvider } from "@bentley/presentation-components";
+import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider, PresentationTableDataProvider } from "@bentley/presentation-components";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 export interface PropertyProps {
@@ -99,7 +98,7 @@ export class PropertyFormattingApp implements SampleApp {
   /* Approach 3: Do it all yourself.  If you want to use your own UI components.
 
   This approach shows how to process the Content object yourself.  This is an oversimplified implementation that
-  2does not handle the difficult cases like properties which are arrays or structs.  Instead it represents
+  does not handle the difficult cases like properties which are arrays or structs.  Instead it represents
   every property value as a single string.
 
   A full implementation would handle arrays and structs.  Also, a full implementation would consider all the items
