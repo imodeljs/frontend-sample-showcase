@@ -32,11 +32,11 @@ interface VolumeQueryUIState {
 }
 
 export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, VolumeQueryUIState> {
-  private _progressBarRefrence = React.createRef<ProgressBar>();
+  private _progressBarReference = React.createRef<ProgressBar>();
 
   constructor(props?: any) {
     super(props);
-    this._progressBarRefrence = React.createRef();
+    this._progressBarReference = React.createRef();
     this.state = {
       isVolumeBoxOn: false,
       isClipVolumeOn: false,
@@ -59,7 +59,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
     };
   }
 
-  /* Turining Volume Box on and off */
+  /* Turning Volume Box on and off */
   private _onToggleVolumeBox = (isToggleOn: boolean) => {
     this.setState({ isVolumeBoxOn: isToggleOn });
     const vp = IModelApp.viewManager.selectedView;
@@ -94,7 +94,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
     }
   }
 
-  /* Coloring elements that are inside, outside the box or overlaping */
+  /* Coloring elements that are inside, outside the box or overlapping */
   private _onClickApplyColorOverrides = async () => {
     const vp = IModelApp.viewManager.selectedView;
     if (undefined !== vp) {
@@ -105,7 +105,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
       /* Getting elements that are going to be colored */
       const spatialElements = await VolumeQueryApp.getSpatialElements(vp, range);
       this.setState({ spatialElements });
-      const progressBar = this._progressBarRefrence.current!;
+      const progressBar = this._progressBarReference.current!;
       await progressBar.processElements(this.state.classifiedElementsColors, spatialElements, vp);
     }
   }
@@ -266,7 +266,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
           {(coloredElements[position].length <= 100) ? "." : ", showing first 100."}
         </span>
         <ProgressBar
-          ref={this._progressBarRefrence}
+          ref={this._progressBarReference}
           getProgress={this.getProgress.bind(this)}
           setProgress={this.setProgress.bind(this)}
           setColoredElements={this.setColoredElements.bind(this)}

@@ -2,20 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-.table-wrapper > select {
-  flex: 1;
-  margin: 3px;
-}
-.table-wrapper {
+.table-box {
   display: flex;
+  height: 300px;
+  justify-content: center;
+  align-items: center;
 }
 
-.table-button-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.table-caption {
+.table-box > span {
   margin: 4px 0 4px 8px;
   color: var(--buic-foreground-accessory);
   font-size: 12px;
