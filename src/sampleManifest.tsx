@@ -6,6 +6,7 @@ import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
+import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
@@ -72,6 +73,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
 }, {
   groupName: "Viewer Features", samples: [
     getDisplayStylesSpec(),
+    getClassifierSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
@@ -135,7 +137,7 @@ export function findSpecBySampleName(nameIn: string) {
   for (const group of sampleManifest) {
     for (const spec of group.samples) {
       if (nameIn === spec.name) {
-        return { group, spec }
+        return { group, spec };
       }
     }
   }
