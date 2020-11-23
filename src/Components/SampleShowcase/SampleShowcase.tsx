@@ -17,7 +17,7 @@ import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { MovePointTool } from "common/InteractivePointMarker";
+import { MovePointTool } from "common/GeometryCommon/InteractivePointMarker";
 
 // cSpell:ignore imodels
 

@@ -15,7 +15,8 @@ export function getCurveFractionSpec(): SampleSpec {
     files: [
       { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp"), entry: true },
       { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI") },
-      { name: "common/InteractivePointMarker.tsx", import: import("!!raw-loader!../../../common/InteractivePointMarker") },
+      { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!../../../common/GeometryCommon/SampleCurveFactory") },
+      { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!../../../common/GeometryCommon/InteractivePointMarker") },
     ],
     setup: CurveFractionApp.setup.bind(CurveFractionApp),
   });

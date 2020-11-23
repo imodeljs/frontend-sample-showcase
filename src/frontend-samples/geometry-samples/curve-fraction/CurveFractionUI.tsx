@@ -7,14 +7,15 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { NumericInput, Slider } from "@bentley/ui-core";
 import CurveFractionApp from "./CurveFractionApp";
-import { CurveChain, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
+import { SampleCurveFactory } from "common/GeometryCommon/SampleCurveFactory";
+import { InteractivePointMarker } from "common/GeometryCommon/InteractivePointMarker";
+import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
 import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { InteractivePointMarker } from "common/InteractivePointMarker";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 
 interface CurveData {
-  curve: CurveChain;
+  curve: CurvePrimitive;
   curvePointMarker: InteractivePointMarker;
   derivativeAtPoint: Vector3d;
 }
@@ -44,36 +45,35 @@ export default class CurveFractionUI extends React.Component<{}, CurveFractionSt
     const size = 10;
     const shift = 10;
 
-    let curve = CurveFractionApp.createPath("Step Line String", size)!;
+    let curve = SampleCurveFactory.createCurvePrimitive("Step Line String", size)!;
     curve.tryTranslateInPlace(shift, -shift, 0);
     let ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
-    let marker = new InteractivePointMarker(ray.origin, "Step Line String", ColorDef.green, async (pt) => this.setCurvePoint(pt, 0));
+    let marker = new InteractivePointMarker(ray.origin, "Step Line String", ColorDef.green, async (pt: Point3d) => this.setCurvePoint(pt, 0));
     this.curveData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
-    curve = CurveFractionApp.createPath("Half Step Line String", size)!;
+    curve = SampleCurveFactory.createCurvePrimitive("Half Step Line String", size)!;
     curve.tryTranslateInPlace(shift, shift, 0);
     ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
-    marker = new InteractivePointMarker(ray.origin, "Half Step Line String", ColorDef.green, async (pt) => this.setCurvePoint(pt, 1));
+    marker = new InteractivePointMarker(ray.origin, "Half Step Line String", ColorDef.green, async (pt: Point3d) => this.setCurvePoint(pt, 1));
     this.curveData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
-    curve = CurveFractionApp.createPath("Arc", size)!;
+    curve = SampleCurveFactory.createCurvePrimitive("Arc", size)!;
     curve.tryTranslateInPlace(-shift, -shift, 0);
     ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
-    marker = new InteractivePointMarker(ray.origin, "Arc", ColorDef.green, async (pt) => this.setCurvePoint(pt, 2));
+    marker = new InteractivePointMarker(ray.origin, "Arc", ColorDef.green, async (pt: Point3d) => this.setCurvePoint(pt, 2));
     this.curveData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
-    curve = CurveFractionApp.createPath("Elliptical Arc", size)!;
+    curve = SampleCurveFactory.createCurvePrimitive("Elliptical Arc", size)!;
     curve.tryTranslateInPlace(-shift, shift, 0);
     ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
-    marker = new InteractivePointMarker(ray.origin, "Elliptical Arc", ColorDef.green, async (pt) => this.setCurvePoint(pt, 3));
+    marker = new InteractivePointMarker(ray.origin, "Elliptical Arc", ColorDef.green, async (pt: Point3d) => this.setCurvePoint(pt, 3));
     this.curveData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
-    curve = CurveFractionApp.createPath("Line Segment Flat Diagonal", size * 3)!;
+    curve = SampleCurveFactory.createCurvePrimitive("Line Segment Flat Diagonal", size * 3)!;
     curve.tryTranslateInPlace(0, shift * 2, 0);
     ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
-    marker = new InteractivePointMarker(ray.origin, "Line Segment", ColorDef.green, async (pt) => this.setCurvePoint(pt, 4));
+    marker = new InteractivePointMarker(ray.origin, "Line Segment", ColorDef.green, async (pt: Point3d) => this.setCurvePoint(pt, 4));
     this.curveData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
-
   }
 
   public getControls() {
@@ -144,10 +144,9 @@ export default class CurveFractionUI extends React.Component<{}, CurveFractionSt
       const curvePoint = marker.worldLocation;
       const derivative = curveData.derivativeAtPoint;
 
-      // Add the curvechain
+      // Add the curvePrimitive
       this.state.decorator.setColor(ColorDef.white);
-      this.state.decorator.setFill(true);
-      this.state.decorator.setFillColor(ColorDef.red);
+      this.state.decorator.setFill(false);
       this.state.decorator.setLineThickness(5);
       this.state.decorator.setLinePixels(LinePixels.Solid);
       this.state.decorator.addGeometry(curve);

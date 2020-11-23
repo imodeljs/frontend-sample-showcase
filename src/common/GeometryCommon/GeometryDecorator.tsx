@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@bentley/geometry-core";
-import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
+import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@bentley/geometry-core";
+import { DecorateContext, Decorator, GraphicBranch, GraphicBuilder, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
@@ -152,61 +152,67 @@ export class GeometryDecorator implements Decorator {
     this.shapes.forEach((styledGeometry) => {
       const geometry = styledGeometry.geometry;
       builder.setSymbology(styledGeometry.color, styledGeometry.fill ? styledGeometry.fillColor : styledGeometry.color, styledGeometry.lineThickness, styledGeometry.linePixels);
-      if (geometry instanceof LineString3d) {
-        builder.addLineString(geometry.points);
-      } else if (geometry instanceof Loop) {
-        builder.addLoop(geometry);
-        if (styledGeometry.edges) {
-          // Since decorators don't natively support visual edges,
-          // We draw them manually as lines along each loop edge/arc
-          builder.setSymbology(ColorDef.black, ColorDef.black, 2);
-          const curves = geometry.children;
-          curves.forEach((value) => {
-            if (value instanceof LineString3d) {
-              let edges = value.points;
-              const endPoint = value.pointAt(0);
-              if (endPoint) {
-                edges = edges.concat([endPoint]);
-              }
-              builder.addLineString(edges);
-            } else if (value instanceof Arc3d) {
-              builder.addArc(value, false, false);
-            }
-          });
-        }
-      } else if (geometry instanceof Path) {
-        builder.addPath(geometry);
-      } else if (geometry instanceof IndexedPolyface) {
-        builder.addPolyface(geometry, false);
-        if (styledGeometry.edges) {
-          // Since decorators don't natively support visual edges,
-          // We draw them manually as lines along each facet edge
-          builder.setSymbology(ColorDef.black, ColorDef.black, 2);
-          const visitor = IndexedPolyfaceVisitor.create(geometry, 1);
-          let flag = true;
-          while (flag) {
-            const numIndices = visitor.pointCount;
-            for (let i = 0; i < numIndices - 1; i++) {
-              const point1 = visitor.getPoint(i);
-              const point2 = visitor.getPoint(i + 1);
-              if (point1 && point2) {
-                builder.addLineString([point1, point2]);
-              }
-            }
-            flag = visitor.moveToNextFacet();
-          }
-        }
-      } else if (geometry instanceof LineSegment3d) {
-        const pointA = geometry.point0Ref;
-        const pointB = geometry.point1Ref;
-        const lineString = [pointA, pointB];
-        builder.addLineString(lineString);
-      } else if (geometry instanceof Arc3d) {
-        builder.addArc(geometry, false, styledGeometry.fill);
-      }
+      this.createGraphicsForGeometry(geometry, styledGeometry.edges, builder);
     });
     const graphic = builder.finish();
     return graphic;
+  }
+
+  private createGraphicsForGeometry(geometry: GeometryQuery, wantEdges: boolean, builder: GraphicBuilder) {
+    if (geometry instanceof LineString3d) {
+      builder.addLineString(geometry.points);
+    } else if (geometry instanceof Loop) {
+      builder.addLoop(geometry);
+      if (wantEdges) {
+        // Since decorators don't natively support visual edges,
+        // We draw them manually as lines along each loop edge/arc
+        builder.setSymbology(ColorDef.black, ColorDef.black, 2);
+        const curves = geometry.children;
+        curves.forEach((value) => {
+          if (value instanceof LineString3d) {
+            let edges = value.points;
+            const endPoint = value.pointAt(0);
+            if (endPoint) {
+              edges = edges.concat([endPoint]);
+            }
+            builder.addLineString(edges);
+          } else if (value instanceof Arc3d) {
+            builder.addArc(value, false, false);
+          }
+        });
+      }
+    } else if (geometry instanceof Path) {
+      builder.addPath(geometry);
+    } else if (geometry instanceof IndexedPolyface) {
+      builder.addPolyface(geometry, false);
+      if (wantEdges) {
+        // Since decorators don't natively support visual edges,
+        // We draw them manually as lines along each facet edge
+        builder.setSymbology(ColorDef.black, ColorDef.black, 2);
+        const visitor = IndexedPolyfaceVisitor.create(geometry, 1);
+        let flag = true;
+        while (flag) {
+          const numIndices = visitor.pointCount;
+          for (let i = 0; i < numIndices - 1; i++) {
+            const point1 = visitor.getPoint(i);
+            const point2 = visitor.getPoint(i + 1);
+            if (point1 && point2) {
+              builder.addLineString([point1, point2]);
+            }
+          }
+          flag = visitor.moveToNextFacet();
+        }
+      }
+    } else if (geometry instanceof LineSegment3d) {
+      const pointA = geometry.point0Ref;
+      const pointB = geometry.point1Ref;
+      const lineString = [pointA, pointB];
+      builder.addLineString(lineString);
+    } else if (geometry instanceof Arc3d) {
+      builder.addArc(geometry, false, false);
+    } else if (geometry instanceof CurveChainWithDistanceIndex) {
+      this.createGraphicsForGeometry(geometry.path, wantEdges, builder);
+    }
   }
 
   // Generates new graphics if needed, and adds them to the scene
