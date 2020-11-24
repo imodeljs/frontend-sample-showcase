@@ -151,9 +151,9 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     this.setState({ insideDisplayKey: event.target.value });
   }
 
-/** This callback will be executed by ReloadableViewport to initialize the ViewState.
- * Set up camera looking at Rittenhouse Square.
- */
+  /** This callback will be executed by ReloadableViewport to initialize the ViewState.
+   * Set up camera looking at Rittenhouse Square.
+   */
   public static getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
 
