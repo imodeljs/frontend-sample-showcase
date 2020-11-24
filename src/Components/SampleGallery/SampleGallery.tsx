@@ -8,7 +8,6 @@ import "./SampleGallery.scss";
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
 import { SampleSpecGroup } from "../../sampleManifest";
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
-import { CenterContent } from "@bentley/ui-ninezone";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];
