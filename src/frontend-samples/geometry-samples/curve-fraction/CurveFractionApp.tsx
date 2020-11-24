@@ -5,16 +5,20 @@
 import * as React from "react";
 import SampleApp from "common/SampleApp";
 import { CurvePrimitive, Point3d } from "@bentley/geometry-core";
-import ClosestPointOnCurveUI from "./ClosestPointOnCurveUI";
+import CurveFractionUI from "./CurveFractionUI";
 
-export default class ClosestPointOnCurveApp implements SampleApp {
+export default class CurveFractionApp implements SampleApp {
 
-  public static getClosestPointOnCurve(curve: CurvePrimitive, point: Point3d) {
-    const location = curve.closestPoint(point, false);
-    return location?.point;
+  public static fractionToPointAndDerivative(curve: CurvePrimitive, fraction: number) {
+    return curve.fractionToPointAndDerivative(fraction);
+  }
+
+  public static getFractionFromPoint(path: CurvePrimitive, point: Point3d) {
+    const location = path.closestPoint(point, false);
+    return location?.fraction;
   }
 
   public static async setup(): Promise<React.ReactNode> {
-    return <ClosestPointOnCurveUI></ClosestPointOnCurveUI>;
+    return <CurveFractionUI></CurveFractionUI>;
   }
 }

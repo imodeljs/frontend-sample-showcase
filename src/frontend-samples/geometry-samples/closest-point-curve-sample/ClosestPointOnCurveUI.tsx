@@ -7,11 +7,12 @@ import { BlankViewport } from "common/GeometryCommon/BlankViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Input, NumericInput, Select } from "@bentley/ui-core";
 import ClosestPointOnCurveApp from "./ClosestPointOnCurveApp";
-import { CurveChain, LineSegment3d, Point3d } from "@bentley/geometry-core";
+import { CurvePrimitive, LineSegment3d, Point3d } from "@bentley/geometry-core";
 import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { InteractivePointMarker } from "common/InteractivePointMarker";
+import { InteractivePointMarker } from "common/GeometryCommon/InteractivePointMarker";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { SampleCurveFactory } from "common/GeometryCommon/SampleCurveFactory";
 
 interface ClosestPointOnCurveState {
   spacePoint: Point3d;
@@ -23,7 +24,7 @@ interface ClosestPointOnCurveState {
 export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPointOnCurveState> {
   private spacePointMarker?: InteractivePointMarker;
   private closePointMarker?: InteractivePointMarker;
-  private curveChain?: CurveChain;
+  private curve?: CurvePrimitive;
 
   constructor(props?: any) {
     super(props);
@@ -42,7 +43,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
       <>
         <div className="sample-options-2col">
           <span>Curve:</span>
-          <Select options={["Rounded Rectangle", "Line String", "Rounded Line String"]} onChange={(event) => { this.setState({ curveType: event.target.value }); }} />
+          <Select options={["Rounded Rectangle", "Line String", "Rounded Line String", "Arc", "Elliptical Arc"]} onChange={(event) => { this.setState({ curveType: event.target.value }); }} />
 
         </div>
         <hr></hr>
@@ -68,7 +69,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
   }
 
   private setSpacePoint(inPoint: { x?: number, y?: number }) {
-    if (!this.curveChain)
+    if (!this.curve)
       return;
 
     const newPoint = this.state.spacePoint.clone();
@@ -76,7 +77,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
     if (inPoint.x) newPoint.x = inPoint.x;
     if (inPoint.y) newPoint.y = inPoint.y;
 
-    const closePoint = ClosestPointOnCurveApp.getClosestPointOnCurve(this.curveChain, newPoint);
+    const closePoint = ClosestPointOnCurveApp.getClosestPointOnCurve(this.curve, newPoint);
 
     if (closePoint)
       this.setState({ spacePoint: newPoint, closePoint });
@@ -88,7 +89,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
   }
 
   public async componentDidMount() {
-    this.curveChain = ClosestPointOnCurveApp.createPath(this.state.curveType);
+    this.curve = SampleCurveFactory.createCurvePrimitive(this.state.curveType, 10);
     this.setSpacePoint({ x: -10, y: 10 });
     await this.createPointMarkers();
     this.updateVisualization();
@@ -96,7 +97,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
 
   public componentDidUpdate(_prevProps: any, prevState: ClosestPointOnCurveState) {
     if (prevState.curveType !== this.state.curveType) {
-      this.curveChain = ClosestPointOnCurveApp.createPath(this.state.curveType);
+      this.curve = SampleCurveFactory.createCurvePrimitive(this.state.curveType, 10);
       this.setSpacePoint(this.state.spacePoint);
     }
     this.updateVisualization();
@@ -107,16 +108,16 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
     // component is first mounted and then any time component's state is changed.
     this.state.decorator.clearGeometry();
 
-    if (!this.curveChain)
+    if (!this.curve)
       return;
 
-    // Add the curvechain
-    this.state.decorator.setColor(ColorDef.white);
+    // Add the curvePrimitive
+    this.state.decorator.setColor(ColorDef.black);
     this.state.decorator.setFill(true);
     this.state.decorator.setFillColor(ColorDef.red);
     this.state.decorator.setLineThickness(5);
     this.state.decorator.setLinePixels(LinePixels.Solid);
-    this.state.decorator.addGeometry(this.curveChain);
+    this.state.decorator.addGeometry(this.curve);
 
     // Add the marker representing the space point
     if (this.spacePointMarker) {

@@ -9,7 +9,7 @@ import { NumericInput } from "@bentley/ui-core";
 import SimpleLineApp from "./SimpleLineApp";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { InteractivePointMarker } from "common/InteractivePointMarker";
+import { InteractivePointMarker } from "common/GeometryCommon/InteractivePointMarker";
 import { ColorDef } from "@bentley/imodeljs-common";
 
 interface SimpleLineState {
