@@ -14,8 +14,8 @@ The purpose of this sample is to demonstrate the following:
 
 ## Description
 
-This sample features a reality data model of the city of Philadelphia. It also includes building footprint, street, light pole, and commercial corridor data that has been collected from
-open source datasets and connected into the iModel. 
+Reality models derived from either photogrammetry or point cloud scanning provide an important representation of the physical state of a digital twin. They are however inherently monolithic, a single reality model will represent many digital twin components. Spatial classification provides a method to spatially partition a reality model by superimposing it with a spatial model. Reality model geometry within the boundaries of the spatial model components behave much like the components themselves. 
+Classification controls not only the reality model display but the manner in which the reality models are selected. When a reality model is classified the classified geometry is selected rather than the entire model and the properties from the classifier are automatically associated to that portion of the reality model. This is an important feature. To demonstrate the use of GIS data within a reality model this sample uses a reality model of Philadelphia and GIS data representing the building footprints, commercial corridors, arterial streets, and light poles. All sourced from ([OpenDataPhilly](https://www.opendataphilly.org/dataset/)).
 
 [`ClassifierApp`](./ClassifierApp.tsx) has the necessary static methods for interacting with classifier related portions of the iModel.js API.
 
@@ -32,4 +32,3 @@ Classifiers have several properties that the user can set:
 - [outside](https://www.itwinjs.org/reference/imodeljs-common/displaystyles/spatialclassificationprops/spatialclassificationprops.flagsprops/#outside): How to display elements outside the classifier -- Off, On, Dimmed, Hilite, or Element Color.
 
 Additionally, this sample features a property data provider. This shows basic properties of selected elements. For more info on property data providers and property formatting see [property formatting sample](../property-formatting-sample/readme.md).
-

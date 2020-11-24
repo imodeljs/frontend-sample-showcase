@@ -31,7 +31,7 @@ interface ClassifierState {
 
 export default class ClassifierUI extends React.Component<{ iModelName: string, iModelName2: string, iModelSelector: React.ReactNode }, ClassifierState> {
   private _outsideDisplayEntries: { [key: string]: string } = {};
-  private _displayEntries: { [key: string]: string } = {};
+  private _insideDisplayEntries: { [key: string]: string } = {};
 
   /** Creates a sample instance */
   constructor(props?: any) {
@@ -48,14 +48,15 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       keys: new KeySet(),
     };
 
-    this._displayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Off]] = "Off";
-    this._displayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.On]] = "On";
-    this._displayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]] = "Dimmed";
-    this._displayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Hilite]] = "Hilite";
-    this._displayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.ElementColor]] = "Element Color";
+    this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Off]] = "Off";
+    this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.On]] = "On";
+    this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]] = "Dimmed";
+    this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Hilite]] = "Hilite";
+    this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.ElementColor]] = "Element Color";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Off]] = "Off";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.On]] = "On";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]] = "Dimmed";
+    this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Hilite]] = "Hilite";
   }
 
   /**
@@ -76,21 +77,20 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     });
   }
 
+  // Handle Apply. Clear selection and update classifier.
   private _handleApply = () => {
     const vp = IModelApp.viewManager.selectedView;
     this.setState({ keys: new KeySet() });
     if (vp) {
-      const classifier: SpatialClassificationProps.Properties = this.getDefaultClassifierValues(this.state.classifier!);
+      const classifier: SpatialClassificationProps.Properties = this.getClassifierValues(this.state.classifier!);
       ClassifierApp.updateRealityDataClassifiers(vp, classifier);
     }
   }
 
   /*
-  * Get default property values for the classifers. This could be exposed in a UI for the user to decide props what look
-  * best for their data, but for this sample, we've made the choices for the user.
-  * Ex: Commercial corridors should use element color for inside and street poles should be 0.5 meters.
+  * Get property values for the classifer.
   */
-  private getDefaultClassifierValues(modelId: string): SpatialClassificationProps.Properties {
+  private getClassifierValues(modelId: string): SpatialClassificationProps.Properties {
     const flags = new SpatialClassificationProps.Flags();
     const {
       outsideDisplayKey,
@@ -118,6 +118,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     this.setState({ keys });
   }
 
+  // Some reasonable defaults depending on what classifier is chosen.
   private _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (this.state.classifiers[event.target.value].includes("Buildings")) {
       this.setState({ insideDisplayKey: "On", expandDist: 3 });
@@ -142,19 +143,17 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     } catch { }
   }
 
-  private _onOutsideDisplayChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ): void => {
+  private _onOutsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setState({ outsideDisplayKey: event.target.value });
   }
 
-  private _onInsideDisplayChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ): void => {
+  private _onInsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setState({ insideDisplayKey: event.target.value });
   }
 
-  /** This callback will be executed by ReloadableViewport to initialize the ViewState */
+/** This callback will be executed by ReloadableViewport to initialize the ViewState.
+ * Set up camera looking at Rittenhouse Square.
+ */
   public static getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
 
@@ -205,7 +204,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
           />
           <span>Inside Display:</span>
           <Select
-            options={this._displayEntries}
+            options={this._insideDisplayEntries}
             value={insideDisplayKey}
             onChange={this._onInsideDisplayChange}
           />

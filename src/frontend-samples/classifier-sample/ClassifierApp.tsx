@@ -11,7 +11,6 @@ import { ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifi
 import { ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
 
 export default class ClassifierApp implements SampleApp {
-
   public static async turnOnAvailableRealityModel(viewPort: ScreenViewport, imodel: IModelConnection) {
     const style = viewPort.displayStyle.clone();
 
@@ -24,6 +23,10 @@ export default class ClassifierApp implements SampleApp {
     }
   }
 
+  /**
+   * Query the iModel to get available spatial classifiers.
+   * Also do a custom sort and filtering for the purposes of this sample.
+   */
   public static async getAvailableClassifierListForViewport(vp?: Viewport): Promise<{ [key: string]: string }> {
     const models: { [key: string]: string } = {};
     if (!vp || !(vp.view instanceof SpatialViewState))
@@ -58,11 +61,11 @@ export default class ClassifierApp implements SampleApp {
     return Promise.resolve(models);
   }
 
+  // Update the classifier in the ViewPort
   public static updateRealityDataClassifiers(view: ScreenViewport, classifier: SpatialClassificationProps.Properties) {
     const existingRealityModels: ContextRealityModelState[] = [];
-    view.displayStyle.forEachRealityModel(
-      (modelState: ContextRealityModelState) =>
-        existingRealityModels.push(modelState),
+    view.displayStyle.forEachRealityModel((modelState: ContextRealityModelState) =>
+      existingRealityModels.push(modelState),
     );
     const entry: ContextRealityModelState = existingRealityModels[0];
 
