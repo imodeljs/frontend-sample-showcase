@@ -3,23 +3,30 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
+import "./Classifier.scss";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ClassifierProperties } from "./ClassifierProperties";
+import { PropertyFormattingApp } from "frontend-samples/property-formatting-sample/PropertyFormattingApp";
 import * as React from "react";
 import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@bentley/geometry-core";
 import { SpatialClassificationProps } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import ClassifierApp from "./ClassifierApp";
+import { KeySet } from "@bentley/presentation-common";
+import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, Input, Select } from "@bentley/ui-core";
+
+import ClassifierApp from "./ClassifierApp";
 
 interface ClassifierState {
   imodel?: IModelConnection;
-  models: { [key: string]: string };
-  model: string | undefined;
+  classifiers: { [key: string]: string };
+  classifier: string | undefined;
   expandDist: number;
   outsideDisplayKey: string;
   insideDisplayKey: string;
+  keys: KeySet;
 }
 
 export default class ClassifierUI extends React.Component<{ iModelName: string, iModelName2: string, iModelSelector: React.ReactNode }, ClassifierState> {
@@ -33,11 +40,12 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     const insideDisplayKey = SpatialClassificationProps.Display[SpatialClassificationProps.Display.On];
 
     this.state = {
-      models: {},
-      model: undefined,
+      classifiers: {},
+      classifier: undefined,
       expandDist: 3,
       outsideDisplayKey,
       insideDisplayKey,
+      keys: new KeySet(),
     };
 
     this._displayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Off]] = "Off";
@@ -52,24 +60,27 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
 
   /**
    * This callback will be executed by ReloadableViewport once the iModel has been loaded.
-   * The reality models will default to on.
+   * The reality model will default to on.
    */
   private _onIModelReady = async (imodel: IModelConnection) => {
     this.setState({ imodel });
-    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      const models = await ClassifierApp.getAvailableModelListForViewport(_vp);
-      const buildingModelId = Object.keys(models)[0];
-      this.setState({ models, model: buildingModelId });
+    PropertyFormattingApp.addSelectionListener(this._onSelectionChanged);
 
-      await ClassifierApp.turnOnAvailableRealityModels(_vp, imodel);
-      this._handleOK();
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
+      const classifiers = await ClassifierApp.getAvailableClassifierListForViewport(_vp);
+      const buildingModelId = Object.keys(classifiers)[0];
+      this.setState({ classifiers, classifier: buildingModelId });
+
+      await ClassifierApp.turnOnAvailableRealityModel(_vp, imodel);
+      this._handleApply();
     });
   }
 
-  private _handleOK = () => {
+  private _handleApply = () => {
     const vp = IModelApp.viewManager.selectedView;
+    this.setState({ keys: new KeySet() });
     if (vp) {
-      const classifier: SpatialClassificationProps.Properties = this.getDefaultClassifierValues(this.state.model!);
+      const classifier: SpatialClassificationProps.Properties = this.getDefaultClassifierValues(this.state.classifier!);
       ClassifierApp.updateRealityDataClassifiers(vp, classifier);
     }
   }
@@ -101,8 +112,27 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     return classifier;
   }
 
-  private _onModelChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    this.setState({ model: event.target.value });
+  private _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
+    const selection = selectionProvider.getSelection(evt.imodel, evt.level);
+    const keys = new KeySet(selection);
+    this.setState({ keys });
+  }
+
+  private _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    if (this.state.classifiers[event.target.value].includes("Buildings")) {
+      this.setState({ insideDisplayKey: "On", expandDist: 3 });
+    }
+    if (this.state.classifiers[event.target.value].includes("Streets")) {
+      this.setState({ insideDisplayKey: "On", expandDist: 2 });
+    }
+    if (this.state.classifiers[event.target.value].includes("Commercial")) {
+      this.setState({ insideDisplayKey: "ElementColor", expandDist: 1 });
+    }
+    if (this.state.classifiers[event.target.value].includes("Street Poles")) {
+      this.setState({ insideDisplayKey: "Hilite", expandDist: 1 });
+    }
+
+    this.setState({ classifier: event.target.value });
   }
 
   private _onMarginChange = (event: any) => {
@@ -110,19 +140,19 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       const expandDist = parseInt(event.target.value, 10);
       this.setState({ expandDist });
     } catch { }
-  };
+  }
 
   private _onOutsideDisplayChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ): void => {
     this.setState({ outsideDisplayKey: event.target.value });
-  };
+  }
 
   private _onInsideDisplayChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ): void => {
     this.setState({ insideDisplayKey: event.target.value });
-  };
+  }
 
   /** This callback will be executed by ReloadableViewport to initialize the ViewState */
   public static getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
@@ -145,18 +175,18 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     const {
       expandDist,
       outsideDisplayKey,
-      insideDisplayKey
+      insideDisplayKey,
     } = this.state;
 
     // Display drawing and sheet options in separate sections.
     return (
       <>
-        <div className="sample-options-2col" style={{ gridTemplateColumns: "0.5fr 2fr" }}>
-          <span>Select model:</span>
+        <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 2fr" }}>
+          <span>Select classifier:</span>
           <Select
             className="classification-dialog-select"
-            options={this.state.models}
-            onChange={this._onModelChange}
+            options={this.state.classifiers}
+            onChange={this._onClassifierChange}
           />
           <span>Margin:</span>
           <Input
@@ -180,10 +210,11 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
             onChange={this._onInsideDisplayChange}
           />
           <Button
-            onClick={this._handleOK}>
-            Ok
+            onClick={this._handleApply}>
+            Apply
           </Button>
-
+          <span></span>
+          <ClassifierProperties keys={this.state.keys} imodel={this.state.imodel} />
         </div>
       </>
     );
@@ -194,7 +225,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="ToDo" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Use controls below to create a classifier." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         { /* Viewport to display the iModel */}
         <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} getCustomViewState={ClassifierUI.getClassifierView} />
       </>

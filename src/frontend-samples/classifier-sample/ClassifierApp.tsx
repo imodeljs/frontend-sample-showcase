@@ -12,28 +12,19 @@ import { ContextRealityModelState, findAvailableUnattachedRealityModels, IModelC
 
 export default class ClassifierApp implements SampleApp {
 
-  public static updateRealityDataClassifiers(view: ScreenViewport, classifier: SpatialClassificationProps.Properties) {
-    const existingRealityModels: ContextRealityModelState[] = [];
-    view.displayStyle.forEachRealityModel(
-      (modelState: ContextRealityModelState) =>
-        existingRealityModels.push(modelState),
-    );
-    const entry: ContextRealityModelState = existingRealityModels[0];
+  public static async turnOnAvailableRealityModel(viewPort: ScreenViewport, imodel: IModelConnection) {
+    const style = viewPort.displayStyle.clone();
 
-    const props = {
-      tilesetUrl: entry.url,
-      name: entry.name ? entry.name : classifier.name,
-      description: entry.description,
-      classifiers: [classifier],
-    };
-
-    // For situations where we are removing classifiers just remove and reattach latest set of classifiers.
-    view.displayStyle.detachRealityModelByIndex(0);
-    view.displayStyle.attachRealityModel(props);
-    view.invalidateScene();
+    // Get first available reality models and attach them to displayStyle
+    const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
+    for (const crmProp of availableModels) {
+      style.attachRealityModel(crmProp);
+      viewPort.displayStyle = style;
+      break;
+    }
   }
 
-  public static async getAvailableModelListForViewport(vp?: Viewport): Promise<{ [key: string]: string }> {
+  public static async getAvailableClassifierListForViewport(vp?: Viewport): Promise<{ [key: string]: string }> {
     const models: { [key: string]: string } = {};
     if (!vp || !(vp.view instanceof SpatialViewState))
       return Promise.resolve(models);
@@ -60,23 +51,32 @@ export default class ClassifierApp implements SampleApp {
       if (modelProps.id && modelProps.name !== "PhiladelphiaClassification" && modelProps.name !== "Philadelphia_Pictometry") {
         const modelId = modelProps.id;
         const name = modelProps.name ? modelProps.name : modelId;
-        models[modelId] = name;
+        models[modelId] = name.substring(0, name.indexOf(","));
       }
     }
 
     return Promise.resolve(models);
   }
 
-  public static async turnOnAvailableRealityModels(viewPort: ScreenViewport, imodel: IModelConnection) {
-    const style = viewPort.displayStyle.clone();
+  public static updateRealityDataClassifiers(view: ScreenViewport, classifier: SpatialClassificationProps.Properties) {
+    const existingRealityModels: ContextRealityModelState[] = [];
+    view.displayStyle.forEachRealityModel(
+      (modelState: ContextRealityModelState) =>
+        existingRealityModels.push(modelState),
+    );
+    const entry: ContextRealityModelState = existingRealityModels[0];
 
-    // Get first available reality models and attach them to displayStyle
-    const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
-    for (const crmProp of availableModels) {
-      style.attachRealityModel(crmProp);
-      viewPort.displayStyle = style;
-      break;
-    }
+    const props = {
+      tilesetUrl: entry.url,
+      name: entry.name ? entry.name : classifier.name,
+      description: entry.description,
+      classifiers: [classifier],
+    };
+
+    // For situations where we are removing classifiers just remove and reattach latest set of classifiers.
+    view.displayStyle.detachRealityModelByIndex(0);
+    view.displayStyle.attachRealityModel(props);
+    view.invalidateScene();
   }
 
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {

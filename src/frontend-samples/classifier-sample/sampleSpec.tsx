@@ -15,6 +15,7 @@ export function getClassifierSpec(): SampleSpec {
     files: [
       { name: "ClassifierApp.tsx", import: import("!!raw-loader!./ClassifierApp"), entry: true },
       { name: "ClassifierUI.tsx", import: import("!!raw-loader!./ClassifierUI") },
+      { name: "ClassifierProperties.tsx", import: import("!!raw-loader!./ClassifierProperties") },
     ],
     customModelList: [SampleIModels.MetroStation],
     setup: ClassifierApp.setup.bind(ClassifierApp),
