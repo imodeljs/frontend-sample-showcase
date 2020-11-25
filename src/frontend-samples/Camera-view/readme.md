@@ -1,2 +1,2 @@
-# View Camera Sample
+# Animated Camera Path Sample
 

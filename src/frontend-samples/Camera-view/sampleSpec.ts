@@ -7,8 +7,8 @@ import ViewCameraApp from "./ViewCameraApp";
 
 export function getViewCameraSpec(): SampleSpec {
   return ({
-    name: "view-camera-sample",
-    label: "View Camera",
+    name: "Animated Camera Path Sample",
+    label: "Animated Camera",
     image: "view-attributes-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
