@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import ViewCameraUI from "./ViewCameraUI";
+import AnimatedCameraUI from "./AnimatedCameraUI";
 import SampleApp from "common/SampleApp";
 import { Point3d, Vector3d } from "@bentley/geometry-core";
 
@@ -22,13 +22,14 @@ export interface AttrValues {
   positionOn: boolean;
   locationOn: boolean;
   isPause: boolean;
+  sliderValue: number;
 }
 
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class ViewCameraApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return < ViewCameraUI iModelName={
+    return < AnimatedCameraUI iModelName={
       iModelName}
       iModelSelector={
         iModelSelector} />;
@@ -39,10 +40,9 @@ export default class ViewCameraApp implements SampleApp {
   public static isPaused: boolean = false;
 
 
-
   //  Move Camera  using the Viewport API. 
-  public static async animateCameraPath(vp: Viewport, viewCameraUIinstance: ViewCameraUI, pathArray: CameraPoint[]) {
-    var pathCompleted: boolean = true;
+  public static async animateCameraPath(vp: Viewport, viewCameraUIinstance: AnimatedCameraUI, pathArray: CameraPoint[]) {
+    let pathCompleted: boolean = true;
     for (let i: number = 0; i < pathArray.length; i++) {
       if (pathArray[i].isTraversed)
         continue;
@@ -54,16 +54,18 @@ export default class ViewCameraApp implements SampleApp {
       await this.delay(0.001);
       vp.synchWithView();
       pathArray[i].isTraversed = true;
-      if (++this.countPathTravelled % 100 == 0)
-        viewCameraUIinstance.updateTimeline();
+      ++this.countPathTravelled;
+      viewCameraUIinstance.updateTimeline();
     }
     if (pathCompleted) {
       ViewCameraApp.isInitialPositionStarted = false;
     }
+    console.log("slider");
     viewCameraUIinstance.updateTimeline();
   }
 
-  public static delay(ms: number) {
+
+  public static async delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 

@@ -9,11 +9,12 @@ import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d } from "@
 import { Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import ViewCameraApp, { CameraPoint, AttrValues } from "./ViewCameraApp";
+import ViewCameraApp, { CameraPoint, AttrValues } from "./AnimatedCameraApp";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { Point3d } from "@bentley/geometry-core";
-import * as data from './Coordinates.json';
+import { Point3d, Vector3d } from "@bentley/geometry-core";
+import { Coordinates } from './Coordinates';
+
 
 
 // cSpell:ignore imodels
@@ -26,7 +27,7 @@ interface ViewAttributesState {
 
 
 /** A React component that renders the UI specific for this sample */
-export default class ViewCameraUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
+export default class AnimatedCameraUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ViewAttributesState> {
 
   /** Creates a Sample instance */
   constructor(props?: any) {
@@ -37,6 +38,7 @@ export default class ViewCameraUI extends React.Component<{ iModelName: string, 
         locationOn: false,
         positionOn: false,
         isPause: false,
+        sliderValue: 0
       }, PathArray: []
     };
 
@@ -95,15 +97,23 @@ export default class ViewCameraUI extends React.Component<{ iModelName: string, 
 
   // Create the react component for the  slider
   private createCameraSlider(label: string, info: string) {
-    const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={ViewCameraApp.countPathTravelled} style={{ marginLeft: "76px" }}
-    //  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-    //   //   if (this.state.vp) {
-
-    //   //     console.log(event);
-    //   //     //  ViewCameraApp._isPaused = true;
-    //   //     ViewCameraApp.moveCameraPosition(this.state.vp, Math.abs(Number(event.target.value)), this);
-    //   //   }
-    />;
+    const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "76px" }}
+      onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (this.state.vp) {
+          (this.state.vp.view as ViewState3d).lookAt(this.state.PathArray[Number(event.target.value)].Point, this.state.PathArray[Number(event.target.value)].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+          this.state.vp.synchWithView();
+          for (let i: number = 0; i < Number(event.target.value); i++) {
+            this.state.PathArray[i].isTraversed = true;
+          }
+          ViewCameraApp.countPathTravelled = Number(event.target.value) - 1;
+          for (let i: number = Number(event.target.value); i <= this.state.PathArray.length - 1; i++) {
+            this.state.PathArray[i].isTraversed = false;
+          }
+          ViewCameraApp.isPaused = true;
+          ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
+        }
+      }
+      } />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 
@@ -130,7 +140,7 @@ export default class ViewCameraUI extends React.Component<{ iModelName: string, 
 
 
   public updateTimeline() {
-    this.setState({ attrValues: { positionOn: this.state.attrValues.positionOn, locationOn: this.state.attrValues.locationOn, isPause: this.state.attrValues.isPause } });
+    this.setState({ attrValues: { positionOn: this.state.attrValues.positionOn, locationOn: this.state.attrValues.locationOn, isPause: this.state.attrValues.isPause, sliderValue: ViewCameraApp.countPathTravelled } });
   }
   public getControls(): React.ReactNode {
     return (
@@ -156,10 +166,10 @@ export default class ViewCameraUI extends React.Component<{ iModelName: string, 
       ViewCameraApp.isInitialPositionStarted = false;
       ViewCameraApp.isPaused = false;
       ViewCameraApp.countPathTravelled = 0;
-      var cameraPoints: CameraPoint[] = [];
-      for (let i: number = 0; i < data.cooordinatesArray.length; i++) {
+      let cameraPoints: CameraPoint[] = [];
+      for (let i: number = 0; i < Coordinates.length; i++) {
         for (let j: number = 0.00; j <= 1.0; j = j + 0.003) {
-          cameraPoints.push({ Point: new Point3d(data.cooordinatesArray[i].InitialPoint.x, data.cooordinatesArray[i].InitialPoint.y, data.cooordinatesArray[i].InitialPoint.z).interpolate(j, new Point3d(data.cooordinatesArray[i].FinalPoint.x, data.cooordinatesArray[i].FinalPoint.y, data.cooordinatesArray[i].FinalPoint.z)), Direction: new Point3d(data.cooordinatesArray[i].ViewDirection.x, data.cooordinatesArray[i].ViewDirection.y, data.cooordinatesArray[i].ViewDirection.z), isTraversed: false });
+          cameraPoints.push({ Point: new Point3d(Coordinates[i].InitialPoint.x, Coordinates[i].InitialPoint.y, Coordinates[i].InitialPoint.z).interpolate(j, new Point3d(Coordinates[i].FinalPoint.x, Coordinates[i].FinalPoint.y, Coordinates[i].FinalPoint.z)), Direction: new Point3d(Coordinates[i].ViewDirection.x, Coordinates[i].ViewDirection.y, Coordinates[i].ViewDirection.z), isTraversed: false });
         }
       }
       this.setState({ vp, PathArray: cameraPoints });
@@ -183,5 +193,4 @@ export default class ViewCameraUI extends React.Component<{ iModelName: string, 
       </>
     );
   }
-
 }
