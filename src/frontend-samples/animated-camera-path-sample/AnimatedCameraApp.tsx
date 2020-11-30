@@ -41,7 +41,7 @@ export default class ViewCameraApp implements SampleApp {
 
 
   //  Move Camera  using the Viewport API. 
-  public static async animateCameraPath(vp: Viewport, viewCameraUIinstance: AnimatedCameraUI, pathArray: CameraPoint[]) {
+  public static async animateCameraPath(vp: undefined | Viewport, viewCameraUIinstance: AnimatedCameraUI, pathArray: CameraPoint[]) {
     let pathCompleted: boolean = true;
     for (let i: number = 0; i < pathArray.length; i++) {
       if (pathArray[i].isTraversed)
@@ -50,15 +50,19 @@ export default class ViewCameraApp implements SampleApp {
         pathCompleted = false;
         break;
       }
-      (vp.view as ViewState3d).lookAt(pathArray[i].Point, pathArray[i].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
-      await this.delay(0.001);
-      vp.synchWithView();
-      pathArray[i].isTraversed = true;
-      ++this.countPathTravelled;
-      viewCameraUIinstance.updateTimeline();
+
+      if (vp != undefined) {
+        (vp.view as ViewState3d).lookAt(pathArray[i].Point, pathArray[i].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+        await this.delay(0.001);
+        vp.synchWithView();
+        pathArray[i].isTraversed = true;
+        this.countPathTravelled = i;
+        viewCameraUIinstance.updateTimeline();
+      }
     }
     if (pathCompleted) {
       ViewCameraApp.isInitialPositionStarted = false;
+      //  ViewCameraApp.isPaused = true;
     }
     console.log("slider");
     viewCameraUIinstance.updateTimeline();

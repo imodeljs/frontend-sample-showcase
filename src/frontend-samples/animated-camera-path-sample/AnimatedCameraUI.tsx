@@ -100,17 +100,29 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "76px" }}
       onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (this.state.vp) {
-          (this.state.vp.view as ViewState3d).lookAt(this.state.PathArray[Number(event.target.value)].Point, this.state.PathArray[Number(event.target.value)].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
-          this.state.vp.synchWithView();
-          for (let i: number = 0; i < Number(event.target.value); i++) {
-            this.state.PathArray[i].isTraversed = true;
-          }
-          ViewCameraApp.countPathTravelled = Number(event.target.value) - 1;
-          for (let i: number = Number(event.target.value); i <= this.state.PathArray.length - 1; i++) {
-            this.state.PathArray[i].isTraversed = false;
-          }
+          var pathPaused: boolean = ViewCameraApp.isPaused;
           ViewCameraApp.isPaused = true;
-          ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
+          var sliderValue = Number(event.target.value);
+          setTimeout(() => {
+            (this.state.vp?.view as ViewState3d).lookAt(this.state.PathArray[sliderValue].Point, this.state.PathArray[sliderValue].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+            this.state.vp?.synchWithView();
+            for (let i: number = 0; i <= sliderValue; i++) {
+              this.state.PathArray[i].isTraversed = true;
+            }
+            ViewCameraApp.countPathTravelled = sliderValue + 1;
+            for (let i: number = sliderValue + 1; i <= this.state.PathArray.length - 1; i++) {
+              this.state.PathArray[i].isTraversed = false;
+            }
+            ViewCameraApp.isInitialPositionStarted = true;
+            if (!pathPaused) {
+              ViewCameraApp.isPaused = false;
+              ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
+            }
+            else {
+              ViewCameraApp.countPathTravelled = sliderValue + 1;
+              this.updateTimeline();
+            }
+          }, 2);
         }
       }
       } />;
