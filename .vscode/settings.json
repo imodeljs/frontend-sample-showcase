@@ -23,6 +23,7 @@
     "imodeljs",
     "itwin",
     "launchdarkly",
+    "linestring",
     "ninezone",
     "orbitgt",
     "rbac",
@@ -41,4 +42,5 @@
       "url": "./node_modules/@bentley/certa/certa.schema.json"
     },
   ],
+  "debug.javascript.usePreview": false
 }

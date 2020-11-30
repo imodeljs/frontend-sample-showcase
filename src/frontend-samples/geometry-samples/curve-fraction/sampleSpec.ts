@@ -3,21 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import ClosestPointOnCurveApp from "./ClosestPointOnCurveApp";
+import CurveFractionApp from "./CurveFractionApp";
 
-export function getClosestPointOnCurveSpec(): SampleSpec {
+export function getCurveFractionSpec(): SampleSpec {
   return ({
-    name: "closest-point-curve-sample",
-    label: "Closest Point on Curve",
-    image: "closest-point-curve-thumbnail.png",
+    name: "curve-fraction-sample",
+    label: "Curve Fractions",
+    image: "curve-fraction-thumbnail.png",
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp"), entry: true },
-      { name: "ClosestPointOnCurveUI.tsx", import: import("!!raw-loader!./ClosestPointOnCurveUI") },
+      { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp"), entry: true },
+      { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI") },
       { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!../../../common/GeometryCommon/SampleCurveFactory") },
       { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!../../../common/GeometryCommon/InteractivePointMarker") },
     ],
-    setup: ClosestPointOnCurveApp.setup.bind(ClosestPointOnCurveApp),
+    setup: CurveFractionApp.setup.bind(CurveFractionApp),
   });
 }

@@ -27,12 +27,32 @@ interface SampleGalleryState {
 }
 
 export class SampleGallery extends React.Component<SampleGalleryProps, SampleGalleryState> {
+  private myItemRefs: { [key: string]: React.RefObject<HTMLLabelElement> } = {};
+
   constructor(props?: any) {
     super(props);
 
     this.state = {
       expandedGroups: (this.props.samples.map(this.mapPred.bind(this), this)),
     };
+
+    // Create a Ref for every 'sample' element
+    this.props.samples.forEach((group) => {
+      group.samples.forEach((sample) => {
+        const key = this._idFromNames(sample.name, group.groupName);
+        this.myItemRefs[key] = React.createRef<HTMLLabelElement>();
+      });
+    });
+  }
+
+  private onImageLoaded(key: string) {
+    const activeKey = this._idFromNames(this.props.selected, this.props.group);
+    if (activeKey === key) {
+      const sampleRef = this.myItemRefs[activeKey];
+      if (sampleRef?.current) {
+        sampleRef.current.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    }
   }
 
   private mapPred(val: SampleSpecGroup): ExpandedState {
@@ -62,12 +82,12 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     const image2x = `${imageBase}@2x.${imageExt} 2x`;
 
     return (
-      <label className="gallery-card-radio-btn">
+      <label ref={this.myItemRefs[idString]} className="gallery-card-radio-btn">
         <span>{sample.label}</span>
         <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
         <div className="icon icon-status-success gallery-selection-icon"></div>
         <div className="gallery-card gallery-card-body">
-          <img src={image} srcSet={image2x} alt={sample.name} />
+          <img onLoad={() => this.onImageLoaded(idString)} src={image} srcSet={image2x} alt={sample.name} />
         </div>
       </label>
     );
@@ -99,16 +119,17 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     const onClick = () => { this._toggleGroupIsExpanded(group.groupName); };
 
     return (
-      <ExpandableBlock className="gallery-card-block" title={group.groupName} isExpanded={isExpanded} onClick={onClick}>
+      <ExpandableBlock className="gallery-card-block" title={group.groupName} key={group.groupName} isExpanded={isExpanded} onClick={onClick}>
         {group.samples.map((sample: SampleSpec) => this.createElementsForSample(sample, group.groupName))}
       </ExpandableBlock>
     );
   }
 
   public render() {
+    const expandedIndex = this.state.expandedGroups.findIndex((entry) => true === entry.expanded);
     return (
       <>
-        <ExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={0}>
+        <ExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
           {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
         </ExpandableList>
         <svg className="gallery-close-button minimize-button" onClick={this.props.onCollapse}>
