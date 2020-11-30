@@ -137,8 +137,10 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
   }
 
   private _onMarginChange = (event: any) => {
-    const expandDist = event.target.value;
-    this.setState({ expandDist });
+    try {
+      const expandDist = parseFloat(event.target.value);
+      this.setState({ expandDist });
+    } catch { }
   }
 
   private _onOutsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
