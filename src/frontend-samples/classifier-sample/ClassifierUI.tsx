@@ -39,7 +39,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
   constructor(props?: any) {
     super(props);
     const outsideDisplayKey = SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed];
-    const insideDisplayKey = SpatialClassificationProps.Display[SpatialClassificationProps.Display.On];
+    const insideDisplayKey = SpatialClassificationProps.Display[SpatialClassificationProps.Display.ElementColor];
 
     this.state = {
       classifiers: {},
@@ -50,15 +50,14 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       keys: new KeySet(),
     };
 
+    this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.ElementColor]] = "Element Color";
     this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Off]] = "Off";
     this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.On]] = "On";
     this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]] = "Dimmed";
     this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Hilite]] = "Hilite";
-    this._insideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.ElementColor]] = "Element Color";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Off]] = "Off";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.On]] = "On";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]] = "Dimmed";
-    this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Hilite]] = "Hilite";
   }
 
   /**
@@ -71,8 +70,8 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
 
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
       const classifiers = await ClassifierApp.getAvailableClassifierListForViewport(_vp);
-      const buildingModelId = Object.keys(classifiers)[0];
-      this.setState({ classifiers, classifier: buildingModelId });
+      const commercialModelId = Object.keys(classifiers)[0];
+      this.setState({ classifiers, classifier: commercialModelId });
 
       await ClassifierApp.turnOnAvailableRealityModel(_vp, imodel);
       this._handleApply();
@@ -84,7 +83,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     const vp = IModelApp.viewManager.selectedView;
     this.setState({ keys: new KeySet() });
     if (vp) {
-      const classifier: SpatialClassificationProps.Properties = this.getClassifierValues(this.state.classifier!);
+      const classifier: SpatialClassificationProps.Classifier = this.getClassifierValues(this.state.classifier!);
       ClassifierApp.updateRealityDataClassifiers(vp, classifier);
     }
   }
@@ -92,7 +91,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
   /*
   * Get property values for the classifier.
   */
-  private getClassifierValues(modelId: string): SpatialClassificationProps.Properties {
+  private getClassifierValues(modelId: string): SpatialClassificationProps.Classifier {
     const flags = new SpatialClassificationProps.Flags();
     const {
       outsideDisplayKey,
@@ -104,12 +103,11 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     flags.outside = SpatialClassificationProps.Display[outsideDisplayKey as keyof typeof SpatialClassificationProps.Display];
     flags.isVolumeClassifier = false;
 
-    const classifier: SpatialClassificationProps.Properties = {
+    const classifier: SpatialClassificationProps.Classifier = {
       modelId,
       expand: expandDist,
-      name: `${modelId}${expandDist}${JSON.stringify(flags)}`,
+      name: `${modelId}`,
       flags,
-      isActive: true,
     };
     return classifier;
   }
@@ -123,10 +121,10 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
   // Some reasonable defaults depending on what classifier is chosen.
   private _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (this.state.classifiers[event.target.value].includes("Buildings")) {
-      this.setState({ insideDisplayKey: "On", expandDist: 3 });
+      this.setState({ insideDisplayKey: "On", expandDist: 3.5 });
     }
     if (this.state.classifiers[event.target.value].includes("Streets")) {
-      this.setState({ insideDisplayKey: "On", expandDist: 2 });
+      this.setState({ insideDisplayKey: "Hilite", expandDist: 2 });
     }
     if (this.state.classifiers[event.target.value].includes("Commercial")) {
       this.setState({ insideDisplayKey: "ElementColor", expandDist: 1 });
@@ -135,14 +133,12 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       this.setState({ insideDisplayKey: "Hilite", expandDist: 1 });
     }
 
-    this.setState({ classifier: event.target.value });
+    this.setState({ classifier: event.target.value, outsideDisplayKey: "Dimmed" });
   }
 
   private _onMarginChange = (event: any) => {
-    try {
-      const expandDist = parseInt(event.target.value, 10);
-      this.setState({ expandDist });
-    } catch { }
+    const expandDist = event.target.value;
+    this.setState({ expandDist });
   }
 
   private _onOutsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -194,7 +190,6 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
             type="number"
             min="0"
             max="100"
-            step="1"
             value={expandDist}
             onChange={this._onMarginChange}
           />

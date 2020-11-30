@@ -40,11 +40,11 @@ export default class ClassifierApp implements SampleApp {
     let curModelProps: ModelProps[] = new Array<ModelProps>();
     curModelProps = await vp.iModel.models.queryProps(modelQueryParams);
 
-    // Custom sort to put 'Buildings' first. It makes the best default example.
+    // Custom sort to put 'Commercial' first. It makes the best default example.
     curModelProps = curModelProps.sort((a, b) => {
-      if (b.name?.includes("Buildings"))
+      if (b.name?.includes("Commercial"))
         return 1;
-      if (a.name?.includes("Buildings"))
+      if (a.name?.includes("Commercial"))
         return -1;
       return a.name!.localeCompare(b.name!);
     });
@@ -62,24 +62,38 @@ export default class ClassifierApp implements SampleApp {
   }
 
   // Update the classifier in the ViewPort
-  public static updateRealityDataClassifiers(view: ScreenViewport, classifier: SpatialClassificationProps.Properties) {
+  public static updateRealityDataClassifiers(vp: ScreenViewport, classifier: SpatialClassificationProps.Classifier) {
     const existingRealityModels: ContextRealityModelState[] = [];
-    view.displayStyle.forEachRealityModel((modelState: ContextRealityModelState) =>
-      existingRealityModels.push(modelState),
+
+    vp.displayStyle.forEachRealityModel(
+      (modelState: ContextRealityModelState) =>
+        existingRealityModels.push(modelState),
     );
-    const entry: ContextRealityModelState = existingRealityModels[0];
 
-    const props = {
-      tilesetUrl: entry.url,
-      name: entry.name ? entry.name : classifier.name,
-      description: entry.description,
-      classifiers: [classifier],
-    };
+    const realityModel = existingRealityModels[0];
+    let matchingClassifier: SpatialClassificationProps.Classifier | undefined;
 
-    // For situations where we are removing classifiers just remove and reattach latest set of classifiers.
-    view.displayStyle.detachRealityModelByIndex(0);
-    view.displayStyle.attachRealityModel(props);
-    view.invalidateScene();
+    if (realityModel && realityModel.classifiers) {
+      /* step through the classifiers and if there is a stored classifier with the same
+      name as the one being changed then update the stored one */
+      Array.from(realityModel.classifiers).forEach((storedClassifier) => {
+        if (classifier.name === storedClassifier.name) {
+          matchingClassifier = storedClassifier;
+          storedClassifier.name = classifier.name;
+          storedClassifier.expand = classifier.expand;
+          storedClassifier.flags = classifier.flags;
+          storedClassifier.modelId = classifier.modelId;
+        }
+      });
+
+      if (!matchingClassifier)
+        realityModel.classifiers.push(classifier);
+
+      realityModel.classifiers.active = classifier;
+      vp.invalidateScene();
+
+      return;
+    }
   }
 
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
