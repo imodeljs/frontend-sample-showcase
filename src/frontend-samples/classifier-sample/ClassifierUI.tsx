@@ -19,6 +19,8 @@ import { Button, Input, Select } from "@bentley/ui-core";
 
 import ClassifierApp from "./ClassifierApp";
 
+// cspell:ignore Rittenhouse
+
 interface ClassifierState {
   imodel?: IModelConnection;
   classifiers: { [key: string]: string };
@@ -88,7 +90,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
   }
 
   /*
-  * Get property values for the classifer.
+  * Get property values for the classifier.
   */
   private getClassifierValues(modelId: string): SpatialClassificationProps.Properties {
     const flags = new SpatialClassificationProps.Flags();
