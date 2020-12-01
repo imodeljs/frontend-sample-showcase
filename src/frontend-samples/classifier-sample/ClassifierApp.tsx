@@ -63,22 +63,21 @@ export default class ClassifierApp implements SampleApp {
 
   // Update the classifier in the ViewPort
   public static updateRealityDataClassifiers(vp: ScreenViewport, classifier: SpatialClassificationProps.Classifier) {
+    // Get the first reality model in the view
     const existingRealityModels: ContextRealityModelState[] = [];
-
     vp.displayStyle.forEachRealityModel(
       (modelState: ContextRealityModelState) =>
         existingRealityModels.push(modelState),
     );
-
     const realityModel = existingRealityModels[0];
-    let matchingClassifier: SpatialClassificationProps.Classifier | undefined;
 
+    // Loop through all classifiers in the reality model.
+    // If the classifier is not found, add it to realityModel.classifiers
+    let existingClassifier: boolean = false;
     if (realityModel && realityModel.classifiers) {
-      /* step through the classifiers and if there is a stored classifier with the same
-      name as the one being changed then update the stored one */
       Array.from(realityModel.classifiers).forEach((storedClassifier) => {
         if (classifier.name === storedClassifier.name) {
-          matchingClassifier = storedClassifier;
+          existingClassifier = true;
           storedClassifier.name = classifier.name;
           storedClassifier.expand = classifier.expand;
           storedClassifier.flags = classifier.flags;
@@ -86,7 +85,7 @@ export default class ClassifierApp implements SampleApp {
         }
       });
 
-      if (!matchingClassifier)
+      if (!existingClassifier)
         realityModel.classifiers.push(classifier);
 
       realityModel.classifiers.active = classifier;
