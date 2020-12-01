@@ -38,6 +38,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       }, PathArray: [],
     };
     this.animateCameraPlay = this.animateCameraPlay.bind(this);
+    ;
   }
 
   // This common function is used to create the react components for each row of the UI.
@@ -55,6 +56,8 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       return;
 
     switch (event.target.value) {
+      case "Path 1":
+
 
     }
   }
@@ -152,8 +155,8 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       const cameraPoints: CameraPoint[] = [];
       coOrdinates.forEach((item, index) => {
         if (index !== coOrdinates.length - 1) {
-          for (let j: number = 0.00; j <= 1.0; j = j + 0.003) {
-            cameraPoints.push({ Point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(coOrdinates[index + 1].cameraPoint.x, coOrdinates[index + 1].cameraPoint.y, coOrdinates[index + 1].cameraPoint.z)), Direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z), isTraversed: false });
+          for (let j: number = 0.00; j <= 1.0; j = j + 0.005) {
+            cameraPoints.push({ Point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(coOrdinates[index + 1].cameraPoint.x, coOrdinates[index + 1].cameraPoint.y, coOrdinates[index + 1].cameraPoint.z)), Direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(coOrdinates[index + 1].viewDirection.x, coOrdinates[index + 1].viewDirection.y, coOrdinates[index + 1].viewDirection.z)), isTraversed: false });
           }
         }
       });
@@ -169,6 +172,8 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
   /** The sample's render method */
   public render() {
+
+    // document.getElementById("root")?.addEventListener("click", this.my2);
     return (
       <>
         <ControlPane instructions="Use the timeline slider to drive the camera along the predefined path." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>

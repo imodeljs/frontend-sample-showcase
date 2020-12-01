@@ -45,7 +45,7 @@ export default class ViewCameraApp implements SampleApp {
 
       if (vp !== undefined) {
         (vp.view as ViewState3d).lookAt(cameraPoint.Point, cameraPoint.Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
-        await this.delay(0.001);
+        await this.delay(5);
         vp.synchWithView();
         cameraPoint.isTraversed = true;
         this.countPathTravelled++;
