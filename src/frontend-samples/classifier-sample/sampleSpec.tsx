@@ -19,5 +19,6 @@ export function getClassifierSpec(): SampleSpec {
     ],
     customModelList: [SampleIModels.MetroStation],
     setup: ClassifierApp.setup.bind(ClassifierApp),
+    teardown: ClassifierApp.teardown.bind(ClassifierApp),
   });
 }

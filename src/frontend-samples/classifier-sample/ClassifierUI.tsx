@@ -8,7 +8,6 @@ import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ClassifierProperties } from "./ClassifierProperties";
-import { PropertyFormattingApp } from "frontend-samples/property-formatting-sample/PropertyFormattingApp";
 import * as React from "react";
 import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@bentley/geometry-core";
 import { SpatialClassificationProps } from "@bentley/imodeljs-common";
@@ -66,13 +65,12 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
    */
   private _onIModelReady = async (imodel: IModelConnection) => {
     this.setState({ imodel });
-    PropertyFormattingApp.addSelectionListener(this._onSelectionChanged);
-
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
       const classifiers = await ClassifierApp.getAvailableClassifierListForViewport(_vp);
       const commercialModelId = Object.keys(classifiers)[0];
       this.setState({ classifiers, classifier: commercialModelId });
 
+      ClassifierApp.addSelectionListener(this._onSelectionChanged);
       await ClassifierApp.turnOnAvailableRealityModel(_vp, imodel);
       this._handleApply();
     });

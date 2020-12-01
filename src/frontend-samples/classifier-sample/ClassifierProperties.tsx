@@ -7,11 +7,17 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
 import { PropertyCategory, PropertyGrid } from "@bentley/ui-components";
-import { PropertyProps } from "../property-formatting-sample/PropertyFormattingApp";
 import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@bentley/presentation-components";
+import { KeySet } from "@bentley/presentation-common";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 interface ClassifierPropertiesState {
   dataProvider?: PresentationPropertyDataProvider;
+}
+
+export interface PropertyProps {
+  keys: KeySet;
+  imodel?: IModelConnection;
 }
 
 export class ClassifierProperties extends React.Component<PropertyProps, ClassifierPropertiesState> {

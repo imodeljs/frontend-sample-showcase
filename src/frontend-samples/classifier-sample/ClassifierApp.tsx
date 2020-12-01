@@ -9,8 +9,24 @@ import * as React from "react";
 import ClassifierUI from "./ClassifierUI";
 import { ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassificationProps } from "@bentley/imodeljs-common";
 import { ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
+import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 
 export default class ClassifierApp implements SampleApp {
+  private static _selectionListener: SelectionChangesListener;
+
+  public static teardown() {
+    ClassifierApp.removeSelectionListener();
+  }
+
+  public static removeSelectionListener() {
+    Presentation.selection.selectionChange.removeListener(this._selectionListener);
+  }
+
+  public static addSelectionListener(listener: SelectionChangesListener) {
+    this._selectionListener = listener;
+    Presentation.selection.selectionChange.addListener(this._selectionListener);
+  }
+
   public static async turnOnAvailableRealityModel(viewPort: ScreenViewport, imodel: IModelConnection) {
     const style = viewPort.displayStyle.clone();
 
@@ -72,6 +88,7 @@ export default class ClassifierApp implements SampleApp {
     const realityModel = existingRealityModels[0];
 
     // Loop through all classifiers in the reality model.
+    // If the classifier exists, update it with classifier properties
     // If the classifier is not found, add it to realityModel.classifiers
     let existingClassifier: boolean = false;
     if (realityModel && realityModel.classifiers) {
