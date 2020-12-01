@@ -56,7 +56,7 @@ const toolbar = () => {
 };
 
 /**
- * See the https://imodeljs.github.io/iModelJs-docs-output/learning/frontend/tools/
+ * See https://www.itwinjs.org/learning/frontend/tools/
  * for more details and available tools.
  */
 

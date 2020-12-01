@@ -28,7 +28,7 @@ export interface SampleSpec {
   readme?: IInternalFile;
   files: IInternalFile[];
   customModelList?: string[];
-  setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
+  setup: (iModelName: string, iModelSelector: React.ReactNode, iModelName2?: string) => Promise<React.ReactNode>;
   teardown?: () => void;
 }
 
