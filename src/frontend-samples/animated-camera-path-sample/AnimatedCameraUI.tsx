@@ -5,16 +5,15 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
-import { Select, Toggle } from "@bentley/ui-core";
+import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d, Tool } from "@bentley/imodeljs-frontend";
+import { Input, Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewCameraApp, { AttrValues, CameraPoint } from "./AnimatedCameraApp";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Point3d, Vector3d } from "@bentley/geometry-core";
-import { coOrdinates } from "./Coordinates";
-
+import { coOrdinates, coOrdinates2, coOrdinates3 } from "./Coordinates";
 // cSpell:ignore imodels
 /** The React state for this UI component */
 interface ViewAttributesState {
@@ -38,7 +37,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       }, PathArray: [],
     };
     this.animateCameraPlay = this.animateCameraPlay.bind(this);
-    ;
+    // this.my2 = this.my2.bind(this);
   }
 
   // This common function is used to create the react components for each row of the UI.
@@ -54,18 +53,54 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (undefined === this.state.vp)
       return;
-
+    ViewCameraApp.isInitialPositionStarted = false;
+    ViewCameraApp.isPaused = true;
+    ViewCameraApp.countPathTravelled = 0;
+    const cameraPoints: CameraPoint[] = [];
     switch (event.target.value) {
-      case "Path 1":
+      case "Path1":
+        coOrdinates.forEach((item, index) => {
+          if (index !== coOrdinates.length - 1) {
+            for (let j: number = 0.00; j <= 1.0; j = j + 0.005) {
+              cameraPoints.push({ Point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(coOrdinates[index + 1].cameraPoint.x, coOrdinates[index + 1].cameraPoint.y, coOrdinates[index + 1].cameraPoint.z)), Direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(coOrdinates[index + 1].viewDirection.x, coOrdinates[index + 1].viewDirection.y, coOrdinates[index + 1].viewDirection.z)), isTraversed: false });
+            }
+          }
+        });
+        break;
 
+      case "Path2":
+        coOrdinates2.forEach((item, index) => {
+          if (index !== coOrdinates2.length - 1) {
+            for (let j: number = 0.00; j <= 1.0; j = j + 0.005) {
+              cameraPoints.push({ Point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(coOrdinates2[index + 1].cameraPoint.x, coOrdinates2[index + 1].cameraPoint.y, coOrdinates2[index + 1].cameraPoint.z)), Direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(coOrdinates2[index + 1].viewDirection.x, coOrdinates2[index + 1].viewDirection.y, coOrdinates2[index + 1].viewDirection.z)), isTraversed: false });
+            }
+          }
+        });
+        break;
 
+      case "Path3":
+        coOrdinates3.forEach((item, index) => {
+          if (index !== coOrdinates3.length - 1) {
+            for (let j: number = 0.00; j <= 1.0; j = j + 0.005) {
+              cameraPoints.push({ Point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(coOrdinates3[index + 1].cameraPoint.x, coOrdinates3[index + 1].cameraPoint.y, coOrdinates3[index + 1].cameraPoint.z)), Direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(coOrdinates3[index + 1].viewDirection.x, coOrdinates3[index + 1].viewDirection.y, coOrdinates3[index + 1].viewDirection.z)), isTraversed: false });
+            }
+          }
+        });
+        break;
     }
+    (this.state.vp.view as ViewState3d).lookAt(cameraPoints[0].Point, cameraPoints[0].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+    this.state.vp.synchWithView();
+    this.setState((previousState) =>
+      ({ attrValues: { ...previousState.attrValues, isPause: ViewCameraApp.isPaused, sliderValue: ViewCameraApp.countPathTravelled }, PathArray: cameraPoints }));
   }
+
 
   // Create the react components for the render Path
   private createRenderPath(label: string, info: string) {
     const options = {
       Path1: "Path 1",
+      Path2: "Path 2",
+      Path3: "Path 3",
     }
     const element = <Select style={{ width: "fit-content", marginLeft: "41px" }} onChange={this._onChangeRenderPath} options={options} />;
     return this.createJSXElementForAttribute(label, info, element);
@@ -102,6 +137,19 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
         }
       }
+        // (this.state.vp.view as ViewState3d).lookAt(new Point3d(), this.state.PathArray[Number(event.target.value)].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+
+
+        //  (this.state.vp.view as ViewState3d).lookAt(new Point3d(52.60216386569785, -9.152115394177173, 2.766375805337887), new Point3d(117.20386974280073, 212.2351943388874, 22.113359053313836), new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+        // this.state.vp.synchWithView();
+
+        //   (this.state.vp.view as ViewState3d).setEyePoint(new Point3d(52.60216386569785, -9.152115394177173, 2.766375805337887));
+        // this.state.vp.synchWithView();
+        // (this.state.vp.view as ViewState3d).rotateCameraWorld(Angle.createDegrees(-10), new Vector3d(0, 0, 1));
+        //this.state.vp.synchWithView();
+        //  console.log("*/{x: " + (this.state.vp.view as ViewState3d).getTargetPoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getTargetPoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getTargetPoint().z + "},/*");
+
+
       } />;
 
     return this.createJSXElementForAttribute(label, info, element);
@@ -117,6 +165,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       }
       ViewCameraApp.countPathTravelled = 0;
       ViewCameraApp.isInitialPositionStarted = true;
+      ViewCameraApp.isPaused = false;
     }
     else {
       ViewCameraApp.isPaused = !ViewCameraApp.isPaused;
@@ -131,6 +180,12 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   public getControls(): React.ReactNode {
     return (
       <div>
+        <div style={{ maxWidth: "350px" }}>
+          <div className="sample-options-2col" style={{ maxWidth: "350px" }}><span style={{ marginLeft: "32px" }}>imodel</span>
+            <Input value="Metrostation Sample" style={{ marginLeft: "38px", width: "151px", color: "white" }} disabled />
+          </div>
+          <hr style={{ width: "346px", color: "white", marginLeft: "1px" }}></hr>
+        </div>
         <div className="sample-options-2col" style={{ maxWidth: "350px" }}>
           {this.createRenderPath("Path", "Path")}
         </div>
@@ -170,13 +225,22 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     return viewState;
   }
 
+  // my2() {
+  //   if (this.state.vp) {
+
+  //     //   ViewCameraApp.a += "*/{x: " + (this.state.vp.view as ViewState3d).getEyePoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getEyePoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getEyePoint().z + "},/*";
+  //     console.log("*/{x: " + (this.state.vp.view as ViewState3d).getEyePoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getEyePoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getEyePoint().z + "},/*");
+  //     console.log("*/{x: " + (this.state.vp.view as ViewState3d).getTargetPoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getTargetPoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getTargetPoint().z + "},/*");
+  //   }
+  // }
+
   /** The sample's render method */
   public render() {
 
     // document.getElementById("root")?.addEventListener("click", this.my2);
     return (
       <>
-        <ControlPane instructions="Use the timeline slider to drive the camera along the predefined path." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Use the timeline slider to drive the camera along the predefined path." controls={this.getControls()} ></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
       </>
     );
