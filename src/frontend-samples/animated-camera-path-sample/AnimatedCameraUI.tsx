@@ -5,8 +5,8 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d, Tool } from "@bentley/imodeljs-frontend";
-import { Input, Select, Toggle } from "@bentley/ui-core";
+import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
+import { Input, Select } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewCameraApp, { AttrValues, CameraPoint } from "./AnimatedCameraApp";
@@ -105,13 +105,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  // Create the react components for the  Direction toggle .
-  private createDirectionToggle(label: string, info: string) {
-    const element = <Toggle isOn={this.state.attrValues.directionOn} style={{ marginLeft: "-15px" }} />;
-    return this.createJSXElementForAttribute(label, info, element);
-  }
-
-
   // Create the react component for the  slider
   private createCameraSlider(label: string, info: string) {
     const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "76px" }}
@@ -174,9 +167,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           {this.createCameraSlider("Timeline", "Timeline")}
           <button style={{ width: "35px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={this.animateCameraPlay} >{ViewCameraApp.isInitialPositionStarted ? ViewCameraApp.isPaused ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
         </div>
-        <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
-          {this.createDirectionToggle("Unlock Direction", "Unlock Direction")}
-        </div >
       </div >
 
     );
