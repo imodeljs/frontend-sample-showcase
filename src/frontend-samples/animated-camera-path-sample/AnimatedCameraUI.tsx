@@ -14,6 +14,7 @@ import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Point3d, Vector3d } from "@bentley/geometry-core";
 import { coOrdinates, coOrdinates2, coOrdinates3 } from "./Coordinates";
+import { AnimatedCameraTool } from "./AnimatedCameraTool";
 // cSpell:ignore imodels
 /** The React state for this UI component */
 interface ViewAttributesState {
@@ -30,14 +31,12 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
     this.state = {
       attrValues: {
-        locationOn: false,
-        positionOn: false,
+        directionOn: false,
         isPause: false,
         sliderValue: 0,
       }, PathArray: [],
     };
     this.animateCameraPlay = this.animateCameraPlay.bind(this);
-    // this.my2 = this.my2.bind(this);
   }
 
   // This common function is used to create the react components for each row of the UI.
@@ -98,25 +97,20 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   // Create the react components for the render Path
   private createRenderPath(label: string, info: string) {
     const options = {
-      Path1: "Path 1",
-      Path2: "Path 2",
-      Path3: "Path 3",
+      Path1: "Train Path",
+      Path2: "Fly Over",
+      Path3: "Commuter View",
     }
     const element = <Select style={{ width: "fit-content", marginLeft: "41px" }} onChange={this._onChangeRenderPath} options={options} />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  // Create the react components for the  Location toggle .
-  private createLocationToggle(label: string, info: string) {
-    const element = <Toggle isOn={this.state.attrValues.locationOn} style={{ marginLeft: "-15px" }} />;
+  // Create the react components for the  Direction toggle .
+  private createDirectionToggle(label: string, info: string) {
+    const element = <Toggle isOn={this.state.attrValues.directionOn} style={{ marginLeft: "-15px" }} />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  // Create the react components for the Position toggle row.
-  private createPositionToggle(label: string, info: string) {
-    const element = <Toggle isOn={this.state.attrValues.positionOn} style={{ marginLeft: "-15px" }} />;
-    return this.createJSXElementForAttribute(label, info, element);
-  }
 
   // Create the react component for the  slider
   private createCameraSlider(label: string, info: string) {
@@ -137,21 +131,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
         }
       }
-        // (this.state.vp.view as ViewState3d).lookAt(new Point3d(), this.state.PathArray[Number(event.target.value)].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
-
-
-        //  (this.state.vp.view as ViewState3d).lookAt(new Point3d(52.60216386569785, -9.152115394177173, 2.766375805337887), new Point3d(117.20386974280073, 212.2351943388874, 22.113359053313836), new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
-        // this.state.vp.synchWithView();
-
-        //   (this.state.vp.view as ViewState3d).setEyePoint(new Point3d(52.60216386569785, -9.152115394177173, 2.766375805337887));
-        // this.state.vp.synchWithView();
-        // (this.state.vp.view as ViewState3d).rotateCameraWorld(Angle.createDegrees(-10), new Vector3d(0, 0, 1));
-        //this.state.vp.synchWithView();
-        //  console.log("*/{x: " + (this.state.vp.view as ViewState3d).getTargetPoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getTargetPoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getTargetPoint().z + "},/*");
-
-
       } />;
-
     return this.createJSXElementForAttribute(label, info, element);
   }
 
@@ -159,6 +139,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private async animateCameraPlay() {
     if (undefined === this.state.vp)
       return;
+
     if (!ViewCameraApp.isInitialPositionStarted) {
       for (const coOrdinate of this.state.PathArray) {
         coOrdinate.isTraversed = false;
@@ -194,8 +175,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           <button style={{ width: "35px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={this.animateCameraPlay} >{ViewCameraApp.isInitialPositionStarted ? ViewCameraApp.isPaused ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
         </div>
         <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
-          {this.createLocationToggle("Unlock Location", "Unlock Location")}
-          {this.createPositionToggle("Unlock Position", "Unlock Position")}
+          {this.createDirectionToggle("Unlock Direction", "Unlock Direction")}
         </div >
       </div >
 
@@ -225,23 +205,13 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     return viewState;
   }
 
-  // my2() {
-  //   if (this.state.vp) {
-
-  //     //   ViewCameraApp.a += "*/{x: " + (this.state.vp.view as ViewState3d).getEyePoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getEyePoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getEyePoint().z + "},/*";
-  //     console.log("*/{x: " + (this.state.vp.view as ViewState3d).getEyePoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getEyePoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getEyePoint().z + "},/*");
-  //     console.log("*/{x: " + (this.state.vp.view as ViewState3d).getTargetPoint().x + " ,y: " + (this.state.vp.view as ViewState3d).getTargetPoint().y + " ,z: " + (this.state.vp.view as ViewState3d).getTargetPoint().z + "},/*");
-  //   }
-  // }
-
   /** The sample's render method */
   public render() {
-
-    // document.getElementById("root")?.addEventListener("click", this.my2);
+    IModelApp.tools.run(AnimatedCameraTool.toolId);
     return (
       <>
         <ControlPane instructions="Use the timeline slider to drive the camera along the predefined path." controls={this.getControls()} ></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isIdleToolInvisible={true} />
       </>
     );
   }

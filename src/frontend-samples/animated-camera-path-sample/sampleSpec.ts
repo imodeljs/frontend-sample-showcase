@@ -18,9 +18,11 @@ export function getViewCameraSpec(): SampleSpec {
     files: [
       { name: "AnimatedCameraApp.tsx", import: import("!!raw-loader!./AnimatedCameraApp"), entry: true },
       { name: "AnimatedCameraUI.tsx", import: import("!!raw-loader!./AnimatedCameraUI") },
+      { name: "AnimatedCameraTool.ts", import: import("!!raw-loader!./AnimatedCameraTool") },
       { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
 
     ],
     setup: AnimatedCameraApp.setup.bind(AnimatedCameraApp),
+    teardown: AnimatedCameraApp.teardown.bind(AnimatedCameraApp),
   });
 }

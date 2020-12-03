@@ -5,8 +5,10 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import AnimatedCameraUI from "./AnimatedCameraUI";
+import { I18NNamespace } from "@bentley/imodeljs-i18n";
+import { AnimatedCameraTool } from "./AnimatedCameraTool";
 import SampleApp from "common/SampleApp";
 import { Point3d, Vector3d } from "@bentley/geometry-core";
 export interface CameraPoint {
@@ -14,10 +16,8 @@ export interface CameraPoint {
   Direction: Point3d;
   isTraversed: boolean;
 }
-
 export interface AttrValues {
-  positionOn: boolean;
-  locationOn: boolean;
+  directionOn: boolean;
   isPause: boolean;
   sliderValue: number;
 }
@@ -25,9 +25,11 @@ export interface AttrValues {
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class ViewCameraApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    this._sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
+    AnimatedCameraTool.register(this._sampleNamespace);
     return < AnimatedCameraUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
-
+  private static _sampleNamespace: I18NNamespace;
   public static countPathTravelled: number = 0
   public static isInitialPositionStarted: boolean = false;
   public static isPaused: boolean = false;
@@ -62,5 +64,11 @@ export default class ViewCameraApp implements SampleApp {
   public static async delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+
+  public static teardown() {
+    IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
+    IModelApp.tools.unRegister(AnimatedCameraTool.toolId);
+  }
+
 }
 
