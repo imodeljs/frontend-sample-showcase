@@ -18,7 +18,7 @@ export interface ConnectedSampleEditor {
   readme?: IInternalFile;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
-  onSampleClicked: (groupName: string, sampleName: string) => void;
+  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
 }
 
 export function ConnectedSampleEditor(props: ConnectedSampleEditor) {
@@ -47,7 +47,7 @@ export interface SampleEditorProps {
   readme?: IInternalFile;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
-  onSampleClicked: (groupName: string, sampleName: string) => void;
+  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
 }
 
 interface SampleEditorState {
@@ -188,7 +188,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
 interface MyLinkProps {
   href: string;
   fileClicked: (fileName: string) => void;
-  sampleClicked: (groupName: string, sampleName: string) => void;
+  sampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
   onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
@@ -223,7 +223,7 @@ class MyLink extends React.Component<MyLinkProps> {
         return; // throw an error?
 
       event.preventDefault();
-      this.props.sampleClicked(fromManifest.group.groupName, fromManifest.spec.name);
+      this.props.sampleClicked(fromManifest.group.groupName, fromManifest.spec.name, true);
       // NEEDSWORK: need to wait for the sample before selecting the file.  How?
       this.props.fileClicked(fileName);
     }

@@ -5,15 +5,16 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleGallery.scss";
-import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
+import { ExpandableBlock } from "@bentley/ui-core";
 import { SampleSpecGroup } from "../../sampleManifest";
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+import { MyExpandableList } from "Components/MyExpandableList/ExpandableList";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];
   group: string;
   selected: string;
-  onChange: ((group: string, sample: string) => void);
+  onChange: ((group: string, sample: string, wantScroll: boolean) => void);
   onCollapse: () => void;
 }
 
@@ -45,13 +46,29 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     });
   }
 
+  private doScrollToActiveSample() {
+    const activeKey = this._idFromNames(this.props.selected, this.props.group);
+    const sampleRef = this.myItemRefs[activeKey];
+    if (sampleRef?.current) {
+      sampleRef.current.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+
+  }
+
+  public scrollToActiveSample() {
+    if (!this._groupIsExpanded(this.props.group)) {
+      this._toggleGroupIsExpanded(this.props.group);
+      // Expanding the group will cause the images to load which will trigger the scroll.  So we don't need to do it here.
+      return;
+    }
+
+    this.doScrollToActiveSample();
+  }
+
   private onImageLoaded(key: string) {
     const activeKey = this._idFromNames(this.props.selected, this.props.group);
     if (activeKey === key) {
-      const sampleRef = this.myItemRefs[activeKey];
-      if (sampleRef?.current) {
-        sampleRef.current.scrollIntoView({ block: "center", behavior: "smooth" });
-      }
+      this.doScrollToActiveSample();
     }
   }
 
@@ -70,7 +87,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
 
   private _onCardSelected = (event: any) => {
     const names = this._namesFromId(event.target.id);
-    this.props.onChange(names.groupName, names.sampleName);
+    this.props.onChange(names.groupName, names.sampleName, false);
   }
 
   private createElementsForSample(sample: SampleSpec, groupName: string) {
@@ -126,12 +143,12 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
   }
 
   public render() {
-    const expandedIndex = this.state.expandedGroups.findIndex((entry) => true === entry.expanded);
+    const expandedIndex = this.props.samples.findIndex((entry) => this.props.group === entry.groupName);
     return (
       <>
-        <ExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
+        <MyExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
           {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
-        </ExpandableList>
+        </MyExpandableList>
         <svg className="gallery-close-button minimize-button" onClick={this.props.onCollapse}>
           <use href="icons.svg#minimize"></use>
           <title>Minimize</title>
