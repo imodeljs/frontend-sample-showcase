@@ -2,10 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Range1dProps, Range3d } from "@bentley/geometry-core";
+import { Range1d, Range1dProps, Range3d } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { I18NNamespace } from "@bentley/imodeljs-i18n";
+import { PlacementTool } from "common/PlacementTool";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
 import ThematicModesUI from "./ThematicModesUI";
@@ -14,17 +16,23 @@ import ThematicModesUI from "./ThematicModesUI";
 
 /** Handles the setup and teardown of the thematic display sample */
 export default class ThematicModesApp implements SampleApp {
+  private static _sampleNamespace: I18NNamespace;
   public static originalProps?: ThematicDisplayProps;
   public static originalFlag: boolean = false;
   public static viewport?: Viewport;
 
   /** Called by the showcase before the sample is started. */
   public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
+    this._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
+
+    PlacementTool.register(this._sampleNamespace);
     return <ThematicModesUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
+    IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
+    IModelApp.tools.unRegister(PlacementTool.toolId);
     if (undefined === this.viewport) return;
     this.setThematicDisplayProps(this.viewport, this.originalProps);
     this.setThematicDisplayOnOff(this.viewport, this.originalFlag);
@@ -53,7 +61,20 @@ export default class ThematicModesApp implements SampleApp {
 
   /** Query project extents using the Viewport API. */
   public static getProjectExtents(vp: Viewport): Range3d {
-    return vp.iModel.projectExtents;
+    // const extents = vp.iModel.projectExtents;
+    const range = Range3d.fromJSON({
+      low: {
+        x: 512632.32219023904,
+        y: 6654306.092700552,
+        z: -4.808883666992187,
+      },
+      high: {
+        x: 505922.32219023904,
+        y: 6644766.092700552,
+        z: 127.30888366699219,
+      },
+    });
+    return range;
   }
 
   /** Modify the view flags using the Viewport API. */

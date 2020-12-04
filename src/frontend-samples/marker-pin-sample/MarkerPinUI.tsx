@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { PlaceMarkerTool } from "./PlaceMarkerTool";
+import { PlacementTool } from "../../common/PlacementTool";
 import { PopupMenu } from "./PopupMenu";
 import { RadioCard, RadioCardEntry } from "frontend-samples/marker-pin-sample/RadioCard/RadioCard";
 import { PointSelector } from "common/PointSelector/PointSelector";
@@ -106,7 +106,7 @@ export default class MarkerPinsUI extends React.Component<{
     this.setState({ manualPin });
   }
 
-  /** This callback will be executed by the PlaceMarkerTool when it is time to create a new marker */
+  /** This callback will be executed by the PlacementTool when it is time to create a new marker */
   private _manuallyAddMarker = (point: Point3d) => {
     MarkerPinApp.addMarkerPoint(point, MarkerPinApp._images.get(this.state.manualPin.image)!);
   }
@@ -114,8 +114,8 @@ export default class MarkerPinsUI extends React.Component<{
   /** This callback will be executed when the user clicks the UI button.  It will start the tool which
    * handles further user input.
    */
-  private _onStartPlaceMarkerTool = () => {
-    IModelApp.tools.run(PlaceMarkerTool.toolId, this._manuallyAddMarker);
+  private _onStartPlacementTool = () => {
+    IModelApp.tools.run(PlacementTool.toolId, this._manuallyAddMarker);
   }
 
   /** This callback will be executed by ReloadableViewport to initialize the viewstate */
@@ -170,7 +170,7 @@ export default class MarkerPinsUI extends React.Component<{
         </div>
         <div style={{ textAlign: "center" }}>
           <RadioCard entries={this.getMarkerList()} selected={this.state.manualPin.name} onChange={this._onManualPinChange} />
-          <Button buttonType={ButtonType.Primary} onClick={this._onStartPlaceMarkerTool} title="Click here and then click the view to place a new marker">Place Marker</Button>
+          <Button buttonType={ButtonType.Primary} onClick={this._onStartPlacementTool} title="Click here and then click the view to place a new marker">Place Marker</Button>
         </div>
       </>
     );
