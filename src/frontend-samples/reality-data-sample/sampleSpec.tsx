@@ -11,11 +11,12 @@ export function getRealityDataSpec(): SampleSpec {
     name: "reality-data-sample",
     label: "Reality Data",
     image: "reality-data-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp"), entry: true },
       { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI") },
     ],
-    customModelList: [SampleIModels.ExtonCampus],
-    setup: RealityDataApp.setup,
+    customModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
+    setup: RealityDataApp.setup.bind(RealityDataApp),
   });
 }

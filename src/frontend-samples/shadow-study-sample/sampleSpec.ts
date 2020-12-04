@@ -10,11 +10,12 @@ export function getShadowStudySpec(): SampleSpec {
     name: "shadow-study-sample",
     label: "Shadow Study",
     image: "shadow-study-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp"), entry: true },
       { name: "ShadowStudyUI.tsx", import: import("!!raw-loader!./ShadowStudyUI") },
 
     ],
-    setup: ShadowStudyApp.setup,
+    setup: ShadowStudyApp.setup.bind(ShadowStudyApp),
   });
 }

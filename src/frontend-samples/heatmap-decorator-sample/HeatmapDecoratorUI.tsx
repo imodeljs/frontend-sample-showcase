@@ -34,8 +34,8 @@ interface HeatmapDecoratorUIState {
 /** A React component that renders the UI specific for this sample */
 export default class HeatmapDecoratorUI extends React.Component<HeatmapDecoratorUIProps, HeatmapDecoratorUIState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       showDecorator: true,
       spreadFactor: 10,
@@ -45,26 +45,41 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     };
   }
 
-  private _onPointsChanged = (points: Point3d[]) => {
-    this.setState({ points }, () => {
+  public componentDidUpdate(_prevProps: {}, prevState: HeatmapDecoratorUIState) {
+    if (prevState.imodel !== this.state.imodel)
+      if (this.state.showDecorator) {
+        HeatmapDecoratorApp.setupDecorator(this.state.points, this.state.range, this.state.spreadFactor, this.state.height);
+        HeatmapDecoratorApp.enableDecorations();
+      }
+
+    if (prevState.points !== this.state.points) {
       if (HeatmapDecoratorApp.decorator)
         HeatmapDecoratorApp.decorator.setPoints(this.state.points);
-    });
+    }
+
+    if (prevState.spreadFactor !== this.state.spreadFactor) {
+      if (HeatmapDecoratorApp.decorator)
+        HeatmapDecoratorApp.decorator.setSpreadFactor(this.state.spreadFactor);
+    }
+
+    if (prevState.showDecorator !== this.state.showDecorator) {
+      if (this.state.showDecorator)
+        HeatmapDecoratorApp.enableDecorations();
+      else
+        HeatmapDecoratorApp.disableDecorations();
+    }
+  }
+
+  private _onPointsChanged = (points: Point3d[]) => {
+    this.setState({ points });
   }
 
   private _onChangeSpreadFactor = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ spreadFactor: Number(event.target.value) }, () => {
-      if (HeatmapDecoratorApp.decorator)
-        HeatmapDecoratorApp.decorator.setSpreadFactor(this.state.spreadFactor);
-    });
+    this.setState({ spreadFactor: Number(event.target.value) });
   }
 
   private _onChangeShowHeatmap = (checked: boolean) => {
-    if (checked) {
-      this.setState({ showDecorator: true }, () => HeatmapDecoratorApp.enableDecorations());
-    } else {
-      this.setState({ showDecorator: false }, () => HeatmapDecoratorApp.disableDecorations());
-    }
+    this.setState({ showDecorator: checked });
   }
 
   /** This callback will be executed by ReloadableViewport to initialize the viewstate */
@@ -100,12 +115,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
       // We'll draw the heatmap as an overlay in the center of the view's Z extents.
       const height = range3d.high.interpolate(0.5, range3d.low).z;
 
-      this.setState({ imodel, vp, range, height }, () => {
-        if (this.state.showDecorator) {
-          HeatmapDecoratorApp.setupDecorator(this.state.points, this.state.range, this.state.spreadFactor, this.state.height);
-          HeatmapDecoratorApp.enableDecorations();
-        }
-      });
+      this.setState({ imodel, vp, range, height });
     });
   }
 

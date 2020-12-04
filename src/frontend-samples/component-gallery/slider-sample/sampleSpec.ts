@@ -12,9 +12,10 @@ export function getSliderSpec(): SampleSpec {
     label: "UI-Sliders",
     image: "ui-sliders-thumbnail.png",
     customModelList: [],
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "Slider.tsx", import: import("!!raw-loader!./Slider"), entry: true },
     ],
-    setup: SliderList.setup,
+    setup: SliderList.setup.bind(SliderList),
   });
 }

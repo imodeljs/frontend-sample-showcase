@@ -3,11 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import {  BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, ContentLayoutDef,  ContentLayoutProps,
+import {
+  BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, ContentLayoutDef, ContentLayoutProps,
   CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone,
 } from "@bentley/ui-framework";
 import { StageUsage } from "@bentley/ui-abstract";
-import { SmallStatusBarWidgetControl } from "../Widgets/SmallStatusBar";
+import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
+
+/* eslint-disable react/jsx-key */
 
 // A content layout sets the number and arrangement of content views in a frontstage
 const sampleContentLayout: ContentLayoutProps = {
@@ -22,7 +25,7 @@ const sampleViewportGroupProps: ContentGroupProps = {
     {
       classId: IModelViewportControl,
       id: "sampleIModelView",
-      applicationData: { viewState: UiFramework.getDefaultViewState, iModelConnection: UiFramework.getIModelConnection }, // Options passed to the ContentControl component
+      applicationData: { viewState: UiFramework.getDefaultViewState.bind(UiFramework), iModelConnection: UiFramework.getIModelConnection.bind(UiFramework) }, // Options passed to the ContentControl component
     },
   ],
 };

@@ -5,7 +5,7 @@
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import "@fortawesome/fontawesome-free/css/all.css";
-import { ReloadableConnection } from "../../../Components/GenericReloadableComponent/GenericReloadableComponent";
+import { ReloadableConnection } from "Components/GenericReloadableComponent/GenericReloadableComponent";
 import { CustomWebfontIconsTree } from "./CustomWebfontIconsTreeApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 

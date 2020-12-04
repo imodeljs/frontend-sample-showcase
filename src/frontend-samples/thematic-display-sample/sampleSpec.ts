@@ -11,12 +11,13 @@ export function getThematicDisplaySpec(): SampleSpec {
     name: "thematic-display-sample",
     label: "Thematic Display",
     image: "thematic-display-thumbnail.png",
+    readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp"), entry: true },
       { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI") },
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: ThematicDisplaySampleApp.setup,
-    teardown: ThematicDisplaySampleApp.teardown,
+    setup: ThematicDisplaySampleApp.setup.bind(ThematicDisplaySampleApp),
+    teardown: ThematicDisplaySampleApp.teardown.bind(ThematicDisplaySampleApp),
   });
 }

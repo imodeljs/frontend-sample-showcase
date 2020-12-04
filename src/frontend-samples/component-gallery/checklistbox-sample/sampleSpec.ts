@@ -11,10 +11,11 @@ export function getCheckListBoxSpec(): SampleSpec {
     name: "checklistbox-sample",
     label: "UI-CheckListBoxes",
     image: "ui-checklistbox-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     customModelList: [],
     files: [
       { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },
     ],
-    setup: CheckListBoxList.setup,
+    setup: CheckListBoxList.setup.bind(CheckListBoxList),
   });
 }

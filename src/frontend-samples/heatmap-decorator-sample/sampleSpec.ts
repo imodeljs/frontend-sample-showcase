@@ -10,12 +10,13 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
     name: "heatmap-decorator-sample",
     label: "Heatmap Decorator",
     image: "heatmap-decorator-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "HeatmapDecoratorApp.tsx", import: import("!!raw-loader!./HeatmapDecoratorApp"), entry: true },
       { name: "HeatmapDecoratorUI.tsx", import: import("!!raw-loader!./HeatmapDecoratorUI") },
-      { name: "HeatmapDecorator.tsx", import: import("!!raw-loader!./HeatmapDecorator") },
+      { name: "HeatmapDecorator.ts", import: import("!!raw-loader!./HeatmapDecorator") },
     ],
-    setup: HeatmapDecoratorApp.setup,
-    teardown: HeatmapDecoratorApp.teardown,
+    setup: HeatmapDecoratorApp.setup.bind(HeatmapDecoratorApp),
+    teardown: HeatmapDecoratorApp.teardown.bind(HeatmapDecoratorApp),
   });
 }

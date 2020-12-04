@@ -24,8 +24,8 @@ export interface ReloadableViewportState {
 /** Renders viewport, toolbar, and associated elements */
 export class ReloadableViewport extends React.PureComponent<ReloadableViewportProps, ReloadableViewportState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     this.state = {};
   }
@@ -45,14 +45,20 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     );
   }
 
-  public componentWillReceiveProps(nextProps: ReloadableViewportProps) {
-    if (this.props.iModelName !== nextProps.iModelName) {
+  public componentDidUpdate(prevProps: ReloadableViewportProps, prevState: ReloadableViewportState) {
+    if (this.state.imodel && prevProps.iModelName !== this.props.iModelName) {
       this.setState({ imodel: undefined, viewState: undefined });
+      return;
+    }
+
+    if (this.state.imodel && this.state.viewState && prevState.imodel !== this.state.imodel) {
+      if (this.props.onIModelReady)
+        this.props.onIModelReady(this.state.imodel);
     }
   }
 
   private _onIModelReady = async (imodel: IModelConnection) => {
     const viewState = (this.props.getCustomViewState) ? await this.props.getCustomViewState(imodel) : await ViewSetup.getDefaultView(imodel);
-    this.setState({ imodel, viewState }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel); });
+    this.setState({ imodel, viewState });
   }
 }

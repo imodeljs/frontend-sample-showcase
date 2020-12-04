@@ -31,7 +31,6 @@ export interface ComponentExampleProps {
 }
 
 // This formats a single component, along with its corresponding title and description, and adds them to the DOM
-// tslint:disable-next-line:variable-name
 export const ComponentExample: React.FC<ComponentExampleProps> = (props: ComponentExampleProps) => {
   const { title, description, content } = props;
   return (

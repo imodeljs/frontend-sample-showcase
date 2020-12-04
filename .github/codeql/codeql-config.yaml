@@ -1,0 +1,9 @@
+name: "Sample Showcase config - Quality and Security"
+
+disable-default-queries: false
+
+queries:
+  - uses: security-and-quality
+
+paths-ignore:
+  - node_modules

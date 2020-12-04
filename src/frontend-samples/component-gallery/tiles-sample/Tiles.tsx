@@ -23,13 +23,13 @@ export default class TilesList extends React.Component<{}> implements SampleApp 
     return [
       createComponentExample("Normal Tile", undefined,
         <Tile title="Normal Tile" icon="icon-placeholder">
-          <a>Link 1</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
-          <a>Link 2</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
+          <a>Link 1</a>
+          <a>Link 2</a>
         </Tile>),
       createComponentExample("Featured Tile", undefined,
         <FeaturedTile title="Featured Tile" icon="icon-placeholder">
-          <a>Link 1</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
-          <a>Link 2</a> {/* eslint-disable-line jsx-a11y/anchor-is-valid */}
+          <a>Link 1</a>
+          <a>Link 2</a>
         </FeaturedTile>),
       createComponentExample("Minimal Tile", undefined, <MinimalTile title="Minimal Tile" icon="icon-placeholder" />),
       createComponentExample("Featured Minimal Tile", undefined, <MinimalFeaturedTile title="Minimal Featured Tile" icon="icon-placeholder" />),
@@ -54,5 +54,4 @@ export default class TilesList extends React.Component<{}> implements SampleApp 
       </>
     );
   }
-
 }

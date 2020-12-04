@@ -11,13 +11,14 @@ export function getEmphasizeElementsSpec(): SampleSpec {
     name: "emphasize-elements-sample",
     label: "Emphasize Elements",
     image: "emphasize-elements-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp"), entry: true },
       { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI") },
 
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: EmphasizeElementsApp.setup,
-    teardown: EmphasizeElementsApp.teardown,
+    setup: EmphasizeElementsApp.setup.bind(EmphasizeElementsApp),
+    teardown: EmphasizeElementsApp.teardown.bind(EmphasizeElementsApp),
   });
 }

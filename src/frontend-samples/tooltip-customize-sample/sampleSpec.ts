@@ -10,11 +10,12 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     name: "tooltip-customize-sample",
     label: "Tooltip Customize",
     image: "tooltip-customize-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp"), entry: true },
       { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI") },
     ],
-    setup: TooltipCustomizeApp.setup,
-    teardown: TooltipCustomizeApp.teardown,
+    setup: TooltipCustomizeApp.setup.bind(TooltipCustomizeApp),
+    teardown: TooltipCustomizeApp.teardown.bind(TooltipCustomizeApp),
   });
 }

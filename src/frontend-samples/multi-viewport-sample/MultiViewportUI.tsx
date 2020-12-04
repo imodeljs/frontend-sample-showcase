@@ -31,7 +31,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
   // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
     if (args.previous)
-      args.previous!.vpDiv.classList.remove("active-viewport");
+      args.previous.vpDiv.classList.remove("active-viewport");
     if (args.current)
       args.current.vpDiv.classList.add("active-viewport");
   }
@@ -43,7 +43,8 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   // Handles opened View and adds them to the state.
   private _getViews = (viewport: Viewport) => {
-    this.setState({ viewports: [...this.state.viewports, viewport] });
+    const viewports = this.state.viewports;
+    this.setState({ viewports: [...viewports, viewport] });
   }
 
   // Handles when the app teardown is called which signals when the views are all closed.

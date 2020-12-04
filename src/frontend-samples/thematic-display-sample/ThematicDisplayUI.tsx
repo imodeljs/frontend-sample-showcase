@@ -6,7 +6,7 @@ import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
-import { Slider, Toggle } from "@bentley/ui-core";
+import { Select, Slider, Toggle } from "@bentley/ui-core";
 import * as React from "react";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ThematicDisplayApp from "./ThematicDisplayApp";
@@ -40,8 +40,8 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
   };
 
   /** Creates a Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     // placeholder state till set based on the view
     this.state = {
@@ -179,16 +179,12 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
 
   // Create the react components for the render mode row.
   private createColorSchemePicker(label: string, info: string) {
+    const keys = Object.keys(ThematicGradientColorScheme)
+      .filter((key: any) => isNaN((key)))
+      .filter((key) => key !== "Custom");  // Custom options are not supported for this sample.
+    const options = Object.assign({}, keys);
     const element =
-      <select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme}
-        value={this.state.colorScheme}>
-        <option value={ThematicGradientColorScheme.BlueRed}> Blue & Red </option>
-        <option value={ThematicGradientColorScheme.Monochrome}> Monochrome </option>
-        <option value={ThematicGradientColorScheme.RedBlue}> Red & Blue </option>
-        <option value={ThematicGradientColorScheme.SeaMountain}> Sea Mountain </option>
-        <option value={ThematicGradientColorScheme.Topographic}> Topographic </option>
-        {/* <option value={ThematicGradientColorScheme.Custom}> Custom </option> */}
-      </select>;
+      <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={options} />;
 
     return this.createJSXElementForAttribute(label, info, element);
   }

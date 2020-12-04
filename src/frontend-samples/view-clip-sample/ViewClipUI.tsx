@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
+import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
@@ -27,25 +27,46 @@ interface ViewClipUIState {
 /** A React component that renders the UI specific for this sample */
 export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
   /** Creates an Sample instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       showClipBlock: false,
       clipPlane: "None",
     };
   }
 
+  public componentDidUpdate(_prevProps: ViewClipUIProps, prevState: ViewClipUIState) {
+    if (!this.state.imodel)
+      return;
+
+    const vp = IModelApp.viewManager.selectedView;
+    if (undefined === vp) {
+      return;
+    }
+
+    if (prevState.showClipBlock !== this.state.showClipBlock ||
+      prevState.clipPlane !== this.state.clipPlane) {
+
+      if (this.state.clipPlane === "None" && !this.state.showClipBlock) {
+        ViewClipApp.clearClips(vp);
+        return;
+      }
+
+      if (this.state.showClipBlock) {
+        // Clear any other clips before adding the clip range
+        ViewClipApp.clearClips(vp);
+        if (!vp.view.getViewClip())
+          ViewClipApp.addExtentsClipRange(vp);
+        return;
+      }
+
+      ViewClipApp.setClipPlane(vp, this.state.clipPlane, this.state.imodel);
+    }
+  }
+
   /* Handler for plane select */
   private _onPlaneSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ showClipBlock: false, clipPlane: event.target.value });
-    const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp) {
-      return false;
-    }
-    if (this.state.imodel) {
-      return ViewClipApp.setClipPlane(vp, event.target.value, this.state.imodel);
-    }
-    return false;
   }
 
   /* Method for flipping (negating) the current clip plane. */
@@ -76,19 +97,6 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
   /* Turn on/off the clip range */
   private _onToggleRangeClip = async (showClipRange: boolean) => {
     this.setState({ showClipBlock: showClipRange, clipPlane: "None" });
-    const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp) {
-      return false;
-    }
-    // Clear any other clips before adding the clip range
-    ViewClipApp.clearClips(vp);
-    if (showClipRange) {
-      if (!vp.view.getViewClip())
-        ViewClipApp.addExtentsClipRange(vp);
-    } else {
-      ViewClipApp.clearClips(vp);
-    }
-    return true;
   }
 
   public getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
@@ -108,16 +116,19 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
   }
 
   private _onIModelReady = (imodel: IModelConnection) => {
-    this.setState({ imodel });
-
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      // tslint:disable-next-line no-floating-promises
-      this.setState({ imodel, showClipBlock: true }, () => { this._onToggleRangeClip(true); });
+      this.setState({ imodel, showClipBlock: true });
     });
   }
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
+    const options = {
+      None: "None",
+      [EditManipulator.RotationType.Left]: "X",
+      [EditManipulator.RotationType.Front]: "Y",
+      [EditManipulator.RotationType.Top]: "Z",
+    }
     return (
       <>
         <div className="sample-options-3col even-3col">
@@ -125,12 +136,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
           <Toggle isOn={this.state.showClipBlock} onChange={this._onToggleRangeClip} />
           <span />
           <span>Clip Plane</span>
-          <select onChange={this._onPlaneSelectChange} value={this.state.clipPlane}>
-            <option value={"None"}> None </option>
-            <option value={EditManipulator.RotationType.Left}> X </option>
-            <option value={EditManipulator.RotationType.Front}> Y </option>
-            <option value={EditManipulator.RotationType.Top}> Z </option>
-          </select>
+          <Select onChange={this._onPlaneSelectChange} value={this.state.clipPlane} options={options} />
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleFlipButton()} disabled={this.state.clipPlane === "None"}>Flip</Button>
         </div>
       </>

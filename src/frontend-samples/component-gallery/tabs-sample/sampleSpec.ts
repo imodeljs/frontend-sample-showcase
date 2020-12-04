@@ -12,9 +12,10 @@ export function getTabsSpec(): SampleSpec {
     label: "UI-Tabs",
     image: "ui-tabs-thumbnail.png",
     customModelList: [],
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "Tabs.tsx", import: import("!!raw-loader!./Tabs"), entry: true },
     ],
-    setup: TabsList.setup,
+    setup: TabsList.setup.bind(TabsList),
   });
 }

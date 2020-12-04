@@ -11,12 +11,13 @@ export function getViewerOnly2dSpec(): SampleSpec {
     name: "viewer-only-2d-sample",
     label: "2d",
     image: "viewer-only-2d-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ViewerOnly2dApp.tsx", import: import("!!raw-loader!./ViewerOnly2dApp"), entry: true },
       { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI") },
       { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
     ],
     customModelList: [SampleIModels.House, SampleIModels.MetroStation],
-    setup: ViewerOnly2dApp.setup,
+    setup: ViewerOnly2dApp.setup.bind(ViewerOnly2dApp),
   });
 }

@@ -28,26 +28,30 @@ interface ViewerOnly2dState {
 /** A React component that renders the UI specific for this sample */
 export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, ViewerOnly2dState> {
 
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = { drawings: [], sheets: [] };
   }
 
   /** Create a UI component with all 2D models listed */
   private _modelSelector = () => {
-    const sheetViews: JSX.Element[] = this.getSheetModelList(this.state.sheets);
-    const drawingViews: JSX.Element[] = this.getDrawingModelList(this.state.drawings);
+    const drawings: JSX.Element[] = this.getDrawingModelList(this.state.drawings);
+    const sheets: JSX.Element[] = this.getSheetModelList(this.state.sheets);
 
     // Display drawing and sheet options in separate sections.
     return (
       <div style={{ marginTop: "20px" }}>
-        <span>Select Drawing or Sheet: </span>
-        <select onChange={this._handleSelection} className="2d-model-selector">
-          {(drawingViews.length > 0) ? <optgroup label="Drawings" /> : null};
-          {drawingViews};
-          {(sheetViews.length > 0) ? <optgroup label="Sheets" /> : null};
-          {sheetViews};
-        </select>
+        <span>Select Drawing or Sheet:</span>
+        <div className="select-up">
+          <select className="uicore-inputs-select 2d-model-selector" onChange={this._handleSelection}>
+            {drawings.length > 0 && (
+              <optgroup label="Drawings">{drawings}</optgroup>
+            )}
+            {sheets.length > 0 && (
+              <optgroup label="Sheets">{sheets}</optgroup>
+            )}
+          </select>
+        </div>
       </div>
     );
   }
@@ -55,7 +59,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
   public getDrawingModelList(models: ModelProps[]) {
     const drawingViews: JSX.Element[] = [];
     models.forEach((model: ModelProps, index) => {
-      drawingViews.push(<option key={index + "drawing"} value={index + "drawing"}>{model.name}</option>);
+      drawingViews.push(<option key={`${index}drawing`} value={`${index}drawing`}>{model.name}</option>);
     });
     return drawingViews;
   }
@@ -63,14 +67,14 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
   public getSheetModelList(models: ModelProps[]) {
     const sheetViews: JSX.Element[] = [];
     models.forEach((model: ModelProps, index) => {
-      sheetViews.push(<option key={index + "sheet"} value={index + "sheet"}>{model.name}</option>);
+      sheetViews.push(<option key={`${index}sheet`} value={`${index}sheet`}>{model.name}</option>);
     });
     return sheetViews;
   }
 
   /** When a model is selected in above list, get its view and switch to it.  */
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = Number.parseInt(event.target.selectedOptions[0].value, undefined);
+    const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
     const modelList = event.target.selectedOptions[0].value.includes("sheet") ? this.state.sheets : this.state.drawings;
     if (this.state.imodel) {
       await ViewerOnly2dApp.changeViewportView(this.state.imodel, modelList[index]);

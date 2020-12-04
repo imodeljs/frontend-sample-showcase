@@ -11,10 +11,11 @@ export function getButtonSpec(): SampleSpec {
     name: "button-sample",
     label: "UI-Buttons",
     image: "ui-button-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     customModelList: [],
     files: [
       { name: "Button.tsx", import: import("!!raw-loader!./Button"), entry: true },
     ],
-    setup: ButtonList.setup,
+    setup: ButtonList.setup.bind(ButtonList),
   });
 }

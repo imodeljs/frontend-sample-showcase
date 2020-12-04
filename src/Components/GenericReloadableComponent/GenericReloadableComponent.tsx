@@ -20,8 +20,8 @@ export interface ReloadableConnectionState {
 }
 
 export class ReloadableConnection extends React.PureComponent<ReloadableConnectionProps, ReloadableConnectionState> {
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
 
     this.state = {};
   }
@@ -39,13 +39,20 @@ export class ReloadableConnection extends React.PureComponent<ReloadableConnecti
     );
   }
 
-  public componentWillReceiveProps(nextProps: ReloadableConnectionProps) {
-    if (this.props.iModelName !== nextProps.iModelName) {
+  public componentDidUpdate(_prevProps: ReloadableConnectionProps, prevState: ReloadableConnectionState) {
+
+    if (this.state.imodel && _prevProps.iModelName !== this.props.iModelName) {
       this.setState({ imodel: undefined });
+      return;
+    }
+
+    if (this.state.imodel && prevState.imodel !== this.state.imodel) {
+      if (this.props.onIModelReady)
+        this.props.onIModelReady(this.state.imodel);
     }
   }
 
   private _onIModelReady = async (imodel: IModelConnection) => {
-    this.setState({ imodel }, () => { if (this.props.onIModelReady) this.props.onIModelReady(imodel); });
+    this.setState({ imodel });
   }
 }

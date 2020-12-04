@@ -12,12 +12,13 @@ export function getViewportFrontstageSample(): SampleSpec {
     name: "viewport-frontstage-sample",
     label: "Viewport Frontstage",
     image: "viewport-frontstage-thumbnail.png",
+    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ViewportFrontstageApp.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
       { name: "ViewportFrontstageUi.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage") },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: ViewportFrontstageSample.setup,
-    teardown: ViewportFrontstageSample.teardown,
+    setup: ViewportFrontstageSample.setup.bind(ViewportFrontstageSample),
+    teardown: ViewportFrontstageSample.teardown.bind(ViewportFrontstageSample),
   });
 }

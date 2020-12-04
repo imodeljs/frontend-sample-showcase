@@ -26,16 +26,16 @@ export default class ExpandableListList extends React.Component<{}> implements S
         <ExpandableList className="uicore-full-width">
           <SampleExpandableBlock title="Test" isExpanded={true} onClick={() => { }}>
             Hello World!
-              </SampleExpandableBlock>
+          </SampleExpandableBlock>
         </ExpandableList>),
       createComponentExample("ExpandableList w/ singleExpandOnly", "ExpandableList with singleExpandOnly prop",
         <ExpandableList className="uicore-full-width" singleExpandOnly={true} defaultActiveBlock={0}>
           <ExpandableBlock title="Test1" isExpanded={false} onClick={() => { }}>
             Hello World 1
-              </ExpandableBlock>
+          </ExpandableBlock>
           <ExpandableBlock title="Test2" isExpanded={false} onClick={() => { }}>
             Hello World 2
-              </ExpandableBlock>
+          </ExpandableBlock>
         </ExpandableList>),
     ];
   }

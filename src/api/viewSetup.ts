@@ -6,7 +6,7 @@ import { Id64, Id64String } from "@bentley/bentleyjs-core";
 import { BackgroundMapProps, ColorDef } from "@bentley/imodeljs-common";
 import {
   AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection,
-  SpatialViewState, ViewState, ViewState3d,
+  SpatialViewState, ViewState,
 } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
@@ -22,12 +22,12 @@ export class ViewSetup {
     // Return first spatial view definition (if any)
     const spatialViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: SpatialViewState.classFullName });
     if (spatialViews.length > 0)
-      return spatialViews[0].id!;
+      return spatialViews[0].id;
 
     // Return first drawing view definition (if any)
     const drawingViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: DrawingViewState.classFullName });
     if (drawingViews.length > 0)
-      return drawingViews[0].id!;
+      return drawingViews[0].id;
 
     throw new Error("No valid view definitions in imodel");
   }
@@ -60,7 +60,7 @@ export class ViewSetup {
     viewState.viewFlags.grid = false;
 
     if (viewState.is3d()) {
-      const viewState3d = viewState as ViewState3d;
+      const viewState3d = viewState;
       const displayStyle = viewState3d.getDisplayStyle3d();
 
       displayStyle.changeBackgroundMapProps({ useDepthBuffer: true });

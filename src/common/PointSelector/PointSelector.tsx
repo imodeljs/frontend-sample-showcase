@@ -5,6 +5,7 @@
 import * as React from "react";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { BasePointGenerator, CirclePointGenerator, CrossPointGenerator, RandomPointGenerator } from "./PointGenerators";
+import { Select } from "@bentley/ui-core";
 
 export enum PointMode {
   Random = "1",
@@ -28,8 +29,8 @@ export interface PointSelectorState {
 export class PointSelector extends React.Component<PointSelectorProps, PointSelectorState> {
 
   /** Creates a PointSelector instance */
-  constructor(props?: any, context?: any) {
-    super(props, context);
+  constructor(props?: any) {
+    super(props);
     this.state = {
       pointGenerator: new RandomPointGenerator(),
       pointCount: 10,
@@ -60,19 +61,21 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
       case PointMode.Random: { pointGenerator = new RandomPointGenerator(); break; }
     }
 
-    this.setState({ pointGenerator }, () => this.notifyChange());
+    this.setState({ pointGenerator });
   }
 
   private _onChangePointCount = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ pointCount: Number(event.target.value) }, () => this.notifyChange());
+    this.setState({ pointCount: Number(event.target.value) });
   }
 
   public componentDidMount() {
     this.notifyChange();
   }
 
-  public componentDidUpdate(prevProps: PointSelectorProps) {
-    if (undefined !== this.props.range && this.props.range !== prevProps.range) {
+  public componentDidUpdate(prevProps: PointSelectorProps, prevState: PointSelectorState) {
+    if (undefined !== this.props.range && (this.props.range !== prevProps.range ||
+      prevState.pointCount !== this.state.pointCount ||
+      prevState.pointGenerator !== this.state.pointGenerator)) {
       this.notifyChange();
     }
   }
@@ -82,11 +85,7 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
     return (
       <>
         <span>Points</span>
-        <select onChange={this._onChangePointMode}>
-          <option value={PointMode.Random}> Random </option>
-          <option value={PointMode.Circle}> Circle </option>
-          <option value={PointMode.Cross}> Cross </option>
-        </select>
+        <Select onChange={this._onChangePointMode} options={{ [PointMode.Random]: "Random", [PointMode.Circle]: "Circle", [PointMode.Cross]: "Cross" }} />
         <span>Point Count</span>
         <input type="range" min="1" max="500" value={this.state.pointCount} onChange={this._onChangePointCount}></input>
       </>
