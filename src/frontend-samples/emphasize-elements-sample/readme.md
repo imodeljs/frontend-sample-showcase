@@ -22,5 +22,3 @@ This sample works in concert with the SelectElement tool to allow the user to ap
   EmphasizeElements.hideSelectedElements
   EmphasizeElements.isolateSelectedElements
   EmphasizeElements.overrideSelectedElements
-
-There is more info about interacting with reality models in the [reality model sample](../reality-data-sample/readme.md).
