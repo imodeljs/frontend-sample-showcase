@@ -21,11 +21,12 @@ export default class RealityDataApp implements SampleApp {
     const style = viewPort.displayStyle.clone();
 
     if (showReality) {
-      // Get all available reality models and attach them to displayStyle
+      // Get first available reality model and attach it to displayStyle
       const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
       for (const crmProp of availableModels) {
         style.attachRealityModel(crmProp);
         viewPort.displayStyle = style;
+        return;
       }
     } else {
       // Collect reality models on displayStyle and detach
