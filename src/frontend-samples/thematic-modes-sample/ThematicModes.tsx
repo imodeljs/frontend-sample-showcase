@@ -46,7 +46,7 @@ export class ShowcaseViewSelector extends React.Component<ViewSelectorProps, Vie
       .finally(() => this.setState({ isUpdating: false }));
   }
 
-  public componentDidUpdate(prevProps: ViewSelectorProps, prevState: ViewSelectorState) {
+  public componentDidUpdate(prevProps: ViewSelectorProps, _prevState: ViewSelectorState) {
     if (prevProps.imodel !== this.props.imodel) {
       this.updateViewList();
       if (this.state.activeViewId === undefined)

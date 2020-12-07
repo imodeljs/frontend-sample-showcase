@@ -4,20 +4,24 @@
 *--------------------------------------------------------------------------------------------*/
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { ColorDef, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
+import { ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Select, Slider, Toggle } from "@bentley/ui-core";
-import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import ThematicDisplayApp from "./ThematicDisplayApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
+import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import * as React from "react";
+import ThematicDisplayApp from "./ThematicDisplayApp";
 
 /** React state of the Sample component */
 interface SampleState {
   on: boolean;
+  map: boolean;
   range: Range1dProps;
   extents: Range1dProps;
   colorScheme: ThematicGradientColorScheme;
+  gradientMode: ThematicGradientMode;
+  displayMode: ThematicDisplayMode;
 }
 
 /** React props for the Sample component */
@@ -27,7 +31,7 @@ interface ThematicDisplaySampleUIProps {
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class ThematicDisplaySampleUIComponent extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
+export default class ThematicDisplayUI extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
 
   // defining the Thematic Display Props values that are not what is need at default,
   private static readonly _defaultProps: ThematicDisplayProps = {
@@ -37,6 +41,7 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
       mode: ThematicGradientMode.SteppedWithDelimiter,
       stepCount: 10,
     },
+    displayMode: ThematicDisplayMode.Height,
   };
 
   /** Creates a Sample instance */
@@ -46,16 +51,19 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     // placeholder state till set based on the view
     this.state = {
       on: false,
+      map: false,
       range: [0, 1],
       extents: [0, 1],
       colorScheme: ThematicGradientColorScheme.Custom,
+      displayMode: ThematicDisplayMode.Height,
+      gradientMode: ThematicGradientMode.SteppedWithDelimiter,
     };
   }
 
   /** This method is called when the iModel is loaded by the react component */
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
-      ThematicDisplaySampleUIComponent.init(vp);
+      ThematicDisplayUI.init(vp);
       this.updateState();
     });
   }
@@ -93,29 +101,32 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
       return;
 
     const props = ThematicDisplayApp.getThematicDisplayProps(vp);
-    const extents = ThematicDisplayApp.getProjectExtents(vp);
+    let extents = ThematicDisplayApp.getProjectExtents(vp);
     const range = props.range;
+    if (this.props.iModelName === SampleIModels.CoffsHarborDemo)
+      extents = [-4.8088836669921875, 127.30888366699219];
 
     let colorScheme = props.gradientSettings?.colorScheme;
     if (undefined === colorScheme)
       colorScheme = ThematicGradientColorScheme.BlueRed;
 
+    let displayMode = props.displayMode;
+    if (undefined === displayMode)
+      displayMode = ThematicDisplayUI._defaultProps.displayMode!;
+
+    let gradientMode = props.gradientSettings?.mode;
+    if (undefined === gradientMode)
+      gradientMode = ThematicDisplayUI._defaultProps.gradientSettings!.mode!;
+
     this.setState({
       on: ThematicDisplayApp.isThematicDisplayOn(vp),
+      map: ThematicDisplayApp.isGeoLocated(vp) && ThematicDisplayApp.isBackgroundMapOn(vp),
       extents: undefined === extents ? [0, 1] : extents,
       range: undefined === range ? [0, 1] : range,
       colorScheme,
+      displayMode,
+      gradientMode,
     });
-  }
-
-  // This common function is used to create the react components for each row of the UI.
-  private createJSXElementForAttribute(label: string, info: string, element: JSX.Element) {
-    return (
-      <>
-        <span><span style={{ marginRight: "1em" }} className="icon icon-help" title={info}></span>{label}</span>
-        {element}
-      </>
-    );
   }
 
   // Handle changes to the thematic display toggle.
@@ -129,10 +140,15 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     this.updateState();
   }
 
-  // Creates the react components for the thematic display toggle row.
-  private createThematicDisplayToggle(label: string, info: string) {
-    const element = <Toggle isOn={this.state.on} onChange={(checked: boolean) => this._onChangeThematicDisplayToggle(checked)} />;
-    return this.createJSXElementForAttribute(label, info, element);
+  // Handle changes to the thematic display toggle.
+  private readonly _onChangeMapToggle = (checked: boolean) => {
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (undefined === vp)
+      return;
+
+    ThematicDisplayApp.setBackgroundMap(vp, checked);
+    this.updateState();
   }
 
   // Handles updates to the thematic range slider
@@ -150,18 +166,6 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     this.updateState();
   }
 
-  // Create a component for controlling the range the thematic display
-  private createThematicDisplayRangeSlider(label: string, info: string) {
-    const extents = Range1d.fromJSON(this.state.extents);
-    const range = Range1d.fromJSON(this.state.range);
-
-    const step = 1;
-    const element = <Slider min={extents.low} max={extents.high} step={step}
-      values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />;
-
-    return this.createJSXElementForAttribute(label, info, element);
-  }
-
   // Handle changes to the display mode.
   private readonly _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const vp = IModelApp.viewManager.selectedView;
@@ -177,27 +181,80 @@ export default class ThematicDisplaySampleUIComponent extends React.Component<Th
     this.updateState();
   }
 
-  // Create the react components for the render mode row.
-  private createColorSchemePicker(label: string, info: string) {
-    const keys = Object.keys(ThematicGradientColorScheme)
-      .filter((key: any) => isNaN((key)))
-      .filter((key) => key !== "Custom");  // Custom options are not supported for this sample.
-    const options = Object.assign({}, keys);
-    const element =
-      <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={options} />;
+  // Handle changes to the gradient mode.
+  private readonly _onChangeGradientMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const vp = IModelApp.viewManager.selectedView;
 
-    return this.createJSXElementForAttribute(label, info, element);
+    if (undefined === vp)
+      return;
+
+    // Convert the value back to number represented by enum.
+    const gradientMode: ThematicGradientMode = Number.parseInt(event.target.value, 10);
+
+    ThematicDisplayApp.setThematicDisplayGradientMode(vp, gradientMode);
+    ThematicDisplayApp.syncViewport(vp);
+    this.updateState();
+  }
+
+  // Handle changes to the display mode.
+  private readonly _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (undefined === vp)
+      return;
+
+    // Convert the value back to number represented by enum.
+    const displayMode: ThematicDisplayMode = Number.parseInt(event.target.value, 10);
+
+    ThematicDisplayApp.setThematicDisplayMode(vp, displayMode);
+    ThematicDisplayApp.syncViewport(vp);
+    this.updateState();
   }
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
+    const colorSchemeKeys = Object.keys(ThematicGradientColorScheme)
+      .filter((key: any) => isNaN((key)))
+      .filter((key) => key !== "Custom");  // Custom options are not supported for this sample.
+    const colorSchemeOptions = Object.assign({}, colorSchemeKeys);
+
+    const gradientModeKeys = Object.keys(ThematicGradientMode)
+      .filter((key: any) => isNaN((key)));
+    const gradientModeOptions = Object.assign({}, gradientModeKeys);
+
+    const displayModeKeys = Object.keys(ThematicDisplayMode)
+      .filter((key: any) => isNaN((key)))
+      .filter((key) => key !== "InverseDistanceWeightedSensors");
+    const displayModeOptions = Object.assign({}, displayModeKeys);
+
+    const vp = IModelApp.viewManager.selectedView;
+    const isGeoLocated = vp ? ThematicDisplayApp.isGeoLocated(vp) : false;
+
+    const extents = Range1d.fromJSON(this.state.extents);
+    const range = Range1d.fromJSON(this.state.range);
+    const step = 1;
+
     return (
       <>
         { /* This is the ui specific for this sample.*/}
-        <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
-          {this.createThematicDisplayToggle("Thematic Display", "Turn off to see the original model without decorations.")}
-          {this.createColorSchemePicker("Color Scheme", "Control the thematic color scheme.")}
-          {this.createThematicDisplayRangeSlider("Change Range", "Control the effective area of the thematic display.")}
+        <div className="sample-options-2col">
+          <label>Thematic Display</label>
+          <Toggle isOn={this.state.on} onChange={this._onChangeThematicDisplayToggle} />
+
+          <label>Background Map</label>
+          <Toggle isOn={this.state.map} onChange={this._onChangeMapToggle} disabled={!isGeoLocated}/>
+
+          <label>Display Mode</label>
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeDisplayMode} value={this.state.displayMode} options={displayModeOptions} />
+
+          <label>Color Scheme</label>
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={colorSchemeOptions} />
+
+          <label>Gradient Mode</label>
+          <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.HillShade} />
+
+          <label>Change Range</label>
+          <Slider min={extents.low} max={extents.high} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />
         </div>
       </>
     );

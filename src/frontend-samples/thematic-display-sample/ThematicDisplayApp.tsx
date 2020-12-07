@@ -2,13 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import * as React from "react";
 import { Range1dProps } from "@bentley/geometry-core";
-import { ThematicDisplay, ThematicDisplayProps, ThematicGradientColorScheme } from "@bentley/imodeljs-common";
+import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import { BackgroundMapSettings, GlobeMode, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 import SampleApp from "common/SampleApp";
+import * as React from "react";
+import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
 // cSpell:ignore imodels
 
@@ -40,9 +40,18 @@ export default class ThematicDisplayApp implements SampleApp {
     return vp.view.is3d();
   }
 
-  /** Query view flags using Viewport API. */
+  /** Query background map view flag using Viewport API. */
+  public static isBackgroundMapOn(vp: Viewport): boolean {
+    return vp.viewFlags.backgroundMap;
+  }
+
+  /** Query thematic display view flag using Viewport API. */
   public static isThematicDisplayOn(vp: Viewport): boolean {
     return vp.viewFlags.thematicDisplay;
+  }
+
+  public static isGeoLocated(vp: Viewport): boolean {
+    return vp.iModel.isGeoLocated;
   }
 
   /** Query Thematic Display settings with the Viewport API. */
@@ -55,6 +64,17 @@ export default class ThematicDisplayApp implements SampleApp {
   public static getProjectExtents(vp: Viewport): Range1dProps {
     const extents = vp.iModel.projectExtents;
     return { low: extents.zLow, high: extents.zHigh };
+  }
+
+  /** Modify the background view flag and terrain setting using the Viewport API. */
+  public static setBackgroundMap(vp: Viewport, on: boolean) {
+    (vp.view as ViewState3d).getDisplayStyle3d().settings.backgroundMap = BackgroundMapSettings.fromJSON({
+      applyTerrain: true,
+      globeMode: GlobeMode.Plane,
+    });
+    const vf = vp.viewFlags.clone();
+    vf.backgroundMap = on;
+    vp.viewFlags = vf;
   }
 
   /** Modify the view flags using the Viewport API. */
@@ -88,6 +108,22 @@ export default class ThematicDisplayApp implements SampleApp {
     if (undefined === props.gradientSettings)
       props.gradientSettings = {};
     props.gradientSettings.colorScheme = colorScheme;
+    this.setThematicDisplayProps(vp, props);
+  }
+
+  /** Modify the display mode setting using the Viewport API. */
+  public static setThematicDisplayMode(vp: Viewport, displayMode: ThematicDisplayMode) {
+    const props = this.getThematicDisplayProps(vp);
+    props.displayMode = displayMode;
+    this.setThematicDisplayProps(vp, props);
+  }
+
+  /** Modify the gradient mode setting using the Viewport API. */
+  public static setThematicDisplayGradientMode(vp: Viewport, gradientMode: ThematicGradientMode) {
+    const props = this.getThematicDisplayProps(vp);
+    if (undefined === props.gradientSettings)
+      props.gradientSettings = {};
+    props.gradientSettings.mode = gradientMode;
     this.setThematicDisplayProps(vp, props);
   }
 }

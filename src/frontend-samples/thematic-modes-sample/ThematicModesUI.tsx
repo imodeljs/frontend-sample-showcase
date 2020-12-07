@@ -2,19 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Range1d, Range1dProps, Range3d, Range3dProps } from "@bentley/geometry-core";
+import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, ScreenViewport, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "Components/ControlPane/ControlPane";
+import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
-import ThematicModesApp from "./ThematicModesApp";
-import { ViewSetup } from "api/viewSetup";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 import { ShowcaseViewSelector } from "./ThematicModes";
-import { SampleGridBuilder } from "frontend-samples/heatmap-decorator-sample/HeatmapDecorator";
+import ThematicModesApp from "./ThematicModesApp";
 // import { ViewSelector } from "@bentley/ui-framework";
 
 /** React state of the Sample component */
@@ -25,7 +23,6 @@ interface ThematicModesUIState {
   colorScheme: ThematicGradientColorScheme;
   gradientMode: ThematicGradientMode;
   displayMode: ThematicDisplayMode;
-  viewList: IModelConnection.ViewSpec[];
   iModel?: IModelConnection;
 }
 
@@ -37,9 +34,6 @@ interface ThematicModesUIProps {
 
 /** A React component that renders the UI specific for this sample */
 export default class ThematicModesUI extends React.Component<ThematicModesUIProps, ThematicModesUIState> {
-
-  private _grid?: SampleGridBuilder;
-  private _points: Range3d[] = [];
 
   // defining the Thematic Display Props values that are not what is need at default,
   private static readonly _defaultProps: ThematicDisplayProps = {
@@ -63,7 +57,6 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
       colorScheme: ThematicGradientColorScheme.Custom,
       displayMode: ThematicDisplayMode.Height,
       gradientMode: ThematicGradientMode.SteppedWithDelimiter,
-      viewList: [],
     };
   }
 
@@ -286,23 +279,23 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  public getViewSelector(): React.ReactNode {
-    const activeViewId = IModelApp.viewManager.selectedView?.view.id;
-    let viewSelector: React.ReactNode = <></>;
-    if (undefined !== activeViewId && this.state.viewList.length > 0)
-      viewSelector = (
-        <select value={activeViewId} onChange={async (event) => {
-          const iModel = IModelApp.viewManager.selectedView!.iModel;
-          const state = await iModel.views.load(event.target.value);
-          IModelApp.viewManager.selectedView?.changeView(state);
-          this.updateState();
-        }}>
-          {this.state.viewList.map((viewSpec, index) =>
-            <option key={index} value={viewSpec.id}>{viewSpec.name}</option>)}
-        </select>
-      );
-    return viewSelector;
-  }
+  // public getViewSelector(): React.ReactNode {
+  //   const activeViewId = IModelApp.viewManager.selectedView?.view.id;
+  //   let viewSelector: React.ReactNode = <></>;
+  //   if (undefined !== activeViewId && this.state.viewList.length > 0)
+  //     viewSelector = (
+  //       <select value={activeViewId} onChange={async (event) => {
+  //         const iModel = IModelApp.viewManager.selectedView!.iModel;
+  //         const state = await iModel.views.load(event.target.value);
+  //         IModelApp.viewManager.selectedView?.changeView(state);
+  //         this.updateState();
+  //       }}>
+  //         {this.state.viewList.map((viewSpec, index) =>
+  //           <option key={index} value={viewSpec.id}>{viewSpec.name}</option>)}
+  //       </select>
+  //     );
+  //   return viewSelector;
+  // }
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
@@ -323,36 +316,20 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     );
   }
 
-  private readonly _getCoffsHarbourView = async (imodel: IModelConnection): Promise<ViewState> => {
-    const viewList = await imodel.views.getViewList({ wantPrivate: false });
-    // console.debug(viewList);
-    // imodel.views.load();
-    this.setState({ viewList });
-    return ViewSetup.getDefaultView(imodel);
-  }
-
-  public componentDidUpdate(_prevProps: ThematicModesUIProps, _prevState: ThematicModesUIState) {
-    if (this.state.displayMode === ThematicDisplayMode.InverseDistanceWeightedSensors) {
-      const vp = IModelApp.viewManager.selectedView;
-      const gridSize = 12;
-      if (undefined === this._grid && undefined !== vp) {
-        const range: Range1dProps = this.state.range;
-        const extents: Range3d = ThematicModesApp.getProjectExtents(vp);
-        extents!.low.z = (range as number[])[0];
-        extents!.high.z = (range as number[])[1];
-        this._grid = new SampleGridBuilder(extents, gridSize);
-      } // Grid setup
-    //   if (undefined !== this._grid)
-    //     this._grid.
-    }
-  }
+  // private readonly _getCoffsHarbourView = async (imodel: IModelConnection): Promise<ViewState> => {
+  //   const viewList = await imodel.views.getViewList({ wantPrivate: false });
+  //   // console.debug(viewList);
+  //   // imodel.views.load();
+  //   this.setState({ viewList });
+  //   return ViewSetup.getDefaultView(imodel);
+  // }
 
   /** The sample's render method */
   public render() {
     return (
       <>
         <ControlPane instructions="Use the controls below to change the thematic display attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport getCustomViewState={this._getCoffsHarbourView} iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+        <ReloadableViewport  iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );
   }
