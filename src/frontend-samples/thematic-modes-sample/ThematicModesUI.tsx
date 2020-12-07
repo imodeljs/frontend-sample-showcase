@@ -2,26 +2,30 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Point3d, Range1d, Range1dProps, Range2d, Range3d } from "@bentley/geometry-core";
+import { Range1d, Range1dProps, Range3d, Range3dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicDisplaySensorProps, ThematicDisplaySensorSettings, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType, Slider, Toggle } from "@bentley/ui-core";
-import { PlacementTool } from "common/PlacementTool";
-import { PointSelector } from "common/PointSelector/PointSelector";
+import { ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
+import { IModelApp, IModelConnection, ScreenViewport, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { Slider, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import ThematicModesApp from "./ThematicModesApp";
+import { ViewSetup } from "api/viewSetup";
+import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import { ShowcaseViewSelector } from "./ThematicModes";
+import { SampleGridBuilder } from "frontend-samples/heatmap-decorator-sample/HeatmapDecorator";
+// import { ViewSelector } from "@bentley/ui-framework";
 
 /** React state of the Sample component */
 interface ThematicModesUIState {
   on: boolean;
   range: Range1dProps;
-  extents: Range3d;
+  extents: Range1dProps;
   colorScheme: ThematicGradientColorScheme;
   gradientMode: ThematicGradientMode;
   displayMode: ThematicDisplayMode;
+  viewList: IModelConnection.ViewSpec[];
   iModel?: IModelConnection;
 }
 
@@ -34,6 +38,9 @@ interface ThematicModesUIProps {
 /** A React component that renders the UI specific for this sample */
 export default class ThematicModesUI extends React.Component<ThematicModesUIProps, ThematicModesUIState> {
 
+  private _grid?: SampleGridBuilder;
+  private _points: Range3d[] = [];
+
   // defining the Thematic Display Props values that are not what is need at default,
   private static readonly _defaultProps: ThematicDisplayProps = {
     axis: [0.0, 0.0, 1.0],
@@ -41,7 +48,6 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
       marginColor: ColorDef.white.toJSON(),
       mode: ThematicGradientMode.SteppedWithDelimiter,
     },
-    sensorSettings: { distanceCutoff: 0},
     displayMode: ThematicDisplayMode.Height,
   };
 
@@ -53,10 +59,11 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     this.state = {
       on: false,
       range: [0, 1],
-      extents: Range3d.fromJSON(),
-      colorScheme: ThematicGradientColorScheme.RedBlue,
-      displayMode: ThematicDisplayMode.InverseDistanceWeightedSensors,
-      gradientMode: ThematicGradientMode.Smooth,
+      extents: [0, 1],
+      colorScheme: ThematicGradientColorScheme.Custom,
+      displayMode: ThematicDisplayMode.Height,
+      gradientMode: ThematicGradientMode.SteppedWithDelimiter,
+      viewList: [],
     };
   }
 
@@ -86,9 +93,6 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     const extents = ThematicModesApp.getProjectExtents(vp);
     const highLow: Range1dProps = { low: extents.zLow, high: extents.zHigh };
     ThematicModesApp.setThematicDisplayRange(vp, highLow);
-    const settings = ThematicModesApp.getThematicDisplayProps(vp);
-    settings.sensorSettings = ThematicDisplaySensorSettings.fromJSON({ distanceCutoff: extents.maxLength() / 10});
-    ThematicModesApp.setThematicDisplayProps(vp, settings);
 
     // Redraw viewport with new settings
     ThematicModesApp.syncViewport(vp);
@@ -107,7 +111,10 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
 
     const props = ThematicModesApp.getThematicDisplayProps(vp);
     const projectExtents = ThematicModesApp.getProjectExtents(vp);
+    let extents: Range1dProps = { low: projectExtents.zLow, high: projectExtents.zHigh };
     const range = props.range;
+    if (this.props.iModelName === SampleIModels.CoffsHarborDemo)
+      extents = [-4.8088836669921875, 127.30888366699219];
 
     let colorScheme = props.gradientSettings?.colorScheme;
     if (undefined === colorScheme)
@@ -123,7 +130,7 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
 
     this.setState({
       on: ThematicModesApp.isThematicDisplayOn(vp),
-      extents: undefined === projectExtents ? Range3d.createNull() : projectExtents,
+      extents: undefined === extents ? [0, 1] : extents,
       range: undefined === range ? [0, 1] : range,
       colorScheme,
       displayMode,
@@ -175,12 +182,12 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
 
   // Create a component for controlling the range the thematic display
   private createThematicDisplayRangeSlider(label: string, info: string) {
-    const extents = Range1d.createXX(this.state.extents.zLow, this.state.extents.zHigh);
+    const extents = Range1d.fromJSON(this.state.extents);
     const range = Range1d.fromJSON(this.state.range);
 
     const step = 1;
     const element = <Slider min={extents.low} max={extents.high} step={step}
-      disabled={this.state.displayMode === ThematicDisplayMode.HillShade || this.state.displayMode === ThematicDisplayMode.InverseDistanceWeightedSensors}
+      disabled={this.state.displayMode === ThematicDisplayMode.HillShade}
       values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />;
 
     return this.createJSXElementForAttribute(label, info, element);
@@ -263,25 +270,11 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     this.updateState();
   }
 
-  private readonly _onChangePoints = (points: Point3d[]): void => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp)
-      return;
-    const settings = ThematicModesApp.getThematicDisplayProps(vp);
-    const range = ThematicModesApp.getProjectExtents(vp);
-    if (settings.sensorSettings === undefined)
-      settings.sensorSettings = ThematicDisplaySensorSettings.fromJSON({ distanceCutoff: range.maxLength() / 10});
-
-    settings.sensorSettings.sensors = points.map((p) => ({ position: p.toJSONXYZ(), value: Math.random() } as ThematicDisplaySensorProps));
-    ThematicModesApp.setThematicDisplayProps(vp, settings);
-    ThematicModesApp.syncViewport(vp);
-  }
-
   // Create the react components for the display mode row.
   private createGradientModePicker(label: string, info: string) {
     const element =
       <select style={{ width: "fit-content" }}
-        disabled={this.state.displayMode === ThematicDisplayMode.HillShade || this.state.displayMode === ThematicDisplayMode.InverseDistanceWeightedSensors}
+        disabled={this.state.displayMode === ThematicDisplayMode.HillShade}
         onChange={this._onChangeGradientMode}
         value={this.state.gradientMode}>
         <option value={ThematicGradientMode.Smooth}> Smooth </option>
@@ -293,43 +286,32 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     return this.createJSXElementForAttribute(label, info, element);
   }
 
-  /** This callback will be executed when the user clicks the UI button.  It will start the tool which
-   * handles further user input.
-   */
-  private readonly _onStartPlacementTool = () => {
-    IModelApp.tools.run(PlacementTool.toolId, this._manuallyAddSensor);
-  }
-
-  private readonly _manuallyAddSensor = (point: Point3d) => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp)
-      return;
-    const settings = ThematicModesApp.getThematicDisplayProps(vp);
-    if (undefined === settings.sensorSettings)
-      return;
-    if (undefined === settings.sensorSettings.sensors)
-      settings.sensorSettings.sensors = [];
-    settings.sensorSettings.sensors.push({ position: point.toJSONXYZ(), value: Math.random() } as ThematicDisplaySensorProps);
-
-    ThematicModesApp.setThematicDisplayProps(vp, settings);
-    ThematicModesApp.syncViewport(vp);
+  public getViewSelector(): React.ReactNode {
+    const activeViewId = IModelApp.viewManager.selectedView?.view.id;
+    let viewSelector: React.ReactNode = <></>;
+    if (undefined !== activeViewId && this.state.viewList.length > 0)
+      viewSelector = (
+        <select value={activeViewId} onChange={async (event) => {
+          const iModel = IModelApp.viewManager.selectedView!.iModel;
+          const state = await iModel.views.load(event.target.value);
+          IModelApp.viewManager.selectedView?.changeView(state);
+          this.updateState();
+        }}>
+          {this.state.viewList.map((viewSpec, index) =>
+            <option key={index} value={viewSpec.id}>{viewSpec.name}</option>)}
+        </select>
+      );
+    return viewSelector;
   }
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
-      return;
-    const pe = ThematicModesApp.getProjectExtents(vp);
-    const range = Range2d.createXYXY(pe.xLow, pe.yLow, pe.xHigh, pe.yHigh);
     return (
       <>
         { /* This is the ui specific for this sample.*/}
-        {/* <ShowcaseViewSelector imodel={this.state.iModel} queryParams={{ wantPrivate: false }}></ShowcaseViewSelector> */}
-        {this.state.displayMode === ThematicDisplayMode.InverseDistanceWeightedSensors ?
-          <PointSelector onPointsChanged={this._onChangePoints} range={range}></PointSelector>
-          : <></>}
+        {/* {this.getViewSelector()} */}
+        <ShowcaseViewSelector imodel={this.state.iModel} queryParams={{ wantPrivate: false }}></ShowcaseViewSelector>
+        {/* <ViewSelector imodel={this.state.iModel} listenForShowUpdates={true} showUnknown={true} showSpatials={true}></ViewSelector> */}
         <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
           {this.createThematicDisplayToggle("Thematic Display", "Turn off to see the original model without decorations.")}
           {this.createDisplayModePicker("Display Mode", "Control the thematic mode displayed.")}
@@ -337,10 +319,32 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
           {this.createGradientModePicker("Gradient Mode", "Control the gradient of the thematic display.")}
           {this.createThematicDisplayRangeSlider("Change Range", "Control the effective area of the thematic display.")}
         </div>
-        <hr/>
-        <Button buttonType={ButtonType.Primary} onClick={this._onStartPlacementTool} title="Click here and then click the view to place a new marker">Place Marker</Button>
       </>
     );
+  }
+
+  private readonly _getCoffsHarbourView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewList = await imodel.views.getViewList({ wantPrivate: false });
+    // console.debug(viewList);
+    // imodel.views.load();
+    this.setState({ viewList });
+    return ViewSetup.getDefaultView(imodel);
+  }
+
+  public componentDidUpdate(_prevProps: ThematicModesUIProps, _prevState: ThematicModesUIState) {
+    if (this.state.displayMode === ThematicDisplayMode.InverseDistanceWeightedSensors) {
+      const vp = IModelApp.viewManager.selectedView;
+      const gridSize = 12;
+      if (undefined === this._grid && undefined !== vp) {
+        const range: Range1dProps = this.state.range;
+        const extents: Range3d = ThematicModesApp.getProjectExtents(vp);
+        extents!.low.z = (range as number[])[0];
+        extents!.high.z = (range as number[])[1];
+        this._grid = new SampleGridBuilder(extents, gridSize);
+      } // Grid setup
+    //   if (undefined !== this._grid)
+    //     this._grid.
+    }
   }
 
   /** The sample's render method */
@@ -348,7 +352,7 @@ export default class ThematicModesUI extends React.Component<ThematicModesUIProp
     return (
       <>
         <ControlPane instructions="Use the controls below to change the thematic display attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+        <ReloadableViewport getCustomViewState={this._getCoffsHarbourView} iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );
   }

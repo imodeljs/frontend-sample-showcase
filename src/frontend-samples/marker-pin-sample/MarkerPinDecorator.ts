@@ -19,7 +19,7 @@ import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
  *
  * SampleMarkerSet - Represents a logical collection of markers.  This sample creates two SampleMarkerSets.  One represents
  *                   a "auto" pattern of locations (random, circle, etc.).  The other represents the locations created by
- *                   the PlacementTool.
+ *                   the PlaceMarkerTool.
  *
  * MarkerPinDecorator - The object which is registered with the ViewManager and is responsible for displaying all the
  *                      markers and marker clusters.  This sample creates exactly one MarkerPinDecorator.

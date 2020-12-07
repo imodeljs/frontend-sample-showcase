@@ -9,7 +9,7 @@ import { Point3d } from "@bentley/geometry-core";
 import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
-import { PlacementTool } from "../../common/PlacementTool";
+import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import MarkerPinsUI from "./MarkerPinUI";
 import SampleApp from "common/SampleApp";
 
@@ -22,7 +22,7 @@ export default class MarkerPinApp implements SampleApp {
 
     this._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
 
-    PlacementTool.register(this._sampleNamespace);
+    PlaceMarkerTool.register(this._sampleNamespace);
 
     MarkerPinApp._images = new Map();
     MarkerPinApp._images.set("Google_Maps_pin.svg", await imageElementFromUrl(".\\Google_Maps_pin.svg"));
@@ -37,7 +37,7 @@ export default class MarkerPinApp implements SampleApp {
     MarkerPinApp._markerDecorator = undefined;
 
     IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
-    IModelApp.tools.unRegister(PlacementTool.toolId);
+    IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
   }
 
   public static decoratorIsSetup() {
