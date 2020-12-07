@@ -10,6 +10,7 @@ The purpose of this sample is to demonstrate the following:
 
 * Turn on Thematic Display in a Viewport.
 * Adjust basic settings on the Thematic Display.
+* Showcase the interaction with background map terrain.
 
 ## Description
 
