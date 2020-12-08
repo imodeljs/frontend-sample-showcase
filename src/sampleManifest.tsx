@@ -14,7 +14,6 @@ import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sam
 import { getPropertyFormattingSpec } from "./frontend-samples/property-formatting-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
-import { getThematicModesSpec } from "frontend-samples/thematic-modes-sample/sampleSpec";
 import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
@@ -86,7 +85,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
-    getThematicModesSpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
     getVolumeQuerySpec(),

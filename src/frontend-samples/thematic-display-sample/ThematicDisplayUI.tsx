@@ -30,6 +30,11 @@ interface ThematicDisplaySampleUIProps {
   iModelSelector: React.ReactNode;
 }
 
+function mapOptions(o: {}): {} {
+  const keys = Object.keys(o).filter((key: any) => isNaN(key));
+  return Object.assign({}, keys);
+}
+
 /** A React component that renders the UI specific for this sample */
 export default class ThematicDisplayUI extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
 
@@ -213,19 +218,15 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
-    const colorSchemeKeys = Object.keys(ThematicGradientColorScheme)
-      .filter((key: any) => isNaN((key)))
-      .filter((key) => key !== "Custom");  // Custom options are not supported for this sample.
-    const colorSchemeOptions = Object.assign({}, colorSchemeKeys);
 
-    const gradientModeKeys = Object.keys(ThematicGradientMode)
-      .filter((key: any) => isNaN((key)));
-    const gradientModeOptions = Object.assign({}, gradientModeKeys);
+    const colorSchemeOptions = mapOptions(ThematicGradientColorScheme);
+    delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom options are not supported for this sample.
 
-    const displayModeKeys = Object.keys(ThematicDisplayMode)
-      .filter((key: any) => isNaN((key)))
-      .filter((key) => key !== "InverseDistanceWeightedSensors");
-    const displayModeOptions = Object.assign({}, displayModeKeys);
+    const gradientModeOptions = mapOptions(ThematicGradientMode);
+
+    const displayModeOptions = mapOptions(ThematicDisplayMode);
+    delete (displayModeOptions as any)[ThematicDisplayMode.InverseDistanceWeightedSensors]; // Sensors are not supported for this sample.
+    // A sensor specific sample will come soon.
 
     const vp = IModelApp.viewManager.selectedView;
     const isGeoLocated = vp ? ThematicDisplayApp.isGeoLocated(vp) : false;
@@ -251,7 +252,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={colorSchemeOptions} />
 
           <label>Gradient Mode</label>
-          <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.HillShade} />
+          <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.Slope} />
 
           <label>Change Range</label>
           <Slider min={extents.low} max={extents.high} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />
