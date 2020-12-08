@@ -5,7 +5,7 @@
 import { Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { BackgroundMapSettings, GlobeMode, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
-import { DrawingViewState, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
 import ThematicDisplaySampleUI from "./ThematicDisplayUI";
