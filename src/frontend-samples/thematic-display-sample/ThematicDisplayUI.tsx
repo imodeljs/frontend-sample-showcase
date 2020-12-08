@@ -252,7 +252,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={colorSchemeOptions} />
 
           <label>Gradient Mode</label>
-          <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.Slope} />
+          <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.HillShade} />
 
           <label>Change Range</label>
           <Slider min={extents.low} max={extents.high} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />

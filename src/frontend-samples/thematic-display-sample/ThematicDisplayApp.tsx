@@ -5,7 +5,7 @@
 import { Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { BackgroundMapSettings, GlobeMode, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { DrawingViewState, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
 import ThematicDisplaySampleUI from "./ThematicDisplayUI";
@@ -50,6 +50,7 @@ export default class ThematicDisplayApp implements SampleApp {
     return vp.viewFlags.thematicDisplay;
   }
 
+  /** Query if the model has been geo-located using the iModel API. */
   public static isGeoLocated(vp: Viewport): boolean {
     return vp.iModel.isGeoLocated;
   }
@@ -68,9 +69,10 @@ export default class ThematicDisplayApp implements SampleApp {
 
   /** Modify the background view flag and terrain setting using the Viewport API. */
   public static setBackgroundMap(vp: Viewport, on: boolean) {
+    // To best display the capabilities of the thematic display, terrain and plane global mode have been enabled.
     (vp.view as ViewState3d).getDisplayStyle3d().settings.backgroundMap = BackgroundMapSettings.fromJSON({
       applyTerrain: true,
-      globeMode: GlobeMode.Plane,
+      globeMode: GlobeMode.Plane, // If the user zooms out enough, the curve of the earth can effect the thematic display.
     });
     const vf = vp.viewFlags.clone();
     vf.backgroundMap = on;
