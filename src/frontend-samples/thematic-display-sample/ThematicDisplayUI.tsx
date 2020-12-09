@@ -239,6 +239,8 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     const isGeoLocated = vp ? ThematicDisplayApp.isGeoLocated(vp) : false;
 
     const isRangeDisabled = this.state.displayMode === ThematicDisplayMode.HillShade;
+    const isColorSchemeDisabled = this.state.displayMode === ThematicDisplayMode.HillShade;
+    const isGradientDisabled = this.state.displayMode !== ThematicDisplayMode.Height;
 
     const extents = Range1d.fromJSON(this.state.extents);
     const min = extents.low, max = extents.high;
@@ -253,16 +255,16 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Toggle isOn={this.state.on} onChange={this._onChangeThematicDisplayToggle} />
 
           <label>Background Map</label>
-          <Toggle isOn={this.state.map} onChange={this._onChangeMapToggle} disabled={!isGeoLocated}/>
+          <Toggle isOn={this.state.map} onChange={this._onChangeMapToggle} disabled={!isGeoLocated} />
 
           <label>Display Mode</label>
           <Select style={{ width: "fit-content" }} onChange={this._onChangeDisplayMode} value={this.state.displayMode} options={displayModeOptions} />
 
           <label>Color Scheme</label>
-          <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={colorSchemeOptions} />
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={colorSchemeOptions} disabled={isColorSchemeDisabled} />
 
           <label>Gradient Mode</label>
-          <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.HillShade} />
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={isGradientDisabled} />
 
           <label>Change Range</label>
           <span style={{display: "flex"}}>
