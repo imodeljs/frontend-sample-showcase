@@ -6,13 +6,13 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
-import { Input, Select } from "@bentley/ui-core";
+import { Input, Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import ViewCameraApp, { AttrValues, CameraPoint } from "./AnimatedCameraApp";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { Point3d, Vector3d } from "@bentley/geometry-core";
+import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { coOrdinates, coOrdinates2, coOrdinates3 } from "./Coordinates";
 import { AnimatedCameraTool } from "./AnimatedCameraTool";
 // cSpell:ignore imodels
@@ -31,12 +31,14 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
     this.state = {
       attrValues: {
-        directionOn: false,
         isPause: false,
         sliderValue: 0,
+        isDirectionOn: false,
       }, PathArray: [],
     };
     this.animateCameraPlay = this.animateCameraPlay.bind(this);
+
+    this.my8 = this.my8.bind(this);
   }
 
   // This common function is used to create the react components for each row of the UI.
@@ -55,6 +57,11 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     ViewCameraApp.isInitialPositionStarted = false;
     ViewCameraApp.isPaused = true;
     ViewCameraApp.countPathTravelled = 0;
+    ViewCameraApp.isDirectionOn = false;
+    (this.state.vp.view as ViewState3d).lookAt(this.state.PathArray[0].Point, this.state.PathArray[0].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+    this.state.vp.synchWithView();
+    if (this.state.vp)
+      (this.state.vp.view as ViewState3d).setupFromFrustum(ViewCameraApp.InitialFrustum);
     const cameraPoints: CameraPoint[] = [];
     switch (event.target.value) {
       case "Path1":
@@ -90,7 +97,12 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     (this.state.vp.view as ViewState3d).lookAt(cameraPoints[0].Point, cameraPoints[0].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
     this.state.vp.synchWithView();
     this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, isPause: ViewCameraApp.isPaused, sliderValue: ViewCameraApp.countPathTravelled }, PathArray: cameraPoints }));
+      ({ attrValues: { ...previousState.attrValues, isPause: ViewCameraApp.isPaused, sliderValue: ViewCameraApp.countPathTravelled, isDirectionOn: ViewCameraApp.isDirectionOn }, PathArray: cameraPoints }));
+
+    if (this.state.vp) {
+      ViewCameraApp.currentFrustum = this.state.vp.getFrustum().clone();
+      ViewCameraApp.InitialFrustum = this.state.vp.getFrustum().clone();
+    }
   }
 
 
@@ -110,18 +122,26 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "76px" }}
       onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (this.state.vp) {
-          (this.state.vp.view as ViewState3d).lookAt(this.state.PathArray[Number(event.target.value)].Point, this.state.PathArray[Number(event.target.value)].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+          const sliderValue: string = event.target.value;
+          ViewCameraApp.isPaused = true;
+          ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
+          (this.state.vp.view as ViewState3d).lookAt(this.state.PathArray[0].Point, this.state.PathArray[0].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
           this.state.vp.synchWithView();
+          ViewCameraApp.countPathTravelled = Number(sliderValue) - 1;
+          ViewCameraApp.isInitialPositionStarted = true;
+          this.updateTimeline();
+          if (this.state.vp)
+            (this.state.vp.view as ViewState3d).setupFromFrustum(ViewCameraApp.InitialFrustum);
           for (const coOrdinate of this.state.PathArray) {
-            if (this.state.PathArray.indexOf(coOrdinate) < Number(event.target.value))
+            if (this.state.PathArray.indexOf(coOrdinate) <= Number(sliderValue)) {
+              (this.state.vp?.view as ViewState3d).lookAt(coOrdinate.Point, coOrdinate.Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+              this.state.vp?.synchWithView();
+              ViewCameraApp.currentFrustum = this.state.vp?.getFrustum().clone();
               coOrdinate.isTraversed = true;
+            }
             else
               coOrdinate.isTraversed = false;
           }
-          ViewCameraApp.countPathTravelled = Number(event.target.value) - 1;
-          ViewCameraApp.isInitialPositionStarted = true;
-          ViewCameraApp.isPaused = true;
-          ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
         }
       }
       } />;
@@ -143,13 +163,83 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     }
     else {
       ViewCameraApp.isPaused = !ViewCameraApp.isPaused;
+      if (!ViewCameraApp.isPaused) {
+        // setTimeout(() => { this.state.vp?.setupViewFromFrustum(ViewCameraApp.currentFrustum) }, 0);
+        (this.state.vp.view as ViewState3d).lookAt(this.state.PathArray[0].Point, this.state.PathArray[0].Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+        this.state.vp.synchWithView();
+        if (this.state.vp)
+          (this.state.vp.view as ViewState3d).setupFromFrustum(ViewCameraApp.InitialFrustum);
+        for (const coOrdinate of this.state.PathArray) {
+          if (coOrdinate.isTraversed) {
+            (this.state.vp?.view as ViewState3d).lookAt(coOrdinate.Point, coOrdinate.Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+            this.state.vp?.synchWithView();
+            ViewCameraApp.currentFrustum = this.state.vp?.getFrustum().clone();
+          }
+          else
+            break;
+        }
+      }
     }
     ViewCameraApp.animateCameraPath(this.state.vp, this, this.state.PathArray);
+
   }
+
+  // Handle changes to the  Direction toggle.
+  private _onChangeDirectionToggle = (checked: boolean) => {
+    if (undefined === this.state.vp)
+      return;
+    IModelApp.tools.run(AnimatedCameraTool.toolId);
+    if (checked)
+      ViewCameraApp.isDirectionOn = true;
+    else
+      ViewCameraApp.isDirectionOn = false;
+  }
+
+  // Create the react components for the camera toggle row.
+  private createDirectionToggle(label: string, info: string) {
+    const element = <Toggle style={{ marginLeft: "29px" }} isOn={ViewCameraApp.isDirectionOn} onChange={(checked: boolean) => this._onChangeDirectionToggle(checked)} />;
+    return this.createJSXElementForAttribute(label, info, element);
+  }
+
+  private _onChangeRenderSpeed = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (undefined === this.state.vp)
+      return;
+
+    switch (event.target.value) {
+      case "Speed1":
+        ViewCameraApp.Speed = 1;
+        break;
+      case "Speed2":
+        ViewCameraApp.Speed = 2;
+        break;
+      case "Speed3":
+        ViewCameraApp.Speed = 3;
+        break;
+      case "Speed4":
+        ViewCameraApp.Speed = 4;
+        break;
+      case "Speed5":
+        ViewCameraApp.Speed = 5;
+        break;
+    }
+  }
+  //
+  private createSpeedSlider(label: string, info: string) {
+    const options = {
+      Speed1: "1",
+      Speed2: "2",
+      Speed3: "3",
+      Speed4: "4",
+      Speed5: "5",
+    }
+    const element = <Select style={{ width: "80px", marginLeft: "28px" }} onChange={this._onChangeRenderSpeed} options={options} />;
+    return this.createJSXElementForAttribute(label, info, element);
+  }
+
 
   public updateTimeline() {
     this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, sliderValue: ViewCameraApp.countPathTravelled } }));
+      ({ attrValues: { ...previousState.attrValues, isDirectionOn: ViewCameraApp.isDirectionOn, sliderValue: ViewCameraApp.countPathTravelled } }));
   }
   public getControls(): React.ReactNode {
     return (
@@ -167,9 +257,27 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           {this.createCameraSlider("Timeline", "Timeline")}
           <button style={{ width: "35px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={this.animateCameraPlay} >{ViewCameraApp.isInitialPositionStarted ? ViewCameraApp.isPaused ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
         </div>
+        <div>
+          {this.createSpeedSlider("Animation Speed", "Animation Speed")}
+        </div>
+        <div>
+          {this.createDirectionToggle("Unlock Direction", "Unlock Direction")}
+        </div>
       </div >
 
     );
+  }
+  public my8() {
+    if (this.state.vp) {
+      (this.state.vp.view as ViewState3d).rotateCameraWorld(Angle.createDegrees(-1), new Vector3d(0, 0, 1));
+      //  (this.state.vp.rotation
+      // (this.state.vp.view as ViewState3d).lookAt(new Point3d(-25.66922220716401, 25.733158894852053, -13.586188440734832), new Point3d(189.52704835269307, -29.925967276210468, -9.436314464921214), new Vector3d(0, 0, 1), undefined, undefined, undefined, {animateFrustumChange: true });
+      this.state.vp.synchWithView();
+      // setTimeout(() => {
+      //   this.state.vp?.setupViewFromFrustum(ViewCameraApp.InitialFrustum);
+      // }, 0);
+      // //  this.state.vp.rotation
+    }
   }
 
   private onIModelReady = (_imodel: IModelConnection) => {
@@ -186,6 +294,13 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
         }
       });
       this.setState({ vp, PathArray: cameraPoints });
+      if (this.state.vp) {
+        ViewCameraApp.vp = this.state.vp;
+        (this.state.vp.view as ViewState3d).lookAt(new Point3d(-25.66922220716401, 25.733158894852053, -13.586188440734832), new Point3d(189.52704835269307, -29.925967276210468, -9.436314464921214), new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+        this.state.vp.synchWithView();
+        ViewCameraApp.currentFrustum = this.state.vp.getFrustum().clone();
+        ViewCameraApp.InitialFrustum = this.state.vp.getFrustum().clone();
+      }
     });
   }
 
@@ -201,7 +316,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     return (
       <>
         <ControlPane instructions="Use the timeline slider to drive the camera along the predefined path." controls={this.getControls()} ></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isIdleToolInvisible={true} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isIdleToolInvisible={ViewCameraApp.isInitialPositionStarted ? !ViewCameraApp.isPaused : false} />
       </>
     );
   }

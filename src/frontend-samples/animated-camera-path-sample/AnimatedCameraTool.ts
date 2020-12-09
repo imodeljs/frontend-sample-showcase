@@ -2,7 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { BeButtonEvent, BeWheelEvent, EventHandled, PrimitiveTool, Viewport } from "@bentley/imodeljs-frontend";
+import { BeButtonEvent, BeWheelEvent, EventHandled, PrimitiveTool, Viewport, ViewState3d, } from "@bentley/imodeljs-frontend";
+import ViewCameraApp from "./AnimatedCameraApp";
+import { Angle, Matrix3d, Transform, Vector3d } from "@bentley/geometry-core";
 
 export class AnimatedCameraTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
@@ -16,15 +18,61 @@ export class AnimatedCameraTool extends PrimitiveTool {
   public onRestartTool(): void { this.exitTool(); }
 
   public async onMiddleButtonDown(_ev: BeButtonEvent): Promise<EventHandled> {
-    return EventHandled.Yes;
+    if (ViewCameraApp.isPaused)
+      return EventHandled.No;
+    else
+      return EventHandled.Yes;
   }
 
   public async onMouseWheel(_ev: BeWheelEvent): Promise<EventHandled> {
-    return EventHandled.Yes;
+    if (ViewCameraApp.isPaused)
+      return EventHandled.No;
+    else
+      return EventHandled.Yes;
   }
 
-  public async onMouseStartDrag(_ev: BeButtonEvent): Promise<EventHandled> {
-    return EventHandled.Yes;
+  public async onMouseStartDrag(_ev: BeWheelEvent): Promise<EventHandled> {
+    if (ViewCameraApp.isPaused)
+      return EventHandled.No;
+    else
+      return EventHandled.Yes;
   }
 
+  public async onDataButtonDown(_ev: BeWheelEvent): Promise<EventHandled> {
+    if (ViewCameraApp.isPaused) {
+      if (ViewCameraApp.isDirectionOn) {
+        ViewCameraApp.keyDown = !ViewCameraApp.keyDown;
+        return EventHandled.Yes
+      }
+      else
+        return EventHandled.No;
+    }
+    else
+      return EventHandled.Yes;
+  }
+
+  public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
+    if (ViewCameraApp.isPaused && ViewCameraApp.isDirectionOn && ViewCameraApp.keyDown) {
+      const viewRect = ViewCameraApp.vp.viewRect;
+      const xExtent = viewRect.width;
+      const yExtent = viewRect.height;
+      const rotation = new Matrix3d();
+      if (_ev.movement) {
+        const xAngle = -(_ev.movement.x / xExtent * 0.4);
+        const yAngle = -(_ev.movement.y / yExtent * 0.4);
+        rotation.setFrom(ViewCameraApp.vp.rotation);
+        const inverseRotation = rotation.inverse();
+        const horizontalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitZ(), Angle.createRadians(xAngle));
+        const verticalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitX(), Angle.createRadians(yAngle));
+        if (verticalRotation && inverseRotation && horizontalRotation) {
+          verticalRotation.multiplyMatrixMatrix(rotation, verticalRotation);
+          inverseRotation.multiplyMatrixMatrix(verticalRotation, verticalRotation);
+          const newRotation = horizontalRotation.multiplyMatrixMatrix(verticalRotation);
+          const transform8 = Transform.createFixedPointAndMatrix((ViewCameraApp.vp.view as ViewState3d).camera.getEyePoint(), newRotation);
+          const frustum = ViewCameraApp.vp.getFrustum().transformBy(transform8);
+          ViewCameraApp.vp.setupViewFromFrustum(frustum);
+        }
+      }
+    }
+  }
 }

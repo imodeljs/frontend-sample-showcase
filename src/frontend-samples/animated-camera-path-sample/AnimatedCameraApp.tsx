@@ -11,15 +11,16 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { AnimatedCameraTool } from "./AnimatedCameraTool";
 import SampleApp from "common/SampleApp";
 import { Point3d, Vector3d } from "@bentley/geometry-core";
+import { Frustum } from "@bentley/imodeljs-common";
 export interface CameraPoint {
   Point: Point3d;
   Direction: Point3d;
   isTraversed: boolean;
 }
 export interface AttrValues {
-  directionOn: boolean;
   isPause: boolean;
   sliderValue: number;
+  isDirectionOn: boolean;
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
@@ -34,6 +35,13 @@ export default class ViewCameraApp implements SampleApp {
   public static isInitialPositionStarted: boolean = false;
   public static isPaused: boolean = false;
 
+  public static currentFrustum: Frustum;
+  public static InitialFrustum: Frustum;
+  public static vp: Viewport;
+  public static isDirectionOn: boolean = false;
+  public static keyDown: boolean = false;
+  public static Speed: number = 1;
+
   //  Move Camera  using the Viewport API.
   public static async animateCameraPath(vp: undefined | Viewport, viewCameraUInstance: AnimatedCameraUI, pathArray: CameraPoint[]) {
     let pathCompleted: boolean = true;
@@ -46,9 +54,12 @@ export default class ViewCameraApp implements SampleApp {
       }
 
       if (vp !== undefined) {
-        (vp.view as ViewState3d).lookAt(cameraPoint.Point, cameraPoint.Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
-        await this.delay(5);
-        vp.synchWithView();
+        if (pathArray.indexOf(cameraPoint) % ViewCameraApp.Speed === 0) {
+          (vp.view as ViewState3d).lookAt(cameraPoint.Point, cameraPoint.Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+          vp.synchWithView();
+          await this.delay(0.0000001);
+        }
+        ViewCameraApp.currentFrustum = vp?.getFrustum().clone();
         cameraPoint.isTraversed = true;
         this.countPathTravelled++;
         viewCameraUInstance.updateTimeline();
