@@ -265,7 +265,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.HillShade} />
 
           <label>Change Range</label>
-          <span>
+          <span style={{display: "flex"}}>
             <label style={{ marginRight: 7 }}>{Math.round(min)}</label>
             <Slider min={min} max={max} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} disabled={isRangeDisabled} />
             <label style={{ marginLeft: 7 }}>{Math.round(max)}</label>
