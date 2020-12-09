@@ -107,13 +107,14 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
 
     const props = ThematicDisplayApp.getThematicDisplayProps(vp);
     let extents = ThematicDisplayApp.getProjectExtents(vp);
-    const range = props.range;
-    if (this.props.iModelName === SampleIModels.CoffsHarborDemo)
+    let range = props.range;
+
+    if (SampleIModels.CoffsHarborDemo === this.props.iModelName)
       extents = [-4.8088836669921875, 127.30888366699219];
 
     let colorScheme = props.gradientSettings?.colorScheme;
     if (undefined === colorScheme)
-      colorScheme = ThematicGradientColorScheme.BlueRed;
+      colorScheme = ThematicDisplayUI._defaultProps.gradientSettings!.colorScheme!;
 
     let displayMode = props.displayMode;
     if (undefined === displayMode)
@@ -122,6 +123,12 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     let gradientMode = props.gradientSettings?.mode;
     if (undefined === gradientMode)
       gradientMode = ThematicDisplayUI._defaultProps.gradientSettings!.mode!;
+
+    if (ThematicDisplayMode.Slope === displayMode)
+      extents = [0, 90]; // Slope range is angular
+
+    if (!Range1d.fromJSON(this.state.extents).isAlmostEqual(Range1d.fromJSON(extents)))
+      range = extents;
 
     this.setState({
       on: ThematicDisplayApp.isThematicDisplayOn(vp),
@@ -231,7 +238,10 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     const vp = IModelApp.viewManager.selectedView;
     const isGeoLocated = vp ? ThematicDisplayApp.isGeoLocated(vp) : false;
 
+    const isRangeDisabled = this.state.displayMode === ThematicDisplayMode.HillShade;
+
     const extents = Range1d.fromJSON(this.state.extents);
+    const min = extents.low, max = extents.high;
     const range = Range1d.fromJSON(this.state.range);
     const step = 1;
 
@@ -255,7 +265,11 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Select style={{width: "fit-content"}} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={this.state.displayMode === ThematicDisplayMode.HillShade} />
 
           <label>Change Range</label>
-          <Slider min={extents.low} max={extents.high} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />
+          <span>
+            <label style={{ marginRight: 7 }}>{Math.round(min)}</label>
+            <Slider min={min} max={max} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} disabled={isRangeDisabled} />
+            <label style={{ marginLeft: 7 }}>{Math.round(max)}</label>
+          </span>
         </div>
       </>
     );
