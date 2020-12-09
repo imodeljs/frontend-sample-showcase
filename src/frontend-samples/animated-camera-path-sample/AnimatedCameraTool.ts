@@ -40,26 +40,28 @@ export class AnimatedCameraTool extends PrimitiveTool {
 
   public async onDataButtonDown(_ev: BeWheelEvent): Promise<EventHandled> {
     if (ViewCameraApp.isPaused) {
-      if (ViewCameraApp.isDirectionOn) {
+      if (ViewCameraApp.isUnlockDirectionOn) {
         ViewCameraApp.keyDown = !ViewCameraApp.keyDown;
         return EventHandled.Yes
       }
       else
         return EventHandled.No;
     }
-    else
+    else {
+      ViewCameraApp.keyDown = !ViewCameraApp.keyDown;
       return EventHandled.Yes;
+    }
   }
 
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
-    if (ViewCameraApp.isPaused && ViewCameraApp.isDirectionOn && ViewCameraApp.keyDown) {
+    if (ViewCameraApp.isUnlockDirectionOn && ViewCameraApp.keyDown) {
       const viewRect = ViewCameraApp.vp.viewRect;
       const xExtent = viewRect.width;
       const yExtent = viewRect.height;
       const rotation = new Matrix3d();
       if (_ev.movement) {
-        const xAngle = -(_ev.movement.x / xExtent * 0.4);
-        const yAngle = -(_ev.movement.y / yExtent * 0.4);
+        const xAngle = -(_ev.movement.x / xExtent * 0.8);
+        const yAngle = -(_ev.movement.y / yExtent * 0.8);
         rotation.setFrom(ViewCameraApp.vp.rotation);
         const inverseRotation = rotation.inverse();
         const horizontalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitZ(), Angle.createRadians(xAngle));

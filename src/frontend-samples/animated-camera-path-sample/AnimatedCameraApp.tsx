@@ -38,7 +38,7 @@ export default class ViewCameraApp implements SampleApp {
   public static currentFrustum: Frustum;
   public static InitialFrustum: Frustum;
   public static vp: Viewport;
-  public static isDirectionOn: boolean = false;
+  public static isUnlockDirectionOn: boolean = false;
   public static keyDown: boolean = false;
   public static Speed: number = 1;
 
@@ -55,9 +55,14 @@ export default class ViewCameraApp implements SampleApp {
 
       if (vp !== undefined) {
         if (pathArray.indexOf(cameraPoint) % ViewCameraApp.Speed === 0) {
-          (vp.view as ViewState3d).lookAt(cameraPoint.Point, cameraPoint.Direction, new Vector3d(0, 0, 1), undefined, undefined, undefined, { animateFrustumChange: true });
+          if (!ViewCameraApp.isUnlockDirectionOn) {
+            (vp.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.Point, cameraPoint.Direction, new Vector3d(0, 0, 1), (vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+          }
+          else {
+            (vp.view as ViewState3d).setEyePoint(cameraPoint.Point);
+          }
           vp.synchWithView();
-          await this.delay(0.0000001);
+          await this.delay(18);
         }
         ViewCameraApp.currentFrustum = vp?.getFrustum().clone();
         cameraPoint.isTraversed = true;
