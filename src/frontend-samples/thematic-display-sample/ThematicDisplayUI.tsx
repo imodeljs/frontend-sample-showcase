@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
+import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Select, Slider, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -47,6 +47,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
       mode: ThematicGradientMode.SteppedWithDelimiter,
       stepCount: 10,
     },
+    sunDirection: calculateSolarDirectionFromAngles({ azimuth: 315.0, elevation: 45.0 }),
     displayMode: ThematicDisplayMode.Height,
   };
 
@@ -166,17 +167,17 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     this.updateState();
   }
 
-  // Handles updates to the thematic range slider
-  private readonly _onUpdateRangeSlider = (values: readonly number[]) => {
+  // Handle changes to the display mode.
+  private readonly _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (undefined === vp)
       return;
 
-    // This keeps the high and low from crossing
-    const newRange = Range1d.createXX(values[0], values[1]);
+    // Convert the value back to number represented by enum.
+    const displayMode: ThematicDisplayMode = Number.parseInt(event.target.value, 10);
 
-    ThematicDisplayApp.setThematicDisplayRange(vp, newRange);
+    ThematicDisplayApp.setThematicDisplayMode(vp, displayMode);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
   }
@@ -211,17 +212,17 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     this.updateState();
   }
 
-  // Handle changes to the display mode.
-  private readonly _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  // Handles updates to the thematic range slider
+  private readonly _onUpdateRangeSlider = (values: readonly number[]) => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (undefined === vp)
       return;
 
-    // Convert the value back to number represented by enum.
-    const displayMode: ThematicDisplayMode = Number.parseInt(event.target.value, 10);
+    // This keeps the high and low from crossing
+    const newRange = Range1d.createXX(values[0], values[1]);
 
-    ThematicDisplayApp.setThematicDisplayMode(vp, displayMode);
+    ThematicDisplayApp.setThematicDisplayRange(vp, newRange);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
   }
