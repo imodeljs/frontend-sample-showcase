@@ -60,8 +60,8 @@ export class AnimatedCameraTool extends PrimitiveTool {
       const yExtent = viewRect.height;
       const rotation = new Matrix3d();
       if (_ev.movement) {
-        const xAngle = -(_ev.movement.x / xExtent * 0.8);
-        const yAngle = -(_ev.movement.y / yExtent * 0.8);
+        const xAngle = -(_ev.movement.x / xExtent * 2);
+        const yAngle = -(_ev.movement.y / yExtent * 2);
         rotation.setFrom(ViewCameraApp.vp.rotation);
         const inverseRotation = rotation.inverse();
         const horizontalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitZ(), Angle.createRadians(xAngle));

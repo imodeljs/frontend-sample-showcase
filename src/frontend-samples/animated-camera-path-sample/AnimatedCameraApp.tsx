@@ -20,7 +20,7 @@ export interface CameraPoint {
 export interface AttrValues {
   isPause: boolean;
   sliderValue: number;
-  isDirectionOn: boolean;
+  isUnlockDirectionOn: boolean;
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
@@ -62,7 +62,7 @@ export default class ViewCameraApp implements SampleApp {
             (vp.view as ViewState3d).setEyePoint(cameraPoint.Point);
           }
           vp.synchWithView();
-          await this.delay(18);
+          await this.delay(29);
         }
         ViewCameraApp.currentFrustum = vp?.getFrustum().clone();
         cameraPoint.isTraversed = true;
