@@ -49,6 +49,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private _samples = sampleManifest;
   private _prevSampleSetup?: any;
   private _prevSampleTeardown?: any;
+  private _wantScroll = false;
+  private _galleryRef = React.createRef<SampleGallery>();
 
   constructor(props?: any) {
     super(props);
@@ -148,7 +150,13 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     if (prevState.activeSampleGroup !== this.state.activeSampleGroup ||
       prevState.activeSampleName !== this.state.activeSampleName ||
       prevState.iModelName !== this.state.iModelName) {
-      this._onActiveSampleChange(prevState.activeSampleGroup, prevState.activeSampleName);
+
+      if (this._wantScroll && this._galleryRef.current) {
+        this._galleryRef.current.scrollToActiveSample();
+        this._wantScroll = false;
+      }
+
+      this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
     }
   }
 
@@ -222,7 +230,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName: iModelName ? iModelName : "" });
   }
 
-  private _onGalleryCardClicked = (groupName: string, sampleName: string) => {
+  private _onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
+    this._wantScroll = wantScroll;
     this._updateNames({ group: groupName, sample: sampleName })
   }
 
@@ -303,7 +312,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
               {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
             </div>
           </SplitScreen>
-          <SampleGallery samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryCardClicked} onCollapse={() => this.setState({ showGallery: false })} />
+          <SampleGallery ref={this._galleryRef} samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryCardClicked} onCollapse={() => this.setState({ showGallery: false })} />
         </SplitScreen>
       </div>
     );
