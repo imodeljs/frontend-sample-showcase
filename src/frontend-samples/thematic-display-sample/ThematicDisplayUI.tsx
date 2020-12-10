@@ -22,6 +22,8 @@ interface SampleState {
   colorScheme: ThematicGradientColorScheme;
   gradientMode: ThematicGradientMode;
   displayMode: ThematicDisplayMode;
+  azimuth: number;
+  elevation: number;
 }
 
 /** React props for the Sample component */
@@ -34,11 +36,15 @@ function mapOptions(o: {}): {} {
   const keys = Object.keys(o).filter((key: any) => isNaN(key));
   return Object.assign({}, keys);
 }
+const _defaultAzimuth = 315.0;
+const _defaultElevation = 45.0;
 
 /** A React component that renders the UI specific for this sample */
 export default class ThematicDisplayUI extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
 
   // defining the Thematic Display Props values that are not what is need at default,
+  private static readonly _defaultAzimuth = 315.0;
+  private static readonly _defaultElevation = 45.0;
   private static readonly _defaultProps: ThematicDisplayProps = {
     axis: [0.0, 0.0, 1.0],
     gradientSettings: {
@@ -47,7 +53,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
       mode: ThematicGradientMode.SteppedWithDelimiter,
       stepCount: 10,
     },
-    sunDirection: calculateSolarDirectionFromAngles({ azimuth: 315.0, elevation: 45.0 }),
+    sunDirection: calculateSolarDirectionFromAngles({ azimuth: ThematicDisplayUI._defaultAzimuth, elevation: ThematicDisplayUI._defaultElevation }),
     displayMode: ThematicDisplayMode.Height,
   };
 
@@ -64,6 +70,8 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
       colorScheme: ThematicGradientColorScheme.BlueRed,
       displayMode: ThematicDisplayMode.Height,
       gradientMode: ThematicGradientMode.SteppedWithDelimiter,
+      azimuth: ThematicDisplayUI._defaultAzimuth,
+      elevation: ThematicDisplayUI._defaultElevation,
     };
   }
 
@@ -234,6 +242,10 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom options are not supported for this sample.
 
     const gradientModeOptions = mapOptions(ThematicGradientMode);
+    if (this.state.displayMode !== ThematicDisplayMode.Height) {
+      delete (gradientModeOptions as any)[ThematicGradientMode.IsoLines];
+      delete (gradientModeOptions as any)[ThematicGradientMode.SteppedWithDelimiter];
+    }
 
     const displayModeOptions = mapOptions(ThematicDisplayMode);
     delete (displayModeOptions as any)[ThematicDisplayMode.InverseDistanceWeightedSensors]; // Sensors are not supported for this sample.
@@ -241,9 +253,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     const vp = IModelApp.viewManager.selectedView;
     const isGeoLocated = vp ? ThematicDisplayApp.isGeoLocated(vp) : false;
 
-    const isRangeDisabled = this.state.displayMode === ThematicDisplayMode.HillShade;
     const isColorSchemeDisabled = this.state.displayMode === ThematicDisplayMode.HillShade;
-    const isGradientDisabled = this.state.displayMode !== ThematicDisplayMode.Height;
 
     const extents = Range1d.fromJSON(this.state.extents);
     const min = extents.low, max = extents.high;
@@ -267,13 +277,18 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme.toString()} options={colorSchemeOptions} disabled={isColorSchemeDisabled} />
 
           <label>Gradient Mode</label>
-          <Select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode} value={this.state.gradientMode.toString()} options={gradientModeOptions} disabled={isGradientDisabled} />
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode} value={this.state.gradientMode.toString()} options={gradientModeOptions} />
 
           <label>Change Range</label>
           <span style={{ display: "flex" }}>
-            <label style={{ marginRight: 7 }}>{Math.round(min)}</label>
-            <Slider min={min} max={max} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} disabled={isRangeDisabled} />
-            <label style={{ marginLeft: 7 }}>{Math.round(max)}</label>
+            {this.state.displayMode !== ThematicDisplayMode.HillShade ? <>
+              <label style={{ marginRight: 7 }}>{Math.round(min)}</label>
+              <Slider min={min} max={max} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />
+              <label style={{ marginLeft: 7 }}>{Math.round(max)}</label>
+            </> : <div style={{ gridTemplateColumns: "1fr 2fr" }}>
+              <label>Azimuth</label><Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={this._onUpdateRangeSlider} />
+              <label>Elevation</label><Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={this._onUpdateRangeSlider} />
+            </div>}
           </span>
         </div>
       </>
