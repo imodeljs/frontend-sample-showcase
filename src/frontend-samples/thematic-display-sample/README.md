@@ -18,5 +18,6 @@ First, toggle the `thematicDisplay` view flag in the viewport.  Setting view fla
 Next, any properties of the thematic display can be set using the [`thematic`](https://www.imodeljs.org/reference/imodeljs-common/displaystyles/displaystyle3dsettings/thematic/) property of the [`DisplayStyle3dSettings`](https://www.imodeljs.org/reference/imodeljs-common/displaystyles/displaystyle3dsettings/).  You can create a [`ThematicDisplay`](https://www.imodeljs.org/reference/imodeljs-common/symbology/thematicdisplay/) by calling `ThematicDisplay.fromJSON`.
 
 The iTwin documentation has a brief description of each of the [ThematicDisplayMode](https://www.itwinjs.org/reference/imodeljs-common/symbology/thematicdisplaymode/).
+Currently, Terrain is not supported by Hill Shade mode or Slope mode.  Those features will be included in future releases.
 
 Thematic Display can also be set using the [Display Settings Styles](../display-styles-sample/README.md).
