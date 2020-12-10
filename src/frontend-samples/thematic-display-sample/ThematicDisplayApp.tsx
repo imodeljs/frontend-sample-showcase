@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Range1dProps } from "@bentley/geometry-core";
+import { Range1dProps, Vector3d } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import {
   BackgroundMapSettings,
@@ -131,6 +131,12 @@ export default class ThematicDisplayApp implements SampleApp {
   public static setThematicDisplayMode(vp: Viewport, displayMode: ThematicDisplayMode) {
     const props = this.getThematicDisplayProps(vp);
     props.displayMode = displayMode;
+    this.setThematicDisplayProps(vp, props);
+  }
+
+  public static setThematicDisplaySunDirection(vp: Viewport, sunDirection: Vector3d) {
+    const props = this.getThematicDisplayProps(vp);
+    props.sunDirection = sunDirection;
     this.setThematicDisplayProps(vp, props);
   }
 

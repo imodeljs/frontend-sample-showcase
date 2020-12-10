@@ -280,19 +280,39 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode} value={this.state.gradientMode.toString()} options={gradientModeOptions} />
 
           <label>Change Range</label>
-          <span style={{ display: "flex" }}>
-            {this.state.displayMode !== ThematicDisplayMode.HillShade ? <>
+          {this.state.displayMode !== ThematicDisplayMode.HillShade ?
+            <span style={{ display: "flex", flexDirection: "row" }}>
               <label style={{ marginRight: 7 }}>{Math.round(min)}</label>
               <Slider min={min} max={max} step={step} values={[range.low, range.high]} onUpdate={this._onUpdateRangeSlider} />
               <label style={{ marginLeft: 7 }}>{Math.round(max)}</label>
-            </> : <div style={{ gridTemplateColumns: "1fr 2fr" }}>
-              <label>Azimuth</label><Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={this._onUpdateRangeSlider} />
-              <label>Elevation</label><Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={this._onUpdateRangeSlider} />
-            </div>}
-          </span>
+            </span> : <span style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ display: "flex", flexDirection: "row" }}>
+                <label style={{ marginRight: 7 }}>Azimuth</label>
+                <Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={(values) => { this.setState({azimuth: values[0]}); }} />
+              </span>
+              <span style={{ display: "flex", flexDirection: "row" }}>
+                <label style={{ marginRight: 7 }}>Elevation</label>
+                <Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={(values) => { this.setState({elevation: values[0]}); }} />
+              </span>
+            </span>}
         </div>
       </>
     );
+  }
+
+  public componentDidUpdate(_prevProps: ThematicDisplaySampleUIProps, prevState: SampleState) {
+    const vp = IModelApp.viewManager.selectedView;
+    if (undefined === vp)
+      return;
+    if (prevState.azimuth !== this.state.azimuth || prevState.elevation !== this.state.elevation) {
+      ThematicDisplayApp.setThematicDisplaySunDirection(vp,
+        calculateSolarDirectionFromAngles({
+          azimuth: this.state.azimuth,
+          elevation: this.state.elevation,
+        }),
+      );
+      ThematicDisplayApp.syncViewport(vp);
+    }
   }
 
   /** The sample's render method */
