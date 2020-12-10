@@ -81,6 +81,18 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     this.updateState();
   }
 
+  private getRenderModeIndex() {
+    if (this.state.attrValues.renderMode === RenderMode.HiddenLine) {
+      return "HiddenLine";
+    } else if (this.state.attrValues.renderMode === RenderMode.SmoothShade) {
+      return "SmoothShade";
+    } else if (this.state.attrValues.renderMode === RenderMode.SolidFill) {
+      return "SolidFill";
+    } else if (this.state.attrValues.renderMode === RenderMode.Wireframe) {
+      return "Wireframe";
+    }
+  }
+
   // Create the react components for the render mode row.
   private createRenderModePicker(label: string, info: string) {
     const options = {
@@ -89,7 +101,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       SolidFill: "Solid Fill",
       Wireframe: "Wireframe",
     }
-    const element = <Select style={{ width: "fit-content" }} onChange={this._onChangeRenderMode} options={options} />;
+    const element = <Select style={{ width: "fit-content" }} value={this.getRenderModeIndex()} onChange={this._onChangeRenderMode} options={options} />;
     return this.createJSXElementForAttribute(label, info, element);
   }
 

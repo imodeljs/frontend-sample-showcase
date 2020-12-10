@@ -237,7 +237,6 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     const displayModeOptions = mapOptions(ThematicDisplayMode);
     delete (displayModeOptions as any)[ThematicDisplayMode.InverseDistanceWeightedSensors]; // Sensors are not supported for this sample.
     // A sensor specific sample will come soon.
-
     const vp = IModelApp.viewManager.selectedView;
     const isGeoLocated = vp ? ThematicDisplayApp.isGeoLocated(vp) : false;
 
@@ -261,13 +260,13 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Toggle isOn={this.state.map} onChange={this._onChangeMapToggle} disabled={!isGeoLocated} />
 
           <label>Display Mode</label>
-          <Select style={{ width: "fit-content" }} onChange={this._onChangeDisplayMode} value={this.state.displayMode} options={displayModeOptions} />
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeDisplayMode} value={this.state.displayMode.toString()} options={displayModeOptions} />
 
           <label>Color Scheme</label>
-          <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme} options={colorSchemeOptions} disabled={isColorSchemeDisabled} />
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme.toString()} options={colorSchemeOptions} disabled={isColorSchemeDisabled} />
 
           <label>Gradient Mode</label>
-          <Select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode} value={this.state.gradientMode} options={gradientModeOptions} disabled={isGradientDisabled} />
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode} value={this.state.gradientMode.toString()} options={gradientModeOptions} disabled={isGradientDisabled} />
 
           <label>Change Range</label>
           <span style={{ display: "flex" }}>
