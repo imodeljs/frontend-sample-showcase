@@ -102,12 +102,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return { group, sample, imodel };
   }
 
-  private updateURLParams(group: string, sample: string, imodel: string) {
+  private updateURLParams(group: string, sample: string, imodel?: string) {
     const params = new URLSearchParams();
     params.append("group", group);
     params.append("sample", sample);
 
-    if (this.state.iModelName) {
+    if (imodel) {
       params.append("imodel", imodel);
     }
 
@@ -219,7 +219,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
 
     this.updateURLParams(names.group, names.sample, iModelName);
-    this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName });
+    this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName: iModelName ? iModelName : "" });
   }
 
   private _onGalleryCardClicked = (groupName: string, sampleName: string) => {
