@@ -4,7 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 import { Range1dProps } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { BackgroundMapSettings, GlobeMode, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
+import {
+  BackgroundMapSettings,
+  GlobeMode,
+  TerrainHeightOriginMode,
+  TerrainSettings,
+  ThematicDisplay,
+  ThematicDisplayMode,
+  ThematicDisplayProps,
+  ThematicGradientColorScheme,
+  ThematicGradientMode,
+} from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import * as React from "react";
@@ -73,6 +83,9 @@ export default class ThematicDisplayApp implements SampleApp {
     vp.backgroundMapSettings = BackgroundMapSettings.fromJSON({
       applyTerrain: true,
       globeMode: GlobeMode.Plane, // If the user zooms out enough, the curve of the earth can effect the thematic display.
+      useDepthBuffer: true,
+      transparency: 0.75,
+      terrainSettings: TerrainSettings.fromJSON({heightOriginMode: TerrainHeightOriginMode.Geoid}),
     });
     vp.synchWithView();
     const vf = vp.viewFlags.clone();
