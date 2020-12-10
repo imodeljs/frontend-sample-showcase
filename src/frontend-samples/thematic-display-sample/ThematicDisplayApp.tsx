@@ -70,16 +70,17 @@ export default class ThematicDisplayApp implements SampleApp {
   /** Modify the background view flag and terrain setting using the Viewport API. */
   public static setBackgroundMap(vp: Viewport, on: boolean) {
     // To best display the capabilities of the thematic display, terrain and plane global mode have been enabled.
-    (vp.view as ViewState3d).getDisplayStyle3d().settings.backgroundMap = BackgroundMapSettings.fromJSON({
+    vp.backgroundMapSettings = BackgroundMapSettings.fromJSON({
       applyTerrain: true,
       globeMode: GlobeMode.Plane, // If the user zooms out enough, the curve of the earth can effect the thematic display.
     });
+    vp.synchWithView();
     const vf = vp.viewFlags.clone();
     vf.backgroundMap = on;
     vp.viewFlags = vf;
   }
 
-  /** Modify the view flags using the Viewport API. */
+  /** Modify the thematic display view flag using the Viewport API. */
   public static setThematicDisplayOnOff(vp: Viewport, on: boolean) {
     const vf = vp.viewFlags.clone();
     vf.thematicDisplay = on;

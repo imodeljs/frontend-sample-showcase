@@ -83,7 +83,6 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
       alert("iModel is not compatible with thematic display, please use an iModel with a 3d view.");
       return;
     }
-
     // Set the default values.
     ThematicDisplayApp.setThematicDisplayProps(vp, this._defaultProps);
 
@@ -93,6 +92,9 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
 
     // Redraw viewport with new settings
     ThematicDisplayApp.syncViewport(vp);
+
+    if (vp.viewFlags.backgroundMap)
+      ThematicDisplayApp.setBackgroundMap(vp, true); // this also enables the terrain.
 
     // Turn on
     // Note: Since this function is modifying the view flags, the view does not need to be synced to see the changes.
