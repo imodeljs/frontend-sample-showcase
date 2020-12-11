@@ -138,6 +138,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     window.onpopstate = (_ev: PopStateEvent) => {
       const names = this.getNamesFromURLParams();
+      this._wantScroll = true;
       this.setState({ iModelName: names.imodel, activeSampleGroup: names.group, activeSampleName: names.sample });
     };
 
@@ -152,8 +153,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       prevState.iModelName !== this.state.iModelName) {
 
       if (this._wantScroll && this._galleryRef.current) {
-        this._galleryRef.current.scrollToActiveSample();
         this._wantScroll = false;
+        this._galleryRef.current.scrollToActiveSample();
       }
 
       this._onActiveSampleChange(prevState.activeSampleGroup, prevState.activeSampleName);
