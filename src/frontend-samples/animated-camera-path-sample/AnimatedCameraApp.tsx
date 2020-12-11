@@ -34,13 +34,12 @@ export default class ViewCameraApp implements SampleApp {
   public static countPathTravelled: number = 0
   public static isInitialPositionStarted: boolean = false;
   public static isPaused: boolean = false;
-
   public static currentFrustum: Frustum;
   public static InitialFrustum: Frustum;
   public static vp: Viewport;
   public static isUnlockDirectionOn: boolean = false;
   public static keyDown: boolean = false;
-  public static Speed: number = 1;
+  public static animationSpeed: number = 1;
 
   //  Move Camera  using the Viewport API.
   public static async animateCameraPath(vp: undefined | Viewport, viewCameraUInstance: AnimatedCameraUI, pathArray: CameraPoint[]) {
@@ -54,7 +53,7 @@ export default class ViewCameraApp implements SampleApp {
       }
 
       if (vp !== undefined) {
-        if (pathArray.indexOf(cameraPoint) % ViewCameraApp.Speed === 0) {
+        if (pathArray.indexOf(cameraPoint) % ViewCameraApp.animationSpeed === 0) {
           if (!ViewCameraApp.isUnlockDirectionOn) {
             (vp.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.Point, cameraPoint.Direction, new Vector3d(0, 0, 1), (vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
           }
@@ -62,7 +61,7 @@ export default class ViewCameraApp implements SampleApp {
             (vp.view as ViewState3d).setEyePoint(cameraPoint.Point);
           }
           vp.synchWithView();
-          await this.delay(29);
+          await this.delay(40);
         }
         ViewCameraApp.currentFrustum = vp?.getFrustum().clone();
         cameraPoint.isTraversed = true;

@@ -205,19 +205,19 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
     switch (event.target.value) {
       case "Speed1":
-        ViewCameraApp.Speed = 1;
+        ViewCameraApp.animationSpeed = 1;
         break;
       case "Speed2":
-        ViewCameraApp.Speed = 2;
+        ViewCameraApp.animationSpeed = 2;
         break;
       case "Speed3":
-        ViewCameraApp.Speed = 3;
+        ViewCameraApp.animationSpeed = 3;
         break;
       case "Speed4":
-        ViewCameraApp.Speed = 4;
+        ViewCameraApp.animationSpeed = 4;
         break;
       case "Speed5":
-        ViewCameraApp.Speed = 5;
+        ViewCameraApp.animationSpeed = 5;
         break;
     }
   }
@@ -282,7 +282,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       this.setState({ vp, PathArray: cameraPoints });
       if (this.state.vp) {
         ViewCameraApp.vp = this.state.vp;
-        (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(new Point3d(- 30.316071694565487, 23.303611924006788, -13.017223490617676), new Point3d(125.52495890164565, 13.823150927178707, -11.774107413804492), new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+        (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(new Point3d(-30.31149339265272, 22.29572179067724, -12.97458433691228), new Point3d(149.17338274561203, 24.11064034862238, -13.213309138986613), new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
         this.state.vp.synchWithView();
         ViewCameraApp.currentFrustum = this.state.vp.getFrustum().clone();
         ViewCameraApp.InitialFrustum = this.state.vp.getFrustum().clone();
