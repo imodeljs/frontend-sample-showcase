@@ -156,7 +156,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._wantScroll = false;
       }
 
-      this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
+      this._onActiveSampleChange(prevState.activeSampleGroup, prevState.activeSampleName);
     }
   }
 
