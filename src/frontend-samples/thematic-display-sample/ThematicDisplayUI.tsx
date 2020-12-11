@@ -253,8 +253,6 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     const vp = IModelApp.viewManager.selectedView;
     const isGeoLocated = vp ? ThematicDisplayApp.isGeoLocated(vp) : false;
 
-    const isColorSchemeDisabled = this.state.displayMode === ThematicDisplayMode.HillShade;
-
     const extents = Range1d.fromJSON(this.state.extents);
     const min = extents.low, max = extents.high;
     const range = Range1d.fromJSON(this.state.range);
@@ -274,7 +272,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
           <Select style={{ width: "fit-content" }} onChange={this._onChangeDisplayMode} value={this.state.displayMode.toString()} options={displayModeOptions} />
 
           <label>Color Scheme</label>
-          <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme.toString()} options={colorSchemeOptions} disabled={isColorSchemeDisabled} />
+          <Select style={{ width: "fit-content" }} onChange={this._onChangeColorScheme} value={this.state.colorScheme.toString()} options={colorSchemeOptions} />
 
           <label>Gradient Mode</label>
           <Select style={{ width: "fit-content" }} onChange={this._onChangeGradientMode} value={this.state.gradientMode.toString()} options={gradientModeOptions} />
