@@ -37,7 +37,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       }, PathArray: [],
     };
     this.animateCameraPlay = this.animateCameraPlay.bind(this);
-
   }
 
   // This common function is used to create the react components for each row of the UI.
@@ -151,7 +150,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private async animateCameraPlay() {
     if (undefined === this.state.vp)
       return;
-
     if (!ViewCameraApp.isInitialPositionStarted) {
       for (const coOrdinate of this.state.PathArray) {
         coOrdinate.isTraversed = false;
@@ -163,7 +161,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     else {
       ViewCameraApp.isPaused = !ViewCameraApp.isPaused;
       if (!ViewCameraApp.isPaused) {
-        // setTimeout(() => { this.state.vp?.setupViewFromFrustum(ViewCameraApp.currentFrustum) }, 0);
         (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(this.state.PathArray[0].Point, this.state.PathArray[0].Direction, new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
         this.state.vp.synchWithView();
         if (this.state.vp)
@@ -262,7 +259,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           {this.createDirectionToggle("Unlock Direction", "Unlock Direction")}
         </div>
       </div >
-
     );
   }
 
@@ -274,7 +270,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       const cameraPoints: CameraPoint[] = [];
       coOrdinates.forEach((item, index) => {
         if (index !== coOrdinates.length - 1) {
-          for (let j: number = 0.00; j <= 1.0; j = j + 0.005) {
+          for (let j: number = 0.00; j <= 1.0; j = j + 0.0025) {
             cameraPoints.push({ Point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(coOrdinates[index + 1].cameraPoint.x, coOrdinates[index + 1].cameraPoint.y, coOrdinates[index + 1].cameraPoint.z)), Direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(coOrdinates[index + 1].viewDirection.x, coOrdinates[index + 1].viewDirection.y, coOrdinates[index + 1].viewDirection.z)), isTraversed: false });
           }
         }
@@ -286,8 +282,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
         this.state.vp.synchWithView();
         ViewCameraApp.currentFrustum = this.state.vp.getFrustum().clone();
         ViewCameraApp.InitialFrustum = this.state.vp.getFrustum().clone();
-
-
       }
     });
   }
