@@ -8,7 +8,7 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { Input, NumericInput, Select } from "@bentley/ui-core";
 import ClosestPointOnCurveApp from "./ClosestPointOnCurveApp";
 import { CurvePrimitive, LineSegment3d, Point3d } from "@bentley/geometry-core";
-import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
+import { ColorByName, ColorDef, LinePixels } from "@bentley/imodeljs-common";
 import { InteractivePointMarker } from "common/GeometryCommon/InteractivePointMarker";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
@@ -114,7 +114,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
     // Add the curvePrimitive
     this.state.decorator.setColor(ColorDef.black);
     this.state.decorator.setFill(true);
-    this.state.decorator.setFillColor(ColorDef.red);
+    this.state.decorator.setFillColor(ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)));
     this.state.decorator.setLineThickness(5);
     this.state.decorator.setLinePixels(LinePixels.Solid);
     this.state.decorator.addGeometry(this.curve);
