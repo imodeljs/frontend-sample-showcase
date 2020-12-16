@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import RealityDataApp from "./RealityDataApp";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
 export function getRealityDataSpec(): SampleSpec {
   return ({

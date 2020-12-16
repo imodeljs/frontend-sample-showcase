@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "../../../Components/IModelSelector/IModelSelector";
+import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { ToolbarButtonSample } from "./ToolbarButtonApp";
 
 export function getToolbarButtonSample(): SampleSpec {

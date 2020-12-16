@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import ClassifierApp from "./ClassifierApp";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
 export function getClassifierSpec(): SampleSpec {
   return ({

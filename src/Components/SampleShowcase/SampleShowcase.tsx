@@ -8,7 +8,7 @@ import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
+import { IModelSelector, SampleIModels } from "common/IModelSelector/IModelSelector";
 import { ConnectedSampleEditor } from "../SampleEditor/SampleEditor";
 import { editorCommonActionContext, IInternalFile, SplitScreen } from "@bentley/monaco-editor/editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
@@ -17,7 +17,7 @@ import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { MovePointTool } from "common/GeometryCommon/InteractivePointMarker";
+import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 
 // cSpell:ignore imodels
 

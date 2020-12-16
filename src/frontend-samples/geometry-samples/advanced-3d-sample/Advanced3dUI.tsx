@@ -3,14 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
+import { BlankViewport } from "common/Geometry/BlankViewport";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { Select } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import Advanced3dApp from "./Advanced3dApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 
 interface Advanced3dState {
   shape: string;

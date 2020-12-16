@@ -6,10 +6,10 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import ShadowStudyApp from "./ShadowStudyApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { Input } from "@bentley/ui-core";
 
 /** React state of the Sample component */
@@ -153,7 +153,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     return (
       <>
         <ControlPane instructions="Select a date and time." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />
+        <SandboxViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />
       </>
     );
   }

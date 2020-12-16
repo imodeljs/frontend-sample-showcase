@@ -5,8 +5,8 @@
 import "common/samples-common.scss";
 import "./Classifier.scss";
 import { ViewSetup } from "api/viewSetup";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ClassifierProperties } from "./ClassifierProperties";
 import * as React from "react";
 import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@bentley/geometry-core";
@@ -223,7 +223,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions="Use controls below to create a classifier." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         { /* Viewport to display the iModel */}
-        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} getCustomViewState={ClassifierUI.getClassifierView} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} getCustomViewState={ClassifierUI.getClassifierView} />
       </>
     );
   }

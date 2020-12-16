@@ -7,8 +7,8 @@ import { Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
 import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
-import { GeometryDecorator } from "./GeometryDecorator";
-import "Components/Viewport/Toolbar.scss";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import "common/SandboxViewport/Toolbar.scss";
 
 interface BlankViewportProps {
   force2d: boolean;

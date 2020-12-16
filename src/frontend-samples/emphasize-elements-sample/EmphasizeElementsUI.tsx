@@ -6,14 +6,14 @@ import * as React from "react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 
 import { ColorDef } from "@bentley/imodeljs-common";
 import {
   ClearEmphasizeAction, ClearHideAction, ClearIsolateAction, ClearOverrideAction,
   EmphasizeAction, HideAction, IsolateAction, OverrideAction,
 } from "./EmphasizeElementsApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface EmphasizeElementsState {
@@ -149,7 +149,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     return (
       <>
         <ControlPane instructions="Select one or more elements.  Click one of the Apply buttons." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} />
+        <SandboxViewport iModelName={this.props.iModelName} />
       </>
     );
   }

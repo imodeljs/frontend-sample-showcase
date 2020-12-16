@@ -8,8 +8,8 @@ import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
 import "./index.scss";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 import { SettingsResult, SettingsStatus } from "@bentley/product-settings-client";
 import ReadSettingsApp from "./ReadSettingsApp";
@@ -144,7 +144,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
     return (
       <>
         <ControlPane instructions="Choose a Setting Name below to read that setting from the ProductSettingsService" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
   }

@@ -9,11 +9,11 @@ import { Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { PointSelector } from "common/PointSelector/PointSelector";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import HeatmapDecoratorApp from "./HeatmapDecoratorApp";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ViewSetup } from "api/viewSetup";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface HeatmapDecoratorUIProps {
@@ -139,7 +139,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     return (
       <>
         <ControlPane instructions="Use the options below to control the heatmap visualization." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={HeatmapDecoratorUI.getTopView} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={HeatmapDecoratorUI.getTopView} />
       </>
     );
   }

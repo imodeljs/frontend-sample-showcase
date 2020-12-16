@@ -7,9 +7,9 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Input, Select, Toggle } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "api/showcasetooladmin";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { SampleToolAdmin } from "./TooltipCustomizeApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 export enum ElemProperty {
   Origin = "Origin",
@@ -102,7 +102,7 @@ export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iM
     return (
       <>
         <ControlPane instructions="Hover the mouse pointer over an element to see the tooltip.  Use these options to control it." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} />
+        <SandboxViewport iModelName={this.props.iModelName} />
       </>
     );
   }

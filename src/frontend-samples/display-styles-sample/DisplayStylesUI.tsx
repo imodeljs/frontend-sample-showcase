@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import DisplayStylesApp from "./DisplayStylesApp";
 import { DisplayStyle } from "./Styles";
@@ -92,7 +92,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions={instruction} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
         { /* Viewport to display the iModel */}
-        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );
   }

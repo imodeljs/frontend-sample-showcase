@@ -5,14 +5,14 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import "common/CommonComponentTools/index.scss";
-import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
+import "common/UIComponents/index.scss";
+import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ContextMenuItem, SplitButton } from "@bentley/ui-core";
 import SampleApp from "common/SampleApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
-export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
+export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
   return { title, description, content };
 };
 
@@ -26,7 +26,7 @@ export default class SplitButtonList extends React.Component<{}> implements Samp
       <ContextMenuItem key="item3" icon="icon-placeholder">Item 3</ContextMenuItem>,
     ];
   }
-  public static getSplitButtonData(): ComponentExampleProps[] {
+  public static getSplitButtonData(): UIComponentExampleProps[] {
     return [
       createComponentExample("Basic SplitButton", "Basic SplitButton",
         <SplitButton label="Split Button" onClick={() => { }}>
@@ -49,7 +49,7 @@ export default class SplitButtonList extends React.Component<{}> implements Samp
     return (
       <>
         <ControlPane instructions="Different styles of split buttons that can be used in iModel.js applications."></ControlPane>
-        <ComponentContainer data={SplitButtonList.getSplitButtonData()}></ComponentContainer>
+        <UIComponentContainer data={SplitButtonList.getSplitButtonData()}></UIComponentContainer>
       </>
     );
   }

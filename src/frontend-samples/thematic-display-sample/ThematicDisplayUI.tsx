@@ -7,9 +7,9 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Select, Slider, Toggle } from "@bentley/ui-core";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import ThematicDisplayApp from "./ThematicDisplayApp";
 
@@ -286,11 +286,11 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
             </span> : <span style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ display: "flex", flexDirection: "row" }}>
                 <label style={{ marginRight: 7 }}>Azimuth</label>
-                <Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={(values) => { this.setState({azimuth: values[0]}); }} />
+                <Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={(values) => { this.setState({ azimuth: values[0] }); }} />
               </span>
               <span style={{ display: "flex", flexDirection: "row" }}>
                 <label style={{ marginRight: 7 }}>Elevation</label>
-                <Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={(values) => { this.setState({elevation: values[0]}); }} />
+                <Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={(values) => { this.setState({ elevation: values[0] }); }} />
               </span>
             </span>}
         </div>
@@ -318,7 +318,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     return (
       <>
         <ControlPane instructions="Use the controls below to change the thematic display attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );
   }

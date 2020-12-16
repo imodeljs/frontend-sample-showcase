@@ -5,7 +5,7 @@
 import * as React from "react";
 import "common/DataProvider/Trees.scss";
 import { CustomEventHandlerTree } from "./CustomEventHandlerTreeApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 export class CustomEventHandlerTreeUI extends React.Component<{}> {
 

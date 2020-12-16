@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import ThematicDisplaySampleApp from "./ThematicDisplayApp";
 
 export function getThematicDisplaySpec(): SampleSpec {

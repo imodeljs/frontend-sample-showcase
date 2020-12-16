@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
@@ -99,7 +99,7 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions="Use the toggle below for displaying the reality data in the model." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         { /* Viewport to display the iModel */}
-        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );
   }

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { PropertyFormattingApp } from "./PropertyFormattingApp";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
 export function getPropertyFormattingSpec(): SampleSpec {
   return ({

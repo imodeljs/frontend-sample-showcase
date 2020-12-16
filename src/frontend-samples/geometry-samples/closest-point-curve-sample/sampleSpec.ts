@@ -15,8 +15,8 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
     files: [
       { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp"), entry: true },
       { name: "ClosestPointOnCurveUI.tsx", import: import("!!raw-loader!./ClosestPointOnCurveUI") },
-      { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!../../../common/GeometryCommon/SampleCurveFactory") },
-      { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!../../../common/GeometryCommon/InteractivePointMarker") },
+      { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!common/Geometry/SampleCurveFactory") },
+      { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!common/Geometry/InteractivePointMarker") },
     ],
     setup: ClosestPointOnCurveApp.setup.bind(ClosestPointOnCurveApp),
   });

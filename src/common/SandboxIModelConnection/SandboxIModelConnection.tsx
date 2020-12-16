@@ -9,17 +9,17 @@ import { StartupComponent } from "../Startup/Startup";
 // TODO: Extend The ReloadableConnection to Work Generically with any UI that requires an iModelConnection
 // Currently this class only acts as a wrapper to the Startup Component
 
-export interface ReloadableConnectionProps {
+export interface SandboxIModelConnectionProps {
   iModelName: string;
   onIModelReady?: (imodel: IModelConnection) => void;
 }
 
-export interface ReloadableConnectionState {
+export interface SandboxIModelConnectionState {
   /** iModel whose contents should be displayed in the viewport */
   imodel?: IModelConnection;
 }
 
-export class ReloadableConnection extends React.PureComponent<ReloadableConnectionProps, ReloadableConnectionState> {
+export class SandboxIModelConnection extends React.PureComponent<SandboxIModelConnectionProps, SandboxIModelConnectionState> {
   constructor(props?: any) {
     super(props);
 
@@ -39,7 +39,7 @@ export class ReloadableConnection extends React.PureComponent<ReloadableConnecti
     );
   }
 
-  public componentDidUpdate(_prevProps: ReloadableConnectionProps, prevState: ReloadableConnectionState) {
+  public componentDidUpdate(_prevProps: SandboxIModelConnectionProps, prevState: SandboxIModelConnectionState) {
 
     if (this.state.imodel && _prevProps.iModelName !== this.props.iModelName) {
       this.setState({ imodel: undefined });

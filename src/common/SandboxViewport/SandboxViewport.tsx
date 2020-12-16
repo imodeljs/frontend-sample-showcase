@@ -8,14 +8,14 @@ import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
 import { StartupComponent } from "../Startup/Startup";
 
-export interface ReloadableViewportProps {
+export interface SandboxViewportProps {
   iModelName: string;
   iModelName2?: string;
   getCustomViewState?: (imodel: IModelConnection) => Promise<ViewState>;
   onIModelReady?: (imodel: IModelConnection) => void;
 }
 
-export interface ReloadableViewportState {
+export interface SandboxViewportState {
   /** iModel whose contents should be displayed in the viewport */
   imodel?: IModelConnection;
   /** View state to use when the viewport is first loaded */
@@ -23,7 +23,7 @@ export interface ReloadableViewportState {
 }
 
 /** Renders viewport, toolbar, and associated elements */
-export class ReloadableViewport extends React.PureComponent<ReloadableViewportProps, ReloadableViewportState> {
+export class SandboxViewport extends React.PureComponent<SandboxViewportProps, SandboxViewportState> {
 
   constructor(props?: any) {
     super(props);
@@ -46,7 +46,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     );
   }
 
-  public componentDidUpdate(prevProps: ReloadableViewportProps, prevState: ReloadableViewportState) {
+  public componentDidUpdate(prevProps: SandboxViewportProps, prevState: SandboxViewportState) {
     if (this.state.imodel && prevProps.iModelName !== this.props.iModelName) {
       this.setState({ imodel: undefined, viewState: undefined });
       return;

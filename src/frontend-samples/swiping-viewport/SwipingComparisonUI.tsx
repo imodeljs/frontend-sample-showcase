@@ -7,8 +7,8 @@ import { Point3d } from "@bentley/geometry-core";
 import { Frustum } from "@bentley/imodeljs-common";
 import { IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Select, Toggle } from "@bentley/ui-core";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import React from "react";
 import { DividerComponent } from "./Divider";
 import SwipingComparisonApp, { ComparisonType } from "./SwipingComparisonApp";
@@ -184,7 +184,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
         <Toggle title={"Lock dividing plane"} isOn={this.state.isLocked} onChange={this._onLockToggle}></Toggle>
 
         <label>Comparison Type</label>
-        <Select value={this.state.comparison} onChange={this._onComparisonType} disabled={undefined === this.state.viewport && undefined === this.state.iModel} options={options}/>
+        <Select value={this.state.comparison} onChange={this._onComparisonType} disabled={undefined === this.state.viewport && undefined === this.state.iModel} options={options} />
       </div>
     );
   }
@@ -198,7 +198,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
         controls={this.getControls()}
       />
       { /* Viewport to display the iModel */}
-      <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+      <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       {undefined !== this.state.bounds && undefined !== this.state.dividerLeft && !this.state.isLocked ?
         <DividerComponent sideL={this.state.dividerLeft - this.state.bounds.left} bounds={this.state.bounds} onDragged={this._onDividerMoved} />
         : <></>}

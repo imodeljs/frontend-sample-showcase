@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import "common/AppUi/app-ui.scss";
 import { SampleAppUiComponent } from "common/AppUi/SampleAppUiComponent";
 import { AppUi } from "common/AppUi/AppUi";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
