@@ -4,10 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { Select } from "@bentley/ui-core";
-import { ColorPickerButton } from "@bentley/ui-components";
 import Advanced3dApp from "./Advanced3dApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
@@ -27,7 +26,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       shape: "Sweeps",
-      color: ColorDef.red,
+      color: ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)),
       sweepType: "Linear",
       decorator,
     };
@@ -59,8 +58,6 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
         <div className="sample-options-2col">
           <span>Shape:</span>
           <Select options={["Sweeps", "Mitered Pipes"]} onChange={(event) => { this.setState({ shape: event.target.value }); }} />
-          <span>Color:</span>
-          <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }); }} />
           {this.state.shape === "Sweeps" ? <span>Sweep Type:</span> : undefined}
           {this.state.shape === "Sweeps" ? <Select options={["Linear", "Ruled", "Rotational"]} onChange={(event) => { this.setState({ sweepType: event.target.value }); }} /> : undefined}
         </div>

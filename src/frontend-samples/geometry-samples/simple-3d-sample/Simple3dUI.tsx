@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { ControlPane } from "common/ControlPane/ControlPane"; import { NumericInput, Select } from "@bentley/ui-core";
-import { ColorPickerButton } from "@bentley/ui-components";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { NumericInput, Select } from "@bentley/ui-core";
+import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import Simple3dApp from "./Simple3dApp";
 import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
@@ -36,7 +36,7 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
     IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       shape: "Box",
-      color: ColorDef.red,
+      color: ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)),
       sphereRadius: 4,
       boxLength: 4,
       boxWidth: 4,
@@ -95,8 +95,6 @@ export default class Simple3dUI extends React.Component<{}, Simple3dState> {
         <div className="sample-options-2col">
           <span>Shape:</span>
           <Select options={["Box", "Cone", "Sphere", "Torus Pipe"]} onChange={(event) => { this.setState({ shape: event.target.value }); }} />
-          <span>Color:</span>
-          <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }); }} />
           {this.state.shape === "Sphere" ? <span>Radius:</span> : undefined}
           {this.state.shape === "Sphere" ? <NumericInput defaultValue={this.state.sphereRadius} min={0} max={500} onChange={(value) => { if (value) this.setState({ sphereRadius: value }); }}></NumericInput> : undefined}
 

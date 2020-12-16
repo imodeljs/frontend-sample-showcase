@@ -5,7 +5,7 @@
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
 import { Loop, Point3d } from "@bentley/geometry-core";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
 import Transformations2dApp from "./2dTransformationsApp";
@@ -30,7 +30,7 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
     IModelApp.viewManager.addDecorator(decorator);
     this.state = {
       shape: "Square",
-      color: ColorDef.red,
+      color: ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)),
       xTrans: 1,
       yTrans: 1,
       rotationDeg: 180,
@@ -42,7 +42,7 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
   public componentDidUpdate() {
     if (this.state.geometry) {
       this.state.decorator.clearGeometry();
-      this.state.decorator.setColor(ColorDef.red);
+      this.state.decorator.setColor(this.state.color);
       this.state.decorator.setLineThickness(5);
       this.state.decorator.addGeometry(this.state.geometry);
     }

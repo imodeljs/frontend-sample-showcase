@@ -104,13 +104,13 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return { group, sample, imodel };
   }
 
-  private updateURLParams() {
+  private updateURLParams(group: string, sample: string, imodel?: string) {
     const params = new URLSearchParams();
-    params.append("group", this.state.activeSampleGroup);
-    params.append("sample", this.state.activeSampleName);
+    params.append("group", group);
+    params.append("sample", sample);
 
-    if (this.state.iModelName) {
-      params.append("imodel", this.state.iModelName);
+    if (imodel) {
+      params.append("imodel", imodel);
     }
 
     // Detect if editor was enabled in URL params as a semi-backdoor, this
@@ -118,7 +118,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     const editorEnabled = new URLSearchParams(window.location.search).get("editor");
     if (editorEnabled) params.append("editor", editorEnabled);
 
-    window.history.replaceState(null, "", `?${params.toString()}`);
+    window.history.pushState(null, "", `?${params.toString()}`);
 
     // Send to parent if within an iframe.
     if (window.self !== window.top) {
@@ -132,28 +132,32 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   public componentDidMount() {
-    this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
+    this._onActiveSampleChange("", "");
 
     document.documentElement.setAttribute("data-theme", "dark");
+
+    window.onpopstate = (_ev: PopStateEvent) => {
+      const names = this.getNamesFromURLParams();
+      this._wantScroll = true;
+      this.setState({ iModelName: names.imodel, activeSampleGroup: names.group, activeSampleName: names.sample });
+    };
 
     SampleShowcase._sampleNamespace = IModelApp.i18n.registerNamespace("sample-showcase-i18n-namespace");
     MovePointTool.register(SampleShowcase._sampleNamespace);
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: ShowcaseState) {
+
     if (prevState.activeSampleGroup !== this.state.activeSampleGroup ||
       prevState.activeSampleName !== this.state.activeSampleName ||
       prevState.iModelName !== this.state.iModelName) {
 
-      this.updateURLParams();
-
       if (this._wantScroll && this._galleryRef.current) {
-        this._galleryRef.current.scrollToActiveSample();
         this._wantScroll = false;
+        this._galleryRef.current.scrollToActiveSample();
       }
 
-      if (prevState.iModelName !== this.state.iModelName)
-        this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
+      this._onActiveSampleChange(prevState.activeSampleGroup, prevState.activeSampleName);
     }
   }
 
@@ -181,58 +185,67 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return undefined;
   }
 
-  private async setupNewSample(groupName: string, sampleName: string) {
+  private async setupNewSample() {
 
-    const newSampleSpec = this.getSampleByName(groupName, sampleName);
+    const newSampleSpec = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined === newSampleSpec) {
-      this.setState({ activeSampleGroup: "", activeSampleName: "" });
+      this.setState({ activeSampleGroup: "", activeSampleName: "", iModelName: "" });
       return;
     }
 
     let sampleUI: React.ReactNode;
-    let iModelName = this.state.iModelName;
 
-    if (newSampleSpec && newSampleSpec.setup) {
+    if (newSampleSpec.setup) {
       const iModelList = this.getIModelList(newSampleSpec);
-
-      if (newSampleSpec.name !== this.state.activeSampleName) {
-        iModelName = iModelList[0];
-      }
-      const iModelSelector = this.getIModelSelector(iModelName, iModelList);
-      sampleUI = await newSampleSpec.setup(iModelName, iModelSelector);
+      const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
+      sampleUI = await newSampleSpec.setup(this.state.iModelName, iModelSelector);
     }
 
-    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName });
+    this.setState({ sampleUI });
+  }
+
+  private _updateNames = (names: { group: string, sample: string, imodel?: string }) => {
+    if (this._prevSampleSetup) {
+      if (!window.confirm("Changes made to the code will not be saved!")) {
+        return;
+      }
+
+      const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
+      activeSample.setup = this._prevSampleSetup;
+      activeSample.teardown = this._prevSampleTeardown;
+      this._prevSampleSetup = undefined;
+      this._prevSampleTeardown = undefined;
+    }
+
+    let iModelName = names.imodel;
+    if (names.group !== this.state.activeSampleGroup || names.sample !== this.state.activeSampleName) {
+      const newSampleSpec = this.getSampleByName(names.group, names.sample);
+
+      if (newSampleSpec) {
+        const iModelList = this.getIModelList(newSampleSpec);
+        iModelName = iModelList[0];
+      }
+    }
+
+    this.updateURLParams(names.group, names.sample, iModelName);
+    this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName: iModelName ? iModelName : "" });
   }
 
   private _onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
-
     this._wantScroll = wantScroll;
-
-    if (this._prevSampleSetup) {
-      if (window.confirm("Changes made to the code will not be saved!")) {
-        const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-        activeSample.setup = this._prevSampleSetup;
-        activeSample.teardown = this._prevSampleTeardown;
-        this._prevSampleSetup = undefined;
-        this._prevSampleTeardown = undefined;
-        this._onActiveSampleChange(groupName, sampleName);
-      }
-    } else {
-      this._onActiveSampleChange(groupName, sampleName);
-    }
+    this._updateNames({ group: groupName, sample: sampleName })
   }
 
-  private _onActiveSampleChange = (groupName: string, sampleName: string) => {
-    const oldSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+  private _onActiveSampleChange = (prevGroupName: string, prevSampleName: string) => {
+    const oldSample = this.getSampleByName(prevGroupName, prevSampleName);
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
-    this.setupNewSample(groupName, sampleName);
+    this.setupNewSample();
   }
 
   private _onIModelChange = (iModelName: string) => {
-    this.setState({ iModelName });
+    this._updateNames({ group: this.state.activeSampleGroup, sample: this.state.activeSampleName, imodel: iModelName })
   }
 
   private _onEditorButtonClick = () => {
