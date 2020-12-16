@@ -1,7 +1,7 @@
 
-export const coOrdinates = [
+export const trainPathCoordinates = [
   {
-    cameraPoint: { x: -95.40601059338132, y: 25.2181500566074, z: -14.22864197744207 },
+    cameraPoint: { x: -25.45530175739978, y: 25.22014000165137, z: -14.22864197744207 },
     viewDirection: { x: 399.20020853601386, y: 25.007146313765436, z: -14.22864197744207 },
   },
   {
@@ -9,15 +9,14 @@ export const coOrdinates = [
     viewDirection: { x: 399.20020853601386, y: 25.007146313765436, z: -14.22864197744207 },
   },
   {
-    cameraPoint: { x: 372.1393262607244, y: 25.233019027102163, z: -13.060301408369897 },
+    cameraPoint: { x: 250.81808347508303, y: 25.081570064940223, z: -14.22864197744207 },
     viewDirection: { x: 399.20020853601386, y: 25.007146313765436, z: -14.22864197744207 },
   },
-
 ]
 
-export const coOrdinates2 = [
+export const flyoverCoordinates = [
   {
-    cameraPoint: { x: 92.9729357780841, y: -1029.016035144616, z: 30.38659261093646 },
+    cameraPoint: { x: 59.81704583844181, y: -199.22070776222904, z: 30.38659261093646 },
     viewDirection: { x: 1167.5123470671867, y: 14287.928900145913, z: -4000.9401851562648 },
   },
   {
@@ -26,7 +25,7 @@ export const coOrdinates2 = [
   },
 ]
 
-export const coOrdinates3 = [
+export const commuterViewCoordinates = [
   {
     cameraPoint: { x: 62.58449654037943, y: -5.208339195281402, z: 3.6228594110632932 },
     viewDirection: { x: 22.249124661371873, y: 21.136667413347567, z: 0.09606156857723924 },

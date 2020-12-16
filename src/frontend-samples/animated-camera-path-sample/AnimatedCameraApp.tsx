@@ -21,6 +21,7 @@ export interface AttrValues {
   isPause: boolean;
   sliderValue: number;
   isUnlockDirectionOn: boolean;
+  speed: string;
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
@@ -35,8 +36,8 @@ export default class AnimatedCameraApp implements SampleApp {
   public static isInitialPositionStarted: boolean = false;
   public static isPaused: boolean = false;
   public static currentFrustum: Frustum;
-  public static InitialFrustum: Frustum;
-  public static vp: Viewport;
+  public static initialFrustum: Frustum;
+  public static viewport: Viewport;
   public static isUnlockDirectionOn: boolean = false;
   public static keyDown: boolean = false;
   public static animationSpeed: number;

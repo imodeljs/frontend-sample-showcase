@@ -55,14 +55,14 @@ export class AnimatedCameraTool extends PrimitiveTool {
 
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
     if (AnimatedCameraApp.isUnlockDirectionOn && AnimatedCameraApp.keyDown) {
-      const viewRect = AnimatedCameraApp.vp.viewRect;
+      const viewRect = AnimatedCameraApp.viewport.viewRect;
       const xExtent = viewRect.width;
       const yExtent = viewRect.height;
       const rotation = new Matrix3d();
       if (_ev.movement) {
         const xAngle = -(_ev.movement.x / xExtent * 2);
         const yAngle = -(_ev.movement.y / yExtent * 2);
-        rotation.setFrom(AnimatedCameraApp.vp.rotation);
+        rotation.setFrom(AnimatedCameraApp.viewport.rotation);
         const inverseRotation = rotation.inverse();
         const horizontalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitZ(), Angle.createRadians(xAngle));
         const verticalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitX(), Angle.createRadians(yAngle));
@@ -70,9 +70,9 @@ export class AnimatedCameraTool extends PrimitiveTool {
           verticalRotation.multiplyMatrixMatrix(rotation, verticalRotation);
           inverseRotation.multiplyMatrixMatrix(verticalRotation, verticalRotation);
           const newRotation = horizontalRotation.multiplyMatrixMatrix(verticalRotation);
-          const transform8 = Transform.createFixedPointAndMatrix((AnimatedCameraApp.vp.view as ViewState3d).camera.getEyePoint(), newRotation);
-          const frustum = AnimatedCameraApp.vp.getFrustum().transformBy(transform8);
-          AnimatedCameraApp.vp.setupViewFromFrustum(frustum);
+          const transform8 = Transform.createFixedPointAndMatrix((AnimatedCameraApp.viewport.view as ViewState3d).camera.getEyePoint(), newRotation);
+          const frustum = AnimatedCameraApp.viewport.getFrustum().transformBy(transform8);
+          AnimatedCameraApp.viewport.setupViewFromFrustum(frustum);
         }
       }
     }
