@@ -2,14 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { Point3d } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { RenderMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { Button } from "@bentley/ui-core";
 import { ViewSetup } from "api/viewSetup";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { PlaceMarkerTool } from "frontend-samples/marker-pin-sample/PlaceMarkerTool";
 import * as React from "react";
+import { FireDecorator, FireDecoratorPoint } from "./FireDecorator";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -37,7 +40,20 @@ export default class FireDecorationUI extends React.Component<{ iModelName: stri
 
   public getControls(): React.ReactNode {
     return (<>
-
+      <Button onClick={() => {
+        const vp = IModelApp.viewManager.selectedView;
+        if (undefined === vp)
+          return;
+        FireDecorator.enable();
+      }}>Fire</Button>
+      <Button onClick={() => {
+        const vp = IModelApp.viewManager.selectedView;
+        if (undefined === vp)
+          return;
+        IModelApp.tools.run(PlaceMarkerTool.toolId, (point: Point3d) => {
+          IModelApp.viewManager.addDecorator(new FireDecoratorPoint(point));
+        });
+      }}>Placement</Button>
     </>);
   }
 
@@ -49,7 +65,8 @@ export default class FireDecorationUI extends React.Component<{ iModelName: stri
 
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
-    viewState.viewFlags.renderMode = RenderMode.Wireframe;
+    // Make edits here
+
     return viewState;
   }
 
@@ -58,7 +75,7 @@ export default class FireDecorationUI extends React.Component<{ iModelName: stri
 
     return (
       <>
-        <ControlPane instructions="Use the controls below to change the view attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="click button to start fire." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
       </>
     );
