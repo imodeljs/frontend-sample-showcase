@@ -3,14 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Box, Point3d, Polyface, PolyfaceBuilder, Range3d, StrokeOptions } from "@bentley/geometry-core";
+import { Box, Point3d, Polyface, PolyfaceBuilder, Range3d, StrokeOptions, Transform } from "@bentley/geometry-core";
 import { ColorByName, ColorDef, NpcCenter } from "@bentley/imodeljs-common";
-import { DecorateContext, Decorator, GraphicType, imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
 import { Particle, SampleCanvas } from "./SampleCanvas";
 
 const url = "https://upload.wikimedia.org/wikipedia/commons/9/99/FireIcon.svg";
-const color = ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50));
+const color = ColorDef.fromTbgr(ColorDef.create(ColorByName.cyan).tbgr);
 
 export class FireDecoratorPoint extends GeometryDecorator {
 
@@ -54,6 +54,12 @@ export class FireDecoratorPoint extends GeometryDecorator {
     // builder.addRangeBox(vp.iModel.projectExtents);
 
     context.addDecorationFromBuilder(builder);
+
+    // Any geometry that has been added to the decorator at this point will be turned into a graphic and added as a decoration
+    const branch = new GraphicBranch(false);
+    branch.add(this.createGraphics(context));
+    const graphic = context.createBranch(branch, Transform.identity);
+    context.addDecoration(GraphicType.Scene, graphic);
   }
 }
 
