@@ -39,6 +39,7 @@ interface ShowcaseState {
   sampleUI?: React.ReactNode;
   showEditor: boolean;
   showGallery: boolean;
+  dragging: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
@@ -63,6 +64,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       activeSampleName: names.sample,
       showEditor: true,
       showGallery: true,
+      dragging: false,
     };
 
   }
@@ -280,24 +282,53 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
   }
 
+  private _onDragStarted = () => {
+    this.setState({ dragging: true });
+  }
+
+  private _onDragFinished = () => {
+    this.setState({ dragging: false });
+  }
+
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     const readme = activeSample ? activeSample.readme : undefined;
     const files = activeSample ? activeSample.files : undefined;
 
+    const showEditor = this.state.showEditor;
+    const showGallery = this.state.showGallery;
+
+    /* To hide the side panels, we are setting their width to zero.  It would be better to translate them
+       off the screen but I can't make that work with the SplitPanel.  One negative side effect is that
+       the contents of the panels resize during the hide/show transition.  To prevent the user from seeing
+       the resize, we set the opacity to zero.
+
+       When closing, set the opacity to 0 immediately.  When opening, delay until the panel is fully open. */
+    const closeTransition = this.state.dragging ? {} : { transition: "width .2s ease" };
+    const openTransition = this.state.dragging ? {} : { transition: "width .2s ease, opacity .1s .2s" };
+    const closedPanelStyle = { ...closeTransition, width: "0", opacity: "0" };
+
+    const openEditorPanelStyle = { ...openTransition, maxWidth: "80%" };
+    const editorPanelStyle = showEditor ? openEditorPanelStyle : closedPanelStyle;
+
+    const openGalleryPanelStyle = { ...openTransition, maxWidth: "25%" };
+    const galleryPanelStyle = showGallery ? openGalleryPanelStyle : closedPanelStyle;
+
     return (
       <div className="showcase">
-        <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
-          <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
+        <SplitScreen primary="second" resizerStyle={showGallery ? undefined : { display: "none" }} minSize={showGallery ? 100 : 150} size={showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={galleryPanelStyle} onChange={this._onSampleGallerySizeChange} onDragStarted={this._onDragStarted} onDragEnd={this._onDragFinished}>
+          <SplitScreen style={{ position: "relative" }} resizerStyle={showEditor ? undefined : { display: "none" }} minSize={showEditor ? 190 : 210} size={showEditor ? 500 : 0} maxSize={1450} pane1Style={editorPanelStyle} onChange={this._onEditorSizeChange} onDragStarted={this._onDragStarted} onDragEnd={this._onDragFinished}>
             <ConnectedSampleEditor files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
             <div style={{ height: "100%" }}>
+              {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+              {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
-                {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
                 <ErrorBoundary>
                   {this.state.sampleUI || null}
                 </ErrorBoundary>
               </div>
-              {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
+              {showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
+              {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={() => this.setState({ showGallery: false })}><span className="icon icon-chevron-right"></span></Button>}
             </div>
           </SplitScreen>
           <SampleGallery ref={this._galleryRef} samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryCardClicked} onCollapse={() => this.setState({ showGallery: false })} />
