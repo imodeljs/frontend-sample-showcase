@@ -91,16 +91,18 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       const sampleImodels: string[] = Object.values(SampleIModels);
       if (sampleImodels.includes(iModelName)) {
         imodel = iModelName;
-      } else {
-        imodel = IModelSelector.defaultIModel;
       }
-    } else {
-      imodel = IModelSelector.defaultIModel;
     }
 
     if (!namesAreValid) {
       group = this._samples[0].groupName;
       sample = this._samples[0].samples[0].name;
+    }
+
+    if (!imodel) {
+      const spec = this.getSampleByName(group, sample)!;
+      const iModelList = this.getIModelList(spec);
+      imodel = iModelList[0];
     }
 
     return { group, sample, imodel };
