@@ -99,5 +99,3 @@ export const commuterViewCoordinates = [
     viewDirection: { x: -5.77259891891228, y: 5.3213922301327345, z: -14.339903818093948 },
   },
 ]
-
-

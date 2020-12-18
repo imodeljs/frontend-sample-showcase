@@ -18,39 +18,20 @@ export class AnimatedCameraTool extends PrimitiveTool {
   public onRestartTool(): void { this.exitTool(); }
 
   public async onMiddleButtonDown(_ev: BeButtonEvent): Promise<EventHandled> {
-    if (AnimatedCameraApp.isPaused)
-      return EventHandled.No;
-    else
-      return EventHandled.Yes;
+    return EventHandled.Yes;
   }
 
   public async onMouseWheel(_ev: BeWheelEvent): Promise<EventHandled> {
-    if (AnimatedCameraApp.isPaused)
-      return EventHandled.No;
-    else
-      return EventHandled.Yes;
+    return EventHandled.Yes;
   }
 
   public async onMouseStartDrag(_ev: BeWheelEvent): Promise<EventHandled> {
-    if (AnimatedCameraApp.isPaused)
-      return EventHandled.No;
-    else
-      return EventHandled.Yes;
+    return EventHandled.Yes;
   }
 
   public async onDataButtonDown(_ev: BeWheelEvent): Promise<EventHandled> {
-    if (AnimatedCameraApp.isPaused) {
-      if (AnimatedCameraApp.isUnlockDirectionOn) {
-        AnimatedCameraApp.keyDown = !AnimatedCameraApp.keyDown;
-        return EventHandled.Yes
-      }
-      else
-        return EventHandled.No;
-    }
-    else {
-      AnimatedCameraApp.keyDown = !AnimatedCameraApp.keyDown;
-      return EventHandled.Yes;
-    }
+    AnimatedCameraApp.keyDown = !AnimatedCameraApp.keyDown;
+    return EventHandled.Yes;
   }
 
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {

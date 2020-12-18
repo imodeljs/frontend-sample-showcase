@@ -23,7 +23,7 @@ export interface ViewportAndNavigationProps {
   /** View state to use when the viewport is first loaded */
   viewState: ViewState;
 
-  isIdleToolInvisible?: Boolean;
+  isIdleToolInvisible?: boolean;
 }
 
 /** Renders viewport, toolbar, and associated elements */
@@ -36,7 +36,7 @@ export class ViewportAndNavigation extends React.PureComponent<ViewportAndNaviga
           imodel={this.props.imodel}
           viewState={this.props.viewState}
         />
-        { !this.props.isIdleToolInvisible && toolbar()}
+        { (this.props.isIdleToolInvisible === undefined || this.props.isIdleToolInvisible === false) && toolbar()}
       </>
     );
   }
