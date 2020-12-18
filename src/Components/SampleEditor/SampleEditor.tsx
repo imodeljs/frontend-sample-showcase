@@ -149,12 +149,6 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
               <div className="icon icon-info" style={wantReadme ? { display: "inline-block", color: "white" } : { display: "inline-block" }}></div>
             </TabNavigationAction>
             {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunCompleted={this.props.onTranspiled} />}
-            <TabNavigationAction onClick={this.props.onCloseClick}>
-              <svg className="minimize-button">
-                <use href="icons.svg#minimize"></use>
-                <title>Minimize</title>
-              </svg>
-            </TabNavigationAction>
           </TabNavigation>
           <div style={{ height: "100%" }}>
             {wantReadme &&
