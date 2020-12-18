@@ -37,7 +37,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     if (!this.state.imodel || !this.state.viewState)
       ui = <StartupComponent iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />;
     else
-      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} isIdleToolInvisible={this.props.isNavigationToolInvisible} />;
+      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} isNavigationToolInvisible={this.props.isNavigationToolInvisible} />;
 
     return (
       <>
