@@ -8,7 +8,7 @@ import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
+import { IModelSelector } from "../IModelSelector/IModelSelector";
 import { ConnectedSampleEditor } from "../SampleEditor/SampleEditor";
 import { editorCommonActionContext, IInternalFile, SplitScreen } from "@bentley/monaco-editor/editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
@@ -85,22 +85,19 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       sample = urlSampleName;
     }
 
-    let imodel = "";
-
-    if (iModelName) {
-      const sampleImodels: string[] = Object.values(SampleIModels);
-      if (sampleImodels.includes(iModelName)) {
-        imodel = iModelName;
-      } else {
-        imodel = IModelSelector.defaultIModel;
-      }
-    } else {
-      imodel = IModelSelector.defaultIModel;
-    }
-
     if (!namesAreValid) {
       group = this._samples[0].groupName;
       sample = this._samples[0].samples[0].name;
+    }
+
+    let imodel = iModelName;
+    const spec = this.getSampleByName(group, sample)!;
+    const iModelList = this.getIModelList(spec);
+
+    if (0 === iModelList.length) {
+      imodel = "";
+    } else if (!imodel || !iModelList.includes(imodel)) {
+      imodel = iModelList[0];
     }
 
     return { group, sample, imodel };
