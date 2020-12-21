@@ -77,8 +77,22 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
         break;
       }
       case ActionType.Override: {
-        if (new OverrideAction(this.state.colorValue).run())
-          this.setState({ overrideIsActive: true });
+        setInterval(() => {
+          let colorValue = ColorDef.red;
+          this.setState({ colorValue });
+
+          setTimeout(() => {
+            if (new OverrideAction(this.state.colorValue).run())
+              this.setState({ overrideIsActive: true });
+            console.log('setTimeout - 1');
+          }, 1000);
+
+          setTimeout(() => {
+            if (new ClearOverrideAction().run())
+              this.setState({ overrideIsActive: false });
+            console.log('setTimeout - 2');
+          }, 3000);
+        }, 4000);
         break;
       }
     }
@@ -112,6 +126,8 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
 
   private _onToggleEmphasis = (wantEmphasis: boolean) => {
     this.setState({ wantEmphasis });
+    // this.setState({ ColorDef.blue });
+    this._handleActionButton(ActionType.Override)
   }
 
   private _onColorPick = (colorValue: ColorDef) => {
@@ -125,7 +141,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
         <div className="sample-options-4col">
           <span>Show IoT Alert</span>
           <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} disabled={this.state.selectionIsEmpty} />
-          {/* <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Emphasize)} disabled={this.state.selectionIsEmpty}>Apply</Button>
+          <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Emphasize)} disabled={this.state.selectionIsEmpty}>Apply</Button>
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Emphasize)} disabled={!this.state.emphasizeIsActive}>Clear</Button>
           <span>Hide</span>
           <span />
@@ -138,7 +154,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
           <span>Override</span>
           <ColorPickerButton initialColor={this.state.colorValue} onColorPick={this._onColorPick} disabled={this.state.selectionIsEmpty} />
           <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Override)} disabled={this.state.selectionIsEmpty}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Override)} disabled={!this.state.overrideIsActive}>Clear</Button> */}
+          <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Override)} disabled={!this.state.overrideIsActive}>Clear</Button>
         </div>
       </>
     );
