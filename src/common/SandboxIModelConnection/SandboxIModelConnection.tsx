@@ -11,6 +11,7 @@ import { StartupComponent } from "../Startup/Startup";
 
 export interface SandboxIModelConnectionProps {
   iModelName: string;
+  iModelName2?: string;
   onIModelReady?: (imodel: IModelConnection) => void;
 }
 
@@ -30,7 +31,7 @@ export class SandboxIModelConnection extends React.PureComponent<SandboxIModelCo
     let ui: React.ReactNode;
 
     if (!this.state.imodel)
-      ui = <StartupComponent iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />;
+      ui = <StartupComponent iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
 
     return (
       <>

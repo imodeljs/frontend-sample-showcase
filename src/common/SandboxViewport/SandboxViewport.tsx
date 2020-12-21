@@ -6,7 +6,7 @@ import * as React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
-import { StartupComponent } from "../Startup/Startup";
+import { SandboxIModelConnection } from "../SandboxIModelConnection/SandboxIModelConnection"
 
 export interface SandboxViewportProps {
   iModelName: string;
@@ -35,7 +35,7 @@ export class SandboxViewport extends React.PureComponent<SandboxViewportProps, S
     let ui: React.ReactNode;
 
     if (!this.state.imodel || !this.state.viewState)
-      ui = <StartupComponent iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
+      ui = <SandboxIModelConnection iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
     else
       ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} />;
 
