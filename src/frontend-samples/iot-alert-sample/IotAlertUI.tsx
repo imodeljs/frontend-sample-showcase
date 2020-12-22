@@ -4,33 +4,20 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { ColorPickerButton } from "@bentley/ui-components";
+import { Toggle } from "@bentley/ui-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { KeySet } from "@bentley/presentation-common";
 
 import { ColorDef } from "@bentley/imodeljs-common";
-import {
-  ClearEmphasizeAction, ClearHideAction, ClearIsolateAction, ClearOverrideAction,
-  EmphasizeAction, HideAction, IsolateAction, OverrideAction,
-} from "./IotAlertApp";
+import { ClearOverrideAction, OverrideAction } from "./IotAlertApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 
 /** React state of the Sample component */
 interface EmphasizeElementsState {
   selectionIsEmpty: boolean;
-  emphasizeIsActive: boolean;
-  hideIsActive: boolean;
-  isolateIsActive: boolean;
   overrideIsActive: boolean;
   wantEmphasis: boolean;
   colorValue: ColorDef;
-}
-
-enum ActionType {
-  Emphasize = "Emphasize",
-  Isolate = "Isolate",
-  Hide = "Hide",
-  Override = "Color",
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -41,9 +28,6 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     super(props);
     this.state = {
       selectionIsEmpty: true,
-      emphasizeIsActive: false,
-      hideIsActive: false,
-      isolateIsActive: false,
       overrideIsActive: false,
       wantEmphasis: false,
       colorValue: ColorDef.red,
@@ -55,93 +39,39 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
 
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
-    console.log(`_onSelectionChanged: ${selection.isEmpty}`);
+    //evt.imodel.selectionSet.replace("BuildingDataGroup:Slab");
+    //let keys = selection.elements;
+    // const keys = new KeySet(selection);
+    // console.log(keys);
+    // for (const key in selection) {
+    //   console.log(key);
+    // }
+    // console.log(keys.toJSON().instanceKeys[0][0]);
+    // console.log(`_onSelectionChanged: ${selection.isEmpty}`);
     this.setState({ selectionIsEmpty: selection.isEmpty });
-  }
-
-  private _handleActionButton = (type: ActionType) => {
-    switch (type) {
-      default:
-      case ActionType.Emphasize: {
-        if (new EmphasizeAction(this.state.wantEmphasis).run())
-          this.setState({ emphasizeIsActive: true });
-        break;
-      }
-      case ActionType.Isolate: {
-        if (new IsolateAction().run())
-          this.setState({ isolateIsActive: true });
-        break;
-      }
-      case ActionType.Hide: {
-        if (new HideAction().run())
-          this.setState({ hideIsActive: true });
-        break;
-      }
-      case ActionType.Override: {
-        if (!this.state.wantEmphasis) {
-          setInterval(() => {
-            console.log(`_handleActionButton: selectionIsEmpty is ${this.state.selectionIsEmpty}`);
-            let colorValue = ColorDef.red;
-            this.setState({ colorValue });
-
-            setTimeout(() => {
-              if (new OverrideAction(ColorDef.red).run())
-                this.setState({ overrideIsActive: true });
-              console.log('setTimeout - 1');
-            }, 1000);
-
-            // setTimeout(() => {
-            //   if (new OverrideAction(ColorDef.white).run())
-            //     this.setState({ overrideIsActive: true });
-            //   console.log('setTimeout - 2');
-            // }, 1000);
-
-            setTimeout(() => {
-              if (new ClearOverrideAction().run())
-                this.setState({ overrideIsActive: false });
-              console.log('setTimeout - 2');
-            }, 2000);
-          }, 2000);
-        }
-        break;
-      }
-    }
-  }
-
-  private _handleClearButton = (type: ActionType) => {
-    switch (type) {
-      default:
-      case ActionType.Emphasize: {
-        if (new ClearEmphasizeAction().run())
-          this.setState({ emphasizeIsActive: false });
-        break;
-      }
-      case ActionType.Isolate: {
-        if (new ClearIsolateAction().run())
-          this.setState({ isolateIsActive: false });
-        break;
-      }
-      case ActionType.Hide: {
-        if (new ClearHideAction().run())
-          this.setState({ hideIsActive: false });
-        break;
-      }
-      case ActionType.Override: {
-        if (new ClearOverrideAction().run())
-          this.setState({ overrideIsActive: false });
-        break;
-      }
-    }
   }
 
   private _onToggleEmphasis = (wantEmphasis: boolean) => {
     this.setState({ wantEmphasis });
-    // this.setState({ ColorDef.blue });
-    this._handleActionButton(ActionType.Override)
+    this.doBlinking();
   }
 
-  private _onColorPick = (colorValue: ColorDef) => {
-    this.setState({ colorValue });
+  private doBlinking = () => {
+    const timer = setInterval(() => {
+      setTimeout(() => {
+        if (new OverrideAction(ColorDef.red).run())
+          this.setState({ overrideIsActive: true });
+      }, 1000);
+
+      setTimeout(() => {
+        if (new ClearOverrideAction().run())
+          this.setState({ overrideIsActive: false });
+      }, 2000);
+
+      if (!this.state.wantEmphasis) {
+        clearInterval(timer);
+      }
+    }, 2000);
   }
 
   /** Components for rendering the sample's instructions and controls */
@@ -151,7 +81,6 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
         <div className="sample-options-4col">
           <span>Show IoT Alert</span>
           <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} disabled={this.state.selectionIsEmpty} />
-          {console.log(`Inside div: isOn toggle: ${this.state.wantEmphasis}`)}
         </div>
       </>
     );
