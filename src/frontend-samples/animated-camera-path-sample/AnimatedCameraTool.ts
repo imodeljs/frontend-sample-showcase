@@ -6,8 +6,11 @@ import { BeButtonEvent, BeWheelEvent, EventHandled, PrimitiveTool, Viewport, Vie
 import AnimatedCameraApp from "./AnimatedCameraApp";
 import { Angle, Matrix3d, Transform, Vector3d } from "@bentley/geometry-core";
 
+
 export class AnimatedCameraTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
+  public static viewport: Viewport;
+  public static keyDown: boolean = false;
 
   constructor() {
     super();
@@ -30,20 +33,20 @@ export class AnimatedCameraTool extends PrimitiveTool {
   }
 
   public async onDataButtonDown(_ev: BeWheelEvent): Promise<EventHandled> {
-    AnimatedCameraApp.keyDown = !AnimatedCameraApp.keyDown;
+    AnimatedCameraTool.keyDown = !AnimatedCameraTool.keyDown;
     return EventHandled.Yes;
   }
 
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
-    if (AnimatedCameraApp.isUnlockDirectionOn && AnimatedCameraApp.keyDown) {
-      const viewRect = AnimatedCameraApp.viewport.viewRect;
+    if (AnimatedCameraApp.isUnlockDirectionOn && AnimatedCameraTool.keyDown) {
+      const viewRect = AnimatedCameraTool.viewport.viewRect;
       const xExtent = viewRect.width;
       const yExtent = viewRect.height;
       const rotation = new Matrix3d();
       if (_ev.movement) {
         const xAngle = -(_ev.movement.x / xExtent * 2);
         const yAngle = -(_ev.movement.y / yExtent * 2);
-        rotation.setFrom(AnimatedCameraApp.viewport.rotation);
+        rotation.setFrom(AnimatedCameraTool.viewport.rotation);
         const inverseRotation = rotation.inverse();
         const horizontalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitZ(), Angle.createRadians(xAngle));
         const verticalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitX(), Angle.createRadians(yAngle));
@@ -51,9 +54,9 @@ export class AnimatedCameraTool extends PrimitiveTool {
           verticalRotation.multiplyMatrixMatrix(rotation, verticalRotation);
           inverseRotation.multiplyMatrixMatrix(verticalRotation, verticalRotation);
           const newRotation = horizontalRotation.multiplyMatrixMatrix(verticalRotation);
-          const transform8 = Transform.createFixedPointAndMatrix((AnimatedCameraApp.viewport.view as ViewState3d).camera.getEyePoint(), newRotation);
-          const frustum = AnimatedCameraApp.viewport.getFrustum().transformBy(transform8);
-          AnimatedCameraApp.viewport.setupViewFromFrustum(frustum);
+          const transform8 = Transform.createFixedPointAndMatrix((AnimatedCameraTool.viewport.view as ViewState3d).camera.getEyePoint(), newRotation);
+          const frustum = AnimatedCameraTool.viewport.getFrustum().transformBy(transform8);
+          AnimatedCameraTool.viewport.setupViewFromFrustum(frustum);
         }
       }
     }

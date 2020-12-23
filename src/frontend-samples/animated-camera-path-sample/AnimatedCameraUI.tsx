@@ -5,13 +5,15 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import AnimatedCameraApp, { AttrValues, CameraPoint } from "./AnimatedCameraApp";
+import AnimatedCameraApp, { AnimationSpeed, AttrValues, CameraPoint, PathDelay } from "./AnimatedCameraApp";
+import { AnimatedCameraTool } from "./AnimatedCameraTool";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
+import { Point3d, Vector3d } from "@bentley/geometry-core";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -26,10 +28,9 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   /** Creates a Sample instance */
   constructor(props?: any) {
     super(props);
-    this.state = { attrValues: { isPause: false, sliderValue: 0, isUnlockDirectionOn: false, speed: "Default" }, PathArray: [] };
+    this.state = { attrValues: { isPause: false, sliderValue: 0, isUnlockDirectionOn: false, speedLevel: "Default", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default }, PathArray: [] };
     this.handleCameraPlay = this.handleCameraPlay.bind(this);
   }
-
   // This common function is used to create the react components for each row of the UI.
   private createJSXElementForAttribute(label: string, element: JSX.Element) {
     return (
@@ -50,7 +51,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           this.handleCameraPathAnimation();
           AnimatedCameraApp.countPathTravelled = Number(sliderValue) - 1;
           this.updateTimeline();
-          AnimatedCameraApp.animateCameraSlider(this.state.PathArray, sliderValue)
+          AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray, sliderValue, this.state.vp)
         }
       }
       } />;
@@ -76,53 +77,84 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
         pathCompleted = false;
         break;
       }
-      await AnimatedCameraApp.animateCameraPath(cameraPoint, this.state.PathArray);
+      await AnimatedCameraApp.animateCameraPath(cameraPoint, this.state.PathArray, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.vp);
       this.updateTimeline();
     }
     if (pathCompleted) {
       AnimatedCameraApp.isInitialPositionStarted = false;
-      AnimatedCameraApp.ToolActivation();
+      AnimatedCameraApp.toolActivation();
     }
     this.updateTimeline();
   }
 
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const cameraPoints: CameraPoint[] = AnimatedCameraApp.ChangeRenderPath(event.target.value, this.state.PathArray[0]);
+    if (undefined === this.state.vp)
+      return;
+    AnimatedCameraApp.isInitialPositionStarted = false;
+    AnimatedCameraApp.isPaused = true;
+    AnimatedCameraApp.countPathTravelled = 0;
+    AnimatedCameraApp.isUnlockDirectionOn = false;
+    const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath(event.target.value);
+    (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(cameraPoints[0].point, cameraPoints[0].direction, new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+    this.state.vp.synchWithView();
+    AnimatedCameraApp.toolActivation();
     this.setState((previousState) =>
       ({ attrValues: { ...previousState.attrValues, isPause: AnimatedCameraApp.isPaused, sliderValue: AnimatedCameraApp.countPathTravelled, isUnlockDirectionOn: AnimatedCameraApp.isUnlockDirectionOn }, PathArray: cameraPoints }));
   }
 
   // Create the react components for the render Path
-  private createRenderPath(label: string) {
-    const options = {
-      TrainPath: "Train Path",
-      FlyoverPath: "Fly Over",
-      CommuterPath: "Commuter View",
-    }
+  private _createRenderPath(label: string) {
+    const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" }
     const element = <Select style={{ width: "fit-content", marginLeft: "34px" }} onChange={this._onChangeRenderPath} options={options} />;
     return this.createJSXElementForAttribute(label, element);
   }
 
   // Handle changes to the  Direction toggle.
   private _onChangeDirectionToggle = (checked: boolean) => {
-    AnimatedCameraApp.ChangeDirectionToggle(checked);
+    if (checked)
+      AnimatedCameraApp.isUnlockDirectionOn = true;
+    else
+      AnimatedCameraApp.isUnlockDirectionOn = false;
   }
 
   // Create the react components for the camera toggle row.
-  private createDirectionToggle(label: string) {
+  private _createDirectionToggle(label: string) {
     const element = <Toggle style={{ marginLeft: "30px" }} isOn={AnimatedCameraApp.isUnlockDirectionOn} onChange={(checked: boolean) => this._onChangeDirectionToggle(checked)} />;
     return this.createJSXElementForAttribute(label, element);
   }
 
   private _onChangeRenderSpeed = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const currentSpeed: string = event.target.value;
-    AnimatedCameraApp.ChangeRenderSpeed(currentSpeed);
+    let speedOfAnimation: number;
+    let delay: number;
+    switch (currentSpeed) {
+      case "Slowest":
+        speedOfAnimation = AnimationSpeed.Slowest;
+        delay = PathDelay.Fastest;
+        break;
+      case "Slower":
+        speedOfAnimation = AnimationSpeed.Slower;
+        delay = PathDelay.Faster;
+        break;
+      case "Default":
+        speedOfAnimation = AnimationSpeed.Default;
+        delay = PathDelay.Default;
+        break;
+      case "Faster":
+        speedOfAnimation = AnimationSpeed.Faster;
+        delay = PathDelay.Slower;
+        break;
+      case "Fastest":
+        speedOfAnimation = AnimationSpeed.Fastest;
+        delay = PathDelay.Slowest;
+        break;
+    }
     this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, speed: currentSpeed } }));
+      ({ attrValues: { ...previousState.attrValues, speedLevel: currentSpeed, animationSpeed: speedOfAnimation, pathDelay: delay } }));
   }
   //
   private createSpeedSlider(label: string) {
-    const element = <Select style={{ width: "80px", marginLeft: "28px" }} onChange={this._onChangeRenderSpeed} options={["Slowest", "Slower", "Default", "Faster", "Fastest"]} value={this.state.attrValues.speed} />
+    const element = <Select style={{ width: "80px", marginLeft: "28px" }} onChange={this._onChangeRenderSpeed} options={["Slowest", "Slower", "Default", "Faster", "Fastest"]} value={this.state.attrValues.speedLevel} />
     return this.createJSXElementForAttribute(label, element);
   }
 
@@ -130,7 +162,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     return (
       <div>
         <div className="sample-options-2col" style={{ maxWidth: "350px" }}>
-          {this.createRenderPath("Path")}
+          {this._createRenderPath("Path")}
         </div>
         <div className="sample-options-3col" style={{ maxWidth: "350px" }}>
           {this.createCameraSlider("Timeline")}
@@ -140,7 +172,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           {this.createSpeedSlider("Animation Speed")}
         </div>
         <div>
-          {this.createDirectionToggle("Unlock Direction")}
+          {this._createDirectionToggle("Unlock Direction")}
         </div>
       </div >
     );
@@ -150,15 +182,19 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     this.setState((previousState) =>
       ({ attrValues: { ...previousState.attrValues, isUnlockDirectionOn: AnimatedCameraApp.isUnlockDirectionOn, sliderValue: AnimatedCameraApp.countPathTravelled } }));
   }
-
+  //
   private onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
-      this.setState({ vp }, () => {
-        if (this.state.vp) {
-          const cameraPoints = AnimatedCameraApp.setupInitialValuesOnIModelReady(this.state.vp);
-          this.setState({ PathArray: cameraPoints });
-        }
-      });
+      AnimatedCameraApp.isInitialPositionStarted = false;
+      AnimatedCameraApp.isPaused = false;
+      AnimatedCameraApp.countPathTravelled = 0;
+      const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath("TrainPath");
+      this.setState({ vp, PathArray: cameraPoints });
+      if (this.state.vp) {
+        AnimatedCameraTool.viewport = vp;
+        (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(new Point3d(cameraPoints[0].point.x, cameraPoints[0].point.y, cameraPoints[0].point.z), new Point3d(cameraPoints[0].direction.x, cameraPoints[0].direction.y, cameraPoints[0].direction.z), new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+        this.state.vp.synchWithView();
+      }
     });
   }
 
