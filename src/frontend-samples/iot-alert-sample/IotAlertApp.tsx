@@ -40,6 +40,14 @@ abstract class EmphasizeActionBase {
       return false;
     }
 
+    if (vp) {
+      // Select some elements
+      const ids = new Set<string>();
+      ids.add("0x20000025cd4");//metro station
+      //ids.add("0x20000001381");//CoffsHarborDemo
+      vp.view.iModel.selectionSet.replace(ids);
+    }
+
     const emph = EmphasizeElements.getOrCreate(vp);
     return this.execute(emph, vp);
   }

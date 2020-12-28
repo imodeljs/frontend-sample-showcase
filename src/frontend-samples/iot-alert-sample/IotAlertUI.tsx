@@ -11,6 +11,7 @@ import { KeySet } from "@bentley/presentation-common";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ClearOverrideAction, OverrideAction } from "./IotAlertApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 
 /** React state of the Sample component */
 interface EmphasizeElementsState {
@@ -34,22 +35,22 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     };
 
     // subscribe for unified selection changes
-    Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
+    //Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
   }
 
-  private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
-    const selection = selectionProvider.getSelection(evt.imodel, evt.level);
-    //evt.imodel.selectionSet.replace("BuildingDataGroup:Slab");
-    //let keys = selection.elements;
-    // const keys = new KeySet(selection);
-    // console.log(keys);
-    // for (const key in selection) {
-    //   console.log(key);
-    // }
-    // console.log(keys.toJSON().instanceKeys[0][0]);
-    // console.log(`_onSelectionChanged: ${selection.isEmpty}`);
-    this.setState({ selectionIsEmpty: selection.isEmpty });
-  }
+  // private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
+  //   const selection = selectionProvider.getSelection(evt.imodel, evt.level);
+  //   //evt.imodel.selectionSet.replace("BuildingDataGroup:Slab");
+  //   //let keys = selection.elements;
+  //   const keys = new KeySet(selection);
+  //   console.log(keys);
+  //   for (const key in selection) {
+  //     console.log(key);
+  //   }
+  //   console.log(keys.toJSON().instanceKeys[0][0]);
+  //   console.log(`_onSelectionChanged: ${selection.isEmpty}`);
+  //   // this.setState({ selectionIsEmpty: selection.isEmpty });
+  // }
 
   private _onToggleEmphasis = (wantEmphasis: boolean) => {
     this.setState({ wantEmphasis });
@@ -80,7 +81,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
       <>
         <div className="sample-options-4col">
           <span>Show IoT Alert</span>
-          <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} disabled={this.state.selectionIsEmpty} />
+          <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} />
         </div>
       </>
     );
