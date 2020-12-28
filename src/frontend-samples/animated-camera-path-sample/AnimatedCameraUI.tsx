@@ -77,7 +77,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
         pathCompleted = false;
         break;
       }
-      await AnimatedCameraApp.animateCameraPath(cameraPoint, this.state.PathArray, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.vp);
+      await AnimatedCameraApp.animateCameraPath(cameraPoint, this.state.PathArray, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.isUnlockDirectionOn, this.state.vp);
       this.updateTimeline();
     }
     if (pathCompleted) {
@@ -93,13 +93,13 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     AnimatedCameraApp.isInitialPositionStarted = false;
     AnimatedCameraApp.isPaused = true;
     AnimatedCameraApp.countPathTravelled = 0;
-    AnimatedCameraApp.isUnlockDirectionOn = false;
+    AnimatedCameraTool.isUnlockDirectionOn = false;
     const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath(event.target.value);
     (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(cameraPoints[0].point, cameraPoints[0].direction, new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     this.state.vp.synchWithView();
     AnimatedCameraApp.toolActivation();
     this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, isPause: AnimatedCameraApp.isPaused, sliderValue: AnimatedCameraApp.countPathTravelled, isUnlockDirectionOn: AnimatedCameraApp.isUnlockDirectionOn }, PathArray: cameraPoints }));
+      ({ attrValues: { ...previousState.attrValues, isPause: AnimatedCameraApp.isPaused, sliderValue: AnimatedCameraApp.countPathTravelled, isUnlockDirectionOn: false }, PathArray: cameraPoints }));
   }
 
   // Create the react components for the render Path
@@ -111,15 +111,22 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
   // Handle changes to the  Direction toggle.
   private _onChangeDirectionToggle = (checked: boolean) => {
+    let unlockDirectionFlag: boolean;
     if (checked)
-      AnimatedCameraApp.isUnlockDirectionOn = true;
+      unlockDirectionFlag = true
+    // AnimatedCameraApp.isUnlockDirectionOn = true;
     else
-      AnimatedCameraApp.isUnlockDirectionOn = false;
+      unlockDirectionFlag = false;
+    // AnimatedCameraApp.isUnlockDirectionOn = false;
+    AnimatedCameraTool.isUnlockDirectionOn = unlockDirectionFlag;
+    this.setState((previousState) =>
+      ({ attrValues: { ...previousState.attrValues, isUnlockDirectionOn: unlockDirectionFlag } }));
+
   }
 
   // Create the react components for the camera toggle row.
   private _createDirectionToggle(label: string) {
-    const element = <Toggle style={{ marginLeft: "30px" }} isOn={AnimatedCameraApp.isUnlockDirectionOn} onChange={(checked: boolean) => this._onChangeDirectionToggle(checked)} />;
+    const element = <Toggle style={{ marginLeft: "30px" }} isOn={this.state.attrValues.isUnlockDirectionOn} onChange={(checked: boolean) => this._onChangeDirectionToggle(checked)} />;
     return this.createJSXElementForAttribute(label, element);
   }
 
@@ -180,7 +187,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
   public updateTimeline() {
     this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, isUnlockDirectionOn: AnimatedCameraApp.isUnlockDirectionOn, sliderValue: AnimatedCameraApp.countPathTravelled } }));
+      ({ attrValues: { ...previousState.attrValues, sliderValue: AnimatedCameraApp.countPathTravelled } }));
   }
   //
   private onIModelReady = (_imodel: IModelConnection) => {

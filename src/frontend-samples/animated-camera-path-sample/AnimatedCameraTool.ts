@@ -11,6 +11,8 @@ export class AnimatedCameraTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
   public static viewport: Viewport;
   public static keyDown: boolean = false;
+  public static isUnlockDirectionOn: boolean = false;
+  public static isAnimatedCameraToolActive: boolean = false;
 
   constructor() {
     super();
@@ -38,7 +40,7 @@ export class AnimatedCameraTool extends PrimitiveTool {
   }
 
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
-    if (AnimatedCameraApp.isUnlockDirectionOn && AnimatedCameraTool.keyDown) {
+    if (AnimatedCameraTool.isUnlockDirectionOn && AnimatedCameraTool.keyDown) {
       const viewRect = AnimatedCameraTool.viewport.viewRect;
       const xExtent = viewRect.width;
       const yExtent = viewRect.height;
