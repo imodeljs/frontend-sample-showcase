@@ -3,6 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { Point3d, Vector3d } from "@bentley/geometry-core";
+import { DecorateContext } from "@bentley/imodeljs-frontend";
+
 /** Created following this article:
  * http://nibunan.com/articles/article/how-to-create-realistic-fire-effect-in-html5-canvas-using-javascript
  */
@@ -65,6 +68,61 @@ export class SampleCanvas {
   public addObject(obj: SampleCanvasObject) {  this._objects.push(obj); }
 }
 
+export abstract class ParticleObject {
+  protected abstract _draw(context: DecorateContext, props: ParticleProps): void;
+  public abstract reset(): ParticleProps;
+
+  private _init = false;
+  protected _defaultProps = {
+    direction: Vector3d.unitY(),
+    // wind: 0,
+    speed: randomFloat(5) - 10,
+    radius: 20,
+    opacity: 255,
+    greenFactor: 255,
+    color: "rgb(255,255,0)",
+    location: Point3d.create(this.source.x + randomInt(40), this.source.y),
+  };
+  public props: ParticleProps = this._defaultProps;
+
+  constructor(public readonly source: Point3d, defaultProps?: ParticleProps) {
+    if (defaultProps)
+      this._defaultProps = defaultProps;
+    this.props = this._defaultProps;
+  }
+
+  public move() {
+    if (this.props.location.y < this.source.y - 20 || this.props.radius <= 1) {
+      this.props = this.reset();
+    }
+    this.props.radius += 20 / (300 / this.props.speed);
+    this.props.opacity += 255 / (300 / this.props.speed);
+    this.props.greenFactor += 255 / ((300 *  2) / this.props.speed);
+    // TODO# generic-ify color's "move"
+    this.props.color = `rgb(255,${(Math.floor(this.props.greenFactor) + 1)},0)`;
+    // this.props.location.x += this.props.wind;
+    this.props.location.x += this.props.direction.x * this.props.speed;
+    this.props.location.y += this.props.direction.y * this.props.speed;
+    this.props.location.z += this.props.direction.z * this.props.speed;
+  }
+
+  public paint(context: DecorateContext) {
+    if (!this._init) {
+      this.props = this.reset();
+      this._init = true;
+      for (let i = 0; i < 20; i += 1) this.move();
+    }
+    this.move();
+    this._draw(context, this.props);
+  }
+  protected randomFloat(range: number) {
+    return ((Math.random() * range) + 1);
+  }
+  protected randomInt(range: number) {
+    return Math.floor(this.randomFloat(range));
+  }
+}
+
 function randomFloat(range: number) {
   return ((Math.random() * range) + 1);
 }
@@ -76,25 +134,27 @@ export interface LocationXY {
   y: number;
 }
 export interface ParticleProps {
-  wind: number;
+  direction: Vector3d;
+  // wind: number;
   speed: number;
   radius: number;
   opacity: number;
   greenFactor: number;
   color: string;
-  location: LocationXY;
+  location: Point3d;
 }
 
 export class Particle implements SampleCanvasObject {
   public readonly source: LocationXY = { x: window.innerWidth / 2, y: (window.innerHeight / 2) + 100 };
-  private readonly _defaultProps = {
-    wind: 0,
+  private readonly _defaultProps: ParticleProps = {
+    direction: Vector3d.unitY(),
+    // wind: 0,
     speed: randomFloat(5) - 10,
     radius: 20,
     opacity: 255,
     greenFactor: 255,
     color: "rgb(255,255,0)",
-    location: { x: this.source.x + randomInt(40), y: this.source.y },
+    location: Point3d.create(this.source.x + randomInt(40), this.source.y, 0),
   };
   public props: ParticleProps = this._defaultProps;
 
@@ -104,13 +164,14 @@ export class Particle implements SampleCanvasObject {
   }
   public reset() {
     this.props = {
-      wind: this._defaultProps.wind,
-      speed: this._defaultProps.speed,
+      direction: Vector3d.unitY(),
+      // wind: this._defaultProps.wind,
+      speed: randomFloat(5) - 10,
       radius: this._defaultProps.radius,
       opacity: this._defaultProps.opacity,
       greenFactor: this._defaultProps.greenFactor,
       color: this._defaultProps.color,
-      location: { x: this.source.x + randomInt(40), y: this.source.y },
+      location: Point3d.create(this.source.x + randomInt(40), this.source.y),
     };
   }
 
@@ -122,7 +183,7 @@ export class Particle implements SampleCanvasObject {
     this.props.opacity += 255 / (300 / this.props.speed);
     this.props.greenFactor += 255 / ((300 *  2) / this.props.speed);
     this.props.color = `rgb(255,${(Math.floor(this.props.greenFactor) + 1)},0)`;
-    this.props.location.x += this.props.wind;
+    // this.props.location.x += this.props.wind;
     this.props.location.y += this.props.speed;
   }
 

@@ -12,7 +12,7 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { PlaceMarkerTool } from "frontend-samples/marker-pin-sample/PlaceMarkerTool";
 import * as React from "react";
-import { FireDecorator, FireDecoratorPoint } from "./FireDecorator";
+import { FireDecorator, FireDecoratorPoint, FireDecoratorSource } from "./FireDecorator";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -50,9 +50,10 @@ export default class FireDecorationUI extends React.Component<{ iModelName: stri
         const vp = IModelApp.viewManager.selectedView;
         if (undefined === vp)
           return;
-        IModelApp.tools.run(PlaceMarkerTool.toolId, (point: Point3d) => {
-          IModelApp.viewManager.addDecorator(new FireDecoratorPoint(point));
-        });
+        // IModelApp.tools.run(PlaceMarkerTool.toolId, (point: Point3d) => {
+        //   IModelApp.viewManager.addDecorator(new FireDecoratorSource(point, vp));
+        // });
+        FireDecoratorPoint.enable();
       }}>Placement</Button>
     </>);
   }
@@ -65,7 +66,7 @@ export default class FireDecorationUI extends React.Component<{ iModelName: stri
 
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
-    // Make edits here
+    // Make view edits here
 
     return viewState;
   }
