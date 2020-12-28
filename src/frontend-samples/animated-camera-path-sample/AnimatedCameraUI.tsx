@@ -45,17 +45,19 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private createCameraSlider(label: string) {
     const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "77px" }}
       onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const sliderValue: string = event.target.value;
+        const sliderNumber: string = event.target.value;
         AnimatedCameraApp.isPaused = true;
-        this.handleCameraPathAnimation();
-        AnimatedCameraApp.countPathTravelled = Number(sliderValue) - 1;
-        this.setState((previousState) =>
-          ({ attrValues: { ...previousState.attrValues, sliderValue: AnimatedCameraApp.countPathTravelled, isInitialPositionStarted: true } }), () => {
-            if (this.state.vp)
-              AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray, sliderValue, this.state.vp)
-            AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
-          });
-
+        setTimeout(() => {
+          let initialPositionStarted: boolean = true;
+          if (Number(sliderNumber) === this.state.PathArray.length - 1)
+            initialPositionStarted = false;
+          this.setState((previousState) =>
+            ({ attrValues: { ...previousState.attrValues, sliderValue: Number(sliderNumber), isInitialPositionStarted: initialPositionStarted } }), () => {
+              if (this.state.vp)
+                AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray, this.state.attrValues.sliderValue, this.state.vp)
+              AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
+            });
+        }, 20);
       }
       } />;
     return this.createJSXElementForAttribute(label, element);
@@ -69,10 +71,10 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       for (const coordinate of this.state.PathArray) {
         coordinate.isTraversed = false;
       }
-      AnimatedCameraApp.countPathTravelled = 0;
+      //AnimatedCameraApp.countPathTravelled = 0;
       AnimatedCameraApp.isPaused = false;
       this.setState((previousState) =>
-        ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: true } }), () => {
+        ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: true, sliderValue: 0 } }), () => {
           AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
           this.handleCameraPathAnimation();
         });
@@ -89,6 +91,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     if (undefined === this.state.vp)
       return;
     let pathCompleted: boolean = true;
+    let pathCountCompleted: number = 0;
     for (const cameraPoint of this.state.PathArray) {
       if (cameraPoint.isTraversed)
         continue;
@@ -96,8 +99,9 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
         pathCompleted = false;
         break;
       }
-      await AnimatedCameraApp.animateCameraPath(cameraPoint, this.state.PathArray, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.isUnlockDirectionOn, this.state.vp);
-      this.updateTimeline();
+      pathCountCompleted = await AnimatedCameraApp.animateCameraPath(cameraPoint, this.state.PathArray, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.isUnlockDirectionOn, this.state.attrValues.sliderValue, this.state.vp);
+      cameraPoint.isTraversed = true;
+      this.updateTimeline(pathCountCompleted);
     }
     if (pathCompleted) {
       this.setState((previousState) =>
@@ -105,21 +109,23 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
           AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
         });
     }
-    this.updateTimeline();
+    this.updateTimeline(pathCountCompleted);
   }
 
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (undefined === this.state.vp)
       return;
     AnimatedCameraApp.isPaused = true;
-    AnimatedCameraApp.countPathTravelled = 0;
+    // AnimatedCameraApp.countPathTravelled = 0;
     AnimatedCameraTool.isUnlockDirectionOn = false;
     const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath(event.target.value);
     (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(cameraPoints[0].point, cameraPoints[0].direction, new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     this.state.vp.synchWithView();
     AnimatedCameraApp.toolActivation(false);
-    this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, isPause: AnimatedCameraApp.isPaused, sliderValue: AnimatedCameraApp.countPathTravelled, isInitialPositionStarted: false, isUnlockDirectionOn: false }, PathArray: cameraPoints }));
+    setTimeout(() => {
+      this.setState((previousState) =>
+        ({ attrValues: { ...previousState.attrValues, isPause: AnimatedCameraApp.isPaused, sliderValue: 0, isInitialPositionStarted: false, isUnlockDirectionOn: false }, PathArray: cameraPoints }));
+    }, 0);
   }
 
   // Create the react components for the render Path
@@ -203,15 +209,14 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     );
   }
 
-  public updateTimeline() {
+  public updateTimeline(pathCountCompleted: number) {
     this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, sliderValue: AnimatedCameraApp.countPathTravelled } }));
+      ({ attrValues: { ...previousState.attrValues, sliderValue: pathCountCompleted } }));
   }
   //
   private onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
       AnimatedCameraApp.isPaused = false;
-      AnimatedCameraApp.countPathTravelled = 0;
       const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath("TrainPath");
       this.setState({ vp, PathArray: cameraPoints });
       if (this.state.vp) {

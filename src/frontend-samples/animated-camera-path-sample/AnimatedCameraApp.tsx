@@ -52,7 +52,6 @@ export default class AnimatedCameraApp implements SampleApp {
     return <AnimatedCameraUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
   private static _sampleNamespace: I18NNamespace;
-  public static countPathTravelled: number = 0
   public static isPaused: boolean = false;
 
 
@@ -68,7 +67,7 @@ export default class AnimatedCameraApp implements SampleApp {
     }
   }
 
-  public static async animateCameraPath(cameraPoint: CameraPoint, pathArray: CameraPoint[], animationSpeed: number, pathDelay: number, isUnlockDirectionOn: boolean, viewport: Viewport) {
+  public static async animateCameraPath(cameraPoint: CameraPoint, pathArray: CameraPoint[], animationSpeed: number, pathDelay: number, isUnlockDirectionOn: boolean, countPathTravelled: number, viewport: Viewport) {
     if (pathArray.indexOf(cameraPoint) % animationSpeed === 0) {
       if (!isUnlockDirectionOn)
         (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
@@ -77,15 +76,15 @@ export default class AnimatedCameraApp implements SampleApp {
       viewport.synchWithView();
       await AnimatedCameraApp.delay(pathDelay);
     }
-    cameraPoint.isTraversed = true;
-    AnimatedCameraApp.countPathTravelled++;
+
+    return ++countPathTravelled;
   }
 
-  public static setViewFromPointAndDirection(pathArray: CameraPoint[], sliderValue: string, viewport: Viewport) {
+  public static setViewFromPointAndDirection(pathArray: CameraPoint[], sliderValue: number, viewport: Viewport) {
     (viewport.view as ViewState3d).lookAtUsingLensAngle(pathArray[Number(sliderValue)].point, pathArray[Number(sliderValue)].direction, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     viewport.synchWithView();
     for (const coordinate of pathArray) {
-      if (pathArray.indexOf(coordinate) <= Number(sliderValue)) {
+      if (pathArray.indexOf(coordinate) <= sliderValue) {
         coordinate.isTraversed = true;
       }
       else
