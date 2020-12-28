@@ -46,25 +46,12 @@ export enum PathDelay {
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class AnimatedCameraApp implements SampleApp {
+  private static _sampleNamespace: I18NNamespace;
+
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     this._sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
     AnimatedCameraTool.register(this._sampleNamespace);
     return <AnimatedCameraUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-  private static _sampleNamespace: I18NNamespace;
-  public static isPaused: boolean = false;
-
-
-  // We will use this method to activate and deactivate the AnimatedCameraTool while animation is on and off respectively.The AnimatedCameraTool will prevent the view tool and standard mouse events when activated and when deactivated ,data and reset events will be directed to the Idle tool.
-  public static toolActivation(isInitialPositionStarted: boolean) {
-    if (!AnimatedCameraApp.isPaused && !AnimatedCameraTool.isAnimatedCameraToolActive) {
-      AnimatedCameraTool.isAnimatedCameraToolActive = true;
-      IModelApp.tools.run(AnimatedCameraTool.toolId);
-    }
-    else if ((!isInitialPositionStarted || AnimatedCameraApp.isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
-      AnimatedCameraTool.isAnimatedCameraToolActive = false;
-      IModelApp.tools.run(SelectionTool.toolId); // will stop the AnimatedCameraTool and run the default tool as mentioned here : https://www.itwinjs.org/learning/frontend/tools/#tooladmin
-    }
   }
 
   public static async animateCameraPath(cameraPoint: CameraPoint, pathArray: CameraPoint[], animationSpeed: number, pathDelay: number, isUnlockDirectionOn: boolean, countPathTravelled: number, viewport: Viewport) {
@@ -78,6 +65,21 @@ export default class AnimatedCameraApp implements SampleApp {
     }
 
     return ++countPathTravelled;
+  }
+
+  // We will use this method to activate and deactivate the AnimatedCameraTool while animation is on and off respectively.
+  // The AnimatedCameraTool will prevent the view tool and standard mouse events when activated 
+  // and when deactivated ,data and reset events will be directed to the Idle tool.
+  public static toolActivation(isInitialPositionStarted: boolean, isPaused: boolean) {
+    if (!isPaused && !AnimatedCameraTool.isAnimatedCameraToolActive) {
+      AnimatedCameraTool.isAnimatedCameraToolActive = true;
+      IModelApp.tools.run(AnimatedCameraTool.toolId);
+    }
+    else if ((!isInitialPositionStarted || isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
+      AnimatedCameraTool.isAnimatedCameraToolActive = false;
+      IModelApp.tools.run(SelectionTool.toolId); // will stop the AnimatedCameraTool  :
+      // and run the default tool as mentioned here : https://www.itwinjs.org/learning/frontend/tools/#tooladmin
+    }
   }
 
   public static setViewFromPointAndDirection(pathArray: CameraPoint[], sliderValue: number, viewport: Viewport) {

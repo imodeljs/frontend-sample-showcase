@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { BeButtonEvent, BeWheelEvent, EventHandled, PrimitiveTool, Viewport, ViewState3d, } from "@bentley/imodeljs-frontend";
-import AnimatedCameraApp from "./AnimatedCameraApp";
 import { Angle, Matrix3d, Transform, Vector3d } from "@bentley/geometry-core";
 
 
