@@ -25,6 +25,7 @@ export interface AttrValues {
   speedLevel: string;
   animationSpeed: number;
   pathDelay: number;
+  isInitialPositionStarted: boolean;
 }
 
 export enum AnimationSpeed {
@@ -52,33 +53,16 @@ export default class AnimatedCameraApp implements SampleApp {
   }
   private static _sampleNamespace: I18NNamespace;
   public static countPathTravelled: number = 0
-  public static isInitialPositionStarted: boolean = false;
   public static isPaused: boolean = false;
 
 
-  //
-  public static animateCameraPlay(pathArray: CameraPoint[]) {
-    if (!AnimatedCameraApp.isInitialPositionStarted) {
-      for (const coordinate of pathArray) {
-        coordinate.isTraversed = false;
-      }
-      AnimatedCameraApp.countPathTravelled = 0;
-      AnimatedCameraApp.isInitialPositionStarted = true;
-      AnimatedCameraApp.isPaused = false;
-    }
-    else {
-      AnimatedCameraApp.isPaused = !AnimatedCameraApp.isPaused;
-    }
-    AnimatedCameraApp.toolActivation();
-  }
-
   // We will use this method to activate and deactivate the AnimatedCameraTool while animation is on and off respectively.The AnimatedCameraTool will prevent the view tool and standard mouse events when activated and when deactivated ,data and reset events will be directed to the Idle tool.
-  public static toolActivation() {
+  public static toolActivation(isInitialPositionStarted: boolean) {
     if (!AnimatedCameraApp.isPaused && !AnimatedCameraTool.isAnimatedCameraToolActive) {
       AnimatedCameraTool.isAnimatedCameraToolActive = true;
       IModelApp.tools.run(AnimatedCameraTool.toolId);
     }
-    else if ((!AnimatedCameraApp.isInitialPositionStarted || AnimatedCameraApp.isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
+    else if ((!isInitialPositionStarted || AnimatedCameraApp.isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
       AnimatedCameraTool.isAnimatedCameraToolActive = false;
       IModelApp.tools.run(SelectionTool.toolId); // will stop the AnimatedCameraTool and run the default tool as mentioned here : https://www.itwinjs.org/learning/frontend/tools/#tooladmin
     }
@@ -98,7 +82,6 @@ export default class AnimatedCameraApp implements SampleApp {
   }
 
   public static setViewFromPointAndDirection(pathArray: CameraPoint[], sliderValue: string, viewport: Viewport) {
-    AnimatedCameraApp.isInitialPositionStarted = true;
     (viewport.view as ViewState3d).lookAtUsingLensAngle(pathArray[Number(sliderValue)].point, pathArray[Number(sliderValue)].direction, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     viewport.synchWithView();
     for (const coordinate of pathArray) {
@@ -108,7 +91,6 @@ export default class AnimatedCameraApp implements SampleApp {
       else
         coordinate.isTraversed = false;
     }
-    AnimatedCameraApp.toolActivation();
   }
 
   public static loadCameraPath(pathname: string): CameraPoint[] {

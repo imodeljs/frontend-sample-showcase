@@ -28,7 +28,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   /** Creates a Sample instance */
   constructor(props?: any) {
     super(props);
-    this.state = { attrValues: { isPause: false, sliderValue: 0, isUnlockDirectionOn: false, speedLevel: "Default", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default }, PathArray: [] };
+    this.state = { attrValues: { isPause: false, sliderValue: 0, isUnlockDirectionOn: false, speedLevel: "Default", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default, isInitialPositionStarted: false }, PathArray: [] };
     this.handleCameraPlay = this.handleCameraPlay.bind(this);
   }
   // This common function is used to create the react components for each row of the UI.
@@ -45,14 +45,17 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private createCameraSlider(label: string) {
     const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "77px" }}
       onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (this.state.vp) {
-          const sliderValue: string = event.target.value;
-          AnimatedCameraApp.isPaused = true;
-          this.handleCameraPathAnimation();
-          AnimatedCameraApp.countPathTravelled = Number(sliderValue) - 1;
-          this.updateTimeline();
-          AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray, sliderValue, this.state.vp)
-        }
+        const sliderValue: string = event.target.value;
+        AnimatedCameraApp.isPaused = true;
+        this.handleCameraPathAnimation();
+        AnimatedCameraApp.countPathTravelled = Number(sliderValue) - 1;
+        this.setState((previousState) =>
+          ({ attrValues: { ...previousState.attrValues, sliderValue: AnimatedCameraApp.countPathTravelled, isInitialPositionStarted: true } }), () => {
+            if (this.state.vp)
+              AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray, sliderValue, this.state.vp)
+            AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
+          });
+
       }
       } />;
     return this.createJSXElementForAttribute(label, element);
@@ -62,8 +65,24 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private handleCameraPlay() {
     if (undefined === this.state.vp)
       return;
-    AnimatedCameraApp.animateCameraPlay(this.state.PathArray)
-    this.handleCameraPathAnimation();
+    if (!this.state.attrValues.isInitialPositionStarted) {
+      for (const coordinate of this.state.PathArray) {
+        coordinate.isTraversed = false;
+      }
+      AnimatedCameraApp.countPathTravelled = 0;
+      AnimatedCameraApp.isPaused = false;
+      this.setState((previousState) =>
+        ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: true } }), () => {
+          AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
+          this.handleCameraPathAnimation();
+        });
+
+    }
+    else {
+      AnimatedCameraApp.isPaused = !AnimatedCameraApp.isPaused;
+      AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
+      this.handleCameraPathAnimation();
+    }
   }
 
   public async handleCameraPathAnimation() {
@@ -81,8 +100,10 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       this.updateTimeline();
     }
     if (pathCompleted) {
-      AnimatedCameraApp.isInitialPositionStarted = false;
-      AnimatedCameraApp.toolActivation();
+      this.setState((previousState) =>
+        ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: false } }), () => {
+          AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted);
+        });
     }
     this.updateTimeline();
   }
@@ -90,16 +111,15 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (undefined === this.state.vp)
       return;
-    AnimatedCameraApp.isInitialPositionStarted = false;
     AnimatedCameraApp.isPaused = true;
     AnimatedCameraApp.countPathTravelled = 0;
     AnimatedCameraTool.isUnlockDirectionOn = false;
     const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath(event.target.value);
     (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(cameraPoints[0].point, cameraPoints[0].direction, new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     this.state.vp.synchWithView();
-    AnimatedCameraApp.toolActivation();
+    AnimatedCameraApp.toolActivation(false);
     this.setState((previousState) =>
-      ({ attrValues: { ...previousState.attrValues, isPause: AnimatedCameraApp.isPaused, sliderValue: AnimatedCameraApp.countPathTravelled, isUnlockDirectionOn: false }, PathArray: cameraPoints }));
+      ({ attrValues: { ...previousState.attrValues, isPause: AnimatedCameraApp.isPaused, sliderValue: AnimatedCameraApp.countPathTravelled, isInitialPositionStarted: false, isUnlockDirectionOn: false }, PathArray: cameraPoints }));
   }
 
   // Create the react components for the render Path
@@ -113,11 +133,9 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private _onChangeDirectionToggle = (checked: boolean) => {
     let unlockDirectionFlag: boolean;
     if (checked)
-      unlockDirectionFlag = true
-    // AnimatedCameraApp.isUnlockDirectionOn = true;
+      unlockDirectionFlag = true;
     else
       unlockDirectionFlag = false;
-    // AnimatedCameraApp.isUnlockDirectionOn = false;
     AnimatedCameraTool.isUnlockDirectionOn = unlockDirectionFlag;
     this.setState((previousState) =>
       ({ attrValues: { ...previousState.attrValues, isUnlockDirectionOn: unlockDirectionFlag } }));
@@ -173,7 +191,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
         </div>
         <div className="sample-options-3col" style={{ maxWidth: "350px" }}>
           {this.createCameraSlider("Timeline")}
-          <button style={{ width: "35px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => this.handleCameraPlay()} >{AnimatedCameraApp.isInitialPositionStarted ? AnimatedCameraApp.isPaused ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
+          <button style={{ width: "35px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => this.handleCameraPlay()} >{this.state.attrValues.isInitialPositionStarted ? AnimatedCameraApp.isPaused ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
         </div>
         <div>
           {this.createSpeedSlider("Animation Speed")}
@@ -192,7 +210,6 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   //
   private onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
-      AnimatedCameraApp.isInitialPositionStarted = false;
       AnimatedCameraApp.isPaused = false;
       AnimatedCameraApp.countPathTravelled = 0;
       const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath("TrainPath");
@@ -216,7 +233,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     return (
       <>
         <ControlPane instructions="Use the timeline slider to drive the camera along the predefined path." controls={this.getControls()} ></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isNavigationToolInvisible={AnimatedCameraApp.isInitialPositionStarted ? !AnimatedCameraApp.isPaused : false} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isNavigationToolInvisible={this.state.attrValues.isInitialPositionStarted ? !AnimatedCameraApp.isPaused : false} />
       </>
     );
   }
