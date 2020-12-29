@@ -81,41 +81,36 @@ export default class AnimatedCameraApp implements SampleApp {
     }
   }
 
+  // load the Coordinates while onModelReady and changing the Camera Path
   public static loadCameraPath(pathName: string): CameraPoint[] {
     const trainPathInterpolateValue: number = 0.00015; // Fraction of interpolation to get coordinates of Train Path
     const flyoverPathInterpolateValue: number = 0.00020; // Fraction of interpolation to get coordinates of Flyover Path
     const commuterPathInterpolateValue: number = 0.00250; // Fraction of interpolation to get coordinates of commuter Path
     const cameraPoints: CameraPoint[] = [];
+    let pathInterpolationValue: number;
+    let currentPathCoordinates: typeof trainPathCoordinates = [];
     switch (pathName) {
       case "TrainPath":
-        trainPathCoordinates.forEach((item, index) => {
-          if (index !== trainPathCoordinates.length - 1) {
-            for (let j: number = 0.00; j <= 1.0; j = j + trainPathInterpolateValue) {
-              cameraPoints.push({ point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(trainPathCoordinates[index + 1].cameraPoint.x, trainPathCoordinates[index + 1].cameraPoint.y, trainPathCoordinates[index + 1].cameraPoint.z)), direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(trainPathCoordinates[index + 1].viewDirection.x, trainPathCoordinates[index + 1].viewDirection.y, trainPathCoordinates[index + 1].viewDirection.z)), isTraversed: false });
-            }
-          }
-        });
+        pathInterpolationValue = trainPathInterpolateValue;
+        currentPathCoordinates = trainPathCoordinates;
         break;
 
       case "FlyoverPath":
-        flyoverCoordinates.forEach((item, index) => {
-          if (index !== flyoverCoordinates.length - 1) {
-            for (let j: number = 0.00; j <= 1.0; j = j + flyoverPathInterpolateValue) {
-              cameraPoints.push({ point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(flyoverCoordinates[index + 1].cameraPoint.x, flyoverCoordinates[index + 1].cameraPoint.y, flyoverCoordinates[index + 1].cameraPoint.z)), direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(flyoverCoordinates[index + 1].viewDirection.x, flyoverCoordinates[index + 1].viewDirection.y, flyoverCoordinates[index + 1].viewDirection.z)), isTraversed: false });
-            }
-          }
-        });
+        pathInterpolationValue = flyoverPathInterpolateValue;
+        currentPathCoordinates = flyoverCoordinates;
         break;
 
       case "CommuterPath":
-        commuterViewCoordinates.forEach((item, index) => {
-          if (index !== commuterViewCoordinates.length - 1) {
-            for (let j: number = 0.00; j <= 1.0; j = j + commuterPathInterpolateValue) {
-              cameraPoints.push({ point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(commuterViewCoordinates[index + 1].cameraPoint.x, commuterViewCoordinates[index + 1].cameraPoint.y, commuterViewCoordinates[index + 1].cameraPoint.z)), direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(commuterViewCoordinates[index + 1].viewDirection.x, commuterViewCoordinates[index + 1].viewDirection.y, commuterViewCoordinates[index + 1].viewDirection.z)), isTraversed: false });
-            }
-          }
-        });
+        pathInterpolationValue = commuterPathInterpolateValue;
+        currentPathCoordinates = commuterViewCoordinates;
     }
+    currentPathCoordinates.forEach((item, index) => {
+      if (index !== currentPathCoordinates.length - 1) {
+        for (let j: number = 0.00; j <= 1.0; j = j + pathInterpolationValue) {
+          cameraPoints.push({ point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z)), direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z)), isTraversed: false });
+        }
+      }
+    });
     return cameraPoints;
   }
 
