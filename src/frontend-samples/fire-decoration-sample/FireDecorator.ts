@@ -172,7 +172,7 @@ export class FireDecoratorPoint implements Decorator {
     try {
       texture = IModelApp.renderSystem.createTextureFromImage(this.image, true, vp.iModel, new RenderTexture.Params(undefined, RenderTexture.Type.Normal, true));
     } catch (error) {
-      throw error;
+      console.debug(error);
     }
 
     if (!texture)
