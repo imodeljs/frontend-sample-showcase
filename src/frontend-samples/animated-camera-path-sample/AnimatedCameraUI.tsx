@@ -33,7 +33,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   }
 
   // This common function is used to create the react components for each row of the UI.
-  private createJSXElementForAttribute(label: string, element: JSX.Element) {
+  private _createJSXElementForAttribute(label: string, element: JSX.Element) {
     return (
       <>
         <span style={{ marginLeft: "8px", marginRight: "0px" }}>{label}</span>
@@ -65,7 +65,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
         }
       }
       } />;
-    return this.createJSXElementForAttribute(label, element);
+    return this._createJSXElementForAttribute(label, element);
   }
 
   // Update the States for the Play/Pause button click event
@@ -133,7 +133,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private _createRenderPath(label: string) {
     const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" }
     const element = <Select style={{ width: "fit-content", marginLeft: "34px" }} onChange={this._onChangeRenderPath} options={options} />;
-    return this.createJSXElementForAttribute(label, element);
+    return this._createJSXElementForAttribute(label, element);
   }
 
   // Handle changes to the  Direction toggle.
@@ -150,7 +150,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   // Create the react components for the camera Direction toggle
   private _createDirectionToggle(label: string) {
     const element = <Toggle style={{ marginLeft: "30px" }} isOn={this.state.attrValues.isUnlockDirectionOn} onChange={(checked: boolean) => this._onChangeDirectionToggle(checked)} />;
-    return this.createJSXElementForAttribute(label, element);
+    return this._createJSXElementForAttribute(label, element);
   }
 
   // Handle the speed level change
@@ -186,7 +186,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
     const element = <Select style={{ width: "80px", marginLeft: "28px" }} onChange={this._onChangeRenderSpeed} options={["Slowest", "Slower", "Default", "Faster", "Fastest"]} value={this.state.attrValues.speedLevel} />
-    return this.createJSXElementForAttribute(label, element);
+    return this._createJSXElementForAttribute(label, element);
   }
 
   public getControls(): React.ReactNode {
