@@ -168,14 +168,12 @@ export class FireDecoratorPoint implements Decorator {
 
   private createFireGeometry(context: DecorateContext) {
     const vp = context.viewport;
-
-    const texture = IModelApp.renderSystem.createTextureFromImage(this.image, true, vp.iModel, {
-      isTileSection: false,
-      isSkyBox: false,
-      isGlyph: false,
-      isOwned: true,
-      type: RenderTexture.Type.Normal,
-    });
+    let texture;
+    try {
+      texture = IModelApp.renderSystem.createTextureFromImage(this.image, true, vp.iModel, new RenderTexture.Params(undefined, RenderTexture.Type.Normal, true));
+    } catch (error) {
+      throw error;
+    }
 
     if (!texture)
       return;
