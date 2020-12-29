@@ -18,7 +18,7 @@ export interface CameraPoint {
   direction: Point3d;
   isTraversed: boolean;
 }
-export interface AttrValues {
+export interface AnimatedCameraAttrValues {
   isPause: boolean;
   sliderValue: number;
   isUnlockDirectionOn: boolean;
@@ -28,6 +28,7 @@ export interface AttrValues {
   isInitialPositionStarted: boolean;
 }
 
+// The level of Animation Speed
 export enum AnimationSpeed {
   Slowest = 1,
   Slower,
@@ -36,6 +37,7 @@ export enum AnimationSpeed {
   Fastest
 }
 
+// For Delay between two Coordinates while animation is Active
 export enum PathDelay {
   Slowest = 1,
   Slower = 10,
@@ -67,21 +69,6 @@ export default class AnimatedCameraApp implements SampleApp {
     return ++countPathTravelled;
   }
 
-  // We will use this method to activate and deactivate the AnimatedCameraTool while animation is on and off respectively.
-  // The AnimatedCameraTool will prevent the view tool and standard mouse events when activated 
-  // and when deactivated ,data and reset events will be directed to the Idle tool.
-  public static toolActivation(isInitialPositionStarted: boolean, isPaused: boolean) {
-    if (!isPaused && !AnimatedCameraTool.isAnimatedCameraToolActive) {
-      AnimatedCameraTool.isAnimatedCameraToolActive = true;
-      IModelApp.tools.run(AnimatedCameraTool.toolId);
-    }
-    else if ((!isInitialPositionStarted || isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
-      AnimatedCameraTool.isAnimatedCameraToolActive = false;
-      IModelApp.tools.run(SelectionTool.toolId); // will stop the AnimatedCameraTool  :
-      // and run the default tool as mentioned here : https://www.itwinjs.org/learning/frontend/tools/#tooladmin
-    }
-  }
-
   public static setViewFromPointAndDirection(pathArray: CameraPoint[], sliderValue: number, viewport: Viewport) {
     (viewport.view as ViewState3d).lookAtUsingLensAngle(pathArray[Number(sliderValue)].point, pathArray[Number(sliderValue)].direction, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     viewport.synchWithView();
@@ -94,12 +81,12 @@ export default class AnimatedCameraApp implements SampleApp {
     }
   }
 
-  public static loadCameraPath(pathname: string): CameraPoint[] {
+  public static loadCameraPath(pathName: string): CameraPoint[] {
     const trainPathInterpolateValue: number = 0.00015; // Fraction of interpolation to get coordinates of Train Path
-    const flyoverPathInterpolateValue: number = 0.0002; // Fraction of interpolation to get coordinates of Flyover Path
-    const commuterPathInterpolateValue: number = 0.0025; // Fraction of interpolation to get coordinates of commuter Path
+    const flyoverPathInterpolateValue: number = 0.00020; // Fraction of interpolation to get coordinates of Flyover Path
+    const commuterPathInterpolateValue: number = 0.00250; // Fraction of interpolation to get coordinates of commuter Path
     const cameraPoints: CameraPoint[] = [];
-    switch (pathname) {
+    switch (pathName) {
       case "TrainPath":
         trainPathCoordinates.forEach((item, index) => {
           if (index !== trainPathCoordinates.length - 1) {
@@ -132,6 +119,22 @@ export default class AnimatedCameraApp implements SampleApp {
     return cameraPoints;
   }
 
+  // We will use this method to activate and deactivate the AnimatedCameraTool while animation is on and off respectively
+  // The AnimatedCameraTool will prevent the view tool and standard mouse events when activated
+  // and when deactivated ,data and reset events will be directed to the Idle tool
+  public static toolActivation(isInitialPositionStarted: boolean, isPaused: boolean) {
+    if (!isPaused && !AnimatedCameraTool.isAnimatedCameraToolActive) {
+      AnimatedCameraTool.isAnimatedCameraToolActive = true;
+      IModelApp.tools.run(AnimatedCameraTool.toolId);
+    }
+    else if ((!isInitialPositionStarted || isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
+      AnimatedCameraTool.isAnimatedCameraToolActive = false;
+      IModelApp.tools.run(SelectionTool.toolId); // will stop the AnimatedCameraTool  :
+      // and run the default tool as mentioned here : https://www.itwinjs.org/learning/frontend/tools/#tooladmin
+    }
+  }
+
+  // For Delay between two Coordinates while animation is Active
   public static async delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
