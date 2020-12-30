@@ -4,14 +4,23 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { Toggle } from "@bentley/ui-core";
+import { MessageRenderer, Toggle } from "@bentley/ui-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { KeySet } from "@bentley/presentation-common";
 
 import { ColorDef } from "@bentley/imodeljs-common";
 import { ClearOverrideAction, OverrideAction } from "./IotAlertApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp, MessageBoxIconType, MessageBoxType, NotifyMessageDetails, OutputMessagePriority } from "@bentley/imodeljs-frontend";
+import { SampleAppUiComponent } from "common/AppUi/SampleAppUiComponent";
+import { useState } from "react";
+import Toast from 'react-bootstrap/Toast';
+import ToastHeader from 'react-bootstrap/ToastHeader';
+import ToastBody from 'react-bootstrap/ToastBody';
+import Button from 'react-bootstrap/Button'
+import { Row, Col } from 'react-bootstrap';
+import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
+import { ReactNotifyMessageDetails } from "@bentley/ui-framework";
 
 /** React state of the Sample component */
 interface EmphasizeElementsState {
@@ -55,6 +64,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
   private _onToggleEmphasis = (wantEmphasis: boolean) => {
     this.setState({ wantEmphasis });
     this.doBlinking();
+    //  IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Info, "Hello from the toolbar button you added."))
   }
 
   private doBlinking = () => {
@@ -82,18 +92,47 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
         <div className="sample-options-4col">
           <span>Show IoT Alert</span>
           <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} />
+
         </div>
       </>
     );
   }
 
+  private Example() {
+    const [show, setShow] = useState(false);
+
+    return (
+      <Row>
+        <Col xs={6}>
+          <Toast onClose={() => setShow(false)} show={true}>
+            <Toast.Header>
+              <img
+                src="holder.js/20x20?text=%20"
+                className="rounded mr-2"
+                alt=""
+              />
+            </Toast.Header>
+            <Toast.Body><Button variant="link">Link</Button></Toast.Body>
+          </Toast>
+        </Col>
+      </Row>
+    );
+  }
+
+
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ControlPane instructions="Select one or more elements indicating IoT sensor(s). Set the IoT alert toggle ON." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        {}
+        <ControlPane instructions="Set the IoT alert toggle ON to display observed elements." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+
         <ReloadableViewport iModelName={this.props.iModelName} />
+
       </>
+
+
+
     );
   }
 }

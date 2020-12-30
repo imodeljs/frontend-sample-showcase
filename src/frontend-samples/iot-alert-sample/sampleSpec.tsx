@@ -9,8 +9,8 @@ import { SampleIModels } from "Components/IModelSelector/IModelSelector";
 export function getIotAlertSpec(): SampleSpec {
   return ({
     name: "iot-alert-sample",
-    label: "IOT Alerts",
-    image: "iot-alert-thumbnail.png",
+    label: "IoT Alerts",
+    image: "IoT-Alert-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "IotAlertApp.tsx", import: import("!!raw-loader!./IotAlertApp"), entry: true },
