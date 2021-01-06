@@ -18,32 +18,22 @@ export interface CameraPoint {
   direction: Point3d;
   isTraversed: boolean;
 }
-export interface AnimatedCameraAttrValues {
-  isPause: boolean;
-  sliderValue: number;
-  isUnlockDirectionOn: boolean;
-  speedLevel: string;
-  animationSpeed: number;
-  pathDelay: number;
-  isInitialPositionStarted: boolean;
-}
 
-// The level of Animation Speed
+// The level of Animation Speed, will regulate the speed
 export enum AnimationSpeed {
-  Slowest = 1,
-  Slower,
-  Default,
-  Faster,
-  Fastest
+  Default = 1,  // Travel all coordinates
+  Fast = 3,     // Travel every 3rd coordinate
+  Faster,   // Travel every 4th coordinate
+  Fastest  // Travel every 5th coordinate
 }
 
 // For Delay between two Coordinates while animation is Active
 export enum PathDelay {
-  Slowest = 1,
-  Slower = 10,
-  Default = 20,
-  Faster = 30,
-  Fastest = 40
+  Slowest = 30,
+  Default = 5,
+  Fast = 2,
+  Faster = 1,
+  Fastest = 0.01
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
@@ -75,39 +65,28 @@ export default class AnimatedCameraApp implements SampleApp {
     for (const coordinate of pathArray) {
       if (pathArray.indexOf(coordinate) <= sliderValue) {
         coordinate.isTraversed = true;
-      }
-      else
+      } else
         coordinate.isTraversed = false;
     }
   }
 
-  // load the Coordinates while onModelReady and changing the Camera Path
+  // load the Coordinates while onIModelReady and changing the Camera Path
   public static loadCameraPath(pathName: string): CameraPoint[] {
-    const trainPathInterpolateValue: number = 0.00015; // Fraction of interpolation to get coordinates of Train Path
-    const flyoverPathInterpolateValue: number = 0.00020; // Fraction of interpolation to get coordinates of Flyover Path
-    const commuterPathInterpolateValue: number = 0.00250; // Fraction of interpolation to get coordinates of commuter Path
+    const pathSpeed = 1.4 // The normal human walking Speed is 1.4 meters/second
+    const stepsPerSecond = 30; //  In order to know  how much steps it will take to move between successive coordinates,consider camera movement as 30 steps/second and then multiply it by duration to travel between successive coordinates
+    let pathDistance: number; // Distance between two Coordinates
+    let pathTotalSteps: number;
     const cameraPoints: CameraPoint[] = [];
-    let pathInterpolationValue: number;
-    let currentPathCoordinates: typeof trainPathCoordinates = [];
-    switch (pathName) {
-      case "TrainPath":
-        pathInterpolationValue = trainPathInterpolateValue;
-        currentPathCoordinates = trainPathCoordinates;
-        break;
-
-      case "FlyoverPath":
-        pathInterpolationValue = flyoverPathInterpolateValue;
-        currentPathCoordinates = flyoverCoordinates;
-        break;
-
-      case "CommuterPath":
-        pathInterpolationValue = commuterPathInterpolateValue;
-        currentPathCoordinates = commuterViewCoordinates;
-    }
+    const currentPathCoordinates = pathName === "TrainPath" ? trainPathCoordinates : (pathName === "FlyoverPath" ? flyoverCoordinates : commuterViewCoordinates);
     currentPathCoordinates.forEach((item, index) => {
       if (index !== currentPathCoordinates.length - 1) {
-        for (let j: number = 0.00; j <= 1.0; j = j + pathInterpolationValue) {
-          cameraPoints.push({ point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j, new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z)), direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j, new Point3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z)), isTraversed: false });
+        if (pathDistance = new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).distance(new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z))) // Two coordinates can be same as a commuter can look around at a particular position
+          pathTotalSteps = stepsPerSecond * (pathDistance / pathSpeed);  // stepsPerSecond * Duration to travel between two coordinates with constant speed
+        else if (pathDistance = new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).distance(new Point3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z)))
+          pathTotalSteps = stepsPerSecond * (pathDistance / pathSpeed); // stepsPerSecond * Duration to travel between two ViewDirection coordinates at a particular coordinate with constant speed
+        // for each current step calculate the interpolation value by evaluating current step/total no of steps
+        for (let j: number = 0; j <= pathTotalSteps; j++) {
+          cameraPoints.push({ point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j / pathTotalSteps, new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z)), direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j / pathTotalSteps, new Point3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z)), isTraversed: false });
         }
       }
     });
@@ -121,8 +100,7 @@ export default class AnimatedCameraApp implements SampleApp {
     if (!isPaused && !AnimatedCameraTool.isAnimatedCameraToolActive) {
       AnimatedCameraTool.isAnimatedCameraToolActive = true;
       IModelApp.tools.run(AnimatedCameraTool.toolId);
-    }
-    else if ((!isInitialPositionStarted || isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
+    } else if ((!isInitialPositionStarted || isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
       AnimatedCameraTool.isAnimatedCameraToolActive = false;
       IModelApp.tools.run(SelectionTool.toolId); // will stop the AnimatedCameraTool  :
       // and run the default tool as mentioned here : https://www.itwinjs.org/learning/frontend/tools/#tooladmin

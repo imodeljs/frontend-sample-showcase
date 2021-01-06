@@ -9,7 +9,7 @@ import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d } from "@
 import { Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import AnimatedCameraApp, { AnimatedCameraAttrValues, AnimationSpeed, CameraPoint, PathDelay } from "./AnimatedCameraApp";
+import AnimatedCameraApp, { AnimationSpeed, CameraPoint, PathDelay } from "./AnimatedCameraApp";
 import { AnimatedCameraTool } from "./AnimatedCameraTool";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -19,7 +19,15 @@ import { Point3d, Vector3d } from "@bentley/geometry-core";
 /** The React state for this UI component */
 interface AnimatedCameraAttributesState {
   vp?: Viewport;
-  attrValues: AnimatedCameraAttrValues;
+  attrValues: {
+    isPause: boolean;
+    sliderValue: number;
+    isUnlockDirectionOn: boolean;
+    speedLevel: string;
+    animationSpeed: number;
+    pathDelay: number;
+    isInitialPositionStarted: boolean;
+  };
   PathArray: CameraPoint[];
 }
 
@@ -28,7 +36,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   /** Creates a Sample instance */
   constructor(props?: any) {
     super(props);
-    this.state = { attrValues: { isPause: false, sliderValue: 0, isUnlockDirectionOn: false, speedLevel: "Default", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default, isInitialPositionStarted: false }, PathArray: [] };
+    this.state = { attrValues: { isPause: false, sliderValue: 0, isUnlockDirectionOn: false, speedLevel: "3 Mph: Walking", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default, isInitialPositionStarted: false }, PathArray: [] };
     this._handleCameraPlay = this._handleCameraPlay.bind(this);
   }
 
@@ -80,8 +88,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       }
       timelineValue = 0;
       isCameraPaused = false;
-    }
-    else {
+    } else {
       timelineValue = this.state.attrValues.sliderValue;
       isCameraPaused = !this.state.attrValues.isPause;
     }
@@ -159,25 +166,25 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
     let speedOfAnimation: number;
     let delay: number;
     switch (currentSpeed) {
-      case "Slowest":
-        speedOfAnimation = AnimationSpeed.Slowest;
-        delay = PathDelay.Fastest;
+      case "1 Mph: Slow Walk":
+        speedOfAnimation = AnimationSpeed.Default;
+        delay = PathDelay.Slowest;
         break;
-      case "Slower":
-        speedOfAnimation = AnimationSpeed.Slower;
-        delay = PathDelay.Faster;
-        break;
-      case "Default":
+      case "3 Mph: Walking":
         speedOfAnimation = AnimationSpeed.Default;
         delay = PathDelay.Default;
         break;
-      case "Faster":
-        speedOfAnimation = AnimationSpeed.Faster;
-        delay = PathDelay.Slower;
+      case "30 Mph: Car":
+        speedOfAnimation = AnimationSpeed.Fast;
+        delay = PathDelay.Fast;
         break;
-      case "Fastest":
+      case "60 Mph: Fast Car":
+        speedOfAnimation = AnimationSpeed.Faster;
+        delay = PathDelay.Faster;
+        break;
+      case "150 Mph: Airplane":
         speedOfAnimation = AnimationSpeed.Fastest;
-        delay = PathDelay.Slowest;
+        delay = PathDelay.Fastest;
         break;
     }
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, speedLevel: currentSpeed, animationSpeed: speedOfAnimation, pathDelay: delay } }));
@@ -185,7 +192,7 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
-    const element = <Select style={{ width: "80px", marginLeft: "28px" }} onChange={this._onChangeRenderSpeed} options={["Slowest", "Slower", "Default", "Faster", "Fastest"]} value={this.state.attrValues.speedLevel} />
+    const element = <Select style={{ width: "140px", marginLeft: "28px" }} onChange={this._onChangeRenderSpeed} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} />
     return this._createJSXElementForAttribute(label, element);
   }
 
@@ -213,8 +220,8 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
   private _updateTimeline(pathCountCompleted: number) {
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: pathCountCompleted } }));
   }
-  //
-  private onIModelReady = (_imodel: IModelConnection) => {
+
+  public onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
       const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath("TrainPath");
       this.setState({ vp, PathArray: cameraPoints }, () => {
