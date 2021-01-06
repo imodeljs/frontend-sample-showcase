@@ -16,3 +16,27 @@
   font-size: 12px;
   font-style: italic;
 }
+
+@import "@bentley/ui-core/lib/ui-core/index";
+
+.message-span {
+  display: flex;
+  position: absolute;
+  top: 60%;
+  justify-content: center;
+  color: red;
+}
+
+.button-to-issue {
+  display: flex;
+  overflow: hidden;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 100px;
+  height: 30px;
+  justify-content: center;
+  border-color: red;
+  border-radius: 5px;
+  color: red;
+}
