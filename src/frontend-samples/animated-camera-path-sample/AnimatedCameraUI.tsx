@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, Viewport, ViewState, ViewState3d } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -13,7 +13,6 @@ import AnimatedCameraApp, { AnimationSpeed, CameraPoint, PathDelay } from "./Ani
 import { AnimatedCameraTool } from "./AnimatedCameraTool";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { Point3d, Vector3d } from "@bentley/geometry-core";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -56,7 +55,13 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
       initialPositionStarted = false;
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: sliderNumber, isInitialPositionStarted: initialPositionStarted } }), () => {
       if (this.state.vp)
-        AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray, this.state.attrValues.sliderValue, this.state.vp)
+        AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray[this.state.attrValues.sliderValue], this.state.vp);
+      for (const coordinate of this.state.PathArray) {
+        if (this.state.PathArray.indexOf(coordinate) <= this.state.attrValues.sliderValue)
+          coordinate.isTraversed = true;
+        else
+          coordinate.isTraversed = false;
+      }
       AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted, this.state.attrValues.isPause);
     });
   }
@@ -122,13 +127,12 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
   // Handle the Path Change
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath(event.target.value);
+    const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath(event.target.value, 1.4); // The normal human walking Speed is 1.4 meters/second
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isInitialPositionStarted: false, isUnlockDirectionOn: false }, PathArray: cameraPoints }), () => {
       setTimeout(() => {
         AnimatedCameraTool.isUnlockDirectionOn = false;
         if (this.state.vp) {
-          (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(this.state.PathArray[0].point, this.state.PathArray[0].direction, new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
-          this.state.vp.synchWithView();
+          AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray[0], this.state.vp);
           this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: 0 } }));
         }
         AnimatedCameraApp.toolActivation(this.state.attrValues.isInitialPositionStarted, this.state.attrValues.isPause);
@@ -223,12 +227,11 @@ export default class AnimatedCameraUI extends React.Component<{ iModelName: stri
 
   public onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
-      const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath("TrainPath");
+      const cameraPoints: CameraPoint[] = AnimatedCameraApp.loadCameraPath("TrainPath", 1.4); // The normal human walking Speed is 1.4 meters/second
       this.setState({ vp, PathArray: cameraPoints }, () => {
         if (this.state.vp) {
           AnimatedCameraTool.viewport = vp;
-          (this.state.vp.view as ViewState3d).lookAtUsingLensAngle(new Point3d(cameraPoints[0].point.x, cameraPoints[0].point.y, cameraPoints[0].point.z), new Point3d(cameraPoints[0].direction.x, cameraPoints[0].direction.y, cameraPoints[0].direction.z), new Vector3d(0, 0, 1), (this.state.vp.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
-          this.state.vp.synchWithView();
+          AnimatedCameraApp.setViewFromPointAndDirection(this.state.PathArray[0], this.state.vp);
         }
       });
     });

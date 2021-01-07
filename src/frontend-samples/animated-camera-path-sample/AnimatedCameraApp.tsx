@@ -10,12 +10,12 @@ import AnimatedCameraUI from "./AnimatedCameraUI";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { AnimatedCameraTool } from "./AnimatedCameraTool";
 import SampleApp from "common/SampleApp";
-import { Point3d, Vector3d } from "@bentley/geometry-core";
+import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
 export interface CameraPoint {
   point: Point3d;
-  direction: Point3d;
+  direction: Vector3d;
   isTraversed: boolean;
 }
 
@@ -49,7 +49,7 @@ export default class AnimatedCameraApp implements SampleApp {
   public static async animateCameraPath(cameraPoint: CameraPoint, pathArray: CameraPoint[], animationSpeed: number, pathDelay: number, isUnlockDirectionOn: boolean, countPathTravelled: number, viewport: Viewport) {
     if (pathArray.indexOf(cameraPoint) % animationSpeed === 0) {
       if (!isUnlockDirectionOn)
-        (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+        (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
       else
         (viewport.view as ViewState3d).setEyePoint(cameraPoint.point);
       viewport.synchWithView();
@@ -59,34 +59,57 @@ export default class AnimatedCameraApp implements SampleApp {
     return ++countPathTravelled;
   }
 
-  public static setViewFromPointAndDirection(pathArray: CameraPoint[], sliderValue: number, viewport: Viewport) {
-    (viewport.view as ViewState3d).lookAtUsingLensAngle(pathArray[Number(sliderValue)].point, pathArray[Number(sliderValue)].direction, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+  public static setViewFromPointAndDirection(cameraPoint: CameraPoint, viewport: Viewport) {
+    (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     viewport.synchWithView();
-    for (const coordinate of pathArray) {
-      if (pathArray.indexOf(coordinate) <= sliderValue) {
-        coordinate.isTraversed = true;
-      } else
-        coordinate.isTraversed = false;
-    }
   }
 
   // load the Coordinates while onIModelReady and changing the Camera Path
-  public static loadCameraPath(pathName: string): CameraPoint[] {
-    const pathSpeed = 1.4 // The normal human walking Speed is 1.4 meters/second
+  public static loadCameraPath(pathName: string, pathSpeed: number): CameraPoint[] {
+    const pathAngularSpeed: number = 7  // degrees/second  assumed for computing the interpolation fraction for the special case where the camera is rotating from a stationary position
     const stepsPerSecond = 30; //  In order to know  how much steps it will take to move between successive coordinates,consider camera movement as 30 steps/second and then multiply it by duration to travel between successive coordinates
-    let pathDistance: number; // Distance between two Coordinates
-    let pathTotalSteps: number;
+    let segmentDistance: number; // Distance between two Coordinates
+    let segmentAngularDistance: Angle; // Angular Distance between two Direction Vectors
+    let segmentStepsCount: number;  // Total Steps count in each Segment
     const cameraPoints: CameraPoint[] = [];
-    const currentPathCoordinates = pathName === "TrainPath" ? trainPathCoordinates : (pathName === "FlyoverPath" ? flyoverCoordinates : commuterViewCoordinates);
+    let currentPathCoordinates: typeof trainPathCoordinates = [];
+    switch (pathName) {
+      case "TrainPath":
+        currentPathCoordinates = trainPathCoordinates;
+        break;
+
+      case "FlyoverPath":
+        currentPathCoordinates = flyoverCoordinates;
+        break;
+
+      case "CommuterPath":
+        currentPathCoordinates = commuterViewCoordinates;
+    }
+
     currentPathCoordinates.forEach((item, index) => {
       if (index !== currentPathCoordinates.length - 1) {
-        if (pathDistance = new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).distance(new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z))) // Two coordinates can be same as a commuter can look around at a particular position
-          pathTotalSteps = stepsPerSecond * (pathDistance / pathSpeed);  // stepsPerSecond * Duration to travel between two coordinates with constant speed
-        else if (pathDistance = new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).distance(new Point3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z)))
-          pathTotalSteps = stepsPerSecond * (pathDistance / pathSpeed); // stepsPerSecond * Duration to travel between two ViewDirection coordinates at a particular coordinate with constant speed
+        const currPoint = new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z);
+        const nextPoint = new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z);
+        segmentDistance = currPoint.distance(nextPoint);
+        if (0 !== segmentDistance)
+          segmentStepsCount = stepsPerSecond * (segmentDistance / pathSpeed);  // stepsPerSecond * Duration to travel between two coordinates
+        else {
+          const currViewDirection = new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z);
+          const nextViewDirection = new Vector3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z);
+          segmentAngularDistance = currViewDirection.angleTo(nextViewDirection);
+          if (0 !== segmentAngularDistance.degrees)
+            segmentStepsCount = stepsPerSecond * (segmentAngularDistance.degrees / pathAngularSpeed);
+        }
+
         // for each current step calculate the interpolation value by evaluating current step/total no of steps
-        for (let j: number = 0; j <= pathTotalSteps; j++) {
-          cameraPoints.push({ point: new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z).interpolate(j / pathTotalSteps, new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z)), direction: new Point3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z).interpolate(j / pathTotalSteps, new Point3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z)), isTraversed: false });
+        for (let j: number = 0; j <= segmentStepsCount; j++) {
+          const currentCoordinate = new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z);
+          const nextCoordinate = new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z);
+          const cameraPoint = currentCoordinate.interpolate(j / segmentStepsCount, nextCoordinate);
+          const currentDirectionVector = new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z);
+          const nextDirectionVector = new Vector3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z);
+          const cameraDirectionVector = currentDirectionVector.interpolate(j / segmentStepsCount, nextDirectionVector);
+          cameraPoints.push({ point: cameraPoint, direction: cameraDirectionVector, isTraversed: false });
         }
       }
     });
