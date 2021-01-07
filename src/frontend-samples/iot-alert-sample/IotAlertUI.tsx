@@ -21,6 +21,7 @@ import Button from 'react-bootstrap/Button'
 import { Row, Col } from 'react-bootstrap';
 import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
 import { ModelessDialogManager } from "@bentley/ui-framework";
+import { ElementSelector } from "./ElementSelectorComponent";
 //import { CivilBrowser } from "./CivilBrowser/CivilBrowser";
 
 /** React state of the Sample component */
@@ -39,7 +40,12 @@ interface EmphasizeElementsState {
 
 export interface IOTAlertProps {
   message: string;
+  isOpen: boolean;
   onButtonClick: () => void;
+}
+
+export interface IOTAlertState {
+  isMessageBoxOpen: boolean;
 }
 
 export interface ZoomToState {
@@ -57,9 +63,16 @@ export interface ZoomToState {
   standardViewVal: StandardViewId;
 }
 
-export class IOTAlert extends React.Component<IOTAlertProps> {
-
+export class IOTAlert extends React.Component<IOTAlertProps, IOTAlertState> {
   public static readonly id = "IOTAlert";
+  constructor(props?: any) {
+    super(props);
+    this.state = {
+      isMessageBoxOpen: this.props.isOpen,
+    };
+  }
+
+  //public static isOpen = true;
 
   // user clicked the dialog button
   public static closeAlert() {
@@ -68,8 +81,11 @@ export class IOTAlert extends React.Component<IOTAlertProps> {
 
   // user closed the modeless dialog
   private _onCancel = () => {
+    this.setState({ isMessageBoxOpen: false });
+    // this.forceUpdate();
+    // IOTAlert.isOpen = true;
     //this._closeDialog();
-    alert('I m unable to close.')
+    //alert('I m unable to close.')
   }
 
   private _closeDialog = () => {
@@ -86,7 +102,7 @@ export class IOTAlert extends React.Component<IOTAlertProps> {
       <Dialog
         title={"IoT Alert"}
         modelessId={IOTAlert.id}
-        opened={true}
+        opened={this.state.isMessageBoxOpen}
         resizable={false}
         movable={true}
         modal={false}
@@ -114,15 +130,15 @@ export class IOTAlert extends React.Component<IOTAlertProps> {
     );
   }
 
-  public static showAlert(dtId: string, onAction: () => void) {
-    ModelessDialogManager.closeDialog(IOTAlert.id);
-    const _message = "Code Red in " + dtId;
-    ModelessDialogManager.openDialog(<IOTAlert onButtonClick={onAction} message={_message} />, IOTAlert.id);
+  // public static showAlert(dtId: string, onAction: () => void) {
+  //   ModelessDialogManager.closeDialog(IOTAlert.id);
+  //   const _message = "Code Red in " + dtId;
+  //   ModelessDialogManager.openDialog(<IOTAlert onButtonClick={onAction} message={_message} />, IOTAlert.id);
 
 
-    // const message = new NotifyMessageDetails(OutputMessagePriority.Warning, _message, undefined);
-    // MessageManager.addMessage(message);
-  }
+  //   // const message = new NotifyMessageDetails(OutputMessagePriority.Warning, _message, undefined);
+  //   // MessageManager.addMessage(message);
+  // }
 }
 
 const zoomToElements = async ( /* state: ZoomToState*/) => {
@@ -205,7 +221,6 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
   }
 
   private onAction = () => {
-    //alert("i am clicked...");
     const s = {
       elementsAreSelected: false,
       elementList: [],
@@ -223,13 +238,17 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
   }
 
   private str = "Hello";
+  private list = ["SHELL_AND_TUBE_HEAT_EXCHANGER_PAR", "VERTICAL_VESSEL_PAR", "PLATE_TYPE_HEAT_EXCHANGER", "REBOILER_PAR"];
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
     return (
       <>
-        <div className="sample-options-4col">
+        <div className="sample-options-2col">
           <span>Show IoT Alert</span>
           <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} />
+        </div>
+        <div >
+          <ElementSelector classList={this.list} />
         </div>
       </>
     );
@@ -239,20 +258,9 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
   public render() {
     return (
       <>
-        <ControlPane instructions="Set the IoT alert toggle ON to display observed elements." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Set the IoT alert ON to display observed elements." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} />
-        {/* {this.state.wantEmphasis ? () => {
-          // ModelessDialogManager.closeDialog(IOTAlert.id);
-          const _message = "Code Red in element.";
-          ModelessDialogManager.openDialog(<IOTAlert onButtonClick={this.onAction} message={"message"} />, IOTAlert.id);
-        } : ""} */}
-
-        {this.state.wantEmphasis ? <IOTAlert onButtonClick={this.onAction} message={"message"} /> : ""}
-        {() => {
-          console.log(IOTAlert.id);
-          ModelessDialogManager.openDialog(<IOTAlert onButtonClick={this.onAction} message={"_message"} />, IOTAlert.id);
-        }}
-
+        {this.state.wantEmphasis ? <IOTAlert onButtonClick={this.onAction} isOpen={this.state.wantEmphasis} message={"message"} /> : ""}
       </>
     );
   }
