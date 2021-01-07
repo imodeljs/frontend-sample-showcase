@@ -9,8 +9,12 @@ export function ElementSelector(props: ElementSelectorProps) {
 
   const [elements, setElements] = React.useState(["element1", "element2", "element3"]);
 
-  const _onClassifierChange = () => {
-    // The elements list would be populated from respective class.
+  const _onClassChange = () => {
+    // To do: The elements list would be populated from respective class.
+  }
+
+  const _onElementChange = () => {
+    // To do: Code for element selection.
   }
 
   return (
@@ -20,7 +24,7 @@ export function ElementSelector(props: ElementSelectorProps) {
         <Select
           className="iotalert-class-select"
           options={props.classList}
-          onChange={_onClassifierChange}
+          onChange={_onClassChange}
         />
       </div >
       <div className="sample-options-2col">
@@ -28,7 +32,7 @@ export function ElementSelector(props: ElementSelectorProps) {
         <Select
           className="iotalert-element-select"
           options={elements}
-          onChange={_onClassifierChange}
+          onChange={_onElementChange}
         />
       </div >
     </>
