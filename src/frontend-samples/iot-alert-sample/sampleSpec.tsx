@@ -16,7 +16,7 @@ export function getIotAlertSpec(): SampleSpec {
       { name: "IotAlertApp.tsx", import: import("!!raw-loader!./IotAlertApp"), entry: true },
       { name: "IotAlertUI.tsx", import: import("!!raw-loader!./IotAlertUI") },
     ],
-    customModelList: [SampleIModels.MetroStation],
+    customModelList: [SampleIModels.BayTown],
     setup: IotAlertApp.setup.bind(IotAlertApp),
     teardown: IotAlertApp.teardown.bind(IotAlertApp),
   });
