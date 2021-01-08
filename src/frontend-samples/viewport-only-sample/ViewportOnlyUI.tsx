@@ -3,21 +3,20 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
+import { ViewportComponent } from "@bentley/ui-components";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { ViewSetup } from "api/viewSetup";
 
-export default class ViewportOnlyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
-
-  /** The sample's render method */
-  public render() {
-    return (
-      <>
-        { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Use the toolbar at the top-right to navigate the model." iModelSelector={this.props.iModelSelector}></ControlPane>
-        { /* Viewport to display the iModel */}
-        <SandboxViewport iModelName={this.props.iModelName} />
-      </>
-    );
-  }
+export async function ViewportOnlyUI(iModelConnection: IModelConnection, iModelSelector: React.ReactNode) {
+  return (
+    <>
+      { /* Display the instructions and iModelSelector for the sample on a control pane */}
+      <ControlPane instructions="Use the toolbar at the top-right to navigate the model." iModelSelector={iModelSelector}></ControlPane>
+      { /* Viewport to display the iModel */}
+      <ViewportComponent imodel={iModelConnection} viewState={await ViewSetup.getDefaultView(iModelConnection)}></ViewportComponent>
+    </>
+  );
 }
+

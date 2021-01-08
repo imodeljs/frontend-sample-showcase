@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ViewportOnlyApp from "./ViewportOnlyApp";
+import { ViewportOnlyUI } from "./ViewportOnlyUI";
 
 export function getViewportOnlySpec(): SampleSpec {
   return ({
@@ -15,6 +15,6 @@ export function getViewportOnlySpec(): SampleSpec {
       { name: "ViewportOnlyApp.tsx", import: import("!!raw-loader!./ViewportOnlyApp"), entry: true },
       { name: "ViewportOnlyUI.tsx", import: import("!!raw-loader!./ViewportOnlyUI") },
     ],
-    setup: ViewportOnlyApp.setup.bind(ViewportOnlyApp),
+    setup: ViewportOnlyUI,
   });
 }

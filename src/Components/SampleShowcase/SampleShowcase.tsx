@@ -15,10 +15,10 @@ import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import SampleApp from "common/SampleApp";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
-
+import ShowcaseSample from "./../ShowcaseSample/ShowcaseSample";
 // cSpell:ignore imodels
 
 export interface SampleSpec {
@@ -28,7 +28,7 @@ export interface SampleSpec {
   readme?: IInternalFile;
   files: IInternalFile[];
   customModelList?: string[];
-  setup: (iModelName: string, iModelSelector: React.ReactNode, iModelName2?: string) => Promise<React.ReactNode>;
+  setup: (iModelConnection?: IModelConnection, iModelSelector?: React.ReactNode) => React.ReactNode;
   teardown?: () => void;
 }
 
@@ -198,7 +198,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     if (newSampleSpec.setup) {
       const iModelList = this.getIModelList(newSampleSpec);
       const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
-      sampleUI = await newSampleSpec.setup(this.state.iModelName, iModelSelector);
+      //sampleUI = await newSampleSpec.setup(this.state.iModelName, iModelSelector);
+      sampleUI = ShowcaseSample.showSample(newSampleSpec.setup, this.state.iModelName, undefined, iModelSelector,)
     }
 
     this.setState({ sampleUI });

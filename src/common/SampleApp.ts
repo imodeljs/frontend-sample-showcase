@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as  React from "react";
 
-export default abstract class SampleApp {
+export default abstract class ShowcaseSample {
   public static setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
   public static teardown?: () => void;
+
 }
