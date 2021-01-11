@@ -1,4 +1,4 @@
-# Animated Camera Path Sample
+# Camera Path Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 

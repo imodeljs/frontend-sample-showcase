@@ -5,10 +5,10 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, SelectionTool, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import AnimatedCameraUI from "./AnimatedCameraUI";
+import { IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import CameraPathUI from "./CameraPathUI";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { AnimatedCameraTool } from "./AnimatedCameraTool";
+import { CameraPathTool } from "./CameraPathTool";
 import SampleApp from "common/SampleApp";
 import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
@@ -16,7 +16,6 @@ import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } fro
 export interface CameraPoint {
   point: Point3d;
   direction: Vector3d;
-  isTraversed: boolean;
 }
 
 // The level of Animation Speed, will regulate the speed
@@ -36,24 +35,24 @@ export enum PathDelay {
   Fastest = 0.01
 }
 
-/** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class AnimatedCameraApp implements SampleApp {
+/** This class implements the interaction between the sample and the iModel.js API.  No user interface. */// //
+export default class CameraPathApp implements SampleApp {
   private static _sampleNamespace: I18NNamespace;
 
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     this._sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
-    AnimatedCameraTool.register(this._sampleNamespace);
-    return <AnimatedCameraUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+    CameraPathTool.register(this._sampleNamespace);
+    return <CameraPathUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
-  public static async animateCameraPath(cameraPoint: CameraPoint, pathArray: CameraPoint[], animationSpeed: number, pathDelay: number, isUnlockDirectionOn: boolean, countPathTravelled: number, viewport: Viewport) {
-    if (pathArray.indexOf(cameraPoint) % animationSpeed === 0) {
-      if (!isUnlockDirectionOn)
+  public static async animateCameraPath(cameraPoint: CameraPoint, cameraPointIndex: number, animationSpeed: number, pathDelay: number, countPathTravelled: number, viewport: Viewport) {
+    if (cameraPointIndex % animationSpeed === 0) {
+      if (!CameraPathTool.keyDown)
         (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
       else
         (viewport.view as ViewState3d).setEyePoint(cameraPoint.point);
       viewport.synchWithView();
-      await AnimatedCameraApp.delay(pathDelay);
+      await CameraPathApp.delay(pathDelay);
     }
 
     return ++countPathTravelled;
@@ -109,25 +108,17 @@ export default class AnimatedCameraApp implements SampleApp {
           const currentDirectionVector = new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z);
           const nextDirectionVector = new Vector3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z);
           const cameraDirectionVector = currentDirectionVector.interpolate(j / segmentStepsCount, nextDirectionVector);
-          cameraPoints.push({ point: cameraPoint, direction: cameraDirectionVector, isTraversed: false });
+          cameraPoints.push({ point: cameraPoint, direction: cameraDirectionVector });
         }
       }
     });
     return cameraPoints;
   }
 
-  // We will use this method to activate and deactivate the AnimatedCameraTool while animation is on and off respectively
-  // The AnimatedCameraTool will prevent the view tool and standard mouse events when activated
-  // and when deactivated ,data and reset events will be directed to the Idle tool
-  public static toolActivation(isInitialPositionStarted: boolean, isPaused: boolean) {
-    if (!isPaused && !AnimatedCameraTool.isAnimatedCameraToolActive) {
-      AnimatedCameraTool.isAnimatedCameraToolActive = true;
-      IModelApp.tools.run(AnimatedCameraTool.toolId);
-    } else if ((!isInitialPositionStarted || isPaused) && AnimatedCameraTool.isAnimatedCameraToolActive) {
-      AnimatedCameraTool.isAnimatedCameraToolActive = false;
-      IModelApp.tools.run(SelectionTool.toolId); // will stop the AnimatedCameraTool  :
-      // and run the default tool as mentioned here : https://www.itwinjs.org/learning/frontend/tools/#tooladmin
-    }
+  // We will use this method to activate the CameraPathTool
+  // The CameraPathTool will prevent the view tool and standard mouse events
+  public static toolActivation() {
+    IModelApp.tools.run(CameraPathTool.toolId);
   }
 
   // For Delay between two Coordinates while animation is Active
@@ -137,7 +128,7 @@ export default class AnimatedCameraApp implements SampleApp {
 
   public static teardown() {
     IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
-    IModelApp.tools.unRegister(AnimatedCameraTool.toolId);
+    IModelApp.tools.unRegister(CameraPathTool.toolId);
   }
 }
 

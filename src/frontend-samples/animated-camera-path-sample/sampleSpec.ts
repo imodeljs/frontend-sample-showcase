@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import AnimatedCameraApp from "./AnimatedCameraApp";
+import CameraPathApp from "./CameraPathApp";
 // import * as data from './Coordinates.json';
 // const langFile = require('./Coordinates.json');
 
@@ -11,18 +11,18 @@ export function getViewCameraSpec(): SampleSpec {
 
 
   return ({
-    name: "Animated Camera Path Sample",
-    label: "Animated Camera",
+    name: "Camera Path Sample",
+    label: "Camera Path",
     image: "view-attributes-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "AnimatedCameraApp.tsx", import: import("!!raw-loader!./AnimatedCameraApp"), entry: true },
-      { name: "AnimatedCameraUI.tsx", import: import("!!raw-loader!./AnimatedCameraUI") },
-      { name: "AnimatedCameraTool.ts", import: import("!!raw-loader!./AnimatedCameraTool") },
+      { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp"), entry: true },
+      { name: "CameraPathUI.tsx", import: import("!!raw-loader!./CameraPathUI") },
+      { name: "CameraPathTool.ts", import: import("!!raw-loader!./CameraPathTool") },
       { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
 
     ],
-    setup: AnimatedCameraApp.setup.bind(AnimatedCameraApp),
-    teardown: AnimatedCameraApp.teardown.bind(AnimatedCameraApp),
+    setup: CameraPathApp.setup.bind(CameraPathApp),
+    teardown: CameraPathApp.teardown.bind(CameraPathApp),
   });
 }
