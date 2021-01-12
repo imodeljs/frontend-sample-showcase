@@ -191,7 +191,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   }
 
   public componentWillUnmount() {
-    document.getElementById("root")?.removeEventListener("wheel", this._handleScrollAnimation);
+    document.getElementById("sample-container")?.removeEventListener("wheel", this._handleScrollAnimation);
   }
 
   // Update the Slider timeline continuously while animation is active
@@ -201,7 +201,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   public onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
-      document.getElementById("root")?.addEventListener("wheel", this._handleScrollAnimation);
+      document.getElementById("sample-container")?.addEventListener("wheel", this._handleScrollAnimation);
       const cameraPoints: CameraPoint[] = CameraPathApp.loadCameraPath("TrainPath", 1.4); // The normal human walking Speed is 1.4 meters/second
       this.setState({ vp, PathArray: cameraPoints }, () => {
         if (this.state.vp) {
@@ -223,7 +223,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     const sliderValue = this.state.attrValues.sliderValue;
     let cameraPathIterationValue: number;
     if (eventDeltaY < 0) {
-      cameraPathIterationValue = sliderValue + (this.state.PathArray.length / 50);
+      cameraPathIterationValue = sliderValue + (this.state.PathArray.length / 50);  // Increase the path motion distance from current coordinate to (length of path)/50
       if (cameraPathIterationValue > this.state.PathArray.length - 1)
         cameraPathIterationValue = this.state.PathArray.length - 1;
       for (let i: number = sliderValue + 1; i <= cameraPathIterationValue; i++) {
@@ -233,7 +233,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         this._updateTimeline(pathCompletedCount);
       }
     } else if (eventDeltaY > 0) {
-      cameraPathIterationValue = sliderValue - (this.state.PathArray.length / 50);
+      cameraPathIterationValue = sliderValue - (this.state.PathArray.length / 50); // Decrease the path motion distance from current coordinate to (length of path)/50
       if (cameraPathIterationValue < 0)
         cameraPathIterationValue = 0;
       for (let i: number = sliderValue; i >= cameraPathIterationValue; i--) {

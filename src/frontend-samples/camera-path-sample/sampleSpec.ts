@@ -8,12 +8,10 @@ import CameraPathApp from "./CameraPathApp";
 // const langFile = require('./Coordinates.json');
 
 export function getViewCameraSpec(): SampleSpec {
-
-
   return ({
     name: "Camera Path Sample",
     label: "Camera Path",
-    image: "view-attributes-thumbnail.png",
+    image: "CameraPath.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp"), entry: true },
