@@ -70,10 +70,10 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getViewerOnly2dSpec(),
     getRealityDataSpec(),
     getViewAttributesSpec(),
-    getViewCameraSpec(),
   ],
 }, {
   groupName: "Viewer Features", samples: [
+    getViewCameraSpec(),
     getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),

@@ -42,7 +42,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   private _createJSXElementForAttribute(label: string, element: JSX.Element) {
     return (
       <>
-        <span style={{ marginLeft: "8px", marginRight: "0px" }}>{label}</span>
+        <span style={{ marginLeft: "6px", marginRight: "0px" }}>{label}</span>
         {element}
       </>
     );
@@ -60,7 +60,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Create the react component for the  slider
   private _createCameraSlider(label: string) {
-    const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "77px" }}
+    const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "44px" }}
       onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
         const sliderNumber: number = Number(event.target.value);
 
@@ -133,7 +133,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   // Create the react components for the  Paths
   private _createRenderPath(label: string) {
     const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" }
-    const element = <Select style={{ width: "fit-content", marginLeft: "34px" }} onChange={this._onChangeRenderPath} options={options} />;
+    const element = <Select style={{ width: "fit-content", marginLeft: "12px" }} onChange={this._onChangeRenderPath} options={options} />;
     return this._createJSXElementForAttribute(label, element);
   }
 
@@ -169,22 +169,22 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
-    const element = <Select style={{ width: "140px", marginLeft: "28px" }} onChange={this._onChangeRenderSpeed} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} />
+    const element = <Select style={{ width: "140px", marginLeft: "48px" }} onChange={this._onChangeRenderSpeed} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} />
     return this._createJSXElementForAttribute(label, element);
   }
 
   public getControls(): React.ReactNode {
     return (
       <div>
-        <div className="sample-options-2col" style={{ maxWidth: "350px" }}>
+        <div className="sample-options-2col" style={{ maxWidth: "310px" }}>
           {this._createRenderPath("Path")}
         </div>
-        <div className="sample-options-3col" style={{ maxWidth: "350px" }}>
+        <div className="sample-options-3col" style={{ maxWidth: "310px" }}>
           {this._createCameraSlider("Timeline")}
-          <button style={{ width: "35px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => this._handleCameraPlay()} >{this.state.attrValues.isInitialPositionStarted ? this.state.attrValues.isPause ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
         </div>
-        <div>
-          {this._createSpeedDropDown("Animation Speed")}
+        <div className="sample-options-3col" style={{ maxWidth: "310px" }}>
+          {this._createSpeedDropDown("Animate")}
+          <button style={{ width: "35px", marginLeft: "4px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => this._handleCameraPlay()} >{this.state.attrValues.isInitialPositionStarted ? this.state.attrValues.isPause ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
         </div>
       </div >
     );
