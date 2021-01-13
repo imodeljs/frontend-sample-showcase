@@ -65,7 +65,7 @@ export default class IotAlertApp implements SampleApp {
     const rows = [];
     for await (const row of imodel.query(query))
       rows.push(row);
-    console.log(rows);
+    // console.log(rows);
     return rows;
   }
 }
@@ -93,8 +93,8 @@ abstract class EmphasizeActionBase {
           // console.log(`EmphasizeActionBase inside if: ${value}`);
         }
       }
-      //ids.add("0x40000000329");//metro station
-      //ids.add("0x20000001381");//CoffsHarborDemo
+      // ids.add("0x40000000329");//metro station
+      // ids.add("0x20000001381");//CoffsHarborDemo
       vp.view.iModel.selectionSet.replace(ids);
     }
 

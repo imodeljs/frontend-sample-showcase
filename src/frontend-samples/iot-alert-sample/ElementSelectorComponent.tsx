@@ -1,5 +1,5 @@
 import { Select } from "@bentley/ui-core";
-import EmphasizeElementsApp from "./IotAlertApp";
+import IotAlertApp from "./IotAlertApp";
 import * as React from "react";
 
 interface ElementSelectorProps {
@@ -17,20 +17,20 @@ export function ElementSelector(props: ElementSelectorProps) {
     const classElements: any = props.classElementsMap.get(e.target.value);
     const elementNames: any = [];
     const elementNameIdMap = new Map();
-    for (let i = 0; i < classElements?.length; ++i) {
-      elementNames.push(classElements[i].cOMPONENT_NAME);
-      elementNameIdMap.set(classElements[i].cOMPONENT_NAME, classElements[i].id);
+    for (const element of classElements) {
+      elementNames.push(element.cOMPONENT_NAME);
+      elementNameIdMap.set(element.cOMPONENT_NAME, element.id);
     }
     // console.log(elementNames);
     setElements(elementNames);
     // console.log(`element id is ${elementNameIdMap.get("EX-201")}`);
-    EmphasizeElementsApp.setElementNameIdMap(elementNameIdMap);
+    IotAlertApp.setElementNameIdMap(elementNameIdMap);
   };
 
   const _onElementChange = (e: any) => {
     // To do: Code for element selection.
     const selectedElement = e.target.value;
-    EmphasizeElementsApp.setSelectedElement(selectedElement);
+    IotAlertApp.setSelectedElement(selectedElement);
   };
 
   return (
