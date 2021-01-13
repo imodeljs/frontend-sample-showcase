@@ -60,7 +60,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Create the react component for the  slider
   private _createCameraSlider(label: string) {
-    const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "44px" }}
+    const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "10px", width: "150px" }}
       onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
         const sliderNumber: number = Number(event.target.value);
 
@@ -179,8 +179,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         <div className="sample-options-2col" style={{ maxWidth: "310px" }}>
           {this._createRenderPath("Path")}
         </div>
-        <div className="sample-options-3col" style={{ maxWidth: "310px" }}>
-          {this._createCameraSlider("Timeline")}
+        <div className="sample-options-2col" style={{ maxWidth: "310px" }}>
+          {this._createCameraSlider("Progress Bar")}
         </div>
         <div className="sample-options-3col" style={{ maxWidth: "310px" }}>
           {this._createSpeedDropDown("Animate")}
