@@ -8,14 +8,40 @@ import "common/samples-common.scss";
 import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 
-import EmphasizeElementsUI from "./IotAlertUI";
+import IotAlertUI from "./IotAlertUI";
 import SampleApp from "common/SampleApp";
 
-export default class EmphasizeElementsApp implements SampleApp {
+export default class IotAlertApp implements SampleApp {
+  private static elementNameIdMap: Map<string, string> = new Map();
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <EmphasizeElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+    return <IotAlertUI iModelName={iModelName} iModelSelector={iModelSelector} elementsMap={IotAlertApp.elementMap} />;
   }
 
+  public static setElementNameIdMap(elementNameIdMap: any) {
+    for (const [key, value] of elementNameIdMap) {
+      // console.log(`setElementNameIdMap: ${key} = ${value}`);
+      IotAlertApp.elementNameIdMap.set(key, value);
+    }
+
+    // IotAlertApp.elementNameIdMap = elementNameIdMap;
+  }
+
+  public static getElementNameIdMap() {
+    return IotAlertApp.elementNameIdMap;
+  }
+
+  public static setSelectedElement(selectedElement: string) {
+    IotAlertApp.selectedElement = selectedElement;
+  }
+
+  private static elementMap: string[];
+  private static selectedElement: string;
+  public static getSelectedElement() {
+    return this.selectedElement;
+  }
+  public static getElements() {
+    return this.elementMap;
+  }
   public static teardown() {
     const vp = IModelApp.viewManager.selectedView;
 
@@ -27,6 +53,20 @@ export default class EmphasizeElementsApp implements SampleApp {
     emph.clearHiddenElements(vp);
     emph.clearIsolatedElements(vp);
     emph.clearOverriddenElements(vp);
+  }
+
+  public static async fetchElements(imodel: IModelConnection, c: string) {
+    const elementMapQuery = `SELECT * FROM ProcessPhysical.${c}`;
+    // console.log(elementMapQuery);
+    IotAlertApp.elementMap = await this._executeQuery(imodel, elementMapQuery);
+  }
+
+  private static _executeQuery = async (imodel: IModelConnection, query: string) => {
+    const rows = [];
+    for await (const row of imodel.query(query))
+      rows.push(row);
+    console.log(rows);
+    return rows;
   }
 }
 
@@ -43,7 +83,17 @@ abstract class EmphasizeActionBase {
     if (vp) {
       // Select some elements
       const ids = new Set<string>();
-      ids.add("0x20000025cd4");//metro station
+      const m = IotAlertApp.getElementNameIdMap();
+      // console.log(`EmphasizeActionBase m: ${m}`);
+      for (const [key, value] of m) {
+        const selectedElement = IotAlertApp.getSelectedElement();
+        // console.log(`EmphasizeActionBase selectedElement: ${selectedElement}`);
+        if (key === selectedElement) {
+          ids.add(value);
+          // console.log(`EmphasizeActionBase inside if: ${value}`);
+        }
+      }
+      //ids.add("0x40000000329");//metro station
       //ids.add("0x20000001381");//CoffsHarborDemo
       vp.view.iModel.selectionSet.replace(ids);
     }

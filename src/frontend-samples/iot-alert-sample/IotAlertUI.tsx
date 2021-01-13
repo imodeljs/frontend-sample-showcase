@@ -3,26 +3,25 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { MessageRenderer, Toggle, Dialog, MessageContainer, MessageSeverity } from "@bentley/ui-core";
+import { Dialog, MessageContainer, MessageSeverity, Toggle } from "@bentley/ui-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { KeySet } from "@bentley/presentation-common";
-
 import { ColorDef } from "@bentley/imodeljs-common";
-import { ClearOverrideAction, OverrideAction } from "./IotAlertApp";
+import EmphasizeElementsApp, { ClearOverrideAction, OverrideAction } from "./IotAlertApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { IModelApp, IModelConnection, StandardViewId, ViewChangeOptions, ZoomToOptions } from "@bentley/imodeljs-frontend";
 import { ModelessDialogManager } from "@bentley/ui-framework";
 import { ElementSelector } from "./ElementSelectorComponent";
 
 /** React state of the Sample component */
-interface EmphasizeElementsState {
+interface IotAlertState {
   selectionIsEmpty: boolean;
   overrideIsActive: boolean;
   wantEmphasis: boolean;
   colorValue: ColorDef;
+  elementsMap: Map<string, []>;
+  elementNameIdMap: Map<string, string>;
 }
-export interface IOTAlertProps {
+export interface IotAlertProps {
   message: string;
   isOpen: boolean;
   onButtonClick: () => void;
@@ -47,7 +46,7 @@ export interface ZoomToState {
   standardViewVal: StandardViewId;
 }
 
-export class IOTAlert extends React.Component<IOTAlertProps, IOTAlertState> {
+export class IOTAlert extends React.Component<IotAlertProps, IOTAlertState> {
   public static readonly id = "IOTAlert";
   constructor(props?: any) {
     super(props);
@@ -133,20 +132,23 @@ const zoomToElements = async ( /* state: ZoomToState*/) => {
   const vp = IModelApp.viewManager.selectedView!;
   // Set the view to point at a volume containing the list of elements
   const ids = new Set<string>();
-  ids.add("0x400000003cc"); // ProcessPhysical:VERTICAL_VESSEL_PAR, Bay town
-  //ids.add("0x20000025cd4");//metro station
+  const m = EmphasizeElementsApp.getElementNameIdMap();
+  // console.log(`EmphasizeActionBase m: ${m}`);
+  for (const [key, value] of m) {
+    const selectedElement = EmphasizeElementsApp.getSelectedElement();
+    if (key === selectedElement) {
+      ids.add(value);
+      // console.log(`EmphasizeActionBase inside if: ${value}`);
+    }
+  }
   await vp.zoomToElements(ids);
 
-
-  //ids.add("0x20000001381");//CoffsHarborDemo
-  //vp.view.iModel.selectionSet.replace(ids);
-
   // Select the elements.  This is not necessary, but it makes them easier to see.
-  //state.imodel!.selectionSet.replace(state.elementList);
+  // state.imodel!.selectionSet.replace(state.elementList);
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
+export default class IotAlertUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode, elementsMap: string[] }, IotAlertState> {
 
   /** Creates an Sample instance */
   constructor(props?: any) {
@@ -156,31 +158,34 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
       overrideIsActive: false,
       wantEmphasis: false,
       colorValue: ColorDef.red,
+      elementsMap: new Map(),
+      elementNameIdMap: new Map(),
     };
 
     // subscribe for unified selection changes
-    Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
+    // Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
   }
 
-  private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
-    const selection = selectionProvider.getSelection(evt.imodel, evt.level);
-    const keys = new KeySet(selection);
-    console.log(keys);
-    console.log(keys.toJSON().instanceKeys[0][0]);
-    console.log(`_onSelectionChanged: ${selection.isEmpty}`);
-    this.setState({ selectionIsEmpty: selection.isEmpty });
-  }
+  // private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
+  //   const selection = selectionProvider.getSelection(evt.imodel, evt.level);
+  //   console.log(evt.imodel);
+  //   const keys = new KeySet(selection);
+  //   // console.log(keys);
+  //   // console.log(keys.toJSON().instanceKeys[0][0]);
+  //   // console.log(`_onSelectionChanged: ${selection.isEmpty}`);
+  //   this.setState({ selectionIsEmpty: selection.isEmpty });
+  //   //_iModelId: "f30566da-8fdf-4cba-b09a-fd39f5397ae6"
+  // }
 
   private _onToggleEmphasis = (wantEmphasis: boolean) => {
     this.setState({ wantEmphasis });
     this.doBlinking();
-    //  IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Info, "Hello from the toolbar button you added."))
   }
 
   private doBlinking = () => {
     const timer = setInterval(() => {
       setTimeout(() => {
-        if (new OverrideAction(ColorDef.red).run())
+        if (new OverrideAction(ColorDef.white).run())
           this.setState({ overrideIsActive: true });
       }, 1000);
 
@@ -212,7 +217,28 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     zoomToElements();
   }
 
-  private list = ["SHELL_AND_TUBE_HEAT_EXCHANGER_PAR", "VERTICAL_VESSEL_PAR", "PLATE_TYPE_HEAT_EXCHANGER", "REBOILER_PAR"];
+  private _onIModelReady = async (imodel: IModelConnection) => {
+    // CrossProbingApp.addElementSelectionListener(imodel);
+    const classList = ["SHELL_AND_TUBE_HEAT_EXCHANGER_PAR", "VERTICAL_VESSEL_PAR", "PLATE_TYPE_HEAT_EXCHANGER", "REBOILER_PAR"];
+    const classElementsMap = new Map();
+    for (const c of classList) {
+      await EmphasizeElementsApp.fetchElements(imodel, c);
+      // console.log(c);
+      const elements = EmphasizeElementsApp.getElements();
+      // console.log(elements);
+      classElementsMap.set(c, elements);
+    }
+
+    // console.log(`variable classElementsMap: ${classElementsMap}`);
+    this.setState({ elementsMap: classElementsMap });
+    // console.log(`state elementsMap: ${this.state.elementsMap}`);
+    // for (const [key, value] of this.state.elementsMap) {
+    // console.log(`${key} = ${value}`);
+    // }
+  }
+
+  private classList = ["SHELL_AND_TUBE_HEAT_EXCHANGER_PAR", "VERTICAL_VESSEL_PAR", "PLATE_TYPE_HEAT_EXCHANGER", "REBOILER_PAR"];
+
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
     return (
@@ -222,7 +248,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
           <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} />
         </div>
         <div >
-          <ElementSelector classList={this.list} />
+          <ElementSelector classList={this.classList} classElementsMap={this.state.elementsMap} />
         </div>
       </>
     );
@@ -233,7 +259,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     return (
       <>
         <ControlPane instructions="Set the IoT alert ON to display observed elements." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} />
+        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         {this.state.wantEmphasis ? <IOTAlert onButtonClick={this.onAction} isOpen={this.state.wantEmphasis} message={"message"} /> : ""}
       </>
     );

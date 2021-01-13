@@ -1,26 +1,42 @@
 import { Select } from "@bentley/ui-core";
+import EmphasizeElementsApp from "./IotAlertApp";
 import * as React from "react";
 
 interface ElementSelectorProps {
   classList: string[];
-};
+  classElementsMap: Map<string, []>;
+}
 
 export function ElementSelector(props: ElementSelectorProps) {
+  const [elements, setElements] = React.useState(["EX-201", "EX-202", "EX-203", "EX-204", "EX-205"]);
 
-  const [elements, setElements] = React.useState(["element1", "element2", "element3"]);
+  const _onClassChange = (e: any) => {
+    // The elements list would be populated from respective class.
 
-  const _onClassChange = () => {
-    // To do: The elements list would be populated from respective class.
-  }
+    // console.log(`selected class is: ${e.target.value}`);
+    const classElements: any = props.classElementsMap.get(e.target.value);
+    const elementNames: any = [];
+    const elementNameIdMap = new Map();
+    for (let i = 0; i < classElements?.length; ++i) {
+      elementNames.push(classElements[i].cOMPONENT_NAME);
+      elementNameIdMap.set(classElements[i].cOMPONENT_NAME, classElements[i].id);
+    }
+    // console.log(elementNames);
+    setElements(elementNames);
+    // console.log(`element id is ${elementNameIdMap.get("EX-201")}`);
+    EmphasizeElementsApp.setElementNameIdMap(elementNameIdMap);
+  };
 
-  const _onElementChange = () => {
+  const _onElementChange = (e: any) => {
     // To do: Code for element selection.
-  }
+    const selectedElement = e.target.value;
+    EmphasizeElementsApp.setSelectedElement(selectedElement);
+  };
 
   return (
     <>
       <div className="sample-options-2col">
-        <span>Select element class: </span>
+        <span>Select class: </span>
         <Select
           className="iotalert-class-select"
           options={props.classList}
