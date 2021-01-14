@@ -25,6 +25,7 @@ interface CameraPathUIAttributeState {
     animationSpeed: number;
     pathDelay: number;
     isInitialPositionStarted: boolean;
+    isMouseWheelAnimationActive: boolean;
   };
   PathArray: CameraPoint[];
 }
@@ -34,7 +35,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   /** Creates a Sample instance */
   constructor(props?: any) {
     super(props);
-    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default, isInitialPositionStarted: false }, PathArray: [] };
+    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default, isInitialPositionStarted: false, isMouseWheelAnimationActive: false }, PathArray: [] };
     this._handleCameraPlay = this._handleCameraPlay.bind(this);
   }
 
@@ -63,11 +64,9 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     const element = <input type={"range"} min={0} max={this.state.PathArray.length - 1} value={this.state.attrValues.sliderValue} style={{ marginLeft: "10px", width: "150px" }}
       onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
         const sliderNumber: number = Number(event.target.value);
-
         if (this.state.attrValues.isPause) {
-          if (CameraPathTool.isMouseWheelAnimationActive) {
-            CameraPathTool.isMouseWheelAnimationActive = false;
-            setTimeout(() => this._onChangeCameraSliderValue(sliderNumber), 40);
+          if (this.state.attrValues.isMouseWheelAnimationActive) {
+            this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: false } }), () => setTimeout(() => this._onChangeCameraSliderValue(sliderNumber), 40));
           } else
             this._onChangeCameraSliderValue(sliderNumber);
         } else {
@@ -91,7 +90,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       timelineValue = this.state.attrValues.sliderValue;
       isCameraPaused = !this.state.attrValues.isPause;
     }
-    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: true, sliderValue: timelineValue, isPause: isCameraPaused } }), () => {
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: true, sliderValue: timelineValue, isPause: isCameraPaused, isMouseWheelAnimationActive: false } }), () => {
       this._handleCameraPathAnimation();
     });
   }
@@ -102,7 +101,6 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       return;
     let pathCompleted: boolean = true;
     let pathCompletedCount: number = 0;
-    CameraPathTool.isMouseWheelAnimationActive = false;
     for (let i: number = this.state.attrValues.sliderValue + 1; i <= this.state.PathArray.length - 1; i++) {
       if (this.state.attrValues.isPause) {
         pathCompleted = false;
@@ -119,7 +117,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   // Handle the Path Change
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const cameraPoints: CameraPoint[] = CameraPathApp.loadCameraPath(event.target.value, 1.4); // The normal human walking Speed is 1.4 meters/second
-    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isInitialPositionStarted: false, isUnlockDirectionOn: false }, PathArray: cameraPoints }), () => {
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isMouseWheelAnimationActive: false, isInitialPositionStarted: false, isUnlockDirectionOn: false }, PathArray: cameraPoints }), () => {
       setTimeout(() => {
         if (this.state.vp) {
           CameraPathApp.setViewFromPointAndDirection(this.state.PathArray[0], this.state.vp);
@@ -213,53 +211,50 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     });
   }
 
-  private async _handleScrollPath(eventDeltaY: number) {
-    if (this.state.vp === undefined)
-      return;
+  private _handleScrollPath(eventDeltaY: number) {
     let initialPositionStarted: boolean = true;
-    CameraPathTool.isMouseWheelAnimationActive = true;
-    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: initialPositionStarted } }));
-    let pathCompletedCount: number = 0;
-    const sliderValue = this.state.attrValues.sliderValue;
-    let cameraPathIterationValue: number;
-    if (eventDeltaY < 0) {
-      cameraPathIterationValue = sliderValue + (this.state.PathArray.length / 50);  // Increase the path motion distance from current coordinate to (length of path)/50
-      if (cameraPathIterationValue > this.state.PathArray.length - 1)
-        cameraPathIterationValue = this.state.PathArray.length - 1;
-      for (let i: number = sliderValue + 1; i <= cameraPathIterationValue; i++) {
-        if (!CameraPathTool.isMouseWheelAnimationActive)
-          break;
-        pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, PathDelay.Fastest, this.state.attrValues.sliderValue, this.state.vp);
-        this._updateTimeline(pathCompletedCount);
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: true, isInitialPositionStarted: initialPositionStarted } }), async () => {
+      if (this.state.vp === undefined)
+        return;
+      let pathCompletedCount: number = 0;
+      const sliderValue = this.state.attrValues.sliderValue;
+      let cameraPathIterationValue: number;
+      if (eventDeltaY < 0) {
+        cameraPathIterationValue = sliderValue + (this.state.PathArray.length / 10);  // Increase the path motion distance from current coordinate to (length of path)/10
+        if (cameraPathIterationValue > this.state.PathArray.length - 1)
+          cameraPathIterationValue = this.state.PathArray.length - 1;
+        for (let i: number = sliderValue + 1; i <= cameraPathIterationValue; i++) {
+          if (!this.state.attrValues.isMouseWheelAnimationActive)
+            break;
+          pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, PathDelay.Fastest, this.state.attrValues.sliderValue, this.state.vp);
+          this._updateTimeline(pathCompletedCount);
+        }
+      } else if (eventDeltaY > 0) {
+        cameraPathIterationValue = sliderValue - (this.state.PathArray.length / 10); // Decrease the path motion distance from current coordinate to (length of path)/10
+        if (cameraPathIterationValue < 0)
+          cameraPathIterationValue = 0;
+        for (let i: number = sliderValue; i >= cameraPathIterationValue; i--) {
+          if (!this.state.attrValues.isMouseWheelAnimationActive)
+            break;
+          pathCompletedCount = this.state.attrValues.sliderValue - 1
+          await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, PathDelay.Fastest, this.state.attrValues.sliderValue, this.state.vp);
+          this._updateTimeline(pathCompletedCount);
+        }
       }
-    } else if (eventDeltaY > 0) {
-      cameraPathIterationValue = sliderValue - (this.state.PathArray.length / 50); // Decrease the path motion distance from current coordinate to (length of path)/50
-      if (cameraPathIterationValue < 0)
-        cameraPathIterationValue = 0;
-      for (let i: number = sliderValue; i >= cameraPathIterationValue; i--) {
-        if (!CameraPathTool.isMouseWheelAnimationActive)
-          break;
-        pathCompletedCount = this.state.attrValues.sliderValue - 1
-        await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, PathDelay.Fastest, this.state.attrValues.sliderValue, this.state.vp);
-        this._updateTimeline(pathCompletedCount);
+      if (this.state.attrValues.sliderValue === this.state.PathArray.length - 1) {
+        initialPositionStarted = false;
+        this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: initialPositionStarted } }));
       }
-    }
-    CameraPathTool.isMouseWheelEventActive = false;
-    if (this.state.attrValues.sliderValue === this.state.PathArray.length - 1) {
-      initialPositionStarted = false;
-      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isInitialPositionStarted: initialPositionStarted } }));
-    }
+    });
   }
 
   private _handleScrollAnimation = (event: WheelEvent) => {
-    if (CameraPathTool.isMouseWheelEventActive) {
+    if (((this.state.attrValues.sliderValue === this.state.PathArray.length - 1) && (event.deltaY < 0)) || ((this.state.attrValues.sliderValue === 0) && (event.deltaY > 0)))
       return;
-    }
-    CameraPathTool.isMouseWheelEventActive = true;
     if (this.state.attrValues.isPause) {
-      this._handleScrollPath(event.deltaY);
+      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: false } }), () => setTimeout(() => { this._handleScrollPath(event.deltaY) }, 5));
     } else {
-      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(async () => this._handleScrollPath(event.deltaY), 40));
+      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(event.deltaY) }, 40));
     }
   }
 
