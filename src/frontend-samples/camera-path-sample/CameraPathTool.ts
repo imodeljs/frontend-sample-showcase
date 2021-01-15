@@ -10,8 +10,6 @@ export class CameraPathTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
   public static viewport: Viewport;
   public static keyDown: boolean = false;
-  public static isMouseWheelEventActive: boolean = false;
-  public static isMouseWheelAnimationActive: boolean = false;
 
   constructor() {
     super();

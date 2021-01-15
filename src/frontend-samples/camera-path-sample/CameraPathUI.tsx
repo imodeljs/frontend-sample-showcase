@@ -9,7 +9,7 @@ import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imode
 import { Select } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import CameraPathApp, { AnimationSpeed, CameraPoint, PathDelay } from "./CameraPathApp";
+import CameraPathApp, { CameraPoint, CoordinateTraversalFrequency } from "./CameraPathApp";
 import { CameraPathTool } from "./CameraPathTool";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -35,7 +35,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   /** Creates a Sample instance */
   constructor(props?: any) {
     super(props);
-    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", animationSpeed: AnimationSpeed.Default, pathDelay: PathDelay.Default, isInitialPositionStarted: false, isMouseWheelAnimationActive: false }, PathArray: [] };
+    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", animationSpeed: CoordinateTraversalFrequency.Default, pathDelay: 0, isInitialPositionStarted: false, isMouseWheelAnimationActive: false }, PathArray: [] };
     this._handleCameraPlay = this._handleCameraPlay.bind(this);
   }
 
@@ -121,7 +121,6 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       setTimeout(() => {
         if (this.state.vp) {
           CameraPathApp.setViewFromPointAndDirection(this.state.PathArray[0], this.state.vp);
-          CameraPathTool.isMouseWheelAnimationActive = false;
           this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: 0 } }));
         }
       }, 40);
@@ -136,38 +135,43 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   }
 
   // Handle the speed level change
-  private _onChangeRenderSpeed = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const currentSpeed: string = event.target.value;
-    let speedOfAnimation: number;
-    let delay: number;
+  private _onChangeRenderSpeed = (currentSpeed: string) => {
+    let speedOfMotion: number = 0;
+    let frequencyOfCoordinateTraversal: number; // will regulate the speed based on Coordinate Traversal Frequency at different Speed Levels
+    let pathTotalDistance: number = 0;
+    this.state.PathArray.forEach((item, index) => {
+      if (index !== this.state.PathArray.length - 1)
+        pathTotalDistance += item.point.distance(this.state.PathArray[index + 1].point);
+    });
     switch (currentSpeed) {
       case "1 Mph: Slow Walk":
-        speedOfAnimation = AnimationSpeed.Default;
-        delay = PathDelay.Slowest;
+        speedOfMotion = 0.4; // 1Mph = 0.4 meters/second
+        frequencyOfCoordinateTraversal = CoordinateTraversalFrequency.Default;
         break;
       case "3 Mph: Walking":
-        speedOfAnimation = AnimationSpeed.Default;
-        delay = PathDelay.Default;
+        speedOfMotion = 1.4; // 3Mph = 1.4 meters/second
+        frequencyOfCoordinateTraversal = CoordinateTraversalFrequency.Default;
         break;
       case "30 Mph: Car":
-        speedOfAnimation = AnimationSpeed.Fast;
-        delay = PathDelay.Fast;
+        speedOfMotion = 13.4; // 30Mph = 13.4 meters/second
+        frequencyOfCoordinateTraversal = CoordinateTraversalFrequency.Fast;
         break;
       case "60 Mph: Fast Car":
-        speedOfAnimation = AnimationSpeed.Faster;
-        delay = PathDelay.Faster;
+        speedOfMotion = 46.8; // 60Mph = 26.8 meters/second
+        frequencyOfCoordinateTraversal = CoordinateTraversalFrequency.Faster;
         break;
       case "150 Mph: Airplane":
-        speedOfAnimation = AnimationSpeed.Fastest;
-        delay = PathDelay.Fastest;
+        speedOfMotion = 67.05; // 150Mph = 67.05 meters/second
+        frequencyOfCoordinateTraversal = CoordinateTraversalFrequency.Fastest;
         break;
     }
-    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, speedLevel: currentSpeed, animationSpeed: speedOfAnimation, pathDelay: delay } }));
+    const delay = pathTotalDistance / (speedOfMotion * this.state.PathArray.length);  // Time taken to travel between 2 coordinates = Total time taken to travel the Path/length of pathArray
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, speedLevel: currentSpeed, pathDelay: delay, animationSpeed: frequencyOfCoordinateTraversal } }));
   }
 
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
-    const element = <Select style={{ width: "140px", marginLeft: "48px" }} onChange={this._onChangeRenderSpeed} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} />
+    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this._onChangeRenderSpeed(event.target.value)} />
     return this._createJSXElementForAttribute(label, element);
   }
 
@@ -206,6 +210,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           CameraPathTool.viewport = vp;
           CameraPathApp.toolActivation();
           CameraPathApp.setViewFromPointAndDirection(this.state.PathArray[0], this.state.vp);
+          this._onChangeRenderSpeed(this.state.attrValues.speedLevel);
         }
       });
     });
@@ -226,7 +231,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         for (let i: number = sliderValue + 1; i <= cameraPathIterationValue; i++) {
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
-          pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, PathDelay.Fastest, this.state.attrValues.sliderValue, this.state.vp);
+          pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
           this._updateTimeline(pathCompletedCount);
         }
       } else if (eventDeltaY > 0) {
@@ -237,7 +242,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
           pathCompletedCount = this.state.attrValues.sliderValue - 1
-          await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, PathDelay.Fastest, this.state.attrValues.sliderValue, this.state.vp);
+          await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
           this._updateTimeline(pathCompletedCount);
         }
       }

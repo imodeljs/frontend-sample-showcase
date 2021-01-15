@@ -18,21 +18,12 @@ export interface CameraPoint {
   direction: Vector3d;
 }
 
-// The level of Animation Speed, will regulate the speed
-export enum AnimationSpeed {
+// The level of Coordinate Traversal Frequency, will regulate the speed at different Levels
+export enum CoordinateTraversalFrequency {
   Default = 1,  // Travel all coordinates
   Fast = 3,     // Travel every 3rd coordinate
   Faster,   // Travel every 4th coordinate
   Fastest  // Travel every 5th coordinate
-}
-
-// For Delay between two Coordinates while animation is Active
-export enum PathDelay {
-  Slowest = 30,
-  Default = 5,
-  Fast = 2,
-  Faster = 1,
-  Fastest = 0.01
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */// //
@@ -45,8 +36,8 @@ export default class CameraPathApp implements SampleApp {
     return <CameraPathUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
-  public static async animateCameraPath(cameraPoint: CameraPoint, cameraPointIndex: number, animationSpeed: number, pathDelay: number, countPathTravelled: number, viewport: Viewport) {
-    if (cameraPointIndex % animationSpeed === 0) {
+  public static async animateCameraPath(cameraPoint: CameraPoint, cameraPointIndex: number, coordinateTraversingFrequency: number, pathDelay: number, countPathTravelled: number, viewport: Viewport) {
+    if (cameraPointIndex % coordinateTraversingFrequency === 0) {
       if (!CameraPathTool.keyDown)
         (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
       else
@@ -54,7 +45,6 @@ export default class CameraPathApp implements SampleApp {
       viewport.synchWithView();
       await CameraPathApp.delay(pathDelay);
     }
-
     return ++countPathTravelled;
   }
 
@@ -66,7 +56,7 @@ export default class CameraPathApp implements SampleApp {
   // load the Coordinates while onIModelReady and changing the Camera Path
   public static loadCameraPath(pathName: string, pathSpeed: number): CameraPoint[] {
     const pathAngularSpeed: number = 7  // degrees/second  assumed for computing the interpolation fraction for the special case where the camera is rotating from a stationary position
-    const stepsPerSecond = 30; //  In order to know  how much steps it will take to move between successive coordinates,consider camera movement as 30 steps/second and then multiply it by duration to travel between successive coordinates
+    const stepsPerSecond = 30; //  In order to know  how much steps it will take to move between successive coordinates,consider 30 steps/second and then multiply it by duration to travel between successive coordinates
     let segmentDistance: number; // Distance between two Coordinates
     let segmentAngularDistance: Angle; // Angular Distance between two Direction Vectors
     let segmentStepsCount: number;  // Total Steps count in each Segment
