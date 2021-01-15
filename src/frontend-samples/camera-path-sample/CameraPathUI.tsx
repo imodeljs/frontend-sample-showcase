@@ -22,7 +22,7 @@ interface CameraPathUIAttributeState {
     isPause: boolean;
     sliderValue: number;
     speedLevel: string;
-    animationSpeed: number;
+    coordinateTraversalFrequency: number;
     pathDelay: number;
     isInitialPositionStarted: boolean;
     isMouseWheelAnimationActive: boolean;
@@ -35,7 +35,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   /** Creates a Sample instance */
   constructor(props?: any) {
     super(props);
-    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", animationSpeed: CoordinateTraversalFrequency.Default, pathDelay: 0, isInitialPositionStarted: false, isMouseWheelAnimationActive: false }, PathArray: [] };
+    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", coordinateTraversalFrequency: CoordinateTraversalFrequency.Default, pathDelay: 0, isInitialPositionStarted: false, isMouseWheelAnimationActive: false }, PathArray: [] };
     this._handleCameraPlay = this._handleCameraPlay.bind(this);
   }
 
@@ -106,7 +106,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         pathCompleted = false;
         break;
       }
-      pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
+      pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.coordinateTraversalFrequency, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
       this._updateTimeline(pathCompletedCount);
     }
     if (pathCompleted) {
@@ -166,7 +166,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         break;
     }
     const delay = pathTotalDistance / (speedOfMotion * this.state.PathArray.length);  // Time taken to travel between 2 coordinates = Total time taken to travel the Path/length of pathArray
-    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, speedLevel: currentSpeed, pathDelay: delay, animationSpeed: frequencyOfCoordinateTraversal } }));
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, speedLevel: currentSpeed, pathDelay: delay, coordinateTraversalFrequency: frequencyOfCoordinateTraversal } }));
   }
 
   // Create the react component for the camera speed dropdown
@@ -231,7 +231,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         for (let i: number = sliderValue + 1; i <= cameraPathIterationValue; i++) {
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
-          pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
+          pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.coordinateTraversalFrequency, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
           this._updateTimeline(pathCompletedCount);
         }
       } else if (eventDeltaY > 0) {
@@ -242,7 +242,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
           pathCompletedCount = this.state.attrValues.sliderValue - 1
-          await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.animationSpeed, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
+          await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.coordinateTraversalFrequency, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
           this._updateTimeline(pathCompletedCount);
         }
       }
