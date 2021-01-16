@@ -39,9 +39,9 @@ export class CameraPathTool extends PrimitiveTool {
   }
 
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
-    if (_ev.viewport === undefined)
-      return;
     if (CameraPathTool.keyDown) {
+      if (_ev.viewport === undefined)
+        return;
       const viewRect = _ev.viewport.viewRect;
       const xExtent = viewRect.width;
       const yExtent = viewRect.height;
