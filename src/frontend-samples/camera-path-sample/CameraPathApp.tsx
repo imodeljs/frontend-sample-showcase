@@ -105,12 +105,6 @@ export default class CameraPathApp implements SampleApp {
     return cameraPoints;
   }
 
-  // We will use this method to activate the CameraPathTool
-  // The CameraPathTool will prevent the view tool and standard mouse events
-  public static toolActivation() {
-    IModelApp.tools.run(CameraPathTool.toolId);
-  }
-
   // For Delay between two Coordinates while animation is Active
   public static async delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));

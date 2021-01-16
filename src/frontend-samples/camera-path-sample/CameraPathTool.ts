@@ -8,11 +8,12 @@ import { Angle, Matrix3d, Transform, Vector3d } from "@bentley/geometry-core";
 
 export class CameraPathTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
-  public static viewport: Viewport;
   public static keyDown: boolean = false;
+  private _mouseScrollCallback: (deltaY: number) => {};
 
-  constructor() {
+  constructor(callback: (deltaY: number) => {}) {
     super();
+    this._mouseScrollCallback = callback;
   }
 
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp); }
@@ -24,6 +25,7 @@ export class CameraPathTool extends PrimitiveTool {
   }
 
   public async onMouseWheel(_ev: BeWheelEvent): Promise<EventHandled> {
+    this._mouseScrollCallback(_ev.wheelDelta);
     return EventHandled.Yes;
   }
 
@@ -37,15 +39,17 @@ export class CameraPathTool extends PrimitiveTool {
   }
 
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
+    if (_ev.viewport === undefined)
+      return;
     if (CameraPathTool.keyDown) {
-      const viewRect = CameraPathTool.viewport.viewRect;
+      const viewRect = _ev.viewport.viewRect;
       const xExtent = viewRect.width;
       const yExtent = viewRect.height;
       const rotation = new Matrix3d();
       if (_ev.movement) {
         const xAngle = -(_ev.movement.x / xExtent * 2);
         const yAngle = -(_ev.movement.y / yExtent * 2);
-        rotation.setFrom(CameraPathTool.viewport.rotation);
+        rotation.setFrom(_ev.viewport.rotation);
         const inverseRotation = rotation.inverse();
         const horizontalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitZ(), Angle.createRadians(xAngle));
         const verticalRotation = Matrix3d.createRotationAroundVector(Vector3d.unitX(), Angle.createRadians(yAngle));
@@ -53,9 +57,9 @@ export class CameraPathTool extends PrimitiveTool {
           verticalRotation.multiplyMatrixMatrix(rotation, verticalRotation);
           inverseRotation.multiplyMatrixMatrix(verticalRotation, verticalRotation);
           const newRotation = horizontalRotation.multiplyMatrixMatrix(verticalRotation);
-          const transform8 = Transform.createFixedPointAndMatrix((CameraPathTool.viewport.view as ViewState3d).camera.getEyePoint(), newRotation);
-          const frustum = CameraPathTool.viewport.getFrustum().transformBy(transform8);
-          CameraPathTool.viewport.setupViewFromFrustum(frustum);
+          const transform8 = Transform.createFixedPointAndMatrix((_ev.viewport.view as ViewState3d).camera.getEyePoint(), newRotation);
+          const frustum = _ev.viewport.getFrustum().transformBy(transform8);
+          _ev.viewport.setupViewFromFrustum(frustum);
         }
       }
     }

@@ -10,9 +10,9 @@ import { Select } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import CameraPathApp, { CameraPoint, CoordinateTraversalFrequency } from "./CameraPathApp";
-import { CameraPathTool } from "./CameraPathTool";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
+import { CameraPathTool } from "./CameraPathTool";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -192,10 +192,6 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     );
   }
 
-  public componentWillUnmount() {
-    document.getElementById("sample-container")?.removeEventListener("wheel", this._handleScrollAnimation);
-  }
-
   // Update the Slider timeline continuously while animation is active
   private _updateTimeline(pathCountCompleted: number) {
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: pathCountCompleted } }));
@@ -203,17 +199,21 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   public onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
-      document.getElementById("sample-container")?.addEventListener("wheel", this._handleScrollAnimation);
       const cameraPoints: CameraPoint[] = CameraPathApp.loadCameraPath("TrainPath", 1.4); // The normal human walking Speed is 1.4 meters/second
       this.setState({ vp, PathArray: cameraPoints }, () => {
         if (this.state.vp) {
-          CameraPathTool.viewport = vp;
-          CameraPathApp.toolActivation();
+          this.toolActivation();
           CameraPathApp.setViewFromPointAndDirection(this.state.PathArray[0], this.state.vp);
           this._onChangeRenderSpeed(this.state.attrValues.speedLevel);
         }
       });
     });
+  }
+
+  // We will use this method to activate the CameraPathTool
+  // The CameraPathTool will prevent the view tool and standard mouse events
+  private toolActivation() {
+    IModelApp.tools.run(CameraPathTool.toolId, this._handleScrollAnimation);
   }
 
   private _handleScrollPath(eventDeltaY: number) {
@@ -224,7 +224,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       let pathCompletedCount: number = 0;
       const sliderValue = this.state.attrValues.sliderValue;
       let cameraPathIterationValue: number;
-      if (eventDeltaY < 0) {
+      if (eventDeltaY > 0) {
         cameraPathIterationValue = sliderValue + (this.state.PathArray.length / 10);  // Increase the path motion distance from current coordinate to (length of path)/10
         if (cameraPathIterationValue > this.state.PathArray.length - 1)
           cameraPathIterationValue = this.state.PathArray.length - 1;
@@ -234,7 +234,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           pathCompletedCount = await CameraPathApp.animateCameraPath(this.state.PathArray[i], i, this.state.attrValues.coordinateTraversalFrequency, this.state.attrValues.pathDelay, this.state.attrValues.sliderValue, this.state.vp);
           this._updateTimeline(pathCompletedCount);
         }
-      } else if (eventDeltaY > 0) {
+      } else if (eventDeltaY < 0) {
         cameraPathIterationValue = sliderValue - (this.state.PathArray.length / 10); // Decrease the path motion distance from current coordinate to (length of path)/10
         if (cameraPathIterationValue < 0)
           cameraPathIterationValue = 0;
@@ -253,13 +253,13 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     });
   }
 
-  private _handleScrollAnimation = (event: WheelEvent) => {
-    if (((this.state.attrValues.sliderValue === this.state.PathArray.length - 1) && (event.deltaY < 0)) || ((this.state.attrValues.sliderValue === 0) && (event.deltaY > 0)))
+  public _handleScrollAnimation = (eventDeltaY: number) => {
+    if (((this.state.attrValues.sliderValue === this.state.PathArray.length - 1) && (eventDeltaY > 0)) || ((this.state.attrValues.sliderValue === 0) && (eventDeltaY < 0)))
       return;
     if (this.state.attrValues.isPause) {
-      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: false } }), () => setTimeout(() => { this._handleScrollPath(event.deltaY) }, 5));
+      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: false } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY) }, 5));
     } else {
-      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(event.deltaY) }, 40));
+      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY) }, 40));
     }
   }
 
