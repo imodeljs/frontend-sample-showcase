@@ -16,7 +16,7 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp"), entry: true },
       { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI") },
     ],
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
+    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     setup: ViewClipApp.setup.bind(ViewClipApp),
   });
 }
