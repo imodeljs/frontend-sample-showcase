@@ -2,14 +2,15 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ByteStream } from "@bentley/bentleyjs-core";
+import { Matrix3d, Point3d, Point4d, Range3d, Transform, Vector3d } from "@bentley/geometry-core";
+import { ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
+import { CoordSystem, DecorateContext, Decorator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, GraphicBranch, GraphicType, ImdlReader, IModelApp, IModelConnection, SceneContext, ScreenViewport, TileContent, TiledGraphicsProvider, TileRequest, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { Button, Slider } from "@bentley/ui-core";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { DecorateContext, Decorator, EmphasizeElements, GraphicBuilder, GraphicType, IModelApp, IModelConnection, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import { Button, Slider } from "@bentley/ui-core";
-import { Box, Matrix3d, Point3d, Point4d, PolyfaceBuilder, Range3d, StrokeOptions, Transform, Vector3d, WritableXYAndZ, XYZProps } from "@bentley/geometry-core";
-import { IModelTileRpcInterface } from "@bentley/imodeljs-common";
+import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import * as React from "react";
 
 interface SampleProps {
   iModelName: string;
@@ -26,6 +27,7 @@ interface ExplodeState {
 }
 
 interface ElementData {
+  id: string;
   origin: Point3d;
   bBoxHigh: Point3d;
   bBoxLow: Point3d;
@@ -36,6 +38,8 @@ interface ElementData {
   boundingBox: Range3d;
   transformWorld: Transform;
   transformExplode: Transform;
+  tile: TileContent;
+  isLoaded: boolean;
 }
 
 function getBBRange(data: ElementData[]) {
@@ -66,25 +70,71 @@ class DebuggerDecorator implements Decorator {
   }
 }
 
-class ExplodeProvider implements TiledGraphicsProvider {
-  constructor(public data: ElementData[]) { }
+class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider {
+  private _data: ElementData[] = [];
+  // public static create() {
+  //   const provider = new ExplodeProvider();
+
+  //   return provider;
+  // }
+
+  public addElementData(data: ElementData) {
+    this._data.push(data);
+    this.vp.setFeatureOverrideProviderChanged();
+  }
+  public clearElementData() { this._data = []; }
+  constructor(public vp: Viewport) { }
+
+  public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {
+    const app = FeatureAppearance.fromTransparency(1);
+    this._data.forEach((element) => {
+      overrides.overrideElement(element.id, app, true);
+    });
+  }
 
   /** Apply the supplied function to each [[TileTreeReference]] to be drawn in the specified [[Viewport]]. */
   public forEachTileTreeRef(viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
-    // const trpc = IModelTileRpcInterface.getClient();
-    const foo = (ref: TileTreeReference) => {
-      // const graphics = trpc.requestElementGraphics
-      func(ref);
-    };
-    viewport.view.forEachTileTreeRef(foo);
+    viewport.view.forEachTileTreeRef(func);
   }
-  public addToScene(_output: SceneContext): void {
-    // output.
+
+  public addToScene(output: SceneContext): void {
+    const vp = output.viewport;
+    const branch = new GraphicBranch();
+    const overrides = new FeatureSymbology.Overrides(vp);
+    const app = FeatureAppearance.fromTransparency(0);
+    this._data.forEach((element) => {
+      if (undefined === element.tile.graphic)
+        return;
+      overrides.overrideElement(element.id, app, true);
+      branch.entries.push(element.tile.graphic);
+      console.debug(branch);
+    });
+    branch.symbologyOverrides = overrides;
+    output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), {}));
   }
 }
 
+function* makeIdSequence() {
+  let current = 0;
+  while (true) {
+    current %= Number.MAX_SAFE_INTEGER;
+    yield ++current;
+  }
+}
+
+const requestIdSequence = makeIdSequence();
+
 export default class ExplodeUI extends React.Component<SampleProps, ExplodeState> {
+  private _tileVersion: TileVersionInfo | undefined;
+  private makeRequestId(): string {
+    const requestId = requestIdSequence.next();
+    if (requestId.done)
+      return (-1).toString(16);
+    return requestId.value.toString(16);
+  }
+
   public state: ExplodeState;
+  private explodeProvider?: ExplodeProvider;
   private _objects: ExplodeObject[] = [
     {
       name: "Lamp",
@@ -92,7 +142,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     },
     {
       name: "Table",
-      elements: ["0x200000009b5", "0x200000009b4", "0x200000009af", "0x200000009ae", "0x200000009b1", "0x200000009b0", "0x200000009b3", "0x200000009b2", "0x200000009ac", "0x200000009ad", "0x200000009a9", "0x200000009aa", "0x200000009ab"]
+      elements: ["0x200000009b5", "0x200000009b4", "0x200000009af", "0x200000009ae", "0x200000009b1", "0x200000009b0", "0x200000009b3", "0x200000009b2", "0x200000009ac", "0x200000009ad", "0x200000009a9", "0x200000009aa", "0x200000009ab"],
     },
   ];
 
@@ -105,7 +155,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   private async queryElements(vp: Viewport, elementsIds: string[]) {
-    const query = `Select Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
+    const query = `Select ECInstanceID,Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
     const results = vp.iModel.query(query);
     const data: ElementData[] = [];
     let row = await results.next();
@@ -118,6 +168,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
 
       (value as ElementData).transformWorld = transform;
       (value as ElementData).boundingBox = box;
+      (value as ElementData).isLoaded = false;
       data.push(value as ElementData);
 
       row = await results.next();
@@ -126,6 +177,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const areaBB = getBBRange(data);
     const center = areaBB.center;
 
+    // Create transform from center of mass outward from each element
     data.forEach((v) => {
       const vector = Vector3d.createFrom(center);
       // Not origin. "Center of the elements range"
@@ -133,27 +185,117 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       vector.scaleInPlace(this.state.explosionFactor);
       v.transformExplode = Transform.createTranslation(vector);
     });
+    return data;
+  }
 
-    vp.addTiledGraphicsProvider(new ExplodeProvider(data));
+  /** Compute the size in meters of one pixel at the point on the tile's bounding sphere closest to the camera. */
+  public getPixelSizeInMetersAtClosestPoint(vp: Viewport, element: ElementData): number {
+
+    const radius = (element.boundingBox.maxLength() ?? 0) / 2;
+    const center = Point3d.createFrom(element.origin);
+
+    const pixelSizeAtPt = this.computePixelSizeInMetersAtClosestPoint(vp, center, radius);
+    return 0 !== pixelSizeAtPt ? vp.target.adjustPixelSizeForLOD(pixelSizeAtPt) : 1.0e-3;
+  }
+
+  /** Compute the size in meters of one pixel at the point on a sphere closest to the camera.
+   * Device scaling is not applied.
+   */
+  protected computePixelSizeInMetersAtClosestPoint(vp: Viewport, center: Point3d, radius: number): number {
+    if (vp.view.isCameraEnabled()) {
+      // Find point on sphere closest to eye.
+      const toEye = center.unitVectorTo(vp.view.camera.eye);
+      if (toEye) {
+        toEye.scaleInPlace(radius);
+        center.addInPlace(toEye);
+      }
+    }
+    const nearViewZ = vp.getFrustum(CoordSystem.View).frontCenter.z;
+    const worldToViewMap = vp.viewingSpace.worldToViewMap;
+    const viewPt = worldToViewMap.transform0.multiplyPoint3dQuietNormalize(center);
+    if (undefined !== nearViewZ && viewPt.z > nearViewZ) {
+      // Limit closest point on sphere to the near plane.
+      viewPt.z = nearViewZ;
+    }
+
+    const viewPt2 = new Point3d(viewPt.x + 1.0, viewPt.y, viewPt.z);
+    return worldToViewMap.transform1.multiplyPoint3dQuietNormalize(viewPt).distance(worldToViewMap.transform1.multiplyPoint3dQuietNormalize(viewPt2));
+  }
+
+  // Start explode process
+  public initExplode(vp: ScreenViewport, data: ElementData[]) {
+    data.forEach((element) => {
+      const pixelSize = this.getPixelSizeInMetersAtClosestPoint(vp, element);
+
+      // Round down to the nearest power of ten.
+      const toleranceLog10 = Math.floor(Math.log10(pixelSize));
+      const formatVersion = IModelApp.tileAdmin.getMaximumMajorTileFormatVersion(this._tileVersion?.formatVersion);
+
+      const props: ElementGraphicsRequestProps = {
+        id: this.makeRequestId(),
+        elementId: element.id,
+        toleranceLog10,
+        formatVersion,
+        location: element.transformWorld.multiplyTransformTransform(element.transformExplode),
+        // contentFlags: idProvider.contentFlags,
+        // omitEdges: !this.tree.hasEdges,
+        clipToProjectExtents: false,
+      };
+      IModelApp.tileAdmin.requestElementGraphics(vp.iModel, props)
+        .then((response: TileRequest.ResponseData | undefined) => {
+          if (!response) return;
+          this.readResponse(vp, response).then((content) => {
+            element.tile = content;
+            this.explodeProvider!.addElementData(element);
+          });
+        });
+    });
+    // vp.addFeatureOverrideProvider();
     IModelApp.viewManager.addDecorator(new DebuggerDecorator(data));
     vp.invalidateDecorations();
-    console.debug(data);
+  }
+
+  public async readResponse(vp: Viewport, response: TileRequest.ResponseData): Promise<TileContent> {
+    const stream = new ByteStream((response as Uint8Array).buffer);
+
+    const position = stream.curPos;
+    // const format = stream.nextUint32;
+    stream.curPos = position;
+
+    // ###TODO: IModelGraphics format wraps IModel format.
+    // if (TileFormat.IModel !== format) return;
+
+    const reader = ImdlReader.create(stream, vp.iModel, vp.iModel.iModelId!, vp.view.is3d(), IModelApp.renderSystem);
+
+    let content: TileContent = { isLeaf: true };
+    if (reader) {
+      try {
+        content = await reader.read();
+      } catch (_) {
+        //
+      }
+    }
+    return content;
   }
 
   public initObject(vp: ScreenViewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.isolateElements(this.state.object.elements, vp, true);
     IModelApp.tools.run("View.Fit", vp, true);
-    this.queryElements(vp, this.state.object.elements);
-    // vp.addTiledGraphicsProvider
+    this.queryElements(vp, this.state.object.elements)
+      .then(async (data) => {
+        this.initExplode(vp, data);
+      });
   }
   public clearEmph(vp: ScreenViewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
-    emph.clearEmphasizedElements(vp);
-    emph.clearHiddenElements(vp);
     emph.clearIsolatedElements(vp);
-    emph.clearOverriddenElements(vp);
     IModelApp.tools.run("View.Fit", vp, true);
+  }
+  public clearExplode(vp: ScreenViewport) {
+    if (!this.explodeProvider) return;
+    vp.dropFeatureOverrideProvider(this.explodeProvider);
+    vp.dropTiledGraphicsProvider(this.explodeProvider);
   }
 
   public getControls(): React.ReactChild {
@@ -162,21 +304,33 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         const vp = IModelApp.viewManager.selectedView;
         if (!vp) return;
         this.initObject(vp);
-        this.queryElements(vp, this.state.object.elements);
       }}>Explode</Button>
+      <Button onClick={() => {
+        const vp = IModelApp.viewManager.selectedView;
+        if (!vp) return;
+        this.clearExplode(vp);
+      }}>Clear Explode</Button>
       <Button onClick={() => {
         const vp = IModelApp.viewManager.selectedView;
         if (!vp) return;
         this.clearEmph(vp);
       }}>Clear Isolation</Button>
-      <Slider min={0} max={2} values={[this.state.explosionFactor]} step={0.05} onChange={this.onSliderChange} />
+      <Slider min={0} max={2} values={[this.state.explosionFactor]} step={0.05} showMinMax={true} onChange={this.onSliderChange} />
+      {/* <div dangerouslySetInnerHTML={{ __html: this.state.keyinField !== undefined ? this.state.keyinField.textBox.div.outerHTML : "" }} /> */}
     </>;
   }
 
   public readonly onIModelReady = (iModel: IModelConnection): void => {
     iModel.selectionSet.onChanged.addListener((ev) => { console.debug(ev.set.elements); });
+    IModelTileRpcInterface.getClient().queryVersionInfo().then((value) => {
+      // TODO: remove race condition
+      this._tileVersion = value;
+    });
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       // (vp.view as ViewState3d).camera.setFrom(this._tableCamera.clone());
+      this.explodeProvider = new ExplodeProvider(vp);
+      vp.addTiledGraphicsProvider(this.explodeProvider);
+      vp.addFeatureOverrideProvider(this.explodeProvider);
       this.initObject(vp);
     });
   }
