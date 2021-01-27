@@ -17,7 +17,7 @@ interface SampleProps {
   iModelSelector: React.ReactNode;
 }
 
-interface ExplodeObject {
+export interface ExplodeObject {
   name: string;
   elements: string[];
 }
@@ -42,15 +42,6 @@ interface ElementData {
   isLoaded: boolean;
 }
 
-function getBBRange(data: ElementData[]) {
-  const allPoints: Point3d[] = [];
-  data.forEach((v) => {
-    allPoints.push(v.transformWorld.multiplyPoint3d(v.bBoxHigh));
-    allPoints.push(v.transformWorld.multiplyPoint3d(v.bBoxLow));
-  });
-  return Range3d.create(...allPoints);
-}
-
 class DebuggerDecorator implements Decorator {
   private _range: Range3d;
   constructor(public data: ElementData[]) {
@@ -71,19 +62,30 @@ class DebuggerDecorator implements Decorator {
 }
 
 class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider {
+  // private _instance: this;
   private _data: ElementData[] = [];
-  // public static create() {
-  //   const provider = new ExplodeProvider();
-
-  //   return provider;
-  // }
-
+  public static createAndAdd(vp: Viewport) {
+    const provider = new ExplodeProvider(vp);
+    provider.add(vp);
+    return provider;
+  }
+  public add(vp: Viewport) {
+    vp.addTiledGraphicsProvider(this);
+    vp.addFeatureOverrideProvider(this);
+  }
+  public drop() {
+    this.vp.dropFeatureOverrideProvider(this);
+    this.vp.dropTiledGraphicsProvider(this);
+  }
   public addElementData(data: ElementData) {
     this._data.push(data);
     this.vp.setFeatureOverrideProviderChanged();
   }
-  public clearElementData() { this._data = []; }
-  constructor(public vp: Viewport) { }
+  public clearElementData() {
+    this._data = [];
+    this.vp.setFeatureOverrideProviderChanged();
+  }
+  private constructor(public vp: Viewport) { }
 
   public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {
     const app = FeatureAppearance.fromTransparency(1);
@@ -106,11 +108,12 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
       if (undefined === element.tile.graphic)
         return;
       overrides.overrideElement(element.id, app, true);
-      branch.entries.push(element.tile.graphic);
-      console.debug(branch);
+      branch.add(element.tile.graphic);
+      // branch.entries.push(element.tile.graphic);
     });
     branch.symbologyOverrides = overrides;
     output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), {}));
+    console.debug(branch, output.scene.foreground);
   }
 }
 
@@ -236,7 +239,8 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         elementId: element.id,
         toleranceLog10,
         formatVersion,
-        location: element.transformWorld.multiplyTransformTransform(element.transformExplode),
+        location: element.transformWorld,
+        // location: element.transformWorld.multiplyTransformTransform(element.transformExplode),
         // contentFlags: idProvider.contentFlags,
         // omitEdges: !this.tree.hasEdges,
         clipToProjectExtents: false,
@@ -292,10 +296,9 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     emph.clearIsolatedElements(vp);
     IModelApp.tools.run("View.Fit", vp, true);
   }
-  public clearExplode(vp: ScreenViewport) {
+  public clearExplode(_vp: ScreenViewport) {
     if (!this.explodeProvider) return;
-    vp.dropFeatureOverrideProvider(this.explodeProvider);
-    vp.dropTiledGraphicsProvider(this.explodeProvider);
+    this.explodeProvider.drop();
   }
 
   public getControls(): React.ReactChild {
@@ -303,7 +306,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       <Button onClick={() => {
         const vp = IModelApp.viewManager.selectedView;
         if (!vp) return;
-        this.initObject(vp);
+        if (this.explodeProvider)
+          this.explodeProvider.add(vp);
+        else
+          this.initObject(vp);
       }}>Explode</Button>
       <Button onClick={() => {
         const vp = IModelApp.viewManager.selectedView;
@@ -328,9 +334,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     });
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       // (vp.view as ViewState3d).camera.setFrom(this._tableCamera.clone());
-      this.explodeProvider = new ExplodeProvider(vp);
-      vp.addTiledGraphicsProvider(this.explodeProvider);
-      vp.addFeatureOverrideProvider(this.explodeProvider);
+      this.explodeProvider = ExplodeProvider.createAndAdd(vp);
       this.initObject(vp);
     });
   }
