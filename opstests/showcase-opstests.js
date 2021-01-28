@@ -1,5 +1,14 @@
 const { Builder, By, until } = require('selenium-webdriver');
 
+async function openAlliModels(driver, iModels) {
+  for (iModel in iModels) {
+    await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
+
+    const model = await driver.wait(until.elementLocated(By.xpath("//option[text() ='" + iModels[iModel] + "']")), 30000);
+    await model.click();
+  }
+}
+
 async function testSamples(driver, samples) {
   for (sample in samples) {
     // Class imodeljs-vp only appears on successful open.
@@ -23,12 +32,21 @@ async function testSamples(driver, samples) {
   try {
     await driver.get('https://www.itwinjs.org/sample-showcase/frontend-sample-showcase/');
 
+    const iModels = [
+      "Metrostation Sample",
+      "Retail Building Sample",
+      "Bay Town Process Plant",
+      "House Sample",
+      "Stadium",
+      "Exton Campus"
+    ]
+
     const viewerSamples = [
       "viewport-only",
       "viewer-only-2d",
       "reality-data",
       "view-attributes"
-    ]
+    ];
 
     const viewerFeatureSamples = [
       "display-styles",
@@ -48,8 +66,9 @@ async function testSamples(driver, samples) {
       "view-clip",
       "volume-query",
       "zoom-to-elements"
-    ]
+    ];
 
+    await openAlliModels(driver, iModels);
     await testSamples(driver, viewerSamples);
     await driver.findElement(By.xpath("//div[@title=\"Viewer Features\"]")).click();
     await testSamples(driver, viewerFeatureSamples);
