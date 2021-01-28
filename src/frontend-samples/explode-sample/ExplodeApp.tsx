@@ -277,29 +277,28 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
 class DebuggerDecorator implements Decorator {
   private static instance: DebuggerDecorator;
   public static setDebugDecorator(data: ElementData[], vp: Viewport) {
+    const range = ExplodeApp.getRangeUnion(data);
     if (!this.instance) {
-      this.instance = new this(data);
+      this.instance = new this(range);
       IModelApp.viewManager.addDecorator(this.instance);
     } else {
-      this.instance.data = data;
+      this.instance.range = range;
     }
     vp.invalidateDecorations();
   }
 
-  private _range: Range3d;
-  private constructor(public data: ElementData[]) {
+  private constructor(public range: Range3d) {
     console.debug("Debug");
-    this._range = ExplodeApp.getRangeUnion(this.data);
   }
 
   public decorate(context: DecorateContext) {
     // Mark union of areas.
     const builder = context.createGraphicBuilder(GraphicType.Scene);
-    builder.addRangeBox(this._range);
+    builder.addRangeBox(this.range);
     context.addDecorationFromBuilder(builder);
     // Mark center of explode point
     const pointPlacer = context.createGraphicBuilder(GraphicType.WorldOverlay);
-    pointPlacer.addPointString([this._range.center]);
+    pointPlacer.addPointString([this.range.center]);
     context.addDecorationFromBuilder(pointPlacer);
   }
 }

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
-import { Button, Slider } from "@bentley/ui-core";
+import { Button, Select, Slider } from "@bentley/ui-core";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -16,7 +16,7 @@ interface SampleProps {
   iModelSelector: React.ReactNode;
 }
 
-export interface ExplodeObject {
+interface ExplodeObject {
   name: string;
   elementIds: string[];
 }
@@ -58,6 +58,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   public getControls(): React.ReactChild {
+    const entries = this._objects.map((object) => object.name);
     return <>
       <Button onClick={() => {
         const vp = this.state.viewport;
@@ -78,7 +79,13 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         ExplodeApp.clearIsolate(vp);
       }}>Clear Isolation</Button>
       <Slider min={0} max={2} values={[this.state.explosionFactor]} step={0.05} showMinMax={true} onChange={this.onSliderChange} />
+      <Select value={this.state.object.name} options={entries} onChange={this.onObjectChanged} />
     </>;
+  }
+  public readonly onObjectChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const object = this._objects.find((o) => o.name === event.target.value);
+    if (object)
+      this.setState({ object });
   }
 
   public readonly onIModelReady = (iModel: IModelConnection): void => {
