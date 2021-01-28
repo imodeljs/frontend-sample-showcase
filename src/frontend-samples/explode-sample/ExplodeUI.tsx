@@ -42,6 +42,15 @@ interface ElementData {
   isLoaded: boolean;
 }
 
+function getBBRange(data: ElementData[]) {
+  const allPoints: Point3d[] = [];
+  data.forEach((element) => {
+    allPoints.push(element.transformWorld.multiplyPoint3d(element.bBoxHigh));
+    allPoints.push(element.transformWorld.multiplyPoint3d(element.bBoxLow));
+  });
+  return Range3d.create(...allPoints);
+}
+
 class DebuggerDecorator implements Decorator {
   private _range: Range3d;
   constructor(public data: ElementData[]) {
