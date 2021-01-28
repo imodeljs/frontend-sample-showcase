@@ -2,7 +2,7 @@
   "name": "showcase-opstests",
   "version": "1.0.0",
   "description": "Tests the UI for showcase",
-  "main": "index.js",
+  "main": "showcase-opstests.js",
   "scripts": {
     "opstests": "node showcase-opstests.js"
   },

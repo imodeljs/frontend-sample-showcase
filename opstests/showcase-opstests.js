@@ -6,7 +6,7 @@ const { Builder, By, until } = require('selenium-webdriver');
     .build();
 
   try {
-    await driver.get('https://www.itwinjs.org/sample-showcase/frontend-sample-showcase/');
+    await driver.get('http://localhost:3000/?group=Viewer&sample=reality-data-sample&imodel=Exton+Campus');
 
     const iModels = [
       "Metrostation Sample",
@@ -50,6 +50,13 @@ const { Builder, By, until } = require('selenium-webdriver');
     await testSamples(driver, viewerFeatureSamples);
     await driver.findElement(By.xpath("//div[@title=\"UI Components\"]")).click();
 
+  } catch (error) {
+    if (error.name === "UnexpectedAlertOpenError") {
+      console.error("Error: Sample failed to open");
+      console.error(await driver.getCurrentUrl());
+    } else {
+      console.error(error);
+    }
   } finally {
     await driver.quit();
   }
