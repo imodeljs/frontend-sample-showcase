@@ -23,7 +23,6 @@ const { Builder, By, until } = require("selenium-webdriver");
   }
 })();
 
-
 // For first sample, attempt to open all available imodel options.
 async function openAlliModels(driver) {
   const allModels = await driver.wait(until.elementsLocated(By.css("option")), 40000);
