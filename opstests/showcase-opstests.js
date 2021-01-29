@@ -8,51 +8,12 @@ const { Builder, By, until } = require("selenium-webdriver");
   try {
     await driver.get("https://www.itwinjs.org/sample-showcase/frontend-sample-showcase/");
 
-    const iModels = [
-      "Metrostation Sample",
-      "Retail Building Sample",
-      "Bay Town Process Plant",
-      "House Sample",
-      "Stadium",
-      "Exton Campus"
-    ]
-
-    const viewerSamples = [
-      "viewport-only",
-      "viewer-only-2d",
-      "reality-data",
-      "view-attributes"
-    ];
-
-    const viewerFeatureSamples = [
-      "display-styles",
-      "classifier",
-      "emphasize-elements",
-      "heatmap-decorator",
-      "image-export",
-      "cross-probing",
-      "marker-pin",
-      "multi-viewport",
-      "property-formatting",
-      "read-settings",
-      "shadow-study",
-      "swiping-viewport",
-      "thematic-display",
-      "tooltip-customize",
-      "view-clip",
-      "volume-query",
-      "zoom-to-elements"
-    ];
-
-    await openAlliModels(driver, iModels);
-    await testSamples(driver, viewerSamples);
-    await driver.findElement(By.xpath("//div[@title=\"Viewer Features\"]")).click();
-    await testSamples(driver, viewerFeatureSamples);
-    await driver.findElement(By.xpath("//div[@title=\"UI Components\"]")).click();
+    await openAlliModels(driver);
+    await testSamples(driver);
 
   } catch (error) {
     if (error.name === "UnexpectedAlertOpenError") {
-      console.error("Error: Sample failed to open");
+      console.error("Error: Sample failed to open iModel");
       console.error(await driver.getCurrentUrl());
     } else {
       console.error(error);
@@ -63,26 +24,40 @@ const { Builder, By, until } = require("selenium-webdriver");
 })();
 
 
-async function openAlliModels(driver, iModels) {
-  for (iModel in iModels) {
-    // Class imodeljs-vp only appears on successful open.
+// For first sample, attempt to open all available imodel options.
+async function openAlliModels(driver) {
+  const allModels = await driver.wait(until.elementsLocated(By.css("option")), 40000);
+  for (model in allModels) {
+    await allModels[model].click();
     await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
-
-    const model = await driver.wait(until.elementLocated(By.xpath("//option[text() ='" + iModels[iModel] + "']")), 30000);
-    await model.click();
   }
 }
 
-async function testSamples(driver, samples) {
-  for (sample in samples) {
-    await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
+async function testSamples(driver) {
+  const allGroups = await driver.wait(until.elementsLocated(By.className("uicore-expandable-blocks-block")), 40000);
+  await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
 
-    const viewportImage = await driver.wait(until.elementLocated(By.xpath("//img[@src='" + samples[sample] + "-thumbnail.png']")), 30000);
-    await viewportImage.click();
+  for (group in allGroups) {
 
-    // Very first sample doesn't change the URL.
-    if (sample !== "0" && samples[sample] !== "viewport-only") {
-      await driver.wait(until.urlContains(samples[sample]), 3000);
+    await allGroups[group].click();
+
+    const allSamples = await driver.wait(until.elementsLocated(By.className("gallery-card-radio-btn")), 40000);
+    for (sample in allSamples) {
+      await allSamples[sample].click();
+
+      // We cannot test for length By.id.
+      await driver.findElement(By.id("component-container")).then(() => {
+        // Move on.
+      }).catch(async () => {
+        const trees = await driver.findElements(By.className("sample-tree"));
+        if (trees.length > 0) {
+          // Move on.
+        } else {
+          await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
+        }
+      })
     }
+
   }
+
 }
