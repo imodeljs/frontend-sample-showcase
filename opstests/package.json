@@ -6,8 +6,12 @@
   "scripts": {
     "opstests": "node showcase-opstests.js"
   },
-  "author": "",
+  "author": "bao.ton@bentley.com",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imodeljs/frontend-sample-showcase"
+  },
   "dependencies": {
     "chromedriver": "^88.0.0",
     "selenium-webdriver": "^4.0.0-alpha.8"
