@@ -61,7 +61,5 @@ async function testSamples(driver) {
         }
       })
     }
-
   }
-
 }
