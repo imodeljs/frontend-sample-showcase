@@ -1,9 +1,12 @@
 const { Builder, By, until } = require("selenium-webdriver");
+require("chromedriver");
+
 const SHOWCASE_URL = "https://www.itwinjs.org/sample-showcase/frontend-sample-showcase/";
 const TIMEOUT = 40000;
 
 (async function testSampleShowcase() {
-  let driver = new Builder()
+
+  const driver = new Builder()
     .forBrowser("chrome")
     .build();
 
