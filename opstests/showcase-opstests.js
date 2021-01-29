@@ -1,4 +1,5 @@
 const { Builder, By, until } = require("selenium-webdriver");
+const TIMEOUT = 40000;
 
 (async function testSampleShowcase() {
   let driver = new Builder()
@@ -25,22 +26,22 @@ const { Builder, By, until } = require("selenium-webdriver");
 
 // For first sample, attempt to open all available imodel options.
 async function openAlliModels(driver) {
-  const allModels = await driver.wait(until.elementsLocated(By.css("option")), 40000);
+  const allModels = await driver.wait(until.elementsLocated(By.css("option")), TIMEOUT);
   for (model in allModels) {
     await allModels[model].click();
-    await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
+    await driver.wait(until.elementLocated(By.className("imodeljs-vp")), TIMEOUT);
   }
 }
 
 async function testSamples(driver) {
-  const allGroups = await driver.wait(until.elementsLocated(By.className("uicore-expandable-blocks-block")), 40000);
-  await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
+  const allGroups = await driver.wait(until.elementsLocated(By.className("uicore-expandable-blocks-block")), TIMEOUT);
+  await driver.wait(until.elementLocated(By.className("imodeljs-vp")), TIMEOUT);
 
   for (group in allGroups) {
 
     await allGroups[group].click();
 
-    const allSamples = await driver.wait(until.elementsLocated(By.className("gallery-card-radio-btn")), 40000);
+    const allSamples = await driver.wait(until.elementsLocated(By.className("gallery-card-radio-btn")), TIMEOUT);
     for (sample in allSamples) {
       await allSamples[sample].click();
 
@@ -52,7 +53,7 @@ async function testSamples(driver) {
         if (trees.length > 0) {
           // Move on.
         } else {
-          await driver.wait(until.elementLocated(By.className("imodeljs-vp")), 40000);
+          await driver.wait(until.elementLocated(By.className("imodeljs-vp")), TIMEOUT);
         }
       })
     }
