@@ -1,4 +1,5 @@
 const { Builder, By, until } = require("selenium-webdriver");
+const SHOWCASE_URL = "https://www.itwinjs.org/sample-showcase/frontend-sample-showcase/";
 const TIMEOUT = 40000;
 
 (async function testSampleShowcase() {
@@ -7,7 +8,7 @@ const TIMEOUT = 40000;
     .build();
 
   try {
-    await driver.get("https://www.itwinjs.org/sample-showcase/frontend-sample-showcase/");
+    await driver.get(SHOWCASE_URL);
 
     await openAlliModels(driver);
     await testSamples(driver);
