@@ -9,7 +9,7 @@ import SampleApp from "common/SampleApp";
 import ExplodeUI from "./ExplodeUI";
 import { CoordSystem, DecorateContext, Decorator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, GraphicBranch, GraphicType, ImdlReader, IModelApp, SceneContext, ScreenViewport, TileContent, TiledGraphicsProvider, TileRequest, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 import { Matrix3d, Point3d, Point4d, Range3d, Transform, Vector3d } from "@bentley/geometry-core";
-import { ElementGraphicsRequestProps, FeatureAppearance, TileVersionInfo } from "@bentley/imodeljs-common";
+import { ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileVersionInfo } from "@bentley/imodeljs-common";
 import { ByteStream } from "@bentley/bentleyjs-core";
 
 interface ElementData {
@@ -36,6 +36,13 @@ function* makeIdSequence() {
   }
 }
 const requestIdSequence = makeIdSequence();
+/** Creates an unique id for requesting tiles from the backend. */
+function makeRequestId(): string {
+  const requestId = requestIdSequence.next();
+  if (requestId.done)
+    return (-1).toString(16);
+  return requestId.value.toString(16);
+}
 
 /** Compute the size in meters of one pixel at the point on the tile's bounding sphere closest to the camera. */
 function getPixelSizeInMetersAtClosestPoint(vp: Viewport, element: ElementData): number {
@@ -71,54 +78,70 @@ function computePixelSizeInMetersAtClosestPoint(vp: Viewport, center: Point3d, r
   return worldToViewMap.transform1.multiplyPoint3dQuietNormalize(viewPt).distance(worldToViewMap.transform1.multiplyPoint3dQuietNormalize(viewPt2));
 }
 
+/** Creates a Range3d containing all the points using the Range3d API. */
+function getRangeUnion(elements: ElementData[]): Range3d {
+  const allPoints: Point3d[] = [];
+  elements.forEach((v) => {
+    allPoints.push(v.transformWorld.multiplyPoint3d(v.bBoxHigh));
+    allPoints.push(v.transformWorld.multiplyPoint3d(v.bBoxLow));
+  });
+  return Range3d.create(...allPoints);
+}
+
 export default class ExplodeApp implements SampleApp {
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
     return <ExplodeUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
-  public static getRangeUnion(elements: ElementData[]): Range3d {
-    const allPoints: Point3d[] = [];
-    elements.forEach((v) => {
-      allPoints.push(v.transformWorld.multiplyPoint3d(v.bBoxHigh));
-      allPoints.push(v.transformWorld.multiplyPoint3d(v.bBoxLow));
-    });
-    return Range3d.create(...allPoints);
+  /** Uses the IModelTileRpcInterface API to query for the tile version info */
+  public static async queryTileFormatVersionInfo(): Promise<TileVersionInfo> {
+    return IModelTileRpcInterface.getClient().queryVersionInfo();
   }
-
+  /** Returns a explosion provider associated with the given viewport.  If one does not exist, it will be created. */
   public static getOrCreateProvider(vp: Viewport) {
     return ExplodeProvider.getOrCreate(vp);
   }
-
+  /** Uses the  EmphasizeElements API to isolate the elements related to the ids given. */
+  public static emphasizeElements(vp: Viewport, elementIds: string[]) {
+    const emph = EmphasizeElements.getOrCreate(vp);
+    emph.emphasizeElements(elementIds, vp, undefined, true);
+  }
+  /** Uses the  EmphasizeElements API to isolate the elements related to the ids given. */
   public static isolateElements(vp: Viewport, elementIds: string[]) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.isolateElements(elementIds, vp, true);
   }
-  public static clearIsolate(vp: Viewport) {
+  /** Uses the  EmphasizeElements API to clear all isolated and emphasized. */
+  public static clearIsolateAndEmphasized(vp: Viewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearIsolatedElements(vp);
+    emph.clearEmphasizedElements(vp);
   }
+  /** Uses the IModel.js tools to fit the view to the object on screen. */
   public static fitView(vp: Viewport) {
     IModelApp.tools.run("View.Fit", vp, true);
   }
 
+  /** This is the main entry point for creating the explosion effect.  This method orchestrates the data and hands it to the provider. */
   public static async explodeElements(vp: Viewport, elementIds: string[], explosionFactor: number, tileVersion: TileVersionInfo): Promise<void> {
     const provider = ExplodeApp.getOrCreateProvider(vp);
-    const tileLoadedCallback = (element: ElementData) => {
-      if (element.isLoaded)
-        provider.addElementData(element);
-    };
-    const elements = await ExplodeApp.queryElements(vp, elementIds);
-    ExplodeApp.populateData(elements, explosionFactor);
+    const tileLoadedCallback = () => { provider.invalidate(); vp.synchWithView(); };
+    let elements: ElementData[];
+    // TODO: actually test the ids that they are all the same
+    if (provider.data.map((e) => e.id).length === elementIds.length) {
+      // Element information is already loaded.  No need to query it again.
+      elements = provider.data;
+      provider.invalidate();
+    } else {
+      // New object, need to query for the elements
+      provider.data = [];
+      elements = await ExplodeApp.queryElements(vp, elementIds);
+      provider.data = elements;
+    }
+    ExplodeApp.populateExplosionTransform(elements, explosionFactor);
     // TODO: validate or remove
     DebuggerDecorator.setDebugDecorator(elements, vp);
     ExplodeApp.populateTileContent(vp, elements, tileVersion, tileLoadedCallback);
-  }
-
-  private static makeRequestId(): string {
-    const requestId = requestIdSequence.next();
-    if (requestId.done)
-      return (-1).toString(16);
-    return requestId.value.toString(16);
   }
 
   private static async populateTileContent(vp: Viewport, elements: ElementData[], tileVersion: TileVersionInfo, tileLoadedCallback?: (data: ElementData) => void) {
@@ -130,12 +153,11 @@ export default class ExplodeApp implements SampleApp {
       const formatVersion = IModelApp.tileAdmin.getMaximumMajorTileFormatVersion(tileVersion.formatVersion);
 
       const props: ElementGraphicsRequestProps = {
-        id: this.makeRequestId(),
+        id: makeRequestId(),
         elementId: element.id,
         toleranceLog10,
         formatVersion,
-        location: element.transformWorld,
-        // location: element.transformWorld.multiplyTransformTransform(element.transformExplode),
+        location: element.transformExplode.toJSON(),
         // contentFlags: idProvider.contentFlags,
         // omitEdges: !this.tree.hasEdges,
         clipToProjectExtents: false,
@@ -153,30 +175,21 @@ export default class ExplodeApp implements SampleApp {
     });
   }
 
-  private static populateData(elements: ElementData[], explosionFactor: number) {
-    // Populate the data
-    elements.forEach((element) => {
-      const quaternion = Matrix3d.createFromQuaternion(Point4d.create(element.pitch, element.roll, element.yaw, 1));
-      const transform = Transform.createOriginAndMatrix(Point3d.createFrom(element.origin), quaternion);
-      const box = Range3d.create(element.bBoxHigh, element.bBoxLow);
-
-      element.transformWorld = transform;
-      element.boundingBox = box;
-    });
+  /** This method calculates and populates the transform for diplacing the "exploded" elements. */
+  private static populateExplosionTransform(elements: ElementData[], explosionFactor: number) {
     // Find the center of the range containing all element
-    // Have to do it now, after the world transform is populated.
-    const center = this.getRangeUnion(elements).center;
+    // Have to do it after the world transform is populated.
+    const center = getRangeUnion(elements).center;
     // Create transform for "exploding" effect
     elements.forEach((element) => {
-      // Create transform from center of mass outward from each element
       const vector = Vector3d.createFrom(center);
-      // Not origin. "Center of the elements range"
-      vector.subtractInPlace(element.origin);
+      vector.subtractInPlace(element.boundingBox.center);
       vector.scaleInPlace(explosionFactor);
       element.transformExplode = Transform.createTranslation(vector);
     });
   }
 
+  /** Queries the backend for the elements to explode.  It also populates the data it can interpolate with a single pass. */
   private static async queryElements(vp: Viewport, elementsIds: string[]): Promise<ElementData[]> {
     const query = `Select ECInstanceID,Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
     const results = vp.iModel.query(query);
@@ -186,6 +199,14 @@ export default class ExplodeApp implements SampleApp {
       const element = (row.value as ElementData);
       element.isLoaded = false;
 
+      // Populate information from first pass
+      const placement = Placement3d.fromJSON({ origin: element.origin, angles: { pitch: element.pitch, roll: element.roll, yaw: element.yaw } });
+      const transform = placement.transform;
+      const box = Range3d.create(element.bBoxHigh, element.bBoxLow);
+
+      element.transformWorld = transform;
+      element.boundingBox = transform.multiplyRange(box);
+
       data.push(element);
       row = await results.next();
     }
@@ -193,6 +214,7 @@ export default class ExplodeApp implements SampleApp {
     return data;
   }
 
+  /** Reads the response for tile content and returns the Tile Content. */
   private static async readResponse(vp: Viewport, response: TileRequest.ResponseData): Promise<TileContent> {
     const stream = new ByteStream((response as Uint8Array).buffer);
     const reader = ImdlReader.create(stream, vp.iModel, vp.iModel.iModelId!, vp.view.is3d(), IModelApp.renderSystem);
@@ -209,96 +231,107 @@ export default class ExplodeApp implements SampleApp {
   }
 }
 
+/** This provider both hides the original graphics of the element and inserts the transformed graphics. */
 class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider {
   private static _instances = new Map<number, ExplodeProvider>();
-  private _data: ElementData[] = [];
+  public data: ElementData[] = [];
+  /** Returns a provider associated with a given viewport. If one does not exist, it will be created. */
   public static getOrCreate(vp: Viewport) {
     let provider = ExplodeProvider._instances.get(vp.viewportId);
     if (!provider)
       provider = ExplodeProvider.createAndAdd(vp);
     return provider;
   }
+  /** Creates a provider associated with a given viewport. */
   public static createAndAdd(vp: Viewport) {
     const provider = new ExplodeProvider(vp);
     ExplodeProvider._instances.set(vp.viewportId, provider);
     provider.add(vp);
     return provider;
   }
+  /** Adds provider from viewport */
   public add(vp: Viewport) {
     if (!vp.hasTiledGraphicsProvider(this)) {
       vp.addTiledGraphicsProvider(this);
       vp.addFeatureOverrideProvider(this);
     }
   }
+  /** Drops provider from viewport */
   public drop() {
     this.vp.dropFeatureOverrideProvider(this);
     this.vp.dropTiledGraphicsProvider(this);
   }
-  public addElementData(data: ElementData) {
-    this._data.push(data);
-    this.vp.setFeatureOverrideProviderChanged();
-  }
-  public clearElementData() {
-    this._data = [];
+  /** Singles the viewport to redraw graphics. */
+  public invalidate() {
     this.vp.setFeatureOverrideProviderChanged();
   }
   private constructor(public vp: Viewport) { }
 
   public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {
     const app = FeatureAppearance.fromTransparency(1);
-    this._data.forEach((element) => {
+    this.data.forEach((element) => {
+      // TODO: hide elements when Emphasized (not isolated)
       overrides.overrideElement(element.id, app, true);
     });
   }
 
   /** Apply the supplied function to each [[TileTreeReference]] to be drawn in the specified [[Viewport]]. */
   public forEachTileTreeRef(viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
+    // TODO: update tile tree with new tiles
     viewport.view.forEachTileTreeRef(func);
   }
 
+  /** Overrides the logic for adding this provider's graphics into the scene. */
   public addToScene(output: SceneContext): void {
     const vp = output.viewport;
     const branch = new GraphicBranch();
     const overrides = new FeatureSymbology.Overrides(vp);
     const app = FeatureAppearance.fromTransparency(0);
-    this._data.forEach((element) => {
-      if (undefined === element.tile.graphic)
-        return;
-      overrides.overrideElement(element.id, app, true);
-      branch.add(element.tile.graphic);
-      // branch.entries.push(element.tile.graphic);
-    });
+    this.data
+      .filter((element) => element.isLoaded)
+      .forEach((element) => {
+        if (undefined === element.tile.graphic)
+          return;
+        overrides.overrideElement(element.id, app, true);
+        // TODO: Attempt to transform without requesting new tiles.
+        // Un-rotate
+        // translate
+        // re-rotate
+        branch.add(element.tile.graphic);
+      });
     branch.symbologyOverrides = overrides;
     output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), {}));
-    console.debug(branch, output.scene.foreground);
   }
 }
 
 class DebuggerDecorator implements Decorator {
   private static instance: DebuggerDecorator;
   public static setDebugDecorator(data: ElementData[], vp: Viewport) {
-    const range = ExplodeApp.getRangeUnion(data);
     if (!this.instance) {
-      this.instance = new this(range);
+      this.instance = new this(data);
       IModelApp.viewManager.addDecorator(this.instance);
     } else {
-      this.instance.range = range;
+      this.instance.data = data;
     }
     vp.invalidateDecorations();
   }
 
-  private constructor(public range: Range3d) {
+  private constructor(public data: ElementData[]) {
     console.debug("Debug");
   }
 
   public decorate(context: DecorateContext) {
+    const range = getRangeUnion(this.data);
     // Mark union of areas.
     const builder = context.createGraphicBuilder(GraphicType.Scene);
-    builder.addRangeBox(this.range);
+    // builder.addRangeBox(range);
+    // this.data.forEach((element) => {
+    //   builder.addRangeBox(element.boundingBox);
+    // });
     context.addDecorationFromBuilder(builder);
     // Mark center of explode point
     const pointPlacer = context.createGraphicBuilder(GraphicType.WorldOverlay);
-    pointPlacer.addPointString([this.range.center]);
+    pointPlacer.addPointString([range.center]);
     context.addDecorationFromBuilder(pointPlacer);
   }
 }
