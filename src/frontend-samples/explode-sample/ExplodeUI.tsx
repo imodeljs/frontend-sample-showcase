@@ -67,6 +67,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     this.state = {
       isInit: true,
       object: this._objects.find((o) => o.name === "Lamp")!,
+      explosionFactor: 1,
       emphasize: EmphasizeType.None, // This will be changed to Isolate before the explosion effect is applied
     };
   }

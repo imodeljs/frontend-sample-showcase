@@ -150,7 +150,7 @@ export default class ExplodeApp implements SampleApp {
       for (const element of newData)
         ExplodeApp.populateTileContent(vp, element, tileVersion).then(() => {
           provider.data.set(element.id, element);
-      provider.invalidate();
+          provider.invalidate();
         });
 
       data = data.concat(newData);
@@ -174,27 +174,27 @@ export default class ExplodeApp implements SampleApp {
   }
 
   private static async populateTileContent(vp: Viewport, element: ElementData, tileVersion: TileVersionInfo) {
-      const pixelSize = getPixelSizeInMetersAtClosestPoint(vp, element);
+    const pixelSize = getPixelSizeInMetersAtClosestPoint(vp, element);
 
-      // Round down to the nearest power of ten.
-      const toleranceLog10 = Math.floor(Math.log10(pixelSize));
-      const formatVersion = IModelApp.tileAdmin.getMaximumMajorTileFormatVersion(tileVersion.formatVersion);
+    // Round down to the nearest power of ten.
+    const toleranceLog10 = Math.floor(Math.log10(pixelSize));
+    const formatVersion = IModelApp.tileAdmin.getMaximumMajorTileFormatVersion(tileVersion.formatVersion);
 
-      const props: ElementGraphicsRequestProps = {
-        id: makeRequestId(),
-        elementId: element.id,
-        toleranceLog10,
-        formatVersion,
+    const props: ElementGraphicsRequestProps = {
+      id: makeRequestId(),
+      elementId: element.id,
+      toleranceLog10,
+      formatVersion,
       // location: element.transformExplode.toJSON(),
-        // contentFlags: idProvider.contentFlags,
-        // omitEdges: !this.tree.hasEdges,
-        clipToProjectExtents: false,
-      };
-        const response: TileRequest.ResponseData | undefined = await IModelApp.tileAdmin.requestElementGraphics(vp.iModel, props);
-        if (response) {
-          const content = await ExplodeApp.readResponse(vp, response);
-          element.tile = content;
-        }
+      // contentFlags: idProvider.contentFlags,
+      // omitEdges: !this.tree.hasEdges,
+      clipToProjectExtents: false,
+    };
+    const response: TileRequest.ResponseData | undefined = await IModelApp.tileAdmin.requestElementGraphics(vp.iModel, props);
+    if (response) {
+      const content = await ExplodeApp.readResponse(vp, response);
+      element.tile = content;
+    }
   }
 
   /** This method calculates and populates the transform for displacing the "exploded" elements. */
@@ -299,14 +299,14 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
     for (const element of this.data.values()) {
       if (!element.tile || !element.tile.graphic || !element.transformExplode)
         return;
-    const branch = new GraphicBranch();
-    const overrides = new FeatureSymbology.Overrides(vp);
-    const app = FeatureAppearance.fromTransparency(0);
-        overrides.overrideElement(element.id, app, true);
-        branch.add(element.tile.graphic);
-    branch.symbologyOverrides = overrides;
+      const branch = new GraphicBranch();
+      const overrides = new FeatureSymbology.Overrides(vp);
+      const app = FeatureAppearance.fromTransparency(0);
+      overrides.overrideElement(element.id, app, true);
+      branch.add(element.tile.graphic);
+      branch.symbologyOverrides = overrides;
       output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, element.transformExplode.inverse()!, {}));
-  }
+    }
   }
 }
 
