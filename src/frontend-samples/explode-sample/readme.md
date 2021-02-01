@@ -1,24 +1,23 @@
-# Explode Sample (TODO: update for actual explode sample)
+# Explode Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This is the simplest iModel.js frontend sample.  It displays a viewport and shows a view navigation toolbar.
+This sample shows how to create an explosion effect in the viewport.
 
 ## Purpose
 
-The main purpose is to illustrate the structure we use for samples.  Specifically:
+The main purpose is give an example of how to create the explosion effect.  To achieve this it also shows how to:
 
-* The file [ViewportOnlyApp](./ViewportOnlyApp.tsx) has the setup method which initializes the UI specific to this sample.  This file would typically also include the sample's key logic and API calls.
-* The file [ViewportOnlyUI](./ViewportOnlyUI.tsx) has the definition for the UI specific to this sample.
+* Request specific elements and tiles from the backend.
+* Work with transforms.
+* Rendering custom graphics.
 
 ## Description
 
-Besides this very basic first sample, you can use the gallery at the right side of the application to browse through many others.  Samples are provided to demonstrate:
+To create the explosion effect, we will request the original graphics from the backend with a translation matrix moving it away from the other elements.
 
-* How to display [reality data](../reality-data-sample/readme.md) and [2D models](../viewer-only-2d-sample/readme.md)
-* How to change the [view attributes](../view-attributes-sample/readme.md) to control things like render mode, background map, and sky box.
-* Using decorators to draw your own graphics such as a [heatmap](../heatmap-decorator-sample/readme.md) or location [markers](../marker-pin-sample/readme.md).
-* Querying imodel elements based on [volume](../volume-query-sample/readme.md) criteria.
-* Using the @bentley/ui-components library to create components like [buttons](../button-sample/readme.md), [sliders](../slider-sample/readme.md), and [trees](../basic-tree-sample/readme.md).
+First, the transform of the elements from the origin to their original placement must be calculated.  This can be done by querying the origin and orientation from the backend using the [iModelConnect.query(...)]() method and passing that to the [Placement3d]() API.
+Second, the direction of offset must be calculated.  This can be found by finding the center of all elements combine, and subtracting that from the center of mass for each element.  This is easily done by also query the bounding boxes during the previous step and create a [Range3d]() using those points.  The center of all elements combined can be found by finding the union of all the ranges or creating a new range that includes all the bounding points of the individual elements.  A translation transform can be create from this using [Transform.createTranslation(...)]()
+Third, with the new translation matrix, updated tiles need to be requested from the backend using the [IModelTileRpcInterface.requestElementGraphics(...)]() method.  Once they are loaded, they are handed the a provider which will hide the original graphics and insert the updated tiles.  This provider is used as both a [TiledGraphicsProvider]() and a [FeatureOverrideProvider]()
 
-... and more!
+Note: The [TiledGraphicsProvider](https://www.imodeljs.org/reference/imodeljs-frontend/views/tiledgraphicsprovider/) is in beta.
