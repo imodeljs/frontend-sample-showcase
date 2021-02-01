@@ -43,6 +43,7 @@ function mapOptions(o: {}): {} {
 export default class ExplodeUI extends React.Component<SampleProps, ExplodeState> {
   public state: ExplodeState;
   private _objects: ExplodeObject[] = [
+    // TODO: test object door
     {
       name: "Door",
       elementIds: ["0x200000000cd"],
@@ -55,14 +56,17 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       name: "Table",
       elementIds: ["0x200000009b5", "0x200000009b4", "0x200000009af", "0x200000009ae", "0x200000009b1", "0x200000009b0", "0x200000009b3", "0x200000009b2", "0x200000009ac", "0x200000009ad", "0x200000009a9", "0x200000009aa", "0x200000009ab"],
     },
+    {
+      name: "SunRoom",
+      elementIds: ["0x20000000883", "0x20000000907", "0x20000000908", "0x20000000906", "0x20000000904", "0x200000001c6", "0x200000001c5", "0x200000001c7", "0x200000001c9", "0x20000000885", "0x20000000886", "0x20000000887", "0x20000000888", "0x20000000905", "0x20000000884", "0x20000000903", "0x200000001ca", "0x200000008ff", "0x200000001ce", "0x200000001cf", "0x200000008fe", "0x20000000900", "0x200000001cd", "0x20000000902", "0x20000000901", "0x200000001cb", "0x200000001cc", "0x2000000088b", "0x2000000088f", "0x2000000088e", "0x2000000088d", "0x20000000889", "0x20000000f0b", "0x20000000ee7", "0x20000000ef2", "0x20000000ee8", "0x20000000126", "0x20000000125", "0x20000000890", "0x2000000018c", "0x2000000088c", "0x2000000088a", "0x200000001b1", "0x200000001c8"],
+    },
   ];
 
   constructor(props: SampleProps) {
     super(props);
     this.state = {
       isInit: true,
-      object: this._objects[1],
-      explosionFactor: 1,
+      object: this._objects.find((o) => o.name === "Lamp")!,
       emphasize: EmphasizeType.None, // This will be changed to Isolate before the explosion effect is applied
     };
   }
@@ -123,12 +127,12 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       this.setState({ viewport: vp });
     });
   }
-  public readonly onObjectChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  private readonly onObjectChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const object = this._objects.find((o) => o.name === event.target.value);
     if (object)
       this.setState({ object });
   }
-  public readonly onEmphasizeChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  private readonly onEmphasizeChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const emphasize: EmphasizeType = Number.parseInt(event.target.value, 10);
     if (!Number.isNaN(emphasize))
       this.setState({ emphasize });
