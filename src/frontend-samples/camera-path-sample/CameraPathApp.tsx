@@ -18,7 +18,7 @@ export interface CameraPoint {
   direction: Vector3d;
 }
 
-/** This class implements the interaction between the sample and the iModel.js API.  No user interface. */// //
+/** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class CameraPathApp implements SampleApp {
   private static _sampleNamespace: I18NNamespace;
 
@@ -53,10 +53,13 @@ export default class CameraPathApp implements SampleApp {
   }
 }
 
+// A CameraPath consists of a CurveChain representing the camera location and an array
+// of direction vectors representing the camera direction at each point.
 export class CameraPath {
   private _path: CurveChainWithDistanceIndex | undefined;
   private _directions: Vector3d[] = [];
 
+  // Build a camera path by reading the raw data
   public static createByLoadingFromJson(pathName: string) {  // return the cameraPath object
     const cameraPath = new CameraPath();
     let currentPathCoordinates: typeof trainPathCoordinates = [];
@@ -65,14 +68,13 @@ export class CameraPath {
       case "TrainPath":
         currentPathCoordinates = trainPathCoordinates;
         break;
-
       case "FlyoverPath":
         currentPathCoordinates = flyoverCoordinates;
         break;
-
       case "CommuterPath":
         currentPathCoordinates = commuterViewCoordinates;
     }
+
     currentPathCoordinates.forEach((item) => {
       directions.push(new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z));
     });
@@ -88,6 +90,13 @@ export class CameraPath {
     return cameraPath;
   }
 
+  public getLength() {
+    if (!this._path)
+      throw new Error("Path was not loaded");
+
+    return this._path.curveLength();
+  }
+
   public advanceAlongPath(currentFraction: number, distanceInMeters: number) {  // return the new fraction
     let globalFractionOfPathTravelled: number = 0;
     if (this._path)
@@ -95,29 +104,37 @@ export class CameraPath {
     return globalFractionOfPathTravelled;
   }
 
-  public getPointAndDirection(fraction: number): CameraPoint {   // return CameraPoint
-    let cameraPoint: Point3d = new Point3d();
-    let viewDirection: Vector3d = new Vector3d();
-    if (this._path) {
-      cameraPoint = this._path.fractionToPoint(fraction);
-      const detail = this._path.closestPoint(cameraPoint, false);
-      if (detail && detail?.childDetail) {
-        const lineString = detail?.childDetail?.curve as LineString3d;
-        const numPoints = lineString.packedPoints.length;
-        const { segmentIndex, localFraction } = this._getSegmentIndexAndLocalFraction(detail, numPoints);
-        const currentDirection = this._directions[segmentIndex];
-        const nextDirection = this._directions[segmentIndex + 1];
-        if (segmentIndex !== numPoints - 1)
-          viewDirection = this._getDirection(currentDirection, localFraction, nextDirection);
-        else
-          viewDirection = new Vector3d(this._directions[segmentIndex].x, this._directions[segmentIndex].y, this._directions[segmentIndex].z);
-      }
-    }
-    return { point: cameraPoint, direction: viewDirection };
+  public getPointAndDirection(fraction: number) {   // return CameraPoint
+    if (!this._path)
+      throw new Error("Path was not loaded");
+
+    const point = this._path.fractionToPoint(fraction);
+    const direction = this._getDirection(point);
+
+    return { point, direction };
   }
 
-  private _getDirection(currentIndexDirection: Vector3d, segmentFraction: number, nextIndexDirection: Vector3d) {
-    return currentIndexDirection.interpolate(segmentFraction, nextIndexDirection);
+  private _getDirection(point: Point3d) {
+    if (!this._path)
+      throw new Error("Path was not loaded");
+
+    // Based on the current point, figure out which segment we are on, and how far along that segment.
+    const detail = this._path.closestPoint(point, false);
+    if (!detail || !detail.childDetail)
+      throw new Error("Invalid path");
+
+    const lineString = detail.childDetail.curve as LineString3d;
+    const numPoints = lineString.packedPoints.length;
+    const { segmentIndex, segmentFraction } = this._getSegmentIndexAndLocalFraction(detail, numPoints);
+
+    // If we are standing on the last point, just return the last direction
+    if (numPoints - 1 === segmentIndex)
+      return new Vector3d(this._directions[segmentIndex].x, this._directions[segmentIndex].y, this._directions[segmentIndex].z);
+
+    // We are in between two points of the path, interpolate between the two directions
+    const prevDirection = this._directions[segmentIndex];
+    const nextDirection = this._directions[segmentIndex + 1];
+    return prevDirection.interpolate(segmentFraction, nextDirection);
   }
 
   private _getSegmentIndexAndLocalFraction(detail: CurveLocationDetail, numPoints: number) {
@@ -128,7 +145,6 @@ export class CameraPath {
       segmentIndex = Math.floor(scaledFraction);
       segmentFraction = scaledFraction - segmentIndex;
     }
-    return { segmentIndex, localFraction: segmentFraction }
+    return { segmentIndex, segmentFraction };
   }
 }
-
