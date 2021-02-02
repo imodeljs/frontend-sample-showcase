@@ -10,20 +10,12 @@ import CameraPathUI from "./CameraPathUI";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { CameraPathTool } from "./CameraPathTool";
 import SampleApp from "common/SampleApp";
-import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
+import { CurveChainWithDistanceIndex, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
 export interface CameraPoint {
   point: Point3d;
   direction: Vector3d;
-}
-
-// The level of Coordinate Traversal Frequency, will regulate the speed at different Levels
-export enum CoordinateTraversalFrequency {
-  Default = 1,  // Travel all coordinates
-  Fast = 3,     // Travel every 3rd coordinate
-  Faster,   // Travel every 4th coordinate
-  Fastest  // Travel every 5th coordinate
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */// //
@@ -36,16 +28,13 @@ export default class CameraPathApp implements SampleApp {
     return <CameraPathUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
-  public static async animateCameraPath(cameraPoint: CameraPoint, cameraPointIndex: number, coordinateTraversingFrequency: number, pathDelay: number, countPathTravelled: number, viewport: Viewport) {
-    if (cameraPointIndex % coordinateTraversingFrequency === 0) {
-      if (!CameraPathTool.keyDown)
-        (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
-      else
-        (viewport.view as ViewState3d).setEyePoint(cameraPoint.point);
-      viewport.synchWithView();
-      await CameraPathApp.delay(pathDelay);
-    }
-    return ++countPathTravelled;
+  public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport) {
+    if (!CameraPathTool.keyDown)
+      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+    else
+      (viewport.view as ViewState3d).setEyePoint(cameraPoint.point);
+    viewport.synchWithView();
+    await CameraPathApp.delay();
   }
 
   public static setViewFromPointAndDirection(cameraPoint: CameraPoint, viewport: Viewport) {
@@ -53,15 +42,33 @@ export default class CameraPathApp implements SampleApp {
     viewport.synchWithView();
   }
 
+  public static getPointAndDirectionFromPathFraction(path: CurveChainWithDistanceIndex, directions: Vector3d[], pathFraction: number): CameraPoint {
+    const cameraPoint = path.fractionToPoint(pathFraction);
+    const detail = path.closestPoint(cameraPoint, false);
+    let segmentFraction: number = 0;
+    let segmentIndex: number = 0;
+    let numPoints: number = 0;
+    let viewDirection: Vector3d = new Vector3d();
+    if (detail && detail?.childDetail) {
+      const lineString = detail?.childDetail?.curve as LineString3d;
+      numPoints = lineString.packedPoints.length;
+      const scaledFraction = detail?.childDetail.fraction * (numPoints - 1);
+      segmentIndex = Math.floor(scaledFraction);
+      segmentFraction = scaledFraction - segmentIndex;
+    }
+    const currentDirection = directions[segmentIndex];
+    const nextDirection = directions[segmentIndex + 1];
+    if (segmentIndex !== numPoints - 1)
+      viewDirection = currentDirection.interpolate(segmentFraction, nextDirection);
+    else
+      viewDirection = new Vector3d(directions[segmentIndex].x, directions[segmentIndex].y, directions[segmentIndex].z);
+    return { point: cameraPoint, direction: viewDirection };
+  }
+
   // load the Coordinates while onIModelReady and changing the Camera Path
-  public static loadCameraPath(pathName: string, pathSpeed: number): CameraPoint[] {
-    const pathAngularSpeed: number = 7  // degrees/second  assumed for computing the interpolation fraction for the special case where the camera is rotating from a stationary position
-    const stepsPerSecond = 30; //  In order to know  how much steps it will take to move between successive coordinates,consider 30 steps/second and then multiply it by duration to travel between successive coordinates
-    let segmentDistance: number; // Distance between two Coordinates
-    let segmentAngularDistance: Angle; // Angular Distance between two Direction Vectors
-    let segmentStepsCount: number;  // Total Steps count in each Segment
-    const cameraPoints: CameraPoint[] = [];
+  public static loadCameraPath(pathName: string): { curveChainWithDistanceIndexPath: CurveChainWithDistanceIndex | undefined, cameraDirection: Vector3d[] } {
     let currentPathCoordinates: typeof trainPathCoordinates = [];
+    const direction: Vector3d[] = [];
     switch (pathName) {
       case "TrainPath":
         currentPathCoordinates = trainPathCoordinates;
@@ -74,40 +81,20 @@ export default class CameraPathApp implements SampleApp {
       case "CommuterPath":
         currentPathCoordinates = commuterViewCoordinates;
     }
-
-    currentPathCoordinates.forEach((item, index) => {
-      if (index !== currentPathCoordinates.length - 1) {
-        const currPoint = new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z);
-        const nextPoint = new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z);
-        segmentDistance = currPoint.distance(nextPoint);
-        if (0 !== segmentDistance)
-          segmentStepsCount = stepsPerSecond * (segmentDistance / pathSpeed);  // stepsPerSecond * Duration to travel between two coordinates
-        else {
-          const currViewDirection = new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z);
-          const nextViewDirection = new Vector3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z);
-          segmentAngularDistance = currViewDirection.angleTo(nextViewDirection);
-          if (0 !== segmentAngularDistance.degrees)
-            segmentStepsCount = stepsPerSecond * (segmentAngularDistance.degrees / pathAngularSpeed);
-        }
-
-        // for each current step calculate the interpolation value by evaluating current step/total no of steps
-        for (let j: number = 0; j <= segmentStepsCount; j++) {
-          const currentCoordinate = new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z);
-          const nextCoordinate = new Point3d(currentPathCoordinates[index + 1].cameraPoint.x, currentPathCoordinates[index + 1].cameraPoint.y, currentPathCoordinates[index + 1].cameraPoint.z);
-          const cameraPoint = currentCoordinate.interpolate(j / segmentStepsCount, nextCoordinate);
-          const currentDirectionVector = new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z);
-          const nextDirectionVector = new Vector3d(currentPathCoordinates[index + 1].viewDirection.x, currentPathCoordinates[index + 1].viewDirection.y, currentPathCoordinates[index + 1].viewDirection.z);
-          const cameraDirectionVector = currentDirectionVector.interpolate(j / segmentStepsCount, nextDirectionVector);
-          cameraPoints.push({ point: cameraPoint, direction: cameraDirectionVector });
-        }
-      }
+    currentPathCoordinates.forEach((item) => {
+      direction.push(new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z));
     });
-    return cameraPoints;
+    const line: LineString3d = LineString3d.create();
+    currentPathCoordinates.forEach((item) => {
+      line.addPoint(new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z));
+    });
+    const path = Path.create(line);
+    return { curveChainWithDistanceIndexPath: CurveChainWithDistanceIndex.createCapture(path), cameraDirection: direction };
   }
 
   // For Delay between two Coordinates while animation is Active
-  public static async delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  public static async delay() {
+    return new Promise((resolve) => setTimeout(resolve, Math.pow(10, -4)));
   }
 
   public static teardown() {
