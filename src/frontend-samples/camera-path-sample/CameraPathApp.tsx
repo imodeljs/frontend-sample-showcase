@@ -10,7 +10,7 @@ import CameraPathUI from "./CameraPathUI";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { CameraPathTool } from "./CameraPathTool";
 import SampleApp from "common/SampleApp";
-import { CurveChainWithDistanceIndex, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
+import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
 export interface CameraPoint {
@@ -28,8 +28,8 @@ export default class CameraPathApp implements SampleApp {
     return <CameraPathUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
-  public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport) {
-    if (!CameraPathTool.keyDown)
+  public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport, keyDown: boolean) {
+    if (!keyDown)
       (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     else
       (viewport.view as ViewState3d).setEyePoint(cameraPoint.point);
@@ -42,33 +42,25 @@ export default class CameraPathApp implements SampleApp {
     viewport.synchWithView();
   }
 
-  public static getPointAndDirectionFromPathFraction(path: CurveChainWithDistanceIndex, directions: Vector3d[], pathFraction: number): CameraPoint {
-    const cameraPoint = path.fractionToPoint(pathFraction);
-    const detail = path.closestPoint(cameraPoint, false);
-    let segmentFraction: number = 0;
-    let segmentIndex: number = 0;
-    let numPoints: number = 0;
-    let viewDirection: Vector3d = new Vector3d();
-    if (detail && detail?.childDetail) {
-      const lineString = detail?.childDetail?.curve as LineString3d;
-      numPoints = lineString.packedPoints.length;
-      const scaledFraction = detail?.childDetail.fraction * (numPoints - 1);
-      segmentIndex = Math.floor(scaledFraction);
-      segmentFraction = scaledFraction - segmentIndex;
-    }
-    const currentDirection = directions[segmentIndex];
-    const nextDirection = directions[segmentIndex + 1];
-    if (segmentIndex !== numPoints - 1)
-      viewDirection = currentDirection.interpolate(segmentFraction, nextDirection);
-    else
-      viewDirection = new Vector3d(directions[segmentIndex].x, directions[segmentIndex].y, directions[segmentIndex].z);
-    return { point: cameraPoint, direction: viewDirection };
+  // For Delay between two Coordinates while animation is Active
+  public static async delay() {
+    return new Promise((resolve) => setTimeout(resolve, Math.pow(10, -4)));
   }
 
-  // load the Coordinates while onIModelReady and changing the Camera Path
-  public static loadCameraPath(pathName: string): { curveChainWithDistanceIndexPath: CurveChainWithDistanceIndex | undefined, cameraDirection: Vector3d[] } {
+  public static teardown() {
+    IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
+    IModelApp.tools.unRegister(CameraPathTool.toolId);
+  }
+}
+
+export class CameraPath {
+  private _path: CurveChainWithDistanceIndex | undefined;
+  private _directions: Vector3d[] = [];
+
+  public static createByLoadingFromJson(pathName: string) {  // return the cameraPath object
+    const cameraPath = new CameraPath();
     let currentPathCoordinates: typeof trainPathCoordinates = [];
-    const direction: Vector3d[] = [];
+    const directions: Vector3d[] = [];
     switch (pathName) {
       case "TrainPath":
         currentPathCoordinates = trainPathCoordinates;
@@ -82,24 +74,61 @@ export default class CameraPathApp implements SampleApp {
         currentPathCoordinates = commuterViewCoordinates;
     }
     currentPathCoordinates.forEach((item) => {
-      direction.push(new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z));
+      directions.push(new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z));
     });
     const line: LineString3d = LineString3d.create();
     currentPathCoordinates.forEach((item) => {
       line.addPoint(new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z));
     });
-    const path = Path.create(line);
-    return { curveChainWithDistanceIndexPath: CurveChainWithDistanceIndex.createCapture(path), cameraDirection: direction };
+    const path = CurveChainWithDistanceIndex.createCapture(Path.create(line));
+    if (path !== undefined) {
+      cameraPath._path = path;
+      cameraPath._directions = directions;
+    }
+    return cameraPath;
   }
 
-  // For Delay between two Coordinates while animation is Active
-  public static async delay() {
-    return new Promise((resolve) => setTimeout(resolve, Math.pow(10, -4)));
+  public advanceAlongPath(currentFraction: number, distanceInMeters: number) {  // return the new fraction
+    let globalFractionOfPathTravelled: number = 0;
+    if (this._path)
+      globalFractionOfPathTravelled = this._path.moveSignedDistanceFromFraction(currentFraction, distanceInMeters, false).fraction;
+    return globalFractionOfPathTravelled;
   }
 
-  public static teardown() {
-    IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
-    IModelApp.tools.unRegister(CameraPathTool.toolId);
+  public getPointAndDirection(fraction: number): CameraPoint {   // return CameraPoint
+    let cameraPoint: Point3d = new Point3d();
+    let viewDirection: Vector3d = new Vector3d();
+    if (this._path) {
+      cameraPoint = this._path.fractionToPoint(fraction);
+      const detail = this._path.closestPoint(cameraPoint, false);
+      if (detail && detail?.childDetail) {
+        const lineString = detail?.childDetail?.curve as LineString3d;
+        const numPoints = lineString.packedPoints.length;
+        const { segmentIndex, localFraction } = this._getSegmentIndexAndLocalFraction(detail, numPoints);
+        const currentDirection = this._directions[segmentIndex];
+        const nextDirection = this._directions[segmentIndex + 1];
+        if (segmentIndex !== numPoints - 1)
+          viewDirection = this._getDirection(currentDirection, localFraction, nextDirection);
+        else
+          viewDirection = new Vector3d(this._directions[segmentIndex].x, this._directions[segmentIndex].y, this._directions[segmentIndex].z);
+      }
+    }
+    return { point: cameraPoint, direction: viewDirection };
+  }
+
+  private _getDirection(currentIndexDirection: Vector3d, segmentFraction: number, nextIndexDirection: Vector3d) {
+    return currentIndexDirection.interpolate(segmentFraction, nextIndexDirection);
+  }
+
+  private _getSegmentIndexAndLocalFraction(detail: CurveLocationDetail, numPoints: number) {
+    let segmentIndex: number = 0;
+    let segmentFraction: number = 0;
+    if (detail.childDetail) {
+      const scaledFraction = detail.childDetail.fraction * (numPoints - 1);
+      segmentIndex = Math.floor(scaledFraction);
+      segmentFraction = scaledFraction - segmentIndex;
+    }
+    return { segmentIndex, localFraction: segmentFraction }
   }
 }
 

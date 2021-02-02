@@ -9,11 +9,10 @@ import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imode
 import { Select } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import CameraPathApp from "./CameraPathApp";
+import CameraPathApp, { CameraPath } from "./CameraPathApp";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { CameraPathTool } from "./CameraPathTool";
-import { CurveChainWithDistanceIndex, Vector3d } from "@bentley/geometry-core";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -26,9 +25,9 @@ interface CameraPathUIAttributeState {
     currentSpeed: number;
     isInitialPositionStarted: boolean;
     isMouseWheelAnimationActive: boolean;
+    keyDown: boolean;
   };
-  Path: CurveChainWithDistanceIndex | undefined;
-  CameraDirections: Vector3d[];
+  cameraPath: CameraPath;
 }
 
 /** A React component that renders the UI specific for this sample */
@@ -36,7 +35,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   /** Creates a Sample instance */
   constructor(props?: any) {
     super(props);
-    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", currentSpeed: 0, isInitialPositionStarted: false, isMouseWheelAnimationActive: false }, Path: undefined, CameraDirections: [] };
+    this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", currentSpeed: 0, isInitialPositionStarted: false, isMouseWheelAnimationActive: false, keyDown: false }, cameraPath: CameraPath.createByLoadingFromJson("TrainPath") };
     this._handleCameraPlay = this._handleCameraPlay.bind(this);
   }
 
@@ -55,8 +54,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     if (sliderNumber === 1)
       initialPositionStarted = false;
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: sliderNumber, isInitialPositionStarted: initialPositionStarted } }), () => {
-      if (this.state.vp && this.state.Path) {
-        const nextPointAndDirectionFromPathFraction = CameraPathApp.getPointAndDirectionFromPathFraction(this.state.Path, this.state.CameraDirections, this.state.attrValues.sliderValue);
+      if (this.state.vp) {
+        const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(this.state.attrValues.sliderValue);
         CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
       }
     });
@@ -100,7 +99,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Handle the Camera Animation
   private async _handleCameraPathAnimation() {
-    if (this.state.vp === undefined || this.state.Path === undefined)
+    if (this.state.vp === undefined)
       return;
     let pathCompleted: boolean = true;
     while (this.state.attrValues.sliderValue < 1) {
@@ -108,9 +107,9 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         pathCompleted = false;
         break;
       }
-      const nextPathFraction = this.state.Path.moveSignedDistanceFromFraction(this.state.attrValues.sliderValue, this.state.attrValues.currentSpeed / 30, false).fraction;
-      const nextPointAndDirectionFromPathFraction = CameraPathApp.getPointAndDirectionFromPathFraction(this.state.Path, this.state.CameraDirections, nextPathFraction);
-      await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp);
+      const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, this.state.attrValues.currentSpeed / 30);
+      const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
+      await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
       this._updateTimeline(nextPathFraction);
     }
     if (pathCompleted) {
@@ -120,11 +119,11 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Handle the Path Change
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { curveChainWithDistanceIndexPath, cameraDirection } = CameraPathApp.loadCameraPath(event.target.value);
-    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isMouseWheelAnimationActive: false, isInitialPositionStarted: false, isUnlockDirectionOn: false }, Path: curveChainWithDistanceIndexPath, CameraDirections: cameraDirection }), () => {
+    const cameraPath = CameraPath.createByLoadingFromJson(event.target.value);
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isMouseWheelAnimationActive: false, isInitialPositionStarted: false, isUnlockDirectionOn: false }, cameraPath }), () => {
       setTimeout(() => {
-        if (this.state.vp && this.state.Path) {
-          const nextPointAndDirectionFromPathFraction = CameraPathApp.getPointAndDirectionFromPathFraction(this.state.Path, this.state.CameraDirections, 0);
+        if (this.state.vp) {
+          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(0);
           CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
           this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: 0 } }));
         }
@@ -193,11 +192,10 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   public onIModelReady = (_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: Viewport) => {
       this._onChangeRenderSpeed(this.state.attrValues.speedLevel);
-      const { curveChainWithDistanceIndexPath, cameraDirection } = CameraPathApp.loadCameraPath("TrainPath"); // The normal human walking Speed is 1.4 meters/second
-      this.setState({ vp, Path: curveChainWithDistanceIndexPath, CameraDirections: cameraDirection }, () => {
-        if (this.state.vp && this.state.Path) {
+      this.setState({ vp }, () => {
+        if (this.state.vp) {
           this.toolActivation();
-          const nextPointAndDirectionFromPathFraction = CameraPathApp.getPointAndDirectionFromPathFraction(this.state.Path, this.state.CameraDirections, 0);
+          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(0);
           CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
         }
       });
@@ -207,13 +205,13 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   // We will use this method to activate the CameraPathTool
   // The CameraPathTool will prevent the view tool and standard mouse events
   private toolActivation() {
-    IModelApp.tools.run(CameraPathTool.toolId, this._handleScrollAnimation);
+    IModelApp.tools.run(CameraPathTool.toolId, this.handleScrollAnimation, this.handleUnlockDirection);
   }
 
   private _handleScrollPath(eventDeltaY: number) {
     let initialPositionStarted: boolean = true;
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: true, isInitialPositionStarted: initialPositionStarted } }), async () => {
-      if (this.state.vp === undefined || this.state.Path === undefined)
+      if (this.state.vp === undefined)
         return;
       const sliderValue = this.state.attrValues.sliderValue;
       let cameraPathIterationValue: number;
@@ -225,9 +223,9 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           if (!this.state.attrValues.isMouseWheelAnimationActive) {
             break;
           }
-          const nextPathFraction = this.state.Path.moveSignedDistanceFromFraction(this.state.attrValues.sliderValue, 3.4 / 30, false).fraction;
-          const nextPointAndDirectionFromPathFraction = CameraPathApp.getPointAndDirectionFromPathFraction(this.state.Path, this.state.CameraDirections, nextPathFraction);
-          await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp);
+          const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, 3.4 / 30);
+          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
+          await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
         }
       } else if (eventDeltaY < 0) {
@@ -237,9 +235,9 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         while (this.state.attrValues.sliderValue >= cameraPathIterationValue) {
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
-          const nextPathFraction = this.state.Path.moveSignedDistanceFromFraction(this.state.attrValues.sliderValue, - 3.4 / 30, false).fraction;
-          const nextPointAndDirectionFromPathFraction = CameraPathApp.getPointAndDirectionFromPathFraction(this.state.Path, this.state.CameraDirections, nextPathFraction);
-          await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp);
+          const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, - 3.4 / 30);
+          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
+          await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
         }
       }
@@ -250,7 +248,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     });
   }
 
-  public _handleScrollAnimation = (eventDeltaY: number) => {
+  public handleScrollAnimation = (eventDeltaY: number) => {
     if (((this.state.attrValues.sliderValue === 1) && (eventDeltaY > 0)) || ((this.state.attrValues.sliderValue === 0) && (eventDeltaY < 0)))
       return;
     if (this.state.attrValues.isPause) {
@@ -258,6 +256,9 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     } else {
       this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY) }, 40));
     }
+  }
+  public handleUnlockDirection = (keyDown: boolean) => {
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, keyDown } }));
   }
 
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {

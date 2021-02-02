@@ -8,12 +8,14 @@ import { Angle, Matrix3d, Transform, Vector3d } from "@bentley/geometry-core";
 
 export class CameraPathTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
-  public static keyDown: boolean = false;
+  private static keyDown: boolean = false;
   private _mouseScrollCallback: (deltaY: number) => {};
+  private _mouseDataButtonDownCallback: (keyDown: boolean) => {};
 
-  constructor(callback: (deltaY: number) => {}) {
+  constructor(mouseScrollCallback: (deltaY: number) => {}, mouseDataButtonDownCallback: (key: boolean) => {}) {
     super();
-    this._mouseScrollCallback = callback;
+    this._mouseScrollCallback = mouseScrollCallback;
+    this._mouseDataButtonDownCallback = mouseDataButtonDownCallback;
   }
 
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp); }
@@ -35,6 +37,7 @@ export class CameraPathTool extends PrimitiveTool {
 
   public async onDataButtonDown(_ev: BeWheelEvent): Promise<EventHandled> {
     CameraPathTool.keyDown = !CameraPathTool.keyDown;
+    this._mouseDataButtonDownCallback(CameraPathTool.keyDown);
     return EventHandled.Yes;
   }
 
