@@ -5,7 +5,7 @@
 import * as  React from "react";
 
 export default abstract class ShowcaseSample {
-  public static setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
+  public static setup: typeof React.Component;;
   public static teardown?: () => void;
 
 }

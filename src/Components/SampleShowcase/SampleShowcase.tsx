@@ -18,7 +18,7 @@ import SampleApp from "common/SampleApp";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
-import ShowcaseSample from "./../ShowcaseSample/ShowcaseSample";
+import SampleLoader from "./../ShowcaseSample/ShowcaseSample";
 // cSpell:ignore imodels
 
 export interface SampleSpec {
@@ -28,7 +28,7 @@ export interface SampleSpec {
   readme?: IInternalFile;
   files: IInternalFile[];
   customModelList?: string[];
-  setup: (iModelConnection?: IModelConnection, iModelSelector?: React.ReactNode) => React.ReactNode;
+  setup: typeof React.Component;//(iModelConnection?: IModelConnection, iModelSelector?: React.ReactNode) => React.ReactNode;
   teardown?: () => void;
 }
 
@@ -199,7 +199,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       const iModelList = this.getIModelList(newSampleSpec);
       const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
       //sampleUI = await newSampleSpec.setup(this.state.iModelName, iModelSelector);
-      sampleUI = ShowcaseSample.showSample(newSampleSpec.setup, this.state.iModelName, undefined, iModelSelector,)
+      sampleUI = SampleLoader.showSample(newSampleSpec.setup, this.state.iModelName, undefined, iModelSelector,)
     }
 
     this.setState({ sampleUI });
@@ -264,16 +264,16 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       this._prevSampleTeardown = activeSample.teardown;
     }
 
-    activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
+    activeSample.setup = sampleUi.setup /*async (iModelName: string, iModelSelector: React.ReactNode) => {
       try {
-        return sampleUi.setup(iModelName, iModelSelector);
+        return SampleLoader.showSample(activeSample.setup, this.state.iModelName, undefined, iModelSelector,);
       } catch (err) {
         return (
           <DisplayError error={err} />
         );
       }
-    };
-
+    };*/
+    console.log(sampleUi.setup)
     activeSample.teardown = sampleUi.teardown || this._prevSampleTeardown;
 
     const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;

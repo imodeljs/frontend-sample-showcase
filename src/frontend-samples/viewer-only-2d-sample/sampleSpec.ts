@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import ViewerOnly2dApp from "./ViewerOnly2dApp";
+import ViewerOnly2dUI from "./ViewerOnly2dUI";
 
 export function getViewerOnly2dSpec(): SampleSpec {
   return ({
@@ -18,6 +18,6 @@ export function getViewerOnly2dSpec(): SampleSpec {
       { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
     ],
     customModelList: [SampleIModels.House, SampleIModels.MetroStation],
-    setup: ViewerOnly2dApp.setup.bind(ViewerOnly2dApp),
+    setup: ViewerOnly2dUI,
   });
 }
