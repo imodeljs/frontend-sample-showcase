@@ -11,11 +11,10 @@ import { SignIn } from "@bentley/ui-components";
 import { SampleBaseApp } from "../../SampleBaseApp";
 import { LoadingSpinner, SpinnerSize } from "@bentley/ui-core";
 
-// cSpell:ignore imodels
-
 /** React state of the StartupComponent */
 export interface StartupProps {
   iModelName: string;
+  iModelName2?: string;
   onIModelReady(iModel: IModelConnection): void;
 }
 
@@ -79,8 +78,12 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     const requestContext: AuthorizedFrontendRequestContext = await AuthorizedFrontendRequestContext.create();
 
     // In testdrive the projectName matches iModelName.  That's not true in general.
-    const iModelName = this.props.iModelName;
+    let iModelName = this.props.iModelName;
     const projectName = this.props.iModelName;
+
+    if (this.props.iModelName2) {
+      iModelName = this.props.iModelName2;
+    }
 
     // const connectClient = new ConnectClient();
     const connectClient = new ContextRegistryClient();

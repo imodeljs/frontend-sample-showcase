@@ -4,8 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import CameraPathApp from "./CameraPathApp";
-// import * as data from './Coordinates.json';
-// const langFile = require('./Coordinates.json');
 
 export function getViewCameraSpec(): SampleSpec {
   return ({

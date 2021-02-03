@@ -191,6 +191,16 @@
       "typedef": true
     },
     {
+      "name": "common/GeometryCommon/InteractivePointMarker",
+      "import": "./src/common/GeometryCommon/InteractivePointMarker",
+      "typedef": true
+    },
+    {
+      "name": "common/GeometryCommon/SampleCurveFactory",
+      "import": "./src/common/GeometryCommon/SampleCurveFactory",
+      "typedef": true
+    },
+    {
       "name": "common/DataProvider/Trees.scss",
       "import": "!!raw-loader!common/DataProvider/Trees.scss"
     },
