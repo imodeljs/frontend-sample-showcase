@@ -80,7 +80,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   /** Kicks off the explosion effect */
   public explode() {
     const vp = this.state.viewport;
-    if (!vp || this.state.isAnimated) return;
+    if (!vp) return;
     // const elementIds = this.state.object.elementIds;
     if (this.state.isInit) {
       this.setState({ isInit: false, emphasize: EmphasizeType.Isolate });
@@ -94,6 +94,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   public animate() {
+    // TODO: Refactor
     const vp = this.state.viewport;
     if (!vp) return;
 
@@ -107,6 +108,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const animationStep = (explode ? 1 : -1) * step;
     const animator: Animator = {
       animate: () => {
+        this.explode();
         if (goal === this.state.explosionFactor) {
           this.setState({ isAnimated: false });
           return true;
@@ -115,10 +117,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
 
-        const provider = ExplodeApp.getOrCreateProvider(vp);
-        ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explosionFactor);
-        provider.invalidate();
-        vp.invalidateScene();
         this.setState({ explosionFactor: newFactor });
         return false;
       },
@@ -207,7 +205,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     let updateObject = false;
     updateExplode = updateObject = (preState.object.name !== this.state.object.name);
     updateExplode = updateExplode || (preState.explosionFactor !== this.state.explosionFactor);
-    // updateExplode = updateExplode || (preState.tileVersion?.formatVersion !== this.state.tileVersion?.formatVersion);
     updateExplode = updateExplode || (preState.viewport?.viewportId !== this.state.viewport?.viewportId);
 
     if ((onEmphasize || updateObject || onInit) && this.state.viewport) {
@@ -225,7 +222,8 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         default:
       }
     }
-    if (updateExplode)
+    // Handling it in the animator is faster.
+    if (updateExplode && !this.state.isAnimated)
       this.explode();
     if (updateObject && this.state.viewport)
       ExplodeApp.fitView(this.state.viewport);
