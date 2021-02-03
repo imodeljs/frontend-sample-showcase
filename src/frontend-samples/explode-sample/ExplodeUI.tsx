@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { Button, Select, Slider } from "@bentley/ui-core";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -21,11 +21,11 @@ interface ExplodeState {
   object: ExplodeObject;
   explosionFactor: number;
   emphasize: EmphasizeType;
-  tileVersion?: TileVersionInfo;
   viewport?: Viewport;
+  isAnimated: boolean;
 }
 
-interface ExplodeObject {
+export interface ExplodeObject {
   name: string;
   elementIds: string[];
 }
@@ -39,6 +39,10 @@ function mapOptions(o: {}): {} {
   const keys = Object.keys(o).filter((key: any) => isNaN(key));
   return Object.assign({}, keys);
 }
+
+const min = 0;
+const max = 2;
+const step = 0.05;
 
 export default class ExplodeUI extends React.Component<SampleProps, ExplodeState> {
   public state: ExplodeState;
@@ -65,9 +69,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   constructor(props: SampleProps) {
     super(props);
     this.state = {
+      isAnimated: false,
       isInit: true,
       object: this._objects.find((o) => o.name === "Lamp")!,
-      explosionFactor: 1,
+      explosionFactor: min, // (min + max) / 2, TODO: set to half
       emphasize: EmphasizeType.None, // This will be changed to Isolate before the explosion effect is applied
     };
   }
@@ -75,17 +80,60 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   /** Kicks off the explosion effect */
   public explode() {
     const vp = this.state.viewport;
-    if (!vp || !this.state.tileVersion) return;
-    const elementIds = this.state.object.elementIds;
+    if (!vp || this.state.isAnimated) return;
+    // const elementIds = this.state.object.elementIds;
     if (this.state.isInit) {
       this.setState({ isInit: false, emphasize: EmphasizeType.Isolate });
     }
-    ExplodeApp.explodeElements(vp, elementIds, this.state.explosionFactor, this.state.tileVersion);
+    const provider = ExplodeApp.getOrCreateProvider(vp);
+    provider.add(vp);  // TODO: should be unnecessary
+    ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explosionFactor);
+    provider.invalidate();
+    vp.invalidateScene();
+    // ExplodeApp.explodeElements(vp, elementIds, this.state.explosionFactor, this.state.tileVersion);
+  }
+
+  public animate() {
+    const vp = this.state.viewport;
+    if (!vp) return;
+
+    if (this.state.isAnimated) {
+      vp.setAnimator();
+      this.setState({ isAnimated: false });
+      return;
+    }
+    const explode = (min + max) / 2 >= this.state.explosionFactor;
+    const goal = explode ? max : min;
+    const animationStep = (explode ? 1 : -1) * step;
+    const animator: Animator = {
+      animate: () => {
+        if (goal === this.state.explosionFactor) {
+          this.setState({ isAnimated: false });
+          return true;
+        }
+        let newFactor = this.state.explosionFactor + animationStep;
+        if (explode ? newFactor > goal : newFactor < goal)
+          newFactor = goal;
+
+        const provider = ExplodeApp.getOrCreateProvider(vp);
+        ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explosionFactor);
+        provider.invalidate();
+        vp.invalidateScene();
+        this.setState({ explosionFactor: newFactor });
+        return false;
+      },
+      interrupt: () => {
+        this.setState({ isAnimated: false });
+      },
+    };
+    this.setState({ isAnimated: true });
+    this.state.viewport!.setAnimator(animator);
   }
 
   public getControls(): React.ReactChild {
     const objectEntries = this._objects.map((object) => object.name);
     const emphasizeEntries = mapOptions(EmphasizeType);
+    const animationText = this.state.isAnimated ? "Pause" : ((min + max) / 2 >= this.state.explosionFactor ? "Explode" : "Collapse");
     return <>
       <div className={"sample-options-2col"}>
         {/* <label>For Debugging Only</label>
@@ -95,7 +143,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
             if (!vp) return;
             const provider = ExplodeApp.getOrCreateProvider(vp);
             provider.add(vp);
-            this.explode();
+            provider.explodeTileTreeRef.explodeFactor = this.state.explosionFactor;
+            ExplodeApp.refSetData(vp, this.state.object.elementIds, this.state.object.name);
+            provider.invalidate();
+            vp.invalidateScene();
           }}>Explode</Button>
           <Button onClick={() => {
             const vp = this.state.viewport;
@@ -109,10 +160,16 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
             ExplodeApp.clearIsolateAndEmphasized(vp);
           }}>Clear Isolation</Button>
         </span> */}
+        <label>Animate</label>
+        <Button onClick={() => {
+          this.animate();
+        }}
+          disabled={this.state.isInit}
+        >{animationText}</Button>
         <label>Explosion</label>
-        <Slider min={0} max={2} values={[this.state.explosionFactor]} step={0.05} showMinMax={true} onUpdate={this.onSliderChange} />
+        <Slider min={min} max={max} values={[this.state.explosionFactor]} step={step} showMinMax={true} onUpdate={this.onSliderChange} disabled={this.state.isAnimated} />
         <label>Object</label>
-        <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} />
+        <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />
         <label>Emphases</label>
         <Select value={this.state.emphasize} options={emphasizeEntries} onChange={this.onEmphasizeChanged} disabled={this.state.isInit} style={{ width: "fit-content" }} />
       </div>
@@ -121,9 +178,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
 
   public readonly onIModelReady = (iModel: IModelConnection): void => {
     iModel.selectionSet.onChanged.addListener((ev) => { console.debug(ev.set.elements); });
-    ExplodeApp.queryTileFormatVersionInfo().then((value) => {
-      this.setState({ tileVersion: value });
-    });
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       this.setState({ viewport: vp });
     });
@@ -143,6 +197,8 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     this.setState({ explosionFactor: value });
   }
 
+  // private readonly onAnimate
+
   /** A REACT method that is called when the props or state is updated (e.g. when "this.setState(...)" is called) */
   public componentDidUpdate(_prevProps: SampleProps, preState: ExplodeState) {
     const onInit = preState.isInit !== this.state.isInit;
@@ -151,7 +207,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     let updateObject = false;
     updateExplode = updateObject = (preState.object.name !== this.state.object.name);
     updateExplode = updateExplode || (preState.explosionFactor !== this.state.explosionFactor);
-    updateExplode = updateExplode || (preState.tileVersion?.formatVersion !== this.state.tileVersion?.formatVersion);
+    // updateExplode = updateExplode || (preState.tileVersion?.formatVersion !== this.state.tileVersion?.formatVersion);
     updateExplode = updateExplode || (preState.viewport?.viewportId !== this.state.viewport?.viewportId);
 
     if ((onEmphasize || updateObject || onInit) && this.state.viewport) {

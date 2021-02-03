@@ -2,25 +2,16 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ByteStream, SortedArray } from "@bentley/bentleyjs-core";
-import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileVersionInfo } from "@bentley/imodeljs-common";
-import { CoordSystem, DecorateContext, Decorator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, GraphicBranch, GraphicType, ImdlReader, IModelApp, SceneContext, ScreenViewport, Tile, TileContent, TiledGraphicsProvider, TileRequest, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
-import "common/samples-common.scss";
 import * as React from "react";
+import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import "common/samples-common.scss";
+import SampleApp from "common/SampleApp";
 import ExplodeUI from "./ExplodeUI";
-
-interface ElementDataProps {
-  id: string;
-  origin: XYZProps;
-  bBoxHigh: XYZProps;
-  bBoxLow: XYZProps;
-  pitch: number;
-  roll: number;
-  yaw: number;
-}
+import { Animator, CoordSystem, DecorateContext, Decorator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, GraphicBranch, GraphicType, ImdlReader, IModelApp, SceneContext, ScreenViewport, Tile, TileContent, TiledGraphicsProvider, TileRequest, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { Matrix3d, Point3d, Point4d, Range3d, Transform, Vector3d, XYZ, XYZProps } from "@bentley/geometry-core";
+import { ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileVersionInfo } from "@bentley/imodeljs-common";
+import { ByteStream, compareStrings, SortedArray } from "@bentley/bentleyjs-core";
+import { ExplodeTreeReference } from "./ExplodeTile";
 
 interface ElementData {
   id: string;
@@ -32,7 +23,17 @@ interface ElementData {
   boundingBox: Range3d;
   transformWorld: Transform;
   transformExplode?: Transform;
-  tile?: TileContent;
+  tile?: TileContent; // TODO: Remove
+}
+
+interface ElementDataProps {
+  id: string;
+  origin: XYZProps;
+  bBoxHigh: XYZProps;
+  bBoxLow: XYZProps;
+  pitch: number;
+  roll: number;
+  yaw: number;
 }
 
 function* makeIdSequence() {
@@ -125,6 +126,11 @@ export default class ExplodeApp implements SampleApp {
   /** Uses the IModel.js tools to fit the view to the object on screen. */
   public static fitView(vp: Viewport) {
     IModelApp.tools.run("View.Fit", vp, true);
+  }
+  public static refSetData(vp: Viewport, name: string, ids: string[], explodeFactor: number) {
+    const provider = ExplodeApp.getOrCreateProvider(vp);
+    provider.setData(name, ids, explodeFactor);
+    provider.invalidate();
   }
 
   /** This is the main entry point for creating the explosion effect.  This method orchestrates the data and hands it to the provider. */
@@ -260,6 +266,10 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
     provider.add(vp);
     return provider;
   }
+  public setData(name: string, elementIds: string[], explodeFactor: number) {
+    this.explodeTileTreeRef.explodeFactor = explodeFactor;
+    this.explodeTileTreeRef.setExplodeObject(name, elementIds);
+  }
   /** Adds provider from viewport */
   public add(vp: Viewport) {
     if (!vp.hasTiledGraphicsProvider(this)) {
@@ -272,14 +282,19 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
     this.vp.dropFeatureOverrideProvider(this);
     this.vp.dropTiledGraphicsProvider(this);
   }
-  /** Singles the viewport to redraw graphics. */
+  /** Signals the viewport to redraw graphics. */
   public invalidate() {
     this.vp.setFeatureOverrideProviderChanged();
   }
   public constructor(public vp: Viewport) { }
+  public explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
 
   public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {
     const app = FeatureAppearance.fromTransparency(1);
+    this.explodeTileTreeRef.id.ids.forEach((id) => {
+      // TODO: hide elements when Emphasized (not isolated)
+      overrides.overrideElement(id, app, true);
+    });
     this.data.forEach((element) => {
       // TODO: hide elements when Emphasized (not isolated)
       overrides.overrideElement(element.id, app, true);
@@ -287,27 +302,28 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
   }
 
   /** Apply the supplied function to each [[TileTreeReference]] to be drawn in the specified [[Viewport]]. */
-  public forEachTileTreeRef(viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
-    // TODO: update tile tree with new tiles
-    viewport.view.forEachTileTreeRef(func);
+  public forEachTileTreeRef(_viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
+    func(this.explodeTileTreeRef);
+    // TODO: only the explode TTRef
+    // viewport.view.forEachModelTreeRef(func);
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
-  public addToScene(output: SceneContext): void {
-    const vp = output.viewport;
+  // public addToScene(output: SceneContext): void {
+  //   const vp = output.viewport;
 
-    for (const element of this.data.values()) {
-      if (!element.tile || !element.tile.graphic || !element.transformExplode)
-        return;
-      const branch = new GraphicBranch();
-      const overrides = new FeatureSymbology.Overrides(vp);
-      const app = FeatureAppearance.fromTransparency(0);
-      overrides.overrideElement(element.id, app, true);
-      branch.add(element.tile.graphic);
-      branch.symbologyOverrides = overrides;
-      output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, element.transformExplode.inverse()!, {}));
-    }
-  }
+  //   for (const element of this.data.values()) {
+  //     if (!element.tile || !element.tile.graphic || !element.transformExplode)
+  //       return;
+  //     const branch = new GraphicBranch();
+  //     const overrides = new FeatureSymbology.Overrides(vp);
+  //     const app = FeatureAppearance.fromTransparency(0);
+  //     overrides.overrideElement(element.id, app, true);
+  //     branch.add(element.tile.graphic);
+  //     branch.symbologyOverrides = overrides;
+  //     output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, element.transformExplode.inverse()!, {}));
+  //   }
+  // }
 }
 
 class DebuggerDecorator implements Decorator {
@@ -330,10 +346,10 @@ class DebuggerDecorator implements Decorator {
     const range = getRangeUnion(this.data);
     // Mark union of areas.
     const builder = context.createGraphicBuilder(GraphicType.Scene);
-    // builder.addRangeBox(range);
-    // this.data.forEach((element) => {
-    //   builder.addRangeBox(element.boundingBox);
-    // });
+    builder.addRangeBox(range);
+    this.data.forEach((element) => {
+      builder.addRangeBox(element.boundingBox);
+    });
     context.addDecorationFromBuilder(builder);
     // Mark center of explode point
     const pointPlacer = context.createGraphicBuilder(GraphicType.WorldOverlay);
