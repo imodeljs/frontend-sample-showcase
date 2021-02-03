@@ -133,7 +133,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Create the react components for the  Paths
   private _createRenderPath(label: string) {
-    const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" }
+    const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" };
     const element = <Select style={{ width: "fit-content", marginLeft: "12px" }} onChange={this._onChangeRenderPath} options={options} />;
     return this._createJSXElementForAttribute(label, element);
   }
@@ -163,7 +163,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
-    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this._onChangeRenderSpeed(event.target.value)} />
+    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this._onChangeRenderSpeed(event.target.value)} />;
     return this._createJSXElementForAttribute(label, element);
   }
 
@@ -213,6 +213,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: true, isInitialPositionStarted: initialPositionStarted } }), async () => {
       if (this.state.vp === undefined)
         return;
+      const stepLength = (this.state.cameraPath.getLength() / 10) / 30;
       const sliderValue = this.state.attrValues.sliderValue;
       let cameraPathIterationValue: number;
       if (eventDeltaY > 0) {
@@ -223,7 +224,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           if (!this.state.attrValues.isMouseWheelAnimationActive) {
             break;
           }
-          const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, 3.4 / 30);
+          const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, stepLength);
           const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
           await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
@@ -235,7 +236,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         while (this.state.attrValues.sliderValue >= cameraPathIterationValue) {
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
-          const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, - 3.4 / 30);
+          const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, - stepLength);
           const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
           await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
@@ -252,9 +253,9 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     if (((this.state.attrValues.sliderValue === 1) && (eventDeltaY > 0)) || ((this.state.attrValues.sliderValue === 0) && (eventDeltaY < 0)))
       return;
     if (this.state.attrValues.isPause) {
-      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: false } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY) }, 5));
+      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isMouseWheelAnimationActive: false } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY); }, 5));
     } else {
-      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY) }, 40));
+      this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY); }, 40));
     }
   }
   public handleUnlockDirection = (keyDown: boolean) => {
