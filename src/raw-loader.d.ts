@@ -3,6 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 declare module "!!raw-loader!*" {
-  const contents: string
-  export = contents
+  const contents: string;
+  export = contents;
 }

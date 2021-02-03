@@ -10,6 +10,7 @@ import { StartupComponent } from "../Startup/Startup";
 
 export interface ReloadableViewportProps {
   iModelName: string;
+  iModelName2?: string;
   getCustomViewState?: (imodel: IModelConnection) => Promise<ViewState>;
   onIModelReady?: (imodel: IModelConnection) => void;
 }
@@ -34,7 +35,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     let ui: React.ReactNode;
 
     if (!this.state.imodel || !this.state.viewState)
-      ui = <StartupComponent iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />;
+      ui = <StartupComponent iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
     else
       ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} />;
 

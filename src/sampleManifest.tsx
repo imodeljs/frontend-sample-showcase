@@ -6,6 +6,7 @@ import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
+import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
@@ -52,6 +53,7 @@ import { getToolbarButtonSample } from "./frontend-samples/app-ui-samples/toolba
 import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/viewport-frontstage-sample/sampleSpec";
 
 import { getClosestPointOnCurveSpec } from "./frontend-samples/geometry-samples/closest-point-curve-sample/sampleSpec";
+import { getCurveFractionSpec } from "frontend-samples/geometry-samples/curve-fraction/sampleSpec";
 import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
 import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d-transformations-sample/sampleSpec";
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
@@ -73,6 +75,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
 }, {
   groupName: "Viewer Features", samples: [
     getDisplayStylesSpec(),
+    getClassifierSpec(),
     getEmphasizeElementsSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
@@ -126,6 +129,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSimpleLineSpec(),
     get2dTransformationsSpec(),
     getClosestPointOnCurveSpec(),
+    getCurveFractionSpec(),
     getSimple3dSpec(),
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
@@ -137,7 +141,7 @@ export function findSpecBySampleName(nameIn: string) {
   for (const group of sampleManifest) {
     for (const spec of group.samples) {
       if (nameIn === spec.name) {
-        return { group, spec }
+        return { group, spec };
       }
     }
   }

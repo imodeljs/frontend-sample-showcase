@@ -88,7 +88,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       SmoothShade: "Smooth Shade",
       SolidFill: "Solid Fill",
       Wireframe: "Wireframe",
-    }
+    };
     const element = <Select style={{ width: "fit-content" }} onChange={this._onChangeRenderMode} options={options} />;
     return this.createJSXElementForAttribute(label, info, element);
   }

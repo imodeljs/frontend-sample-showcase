@@ -9,20 +9,26 @@
   "cSpell.words": [
     "Accu",
     "Heatmap",
+    "Hilite",
     "Metrostation",
     "Oidc",
+    "Pictometry",
     "Reloadable",
     "bentleyjs",
     "exton",
     "fontawesome",
+    "frontstage",
     "imodel",
     "imodelhub",
     "imodeljs",
     "itwin",
     "launchdarkly",
+    "linestring",
     "ninezone",
     "orbitgt",
     "rbac",
+    "ruleset",
+    "tileset",
     "typedefs",
     "typemoq",
     "webfont",
@@ -36,4 +42,5 @@
       "url": "./node_modules/@bentley/certa/certa.schema.json"
     },
   ],
+  "debug.javascript.usePreview": false
 }
