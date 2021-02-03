@@ -36,7 +36,7 @@ export class ViewportAndNavigation extends React.PureComponent<ViewportAndNaviga
           imodel={this.props.imodel}
           viewState={this.props.viewState}
         />
-        { (this.props.isNavigationToolInvisible === undefined || this.props.isNavigationToolInvisible === false) && toolbar()}
+        { (this.props.isNavigationToolInvisible === undefined) && toolbar()}
       </>
     );
   }
