@@ -5,8 +5,8 @@
 
 import { assert, BeTimePoint, ByteStream, compareStrings, SortedArray } from "@bentley/bentleyjs-core";
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
-import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { CoordSystem, FeatureSymbology, GraphicBranch, ImdlReader, IModelApp, IModelConnection, IModelTileTree, RenderSystem, Tile, TileContent, TileDrawArgs, TileLoadPriority, TileRequest, Tiles, TileTree, TileTreeOwner, TileTreeParams, TileTreeReference, Viewport, TileTreeSupplier, TileTreeSet, TileDrawArgParams, SceneContext, DecorateContext, GraphicType } from "@bentley/imodeljs-frontend";
+import { BatchType, ElementAlignedBox3d, ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { CoordSystem, FeatureSymbology, GraphicBranch, ImdlReader, IModelApp, IModelConnection, IModelTileTree, RenderSystem, Tile, TileContent, TileDrawArgs, TileLoadPriority, TileRequest, Tiles, TileTree, TileTreeOwner, TileTreeParams, TileTreeReference, Viewport, TileTreeSupplier, TileTreeSet, TileDrawArgParams, SceneContext, DecorateContext, GraphicType, TileBoundingBoxes } from "@bentley/imodeljs-frontend";
 
 interface ElementData {
   elementId: string;
@@ -26,12 +26,22 @@ interface ElementDataProps {
   yaw: number;
 }
 
-// interface ExplodeTileParams {
-//   elementId: string;
-//   boundingBox: Range3d;
-//   transformWorld: Transform;
-//   formatVersion: number;
-// }
+interface TileParams {
+  centerOfMass: Point3d;
+  versionInfo: TileVersionInfo;
+  data: ElementData;
+}
+
+export interface ExplodeFactorsAttributes {
+  min: number;
+  max: number;
+  step: number;
+}
+export const explodeAttributes: ExplodeFactorsAttributes = {
+  min: 0,
+  max: 2,
+  step: 0.05,
+};
 
 export interface ExplodeTreeId {
   name: string;
@@ -39,6 +49,7 @@ export interface ExplodeTreeId {
 }
 
 interface ExplodeTreeParams {
+  objectName: string;
   data: ElementData[];
   iModel: IModelConnection;
   tileVersionInfo: TileVersionInfo;
@@ -46,17 +57,22 @@ interface ExplodeTreeParams {
 
 interface ExplodeTileDrawArgsParams extends TileDrawArgParams {
   explodeFactor: number;
-  centerOfMass: Point3d;
 }
 
 class ExplodeTileDrawArgs extends TileDrawArgs {
   public explodeFactor: number;
-  public centerOfMass: Point3d;
   constructor(params: ExplodeTileDrawArgsParams) {
     super(params);
     this.explodeFactor = params.explodeFactor;
-    this.centerOfMass = params.centerOfMass;
   }
+}
+
+/** Creates a transform matrix translating the range away from the point scaled by the factor. */
+function calculateExplodeTransform(centerOfElement: Point3d, displaceOrigin: Point3d, explodeFactor: number) {
+  const vector = Vector3d.createFrom(displaceOrigin);
+  vector.subtractInPlace(centerOfElement);
+  vector.scaleInPlace(explodeFactor);
+  return Transform.createTranslation(vector).inverse()!;
 }
 
 /** Creates a Range3d containing all the points using the Range3d API. */
@@ -92,8 +108,7 @@ class ExplodeTreeSupplier implements TileTreeSupplier {
 
     const data = await ExplodeTreeSupplier.queryElements(iModel, id.ids);
 
-    console.debug("TileTreeCreation", id.name);
-    return new ExplodeTileTree({ data, iModel, tileVersionInfo: info });
+    return new ExplodeTileTree({ data, iModel, tileVersionInfo: info, objectName: id.name });
   }
 
   /** Queries the backend for the elements to explode.  It also populates the data it can interpolate with a single pass. */
@@ -109,7 +124,7 @@ class ExplodeTreeSupplier implements TileTreeSupplier {
       const transform = placement.transform;
       const box = Range3d.create(Point3d.fromJSON(element.bBoxLow), Point3d.fromJSON(element.bBoxHigh));
 
-      data.push({ elementId: element.id, origin: Point3d.fromJSON(element.origin), boundingBox: box, transformWorld: transform });
+      data.push({ elementId: element.id, origin: Point3d.fromJSON(element.origin), boundingBox: transform.multiplyRange(box), transformWorld: transform });
       row = await results.next();
     }
 
@@ -156,7 +171,6 @@ export class ExplodeTreeReference extends TileTreeReference {
       parentsAndChildrenExclusive: tree.parentsAndChildrenExclusive,
       symbologyOverrides: this.getSymbologyOverrides(tree),
       explodeFactor: this.explodeFactor,
-      centerOfMass: Point3d.createZero(), // Will Update in the TileTree with the actual center of mass
     });
   }
 }
@@ -167,21 +181,25 @@ class ExplodeTileTree extends TileTree {
   public constructor(params: ExplodeTreeParams) {
     assert(params.data.length >= 0);
     super({
-      id: `Explode_${params.data.length}`,
+      id: `Explode_${params.objectName}_${params.data.length}`,
       modelId: params.iModel.iModelId!,
       iModel: params.iModel,
       priority: TileLoadPriority.Primary,
       location: Transform.createIdentity(),
     });
 
-    console.debug("TileTree");
     // Create tiles
+    this._centerOfMass = getRangeUnion(params.data.map((ele) => ele.boundingBox)).center;
     this._elements = [];
     for (const element of params.data) {
-      this._elements.push(new ElementTile(this, element, params.tileVersionInfo));
+      const tileParams: TileParams = {
+        centerOfMass: this._centerOfMass,
+        versionInfo: params.tileVersionInfo,
+        data: element,
+      };
+      this._elements.push(new ElementTile(this, tileParams));
     }
 
-    this._centerOfMass = getRangeUnion(params.data.map((ele) => ele.boundingBox)).center;
   }
 
   /** The lowest-resolution tile in this tree. */
@@ -207,26 +225,33 @@ class ExplodeTileTree extends TileTree {
 
   /** Implement this method to select tiles of appropriate resolution. */
   protected _selectTiles(args: TileDrawArgs): Tile[] {
-    console.debug("Selection, Start");
     const tiles: Tile[] = [];
     for (const child of this._elements) {
       const tile = child.selectTile(args);
       if (tile)
         tiles.push(tile);
     }
-    console.debug("Tiles Selected", tiles);
     return tiles;
   }
 
   /** Produce graphics of appropriate resolution to be drawn in a [[Viewport]]. */
   public draw(args: TileDrawArgs): void {
-    console.debug("Draw Tree");
+    // const debug = args.context.viewport.debugBoundingBoxes;
+    // args.context.viewport.debugBoundingBoxes = TileBoundingBoxes.Content;
+    // console.debug("Draw Tree");
     assert(args instanceof ExplodeTileDrawArgs);
 
-    args.centerOfMass = this._centerOfMass;
+    // TODO: Remove, this is for debugging.
+    const builder = args.context.createSceneGraphicBuilder();
+    builder.addPointString([this._centerOfMass]);
+    args.graphics.add(builder.finish());
+
     const tiles = this.selectTiles(args);
     for (const tile of tiles)
       tile.drawGraphics(args);
+
+    // args.context.viewport.debugBoundingBoxes = debug;
+    args.drawGraphics();
   }
 
   /** Discard tiles and/or tile contents, presumably based on a least-recently-used and/or least-likely-to-be-needed criterion. */
@@ -241,20 +266,24 @@ class ExplodeTileTree extends TileTree {
 
 class ElementTile extends Tile {
   public formatVersion: number;
-  constructor(tree: TileTree, public data: ElementData, tileVersion: TileVersionInfo) {
+  public data: ElementData;
+  public centerOfMass: Point3d;
+  constructor(tree: TileTree, params: TileParams) {
     super({
       isLeaf: false,
-      contentId: `${tree.id}_${data.elementId}`,
-      range: data.boundingBox,
+      contentId: `${tree.id}_${params.data.elementId}`,
+      range: ElementTile.calculatePossibleRange(params.data.boundingBox, params.centerOfMass, params.data.transformWorld),
       maximumSize: 512,
     }, tree);
+    this.data = params.data;
+    this.centerOfMass = params.centerOfMass;
     this.loadChildren();
     this.setIsReady();
 
-    console.debug("Tile", data.elementId);
-    this.formatVersion = IModelApp.tileAdmin.getMaximumMajorTileFormatVersion(tileVersion.formatVersion);
+    this.formatVersion = IModelApp.tileAdmin.getMaximumMajorTileFormatVersion(params.versionInfo.formatVersion);
   }
 
+  /** Load this tile's children, possibly asynchronously. Pass them to `resolve`, or an error to `reject`. */
   protected _loadChildren(resolve: (children: Tile[] | undefined) => void, _reject: (error: Error) => void): void {
     // Invoked from constructor. We'll add child tiles later as needed.
     resolve([]);
@@ -263,8 +292,8 @@ class ElementTile extends Tile {
   public selectTile(args: TileDrawArgs): Tile | undefined {
     let rtn: Tile | undefined;
     assert(undefined !== this.children);
-    // if (this.isRegionCulled(args))
-    //   return rtn;
+    if (this.isRegionCulled(args))
+      return rtn;
 
     args.markUsed(this);
 
@@ -292,7 +321,7 @@ class ElementTile extends Tile {
         exactMatch = child;
       } else if (tol < toleranceLog10) {
         if (!exactMatch)
-          children.splice(i++, 0, exactMatch = new ExplodedGraphicsTile(this, this.formatVersion, toleranceLog10));
+          children.splice(i++, 0, exactMatch = new ExplodedGraphicsTile(this, toleranceLog10));
 
         if (child.hasGraphics && (!closestMatch || closestMatch.toleranceLog10 > toleranceLog10))
           closestMatch = child;
@@ -301,7 +330,7 @@ class ElementTile extends Tile {
 
     if (!exactMatch) {
       assert(children.length === 0 || children[children.length - 1].toleranceLog10 > toleranceLog10);
-      children.push(exactMatch = new ExplodedGraphicsTile(this, this.formatVersion, toleranceLog10));
+      children.push(exactMatch = new ExplodedGraphicsTile(this, toleranceLog10));
     }
 
     if (!exactMatch.isReady) {
@@ -317,11 +346,11 @@ class ElementTile extends Tile {
     return rtn;
   }
 
-  public calculateExplodeTransform(centerOfMass: Point3d, centerOfElement: Point3d, explodeFactor: number) {
-    const vector = Vector3d.createFrom(centerOfMass);
-    vector.subtractInPlace(centerOfElement);
-    vector.scaleInPlace(explodeFactor);
-    return Transform.createTranslation(vector);
+  private static calculatePossibleRange(bBox: Range3d, centerOfMass: Point3d, _worldTransform: Transform): Range3d {
+    const maxRange = calculateExplodeTransform(bBox.center, centerOfMass, explodeAttributes.max).multiplyRange(bBox);
+    const minRange = calculateExplodeTransform(bBox.center, centerOfMass, explodeAttributes.min).multiplyRange(bBox);
+    maxRange.extendRange(minRange);
+    return maxRange;
   }
 
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
@@ -343,19 +372,26 @@ function* makeIdSequence() {
   }
 }
 const requestIdSequence = makeIdSequence();
-
 export class ExplodedGraphicsTile extends Tile {
+  public get data(): ElementData { return this.parent.data; }
+  public get centerOfMass(): Point3d { return this.parent.centerOfMass; }
+  public get formatVersion(): number { return this.parent.formatVersion; }
   private _prevExplodeFactor: number = -1;
   private _explodeTransform = Transform.createIdentity();
-  constructor(public readonly parent: ElementTile, public formatVersion: number, public toleranceLog10: number) {
+
+  constructor(
+    public readonly parent: ElementTile,
+    public readonly toleranceLog10: number,
+  ) {
     super({
       parent,
       isLeaf: true,
       contentId: `${parent.contentId}_${toleranceLog10}`,
-      range: parent.data.boundingBox,
+      range: parent.range,
       maximumSize: parent.maximumSize,
     }, parent.tree);
-    console.debug(this.contentId);
+
+    this.setExplodeTransform(explodeAttributes.min);
   }
 
   /** Creates an unique id for requesting tiles from the backend. */
@@ -366,21 +402,18 @@ export class ExplodedGraphicsTile extends Tile {
     return requestId.value.toString(16);
   }
 
-  /** Load this tile's children, possibly asynchronously. Pass them to `resolve`, or an error to `reject`. */
+  /** No children tiles. */
   protected _loadChildren(resolve: (children: Tile[] | undefined) => void, _reject: (error: Error) => void): void {
-    resolve([]);
+    resolve(undefined);
   }
 
   /** Return a Promise that resolves to the raw data representing this tile's content. */
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
     const props: ElementGraphicsRequestProps = {
       id: this.makeRequestId(),
-      elementId: this.parent.data.elementId,
+      elementId: this.data.elementId,
       toleranceLog10: this.toleranceLog10,
       formatVersion: this.formatVersion,
-      // location: element.transformExplode.toJSON(),
-      // contentFlags: idProvider.contentFlags,
-      // omitEdges: !this.tree.hasEdges,
       clipToProjectExtents: false,
     };
     return IModelApp.tileAdmin.requestElementGraphics(this.tree.iModel, props);
@@ -398,11 +431,9 @@ export class ExplodedGraphicsTile extends Tile {
     const format = stream.nextUint32;
     stream.curPos = position;
 
-    // ###TODO: IModelGraphics format wraps IModel format.
     assert(TileFormat.IModel === format);
 
     const tree = this.tree;
-    // assert(tree instanceof IModelTileTree);
     const reader = ImdlReader.create(stream, tree.iModel, tree.modelId, tree.is3d, system, undefined, undefined, isCanceled, undefined, this.contentId);
 
     let content: TileContent = { isLeaf: true };
@@ -416,12 +447,10 @@ export class ExplodedGraphicsTile extends Tile {
     return content;
   }
 
-  public setExplodeTransform(centerOfMass: Point3d, explodeFactor: number) {
+  public setExplodeTransform(explodeFactor: number) {
     if (explodeFactor === this._prevExplodeFactor) return;
-    const vector = Vector3d.createFrom(centerOfMass);
-    vector.subtractInPlace(this.parent.data.boundingBox.center);
-    vector.scaleInPlace(explodeFactor);
-    this._explodeTransform = Transform.createTranslation(vector);
+    this._explodeTransform = calculateExplodeTransform(this.data.boundingBox.center, this.centerOfMass, explodeFactor);
+    this._contentRange = this._explodeTransform.multiplyRange(this.data.boundingBox);
   }
 
   /** Output this tile's graphics. */
@@ -435,8 +464,11 @@ export class ExplodedGraphicsTile extends Tile {
     branch.add(gfx);
     branch.symbologyOverrides = overrides;
 
-    this.setExplodeTransform(args.centerOfMass, args.explodeFactor);
+    this.setExplodeTransform(args.explodeFactor);
+    args.graphics.add(args.context.createGraphicBranch(branch, this._explodeTransform, {}));
 
-    args.context.outputGraphic(args.context.createGraphicBranch(branch, this._explodeTransform.inverse()!, {}));
+    const rangeGfx = this.getRangeGraphic(args.context);
+    if (undefined !== rangeGfx)
+      args.graphics.add(rangeGfx);
   }
 }

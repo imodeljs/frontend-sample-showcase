@@ -3,13 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, IModelApp, IModelConnection, TileBoundingBoxes, Viewport } from "@bentley/imodeljs-frontend";
 import { Button, Select, Slider } from "@bentley/ui-core";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import ExplodeApp from "./ExplodeApp";
+import { explodeAttributes } from "./ExplodeTile";
 
 interface SampleProps {
   iModelName: string;
@@ -40,10 +41,6 @@ function mapOptions(o: {}): {} {
   return Object.assign({}, keys);
 }
 
-const min = 0;
-const max = 2;
-const step = 0.05;
-
 export default class ExplodeUI extends React.Component<SampleProps, ExplodeState> {
   public state: ExplodeState;
   private _objects: ExplodeObject[] = [
@@ -72,7 +69,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       isAnimated: false,
       isInit: true,
       object: this._objects.find((o) => o.name === "Lamp")!,
-      explosionFactor: min, // (min + max) / 2, TODO: set to half
+      explosionFactor: (explodeAttributes.min + explodeAttributes.max) / 2,
       emphasize: EmphasizeType.None, // This will be changed to Isolate before the explosion effect is applied
     };
   }
@@ -90,7 +87,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explosionFactor);
     provider.invalidate();
     vp.invalidateScene();
-    // ExplodeApp.explodeElements(vp, elementIds, this.state.explosionFactor, this.state.tileVersion);
   }
 
   public animate() {
@@ -103,7 +99,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       this.setState({ isAnimated: false });
       return;
     }
-    const explode = (min + max) / 2 >= this.state.explosionFactor;
+    const max = explodeAttributes.max;
+    const min = explodeAttributes.min;
+    const step = explodeAttributes.step;
+    const explode = (explodeAttributes.min + max) / 2 >= this.state.explosionFactor;
     const goal = explode ? max : min;
     const animationStep = (explode ? 1 : -1) * step;
     const animator: Animator = {
@@ -129,6 +128,9 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   public getControls(): React.ReactChild {
+    const max = explodeAttributes.max;
+    const min = explodeAttributes.min;
+    const step = explodeAttributes.step;
     const objectEntries = this._objects.map((object) => object.name);
     const emphasizeEntries = mapOptions(EmphasizeType);
     const animationText = this.state.isAnimated ? "Pause" : ((min + max) / 2 >= this.state.explosionFactor ? "Explode" : "Collapse");
@@ -139,12 +141,8 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
           <Button onClick={() => {
             const vp = this.state.viewport;
             if (!vp) return;
-            const provider = ExplodeApp.getOrCreateProvider(vp);
-            provider.add(vp);
-            provider.explodeTileTreeRef.explodeFactor = this.state.explosionFactor;
-            ExplodeApp.refSetData(vp, this.state.object.elementIds, this.state.object.name);
-            provider.invalidate();
-            vp.invalidateScene();
+            this.explode();
+            // vp.debugBoundingBoxes = TileBoundingBoxes.;
           }}>Explode</Button>
           <Button onClick={() => {
             const vp = this.state.viewport;
@@ -194,8 +192,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const value = values[0];
     this.setState({ explosionFactor: value });
   }
-
-  // private readonly onAnimate
 
   /** A REACT method that is called when the props or state is updated (e.g. when "this.setState(...)" is called) */
   public componentDidUpdate(_prevProps: SampleProps, preState: ExplodeState) {
