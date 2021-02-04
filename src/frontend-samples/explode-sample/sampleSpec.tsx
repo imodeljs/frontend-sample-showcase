@@ -16,6 +16,7 @@ export function getExplodeSpec(): SampleSpec {
     files: [
       { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp"), entry: true },
       { name: "ExplodeUI.tsx", import: import("!!raw-loader!./ExplodeUI") },
+      { name: "ExplodeTile.ts", import: import("!!raw-loader!./ExplodeTile") },
     ],
     setup: ExplodeApp.setup.bind(ExplodeApp),
   });
