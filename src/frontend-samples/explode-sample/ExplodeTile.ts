@@ -3,10 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { assert, BeTimePoint, ByteStream, compareStrings, SortedArray } from "@bentley/bentleyjs-core";
+import { assert, BeTimePoint, ByteStream, compareStrings } from "@bentley/bentleyjs-core";
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
-import { BatchType, ElementAlignedBox3d, ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { CoordSystem, FeatureSymbology, GraphicBranch, ImdlReader, IModelApp, IModelConnection, IModelTileTree, RenderSystem, Tile, TileContent, TileDrawArgs, TileLoadPriority, TileRequest, Tiles, TileTree, TileTreeOwner, TileTreeParams, TileTreeReference, Viewport, TileTreeSupplier, TileTreeSet, TileDrawArgParams, SceneContext, DecorateContext, GraphicType, TileBoundingBoxes } from "@bentley/imodeljs-frontend";
+import { ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { FeatureSymbology, GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier } from "@bentley/imodeljs-frontend";
+import ExplodeApp from "./ExplodeApp";
 
 interface ElementData {
   elementId: string;
@@ -32,18 +33,7 @@ interface TileParams {
   data: ElementData;
 }
 
-export interface ExplodeFactorsAttributes {
-  min: number;
-  max: number;
-  step: number;
-}
-export const explodeAttributes: ExplodeFactorsAttributes = {
-  min: 0,
-  max: 2,
-  step: 0.05,
-};
-
-export interface ExplodeTreeId {
+interface ExplodeTreeId {
   name: string;
   ids: string[];
 }
@@ -347,8 +337,8 @@ class ElementTile extends Tile {
   }
 
   private static calculatePossibleRange(bBox: Range3d, centerOfMass: Point3d, _worldTransform: Transform): Range3d {
-    const maxRange = calculateExplodeTransform(bBox.center, centerOfMass, explodeAttributes.max).multiplyRange(bBox);
-    const minRange = calculateExplodeTransform(bBox.center, centerOfMass, explodeAttributes.min).multiplyRange(bBox);
+    const maxRange = calculateExplodeTransform(bBox.center, centerOfMass, ExplodeApp.explodeAttributes.max).multiplyRange(bBox);
+    const minRange = calculateExplodeTransform(bBox.center, centerOfMass, ExplodeApp.explodeAttributes.min).multiplyRange(bBox);
     maxRange.extendRange(minRange);
     return maxRange;
   }
@@ -391,7 +381,7 @@ export class ExplodedGraphicsTile extends Tile {
       maximumSize: parent.maximumSize,
     }, parent.tree);
 
-    this.setExplodeTransform(explodeAttributes.min);
+    this.setExplodeTransform(ExplodeApp.explodeAttributes.min);
   }
 
   /** Creates an unique id for requesting tiles from the backend. */

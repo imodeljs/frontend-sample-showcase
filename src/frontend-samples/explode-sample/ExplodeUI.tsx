@@ -2,15 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, IModelApp, IModelConnection, TileBoundingBoxes, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { Button, Select, Slider } from "@bentley/ui-core";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import ExplodeApp from "./ExplodeApp";
-import { explodeAttributes } from "./ExplodeTile";
 
 interface SampleProps {
   iModelName: string;
@@ -26,7 +24,7 @@ interface ExplodeState {
   isAnimated: boolean;
 }
 
-export interface ExplodeObject {
+interface ExplodeObject {
   name: string;
   elementIds: string[];
 }
@@ -68,7 +66,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       isAnimated: false,
       isInit: true,
       object: this._objects.find((o) => o.name === "Lamp")!,
-      explosionFactor: (explodeAttributes.min + explodeAttributes.max) / 2,
+      explosionFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
       emphasize: EmphasizeType.None, // This will be changed to Isolate before the explosion effect is applied
     };
   }
@@ -77,14 +75,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   public explode() {
     const vp = this.state.viewport;
     if (!vp) return;
-    // const elementIds = this.state.object.elementIds;
     if (this.state.isInit) {
       this.setState({ isInit: false, emphasize: EmphasizeType.Isolate });
     }
-    const provider = ExplodeApp.getOrCreateProvider(vp);
-    provider.add(vp);  // TODO: should be unnecessary
     ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explosionFactor);
-    provider.invalidate();
     vp.invalidateScene();
   }
 
@@ -98,10 +92,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       this.setState({ isAnimated: false });
       return;
     }
-    const max = explodeAttributes.max;
-    const min = explodeAttributes.min;
-    const step = explodeAttributes.step;
-    const explode = (explodeAttributes.min + max) / 2 >= this.state.explosionFactor;
+    const max = ExplodeApp.explodeAttributes.max;
+    const min = ExplodeApp.explodeAttributes.min;
+    const step = ExplodeApp.explodeAttributes.step;
+    const explode = (min + max) / 2 >= this.state.explosionFactor;
     const goal = explode ? max : min;
     const animationStep = (explode ? 1 : -1) * step;
     const animator: Animator = {
@@ -127,34 +121,14 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   public getControls(): React.ReactChild {
-    const max = explodeAttributes.max;
-    const min = explodeAttributes.min;
-    const step = explodeAttributes.step;
+    const max = ExplodeApp.explodeAttributes.max;
+    const min = ExplodeApp.explodeAttributes.min;
+    const step = ExplodeApp.explodeAttributes.step;
     const objectEntries = this._objects.map((object) => object.name);
     const emphasizeEntries = mapOptions(EmphasizeType);
     const animationText = this.state.isAnimated ? "Pause" : ((min + max) / 2 >= this.state.explosionFactor ? "Explode" : "Collapse");
     return <>
       <div className={"sample-options-2col"}>
-        {/* <label>For Debugging Only</label>
-        <span>
-          <Button onClick={() => {
-            const vp = this.state.viewport;
-            if (!vp) return;
-            this.explode();
-            // vp.debugBoundingBoxes = TileBoundingBoxes.;
-          }}>Explode</Button>
-          <Button onClick={() => {
-            const vp = this.state.viewport;
-            if (!vp) return;
-            const provider = ExplodeApp.getOrCreateProvider(vp);
-            provider.drop();
-          }}>Clear Explode</Button>
-          <Button onClick={() => {
-            const vp = this.state.viewport;
-            if (!vp) return;
-            ExplodeApp.clearIsolateAndEmphasized(vp);
-          }}>Clear Isolation</Button>
-        </span> */}
         <label>Animate</label>
         <Button onClick={() => {
           this.animate();
@@ -171,8 +145,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     </>;
   }
 
-  public readonly onIModelReady = (iModel: IModelConnection): void => {
-    iModel.selectionSet.onChanged.addListener((ev) => { console.debug(ev.set.elements); });
+  public readonly onIModelReady = (_iModel: IModelConnection): void => {
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       this.setState({ viewport: vp });
     });
