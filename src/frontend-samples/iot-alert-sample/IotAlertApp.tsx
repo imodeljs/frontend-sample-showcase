@@ -5,9 +5,8 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport, IModelConnection } from "@bentley/imodeljs-frontend";
+import { EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
-
 import IotAlertUI from "./IotAlertUI";
 import SampleApp from "common/SampleApp";
 
@@ -17,13 +16,28 @@ export default class IotAlertApp implements SampleApp {
     return <IotAlertUI iModelName={iModelName} iModelSelector={iModelSelector} elementsMap={IotAlertApp.elementMap} />;
   }
 
-  public static setElementNameIdMap(elementNameIdMap: any) {
-    for (const [key, value] of elementNameIdMap) {
-      // console.log(`setElementNameIdMap: ${key} = ${value}`);
-      IotAlertApp.elementNameIdMap.set(key, value);
+  public static fetchElementsFromClass = (className: string, elementsMap: Map<string, []>) => {
+    const classElements: any = elementsMap.get(className);
+    const elementNames: any = [];
+    const elementNameIdMap = new Map();
+    for (const element of classElements) {
+      elementNames.push(element.cOMPONENT_NAME);
+      elementNameIdMap.set(element.cOMPONENT_NAME, element.id);
+    }
+    // this.setState(elementNames);
+    IotAlertApp.setElementNameIdMap(elementNameIdMap);
+
+    if (Array.isArray(elementNames) && elementNames.length) {
+      IotAlertApp.setSelectedElement(elementNames[0]);
     }
 
-    // IotAlertApp.elementNameIdMap = elementNameIdMap;
+    return elementNames;
+  }
+
+  public static setElementNameIdMap(elementNameIdMap: any) {
+    for (const [key, value] of elementNameIdMap) {
+      IotAlertApp.elementNameIdMap.set(key, value);
+    }
   }
 
   public static getElementNameIdMap() {
@@ -57,7 +71,6 @@ export default class IotAlertApp implements SampleApp {
 
   public static async fetchElements(imodel: IModelConnection, c: string) {
     const elementMapQuery = `SELECT * FROM ProcessPhysical.${c}`;
-    // console.log(elementMapQuery);
     IotAlertApp.elementMap = await this._executeQuery(imodel, elementMapQuery);
   }
 
@@ -65,7 +78,6 @@ export default class IotAlertApp implements SampleApp {
     const rows = [];
     for await (const row of imodel.query(query))
       rows.push(row);
-    // console.log(rows);
     return rows;
   }
 }

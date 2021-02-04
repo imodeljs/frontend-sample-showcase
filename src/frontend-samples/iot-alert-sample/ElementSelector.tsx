@@ -12,23 +12,11 @@ export function ElementSelector(props: ElementSelectorProps) {
 
   const _onClassChange = (e: any) => {
     // The elements list would be populated from respective class.
-
-    // console.log(`selected class is: ${e.target.value}`);
-    const classElements: any = props.classElementsMap.get(e.target.value);
-    const elementNames: any = [];
-    const elementNameIdMap = new Map();
-    for (const element of classElements) {
-      elementNames.push(element.cOMPONENT_NAME);
-      elementNameIdMap.set(element.cOMPONENT_NAME, element.id);
-    }
-    // console.log(elementNames);
+    const elementNames = IotAlertApp.fetchElementsFromClass(e.target.value, props.classElementsMap);
     setElements(elementNames);
-    // console.log(`element id is ${elementNameIdMap.get("EX-201")}`);
-    IotAlertApp.setElementNameIdMap(elementNameIdMap);
   };
 
   const _onElementChange = (e: any) => {
-    // To do: Code for element selection.
     const selectedElement = e.target.value;
     IotAlertApp.setSelectedElement(selectedElement);
   };
