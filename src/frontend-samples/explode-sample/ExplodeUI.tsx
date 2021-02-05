@@ -18,7 +18,7 @@ interface SampleProps {
 interface ExplodeState {
   isInit: boolean;
   object: ExplodeObject;
-  explosionFactor: number;
+  explodeFactor: number;
   emphasize: EmphasizeType;
   viewport?: Viewport;
   isAnimated: boolean;
@@ -66,19 +66,19 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       isAnimated: false,
       isInit: true,
       object: this._objects.find((o) => o.name === "Lamp")!,
-      explosionFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
-      emphasize: EmphasizeType.None, // This will be changed to Isolate before the explosion effect is applied
+      explodeFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
+      emphasize: EmphasizeType.None, // This will be changed to Isolate before the exploded view effect is applied.
     };
   }
 
-  /** Kicks off the explosion effect */
+  /** Kicks off the exploded view effect. */
   public explode() {
     const vp = this.state.viewport;
     if (!vp) return;
     if (this.state.isInit) {
       this.setState({ isInit: false, emphasize: EmphasizeType.Isolate });
     }
-    ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explosionFactor);
+    ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explodeFactor);
     vp.invalidateScene();
   }
 
@@ -86,7 +86,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const vp = this.state.viewport;
     if (!vp) return;
 
-    const explode = (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2 >= this.state.explosionFactor;
+    const explode = (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2 >= this.state.explodeFactor;
     const goal = explode ? ExplodeApp.explodeAttributes.max : ExplodeApp.explodeAttributes.min;
     const animationStep = (explode ? 1 : -1) * ExplodeApp.explodeAttributes.step;
     const animator: Animator = {
@@ -95,16 +95,16 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         // Updates the tile tree with the explode factor.
         this.explode();
         // Test for finishing the animation.
-        if (goal === this.state.explosionFactor) {
+        if (goal === this.state.explodeFactor) {
           this.setState({ isAnimated: false });
           return true;
         }
         // Tests if the slider has become out of sync with the step size.
-        let newFactor = this.state.explosionFactor + animationStep;
+        let newFactor = this.state.explodeFactor + animationStep;
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
 
-        this.setState({ explosionFactor: newFactor });
+        this.setState({ explodeFactor: newFactor });
         return false;
       },
       // Will be called if the animations is interrupt (e.g. the camera is moved)
@@ -122,13 +122,13 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const step = ExplodeApp.explodeAttributes.step;
     const objectEntries = this._objects.map((object) => object.name);
     const emphasizeEntries = mapOptions(EmphasizeType);
-    const animationText = this.state.isAnimated ? "Pause" : ((min + max) / 2 >= this.state.explosionFactor ? "Explode" : "Collapse");
+    const animationText = this.state.isAnimated ? "Pause" : ((min + max) / 2 >= this.state.explodeFactor ? "Explode" : "Collapse");
     return <>
       <div className={"sample-options-2col"}>
         <label>Animate</label>
         <Button onClick={this.onAnimateButton} disabled={this.state.isInit}>{animationText}</Button>
-        <label>Explosion</label>
-        <Slider min={min} max={max} values={[this.state.explosionFactor]} step={step} showMinMax={true} onUpdate={this.onSliderChange} disabled={this.state.isAnimated} />
+        <label>Exploded Scaling</label>
+        <Slider min={min} max={max} values={[this.state.explodeFactor]} step={step} showMinMax={true} onUpdate={this.onSliderChange} disabled={this.state.isAnimated} />
         <label>Object</label>
         <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />
         <label>Emphases</label>
@@ -154,7 +154,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
   private readonly onSliderChange = (values: readonly number[]) => {
     const value = values[0];
-    this.setState({ explosionFactor: value });
+    this.setState({ explodeFactor: value });
   }
   private readonly onAnimateButton = () => {
     const vp = this.state.viewport;
@@ -176,7 +176,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     let updateExplode = false;
     let updateObject = false;
     updateExplode = updateObject = (preState.object.name !== this.state.object.name);
-    updateExplode = updateExplode || (preState.explosionFactor !== this.state.explosionFactor);
+    updateExplode = updateExplode || (preState.explodeFactor !== this.state.explodeFactor);
     updateExplode = updateExplode || (preState.viewport?.viewportId !== this.state.viewport?.viewportId);
 
     if ((onEmphasize || updateObject || onInit) && this.state.viewport) {
