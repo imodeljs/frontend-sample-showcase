@@ -9,8 +9,8 @@ import ExplodeApp from "./ExplodeApp";
 export function getExplodeSpec(): SampleSpec {
   return ({
     name: "explode-sample",
-    label: "Explode",
-    image: "viewport-only-thumbnail.png",
+    label: "Exploded View",
+    image: "exploded-view-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     customModelList: [SampleIModels.House],
     files: [
