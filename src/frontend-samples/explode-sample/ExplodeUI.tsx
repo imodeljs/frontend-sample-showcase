@@ -83,28 +83,23 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   public animate() {
-    // TODO: Refactor
     const vp = this.state.viewport;
     if (!vp) return;
 
-    if (this.state.isAnimated) {
-      vp.setAnimator();
-      this.setState({ isAnimated: false });
-      return;
-    }
-    const max = ExplodeApp.explodeAttributes.max;
-    const min = ExplodeApp.explodeAttributes.min;
-    const step = ExplodeApp.explodeAttributes.step;
-    const explode = (min + max) / 2 >= this.state.explosionFactor;
-    const goal = explode ? max : min;
-    const animationStep = (explode ? 1 : -1) * step;
+    const explode = (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2 >= this.state.explosionFactor;
+    const goal = explode ? ExplodeApp.explodeAttributes.max : ExplodeApp.explodeAttributes.min;
+    const animationStep = (explode ? 1 : -1) * ExplodeApp.explodeAttributes.step;
     const animator: Animator = {
+      // Will be called before rendering a frame.
       animate: () => {
+        // Updates the tile tree with the explode factor.
         this.explode();
+        // Test for finishing the animation.
         if (goal === this.state.explosionFactor) {
           this.setState({ isAnimated: false });
           return true;
         }
+        // Tests if the slider has become out of sync with the step size.
         let newFactor = this.state.explosionFactor + animationStep;
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
@@ -112,12 +107,13 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         this.setState({ explosionFactor: newFactor });
         return false;
       },
+      // Will be called if the animations is interrupt (e.g. the camera is moved)
       interrupt: () => {
         this.setState({ isAnimated: false });
       },
     };
     this.setState({ isAnimated: true });
-    this.state.viewport!.setAnimator(animator);
+    ExplodeApp.setAnimator(vp, animator);
   }
 
   public getControls(): React.ReactChild {
@@ -130,11 +126,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     return <>
       <div className={"sample-options-2col"}>
         <label>Animate</label>
-        <Button onClick={() => {
-          this.animate();
-        }}
-          disabled={this.state.isInit}
-        >{animationText}</Button>
+        <Button onClick={this.onAnimateButton} disabled={this.state.isInit}>{animationText}</Button>
         <label>Explosion</label>
         <Slider min={min} max={max} values={[this.state.explosionFactor]} step={step} showMinMax={true} onUpdate={this.onSliderChange} disabled={this.state.isAnimated} />
         <label>Object</label>
@@ -163,6 +155,18 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   private readonly onSliderChange = (values: readonly number[]) => {
     const value = values[0];
     this.setState({ explosionFactor: value });
+  }
+  private readonly onAnimateButton = () => {
+    const vp = this.state.viewport;
+    if (!vp) return;
+    // This is the "pause" feature of the button.
+    if (this.state.isAnimated) {
+      ExplodeApp.setAnimator(vp);
+      this.setState({ isAnimated: false });
+      return;
+    }
+    // Will a handle the "explode" or "collapse" cases.
+    this.animate();
   }
 
   /** A REACT method that is called when the props or state is updated (e.g. when "this.setState(...)" is called) */

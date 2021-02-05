@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { FeatureAppearance, IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import * as React from "react";
@@ -51,15 +51,22 @@ export default class ExplodeApp implements SampleApp {
     emph.clearIsolatedElements(vp);
     emph.clearEmphasizedElements(vp);
   }
+
   /** Uses the IModel.js tools to fit the view to the object on screen. */
   public static fitView(vp: Viewport) {
     IModelApp.tools.run("View.Fit", vp, true);
   }
+
   /** Updates the tile tree reference with the given data. */
   public static refSetData(vp: Viewport, name: string, ids: string[], explodeFactor: number) {
     const provider = ExplodeApp.getOrCreateProvider(vp);
     provider.setData(name, ids, explodeFactor);
     provider.invalidate();
+  }
+
+  /** Enables an animator using the Viewport API. If the animator is undefined, any active animator will be removed. */
+  public static setAnimator(vp: Viewport, animator?: Animator) {
+    vp.setAnimator(animator);
   }
 }
 
