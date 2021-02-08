@@ -23,8 +23,8 @@ export default class ExplodeApp implements SampleApp {
 
   /** The attributes describing the range of the explode factor. */
   public static explodeAttributes: ExplodeFactorsAttributes = {
-    min: 0,
-    max: 2,
+    min: 1,
+    max: 3,
     step: 0.05,
   };
   /** Uses the IModelTileRpcInterface API to query for the tile version info */

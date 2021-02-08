@@ -127,7 +127,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       <div className={"sample-options-2col"}>
         <label>Animate</label>
         <Button onClick={this.onAnimateButton} disabled={this.state.isInit}>{animationText}</Button>
-        <label>Exploded Scaling</label>
+        <label>Explode Scaling</label>
         <Slider min={min} max={max} values={[this.state.explodeFactor]} step={step} showMinMax={true} onUpdate={this.onSliderChange} disabled={this.state.isAnimated} />
         <label>Object</label>
         <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />

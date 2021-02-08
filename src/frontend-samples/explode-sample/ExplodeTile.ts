@@ -68,7 +68,7 @@ class ExplodeTileDrawArgs extends TileDrawArgs {
 function calculateExplodeTransform(centerOfElement: Point3d, displaceOrigin: Point3d, explodeFactor: number) {
   const vector = Vector3d.createFrom(displaceOrigin);
   vector.subtractInPlace(centerOfElement);
-  vector.scaleInPlace(explodeFactor);
+  vector.scaleInPlace(explodeFactor - 1);
   return Transform.createTranslation(vector).inverse()!;
 }
 
