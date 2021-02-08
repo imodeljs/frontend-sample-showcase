@@ -5,8 +5,10 @@
 import * as React from "react";
 import { Dialog, MessageContainer, MessageSeverity } from "@bentley/ui-core";
 import { ModelessDialogManager } from "@bentley/ui-framework";
+import IotAlertApp from "./IotAlertApp";
 
 export interface IotAlertProps {
+  id: string;
   message: string;
   isOpen: boolean;
   onButtonClick: () => void;
@@ -17,6 +19,7 @@ export interface IOTAlertState {
 }
 export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
   public static readonly id = "Alert";
+  public static isOpen = true;
   constructor(props?: any) {
     super(props);
     this.state = {
@@ -25,9 +28,15 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
   }
 
   // user clicked the dialog button
-  public static closeAlert() {
-    ModelessDialogManager.closeDialog(MessageBox.id);
+  public closeAlert() {
+    this._onCancel();
   }
+
+  // private deleteMessageBox = setTimeout(() => {
+  //   if (!IotAlertApp.getTags().includes(this.props.id)) {
+  //     this._onCancel();
+  //   }
+  // }, 1000);
 
   // user closed the modeless dialog
   private _onCancel = () => {
@@ -36,23 +45,18 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
 
   public render(): JSX.Element {
     const width = 376;
-    const height = 70;
-    const y = window.innerHeight - height - 70;
-    const x = (window.innerWidth - width) / 2;
-
+    const height = 80;
     return (
       <Dialog
         title={"IoT Alert"}
         modelessId={MessageBox.id}
-        opened={this.state.isMessageBoxOpen}
+        opened={this.state.isMessageBoxOpen && IotAlertApp.getTags().includes(this.props.id)}
         resizable={false}
         movable={true}
         modal={false}
         onClose={() => this._onCancel()}
         onEscape={() => this._onCancel()}
         width={width} height={height}
-        minHeight={height}
-        x={x} y={y}
       >
         <MessageContainer severity={MessageSeverity.Warning}>
           {this.renderContent()}
@@ -65,6 +69,7 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
     return (
       <div>
         <span className="message-span">{this.props.message}</span>
+        <br />
         <button className="button-to-issue" onClick={this.props.onButtonClick}>
           <span>Go to issue</span>
         </button>

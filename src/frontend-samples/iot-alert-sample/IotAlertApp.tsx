@@ -13,13 +13,31 @@ import SampleApp from "common/SampleApp";
 export default class IotAlertApp implements SampleApp {
   private static elementNameIdMap: Map<string, string> = new Map();
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <IotAlertUI iModelName={iModelName} iModelSelector={iModelSelector} elementsMap={IotAlertApp.elementMap} />;
+    return <IotAlertUI iModelName={iModelName} iModelSelector={iModelSelector} elementsMap={IotAlertApp.elementMap} tags={IotAlertApp.tags} />;
+  }
+
+  public static zoomToElements = async () => {
+    const vp = IModelApp.viewManager.selectedView!;
+    const ids = new Set<string>();
+    const m = IotAlertApp.getElementNameIdMap();
+    for (const [key, value] of m) {
+      const selectedElements = IotAlertApp.getSelectedElements();
+      for (const element of selectedElements) {
+        if (key === element) {
+          ids.add(value);
+        }
+      }
+    }
+    await vp.zoomToElements(ids);
   }
 
   public static fetchElementsFromClass = (className: string, elementsMap: Map<string, []>) => {
     const classElements: any = elementsMap.get(className);
     const elementNames: any = [];
     const elementNameIdMap = new Map();
+    if (classElements === undefined) {
+      return elementNames;
+    }
     for (const element of classElements) {
       elementNames.push(element.cOMPONENT_NAME);
       elementNameIdMap.set(element.cOMPONENT_NAME, element.id);
@@ -28,7 +46,7 @@ export default class IotAlertApp implements SampleApp {
     IotAlertApp.setElementNameIdMap(elementNameIdMap);
 
     if (Array.isArray(elementNames) && elementNames.length) {
-      IotAlertApp.setSelectedElement(elementNames[0]);
+      IotAlertApp.setSelectedElements(elementNames[0]);
     }
 
     return elementNames;
@@ -44,14 +62,33 @@ export default class IotAlertApp implements SampleApp {
     return IotAlertApp.elementNameIdMap;
   }
 
-  public static setSelectedElement(selectedElement: string) {
-    IotAlertApp.selectedElement = selectedElement;
+  public static setSelectedElements(selectedElement: string) {
+    if (selectedElement === undefined) {
+      return;
+    }
+    IotAlertApp.selectedElementSet.add(selectedElement);
   }
 
   private static elementMap: string[];
-  private static selectedElement: string;
-  public static getSelectedElement() {
-    return this.selectedElement;
+  private static tags: string[];
+  public static getTags() {
+    let arr: string[] = [];
+    const tagsSet = IotAlertApp.getSelectedElements();
+    if (tagsSet !== undefined && tagsSet.size > 0) {
+      arr = Array.from(tagsSet);
+    }
+    return arr;
+  }
+  public static setTags(newTags: string[]) {
+    IotAlertApp.tags = newTags;
+    IotAlertApp.selectedElementSet.clear();
+    for (const t of newTags) {
+      IotAlertApp.setSelectedElements(t);
+    }
+  }
+  private static selectedElementSet = new Set<string>();
+  public static getSelectedElements() {
+    return this.selectedElementSet;
   }
   public static getElements() {
     return this.elementMap;
@@ -98,11 +135,13 @@ abstract class EmphasizeActionBase {
       const m = IotAlertApp.getElementNameIdMap();
       // console.log(`EmphasizeActionBase m: ${m}`);
       for (const [key, value] of m) {
-        const selectedElement = IotAlertApp.getSelectedElement();
+        const selectedElements = IotAlertApp.getSelectedElements();
         // console.log(`EmphasizeActionBase selectedElement: ${selectedElement}`);
-        if (key === selectedElement) {
-          ids.add(value);
-          // console.log(`EmphasizeActionBase inside if: ${value}`);
+        for (const element of selectedElements) {
+          if (key === element) {
+            ids.add(value);
+            // console.log(`EmphasizeActionBase inside if: ${value}`);
+          }
         }
       }
       // ids.add("0x40000000329");//metro station
