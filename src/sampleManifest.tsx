@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
+import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
@@ -74,6 +75,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "Viewer Features", samples: [
+    getSerializeViewSpec(),
     getDisplayStylesSpec(),
     getClassifierSpec(),
     getEmphasizeElementsSpec(),

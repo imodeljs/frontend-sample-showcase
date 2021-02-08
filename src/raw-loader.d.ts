@@ -6,3 +6,8 @@ declare module "!!raw-loader!*" {
   const contents: string;
   export = contents;
 }
+
+declare module "./SampleViewStates.json.raw!=!!raw-loader!*" {
+  const contents: string;
+  export = contents;
+}
