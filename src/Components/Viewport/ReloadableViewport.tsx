@@ -13,6 +13,7 @@ export interface ReloadableViewportProps {
   iModelName2?: string;
   getCustomViewState?: (imodel: IModelConnection) => Promise<ViewState>;
   onIModelReady?: (imodel: IModelConnection) => void;
+  isNavigationToolInvisible?: boolean;
 }
 
 export interface ReloadableViewportState {
@@ -37,7 +38,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     if (!this.state.imodel || !this.state.viewState)
       ui = <StartupComponent iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
     else
-      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} />;
+      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} isNavigationToolInvisible={this.props.isNavigationToolInvisible} />;
 
     return (
       <>
