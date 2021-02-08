@@ -70,7 +70,6 @@ export function ElementSelector(props: ElementSelectorProps) {
           </div>
         </div>
         : ""}
-      { <MessageBox onButtonClick={IotAlertApp.zoomToElements} isOpen={true} message={`Alert coming from element with id ${selectedElement}.`} id={selectedElement} />}
     </>
   );
 }
