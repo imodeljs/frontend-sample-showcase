@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { assert, BeTimePoint, ByteStream, compareStrings } from "@bentley/bentleyjs-core";
+import { assert, BeTimePoint, ByteStream, compareStrings, Id64, partitionArray } from "@bentley/bentleyjs-core";
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
-import { ElementGraphicsRequestProps, FeatureAppearance, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { FeatureSymbology, GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier } from "@bentley/imodeljs-frontend";
+import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { FeatureSymbology, GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
 import ExplodeApp from "./ExplodeApp";
 
 /** Data describing an element for the exploded effect. */
@@ -180,6 +180,7 @@ export class ExplodeTreeReference extends TileTreeReference {
 
 /** The TileTree that will hold the tiles for a specific object being exploded. */
 class ExplodeTileTree extends TileTree {
+  private _rootTile: RootTile;
   private _centerOfMass: Point3d;
   private _elements: ElementTile[];
 
@@ -192,24 +193,12 @@ class ExplodeTileTree extends TileTree {
       priority: TileLoadPriority.Primary,
       location: Transform.createIdentity(),
     });
-
-    // Create tiles for each element.
-    this._centerOfMass = getRangeUnion(params.data.map((ele) => ele.boundingBox)).center;
-    this._elements = [];
-    for (const element of params.data) {
-      const tileParams: TileParams = {
-        centerOfMass: this._centerOfMass,
-        versionInfo: params.tileVersionInfo,
-        data: element,
-      };
-      this._elements.push(new ElementTile(this, tileParams));
-    }
-
+    this._rootTile = new RootTile(this, params.data, params.tileVersionInfo);
   }
 
   /** The lowest-resolution tile in this tree. */
   public get rootTile(): Tile {
-    return this._elements[0]; // Not any lower-resolution, but will consistently exist.
+    return this._rootTile;
   }
   /** True if this tile tree contains 3d graphics. */
   public get is3d(): boolean {
@@ -217,7 +206,7 @@ class ExplodeTileTree extends TileTree {
   }
   /** Returns the maximum depth of this tree, if any. */
   public get maxDepth(): number | undefined {
-    return 2; // Expected hierarchy: Element Tile -> Graphics Tile
+    return 3; // Expected hierarchy: RootTile -> Element Tile -> Graphics Tile
   }
   /** The overrides that should be applied to the view's [ViewFlags]($common) when this tile tree is drawn. Can be overridden by individual [[TileTreeReference]]s. */
   public get viewFlagOverrides(): ViewFlagOverrides {
@@ -230,13 +219,7 @@ class ExplodeTileTree extends TileTree {
 
   /** This method to select tiles of appropriate resolution. */
   protected _selectTiles(args: TileDrawArgs): Tile[] {
-    const tiles: Tile[] = [];
-    for (const child of this._elements) {
-      const tile = child.selectTile(args);
-      if (tile)
-        tiles.push(tile);
-    }
-    return tiles;
+    return this._rootTile.selectTiles(args);
   }
 
   /** Produce graphics of appropriate resolution to be drawn in a [[Viewport]]. */
@@ -259,9 +242,89 @@ class ExplodeTileTree extends TileTree {
     args.drawGraphics();
   }
 
-  public prune(): void { }
+  public prune(): void {
+    const olderThan = BeTimePoint.now().minus(this.expirationTime);
+    this._rootTile.prune(olderThan);
+  }
 
   public forcePrune(): void { }
+}
+
+class RootTile extends Tile implements FeatureAppearanceProvider {
+  private readonly _elements: ElementTile[];
+  private _centerOfMass: Point3d;
+
+  public get appearanceProvider(): FeatureAppearanceProvider {
+    return this;
+  }
+
+  public constructor(tree: ExplodeTileTree, data: ElementData[], versionInfo: TileVersionInfo) {
+    const range = getRangeUnion(data.map((ele) => ele.boundingBox));
+    range.scaleAboutCenterInPlace(ExplodeApp.explodeAttributes.max);
+    super({
+      isLeaf: false,
+      contentId: `${tree.id}_Root`,
+      range,
+      maximumSize: 512,
+    }, tree);
+
+    // Create tiles for each element.
+    this._centerOfMass = this.range.center;
+
+    this._elements = [];
+    for (const element of data) {
+      const tileParams: TileParams = {
+        centerOfMass: this._centerOfMass,
+        versionInfo,
+        data: element,
+      };
+      this._elements.push(new ElementTile(this, tileParams));
+    }
+
+    this.loadChildren(); // initially empty.
+    assert(undefined !== this.children);
+
+    this.setIsReady();
+  }
+
+  public selectTiles(args: TileDrawArgs): Tile[] {
+    const selected: Tile[] = [];
+    for (const child of this._elements) {
+      const graphicsTile = child.selectTile(args);
+      if (graphicsTile)
+        selected.push(graphicsTile);
+    }
+    return selected;
+  }
+
+  public getFeatureAppearance(source: FeatureAppearanceSource, elemLo: number, elemHi: number, subcatLo: number, subcatHi: number, geomClass: GeometryClass, modelLo: number, modelHi: number, type: BatchType, animationNodeId: number): FeatureAppearance | undefined {
+    const hiddenElements = new Id64.Uint32Set(this._elements.map((element) => element.data.elementId));
+    if (hiddenElements.has(elemLo, elemHi))
+      return undefined;
+
+    return source.getAppearance(elemLo, elemHi, subcatLo, subcatHi, geomClass, modelLo, modelHi, type, animationNodeId);
+  }
+
+  public prune(olderThan: BeTimePoint) {
+    // Never discard ElementTiles - do discard not-recently-used graphics.
+    for (const child of this._elements)
+      child.pruneChildren(olderThan);
+  }
+
+  /** Load this tile's children, possibly asynchronously. Pass them to `resolve`, or an error to `reject`. */
+  protected _loadChildren(resolve: (children: Tile[] | undefined) => void, _reject: (error: Error) => void): void {
+    resolve(this._elements);
+  }
+
+  public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
+    assert(false, "Root dynamic tile has no content");
+    return undefined;
+  }
+
+  public async readContent(_data: TileRequest.ResponseData, _system: RenderSystem, _isCanceled: () => boolean): Promise<TileContent> {
+    throw new Error("Root dynamic tile has no content");
+  }
+
 }
 
 /** This tile encompasses the all possible area of a specific element but contains no graphics itself. */
@@ -269,13 +332,14 @@ class ElementTile extends Tile {
   public formatVersion: number;
   public data: ElementData;
   public centerOfMass: Point3d;
-  constructor(tree: TileTree, params: TileParams) {
+  constructor(parent: Tile, params: TileParams) {
     super({
+      parent,
       isLeaf: false,
-      contentId: `${tree.id}_${params.data.elementId}`,
+      contentId: `${parent.contentId}_${params.data.elementId}`,
       range: ElementTile.calculatePossibleRange(params.data.boundingBox, params.centerOfMass),
-      maximumSize: 512,
-    }, tree);
+      maximumSize: parent.maximumSize,
+    }, parent.tree);
     this.data = params.data;
     this.centerOfMass = params.centerOfMass;
     this.loadChildren();
@@ -368,6 +432,23 @@ class ElementTile extends Tile {
     throw new Error("Tile has no content");
   }
 
+  public pruneChildren(olderThan: BeTimePoint): void {
+    const children = this.children as ExplodedGraphicsTile[];
+    assert(undefined !== children);
+
+    const partitionIndex = partitionArray(children, (child) => !child.usageMarker.isExpired(olderThan));
+
+    // Remove expired children.
+    if (partitionIndex < children.length) {
+      const expired = children.splice(partitionIndex);
+      for (const child of expired)
+        child.dispose();
+    }
+
+    // Restore ordering.
+    children.sort((x, y) => y.toleranceLog10 - x.toleranceLog10);
+  }
+
 }
 
 /** Produce a number iterating from 0 to the max integer. */
@@ -402,6 +483,11 @@ export class ExplodedGraphicsTile extends Tile {
     }, parent.tree);
 
     this.setExplodeTransform(ExplodeApp.explodeAttributes.min);
+  }
+
+  public computeLoadPriority(_viewports: Iterable<Viewport>): number {
+    // We want the element's graphics to be updated as soon as possible
+    return 0;
   }
 
   /** Creates an unique id for requesting tiles from the backend. */
@@ -488,5 +574,9 @@ export class ExplodedGraphicsTile extends Tile {
     const rangeGfx = this.getRangeGraphic(args.context);
     if (undefined !== rangeGfx)
       args.graphics.add(rangeGfx);
+  }
+
+  public onActiveRequestCanceled(): void {
+    IModelApp.tileAdmin.cancelElementGraphicsRequest(this);
   }
 }
