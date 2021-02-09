@@ -3,7 +3,7 @@ import IotAlertApp from "./IotAlertApp";
 import * as React from "react";
 import { MessageBox } from "./MessageBox";
 
-import "./Tag.scss";
+import "./IotAlert.scss";
 
 interface ElementSelectorProps {
   classList: string[];
@@ -73,7 +73,7 @@ export function ElementSelector(props: ElementSelectorProps) {
         : ""}
       {
         props.isAlertOn && tags !== undefined ? tags.map((tag) => (
-          <MessageBox onButtonClick={IotAlertApp.zoomToElements} isOpen={props.isAlertOn} message={`Alert coming from element with id ${tag}.`} id={tag} key={tag} />
+          <MessageBox onButtonClick={async () => IotAlertApp.zoomToElements(tag)} isOpen={props.isAlertOn} message={`Alert coming from element with id ${tag}.`} id={tag} key={tag} />
         )) : ""
       }
     </>

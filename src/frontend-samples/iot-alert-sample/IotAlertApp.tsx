@@ -16,17 +16,17 @@ export default class IotAlertApp implements SampleApp {
     return <IotAlertUI iModelName={iModelName} iModelSelector={iModelSelector} elementsMap={IotAlertApp.elementMap} tags={IotAlertApp.tags} />;
   }
 
-  public static zoomToElements = async () => {
+  public static zoomToElements = async (id: string) => {
     const vp = IModelApp.viewManager.selectedView!;
     const ids = new Set<string>();
     const m = IotAlertApp.getElementNameIdMap();
     for (const [key, value] of m) {
-      const selectedElements = IotAlertApp.getSelectedElements();
-      for (const element of selectedElements) {
-        if (key === element) {
-          ids.add(value);
-        }
+      // const selectedElements = IotAlertApp.getSelectedElements();
+      // for (const element of selectedElements) {
+      if (key === id) {
+        ids.add(value);
       }
+      // }
     }
     await vp.zoomToElements(ids);
   }

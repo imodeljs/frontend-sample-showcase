@@ -44,7 +44,7 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
 
   public render(): JSX.Element {
     const width = 376;
-    const height = 80;
+    const height = 110;
     return (
       <Dialog
         title={"IoT Alert"}
@@ -67,9 +67,9 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
   public renderContent() {
     return (
       <div>
-        <span className="message-span">{this.props.message}</span>
+        <span>{this.props.message}</span>
         <br />
-        <button className="button-to-issue" onClick={this.props.onButtonClick}>
+        <button onClick={this.props.onButtonClick}>
           <span>Go to issue</span>
         </button>
       </div>
