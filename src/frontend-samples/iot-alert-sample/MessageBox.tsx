@@ -26,11 +26,6 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
     };
   }
 
-  // user clicked the dialog button
-  public closeAlert() {
-    this._onCancel();
-  }
-
   // private deleteMessageBox = setTimeout(() => {
   //   if (!IotAlertApp.getTags().includes(this.props.id)) {
   //     this._onCancel();
@@ -45,6 +40,8 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
   public render(): JSX.Element {
     const width = 376;
     const height = 110;
+    const y = window.innerHeight - height - 3;
+    const x = (window.innerWidth - width) / 6;
     return (
       <Dialog
         title={"IoT Alert"}
@@ -56,6 +53,7 @@ export class MessageBox extends React.Component<IotAlertProps, IOTAlertState> {
         onClose={() => this._onCancel()}
         onEscape={() => this._onCancel()}
         width={width} height={height}
+        x={x} y={y}
       >
         <MessageContainer severity={MessageSeverity.Warning}>
           {this.renderContent()}

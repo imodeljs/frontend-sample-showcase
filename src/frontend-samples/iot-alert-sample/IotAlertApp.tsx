@@ -223,5 +223,3 @@ export class ClearOverrideAction extends EmphasizeActionBase {
     return true;
   }
 }
-
-

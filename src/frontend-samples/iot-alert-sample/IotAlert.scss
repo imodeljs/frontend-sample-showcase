@@ -12,15 +12,16 @@
 
 .input-tag__tags li {
   align-items: center;
-  background: #85a3bf;
-  border-radius: 2px;
+  background: #626d77;
+  border-radius: 20px;
   color: white;
   display: flex;
   font-weight: 300;
   list-style: none;
-  margin-bottom: 5px;
-  margin-right: 5px;
+  margin-bottom: 4px;
+  margin-right: 4px;
   padding: 5px 10px;
+  font-size: small;
 }
 
 .input-tag__tags li button {

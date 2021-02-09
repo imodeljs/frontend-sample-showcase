@@ -10,7 +10,6 @@ import IotAlertApp, { ClearOverrideAction, OverrideAction } from "./IotAlertApp"
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ElementSelector } from "./ElementSelector";
-import { MessageBox } from "./MessageBox";
 
 /** React state of the Sample component */
 interface IotAlertState {
