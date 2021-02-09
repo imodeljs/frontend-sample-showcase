@@ -2,14 +2,11 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates alerts by an IoT sensor in an iModel.
+This sample demonstrates alerts by IoT sensor(s) in an iModel.
 
 ## Purpose
 
-The purpose of this sample is to demonstrate the following:
-
-- A feature to demonstrate sensor alerts
-- Indicate that sensor is showing some alert in an iModel
+The purpose of this sample is to demonstrate sensor alerts.
 
 ## Description
 

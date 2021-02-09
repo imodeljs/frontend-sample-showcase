@@ -1,6 +1,7 @@
-import { MessageBox, Select } from "@bentley/ui-core";
+import { Select } from "@bentley/ui-core";
 import IotAlertApp from "./IotAlertApp";
 import * as React from "react";
+import { MessageBox } from "./MessageBox";
 
 import "./Tag.scss";
 
@@ -70,6 +71,11 @@ export function ElementSelector(props: ElementSelectorProps) {
           </div>
         </div>
         : ""}
+      {
+        props.isAlertOn && tags !== undefined ? tags.map((tag) => (
+          <MessageBox onButtonClick={IotAlertApp.zoomToElements} isOpen={props.isAlertOn} message={`Alert coming from element with id ${tag}.`} id={tag} key={tag} />
+        )) : ""
+      }
     </>
   );
 }

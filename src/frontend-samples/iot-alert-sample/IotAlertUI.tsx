@@ -95,10 +95,6 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
         <div >
           <ElementSelector classList={this.classList} classElementsMap={this.state.elementsMap} isAlertOn={this.state.wantEmphasis} disabled={!this.state.isImodelReady} />
         </div>
-        {this.state.wantEmphasis && this.state.tags !== undefined ?
-          this.state.tags.map((tag) => (
-            <MessageBox onButtonClick={IotAlertApp.zoomToElements} isOpen={this.state.wantEmphasis} message={`Alert coming from element with id ${tag}.`} key={tag} id={tag} />
-          )) : ""}
       </>
     );
   }
@@ -109,6 +105,10 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
       <>
         <ControlPane instructions="Manage IoT Alerts" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+        {/* {this.state.wantEmphasis && this.state.tags !== undefined ?
+          this.state.tags.map((tag) => (
+            <MessageBox onButtonClick={IotAlertApp.zoomToElements} isOpen={this.state.wantEmphasis} message={`Alert coming from element with id ${tag}.`} key={tag} id={tag} />
+          )) : ""} */}
       </>
     );
   }

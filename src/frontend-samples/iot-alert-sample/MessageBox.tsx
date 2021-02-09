@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Dialog, MessageContainer, MessageSeverity } from "@bentley/ui-core";
-import { ModelessDialogManager } from "@bentley/ui-framework";
 import IotAlertApp from "./IotAlertApp";
 
 export interface IotAlertProps {
