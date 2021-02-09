@@ -65,7 +65,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     this.state = {
       isAnimated: false,
       isInit: true,
-      object: this._objects.find((o) => o.name === "Lamp")!,
+      object: this._objects.find((o) => o.name === "Table")!,
       explodeFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
       emphasize: EmphasizeType.None, // This will be changed to Isolate before the exploded view effect is applied.
     };
@@ -82,6 +82,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     vp.invalidateScene();
   }
 
+  /** Creates and starts an animator in the viewport. */
   public animate() {
     const vp = this.state.viewport;
     if (!vp) return;
@@ -90,9 +91,9 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const goal = explode ? ExplodeApp.explodeAttributes.max : ExplodeApp.explodeAttributes.min;
     const animationStep = (explode ? 1 : -1) * ExplodeApp.explodeAttributes.step;
     const animator: Animator = {
-      // Will be called before rendering a frame.
+      // Will be called before rendering a frame as well as force the viewport to re-render every frame.
       animate: () => {
-        // Updates the tile tree with the explode factor.
+        // Updates the tile tree with the explode scale.
         this.explode();
         // Test for finishing the animation.
         if (goal === this.state.explodeFactor) {
@@ -104,6 +105,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
 
+        // Side effects of updating the state are disabled.
         this.setState({ explodeFactor: newFactor });
         return false;
       },
@@ -142,6 +144,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       this.setState({ viewport: vp });
     });
   }
+  /** Methods that support the UI control interactions. */
   private readonly onObjectChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const object = this._objects.find((o) => o.name === event.target.value);
     if (object)
