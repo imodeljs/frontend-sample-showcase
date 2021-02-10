@@ -192,6 +192,9 @@ class ExplodeTileTree extends TileTree {
       location: Transform.createIdentity(),
     });
     this._rootTile = new RootTile(this, params.data, params.tileVersionInfo);
+
+    // Ensures that graphics are not cut off by going outside the iModel extends.
+    this.iModel.expandDisplayedExtents(this.range);
   }
 
   /** The lowest-resolution tile in this tree. */
