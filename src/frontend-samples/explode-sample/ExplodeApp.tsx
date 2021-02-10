@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import * as React from "react";
@@ -50,8 +50,24 @@ export default class ExplodeApp implements SampleApp {
   }
 
   /** Uses the IModel.js tools to fit the view to the object on screen. */
-  public static fitView(vp: Viewport) {
-    IModelApp.tools.run("View.Fit", vp, true);
+  public static ZoomToObject(vp: Viewport, objectName: string) {
+    const options: ViewChangeOptions = {
+      animateFrustumChange: true,
+      cancelOnAbort: false,
+    };
+
+    const volume = ExplodeTreeReference.getTreeRange(objectName);
+    if (undefined === volume) {
+      const awaitRangeLoaded: TreeDataListener = (name, range) => {
+        if (objectName === name && undefined !== range) {
+          vp.zoomToVolume(range, options);
+          ExplodeTreeReference.onTreeDataUpdated.removeListener(awaitRangeLoaded);
+        }
+      };
+      ExplodeTreeReference.onTreeDataUpdated.addListener(awaitRangeLoaded);
+    } else {
+      vp.zoomToVolume(volume, options);
+    }
   }
 
   /** Updates the tile tree reference with the given data and signals the viewport that changes have been made. */

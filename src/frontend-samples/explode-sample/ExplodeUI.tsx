@@ -131,7 +131,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         <label>Explode Scaling</label>
         <Slider min={min} max={max} values={[this.state.explodeFactor]} step={step} showMinMax={true} onUpdate={this.onSliderChange} disabled={this.state.isAnimated} />
         <label>Object</label>
-        <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />
+        <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />
+          <Button onClick={() => { if (this.state.viewport) ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name); }} disabled={this.state.isInit || this.state.isAnimated}>Zoom To</Button>
+        </span>
         <label>Emphases</label>
         <Select value={this.state.emphasize} options={emphasizeEntries} onChange={this.onEmphasizeChanged} disabled={this.state.isInit} style={{ width: "fit-content" }} />
       </div>
@@ -139,6 +142,19 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   public readonly onIModelReady = (_iModel: IModelConnection): void => {
+    const buildObject = async (iModel: IModelConnection) => {
+      const query = `Select ECInstanceID FROM BisCore:GeometricElement3d`;
+      const results = iModel.query(query);
+      const data: string[] = [];
+      let row = await results.next();
+      while (row.value) {
+        data.push(row.value.id);
+        row = await results.next();
+      }
+      const everythingObject: ExplodeObject = { name: "EVERYTHING", elementIds: data };
+      this._objects.push(everythingObject);
+    };
+    buildObject(_iModel);
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       this.setState({ viewport: vp });
     });
@@ -186,11 +202,11 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       switch (this.state.emphasize) {
         case EmphasizeType.Isolate:
           ExplodeApp.isolateElements(this.state.viewport, this.state.object.elementIds);
-          ExplodeApp.fitView(this.state.viewport);
+          ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
           break;
         case EmphasizeType.Emphasize:
           ExplodeApp.emphasizeElements(this.state.viewport, this.state.object.elementIds);
-          ExplodeApp.fitView(this.state.viewport);
+          ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
           break;
         case EmphasizeType.None:
         default:
@@ -200,7 +216,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     if (updateExplode && !this.state.isAnimated)
       this.explode();
     if (updateObject && this.state.viewport)
-      ExplodeApp.fitView(this.state.viewport);
+      ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
   }
 
   /** The sample's render method */
