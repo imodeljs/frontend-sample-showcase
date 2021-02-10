@@ -254,7 +254,6 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
 
   public constructor(tree: ExplodeTileTree, data: ElementData[], versionInfo: TileVersionInfo) {
     const range = getRangeUnion(data.map((ele) => ele.boundingBox));
-    range.scaleAboutCenterInPlace(ExplodeApp.explodeAttributes.max);
     super({
       isLeaf: false,
       contentId: `${tree.id}_Root`,
@@ -263,7 +262,7 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
     }, tree);
 
     // Create tiles for each element.
-    this._centerOfMass = this.range.center;
+    this._centerOfMass = this.range.center.clone();
 
     this._elements = [];
     for (const element of data) {
@@ -272,7 +271,9 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
         versionInfo,
         data: element,
       };
-      this._elements.push(new ElementTile(this, tileParams));
+      const tile = new ElementTile(this, tileParams)
+      this._elements.push(tile);
+      this.range.extendRange(tile.range);
     }
 
     this.loadChildren(); // initially empty.
@@ -542,7 +543,7 @@ export class ExplodedGraphicsTile extends Tile {
   public setExplodeTransform(explodeScaling: number) {
     if (explodeScaling === this._prevExplodeFactor) return;
     this._explodeTransform = calculateExplodeTransform(this.data.boundingBox.center, this.centerOfMass, explodeScaling);
-    this._contentRange = this._explodeTransform.multiplyRange(this.data.boundingBox);
+    this._explodeTransform.multiplyRange(this.data.boundingBox, this._contentRange);
   }
 
   /** Output this tile's graphics. */
@@ -558,7 +559,7 @@ export class ExplodedGraphicsTile extends Tile {
     // Creates a new set of graphics transformed by the matrix create by the updated explode scaling.  The appearanceProvider insures the elements are drawn;
     args.graphics.add(args.context.createGraphicBranch(branch, this._explodeTransform, { appearanceProvider: this.rootTile.appearanceProvider }));
 
-    // Line is required for the debugging tile ranges feature.  Very useful for debugging, but unused by the actual sample.
+    // Line is required for the debugging tile ranges feature.  Very useful for debugging, but unused by the sample.
     const rangeGfx = this.getRangeGraphic(args.context);
     if (undefined !== rangeGfx)
       args.graphics.add(rangeGfx);
