@@ -79,7 +79,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       this.setState({ isInit: false, emphasize: EmphasizeType.Isolate });
     }
     ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explodeFactor);
-    vp.invalidateScene();
   }
 
   /** Creates and starts an animator in the viewport. */

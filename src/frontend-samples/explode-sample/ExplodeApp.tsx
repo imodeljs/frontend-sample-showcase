@@ -54,10 +54,20 @@ export default class ExplodeApp implements SampleApp {
     IModelApp.tools.run("View.Fit", vp, true);
   }
 
-  /** Updates the tile tree reference with the given data. */
+  /** Updates the tile tree reference with the given data and signals the viewport that changes have been made. */
   public static refSetData(vp: Viewport, name: string, ids: string[], explodeScaling: number) {
     const provider = ExplodeProvider.getOrCreate(vp);
     provider.setData(name, ids, explodeScaling);
+
+    // Necessary when the data changes.
+    provider.invalidate();
+    // Necessary when the explode scaling changes.
+    ExplodeApp.invalidateScene(vp);
+  }
+
+  /** Uses the Viewport API to signal that the scene needs to re-render. */
+  public static invalidateScene(vp: Viewport) {
+    vp.invalidateScene();
   }
 
   /** Enables an animator using the Viewport API. If the animator is undefined, any active animator will be removed. */
@@ -98,6 +108,11 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
   public drop() {
     this.vp.dropFeatureOverrideProvider(this);
     this.vp.dropTiledGraphicsProvider(this);
+  }
+
+  /** Signals to the viewport that this provider needs to be recalculated. */
+  public invalidate() {
+    this.vp.setFeatureOverrideProviderChanged();
   }
 
   public constructor(public vp: Viewport) { }
