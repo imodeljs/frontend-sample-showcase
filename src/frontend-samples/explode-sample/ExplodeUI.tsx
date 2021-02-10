@@ -142,19 +142,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   public readonly onIModelReady = (_iModel: IModelConnection): void => {
-    const buildObject = async (iModel: IModelConnection) => {
-      const query = `Select ECInstanceID FROM BisCore:GeometricElement3d`;
-      const results = iModel.query(query);
-      const data: string[] = [];
-      let row = await results.next();
-      while (row.value) {
-        data.push(row.value.id);
-        row = await results.next();
-      }
-      const everythingObject: ExplodeObject = { name: "EVERYTHING", elementIds: data };
-      this._objects.push(everythingObject);
-    };
-    buildObject(_iModel);
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       this.setState({ viewport: vp });
     });
