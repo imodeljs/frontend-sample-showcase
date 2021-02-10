@@ -8,7 +8,7 @@ import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology,
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import * as React from "react";
-import { ExplodeTreeReference } from "./ExplodeTile";
+import { ExplodeTreeReference, TreeDataListener } from "./ExplodeTile";
 import ExplodeUI from "./ExplodeUI";
 
 export interface ExplodeScalingAttributes {
@@ -115,12 +115,18 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
     this.vp.setFeatureOverrideProviderChanged();
   }
 
-  public constructor(public vp: Viewport) { }
+  public constructor(public vp: Viewport) {
+    ExplodeTreeReference.onTreeDataUpdated.addListener((name) => {
+      const currentTree = this.explodeTileTreeRef.id;
+      if (currentTree.name === name)
+        this.invalidate();
+    });
+  }
   public explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
 
   /** Insures the static elements are not drawn. */
   public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {
-    const ids = new Set<string>(this.explodeTileTreeRef.id.ids);
+    const ids = ExplodeTreeReference.getTreeReadyIds(this.explodeTileTreeRef.id.name);
     overrides.setNeverDrawnSet(ids);
   }
 
