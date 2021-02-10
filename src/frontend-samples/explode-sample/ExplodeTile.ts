@@ -181,9 +181,6 @@ export class ExplodeTreeReference extends TileTreeReference {
 /** The TileTree that will hold the tiles for a specific object being exploded. */
 class ExplodeTileTree extends TileTree {
   private _rootTile: RootTile;
-  private get data(): ElementData[] {
-    return this._rootTile.children?.map((child) => (child as ElementTile).data) ?? [];
-  }
 
   public constructor(params: ExplodeTreeParams) {
     assert(params.data.length >= 0);
