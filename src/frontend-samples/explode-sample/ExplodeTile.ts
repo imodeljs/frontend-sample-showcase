@@ -99,15 +99,15 @@ class ExplodeTreeSupplier implements TileTreeSupplier {
     if (id.ids.length <= 0)
       return undefined;
 
-    let info: TileVersionInfo;
+    let info: Promise<TileVersionInfo>;
     if (this._info === undefined)
-      info = await IModelTileRpcInterface.getClient().queryVersionInfo();
+      info = IModelTileRpcInterface.getClient().queryVersionInfo();
     else
-      info = this._info;
+      info = Promise.resolve(this._info);
 
     const data = await ExplodeTreeSupplier.queryElements(iModel, id.ids);
 
-    return new ExplodeTileTree({ data, iModel, tileVersionInfo: info, objectName: id.name });
+    return new ExplodeTileTree({ data, iModel, tileVersionInfo: await info, objectName: id.name });
   }
 
   /** Queries the backend for the elements to explode.  It also populates the data it can interpolate with a single pass. */
