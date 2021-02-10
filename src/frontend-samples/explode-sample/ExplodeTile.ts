@@ -224,10 +224,14 @@ class ExplodeTileTree extends TileTree {
   public draw(args: TileDrawArgs): void {
     assert(args instanceof ExplodeTileDrawArgs);
 
-    args.graphics.clear();
     const tiles = this.selectTiles(args);
     for (const tile of tiles)
       tile.drawGraphics(args);
+
+    // Unused by this sample but helpful for debugging the tiles.
+    const rangeGfx = this.rootTile.getRangeGraphic(args.context);
+    if (undefined !== rangeGfx)
+      args.graphics.add(rangeGfx);
 
     args.drawGraphics();
   }
