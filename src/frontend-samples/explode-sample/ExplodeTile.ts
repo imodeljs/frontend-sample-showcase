@@ -144,36 +144,45 @@ export type TreeDataListener = (name: string, range: Range3d | undefined, elemen
 
 /** References the unique TileTree for the currently exploded object. */
 export class ExplodeTreeReference extends TileTreeReference {
+  // These methods facilitate communication from the TileTree to the App and Provider.
   private static treeDataMap = new Map<string, TreeData>();
+  /** Event is raised when any TileTree reports a new range or tile loaded. */
   public static onTreeDataUpdated = new BeEvent<TreeDataListener>();
 
+  /** Updates the range related to the tile tree that handles that object. */
   public static setTreeRange(treeName: string, range: Range3d) {
     const oldData = this.getOrCreateTreeDataMap(treeName);
     range.clone(oldData.range);
     this.onTreeDataUpdated.raiseEvent(treeName, this.getTreeRange(treeName), this.getTreeReadyIds(treeName));
   }
+  /** Adds an element id to the list of loaded element graphics related to the tile tree that handles that object. */
   public static setTreeLoadedId(treeName: string, id: string) {
     const oldData = this.getOrCreateTreeDataMap(treeName);
     oldData.elementContentLoaded.push(id);
     this.onTreeDataUpdated.raiseEvent(treeName, this.getTreeRange(treeName), this.getTreeReadyIds(treeName));
   }
+  /** Returns the data related to the tile tree for that object. */
   private static getOrCreateTreeDataMap(name: string): TreeData {
     if (!this.treeDataMap.has(name))
       this.treeDataMap.set(name, { range: Range3d.createNull(), elementContentLoaded: [] });
     return this.treeDataMap.get(name)!;
   }
+  /** Returns a set of ElementIDs that the tile tree has graphics loaded. */
   public static getTreeReadyIds(name: string): Set<string> {
     const array = this.getOrCreateTreeDataMap(name).elementContentLoaded;
     return new Set<string>(array);
   }
+  /** Returns the range of the tile tree, if it's been calculated yet, otherwise returns undefined. */
   public static getTreeRange(name: string): Range3d | undefined {
     const range = this.getOrCreateTreeDataMap(name).range;
     return Range3d.isNull(range) ? undefined : range.clone();
   }
 
+  // These methods support the functionality of the TileTreeReference itself.
   public static supplier = new ExplodeTreeSupplier();
+  /** Uniquely identifies which TileTree this is referencing. */
   public id: ExplodeTreeId = { name: "", ids: [] };
-  public explodeFactor: number = 0;
+  public explodeScaling: number = 1;
 
   public get treeOwner() {
     return this.iModel.tiles.getTileTreeOwner(this.id, ExplodeTreeReference.supplier);
@@ -192,7 +201,7 @@ export class ExplodeTreeReference extends TileTreeReference {
     return false;
   }
 
-  /** Creates the arguments use for the draw call. */
+  /** Creates the arguments use for the draw call. Overridden to inject the explode scaling as an argument. */
   public createDrawArgs(context: SceneContext): ExplodeTileDrawArgs | undefined {
     const tree = this.treeOwner.load();
     if (undefined === tree)
@@ -207,7 +216,7 @@ export class ExplodeTreeReference extends TileTreeReference {
       clipVolume: this.getClipVolume(tree),
       parentsAndChildrenExclusive: tree.parentsAndChildrenExclusive,
       symbologyOverrides: this.getSymbologyOverrides(tree),
-      explodeFactor: this.explodeFactor,
+      explodeFactor: this.explodeScaling,
     });
   }
 }
@@ -256,7 +265,7 @@ class ExplodeTileTree extends TileTree {
   }
   /** True if this tile tree has no bounds - e.g., a tile tree representing a globe is unbounded. */
   public get isContentUnbounded(): boolean {
-    return true;
+    return false;
   }
 
   /** This method to select tiles of appropriate resolution. */

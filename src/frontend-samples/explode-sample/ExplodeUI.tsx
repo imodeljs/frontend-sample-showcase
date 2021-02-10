@@ -121,6 +121,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const max = ExplodeApp.explodeAttributes.max;
     const min = ExplodeApp.explodeAttributes.min;
     const step = ExplodeApp.explodeAttributes.step;
+
     const objectEntries = this._objects.map((object) => object.name);
     const emphasizeEntries = mapOptions(EmphasizeType);
     const animationText = this.state.isAnimated ? "Pause" : ((min + max) / 2 >= this.state.explodeFactor ? "Explode" : "Collapse");
@@ -141,6 +142,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     </>;
   }
 
+  /** Method is called by the showcase when the IModel connection is create. */
   public readonly onIModelReady = (_iModel: IModelConnection): void => {
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       this.setState({ viewport: vp });

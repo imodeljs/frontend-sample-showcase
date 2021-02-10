@@ -94,6 +94,7 @@ export default class ExplodeApp implements SampleApp {
 
 /** This provider both hides the original graphics of the element and inserts the transformed graphics. */
 class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider {
+  // These methods support the provider as an object.
   /** Returns a provider associated with a given viewport. If one does not exist, it will be created. */
   public static getOrCreate(vp: Viewport) {
     let provider = vp.findFeatureOverrideProviderOfType(ExplodeProvider);
@@ -110,7 +111,7 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
 
   /** Updates the TileTree with the elements and explode scaling. */
   public setData(name: string, elementIds: string[], explodeScaling: number) {
-    this.explodeTileTreeRef.explodeFactor = explodeScaling;
+    this.explodeTileTreeRef.explodeScaling = explodeScaling;
     this.explodeTileTreeRef.setExplodeObject(name, elementIds);
   }
   /** Adds provider from viewport */
@@ -131,6 +132,7 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
     this.vp.setFeatureOverrideProviderChanged();
   }
 
+  // These methods support the functionality of the provider.
   public constructor(public vp: Viewport) {
     ExplodeTreeReference.onTreeDataUpdated.addListener((name) => {
       const currentTree = this.explodeTileTreeRef.id;
@@ -140,13 +142,13 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
   }
   public explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
 
-  /** Insures the static elements are not drawn. */
+  /** Required by the FeatureOverrideProvider. Insures the static elements are not drawn. */
   public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {
     const ids = ExplodeTreeReference.getTreeReadyIds(this.explodeTileTreeRef.id.name);
     overrides.setNeverDrawnSet(ids);
   }
 
-  /** Apply the supplied function to each [[TileTreeReference]] to be drawn in the specified [[Viewport]]. */
+  /** Required by the TiledGraphicsProvider.  Apply the supplied function to the TileTreeReference for our ExplodeTileTree. */
   public forEachTileTreeRef(_viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
     func(this.explodeTileTreeRef);
   }
