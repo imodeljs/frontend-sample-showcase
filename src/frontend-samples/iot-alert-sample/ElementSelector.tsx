@@ -1,4 +1,4 @@
-import { Select } from "@bentley/ui-core";
+import { Button, ButtonType, Select } from "@bentley/ui-core";
 import IotAlertApp from "./IotAlertApp";
 import * as React from "react";
 import { MessageBox } from "./MessageBox";
@@ -39,43 +39,44 @@ export function ElementSelector(props: ElementSelectorProps) {
   return (
     <>
       <div className="sample-options-2col">
-        <span>Select class: </span>
+        <span>Select class</span>
         <Select
-          className="iotalert-class-select"
           options={props.classList}
           onChange={_onClassChange}
           disabled={props.disabled}
         />
-      </div >
-      <div className="sample-options-2col">
-        <span>Select element: </span>
+        <span>Select element</span>
         <Select
-          className="iotalert-element-select"
           options={elements}
           onChange={_onElementChange}
           disabled={props.disabled}
         />
-      </div >
-      {props.isAlertOn ?
-        <div className="input-tag">
-          <div className="sample-options-2col">
-            {(tags !== undefined && tags.length) ? <span>Observed elements: </span> : ""}
-            <ul className="input-tag__tags">
-              {tags !== undefined ? tags.map((tag, i) => (
-                <li key={tag}>
-                  {tag}
-                  <button type="button" onClick={() => { removeTag(i); }}>+</button>
-                </li>
-              )) : ""}
-            </ul>
-          </div>
+        <span>Alert</span>
+        <div className="sample-options-2col-1">
+          <Button buttonType={ButtonType.Primary} disabled={props.disabled && props.isAlertOn}>Trigger</Button>
+          <Button buttonType={ButtonType.Primary} disabled={props.disabled && !props.isAlertOn}>Clear</Button>
         </div>
-        : ""}
-      {
-        props.isAlertOn && tags !== undefined ? tags.map((tag) => (
-          <MessageBox onButtonClick={async () => IotAlertApp.zoomToElements(tag)} isOpen={props.isAlertOn} message={`Alert coming from element with id ${tag}.`} id={tag} key={tag} />
-        )) : ""
-      }
+        {(tags !== undefined && tags.length) ? <span>Observed elements </span> : ""}
+        {props.isAlertOn ?
+          <div className="input-tag">
+            <div >
+              <ul className="input-tag__tags">
+                {tags !== undefined ? tags.map((tag, i) => (
+                  <li key={tag}>
+                    {tag}
+                    <button type="button" onClick={() => { removeTag(i); }}>+</button>
+                  </li>
+                )) : ""}
+              </ul>
+            </div>
+          </div>
+          : ""}
+        {
+          props.isAlertOn && tags !== undefined ? tags.map((tag) => (
+            <MessageBox onButtonClick={async () => IotAlertApp.zoomToElements(tag)} isOpen={props.isAlertOn} message={`Alert coming from element ${tag}.`} id={tag} key={tag} />
+          )) : ""
+        }
+      </div>
     </>
   );
 }
