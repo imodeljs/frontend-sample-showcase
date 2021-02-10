@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { assert, BeTimePoint, ByteStream, compareStrings, Id64, partitionArray } from "@bentley/bentleyjs-core";
+import { assert, BeEvent, BeTimePoint, ByteStream, compareStrings, Id64, partitionArray } from "@bentley/bentleyjs-core";
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
 import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
 import { GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
@@ -135,8 +135,42 @@ class ExplodeTreeSupplier implements TileTreeSupplier {
   }
 }
 
+/** Holds the data to report to the App about the tile tree state. */
+interface TreeData {
+  range: Range3d;
+  elementContentLoaded: string[];
+}
+export type TreeDataListener = (name: string, range: Range3d | undefined, elementContentLoaded: Set<string>) => void;
+
 /** References the unique TileTree for the currently exploded object. */
 export class ExplodeTreeReference extends TileTreeReference {
+  private static treeDataMap = new Map<string, TreeData>();
+  public static onTreeDataUpdated = new BeEvent<TreeDataListener>();
+
+  public static setTreeRange(treeName: string, range: Range3d) {
+    const oldData = this.getOrCreateTreeDataMap(treeName);
+    range.clone(oldData.range);
+    this.onTreeDataUpdated.raiseEvent(treeName, this.getTreeRange(treeName), this.getTreeReadyIds(treeName));
+  }
+  public static setTreeLoadedId(treeName: string, id: string) {
+    const oldData = this.getOrCreateTreeDataMap(treeName);
+    oldData.elementContentLoaded.push(id);
+    this.onTreeDataUpdated.raiseEvent(treeName, this.getTreeRange(treeName), this.getTreeReadyIds(treeName));
+  }
+  private static getOrCreateTreeDataMap(name: string): TreeData {
+    if (!this.treeDataMap.has(name))
+      this.treeDataMap.set(name, { range: Range3d.createNull(), elementContentLoaded: [] });
+    return this.treeDataMap.get(name)!;
+  }
+  public static getTreeReadyIds(name: string): Set<string> {
+    const array = this.getOrCreateTreeDataMap(name).elementContentLoaded;
+    return new Set<string>(array);
+  }
+  public static getTreeRange(name: string): Range3d | undefined {
+    const range = this.getOrCreateTreeDataMap(name).range;
+    return Range3d.isNull(range) ? undefined : range.clone();
+  }
+
   public static supplier = new ExplodeTreeSupplier();
   public id: ExplodeTreeId = { name: "", ids: [] };
   public explodeFactor: number = 0;
@@ -182,6 +216,7 @@ export class ExplodeTreeReference extends TileTreeReference {
 class ExplodeTileTree extends TileTree {
   private _rootTile: RootTile;
 
+  public readonly elementContentLoaded: (elementId: string) => void;
   public constructor(params: ExplodeTreeParams) {
     assert(params.data.length >= 0);
     super({
@@ -195,6 +230,12 @@ class ExplodeTileTree extends TileTree {
 
     // Ensures that graphics are not cut off by going outside the iModel extends.
     this.iModel.expandDisplayedExtents(this.range);
+    // Will communicate the range back to the app for the zoom to volume.
+    ExplodeTreeReference.setTreeRange(params.objectName, this.range);
+    this.elementContentLoaded = (elementId: string) => {
+      // Will communicate the range back to the app for the zoom to volume.
+      ExplodeTreeReference.setTreeLoadedId(params.objectName, elementId);
+    };
   }
 
   /** The lowest-resolution tile in this tree. */
@@ -539,6 +580,8 @@ export class ExplodedGraphicsTile extends Tile {
         //
       }
     }
+
+    (this.tree as ExplodeTileTree).elementContentLoaded(this.data.elementId);
     return content;
   }
 
