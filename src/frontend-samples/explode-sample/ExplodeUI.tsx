@@ -82,10 +82,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   /** Creates and starts an animator in the viewport. */
-  public animate() {
-    const vp = this.state.viewport;
-    if (!vp) return;
-
+  public createAnimator(): Animator {
     const explode = (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2 >= this.state.explodeFactor;
     const goal = explode ? ExplodeApp.explodeAttributes.max : ExplodeApp.explodeAttributes.min;
     const animationStep = (explode ? 1 : -1) * ExplodeApp.explodeAttributes.step;
@@ -113,8 +110,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         this.setState({ isAnimated: false });
       },
     };
-    this.setState({ isAnimated: true });
-    ExplodeApp.setAnimator(vp, animator);
+    return animator;
   }
 
   public getControls(): React.ReactChild {
@@ -177,7 +173,9 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       return;
     }
     // Will a handle the "explode" or "collapse" cases.
-    this.animate();
+    const animator = this.createAnimator();
+    this.setState({ isAnimated: true });
+    ExplodeApp.setAnimator(vp, animator);
   }
 
   /** A REACT method that is called when the props or state is updated (e.g. when "this.setState(...)" is called) */
