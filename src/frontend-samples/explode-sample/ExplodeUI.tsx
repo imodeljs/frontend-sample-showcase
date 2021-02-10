@@ -133,7 +133,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         <label>Object</label>
         <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />
-          <Button onClick={() => { if (this.state.viewport) ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name); }} disabled={this.state.isInit || this.state.isAnimated}>Zoom To</Button>
+          <Button onClick={this.onZoomButton} disabled={this.state.isInit || this.state.isAnimated}>Zoom To</Button>
         </span>
         <label>Emphases</label>
         <Select value={this.state.emphasize} options={emphasizeEntries} onChange={this.onEmphasizeChanged} disabled={this.state.isInit} style={{ width: "fit-content" }} />
@@ -151,6 +151,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const object = this._objects.find((o) => o.name === event.target.value);
     if (object)
       this.setState({ object });
+  }
+  private readonly onZoomButton = () => {
+    if (this.state.viewport)
+      ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
   }
   private readonly onEmphasizeChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const emphasize: EmphasizeType = Number.parseInt(event.target.value, 10);
