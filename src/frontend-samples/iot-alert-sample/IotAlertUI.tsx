@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
+import { Button, ButtonType, Select, Toggle, UnderlinedButton } from "@bentley/ui-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ColorDef } from "@bentley/imodeljs-common";
 import IotAlertApp, { ClearOverrideAction, OverrideAction } from "./IotAlertApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, MessageBoxIconType, MessageBoxType } from "@bentley/imodeljs-frontend";
 import { MessageBox } from "./MessageBox";
 
 import "./IotAlert.scss";
@@ -99,6 +99,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     const selectedElement = e.target.value;
     IotAlertApp.setSelectedElements(selectedElement);
     this.setState({ tags: IotAlertApp.getTags() });
+    // IModelApp.notifications.openMessageBox(MessageBoxType.MediumAlert, "Hello Ashish!", MessageBoxIconType.Warning);
   }
 
   private removeTag = (i: any) => {
@@ -137,14 +138,14 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
             <Button buttonType={ButtonType.Primary} onClick={() => this._onToggleEmphasis(true)} disabled={!this.state.isImodelReady || this.state.wantEmphasis}>Trigger</Button>
             <Button buttonType={ButtonType.Primary} onClick={() => this._onToggleEmphasis(false)} disabled={!this.state.isImodelReady || !this.state.wantEmphasis || this.state.tags.length === 0}>Clear</Button>
           </div>
-          {(this.state.tags !== undefined && this.state.tags.length) ? <span>Observed elements </span> : ""}
+          {(this.state.tags !== undefined && this.state.tags.length) ? <span>Active Alert(s) </span> : ""}
           {this.state.wantEmphasis ?
             <div className="input-tag">
               <div >
                 <ul className="input-tag__tags">
                   {this.state.tags !== undefined ? this.state.tags.map((tag, i) => (
                     <li key={tag}>
-                      {tag}
+                      <UnderlinedButton onClick={async () => IotAlertApp.zoomToElements(tag)}>{tag}</UnderlinedButton>
                       <button type="button" onClick={() => { this.removeTag(i); }}>+</button>
                     </li>
                   )) : ""}
@@ -155,6 +156,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
           {
             this.state.wantEmphasis && this.state.tags !== undefined ? this.state.tags.map((tag) => (
               <MessageBox onButtonClick={async () => IotAlertApp.zoomToElements(tag)} isOpen={this.state.wantEmphasis} message={`Alert coming from element ${tag}.`} id={tag} key={tag} />
+
             )) : ""
           }
         </div>

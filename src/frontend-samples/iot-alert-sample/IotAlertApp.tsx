@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, ScreenViewport, ViewChangeOptions } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import IotAlertUI from "./IotAlertUI";
 import SampleApp from "common/SampleApp";
@@ -17,6 +17,8 @@ export default class IotAlertApp implements SampleApp {
   }
 
   public static zoomToElements = async (id: string) => {
+    const viewChangeOpts: ViewChangeOptions = {};
+    viewChangeOpts.animateFrustumChange = true;
     const vp = IModelApp.viewManager.selectedView!;
     const ids = new Set<string>();
     const m = IotAlertApp.getElementNameIdMap();
@@ -28,7 +30,7 @@ export default class IotAlertApp implements SampleApp {
       }
       // }
     }
-    await vp.zoomToElements(ids);
+    await vp.zoomToElements(ids, { ...viewChangeOpts });
   }
 
   public static fetchElementsFromClass = (className: string, elementsMap: Map<string, []>) => {
