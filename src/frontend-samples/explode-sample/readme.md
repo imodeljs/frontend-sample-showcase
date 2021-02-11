@@ -6,7 +6,7 @@ This sample shows how to create an exploded view effect in the viewport.
 
 ## Purpose
 
-The main purpose is give an example of how to create the exploded view effect.  To achieve this it also shows how to:
+The main purpose is give an example of how to create the exploded view effect.  To achieve this, it also shows how to:
 
 * Request specific elements and tiles from the backend.
 * Work with [Transforms](https://www.itwinjs.org/learning/geometry/transform/).
