@@ -6,4 +6,18 @@ This sample demonstrates how to Serialize a view state into JSON and reload the 
 
 ## Purpose
 
+The main purpose is to demonstrate how to serialize a viewstate and reload that viewstate at a later time. This is accomplished by:
+
+- Utilizing a call to toProps of the ViewState object, serializes the ViewState into properties.
+- Recreating the ViewState by a call to [ViewState.createFromProps](https://www.itwinjs.org/reference/imodeljs-frontend/views/viewstate/createfrompropsstatic/).
+- Reloading the ViewState by calling [ViewPort.changeView](https://www.itwinjs.org/reference/imodeljs-frontend/views/viewport/changeview/?term=changeview).
+
 ## Description
+
+Being able save and reload a view of an IModel is a fundamental feature. This sample shows the two functions required to save a view's properties to json format and reload them.
+
+The "Save State" button will allow the user to save the current view to json format. Then to reload the view, use the "Select View" drop down to select the desired view and press the "Load State" button. The will transition the view to the saved view state.
+
+Use the "Show Json" button to show the json of the saved view in a popup window.
+
+We invite you to create new views or manipulate the default views in the [SampleViewStates.json](./SampleViewStates.json).

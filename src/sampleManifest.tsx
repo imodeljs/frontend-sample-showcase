@@ -76,7 +76,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "Viewer Features", samples: [
-    getSerializeViewSpec(),
     getViewCameraSpec(),
     getDisplayStylesSpec(),
     getClassifierSpec(),
@@ -88,6 +87,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMultiViewportSpec(),
     getPropertyFormattingSpec(),
     getReadSettingsSpec(),
+    getSerializeViewSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
