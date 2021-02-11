@@ -152,7 +152,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
   private readonly onZoomButton = () => {
     if (this.state.viewport)
-      ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
+      ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
   }
   private readonly onEmphasizeChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const emphasize: EmphasizeType = Number.parseInt(event.target.value, 10);
@@ -193,11 +193,11 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       switch (this.state.emphasize) {
         case EmphasizeType.Isolate:
           ExplodeApp.isolateElements(this.state.viewport, this.state.object.elementIds);
-          ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
+          ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
           break;
         case EmphasizeType.Emphasize:
           ExplodeApp.emphasizeElements(this.state.viewport, this.state.object.elementIds);
-          ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
+          ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
           break;
         case EmphasizeType.None:
         default:
@@ -207,7 +207,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     if (updateExplode && !this.state.isAnimated)
       this.explode();
     if (updateObject && this.state.viewport)
-      ExplodeApp.ZoomToObject(this.state.viewport, this.state.object.name);
+      ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
   }
 
   /** The sample's render method */

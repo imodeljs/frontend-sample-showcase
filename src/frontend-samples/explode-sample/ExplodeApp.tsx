@@ -61,7 +61,7 @@ export default class ExplodeApp implements SampleApp {
   }
 
   /** Uses the IModel.js tools to fit the view to the object on screen. */
-  public static ZoomToObject(vp: Viewport, objectName: string) {
+  public static zoomToObject(vp: Viewport, objectName: string) {
     const options: ViewChangeOptions = {
       animateFrustumChange: true,
       cancelOnAbort: false,

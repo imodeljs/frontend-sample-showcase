@@ -19,5 +19,6 @@ export function getExplodeSpec(): SampleSpec {
       { name: "ExplodeTile.ts", import: import("!!raw-loader!./ExplodeTile") },
     ],
     setup: ExplodeApp.setup.bind(ExplodeApp),
+    teardown: ExplodeApp.teardown.bind(ExplodeApp),
   });
 }
