@@ -324,8 +324,9 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
         versionInfo,
         data: element,
       };
-      const tile = new ElementTile(this, tileParams)
+      const tile = new ElementTile(this, tileParams);
       this._elements.push(tile);
+      // The range of a child element must be included in it's parent.
       this.range.extendRange(tile.range);
     }
 
@@ -335,6 +336,7 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
     this.setIsReady();
   }
 
+  /** Returns returns it's children elements that contain the graphics for drawing. */
   public selectTiles(args: TileDrawArgs): Tile[] {
     const selected: Tile[] = [];
     for (const child of this._elements) {
@@ -345,12 +347,14 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
     return selected;
   }
 
+  /** Required by FeatureAppearanceProvider. Returns a FeatureAppearance based on element id and other factors or undefined if the it's not to be rendered. */
   public getFeatureAppearance(source: FeatureAppearanceSource, elemLo: number, elemHi: number, subcatLo: number, subcatHi: number, geomClass: GeometryClass, modelLo: number, modelHi: number, type: BatchType, animationNodeId: number): FeatureAppearance | undefined {
     const alwaysDrawIds = new Id64.Uint32Set(this._elements.map((element) => element.data.elementId));
     // If the ids is one of the elements in the tree, always draw it.
     if (alwaysDrawIds.has(elemLo, elemHi))
       return FeatureAppearance.fromJSON({});
 
+    // The source will return undefined for our elements as they have the same Ids that have been mark to never draw by the FeatureOverrideProvider in the App.
     return source.getAppearance(elemLo, elemHi, subcatLo, subcatHi, geomClass, modelLo, modelHi, type, animationNodeId);
   }
 
@@ -373,7 +377,6 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
   public async readContent(_data: TileRequest.ResponseData, _system: RenderSystem, _isCanceled: () => boolean): Promise<TileContent> {
     throw new Error("Root dynamic tile has no content");
   }
-
 }
 
 /** This tile encompasses the all possible area of a specific element but contains no graphics itself. */
