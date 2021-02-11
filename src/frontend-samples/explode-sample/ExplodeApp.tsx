@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import * as React from "react";
@@ -17,9 +17,20 @@ export interface ExplodeScalingAttributes {
   step: number;
 }
 export default class ExplodeApp implements SampleApp {
+  public static cleanUpCallbacks: Array<() => void> = [];
+
   /** This method is called by the showcase when loading the sample. */
   public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+    ExplodeApp.cleanUpCallbacks = [];
     return <ExplodeUI iModelName={iModelName} iModelSelector={iModelSelector} />;
+  }
+  /** This method is called by the showcase before changing samples. */
+  public static async teardown() {
+    IModelApp.viewManager.forEachViewport((vp) => {
+      ExplodeApp.clearIsolateAndEmphasized(vp);
+      ExplodeProvider.getOrCreate(vp).drop();
+    });
+    ExplodeApp.cleanUpCallbacks.forEach((func) => func());
   }
 
   /** The attributes describing the range of the explode scaling. */
@@ -64,7 +75,8 @@ export default class ExplodeApp implements SampleApp {
           ExplodeTreeReference.onTreeDataUpdated.removeListener(awaitRangeLoaded);
         }
       };
-      ExplodeTreeReference.onTreeDataUpdated.addListener(awaitRangeLoaded);
+      const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener(awaitRangeLoaded);
+      ExplodeApp.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
     } else {
       vp.zoomToVolume(volume, options);
     }
@@ -134,11 +146,12 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
 
   // These methods support the functionality of the provider.
   public constructor(public vp: Viewport) {
-    ExplodeTreeReference.onTreeDataUpdated.addListener((name) => {
+    const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name) => {
       const currentTree = this.explodeTileTreeRef.id;
       if (currentTree.name === name)
         this.invalidate();
     });
+    ExplodeApp.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
   }
   public explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
 
