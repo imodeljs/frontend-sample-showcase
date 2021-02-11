@@ -215,7 +215,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Explode Sample" iModelSelector={this.props.iModelSelector} controls={this.getControls()} />
+        <ControlPane instructions="Use the 'Explode' button to watch the object separate. Change objects using the drop down menu." iModelSelector={this.props.iModelSelector} controls={this.getControls()} />
         { /* Viewport to display the iModel */}
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
