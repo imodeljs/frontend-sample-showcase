@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
-import { Select, Toggle } from "@bentley/ui-core";
+import { Select } from "@bentley/ui-core";
 import { effects, EffectsConfig, effectsConfig } from "./Effects";
 
 interface UIState {
@@ -92,10 +92,9 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
 
     if (this.state.viewport) {
       const effectName = this.props.effectNames[this.state.activeEffectIndex];
-      if ("None" === effectName)
-        this.state.viewport.removeScreenSpaceEffects();
-      else
-        this.state.viewport.screenSpaceEffects = [effectName];
+      this.state.viewport.removeScreenSpaceEffects();
+      if ("None" !== effectName)
+        this.state.viewport.addScreenSpaceEffect(effectName);
     }
   }
 
