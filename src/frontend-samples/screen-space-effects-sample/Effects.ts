@@ -6,8 +6,41 @@ import {
   ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams, UniformType, VaryingType,
 } from "@bentley/imodeljs-frontend";
 
-// The amount of saturation to be applied by the Saturation effect. Edit this value to adjust the effect.
-const saturationMultiplier = 2.0;
+export interface SaturationConfig {
+  /** The amount of saturation to be applied by the Saturation effect. A value of 1.0 produces no change. A value less than 1.0 desaturates the image. */
+  multiplier: number;
+}
+
+export interface VignetteConfig {
+  /** Size of the vignette in the form (width/2, height/2). e.g., to make the vignette start fading in halfway between the center and edges of
+   * UV space, use (0.25, 0.25).
+   */
+  readonly size: Float32Array;
+
+  /** How round the vignette will be, from 0.0 (perfectly rectangular) to 1.0 (perfectly round). */
+  roundness: number;
+
+  /** How quickly the vignette fades in. The vignette starts fading in at the edge of the values provided by `size` and will be
+   * fully faded in at (size.x + smoothness, size.y * smoothness). A value of 0.0 produces a hard edge.
+   */
+  smoothness: number;
+}
+
+export interface EffectsConfig {
+  readonly saturation: SaturationConfig;
+  readonly vignette: VignetteConfig;
+}
+
+export const effectsConfig: EffectsConfig = {
+  saturation: {
+    multiplier: 2.0,
+  },
+  vignette: {
+    size: new Float32Array([0.25, 0.25]),
+    roundness: 1.0,
+    smoothness: 0.5,
+  },
+};
 
 export interface Effect extends ScreenSpaceEffectBuilderParams {
   // A function invoked once, when the screen-space effect is being initialized, to define any uniform or varying variables used by the shaders.
@@ -15,6 +48,13 @@ export interface Effect extends ScreenSpaceEffectBuilderParams {
 }
 
 export const effects: Effect[] = [{
+  name: "None",
+  source: {
+    vertex: "",
+    fragment: "",
+  },
+  defineEffect: () => { },
+}, {
   name: "Saturation",
   // Request that the `textureCoordFromPosition` function be included in the vertex shader.
   textureCoordFromPosition: true,
@@ -61,7 +101,63 @@ export const effects: Effect[] = [{
     builder.addUniform({
       name: "u_saturationMult",
       type: UniformType.Float,
-      bind: (uniform) => uniform.setUniform1f(saturationMultiplier),
+      bind: (uniform) => uniform.setUniform1f(effectsConfig.saturation.multiplier),
+    });
+  },
+}, {
+  name: "Vignette",
+  textureCoordFromPosition: true,
+  source: {
+    // Vertex shader simply computes texture coordinate for source pixel.
+    vertex: `
+      void effectMain(vec4 pos) {
+        v_texCoord = textureCoordFromPosition(pos);
+      }
+    `,
+    // Fragment shader darkens image at edges.
+    fragment: `
+      float sdSquare(vec2 point, float width) {
+        vec2 d = abs(point) - width;
+        return min(max(d.x,d.y),0.0) + length(max(d,0.0));
+      }
+
+      float vignette(vec2 uv, vec2 size, float roundness, float smoothness) {
+        // Center UVs
+        uv -= 0.5;
+
+        // Shift UVs based on the larger of width or height
+        float minWidth = min(size.x, size.y);
+        uv.x = sign(uv.x) * clamp(abs(uv.x) - abs(minWidth - size.x), 0.0, 1.0);
+        uv.y = sign(uv.y) * clamp(abs(uv.y) - abs(minWidth - size.y), 0.0, 1.0);
+
+        // Signed distance calculation
+        float boxSize = minWidth * (1.0 - roundness);
+        float dist = sdSquare(uv, boxSize) - (minWidth * roundness);
+
+        return 1.0 - smoothstep(0.0, smoothness, dist);
+      }
+
+      vec4 effectMain() {
+        return TEXTURE(u_diffuse, v_texCoord) * vignette(v_texCoord, u_size, u_roundness, u_smoothness);
+      }
+    `,
+  },
+  defineEffect: (builder: ScreenSpaceEffectBuilder) => {
+    builder.addVarying("v_texCoord", VaryingType.Vec2);
+    builder.addUniform({
+      name: "u_size",
+      type: UniformType.Vec2,
+      bind: (uniform) => uniform.setUniform2fv(effectsConfig.vignette.size),
+    });
+    builder.addUniform({
+      name: "u_roundness",
+      type: UniformType.Float,
+      bind: (uniform) => uniform.setUniform1f(effectsConfig.vignette.roundness),
+    });
+    builder.addUniform({
+      name: "u_smoothness",
+      type: UniformType.Float,
+      bind: (uniform) => uniform.setUniform1f(effectsConfig.vignette.smoothness),
     });
   },
 }];

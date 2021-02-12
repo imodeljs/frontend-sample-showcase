@@ -27,6 +27,9 @@ export default class ScreenSpaceEffectsApp implements SampleApp {
 
   private static registerEffects(): void {
     for (const effect of effects) {
+      if ("None" === effect.name)
+        continue;
+
       // Create the builder.
       const builder = IModelApp.renderSystem.createScreenSpaceEffectBuilder(effect);
       assert(undefined !== builder, "The default render system supports screen-space effects");

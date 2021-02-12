@@ -37,8 +37,13 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     if (this.state.viewport === prevState.viewport && this.state.activeEffectIndex === prevState.activeEffectIndex)
       return;
 
-    if (this.state.viewport)
-      this.state.viewport.screenSpaceEffects = [this.props.effectNames[this.state.activeEffectIndex]];
+    if (this.state.viewport) {
+      const effectName = this.props.effectNames[this.state.activeEffectIndex];
+      if ("None" === effectName)
+        this.state.viewport.removeScreenSpaceEffects();
+      else
+        this.state.viewport.screenSpaceEffects = [effectName];
+    }
   }
 
   private getControls(): React.ReactNode {
