@@ -12,16 +12,14 @@ export interface SaturationConfig {
 }
 
 export interface VignetteConfig {
-  /** Size of the vignette in the form (width/2, height/2). e.g., to make the vignette start fading in halfway between the center and edges of
-   * UV space, use (0.25, 0.25).
-   */
-  readonly size: Float32Array;
+  /** Size of the vignette. e.g., to make the vignette start fading in halfway between the center and edges of UV space, use 0.5.  */
+  size: number;
 
   /** How round the vignette will be, from 0.0 (perfectly rectangular) to 1.0 (perfectly round). */
   roundness: number;
 
   /** How quickly the vignette fades in. The vignette starts fading in at the edge of the values provided by `size` and will be
-   * fully faded in at (size.x + smoothness, size.y * smoothness). A value of 0.0 produces a hard edge.
+   * fully faded in at size * smoothness. A value of 0.0 produces a hard edge.
    */
   smoothness: number;
 }
@@ -42,7 +40,7 @@ export const effectsConfig: EffectsConfig = {
     multiplier: 2.5,
   },
   vignette: {
-    size: new Float32Array([0.25, 0.25]),
+    size: 0.5,
     roundness: 1.0,
     smoothness: 0.5,
   },
@@ -157,7 +155,7 @@ export const effects: Effect[] = [{
     builder.addUniform({
       name: "u_size",
       type: UniformType.Vec2,
-      bind: (uniform) => uniform.setUniform2fv(effectsConfig.vignette.size),
+      bind: (uniform) => uniform.setUniform2fv([effectsConfig.vignette.size / 2, effectsConfig.vignette.size / 2]),
     });
     builder.addUniform({
       name: "u_roundness",

@@ -15,6 +15,7 @@ interface UIState {
   activeEffectIndex: number;
   viewport?: ScreenViewport;
   effectsConfig: EffectsConfig;
+  lensAngle: number;
 }
 
 interface UIProps {
@@ -27,6 +28,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   public state: UIState = {
     activeEffectIndex: 0,
     effectsConfig,
+    lensAngle: 90,
   };
 
   private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -52,14 +54,28 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   private readonly _onIModelReady = () => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
       // The lens distortion effect requires the camera to be enabled.
-      if (!viewport.isCameraOn)
-        viewport.turnCameraOn(Angle.createDegrees(90));
+      let lensAngle = this.state.lensAngle;
+      if (!viewport.view.isCameraEnabled())
+        viewport.turnCameraOn(Angle.createDegrees(lensAngle));
+      else
+        lensAngle = viewport.view.camera.getLensAngle().degrees;
 
       this.setState({
         viewport,
         activeEffectIndex: 0,
+        lensAngle,
       });
     });
+  }
+
+  private readonly _onChangeLensAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const lensAngle = Number(event.target.value);
+    this.setState({ lensAngle });
+
+    if (this.state.viewport) {
+      this.state.viewport.turnCameraOn(Angle.createDegrees(lensAngle));
+      this.state.viewport.requestRedraw();
+    }
   }
 
   public componentDidUpdate(_prevProp: UIProps, prevState: UIState) {
@@ -86,10 +102,18 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
       case "Vignette":
         return (
           <>
-            {this.createSlider("Width", this.state.effectsConfig.vignette.size[0], 0, 1, 0.05, (val) => effectsConfig.vignette.size[0] = val)}
-            {this.createSlider("Height", this.state.effectsConfig.vignette.size[1], 0, 1, 0.05, (val) => effectsConfig.vignette.size[1] = val)}
+            {this.createSlider("Size", this.state.effectsConfig.vignette.size, 0, 1, 0.05, (val) => effectsConfig.vignette.size = val)}
             {this.createSlider("Smoothness", this.state.effectsConfig.vignette.smoothness, 0, 1, 0.05, (val) => effectsConfig.vignette.smoothness = val)}
             {this.createSlider("Roundness", this.state.effectsConfig.vignette.roundness, 0, 1, 0.05, (val) => effectsConfig.vignette.roundness = val)}
+          </>
+        );
+      case "Lens Distortion":
+        return(
+          <>
+            {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.strength = val)}
+            {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.cylindricalRatio = val)}
+            <span>Lens Angle</span>
+            <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onChange={this._onChangeLensAngle}></input>
           </>
         );
       default:
