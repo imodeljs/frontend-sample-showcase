@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
-import { Select } from "@bentley/ui-core";
+import { Select, Slider } from "@bentley/ui-core";
 import { effects, EffectsConfig, effectsConfig } from "./Effects";
 
 interface UIState {
@@ -39,8 +39,8 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
 
   // Create a slider to adjust one of the properties of `EffectsConfig`.
   private createSlider(label: string, value: number, min: number, max: number, step: number, update: (newValue: number) => void) {
-    const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-      update(Number(event.target.value));
+    const updateValue = (values: readonly number[]) => {
+      update(Number(values[0]));
       this.setState({ effectsConfig });
 
       // Ask the viewport to redraw its contents so that the changes to the effect are immediately visible.
@@ -51,7 +51,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     return (
       <>
         <span>{label}</span>
-        <input type="range" min={min} max={max} step={step} value={value} onInput={updateValue}></input>
+        <Slider min={min} max={max} step={step} values={[value]} onUpdate={updateValue}></Slider>
       </>
     );
   }
@@ -116,7 +116,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
           </>
         );
       case "Lens Distortion":
-        return(
+        return (
           <>
             {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.strength = val)}
             {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.cylindricalRatio = val)}
