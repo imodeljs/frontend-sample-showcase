@@ -10,7 +10,7 @@ export function getSerializeViewSpec(): SampleSpec {
   return {
     name: "serialize-view-sample",
     label: "Serialize View",
-    image: "display-styles-thumbnail.png",
+    image: "serialize-view-thumbnail.png",
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
