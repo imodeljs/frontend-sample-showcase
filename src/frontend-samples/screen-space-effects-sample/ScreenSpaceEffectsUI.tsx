@@ -33,26 +33,21 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     this.setState({ activeEffectIndex: Number.parseInt(event.target.value, 10) });
   }
 
-  private readonly _onChangeSaturationMultiplier = (event: React.ChangeEvent<HTMLInputElement>) => {
-    effectsConfig.saturation.multiplier = Number(event.target.value);
-    this.updateEffectsConfig();
-  }
+  private createSlider(label: string, value: number, min: number, max: number, step: number, update: (newValue: number) => void) {
+    const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+      update(Number(event.target.value));
+      this.setState({ effectsConfig });
+      if (this.state.viewport)
+        this.state.viewport.requestRedraw();
+    };
 
-  private readonly _onChangeVignetteWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
-    effectsConfig.vignette.size[0] = Number(event.target.value);
-    this.updateEffectsConfig();
+    return (
+      <>
+        <span>{label}</span>
+        <input type="range" min={min} max={max} step={step} value={value} onChange={updateValue}></input>
+      </>
+    );
   }
-
-  private readonly _onChangeVignetteHeight = (event: React.ChangeEvent<HTMLInputElement>) => {
-    effectsConfig.vignette.size[1] = Number(event.target.value);
-    this.updateEffectsConfig();
-  }
-
-  private updateEffectsConfig(): void {
-    this.setState({ effectsConfig });
-    if (this.state.viewport)
-      this.state.viewport.requestRedraw();
-  };
 
   private readonly _onIModelReady = () => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
@@ -85,17 +80,16 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
       case "Saturation":
         return (
           <>
-            <span>Multiplier</span>
-            <input type="range" min="0" max="5" step="0.2" value={this.state.effectsConfig.saturation.multiplier} onChange={this._onChangeSaturationMultiplier}></input>
+            {this.createSlider("Multiplier", this.state.effectsConfig.saturation.multiplier, 0, 5, 0.2, (val) => effectsConfig.saturation.multiplier = val)}
           </>
         );
       case "Vignette":
         return (
           <>
-            <span>Width</span>
-            <input type="range" min="0" max="1" step="0.05" value={this.state.effectsConfig.vignette.size[0]} onChange={this._onChangeVignetteWidth}></input>
-            <span>Height</span>
-            <input type="range" min="0" max="1" step="0.05" value={this.state.effectsConfig.vignette.size[1]} onChange={this._onChangeVignetteHeight}></input>
+            {this.createSlider("Width", this.state.effectsConfig.vignette.size[0], 0, 1, 0.05, (val) => effectsConfig.vignette.size[0] = val)}
+            {this.createSlider("Height", this.state.effectsConfig.vignette.size[1], 0, 1, 0.05, (val) => effectsConfig.vignette.size[1] = val)}
+            {this.createSlider("Smoothness", this.state.effectsConfig.vignette.smoothness, 0, 1, 0.05, (val) => effectsConfig.vignette.smoothness = val)}
+            {this.createSlider("Roundness", this.state.effectsConfig.vignette.roundness, 0, 1, 0.05, (val) => effectsConfig.vignette.roundness = val)}
           </>
         );
       default:
