@@ -35,14 +35,10 @@ export default class SerializeViewApp implements SampleApp {
   }
 
   public static async loadViewState(viewport: Viewport, props: ViewStateProps) {
-    try {
-      const view = await this.deserializeViewState(viewport, props);
-      if (undefined !== view) {
-        /** Load the saved view */
-        viewport.changeView(view, { animateFrustumChange: true });
-      }
-    } catch {
-      throw ("Error changing view: invalid view state.")
+    const view = await this.deserializeViewState(viewport, props);
+    if (undefined !== view) {
+      /** Load the saved view */
+      viewport.changeView(view, { animateFrustumChange: true });
     }
   }
 }

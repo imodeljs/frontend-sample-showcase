@@ -41,7 +41,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
     jsonMenuValue: "",
     iModelViewIndex: 0,
     jsonError: "",
-    loadStateError: ""
+    loadStateError: "",
   }
 
   /** Dictionary of imodelId's to array of viewstates */
@@ -67,15 +67,15 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
     if (undefined !== this.state.viewport) {
       const view = this.state.iModelViews[this.state.iModelViewIndex].view;
 
-      //** Load the view state. Display error message if there is one */
+      //* * Load the view state. Display error message if there is one */
       SerializeViewApp.loadViewState(this.state.viewport, view)
         .then(() => {
           if (this.state.loadStateError) {
             this.setState({ loadStateError: "" });
           }
         })
-        .catch((error) => {
-          this.setState({ loadStateError: error.toString() });
+        .catch(() => {
+          this.setState({ loadStateError: "Error changing view: invalid view state." });
         });
     }
   }
@@ -126,7 +126,6 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
 
   /** Method called on every user interaction in the json viewer text box */
   private _handleJsonTextChange = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const error = "";
     try {
       JSON.parse(event.target.value)
       this.setState({ jsonMenuValue: event.target.value, jsonError: "" });
