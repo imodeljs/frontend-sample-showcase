@@ -183,7 +183,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
           </div>
         </div>
         <div className="item">
-          <Textarea onChange={this._handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem" }} value={this.state.jsonMenuValue} />
+          <Textarea spellCheck={"false"} onChange={this._handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem" }} value={this.state.jsonMenuValue} />
         </div>
         {this.showError(this.state.jsonError)}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
