@@ -38,7 +38,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
       return;
 
     if (this.state.viewport)
-      this.state.viewport.screenSpaceEffects = [ this.props.effectNames[this.state.activePresetIndex] ];
+      this.state.viewport.screenSpaceEffects = [this.props.effectNames[this.state.activeEffectIndex]];
   }
 
   private getControls(): React.ReactNode {
@@ -55,7 +55,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     const instructions = "Use the drop-down below to select which effect is applied to the viewport.";
     return (
       <>
-        <ControlPane instructions={instruction} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
+        <ControlPane instructions={instructions} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
         <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import {
-  ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams,
+  ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams, UniformType, VaryingType,
 } from "@bentley/imodeljs-frontend";
 
 // The amount of saturation to be applied by the Saturation effect. Edit this value to adjust the effect.
