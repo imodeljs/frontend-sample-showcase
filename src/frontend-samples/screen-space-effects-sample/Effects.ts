@@ -39,7 +39,7 @@ export interface EffectsConfig {
 
 export const effectsConfig: EffectsConfig = {
   saturation: {
-    multiplier: 2.0,
+    multiplier: 2.5,
   },
   vignette: {
     size: new Float32Array([0.25, 0.25]),
