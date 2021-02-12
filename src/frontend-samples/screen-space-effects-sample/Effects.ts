@@ -6,35 +6,42 @@ import {
   ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams, UniformType, VaryingType,
 } from "@bentley/imodeljs-frontend";
 
+/** Settings that control how the saturation effect is applied. */
 export interface SaturationConfig {
   /** The amount of saturation to be applied by the Saturation effect. A value of 1.0 produces no change. A value less than 1.0 desaturates the image. */
   multiplier: number;
 }
 
+/** Settings that control how the vignette effect is applied. */
 export interface VignetteConfig {
-  /** Size of the vignette. e.g., to make the vignette start fading in halfway between the center and edges of UV space, use 0.5.  */
+  /** Size of the vignette in [0, 1]. e.g., to make the vignette start fading in halfway between the center and edges of UV space, use 0.5.  */
   size: number;
 
   /** How round the vignette will be, from 0.0 (perfectly rectangular) to 1.0 (perfectly round). */
   roundness: number;
 
-  /** How quickly the vignette fades in. The vignette starts fading in at the edge of the values provided by `size` and will be
+  /** How quickly the vignette fades in, in [0, 1]. The vignette starts fading in at the edge of the values provided by `size` and will be
    * fully faded in at size * smoothness. A value of 0.0 produces a hard edge.
    */
   smoothness: number;
 }
 
+/** Settings that control how the lens distortion effect is applied. */
 export interface LensDistortionConfig {
+  /** The magnitude of the distortion from 0 (fully perspective) to 1 (fully stereographic). */
   strength: number;
+  /** The cylindricality of the distortion in [0, 1] where 1 is spherical. */
   cylindricalRatio: number;
 }
 
+/** Settings that control how the effects are applied. */
 export interface EffectsConfig {
   readonly saturation: SaturationConfig;
   readonly vignette: VignetteConfig;
   readonly lensDistortion: LensDistortionConfig;
 }
 
+/** Stores the current settings. These  are updated by sliders in the UI. */
 export const effectsConfig: EffectsConfig = {
   saturation: {
     multiplier: 2.5,
@@ -50,11 +57,13 @@ export const effectsConfig: EffectsConfig = {
   },
 };
 
+/** Describes a screen-space effect. */
 export interface Effect extends ScreenSpaceEffectBuilderParams {
-  // A function invoked once, when the screen-space effect is being initialized, to define any uniform or varying variables used by the shaders.
+  /** A function invoked once, when the screen-space effect is being initialized, to define any uniform or varying variables used by the shaders. */
   defineEffect: (builder: ScreenSpaceEffectBuilder) => void;
 }
 
+/** The list of available effects. */
 export const effects: Effect[] = [{
   name: "None",
   source: {
@@ -63,11 +72,11 @@ export const effects: Effect[] = [{
   },
   defineEffect: () => { },
 }, {
+  // Each pixel is converted from RGB to HSV (hue-saturation-value). A multiplier is applied to the saturation, then the color is converted back to RGB.
   name: "Saturation",
   // Request that the `textureCoordFromPosition` function be included in the vertex shader.
   textureCoordFromPosition: true,
   // GLSL shader code implementing the effect.
-  // rgb <-> hsl conversion routines from https://gamedev.stackexchange.com/questions/59797/glsl-shader-change-hue-saturation-brightness
   source: {
     // Vertex shader simply computes texture coordinate for source pixel.
     vertex: `
@@ -75,6 +84,7 @@ export const effects: Effect[] = [{
         v_texCoord = textureCoordFromPosition(pos);
       }`,
     // Fragment shader converts color to HSV, adjusts the saturation, and converts back to RGB.
+    // rgb <-> hsl conversion routines from https://gamedev.stackexchange.com/questions/59797/glsl-shader-change-hue-saturation-brightness
     fragment: `
       vec3 rgb2hsv(vec3 c) {
         vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
@@ -113,6 +123,7 @@ export const effects: Effect[] = [{
     });
   },
 }, {
+  /** Applies [vignetting](https://en.wikipedia.org/wiki/Vignetting) to the image, fading areas on the periphery to emphasize the center of the image. */
   name: "Vignette",
   textureCoordFromPosition: true,
   source: {
@@ -169,9 +180,12 @@ export const effects: Effect[] = [{
     });
   },
 }, {
+  // Simulates the lens distortion produced by real-world cameras with very wide fields of view, bending the image at its periphery.
+  // Based on https://www.decarpentier.nl/lens-distortion
   name: "Lens Distortion",
   textureCoordFromPosition: true,
   source: {
+    // The vertex shader computes the texture coordinate for the fragment shader to sample.
     vertex: `
       void effectMain(vec4 position) {
         vec2 uv = textureCoordFromPosition(position);
@@ -188,7 +202,7 @@ export const effects: Effect[] = [{
         vUV = vec3(0.5, 0.5, 1.0) * z + vec3(-0.5, -0.5, 0.0);
         vUV.xy += uv;
       }`,
-    // We simply shift pixels - we don't alter their colors.
+    // The fragment shader simply shifts pixels - it does not alter their colors.
     fragment: `
       vec4 effectMain() {
         return sampleSourcePixel();

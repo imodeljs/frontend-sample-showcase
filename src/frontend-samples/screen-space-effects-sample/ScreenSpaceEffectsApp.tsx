@@ -30,7 +30,7 @@ export default class ScreenSpaceEffectsApp implements SampleApp {
       if ("None" === effect.name)
         continue;
 
-      // Create the builder.
+      // Create an effect builder.
       const builder = IModelApp.renderSystem.createScreenSpaceEffectBuilder(effect);
       assert(undefined !== builder, "The default render system supports screen-space effects");
 

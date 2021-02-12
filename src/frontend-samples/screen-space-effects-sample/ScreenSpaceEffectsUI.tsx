@@ -12,9 +12,11 @@ import { Select, Toggle } from "@bentley/ui-core";
 import { effects, EffectsConfig, effectsConfig } from "./Effects";
 
 interface UIState {
+  // Index of the selected effect.
   activeEffectIndex: number;
   viewport?: ScreenViewport;
   effectsConfig: EffectsConfig;
+  // Lens angle of the viewport's camera.
   lensAngle: number;
 }
 
@@ -31,14 +33,17 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     lensAngle: 90,
   };
 
-  private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  private readonly _onChangeActiveEffect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ activeEffectIndex: Number.parseInt(event.target.value, 10) });
   }
 
+  // Create a slider to adjust one of the properties of `EffectsConfig`.
   private createSlider(label: string, value: number, min: number, max: number, step: number, update: (newValue: number) => void) {
     const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
       update(Number(event.target.value));
       this.setState({ effectsConfig });
+
+      // Ask the viewport to redraw its contents so that the changes to the effect are immediately visible.
       if (this.state.viewport)
         this.state.viewport.requestRedraw();
     };
@@ -53,7 +58,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
 
   private readonly _onIModelReady = () => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
-      // The lens distortion effect requires the camera to be enabled.
+      // The lens distortion effect requires the camera to be enabled. Turn it on if it's not already.
       let lensAngle = this.state.lensAngle;
       if (!viewport.view.isCameraEnabled())
         viewport.turnCameraOn(Angle.createDegrees(lensAngle));
@@ -91,6 +96,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     }
   }
 
+  // Create sliders to adjust the settings affecting the active effect.
   private getConfigControls(): React.ReactNode {
     switch (this.props.effectNames[this.state.activeEffectIndex]) {
       case "Saturation":
@@ -129,7 +135,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Select Effect:</span>
-        <Select value={this.state.activeEffectIndex} onChange={this._onChange} style={{ width: "fit-content" }} options={options} />
+        <Select value={this.state.activeEffectIndex} onChange={this._onChangeActiveEffect} style={{ width: "fit-content" }} options={options} />
         {this.getConfigControls()}
       </div>
     );
