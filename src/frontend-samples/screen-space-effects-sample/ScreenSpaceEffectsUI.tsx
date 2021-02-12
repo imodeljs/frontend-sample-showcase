@@ -65,6 +65,9 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
       else
         lensAngle = viewport.view.camera.getLensAngle().degrees;
 
+      // The grid is distracting and not useful in read-only apps.
+      viewport.viewFlags.grid = false;
+
       this.setState({
         viewport,
         activeEffectIndex: 0,
