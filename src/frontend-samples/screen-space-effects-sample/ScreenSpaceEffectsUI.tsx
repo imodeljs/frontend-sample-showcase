@@ -38,6 +38,16 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     this.updateEffectsConfig();
   }
 
+  private readonly _onChangeVignetteWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
+    effectsConfig.vignette.size[0] = Number(event.target.value);
+    this.updateEffectsConfig();
+  }
+
+  private readonly _onChangeVignetteHeight = (event: React.ChangeEvent<HTMLInputElement>) => {
+    effectsConfig.vignette.size[1] = Number(event.target.value);
+    this.updateEffectsConfig();
+  }
+
   private updateEffectsConfig(): void {
     this.setState({ effectsConfig });
     if (this.state.viewport)
@@ -71,12 +81,29 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   }
 
   private getConfigControls(): React.ReactNode {
-    return (
-      <>
-        <span>Slider</span>
-        <input type="range" min="0" max="5" step="0.2" value={this.state.effectsConfig.saturation.multiplier} onChange={this._onChangeSaturationMultiplier}></input>
-      </>
-    );
+    switch (this.props.effectNames[this.state.activeEffectIndex]) {
+      case "Saturation":
+        return (
+          <>
+            <span>Multiplier</span>
+            <input type="range" min="0" max="5" step="0.2" value={this.state.effectsConfig.saturation.multiplier} onChange={this._onChangeSaturationMultiplier}></input>
+          </>
+        );
+      case "Vignette":
+        return (
+          <>
+            <span>Width</span>
+            <input type="range" min="0" max="1" step="0.05" value={this.state.effectsConfig.vignette.size[0]} onChange={this._onChangeVignetteWidth}></input>
+            <span>Height</span>
+            <input type="range" min="0" max="1" step="0.05" value={this.state.effectsConfig.vignette.size[1]} onChange={this._onChangeVignetteHeight}></input>
+          </>
+        );
+      default:
+        return (
+          <>
+          </>
+        );
+    }
   }
 
   private getControls(): React.ReactNode {
