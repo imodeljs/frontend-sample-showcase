@@ -19,9 +19,7 @@ export default class SerializeViewApp implements SampleApp {
     /** Create a deep copy of the view and save its properties */
     const clonedView = viewport.view.clone();
 
-    console.log(JSON.stringify(clonedView.toProps()))
-
-    /** return a serialized ViewState as a set of properties */
+    /** returns a serialized ViewState as a set of properties */
     return clonedView.toProps();
   }
 
@@ -37,10 +35,14 @@ export default class SerializeViewApp implements SampleApp {
   }
 
   public static async loadViewState(viewport: Viewport, props: ViewStateProps) {
-    const view = await this.deserializeViewState(viewport, props);
-    if (undefined !== view) {
-      /** Load the saved view */
-      viewport.changeView(view, { animateFrustumChange: true });
+    try {
+      const view = await this.deserializeViewState(viewport, props);
+      if (undefined !== view) {
+        /** Load the saved view */
+        viewport.changeView(view, { animateFrustumChange: true });
+      }
+    } catch {
+      throw ("Error changing view: invalid view state.")
     }
   }
 }

@@ -9,7 +9,7 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import SerializeViewApp from "./SerializeViewApp";
-import { Button, ButtonType, Icon, Select, SelectOption, Textarea } from "@bentley/ui-core";
+import { Button, ButtonType, Icon, Select, SelectOption, SmallText, Textarea } from "@bentley/ui-core";
 import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";
 import { ViewStateProps } from "@bentley/imodeljs-common";
 
@@ -24,6 +24,8 @@ interface SerializeViewUIState {
   iModelViewIndex: number;
   jsonMenuVisible: boolean;
   jsonMenuValue: string;
+  jsonError: string | undefined;
+  loadStateError: string | undefined;
 }
 
 const iModelIdToNameDict: { [id: string]: string } = {
@@ -33,7 +35,14 @@ const iModelIdToNameDict: { [id: string]: string } = {
 
 export default class SerializeViewUI extends React.Component<SerializeViewUIProps, SerializeViewUIState> {
 
-  public state: SerializeViewUIState = { iModelViews: [], jsonMenuVisible: false, jsonMenuValue: "", iModelViewIndex: 0 }
+  public state: SerializeViewUIState = {
+    iModelViews: [],
+    jsonMenuVisible: false,
+    jsonMenuValue: "",
+    iModelViewIndex: 0,
+    jsonError: "",
+    loadStateError: ""
+  }
 
   /** Dictionary of imodelId's to array of viewstates */
   public allSavedViews: IModelViews[] = [...sampleViewStates];
@@ -57,7 +66,17 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
   private readonly _onLoadStateClick = () => {
     if (undefined !== this.state.viewport) {
       const view = this.state.iModelViews[this.state.iModelViewIndex].view;
-      SerializeViewApp.loadViewState(this.state.viewport, view);
+
+      //** Load the view state. Display error message if there is one */
+      SerializeViewApp.loadViewState(this.state.viewport, view)
+        .then(() => {
+          if (this.state.loadStateError) {
+            this.setState({ loadStateError: "" });
+          }
+        })
+        .catch((error) => {
+          this.setState({ loadStateError: error.toString() });
+        });
     }
   }
 
@@ -105,11 +124,19 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
     }));
   }
 
+  /** Method called on every user interaction in the json viewer text box */
   private _handleJsonTextChange = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    this.setState({ jsonMenuValue: event.target.value });
+    const error = "";
+    try {
+      JSON.parse(event.target.value)
+      this.setState({ jsonMenuValue: event.target.value, jsonError: "" });
+    } catch (error) {
+      this.setState({ jsonMenuValue: event.target.value, jsonError: error.toString() });
+    }
   }
 
-  private _onSaveJsonViewerSettingsClick = async () => {
+  /** Called when user selects 'Save View' */
+  private _onSaveJsonViewClick = async () => {
     if (undefined !== this.state.viewport) {
       const views = [...this.state.iModelViews];
       const viewStateProps = JSON.parse(this.state.jsonMenuValue) as ViewStateProps;
@@ -120,12 +147,29 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
     }
   }
 
+  /** Gets the options for the dropdown menu to select views */
   private getOptions(): SelectOption[] {
     return this.state.iModelViews.map((viewStateWithName: ViewStateWithName, index: number) => {
       return { label: viewStateWithName.name, value: index }
     });
   }
 
+  /** Helper method for showing an error */
+  private showError(stateProp: string | undefined) {
+    if (!stateProp) {
+      return (<div></div>);
+    }
+
+    return (
+      <div style={{ overflowWrap: "break-word" }}>
+        <SmallText style={{ color: "var(--foreground-alert)" }}>
+          ${stateProp}
+        </SmallText>
+      </div>
+    );
+  }
+
+  /** This Json window that pops up when the user presses 'show json' */
   private getJsonViewer(): React.ReactNode {
     return (
       <div className="sample-control-ui">
@@ -142,13 +186,15 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         <div className="item">
           <Textarea onChange={this._handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem" }} value={this.state.jsonMenuValue} />
         </div>
+        {this.showError(this.state.jsonError)}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Button onClick={this._onSaveJsonViewerSettingsClick}>Save settings</Button>
+          <Button onClick={this._onSaveJsonViewClick}>Save View</Button>
         </div>
       </div>
     )
   }
 
+  /** The controls for the sample in the bottom right hand corner */
   private getControls(): React.ReactNode {
     return (
       <>
@@ -160,6 +206,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
           <Button onClick={this._onSaveStateClick}>Save State</Button>
           <Button onClick={this._onLoadStateClick}>Load State</Button>
         </div>
+        {this.showError(this.state.loadStateError)}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button onClick={this._onShowJsonViewerClick} disabled={0 === this.state.iModelViews.length}>Show Json</Button>
         </div>
