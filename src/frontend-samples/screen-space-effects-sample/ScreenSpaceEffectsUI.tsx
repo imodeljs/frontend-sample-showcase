@@ -51,7 +51,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     return (
       <>
         <span>{label}</span>
-        <input type="range" min={min} max={max} step={step} value={value} onChange={updateValue}></input>
+        <input type="range" min={min} max={max} step={step} value={value} onInput={updateValue}></input>
       </>
     );
   }
@@ -122,7 +122,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
             {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.strength = val)}
             {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.cylindricalRatio = val)}
             <span>Lens Angle</span>
-            <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onChange={this._onChangeLensAngle}></input>
+            <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onInput={this._onChangeLensAngle}></input>
           </>
         );
       default:
