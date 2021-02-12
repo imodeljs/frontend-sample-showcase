@@ -140,7 +140,7 @@ interface TreeData {
   range: Range3d;
   elementContentLoaded: string[];
 }
-export type TreeDataListener = (name: string, range: Range3d | undefined, elementContentLoaded: Set<string>) => void;
+export type TreeDataListener = (name: string, didRangeUpdate: boolean, didElementIdsUpdate: boolean) => void;
 
 /** References the unique TileTree for the currently exploded object. */
 export class ExplodeTreeReference extends TileTreeReference {
@@ -153,13 +153,13 @@ export class ExplodeTreeReference extends TileTreeReference {
   public static setTreeRange(treeName: string, range: Range3d) {
     const oldData = this.getOrCreateTreeDataMap(treeName);
     range.clone(oldData.range);
-    this.onTreeDataUpdated.raiseEvent(treeName, this.getTreeRange(treeName), this.getTreeReadyIds(treeName));
+    this.onTreeDataUpdated.raiseEvent(treeName, true, false);
   }
   /** Adds an element id to the list of loaded element graphics related to the tile tree that handles that object. */
   public static setTreeLoadedId(treeName: string, id: string) {
     const oldData = this.getOrCreateTreeDataMap(treeName);
     oldData.elementContentLoaded.push(id);
-    this.onTreeDataUpdated.raiseEvent(treeName, this.getTreeRange(treeName), this.getTreeReadyIds(treeName));
+    this.onTreeDataUpdated.raiseEvent(treeName, false, true);
   }
   /** Returns the data related to the tile tree for that object. */
   private static getOrCreateTreeDataMap(name: string): TreeData {

@@ -67,11 +67,12 @@ export default class ExplodeApp implements SampleApp {
       cancelOnAbort: false,
     };
 
-    const volume = ExplodeTreeReference.getTreeRange(objectName);
+    let volume = ExplodeTreeReference.getTreeRange(objectName);
     if (undefined === volume) {
-      const awaitRangeLoaded: TreeDataListener = (name, range) => {
-        if (objectName === name && undefined !== range) {
-          vp.zoomToVolume(range, options);
+      const awaitRangeLoaded: TreeDataListener = (name, rangeDidUpdate) => {
+        if (objectName === name && rangeDidUpdate) {
+          volume = ExplodeTreeReference.getTreeRange(objectName)!;
+          vp.zoomToVolume(volume, options);
           ExplodeTreeReference.onTreeDataUpdated.removeListener(awaitRangeLoaded);
         }
       };
@@ -146,9 +147,9 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
 
   // These methods support the functionality of the provider.
   public constructor(public vp: Viewport) {
-    const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name) => {
+    const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name, _, elementIdsDidUpdate) => {
       const currentTree = this.explodeTileTreeRef.id;
-      if (currentTree.name === name)
+      if (currentTree.name === name && elementIdsDidUpdate)
         this.invalidate();
     });
     ExplodeApp.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
