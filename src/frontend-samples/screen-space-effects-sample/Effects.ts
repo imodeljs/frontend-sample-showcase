@@ -231,7 +231,7 @@ export const effects: Effect[] = [{
         let height = 0;
         if (context.viewport.view.isCameraEnabled()) {
           const fov = context.viewport.view.camera.lens.radians;
-          const height = Math.tan(fov / 2) / context.viewport.viewRect.aspect;
+          height = Math.tan(fov / 2) / context.viewport.viewRect.aspect;
         }
 
         uniform.setUniform1f(height);
