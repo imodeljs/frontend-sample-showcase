@@ -7,6 +7,7 @@
     "@bentley/context-registry-client": "2.11.1",
     "@bentley/frontend-authorization-client": "2.11.1",
     "@bentley/geometry-core": "2.11.1",
+    "@bentley/hypermodeling-frontend": "2.11.1",
     "@bentley/icons-generic-webfont": "^1.0.15",
     "@bentley/imodelhub-client": "2.11.1",
     "@bentley/imodeljs-common": "2.11.1",
