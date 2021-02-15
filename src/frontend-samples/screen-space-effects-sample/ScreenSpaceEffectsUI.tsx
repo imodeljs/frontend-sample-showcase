@@ -9,7 +9,7 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
 import { Slider, Toggle } from "@bentley/ui-core";
-import { EffectsConfig, equalEffectsConfigs, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
+import { cloneEffectsConfig, EffectsConfig, equalEffectsConfigs, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
 
 interface UIState {
   enableSaturation: boolean;
@@ -39,9 +39,8 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   private createSlider(label: string, value: number, min: number, max: number, step: number, enableIf: "enableSaturation" | "enableLensDistortion" | "enableVignette",
     update: (newConfig: EffectsConfig, newValue: number) => void) {
     const updateValue = (values: readonly number[]) => {
-      const effectsConfig = { ...this.state.effectsConfig };
       this.setState((prev) => {
-        const effectsConfig = { ...prev.effectsConfig };
+        const effectsConfig = cloneEffectsConfig(prev.effectsConfig);
         update(effectsConfig, values[0]);
         return { effectsConfig };
       });
@@ -126,7 +125,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Saturation</span>
         <Toggle isOn={this.state.enableSaturation} onChange={(enableSaturation) => this.setState({ enableSaturation })} />
-        {this.createSlider("Multiplier", this.state.effectsConfig.saturation.multiplier, 0, 5, 0.2, "enableSaturation", (config, val) => config.saturation.multiplier = val)}
+        {this.createSlider("Multiplier", this.state.effectsConfig.saturation.multiplier, 0, 4, 0.2, "enableSaturation", (config, val) => config.saturation.multiplier = val)}
         <span>Vignette</span>
         <Toggle isOn={this.state.enableVignette} onChange={(enableVignette) => this.setState({ enableVignette })} />
         {this.createSlider("Size", this.state.effectsConfig.vignette.size, 0, 1, 0.05, "enableVignette", (config, val) => config.vignette.size = val)}

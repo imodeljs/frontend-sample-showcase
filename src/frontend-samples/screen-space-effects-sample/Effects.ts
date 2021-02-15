@@ -57,14 +57,23 @@ let effectsConfig: EffectsConfig = {
   },
 };
 
+/** Create a deep copy of an EffectsConfig. */
+export function cloneEffectsConfig(config: EffectsConfig): EffectsConfig {
+  return {
+    saturation: { ...config.saturation },
+    vignette: { ...config.vignette },
+    lensDistortion: { ...config.lensDistortion },
+  };
+}
+
 /** Obtain a copy of the current EffectsConfig. */
 export function getCurrentEffectsConfig(): EffectsConfig {
-  return { ...effectsConfig };
+  return cloneEffectsConfig(effectsConfig);
 }
 
 /** Update the current EffectsConfig. */
 export function updateEffectsConfig(newConfig: EffectsConfig): void {
-  effectsConfig = { ...newConfig };
+  effectsConfig = cloneEffectsConfig(newConfig);
 }
 
 /** Return true if both EffectsConfigs have the same values for all settings. */
