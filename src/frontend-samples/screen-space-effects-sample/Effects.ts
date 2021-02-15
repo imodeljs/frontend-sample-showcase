@@ -42,7 +42,7 @@ export interface EffectsConfig {
 }
 
 /** Stores the current settings. These  are updated by sliders in the UI. */
-export const effectsConfig: EffectsConfig = {
+let effectsConfig: EffectsConfig = {
   saturation: {
     multiplier: 2.5,
   },
@@ -56,6 +56,23 @@ export const effectsConfig: EffectsConfig = {
     cylindricalRatio: 0.5,
   },
 };
+
+/** Obtain a copy of the current EffectsConfig. */
+export function getCurrentEffectsConfig(): EffectsConfig {
+  return { ...effectsConfig };
+}
+
+/** Update the current EffectsConfig. */
+export function updateEffectsConfig(newConfig: EffectsConfig): void {
+  effectsConfig = { ...newConfig };
+}
+
+/** Return true if both EffectsConfigs have the same values for all settings. */
+export function equalEffectsConfigs(a: EffectsConfig, b: EffectsConfig): boolean {
+  return a.saturation.multiplier === b.saturation.multiplier &&
+    a.vignette.size === b.vignette.size && a.vignette.roundness === b.vignette.roundness && a.vignette.smoothness === b.vignette.smoothness &&
+    a.lensDistortion.strength === b.lensDistortion.strength && a.lensDistortion.cylindricalRatio === b.lensDistortion.cylindricalRatio;
+}
 
 /** Describes a screen-space effect. */
 export interface Effect extends ScreenSpaceEffectBuilderParams {
