@@ -94,6 +94,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
       viewport.turnCameraOn(Angle.createDegrees(this.state.lensAngle));
     }
 
+    // Was an effect toggled on or off?
     if (this.state.enableSaturation !== prevState.enableSaturation || this.state.enableVignette !== prevState.enableVignette || this.state.enableLensDistortion !== prevState.enableLensDistortion) {
       changed = true;
 
@@ -110,7 +111,14 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
         viewport.addScreenSpaceEffect("Vignette");
     }
 
-    // ###TODO check if effectsConfig changed. Sync with the const effectsConfig.
+    // Were the settings controlling the effects changed?
+    const config = this.state.effectsConfig;
+    changed = changed || (this.state.enableSaturation && config.saturation.multiplier !== config.saturation.multiplier);
+    changed = changed || (this.state.enableLensDistortion &&
+      (config.lensDistortion.strength !== prevState.effectsConfig.lensDistortion.strength || config.lensDistortion.cylindricalRatio !== prevState.effectsConfig.lensDistortion.cylindricalRatio));
+    changed = changed || (this.state.enableVignette && (config.vignette.size !== prevState.effectsConfig.vignette.size ||
+      config.vignette.roundness !== prevState.effectsConfig.vignette.roundness || config.vignette.smoothness !== prevState.effectsConfig.vignette.smoothness));
+
     if (changed) {
       viewport.requestRedraw();
 
@@ -119,51 +127,23 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     }
   }
 
-  /*
-  // Create sliders to adjust the settings affecting the active effect.
-  private getConfigControls(): React.ReactNode {
-    switch (this.props.effectNames[this.state.activeEffectIndex]) {
-      case "Saturation":
-        return (
-          <>
-            {this.createSlider("Multiplier", this.state.effectsConfig.saturation.multiplier, 0, 5, 0.2, (val) => effectsConfig.saturation.multiplier = val)}
-          </>
-        );
-      case "Vignette":
-        return (
-          <>
-            {this.createSlider("Size", this.state.effectsConfig.vignette.size, 0, 1, 0.05, (val) => effectsConfig.vignette.size = val)}
-            {this.createSlider("Smoothness", this.state.effectsConfig.vignette.smoothness, 0, 1, 0.05, (val) => effectsConfig.vignette.smoothness = val)}
-            {this.createSlider("Roundness", this.state.effectsConfig.vignette.roundness, 0, 1, 0.05, (val) => effectsConfig.vignette.roundness = val)}
-          </>
-        );
-      case "Lens Distortion":
-        return (
-          <>
-            {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.strength = val)}
-            {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.cylindricalRatio = val)}
-            <span>Lens Angle</span>
-            <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onInput={this._onChangeLensAngle}></input>
-          </>
-        );
-      default:
-        return (
-          <>
-          </>
-        );
-    }
-  }
-  */
-
   private getControls(): React.ReactNode {
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Saturation</span>
         <Toggle isOn={this.state.enableSaturation} onChange={(enableSaturation) => this.setState({ enableSaturation })} />
+        {this.createSlider("Multiplier", this.state.effectsConfig.saturation.multiplier, 0, 5, 0.2, (val) => effectsConfig.saturation.multiplier = val)}
         <span>Vignette</span>
         <Toggle isOn={this.state.enableVignette} onChange={(enableVignette) => this.setState({ enableVignette })} />
+        {this.createSlider("Size", this.state.effectsConfig.vignette.size, 0, 1, 0.05, (val) => effectsConfig.vignette.size = val)}
+        {this.createSlider("Smoothness", this.state.effectsConfig.vignette.smoothness, 0, 1, 0.05, (val) => effectsConfig.vignette.smoothness = val)}
+        {this.createSlider("Roundness", this.state.effectsConfig.vignette.roundness, 0, 1, 0.05, (val) => effectsConfig.vignette.roundness = val)}
         <span>Lens Distortion</span>
         <Toggle isOn={this.state.enableLensDistortion} onChange={(enableLensDistortion) => this.setState({ enableLensDistortion })} />
+        <span>Lens Angle</span>
+        <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onInput={this._onChangeLensAngle}></input>
+        {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.strength = val)}
+        {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, (val) => effectsConfig.lensDistortion.cylindricalRatio = val)}
       </div>
     );
   }
