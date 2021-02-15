@@ -21,8 +21,7 @@ export default class ScreenSpaceEffectsApp implements SampleApp {
       this._effectsRegistered = true;
     }
 
-    const effectNames = effects.map((x) => x.name);
-    return <ScreenSpaceEffectsUI effectNames={effectNames} iModelName={iModelName} iModelSelector={iModelSelector} />;
+    return <ScreenSpaceEffectsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 
   private static registerEffects(): void {

@@ -8,12 +8,13 @@ import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import * as React from "react";
-import { Select, Slider } from "@bentley/ui-core";
-import { effects, EffectsConfig, effectsConfig } from "./Effects";
+import { Slider, Toggle } from "@bentley/ui-core";
+import { EffectsConfig, effectsConfig } from "./Effects";
 
 interface UIState {
-  // Index of the selected effect.
-  activeEffectIndex: number;
+  enableSaturation: boolean;
+  enableVignette: boolean;
+  enableLensDistortion: boolean;
   viewport?: ScreenViewport;
   effectsConfig: EffectsConfig;
   // Lens angle of the viewport's camera.
@@ -23,19 +24,16 @@ interface UIState {
 interface UIProps {
   iModelName: string;
   iModelSelector: React.ReactNode;
-  effectNames: string[];
 }
 
 export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UIState> {
   public state: UIState = {
-    activeEffectIndex: 0,
+    enableSaturation: false,
+    enableVignette: false,
+    enableLensDistortion: false,
     effectsConfig,
     lensAngle: 90,
   };
-
-  private readonly _onChangeActiveEffect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setState({ activeEffectIndex: Number.parseInt(event.target.value, 10) });
-  }
 
   // Create a slider to adjust one of the properties of `EffectsConfig`.
   private createSlider(label: string, value: number, min: number, max: number, step: number, update: (newValue: number) => void) {
@@ -70,7 +68,6 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
 
       this.setState({
         viewport,
-        activeEffectIndex: 0,
         lensAngle,
       });
     });
@@ -87,17 +84,42 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   }
 
   public componentDidUpdate(_prevProp: UIProps, prevState: UIState) {
-    if (this.state.viewport === prevState.viewport && this.state.activeEffectIndex === prevState.activeEffectIndex)
+    const viewport = this.state.viewport;
+    if (!viewport)
       return;
 
-    if (this.state.viewport) {
-      const effectName = this.props.effectNames[this.state.activeEffectIndex];
-      this.state.viewport.removeScreenSpaceEffects();
-      if ("None" !== effectName)
-        this.state.viewport.addScreenSpaceEffect(effectName);
+    let changed = false;
+    if (this.state.lensAngle !== prevState.lensAngle) {
+      changed = true;
+      viewport.turnCameraOn(Angle.createDegrees(this.state.lensAngle));
+    }
+
+    if (this.state.enableSaturation !== prevState.enableSaturation || this.state.enableVignette !== prevState.enableVignette || this.state.enableLensDistortion !== prevState.enableLensDistortion) {
+      changed = true;
+
+      // Screen-space effects are applied in the order in which they are added to the viewport.
+      // Lens distortion shifts pixels, so we want to apply that first, then saturate, and finally vignette.
+      viewport.removeScreenSpaceEffects();
+      if (this.state.enableLensDistortion)
+        viewport.addScreenSpaceEffect("Lens Distortion");
+
+      if (this.state.enableSaturation)
+        viewport.addScreenSpaceEffect("Saturation");
+
+      if (this.state.enableVignette)
+        viewport.addScreenSpaceEffect("Vignette");
+    }
+
+    // ###TODO check if effectsConfig changed. Sync with the const effectsConfig.
+    if (changed) {
+      viewport.requestRedraw();
+
+      // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
+      IModelApp.requestNextAnimation();
     }
   }
 
+  /*
   // Create sliders to adjust the settings affecting the active effect.
   private getConfigControls(): React.ReactNode {
     switch (this.props.effectNames[this.state.activeEffectIndex]) {
@@ -131,14 +153,17 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
         );
     }
   }
+  */
 
   private getControls(): React.ReactNode {
-    const options = Object.assign({}, effects.map((x) => x.name));
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
-        <span>Select Effect:</span>
-        <Select value={this.state.activeEffectIndex} onChange={this._onChangeActiveEffect} style={{ width: "fit-content" }} options={options} />
-        {this.getConfigControls()}
+        <span>Saturation</span>
+        <Toggle isOn={this.state.enableSaturation} onChange={(enableSaturation) => this.setState({ enableSaturation })} />
+        <span>Vignette</span>
+        <Toggle isOn={this.state.enableVignette} onChange={(enableVignette) => this.setState({ enableVignette })} />
+        <span>Lens Distortion</span>
+        <Toggle isOn={this.state.enableLensDistortion} onChange={(enableLensDistortion) => this.setState({ enableLensDistortion })} />
       </div>
     );
   }

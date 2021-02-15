@@ -65,13 +65,6 @@ export interface Effect extends ScreenSpaceEffectBuilderParams {
 
 /** The list of available effects. */
 export const effects: Effect[] = [{
-  name: "None",
-  source: {
-    vertex: "",
-    fragment: "",
-  },
-  defineEffect: () => { },
-}, {
   // Each pixel is converted from RGB to HSV (hue-saturation-value). A multiplier is applied to the saturation, then the color is converted back to RGB.
   name: "Saturation",
   // Request that the `textureCoordFromPosition` function be included in the vertex shader.
