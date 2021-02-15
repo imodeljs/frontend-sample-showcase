@@ -36,17 +36,21 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   };
 
   // Create a slider to adjust one of the properties of `EffectsConfig`.
-  private createSlider(label: string, value: number, min: number, max: number, step: number, update: (newConfig: EffectsConfig, newValue: number) => void) {
+  private createSlider(label: string, value: number, min: number, max: number, step: number, enableIf: "enableSaturation" | "enableLensDistortion" | "enableVignette",
+    update: (newConfig: EffectsConfig, newValue: number) => void) {
     const updateValue = (values: readonly number[]) => {
       const effectsConfig = { ...this.state.effectsConfig };
-      update(effectsConfig, Number(values[0]));
-      this.setState({ effectsConfig });
+      this.setState((prev) => {
+        const effectsConfig = { ...prev.effectsConfig };
+        update(effectsConfig, values[0]);
+        return { effectsConfig };
+      });
     };
 
     return (
       <>
         <span>{label}</span>
-        <Slider min={min} max={max} step={step} values={[value]} onUpdate={updateValue}></Slider>
+        <Slider min={min} max={max} step={step} values={[value]} onUpdate={updateValue} disabled={!this.state[enableIf]}></Slider>
       </>
     );
   }
@@ -122,18 +126,18 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Saturation</span>
         <Toggle isOn={this.state.enableSaturation} onChange={(enableSaturation) => this.setState({ enableSaturation })} />
-        {this.createSlider("Multiplier", this.state.effectsConfig.saturation.multiplier, 0, 5, 0.2, (config, val) => config.saturation.multiplier = val)}
+        {this.createSlider("Multiplier", this.state.effectsConfig.saturation.multiplier, 0, 5, 0.2, "enableSaturation", (config, val) => config.saturation.multiplier = val)}
         <span>Vignette</span>
         <Toggle isOn={this.state.enableVignette} onChange={(enableVignette) => this.setState({ enableVignette })} />
-        {this.createSlider("Size", this.state.effectsConfig.vignette.size, 0, 1, 0.05, (config, val) => config.vignette.size = val)}
-        {this.createSlider("Smoothness", this.state.effectsConfig.vignette.smoothness, 0, 1, 0.05, (config, val) => config.vignette.smoothness = val)}
-        {this.createSlider("Roundness", this.state.effectsConfig.vignette.roundness, 0, 1, 0.05, (config, val) => config.vignette.roundness = val)}
+        {this.createSlider("Size", this.state.effectsConfig.vignette.size, 0, 1, 0.05, "enableVignette", (config, val) => config.vignette.size = val)}
+        {this.createSlider("Smoothness", this.state.effectsConfig.vignette.smoothness, 0, 1, 0.05, "enableVignette", (config, val) => config.vignette.smoothness = val)}
+        {this.createSlider("Roundness", this.state.effectsConfig.vignette.roundness, 0, 1, 0.05, "enableVignette", (config, val) => config.vignette.roundness = val)}
         <span>Lens Distortion</span>
         <Toggle isOn={this.state.enableLensDistortion} onChange={(enableLensDistortion) => this.setState({ enableLensDistortion })} />
         <span>Lens Angle</span>
-        <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onInput={this._onChangeLensAngle}></input>
-        {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, (config, val) => config.lensDistortion.strength = val)}
-        {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, (config, val) => config.lensDistortion.cylindricalRatio = val)}
+        <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onInput={this._onChangeLensAngle} disabled={!this.state.enableLensDistortion}></input>
+        {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, "enableLensDistortion", (config, val) => config.lensDistortion.strength = val)}
+        {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, "enableLensDistortion", (config, val) => config.lensDistortion.cylindricalRatio = val)}
       </div>
     );
   }
