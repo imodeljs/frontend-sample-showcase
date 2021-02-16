@@ -300,9 +300,11 @@ class ExplodeTileTree extends TileTree {
 
 /** This tile acts as an entry point for the tile hierarchy it's range encompasses the range of all children tiles. */
 class RootTile extends Tile implements FeatureAppearanceProvider {
-  private readonly _elements: ElementTile[];
-  private _centerOfMass: Point3d;
+  private readonly _versionInfo: TileVersionInfo;
+  private readonly _data: ElementData[];
+  private readonly _centerOfMass: Point3d;
 
+  private get _elementTiles(): ElementTile[] { return this.children as ElementTile[]; }
   public get appearanceProvider(): FeatureAppearanceProvider {
     return this;
   }
@@ -316,23 +318,12 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
       maximumSize: 512,
     }, tree);
 
-    // Create tiles for each element.
+    // This data is needed to generating the element tiles.
     this._centerOfMass = this.range.center.clone();
+    this._versionInfo = versionInfo;
+    this._data = data;
 
-    this._elements = [];
-    for (const element of data) {
-      const tileParams: TileParams = {
-        centerOfMass: this._centerOfMass,
-        versionInfo,
-        data: element,
-      };
-      const tile = new ElementTile(this, tileParams);
-      this._elements.push(tile);
-      // The range of a child element must be included in it's parent.
-      this.range.extendRange(tile.range);
-    }
-
-    this.loadChildren(); // initially empty.
+    this.loadChildren();
     assert(undefined !== this.children);
 
     this.setIsReady();
@@ -341,7 +332,7 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
   /** Returns graphics representing the exploded elements. */
   public selectTiles(args: TileDrawArgs): Tile[] {
     const selected: Tile[] = [];
-    for (const child of this._elements) {
+    for (const child of this._elementTiles) {
       const graphicsTile = child.selectTile(args);
       if (graphicsTile)
         selected.push(graphicsTile);
@@ -351,7 +342,7 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
 
   /** Required by FeatureAppearanceProvider. Returns a FeatureAppearance based on element id and other factors or undefined if the it's not to be rendered. */
   public getFeatureAppearance(source: FeatureAppearanceSource, elemLo: number, elemHi: number, subcatLo: number, subcatHi: number, geomClass: GeometryClass, modelLo: number, modelHi: number, type: BatchType, animationNodeId: number): FeatureAppearance | undefined {
-    const alwaysDrawIds = new Id64.Uint32Set(this._elements.map((element) => element.data.elementId));
+    const alwaysDrawIds = new Id64.Uint32Set(this._elementTiles.map((element) => element.data.elementId));
     // If the ids is one of the elements in the tree, always draw it.
     if (alwaysDrawIds.has(elemLo, elemHi))
       return FeatureAppearance.fromJSON({});
@@ -362,13 +353,26 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
 
   public prune(olderThan: BeTimePoint) {
     // Never discard ElementTiles - do discard not-recently-used graphics.
-    for (const child of this._elements)
-      child.pruneChildren(olderThan);
+    if (this.children)
+      for (const child of this.children)
+        (child as ElementTile).pruneChildren(olderThan);
   }
 
-  /** Load this tile's children, possibly asynchronously. Pass them to `resolve`, or an error to `reject`. */
+  /** This will generate the ElementTiles that will replace and modify each element in the exploded view. */
   protected _loadChildren(resolve: (children: Tile[] | undefined) => void, _reject: (error: Error) => void): void {
-    resolve(this._elements);
+    const elements: ElementTile[] = [];
+    for (const element of this._data) {
+      const tileParams: TileParams = {
+        centerOfMass: this._centerOfMass,
+        versionInfo: this._versionInfo,
+        data: element,
+      };
+      const tile = new ElementTile(this, tileParams);
+      elements.push(tile);
+      // The range of a child element must be included in it's parent.
+      this.range.extendRange(tile.range);
+    }
+    resolve(elements);
   }
 
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
