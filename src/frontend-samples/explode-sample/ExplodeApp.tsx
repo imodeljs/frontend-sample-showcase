@@ -59,11 +59,6 @@ export default class ExplodeApp implements SampleApp {
     return IModelTileRpcInterface.getClient().queryVersionInfo();
   }
   /** Uses the  EmphasizeElements API to isolate the elements related to the ids given. */
-  public static emphasizeElements(vp: Viewport, elementIds: string[]) {
-    const emph = EmphasizeElements.getOrCreate(vp);
-    emph.emphasizeElements(elementIds, vp);
-  }
-  /** Uses the  EmphasizeElements API to isolate the elements related to the ids given. */
   public static isolateElements(vp: Viewport, elementIds: string[]) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.isolateElements(elementIds, vp);
@@ -72,7 +67,6 @@ export default class ExplodeApp implements SampleApp {
   public static clearIsolateAndEmphasized(vp: Viewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearIsolatedElements(vp);
-    emph.clearEmphasizedElements(vp);
   }
 
   /** Uses the IModel.js tools to fit the view to the object on screen. */

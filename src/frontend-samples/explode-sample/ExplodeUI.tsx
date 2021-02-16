@@ -32,7 +32,6 @@ interface ExplodeObject {
 }
 enum EmphasizeType {
   None,
-  Emphasize,
   Isolate,
 }
 
@@ -214,10 +213,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       switch (this.state.emphasize) {
         case EmphasizeType.Isolate:
           ExplodeApp.isolateElements(this.state.viewport, this.state.object.elementIds);
-          ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
-          break;
-        case EmphasizeType.Emphasize:
-          ExplodeApp.emphasizeElements(this.state.viewport, this.state.object.elementIds);
           ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
           break;
         case EmphasizeType.None:

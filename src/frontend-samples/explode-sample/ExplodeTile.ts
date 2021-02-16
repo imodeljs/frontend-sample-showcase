@@ -342,7 +342,7 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
     const alwaysDrawIds = new Id64.Uint32Set(this._elementTiles.map((element) => element.data.elementId));
     // If the ids is one of the elements in the tree, always draw it.
     if (alwaysDrawIds.has(elemLo, elemHi))
-      return FeatureAppearance.fromJSON({});
+      return FeatureAppearance.defaults;
 
     // The source will return undefined for our elements as they have the same Ids that have been mark to never draw by the FeatureOverrideProvider in the App.
     return source.getAppearance(elemLo, elemHi, subcatLo, subcatHi, geomClass, modelLo, modelHi, type, animationNodeId);
