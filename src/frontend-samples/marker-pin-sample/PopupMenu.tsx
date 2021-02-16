@@ -64,6 +64,7 @@ export class PopupMenu extends React.Component<PopupMenuProps, PopupMenuState> {
   public render(): React.ReactNode {
     const { entries, menuX, menuY, menuVisible } = this.state;
     const onClose = this._hideContextMenu;
+    const offset = this.props.canvas ? this.getOffset(this.props.canvas) : undefined
 
     if (menuVisible) {
       const items = this.getMenuItems(entries);
@@ -71,8 +72,8 @@ export class PopupMenu extends React.Component<PopupMenuProps, PopupMenuState> {
       return (
         <GlobalContextMenu
           identifier="popup-menu"
-          x={menuX + (this.props.canvas ? this.getOffset(this.props.canvas).left : 0)}
-          y={menuY + (this.props.canvas ? this.getOffset(this.props.canvas).top : 0)}
+          x={menuX + (offset ? offset.left : 0)}
+          y={menuY + (offset ? offset.top : 0)}
           opened={menuVisible}
           onEsc={onClose}
           onOutsideClick={onClose}
