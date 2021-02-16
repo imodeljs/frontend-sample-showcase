@@ -547,8 +547,7 @@ export class ExplodedGraphicsTile extends Tile {
   /** Creates an unique id for requesting tiles from the backend. */
   private makeRequestId(): string {
     const requestId = requestIdSequence.next();
-    if (requestId.done)
-      return (-1).toString(16);
+    assert(!requestId.done);
     return requestId.value.toString(16);
   }
 
