@@ -132,7 +132,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
           <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />
           <Button onClick={this.onZoomButton} disabled={this.state.isInit || this.state.isAnimated}>Zoom To</Button>
         </span>
-        <label>Emphases</label>
+        <label>Emphasis</label>
         <Select value={this.state.emphasize} options={emphasizeEntries} onChange={this.onEmphasizeChanged} disabled={this.state.isInit} style={{ width: "fit-content" }} />
       </div>
     </>;

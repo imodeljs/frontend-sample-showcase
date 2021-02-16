@@ -69,6 +69,7 @@ function calculateExplodeTransform(centerOfElement: Point3d, displaceOrigin: Poi
   const vector = Vector3d.createFrom(displaceOrigin);
   vector.subtractInPlace(centerOfElement);
   vector.scaleInPlace(explodeScaling - 1);
+  // The inverse method will never return undefined as the transform is only a translation and is always invertible.
   return Transform.createTranslation(vector).inverse()!;
 }
 
@@ -237,7 +238,7 @@ class ExplodeTileTree extends TileTree {
     });
     this._rootTile = new RootTile(this, params.data, params.tileVersionInfo);
 
-    // Ensures that graphics are not cut off by going outside the iModel extends.
+    // Ensures that graphics are not cut off by going outside the iModel extents.
     this.iModel.expandDisplayedExtents(this.range);
     // Will communicate the range back to the app for the zoom to volume.
     ExplodeTreeReference.setTreeRange(params.objectName, this.range);
@@ -297,6 +298,7 @@ class ExplodeTileTree extends TileTree {
   public forcePrune(): void { }
 }
 
+/** This tile acts as an entry point for the tile hierarchy it's range encompasses the range of all children tiles. */
 class RootTile extends Tile implements FeatureAppearanceProvider {
   private readonly _elements: ElementTile[];
   private _centerOfMass: Point3d;
@@ -336,7 +338,7 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
     this.setIsReady();
   }
 
-  /** Returns returns it's children elements that contain the graphics for drawing. */
+  /** Returns graphics representing the exploded elements. */
   public selectTiles(args: TileDrawArgs): Tile[] {
     const selected: Tile[] = [];
     for (const child of this._elements) {
@@ -370,12 +372,12 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
   }
 
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
-    assert(false, "Root dynamic tile has no content");
+    assert(false, "Root tile has no content");
     return undefined;
   }
 
   public async readContent(_data: TileRequest.ResponseData, _system: RenderSystem, _isCanceled: () => boolean): Promise<TileContent> {
-    throw new Error("Root dynamic tile has no content");
+    throw new Error("Root tile has no content");
   }
 }
 
@@ -614,7 +616,7 @@ export class ExplodedGraphicsTile extends Tile {
     const branch = new GraphicBranch();
     branch.add(gfx);
 
-    // Creates a new set of graphics transformed by the matrix create by the updated explode scaling.  The appearanceProvider insures the elements are drawn;
+    // Creates a new set of graphics transformed by the matrix create by the updated explode scaling.  The appearanceProvider ensures the elements are drawn;
     args.graphics.add(args.context.createGraphicBranch(branch, this._explodeTransform, { appearanceProvider: this.rootTile.appearanceProvider }));
 
     // Line is required for the debugging tile ranges feature.  Very useful for debugging, but unused by the sample.
