@@ -13,6 +13,7 @@ export interface SandboxViewportProps {
   iModelName2?: string;
   getCustomViewState?: (imodel: IModelConnection) => Promise<ViewState>;
   onIModelReady?: (imodel: IModelConnection) => void;
+  isNavigationToolInvisible?: boolean;
 }
 
 export interface SandboxViewportState {
@@ -37,7 +38,7 @@ export class SandboxViewport extends React.PureComponent<SandboxViewportProps, S
     if (!this.state.imodel || !this.state.viewState)
       ui = <SandboxIModelConnection iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
     else
-      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} />;
+      ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} isNavigationToolInvisible={this.props.isNavigationToolInvisible} />;
 
     return (
       <>

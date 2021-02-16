@@ -24,6 +24,7 @@ interface ManualPinSelection {
 
 interface MarkerPinsUIState {
   imodel?: IModelConnection;
+  viewport?: ScreenViewport;
   showDecorator: boolean;
   manualPin: ManualPinSelection;
   points: Point3d[];
@@ -157,16 +158,16 @@ export default class MarkerPinsUI extends React.Component<{
 
   /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
   private onIModelReady = (imodel: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
+    IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
 
       // Grab range of the contents of the view. We'll use this to position the random markers.
-      const range3d = vp.view.computeFitRange();
+      const range3d = viewport.view.computeFitRange();
       const range = Range2d.createFrom(range3d);
 
       // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
       const height = range3d.zHigh;
 
-      this.setState({ imodel, range, height });
+      this.setState({ imodel, viewport, range, height });
     });
   }
 
@@ -174,7 +175,7 @@ export default class MarkerPinsUI extends React.Component<{
   public getControls() {
     return (
       <>
-        <PopupMenu />
+        <PopupMenu canvas={this.state.viewport?.canvas} />
         <div className="sample-options-2col">
           <span>Show Markers</span>
           <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowMarkers} />

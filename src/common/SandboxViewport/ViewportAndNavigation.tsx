@@ -22,6 +22,8 @@ export interface ViewportAndNavigationProps {
   imodel: IModelConnection;
   /** View state to use when the viewport is first loaded */
   viewState: ViewState;
+
+  isNavigationToolInvisible?: boolean;
 }
 
 /** Renders viewport, toolbar, and associated elements */
@@ -34,7 +36,7 @@ export class ViewportAndNavigation extends React.PureComponent<ViewportAndNaviga
           imodel={this.props.imodel}
           viewState={this.props.viewState}
         />
-        {toolbar()}
+        { (this.props.isNavigationToolInvisible === undefined) && toolbar()}
       </>
     );
   }
