@@ -549,7 +549,8 @@ export class ExplodedGraphicsTile extends Tile {
   private makeRequestId(): string {
     const requestId = requestIdSequence.next();
     assert(!requestId.done);
-    return requestId.value.toString(16);
+    // Prefix added to ensure they are unique across all request. If they any request ids match, the first request resolved will be use for all stand request.
+    return "Exploded_".concat(requestId.value.toString(16));
   }
 
   /** No children tiles. */
