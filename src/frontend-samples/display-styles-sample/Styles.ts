@@ -198,7 +198,7 @@ export const displayStyles: DisplayStyle[] = [{
 }, {
   name: "Moonlit",
   environment: {
-    sky: defaultSkyBox,
+    sky: { display: true, groundColor: 2435876, zenithColor: 0, nadirColor: 3880, skyColor: 3481088 },
     ground: { display: false, elevation: -0.01, aboveColor: 32768, belowColor: 1262987 },
   },
   viewflags: { ...renderingStyleViewFlags, visEdges: true },
@@ -294,7 +294,6 @@ export const displayStyles: DisplayStyle[] = [{
   monochromeMode: 1,
   viewflags: {
     ...renderingStyleViewFlags,
-    noConstruct: false,
     visEdges: true,
   },
 },

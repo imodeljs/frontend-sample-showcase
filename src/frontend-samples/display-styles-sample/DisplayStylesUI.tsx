@@ -24,7 +24,7 @@ interface DisplayStylesUIProps {
 }
 
 const CUSTOM_STYLE_INDEX = 0;
-const DEFAULT_STYLE_INDEX = 14;
+const DEFAULT_STYLE_INDEX = 4;
 
 export default class DisplayStylesUI extends React.Component<DisplayStylesUIProps, DisplayStylesUIState> {
 
