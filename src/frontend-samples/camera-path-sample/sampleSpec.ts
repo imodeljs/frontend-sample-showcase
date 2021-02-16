@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import CameraPathApp from "./CameraPathApp";
+import CameraPathUI from "./CameraPathUI";
 
 export function getViewCameraSpec(): SampleSpec {
   return ({
@@ -12,13 +12,12 @@ export function getViewCameraSpec(): SampleSpec {
     image: "camera-path-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp"), entry: true },
-      { name: "CameraPathUI.tsx", import: import("!!raw-loader!./CameraPathUI") },
+      { name: "CameraPathUI.tsx", import: import("!!raw-loader!./CameraPathUI"), entry: true },
+      { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp") },
       { name: "CameraPathTool.ts", import: import("!!raw-loader!./CameraPathTool") },
       { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
 
     ],
-    setup: CameraPathApp.setup.bind(CameraPathApp),
-    teardown: CameraPathApp.teardown.bind(CameraPathApp),
+    sampleClass: CameraPathUI
   });
 }

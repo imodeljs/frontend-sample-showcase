@@ -8,11 +8,7 @@ import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
-<<<<<<< HEAD
-import { IModelSelector, SampleIModels } from "common/IModelSelector/IModelSelector";
-=======
-import { IModelSelector } from "../IModelSelector/IModelSelector";
->>>>>>> 1cdfa0eca8ba8cf4579fc717053fa8306062c3ec
+import { IModelSelector } from "common/IModelSelector/IModelSelector";
 import { ConnectedSampleEditor } from "../SampleEditor/SampleEditor";
 import { editorCommonActionContext, IInternalFile, SplitScreen } from "@bentley/monaco-editor/editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";

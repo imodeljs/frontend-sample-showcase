@@ -9,9 +9,11 @@ import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imode
 import { Select } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
+
 import CameraPathApp, { CameraPath } from "./CameraPathApp";
 import { ViewSetup } from "api/viewSetup";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { CameraPathTool } from "./CameraPathTool";
 
 // cSpell:ignore imodels
@@ -37,6 +39,16 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     super(props);
     this.state = { attrValues: { isPause: false, sliderValue: 0, speedLevel: "3 Mph: Walking", currentSpeed: 0, isInitialPositionStarted: false, isMouseWheelAnimationActive: false, keyDown: false }, cameraPath: CameraPath.createByLoadingFromJson("TrainPath") };
     this._handleCameraPlay = this._handleCameraPlay.bind(this);
+  }
+
+  public componentDidMount() {
+    const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
+    CameraPathTool.register(sampleNamespace);
+  }
+
+  public componentWillUnmount() {
+    IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
+    IModelApp.tools.unRegister(CameraPathTool.toolId);
   }
 
   // This common function is used to create the react components for each row of the UI.
@@ -273,7 +285,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     return (
       <>
         <ControlPane instructions="Use the mouse wheel to scroll the camera along the predefined path. Click in the view to look around." controls={this.getControls()} ></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isNavigationToolInvisible={true} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isNavigationToolInvisible={true} />
       </>
     );
   }

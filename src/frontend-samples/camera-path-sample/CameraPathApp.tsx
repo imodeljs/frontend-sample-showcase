@@ -20,13 +20,6 @@ export interface CameraPoint {
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class CameraPathApp implements SampleApp {
-  private static _sampleNamespace: I18NNamespace;
-
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    this._sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
-    CameraPathTool.register(this._sampleNamespace);
-    return <CameraPathUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 
   public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport, keyDown: boolean) {
     if (!keyDown)
@@ -47,10 +40,6 @@ export default class CameraPathApp implements SampleApp {
     return new Promise((resolve) => setTimeout(resolve, Math.pow(10, -4)));
   }
 
-  public static teardown() {
-    IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
-    IModelApp.tools.unRegister(CameraPathTool.toolId);
-  }
 }
 
 // A CameraPath consists of a CurveChain representing the camera location and an array
