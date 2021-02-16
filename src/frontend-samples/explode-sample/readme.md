@@ -11,6 +11,7 @@ The main purpose is give an example of how to create the exploded view effect.  
 * Request specific elements and tiles from the backend.
 * Work with [Transforms](https://www.itwinjs.org/learning/geometry/transform/).
 * Render customized graphics using a TileTree.
+* Add a simple [Animator](https://www.itwinjs.org/reference/imodeljs-frontend/views/animator/) to a viewport.
 * NOT as an example of generalized animation.
 
 ## Description
