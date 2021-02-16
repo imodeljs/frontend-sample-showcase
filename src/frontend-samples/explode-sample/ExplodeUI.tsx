@@ -95,6 +95,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const vp = this.state.viewport;
     if (!vp) return;
     if (this.state.isInit) {
+      ExplodeApp.zoomToObject(vp, this.state.object.name);
       this.setState({ isInit: false });
     }
     ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explodeFactor);
