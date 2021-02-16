@@ -14,6 +14,7 @@ The purpose of this sample is to demonstrate the following:
 ## Description
 
 This sample provides three examples of screen-space effects that are used to alter the image produced by a viewport. Each effect has one or more parameters that can adjusted using sliders to customize the effect. Any combination of the three effects can be active at any given time.
+
 * Saturation: increases or decreases the saturation of each pixel.
 * Lens Distortion: simulates the "fish-eye" effect produced by physical cameras with wide fields of view.
 * Vignette: reduces the brightness around the periphery of the image

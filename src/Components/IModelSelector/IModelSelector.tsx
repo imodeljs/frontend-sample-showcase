@@ -22,6 +22,7 @@ export enum SampleIModels {
   House = "House Sample",
   Stadium = "Stadium",
   ExtonCampus = "Exton Campus",
+  Villa = "Villa",
 }
 
 export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
