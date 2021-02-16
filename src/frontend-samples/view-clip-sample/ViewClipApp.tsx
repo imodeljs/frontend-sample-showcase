@@ -11,9 +11,6 @@ import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector
 import SampleApp from "common/SampleApp";
 
 export default class ViewClipApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ViewClipUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 
   /* Method for clearing all clips in the viewport */
   public static clearClips(vp: ScreenViewport) {

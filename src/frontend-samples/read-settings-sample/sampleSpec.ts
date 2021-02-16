@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import ReadSettingsApp from "./ReadSettingsApp";
+import ReadSettingsUI from "./ReadSettingsUI";
 
 export function getReadSettingsSpec(): SampleSpec {
   return ({
@@ -13,11 +13,11 @@ export function getReadSettingsSpec(): SampleSpec {
     image: "read-settings-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp"), entry: true },
-      { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI") },
+      { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI"), entry: true },
+      { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp") },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown],
-    setup: ReadSettingsApp.setup,
+    sampleClass: ReadSettingsUI,
   });
 }

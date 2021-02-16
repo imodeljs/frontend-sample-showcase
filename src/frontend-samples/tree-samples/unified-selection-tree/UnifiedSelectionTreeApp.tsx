@@ -12,13 +12,6 @@ import { UnifiedSelectionTreeUI } from "./UnifiedSelectionTreeUI";
 const PAGING_SIZE = 20;
 const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
 
-export default class UnifiedSelectionTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <UnifiedSelectionTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTreeUI>;
-  }
-
-}
-
 export interface UnifiedSelectionTreeProps {
   imodel: IModelConnection;
 }

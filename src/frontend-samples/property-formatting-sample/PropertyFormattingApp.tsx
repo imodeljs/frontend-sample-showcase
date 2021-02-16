@@ -25,13 +25,6 @@ export interface PropertyProps {
 export class PropertyFormattingApp implements SampleApp {
   private static selectionListener: SelectionChangesListener;
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <PropertyFormattingUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
-  public static teardown() {
-    PropertyFormattingApp.removeSelectionListener();
-  }
 
   public static addSelectionListener(listener: SelectionChangesListener) {
     this.selectionListener = listener;

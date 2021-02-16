@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ClassifierApp from "./ClassifierApp";
+import ClassifierUI from "./ClassifierUI";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
 export function getClassifierSpec(): SampleSpec {
@@ -13,12 +13,11 @@ export function getClassifierSpec(): SampleSpec {
     image: "classifier-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "ClassifierApp.tsx", import: import("!!raw-loader!./ClassifierApp"), entry: true },
-      { name: "ClassifierUI.tsx", import: import("!!raw-loader!./ClassifierUI") },
+      { name: "ClassifierUI.tsx", import: import("!!raw-loader!./ClassifierUI"), entry: true },
+      { name: "ClassifierApp.tsx", import: import("!!raw-loader!./ClassifierApp") },
       { name: "ClassifierProperties.tsx", import: import("!!raw-loader!./ClassifierProperties") },
     ],
     customModelList: [SampleIModels.MetroStation],
-    setup: ClassifierApp.setup.bind(ClassifierApp),
-    teardown: ClassifierApp.teardown.bind(ClassifierApp),
+    sampleClass: ClassifierUI,
   });
 }

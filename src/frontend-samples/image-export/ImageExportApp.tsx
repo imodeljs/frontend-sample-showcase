@@ -24,7 +24,4 @@ export default class ImageExportApp implements SampleApp {
     }
   }
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ImageExportUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 }

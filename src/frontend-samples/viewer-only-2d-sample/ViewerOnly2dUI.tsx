@@ -16,7 +16,7 @@ import { ViewportComponent } from "@bentley/ui-components";
 
 // The Props and State for this sample component
 interface ViewerOnly2dProps {
-  iModelConnection: IModelConnection;
+  iModelName: string;
   iModelSelector: React.ReactNode;
 }
 
@@ -123,7 +123,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     return (
       <>
         <ControlPane instructions="The picker below shows a list of 2D models in this iModel." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ViewportComponent imodel={this.props.iModelConnection} viewState={this.getInitialView(this.props.iModelConnection)} />
+        <SandboxViewport iModelName={this.props.iModelName} />
       </>
     );
   }

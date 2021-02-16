@@ -17,12 +17,6 @@ import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import SampleApp from "common/SampleApp";
 import { CustomEventHandlerTreeUI } from "./CustomEventHandlerTreeUI";
 
-export default class CustomEventHandlerTreeApp extends React.Component<{}> implements SampleApp {
-
-  public static async setup(_iModelName: string) {
-    return <CustomEventHandlerTreeUI></CustomEventHandlerTreeUI>;
-  }
-}
 /**
  * This component demonstrates how to use `ControlledTree` with custom tree events handling.
  * It uses `NodesWithCheckboxProvider` class to get some fake data to show.

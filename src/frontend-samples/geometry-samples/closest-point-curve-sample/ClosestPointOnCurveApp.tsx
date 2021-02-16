@@ -14,7 +14,4 @@ export default class ClosestPointOnCurveApp implements SampleApp {
     return location?.point;
   }
 
-  public static async setup(): Promise<React.ReactNode> {
-    return <ClosestPointOnCurveUI></ClosestPointOnCurveUI>;
-  }
 }

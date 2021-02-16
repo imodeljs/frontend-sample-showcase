@@ -85,6 +85,10 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       this.updateCompare();
   }
 
+  public componentWillUnmount() {
+    SwipingComparisonApp.teardown();
+  }
+
   // Update the state of the sample react component by querying the API.
   private updateState() {
     const vp = SwipingComparisonApp.getSelectedViewport();

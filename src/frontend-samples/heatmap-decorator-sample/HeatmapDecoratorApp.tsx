@@ -15,14 +15,6 @@ import SampleApp from "common/SampleApp";
 export default class HeatmapDecoratorApp implements SampleApp {
   public static decorator?: HeatmapDecorator;
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <HeatmapDecoratorUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
-  public static teardown() {
-    HeatmapDecoratorApp.disableDecorations();
-    HeatmapDecoratorApp.decorator = undefined;
-  }
 
   public static setupDecorator(points: Point3d[], range: Range2d, spreadFactor: number, height: number) {
     HeatmapDecoratorApp.decorator = new HeatmapDecorator(points, range, spreadFactor, height);

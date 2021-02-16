@@ -40,10 +40,6 @@ export default class ExpandableListList extends React.Component<{}> implements S
     ];
   }
 
-  public static async setup(_iModelName: string) {
-    return <ExpandableListList></ExpandableListList>;
-  }
-
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {

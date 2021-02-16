@@ -28,6 +28,22 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   public state: MultiViewportUIState = { isSynced: false, viewports: [] };
 
+  public componentDidMount() {
+    MultiViewportApp.selectedViewportChangedListeners.length = 0;
+    MultiViewportApp.teardownListener.length = 0;
+    MultiViewportApp.viewOpenedListeners.length = 0;
+  }
+
+  public componentWillUnmount() {
+    MultiViewportApp.disconnectViewports();
+    MultiViewportApp.selectedViewportChangedListeners.forEach((removeListener) => removeListener());
+    MultiViewportApp.selectedViewportChangedListeners.length = 0;
+    MultiViewportApp.viewOpenedListeners.forEach((removeListener) => removeListener());
+    MultiViewportApp.viewOpenedListeners.length = 0;
+    MultiViewportApp.teardownListener.forEach((removeView) => removeView());
+    MultiViewportApp.teardownListener.length = 0;
+  }
+
   // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
     if (args.previous)

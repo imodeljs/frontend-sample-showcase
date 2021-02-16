@@ -17,11 +17,6 @@ export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
-export default class CustomWebfontIconsTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomWebfontIconsTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomWebfontIconsTreeUI>;
-  }
-}
 /**
  * This component demonstrates how to use `ControlledTree` with node icons from webfonts library.
  * It uses presentation rules defined in './TreeWithIcons.json' to load data from supplied iModel.

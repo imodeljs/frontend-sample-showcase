@@ -18,7 +18,7 @@ import SampleApp from "common/SampleApp";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
-import SampleLoader from "./../ShowcaseSample/ShowcaseSample";
+import SampleLoader from "../SampleLoader/SampleLoader";
 // cSpell:ignore imodels
 
 export interface SampleSpec {
@@ -28,7 +28,7 @@ export interface SampleSpec {
   readme?: IInternalFile;
   files: IInternalFile[];
   customModelList?: string[];
-  setup: typeof React.Component;//(iModelConnection?: IModelConnection, iModelSelector?: React.ReactNode) => React.ReactNode;
+  sampleClass: typeof React.Component;
   teardown?: () => void;
 }
 
@@ -40,6 +40,13 @@ interface ShowcaseState {
   showEditor: boolean;
   showGallery: boolean;
 }
+
+
+export interface SampleProps extends React.Attributes {
+  iModelName?: string;
+  iModelSelector?: React.ReactNode;
+}
+
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
@@ -195,11 +202,14 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     let sampleUI: React.ReactNode;
 
-    if (newSampleSpec.setup) {
+    if (newSampleSpec.sampleClass) {
       const iModelList = this.getIModelList(newSampleSpec);
       const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
-      //sampleUI = await newSampleSpec.setup(this.state.iModelName, iModelSelector);
-      sampleUI = SampleLoader.showSample(newSampleSpec.setup, this.state.iModelName, undefined, iModelSelector,)
+      const props: SampleProps = {
+        iModelName: this.state.iModelName,
+        iModelSelector,
+      }
+      sampleUI = React.createElement(newSampleSpec.sampleClass, props)
     }
 
     this.setState({ sampleUI });
@@ -212,7 +222,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       }
 
       const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-      activeSample.setup = this._prevSampleSetup;
+      activeSample.sampleClass = this._prevSampleSetup;
       activeSample.teardown = this._prevSampleTeardown;
       this._prevSampleSetup = undefined;
       this._prevSampleTeardown = undefined;
@@ -255,16 +265,17 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   private _onSampleTranspiled = async (blob: string) => {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-    const sampleUi = (await import( /* webpackIgnore: true */ blob)).default as typeof SampleApp;
+    const sampleUi = (await import( /* webpackIgnore: true */ blob)).default as typeof React.Component;
 
     if (!this._prevSampleSetup) {
-      this._prevSampleSetup = activeSample.setup;
+      this._prevSampleSetup = activeSample.sampleClass;
     }
     if (!this._prevSampleTeardown) {
       this._prevSampleTeardown = activeSample.teardown;
     }
-
-    activeSample.setup = sampleUi.setup /*async (iModelName: string, iModelSelector: React.ReactNode) => {
+    console.log(activeSample)
+    console.log(sampleUi)
+    activeSample.sampleClass = sampleUi /*async (iModelName: string, iModelSelector: React.ReactNode) => {
       try {
         return SampleLoader.showSample(activeSample.setup, this.state.iModelName, undefined, iModelSelector,);
       } catch (err) {
@@ -273,8 +284,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         );
       }
     };*/
-    console.log(sampleUi.setup)
-    activeSample.teardown = sampleUi.teardown || this._prevSampleTeardown;
 
     const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
@@ -298,7 +307,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     const readme = activeSample ? activeSample.readme : undefined;
     const files = activeSample ? activeSample.files : undefined;
-
+    console.log(files)
     return (
       <div className="showcase">
         <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>

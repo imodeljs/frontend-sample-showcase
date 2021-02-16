@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import PresentationTreeApp from "./PresentationTreeApp";
+import { PresentationTreeUI } from "./PresentationTreeUI";
 
 export function getPresentationTreeSpec(): SampleSpec {
   return ({
@@ -12,9 +12,9 @@ export function getPresentationTreeSpec(): SampleSpec {
     image: "presentation-tree-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp"), entry: true },
       { name: "PresentationTreeUI.tsx", import: import("!!raw-loader!./PresentationTreeUI"), entry: true },
+      { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp") },
     ],
-    setup: PresentationTreeApp.setup.bind(PresentationTreeApp),
+    sampleClass: PresentationTreeUI,
   });
 }

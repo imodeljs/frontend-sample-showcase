@@ -5,18 +5,12 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import SampleApp from "common/SampleApp";
-import * as React from "react";
-import ClassifierUI from "./ClassifierUI";
 import { ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassificationProps } from "@bentley/imodeljs-common";
 import { ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 
 export default class ClassifierApp implements SampleApp {
   private static _selectionListener: SelectionChangesListener;
-
-  public static teardown() {
-    ClassifierApp.removeSelectionListener();
-  }
 
   public static removeSelectionListener() {
     Presentation.selection.selectionChange.removeListener(this._selectionListener);
@@ -110,9 +104,5 @@ export default class ClassifierApp implements SampleApp {
 
       return;
     }
-  }
-
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ClassifierUI iModelName={iModelName} iModelName2={"Philadelphia"} iModelSelector={iModelSelector} />;
   }
 }

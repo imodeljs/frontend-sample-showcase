@@ -33,9 +33,6 @@ export interface SpatialElement {
 }
 
 export class VolumeQueryApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <VolumeQueryUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 
   /* Method for clearing all clips in the viewport */
   public static clearClips(vp: ScreenViewport) {

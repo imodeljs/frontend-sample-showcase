@@ -16,6 +16,6 @@ export function getTextSpec(): SampleSpec {
     files: [
       { name: "Text.tsx", import: import("!!raw-loader!./Text"), entry: true },
     ],
-    setup: TextList.setup.bind(TextList),
+    sampleClass: TextList,
   });
 }

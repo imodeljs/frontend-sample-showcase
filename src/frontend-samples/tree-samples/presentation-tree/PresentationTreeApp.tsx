@@ -16,12 +16,6 @@ export interface PresentationTreeProps {
   imodel: IModelConnection;
 }
 
-export default class PresentationTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <PresentationTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></PresentationTreeUI>;
-  }
-}
-
 /**
  * This component demonstrates how to use `ControlledTree` with presentation rules.
  * It uses presentation rules defined in '../TreeHierarchy.json' to load

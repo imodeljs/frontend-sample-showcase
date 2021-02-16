@@ -75,6 +75,12 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     };
   }
 
+  public componentWillUnmount(): void {
+    if (undefined === ThematicDisplayApp.viewport) return;
+    ThematicDisplayApp.setThematicDisplayProps(ThematicDisplayApp.viewport, ThematicDisplayApp.originalProps);
+    ThematicDisplayApp.setThematicDisplayOnOff(ThematicDisplayApp.viewport, ThematicDisplayApp.originalFlag);
+  }
+
   /** This method is called when the iModel is loaded by the react component */
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {

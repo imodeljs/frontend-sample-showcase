@@ -18,12 +18,6 @@ import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import SampleApp from "common/SampleApp";
 import { CustomNodeLoadingTreeUI } from "./CustomNodeLoadingTreeUI";
 
-export default class CustomNodeLoadingTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomNodeLoadingTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomNodeLoadingTreeUI>;
-  }
-}
-
 export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }

@@ -69,6 +69,10 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
         HeatmapDecoratorApp.disableDecorations();
     }
   }
+  public componentWillUnmount() {
+    HeatmapDecoratorApp.disableDecorations();
+    HeatmapDecoratorApp.decorator = undefined;
+  }
 
   private _onPointsChanged = (points: Point3d[]) => {
     this.setState({ points });

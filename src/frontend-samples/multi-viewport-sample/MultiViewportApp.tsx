@@ -12,27 +12,9 @@ import MultiViewportUI from "./MultiViewportUI";
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApp implements SampleApp {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();
-  private static _selectedViewportChangedListeners: Array<() => void> = [];
-  private static _viewOpenedListeners: Array<() => void> = [];
-  private static _teardownListener: Array<() => void> = [];
-
-  /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    MultiViewportApp._selectedViewportChangedListeners.length = 0;
-    MultiViewportApp._teardownListener.length = 0;
-    MultiViewportApp._viewOpenedListeners.length = 0;
-    return <MultiViewportUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-  /** Called by the showcase before swapping to another sample. */
-  public static async teardown() {
-    MultiViewportApp.disconnectViewports();
-    MultiViewportApp._selectedViewportChangedListeners.forEach((removeListener) => removeListener());
-    MultiViewportApp._selectedViewportChangedListeners.length = 0;
-    MultiViewportApp._viewOpenedListeners.forEach((removeListener) => removeListener());
-    MultiViewportApp._viewOpenedListeners.length = 0;
-    MultiViewportApp._teardownListener.forEach((removeView) => removeView());
-    MultiViewportApp._teardownListener.length = 0;
-  }
+  public static selectedViewportChangedListeners: Array<() => void> = [];
+  public static viewOpenedListeners: Array<() => void> = [];
+  public static teardownListener: Array<() => void> = [];
 
   /** Connects the views of the two provided viewports, overriding the second parameter's view with the first's view. */
   public static connectViewports(vp1: Viewport, vp2: Viewport) {
@@ -47,7 +29,7 @@ export default class MultiViewportApp implements SampleApp {
   public static listenForSelectedViewportChange(onChange: (args: SelectedViewportChangedArgs) => void) {
     if (false === IModelApp.viewManager.onSelectedViewportChanged.has(onChange)) {
       const removeListener = IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
-      MultiViewportApp._selectedViewportChangedListeners.push(removeListener);
+      MultiViewportApp.selectedViewportChangedListeners.push(removeListener);
     }
   }
 
@@ -55,13 +37,13 @@ export default class MultiViewportApp implements SampleApp {
   public static listenForViewOpened(onOpen: (args: ScreenViewport) => void) {
     if (false === IModelApp.viewManager.onViewOpen.has(onOpen)) {
       const removeListener = IModelApp.viewManager.onViewOpen.addListener(onOpen);
-      MultiViewportApp._viewOpenedListeners.push(removeListener);
+      MultiViewportApp.viewOpenedListeners.push(removeListener);
     }
   }
 
   /** Adds a adds a callback for when the app teardown is called. See description in readme for typical implementation */
   public static listenForAppTeardown(listener: () => void) {
-    MultiViewportApp._teardownListener.push(listener);
+    MultiViewportApp.teardownListener.push(listener);
   }
 
   /** Signal viewport to sync with an updated [ViewState] using the Viewport API. */

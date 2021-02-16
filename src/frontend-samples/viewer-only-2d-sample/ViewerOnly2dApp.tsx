@@ -13,9 +13,6 @@ import SampleApp from "common/SampleApp";
 import { ViewSetup } from "api/viewSetup";
 
 export default class ViewerOnly2dApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 
   public static async get2DModels(imodel: IModelConnection): Promise<{ drawings: ModelProps[], sheets: ModelProps[] }> {
     const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });

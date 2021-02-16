@@ -12,10 +12,6 @@ import DisplayStylesUI from "./DisplayStylesUI";
 import { displayStyles } from "./Styles";
 
 export default class DisplayStylesApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <DisplayStylesUI displayStyles={displayStyles} iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
   /** Overrides the current display styles using the viewport API. */
   public static applyDisplayStyle(viewport: Viewport, style: DisplayStyle3dSettingsProps) {
     viewport.overrideDisplayStyle(style);

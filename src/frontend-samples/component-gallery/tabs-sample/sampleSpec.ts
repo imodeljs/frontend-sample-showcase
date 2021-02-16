@@ -16,6 +16,6 @@ export function getTabsSpec(): SampleSpec {
     files: [
       { name: "Tabs.tsx", import: import("!!raw-loader!./Tabs"), entry: true },
     ],
-    setup: TabsList.setup.bind(TabsList),
+    sampleClass: TabsList,
   });
 }

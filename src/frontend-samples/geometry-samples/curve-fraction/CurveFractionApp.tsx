@@ -18,7 +18,4 @@ export default class CurveFractionApp implements SampleApp {
     return location?.fraction;
   }
 
-  public static async setup(): Promise<React.ReactNode> {
-    return <CurveFractionUI></CurveFractionUI>;
-  }
 }

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import Transformations2dApp from "./2dTransformationsApp";
+import Transformations2dUI from "./2dTransformationsUI";
 
 export function get2dTransformationsSpec(): SampleSpec {
   return ({
@@ -13,10 +13,10 @@ export function get2dTransformationsSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp"), entry: true },
-      { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI") },
+      { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI"), entry: true },
+      { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp") },
 
     ],
-    setup: Transformations2dApp.setup.bind(Transformations2dApp),
+    sampleClass: Transformations2dUI,
   });
 }

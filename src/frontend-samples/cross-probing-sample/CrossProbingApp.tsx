@@ -114,7 +114,4 @@ export default class CrossProbingApp implements SampleApp {
     return rows;
   }
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CrossProbingUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 }

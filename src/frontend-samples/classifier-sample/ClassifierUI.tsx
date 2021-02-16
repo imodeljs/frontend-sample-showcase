@@ -30,7 +30,7 @@ interface ClassifierState {
   keys: KeySet;
 }
 
-export default class ClassifierUI extends React.Component<{ iModelName: string, iModelName2: string, iModelSelector: React.ReactNode }, ClassifierState> {
+export default class ClassifierUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ClassifierState> {
   private _outsideDisplayEntries: { [key: string]: string } = {};
   private _insideDisplayEntries: { [key: string]: string } = {};
 
@@ -57,6 +57,10 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Off]] = "Off";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.On]] = "On";
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]] = "Dimmed";
+  }
+
+  public componentWillUnmount() {
+    ClassifierApp.removeSelectionListener();
   }
 
   /**
@@ -223,7 +227,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions="Use controls below to create a classifier." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         { /* Viewport to display the iModel */}
-        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} getCustomViewState={ClassifierUI.getClassifierView} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} iModelName2={"Philadelphia"} getCustomViewState={ClassifierUI.getClassifierView} />
       </>
     );
   }

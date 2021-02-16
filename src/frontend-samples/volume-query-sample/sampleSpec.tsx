@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import { VolumeQueryApp } from "./VolumeQueryApp";
+import VolumeQueryUI from "./VolumeQueryUI";
 
 export function getVolumeQuerySpec(): SampleSpec {
   return ({
@@ -13,8 +13,8 @@ export function getVolumeQuerySpec(): SampleSpec {
     image: "volume-query-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "VolumeQueryApp.tsx", import: import("!!raw-loader!./VolumeQueryApp"), entry: true },
-      { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI") },
+      { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },
+      { name: "VolumeQueryApp.tsx", import: import("!!raw-loader!./VolumeQueryApp") },
       { name: "ProgressBar.tsx", import: import("!!raw-loader!./ProgressBar") },
     ],
     customModelList: [
@@ -24,6 +24,6 @@ export function getVolumeQuerySpec(): SampleSpec {
       SampleIModels.Stadium,
       SampleIModels.MetroStation,
     ],
-    setup: VolumeQueryApp.setup.bind(VolumeQueryApp),
+    sampleClass: VolumeQueryUI,
   });
 }

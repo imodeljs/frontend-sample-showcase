@@ -25,8 +25,4 @@ export default class Simple3dApp implements SampleApp {
     return TorusPipe.createAlongArc(Arc3d.createXY(new Point3d(0, 0, innerRadius), outerRadius, AngleSweep.create(Angle.createDegrees(sweep))), innerRadius, false);
   }
 
-  public static async setup(): Promise<React.ReactNode> {
-    return <Simple3dUI></Simple3dUI>;
-  }
-
 }

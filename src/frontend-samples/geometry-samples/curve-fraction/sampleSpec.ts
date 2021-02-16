@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CurveFractionApp from "./CurveFractionApp";
+import CurveFractionUI from "./CurveFractionUI";
 
 export function getCurveFractionSpec(): SampleSpec {
   return ({
@@ -13,11 +13,11 @@ export function getCurveFractionSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp"), entry: true },
-      { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI") },
+      { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI"), entry: true },
+      { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp") },
       { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!common/Geometry/SampleCurveFactory") },
       { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!common/Geometry/InteractivePointMarker") },
     ],
-    setup: CurveFractionApp.setup.bind(CurveFractionApp),
+    sampleClass: CurveFractionUI,
   });
 }

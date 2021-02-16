@@ -44,9 +44,14 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
       settingsInitialized: false,
       settingKey: settingsKeys[0],
     };
+
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
     this.handleSettingsValueChange = this.handleSettingsValueChange.bind(this);
     this.saveSettings = this.saveSettings.bind(this);
+  }
+
+  public async componentDidMount() {
+    ReadSettingsApp.projectContext = await ReadSettingsApp.getIModelInfo(this.props.iModelName);
   }
 
   private onIModelReady = (imodel: IModelConnection) => {

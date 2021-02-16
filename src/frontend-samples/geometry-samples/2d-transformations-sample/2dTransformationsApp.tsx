@@ -61,8 +61,4 @@ export default class Transformations2dApp implements SampleApp {
     return loop;
   }
 
-  public static async setup(): Promise<React.ReactNode> {
-    return <Transformations2dUI></Transformations2dUI>;
-  }
-
 }

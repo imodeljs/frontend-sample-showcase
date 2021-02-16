@@ -8,12 +8,6 @@ import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import SampleApp from "common/SampleApp";
 import { BasicTreeUI } from "./BasicTreeUI";
 
-export default class BasicTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(_iModelName: string) {
-    return <BasicTreeUI></BasicTreeUI>;
-  }
-}
-
 export function BasicTree() {
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render

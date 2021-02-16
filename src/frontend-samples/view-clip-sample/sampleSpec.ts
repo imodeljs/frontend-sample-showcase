@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import ViewClipApp from "./ViewClipApp";
+import { ViewClipUI } from "./ViewClipUI";
 
 export function getViewClipSpec(): SampleSpec {
   return ({
@@ -13,10 +13,10 @@ export function getViewClipSpec(): SampleSpec {
     image: "view-clip-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp"), entry: true },
-      { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI") },
+      { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
+      { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: ViewClipApp.setup.bind(ViewClipApp),
+    sampleClass: ViewClipUI,
   });
 }

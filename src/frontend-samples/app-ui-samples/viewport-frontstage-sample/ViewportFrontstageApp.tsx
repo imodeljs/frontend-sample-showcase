@@ -12,15 +12,14 @@ import { ControlPane } from "common/ControlPane/ControlPane";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
-export class ViewportFrontstageSample extends React.Component<{ iModelSelector: React.ReactNode }> {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+export default class ViewportFrontstageSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> {
+  public async componentDidMount() {
     // Initialize utility class for AppUi samples
     AppUi.initialize();
     // set up iModel and AppUi Frontstage
-    await AppUi.setIModelAndFrontstage(iModelName, "ViewportFrontstage");
-    return <ViewportFrontstageSample iModelSelector={iModelSelector}></ViewportFrontstageSample>;
+    await AppUi.setIModelAndFrontstage(this.props.iModelName, "ViewportFrontstage");
   }
-  public static teardown() {
+  public componentWillUnmount() {
     AppUi.restoreDefaults();
   }
 

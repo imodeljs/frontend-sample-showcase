@@ -47,6 +47,11 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
     };
   }
 
+
+  public componentWillUnmount() {
+    PropertyFormattingApp.removeSelectionListener();
+  }
+
   private onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
     PropertyFormattingApp.addSelectionListener(this._onSelectionChanged);

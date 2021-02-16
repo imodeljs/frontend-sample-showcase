@@ -59,8 +59,4 @@ export default class Advanced3dApp implements SampleApp {
     return builder.claimPolyface(true);
   }
 
-  public static async setup(): Promise<React.ReactNode> {
-    return <Advanced3dUI></Advanced3dUI>;
-  }
-
 }

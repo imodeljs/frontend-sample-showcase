@@ -37,10 +37,6 @@ export default class CheckListBoxList extends React.Component<{}> implements Sam
     ];
   }
 
-  public static async setup(_iModelName: string) {
-    return <CheckListBoxList ></CheckListBoxList>;
-  }
-
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {

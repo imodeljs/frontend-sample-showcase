@@ -20,10 +20,6 @@ export default class SwipingViewportApp implements SampleApp {
   private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
 
-  /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <SwipingComparisonUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
@@ -256,8 +252,8 @@ class ComparisonWireframeProvider extends SampleTiledGraphicsProvider {
     this.viewFlagOverrides.setRenderMode(RenderMode.Wireframe);
   }
 
-  protected prepareNewBranch(_vp: Viewport): void {}
-  protected resetOldView(_vp: Viewport): void {}
+  protected prepareNewBranch(_vp: Viewport): void { }
+  protected resetOldView(_vp: Viewport): void { }
 }
 
 class ComparisonRealityModelProvider extends SampleTiledGraphicsProvider {

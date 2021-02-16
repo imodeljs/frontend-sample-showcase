@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import BasicTreeApp from "./BasicTreeApp";
+import { BasicTreeUI } from "./BasicTreeUI";
 
 export function getBasicTreeSpec(): SampleSpec {
   return ({
@@ -14,9 +14,9 @@ export function getBasicTreeSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp"), entry: true },
       { name: "BasicTreeUI.tsx", import: import("!!raw-loader!./BasicTreeUI"), entry: true },
+      { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp") },
     ],
-    setup: BasicTreeApp.setup.bind(BasicTreeApp),
+    sampleClass: BasicTreeUI,
   });
 }

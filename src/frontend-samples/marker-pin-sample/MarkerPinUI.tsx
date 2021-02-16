@@ -6,7 +6,7 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Point3d, Range2d } from "@bentley/geometry-core";
-import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { PopupMenu } from "./PopupMenu";
@@ -45,6 +45,28 @@ export default class MarkerPinsUI extends React.Component<{
       range: Range2d.createNull(),
       height: 0,
     };
+  }
+
+  public async componentDidMount() {
+
+    MarkerPinApp._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
+
+    PlaceMarkerTool.register(MarkerPinApp._sampleNamespace);
+
+    MarkerPinApp._images = new Map();
+    MarkerPinApp._images.set("Google_Maps_pin.svg", await imageElementFromUrl(".\\Google_Maps_pin.svg"));
+    MarkerPinApp._images.set("pin_celery.svg", await imageElementFromUrl(".\\pin_celery.svg"));
+    MarkerPinApp._images.set("pin_poloblue.svg", await imageElementFromUrl(".\\pin_poloblue.svg"));
+
+    return <MarkerPinsUI iModelName={this.props.iModelName} iModelSelector={this.props.iModelSelector} />;
+  }
+
+  public componentWillUnmount() {
+    MarkerPinApp.disableDecorations();
+    MarkerPinApp._markerDecorator = undefined;
+
+    IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
+    IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: MarkerPinsUIState) {

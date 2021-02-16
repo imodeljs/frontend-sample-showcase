@@ -16,17 +16,12 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 export default class BadgeList extends React.Component<{}> implements SampleApp {
-
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getBadgeData(): UIComponentExampleProps[] {
     return [
       createComponentExample("BetaBadge", undefined, <BetaBadge />),
       createComponentExample("NewBadge", undefined, <NewBadge />),
     ];
-  }
-
-  public static async setup(_iModelName: string) {
-    return <BadgeList></BadgeList>;
   }
 
   // Combines the control pane and the component container to create the final display

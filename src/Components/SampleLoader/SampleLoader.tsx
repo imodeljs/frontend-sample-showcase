@@ -7,43 +7,48 @@ import { BlankConnection, IModelConnection, ViewState } from "@bentley/imodeljs-
 import { StartupComponent } from "../../common/Startup/Startup";
 import { ViewSetup } from "api/viewSetup";
 import { IModelSelector } from "common/IModelSelector/IModelSelector";
+import { BlankViewport } from "common/Geometry/BlankViewport";
+import { Range3d } from "@bentley/geometry-core";
 
 
-export interface ShowcaseSampleProps {
+export interface ConnectionProps extends React.Attributes {
   iModelConnection: IModelConnection;
-  iModelSelector: IModelSelector;
-  viewState: ViewState;
+  defaultViewState: ViewState;
+  iModelSelector?: React.ReactNode;
 }
 
-export interface BlankConnectionProps {
+export interface BlankConnectionProps extends React.Attributes {
   iModelConnection: BlankConnection;
+  defaultViewState: ViewState;
 }
 
-export abstract class ConnectionSample extends React.Component<ShowcaseSampleProps> {
-
-
-}
-
-export abstract class NoConnectionSample extends React.Component<BlankConnectionProps> {
-
-
-}
-
-export abstract class BlankConnectionConnectionSample extends React.Component<{}> {
-
-
-}
 
 export default class SampleLoader extends React.Component<{ iModelName?: string, iModelName2?: string, iModelSelector?: React.ReactNode, sample: typeof React.Component }, { iModelConnection?: IModelConnection, sampleUI: React.ReactNode }> {
 
   public async setSampleUI() {
-    if (this.state && this.props.iModelName && this.state.iModelConnection) {
-      const sampleViewState = await ViewSetup.getDefaultView(this.state.iModelConnection)
-      //console.log(this.props.sample.prototype)
-      //console.log(this.props.sample.arguments)
-      const sampleUI = React.createElement(this.props.sample, { iModelConnection: this.state.iModelConnection, iModelSelector: this.props.iModelSelector, viewState: sampleViewState })
+    if (this.props.iModelName) {
+      if (this.state && this.state.iModelConnection) {
+        const defaultViewState = await ViewSetup.getDefaultView(this.state.iModelConnection)
+        const props: ConnectionProps = {
+          iModelConnection: this.state.iModelConnection,
+          defaultViewState,
+          iModelSelector: this.props.iModelSelector,
+        }
+        const sampleUI = React.createElement(this.props.sample, props)
 
-      this.setState({ sampleUI })
+        if (sampleUI)
+          this.setState({ sampleUI })
+      }
+    } else {
+      const connection = BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
+      const defaultViewState = BlankViewport.getViewState(connection, true, true)
+      const props: BlankConnectionProps = {
+        iModelConnection: connection,
+        defaultViewState,
+      }
+      const sampleUI = React.createElement(this.props.sample, props)
+      if (sampleUI)
+        this.setState({ sampleUI })
     }
   }
 
@@ -57,9 +62,9 @@ export default class SampleLoader extends React.Component<{ iModelName?: string,
   }
 
   public componentDidUpdate(prevProps: { iModelName?: string, iModelName2?: string, iModelSelector?: React.ReactNode, sample: typeof React.Component }, prevState: { iModelConnection?: IModelConnection, sampleUI: React.ReactNode }) {
-    if (prevProps.iModelName !== this.props.iModelName) {
+    if (prevProps.iModelName !== this.props.iModelName || prevProps.sample !== this.props.sample) {
       this.setState({ iModelConnection: undefined, sampleUI: undefined })
-    } else if (!this.state || !this.state.sampleUI || prevState.iModelConnection !== this.state.iModelConnection)
+    } else if (!this.state || !this.state.sampleUI || (prevState && prevState.iModelConnection !== this.state.iModelConnection))
       this.setSampleUI()
   }
 

@@ -13,9 +13,6 @@ import {
 import RealityDataUI from "./RealityDataUI";
 
 export default class RealityDataApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <RealityDataUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 
   public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
     const style = viewPort.displayStyle.clone();

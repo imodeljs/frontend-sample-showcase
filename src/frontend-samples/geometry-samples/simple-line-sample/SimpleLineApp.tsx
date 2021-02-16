@@ -24,8 +24,4 @@ export default class SimpleLineApp implements SampleApp {
     return points;
   }
 
-  public static async setup(): Promise<React.ReactNode> {
-    return <SimpleLineUI></SimpleLineUI>;
-  }
-
 }

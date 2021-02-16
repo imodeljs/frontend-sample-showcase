@@ -14,6 +14,6 @@ export function getViewportOnlySpec(): SampleSpec {
     files: [
       { name: "ViewportOnlyUI.tsx", import: import("!!raw-loader!./ViewportOnlyUI"), entry: true },
     ],
-    setup: ViewportOnlyUI,
+    sampleClass: ViewportOnlyUI,
   });
 }

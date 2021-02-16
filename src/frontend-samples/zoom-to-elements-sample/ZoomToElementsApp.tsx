@@ -10,9 +10,6 @@ import ZoomToElementsUI, { ZoomToState } from "./ZoomToElementsUI";
 import SampleApp from "common/SampleApp";
 
 export default class ZoomToElementsApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ZoomToElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 
   public static zoomToElements = async (state: ZoomToState) => {
     const viewChangeOpts: ViewChangeOptions = {};

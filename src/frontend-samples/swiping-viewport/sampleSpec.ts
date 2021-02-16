@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import SwipingComparisonApp from "./SwipingComparisonApp";
+import SwipingComparisonUI from "./SwipingComparisonUI";
 
 export function getSwipingComparisonSpec(): SampleSpec {
   return ({
@@ -14,12 +14,11 @@ export function getSwipingComparisonSpec(): SampleSpec {
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     customModelList: [SampleIModels.ExtonCampus],
     files: [
-      { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp"), entry: true },
-      { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI") },
+      { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI"), entry: true },
+      { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp") },
       { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
       { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
     ],
-    setup: SwipingComparisonApp.setup.bind(SwipingComparisonApp),
-    teardown: SwipingComparisonApp.teardown.bind(SwipingComparisonApp),
+    sampleClass: SwipingComparisonUI,
   });
 }

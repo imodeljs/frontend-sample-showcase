@@ -8,7 +8,7 @@ import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool,
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
-import "common/SandboxViewport/Toolbar.scss";
+import "common/SandboxViewport/Toolbar/Toolbar.scss";
 
 interface BlankViewportProps {
   force2d: boolean;
@@ -23,11 +23,11 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
   public componentDidMount() {
     let imodel;
     if (this.props.sampleSpace) {
-      imodel = this.getBlankConnection(this.props.sampleSpace);
+      imodel = BlankViewport.getBlankConnection(this.props.sampleSpace);
     } else {
-      imodel = this.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
+      imodel = BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
     }
-    const viewState = this.getViewState(imodel, this.props.grid, this.props.force2d);
+    const viewState = BlankViewport.getViewState(imodel, this.props.grid, this.props.force2d);
     this.setState({
       viewState,
       imodel,
@@ -41,7 +41,7 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
   }
 
   // Creates a blank iModelConnection with the specified dimensions
-  private getBlankConnection(sampleDimensions: Range3d) {
+  public static getBlankConnection(sampleDimensions: Range3d) {
     const exton: BlankConnection = BlankConnection.create({
       name: "GeometryConnection",
       location: Cartographic.fromDegrees(0, 0, 0),
@@ -51,7 +51,7 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
   }
 
   // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public getViewState(imodel: IModelConnection, grid: boolean, twoDim: boolean): SpatialViewState {
+  public static getViewState(imodel: IModelConnection, grid: boolean, twoDim: boolean): SpatialViewState {
     const ext = imodel.projectExtents;
     const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
     if (!twoDim) {

@@ -60,9 +60,4 @@ export default class ReadSettingsApp implements SampleApp {
     const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
     return IModelApp.settings.saveSetting(requestContext, settingValue, namespace, settingName, true, projectId, imodelId);
   }
-
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    ReadSettingsApp.projectContext = await ReadSettingsApp.getIModelInfo(iModelName);
-    return <ReadSettingsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 }

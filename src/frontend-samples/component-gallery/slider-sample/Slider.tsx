@@ -45,10 +45,6 @@ export default class SliderList extends React.Component<{}> implements SampleApp
     ];
   }
 
-  public static async setup(_iModelName: string) {
-    return <SliderList></SliderList>;
-  }
-
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {

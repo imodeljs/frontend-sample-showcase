@@ -31,9 +31,4 @@ export default class SimpleAnimatedApp implements SampleApp {
     return squares;
   }
 
-  public static async setup(): Promise<React.ReactNode> {
-    return <SimpleAnimatedUI></SimpleAnimatedUI>;
-  }
-
-
 }
