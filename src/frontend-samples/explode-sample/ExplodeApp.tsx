@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import * as React from "react";
@@ -31,6 +31,21 @@ export default class ExplodeApp implements SampleApp {
       ExplodeProvider.getOrCreate(vp).drop();
     });
     ExplodeApp.cleanUpCallbacks.forEach((func) => func());
+  }
+
+  public static async queryElementsInByCategories(iModel: IModelConnection, categoryCodes: string[]): Promise<string[]> {
+    const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
+    const selectElementsInCategories = `SELECT ECInstanceId FROM BisCore.GeometricElement3d WHERE Category.Id IN (${selectRelevantCategories})`;
+
+    const results = iModel.query(selectElementsInCategories);
+    const elementIds: string[] = [];
+    let row = await results.next();
+    while (row.value) {
+      elementIds.push(row.value.id);
+
+      row = await results.next();
+    }
+    return elementIds;
   }
 
   /** The attributes describing the range of the explode scaling. */

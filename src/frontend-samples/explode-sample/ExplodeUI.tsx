@@ -22,11 +22,13 @@ interface ExplodeState {
   emphasize: EmphasizeType;
   viewport?: Viewport;
   isAnimated: boolean;
+  isPopulatingObjects: boolean;
 }
 
 interface ExplodeObject {
   name: string;
   elementIds: string[];
+  categories?: string[];
 }
 enum EmphasizeType {
   None,
@@ -47,8 +49,9 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       elementIds: ["0x20000000fdc", "0x20000000fe1", "0x20000000fe0", "0x20000000fde", "0x20000000fdf", "0x20000000fdd", "0x20000000fe2", "0x20000000fda", "0x20000000fdb", "0x20000000fe3"],
     },
     {
-      name: "House Externals",
-      elementIds: ["0x20000000f01", "0x20000000ef1", "0x20000000f08", "0x200000009a2", "0x200000009a3", "0x20000000eed", "0x20000000eee", "0x20000000efb", "0x200000007fd", "0x20000000efd", "0x20000000eef", "0x20000000ef0", "0x20000000eff", "0x200000009a1", "0x20000000efe", "0x20000000f0f", "0x20000000f10", "0x20000000f06", "0x200000009a0", "0x20000000f12", "0x20000000f11", "0x20000000f00", "0x200000009a5", "0x20000000eec", "0x20000000ee5", "0x20000000f02", "0x20000000f03", "0x20000000eea", "0x20000000f04", "0x20000000ef4", "0x20000000ef6", "0x20000000ef5", "0x20000000f05", "0x20000000ef9", "0x20000000f0a", "0x20000000ef8", "0x20000000ef7", "0x20000000ee6", "0x20000000991", "0x2000000099a", "0x20000000992", "0x20000000eeb", "0x20000000ef3", "0x20000000ef2", "0x20000000f0c", "0x20000000ee7", "0x20000000997", "0x20000000f0b", "0x20000000f14", "0x20000000f13", "0x20000000ee9", "0x200000009a4", "0x20000000998", "0x20000000ee3", "0x20000000999", "0x20000000996", "0x20000000994", "0x20000000993", "0x20000000995"],
+      name: "Exterior",
+      elementIds: [],
+      categories: ["Brick Exterior", "Dry Wall 1st", "Dry Wall 2nd", "Roof", "Wall 1st", "Wall 2nd"],
     },
     {
       name: "Table",
@@ -63,12 +66,28 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   constructor(props: SampleProps) {
     super(props);
     this.state = {
+      isPopulatingObjects: true,
       isAnimated: false,
       isInit: true,
-      object: this._objects.find((o) => o.name === "Table")!,
+      object: this._objects.find((o) => o.name === "Exterior")!,
       explodeFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
-      emphasize: EmphasizeType.None, // This will be changed to Isolate before the exploded view effect is applied.
+      emphasize: EmphasizeType.None,
     };
+  }
+
+  /** Populates the element ids of objects defined by category codes. */
+  public async populateObjects(iModel: IModelConnection): Promise<void> {
+    const populateObjects: Array<Promise<void>> = [];
+    this._objects.forEach((obj, index) => {
+      if (obj.categories === undefined)
+        return;
+
+      populateObjects.push((async () => {
+        const elementIds = await ExplodeApp.queryElementsInByCategories(iModel, obj.categories!);
+        this._objects[index].elementIds = elementIds;
+      })());
+    });
+    await Promise.all(populateObjects);
   }
 
   /** Kicks off the exploded view effect. */
@@ -76,7 +95,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const vp = this.state.viewport;
     if (!vp) return;
     if (this.state.isInit) {
-      this.setState({ isInit: false, emphasize: EmphasizeType.Isolate });
+      this.setState({ isInit: false });
     }
     ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explodeFactor);
   }
@@ -129,7 +148,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         <Slider min={min} max={max} values={[this.state.explodeFactor]} step={step} showMinMax={true} onUpdate={this.onSliderChange} disabled={this.state.isAnimated} />
         <label>Object</label>
         <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated} />
+          <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated || this.state.isPopulatingObjects} />
           <Button onClick={this.onZoomButton} disabled={this.state.isInit || this.state.isAnimated}>Zoom To</Button>
         </span>
         <label>Emphasis</label>
@@ -139,9 +158,12 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   }
 
   /** Method is called by the showcase when the IModel connection is create. */
-  public readonly onIModelReady = (_iModel: IModelConnection): void => {
+  public readonly onIModelReady = (iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp) => {
       this.setState({ viewport: vp });
+    });
+    this.populateObjects(iModel).then(() => {
+      this.setState({ isPopulatingObjects: false });
     });
   }
   /** Methods that support the UI control interactions. */
@@ -185,6 +207,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     let updateExplode = false;
     let updateObject = false;
     updateExplode = updateObject = (preState.object.name !== this.state.object.name);
+    updateExplode = updateExplode || (preState.isPopulatingObjects !== this.state.isPopulatingObjects);
     updateExplode = updateExplode || (preState.explodeFactor !== this.state.explodeFactor);
     updateExplode = updateExplode || (preState.viewport?.viewportId !== this.state.viewport?.viewportId);
 
