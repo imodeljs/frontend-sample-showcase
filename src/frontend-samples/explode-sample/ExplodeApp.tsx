@@ -37,14 +37,10 @@ export default class ExplodeApp implements SampleApp {
     const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
     const selectElementsInCategories = `SELECT ECInstanceId FROM BisCore.GeometricElement3d WHERE Category.Id IN (${selectRelevantCategories})`;
 
-    const results = iModel.query(selectElementsInCategories);
     const elementIds: string[] = [];
-    let row = await results.next();
-    while (row.value) {
-      elementIds.push(row.value.id);
+    for await (const row of iModel.query(selectElementsInCategories))
+      elementIds.push(row.id);
 
-      row = await results.next();
-    }
     return elementIds;
   }
 

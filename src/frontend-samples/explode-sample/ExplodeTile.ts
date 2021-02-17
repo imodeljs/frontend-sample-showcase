@@ -111,18 +111,16 @@ class ExplodeTreeSupplier implements TileTreeSupplier {
   /** Queries the backend for the elements to explode.  It also populates the data it can interpolate with a single pass. */
   private static async queryElements(iModel: IModelConnection, elementsIds: string[]): Promise<ElementData[]> {
     const query = `Select ECInstanceID,Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
-    const results = iModel.query(query);
     const data: ElementData[] = [];
-    let row = await results.next();
-    while (row.value) {
-      const element = (row.value as ElementDataProps);
+
+    for await (const row of iModel.query(query)) {
+      const element = (row as ElementDataProps);
 
       const placement = Placement3d.fromJSON({ origin: element.origin, angles: { pitch: element.pitch, roll: element.roll, yaw: element.yaw } });
       const transform = placement.transform;
       const box = Range3d.create(Point3d.fromJSON(element.bBoxLow), Point3d.fromJSON(element.bBoxHigh));
 
       data.push({ elementId: element.id, origin: Point3d.fromJSON(element.origin), boundingBox: transform.multiplyRange(box), transformWorld: transform });
-      row = await results.next();
     }
 
     return data;
