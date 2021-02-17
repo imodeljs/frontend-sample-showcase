@@ -72,8 +72,13 @@ export default class ExplodeApp implements SampleApp {
       cancelOnAbort: false,
     };
 
+    // Move the view into a good viewing angle.
+    IModelApp.tools.run("View.Standard", vp, 7 /* isoRight */);
+
+    // Gets the volume from the tile tree once it has been calculated.
     let volume = ExplodeTreeReference.getTreeRange(objectName);
     if (undefined === volume) {
+      // wait for the volume to be calculated, then zoom.
       const awaitRangeLoaded: TreeDataListener = (name, rangeDidUpdate) => {
         if (objectName === name && rangeDidUpdate) {
           volume = ExplodeTreeReference.getTreeRange(objectName)!;
@@ -84,6 +89,7 @@ export default class ExplodeApp implements SampleApp {
       const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener(awaitRangeLoaded);
       ExplodeApp.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
     } else {
+      // volume was already calculated.
       vp.zoomToVolume(volume, options);
     }
   }
