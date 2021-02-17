@@ -56,7 +56,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       isPopulatingObjects: true,
       isAnimated: false,
       isInit: true,
-      object: this._objects.find((o) => o.name === "Exterior")!,
+      object: this._objects.find((o) => o.name === "Sunroom")!,
       explodeFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
       isolate: false,  // Will be set to "true" after initialized.
     };
