@@ -93,7 +93,11 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         return iModelViews.iModelName === this.props.iModelName;
       });
 
+      /** Grab the views of the iModel just loaded and load the first view state in the SampleViewStates.ts */
       const views = iModelWithViews.length > 0 ? iModelWithViews[0].views : [];
+      if (views.length !== 0) {
+        SerializeViewApp.loadViewState(viewport, views[this.state.currentViewIndex].view);
+      }
 
       /** Prettify the json string */
       const menuValue = undefined !== views[this.state.currentViewIndex] ?
