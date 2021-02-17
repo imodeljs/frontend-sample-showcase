@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Animator, IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
-import { Button, Select, Slider } from "@bentley/ui-core";
+import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
@@ -19,7 +19,7 @@ interface ExplodeState {
   isInit: boolean;
   object: ExplodeObject;
   explodeFactor: number;
-  emphasize: EmphasizeType;
+  isolate: boolean;
   viewport?: Viewport;
   isAnimated: boolean;
   isPopulatingObjects: boolean;
@@ -29,15 +29,6 @@ interface ExplodeObject {
   name: string;
   elementIds: string[];
   categories?: string[];
-}
-enum EmphasizeType {
-  None,
-  Isolate,
-}
-
-function mapOptions(o: {}): {} {
-  const keys = Object.keys(o).filter((key: any) => isNaN(key));
-  return Object.assign({}, keys);
 }
 
 export default class ExplodeUI extends React.Component<SampleProps, ExplodeState> {
@@ -67,7 +58,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       isInit: true,
       object: this._objects.find((o) => o.name === "Exterior")!,
       explodeFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
-      emphasize: EmphasizeType.None,
+      isolate: false,  // Will be set to "true" after initialized.
     };
   }
 
@@ -92,7 +83,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     if (!vp) return;
     if (this.state.isInit) {
       ExplodeApp.zoomToObject(vp, this.state.object.name);
-      this.setState({ isInit: false });
+      this.setState({ isInit: false, isolate: true });
     }
     ExplodeApp.refSetData(vp, this.state.object.name, this.state.object.elementIds, this.state.explodeFactor);
   }
@@ -135,7 +126,6 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const step = ExplodeApp.explodeAttributes.step;
 
     const objectEntries = this._objects.map((object) => object.name);
-    const emphasizeEntries = mapOptions(EmphasizeType);
     const animationText = this.state.isAnimated ? "Pause" : ((min + max) / 2 >= this.state.explodeFactor ? "Explode" : "Collapse");
     return <>
       <div className={"sample-options-2col"}>
@@ -148,8 +138,8 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
           <Select value={this.state.object.name} options={objectEntries} onChange={this.onObjectChanged} style={{ width: "fit-content" }} disabled={this.state.isAnimated || this.state.isPopulatingObjects} />
           <Button onClick={this.onZoomButton} disabled={this.state.isInit || this.state.isAnimated}>Zoom To</Button>
         </span>
-        <label>Emphasis</label>
-        <Select value={this.state.emphasize} options={emphasizeEntries} onChange={this.onEmphasizeChanged} disabled={this.state.isInit} style={{ width: "fit-content" }} />
+        <label>Isolate</label>
+        <Toggle isOn={this.state.isolate} onChange={this.onEmphasizeChanged} disabled={this.state.isInit || this.state.isAnimated} />
       </div>
     </>;
   }
@@ -173,10 +163,8 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     if (this.state.viewport)
       ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
   }
-  private readonly onEmphasizeChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const emphasize: EmphasizeType = Number.parseInt(event.target.value, 10);
-    if (!Number.isNaN(emphasize))
-      this.setState({ emphasize });
+  private readonly onEmphasizeChanged = (checked: boolean) => {
+    this.setState({ isolate: checked });
   }
   private readonly onSliderChange = (values: readonly number[]) => {
     const value = values[0];
@@ -200,7 +188,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
   /** A REACT method that is called when the props or state is updated (e.g. when "this.setState(...)" is called) */
   public componentDidUpdate(_prevProps: SampleProps, preState: ExplodeState) {
     const onInit = preState.isInit !== this.state.isInit;
-    const onEmphasize = preState.emphasize !== this.state.emphasize;
+    const onEmphasize = preState.isolate !== this.state.isolate;
     let updateExplode = false;
     let updateObject = false;
     updateExplode = updateObject = (preState.object.name !== this.state.object.name);
@@ -209,14 +197,10 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     updateExplode = updateExplode || (preState.viewport?.viewportId !== this.state.viewport?.viewportId);
 
     if ((onEmphasize || updateObject || onInit) && this.state.viewport) {
-      ExplodeApp.clearIsolateAndEmphasized(this.state.viewport);
-      switch (this.state.emphasize) {
-        case EmphasizeType.Isolate:
-          ExplodeApp.isolateElements(this.state.viewport, this.state.object.elementIds);
-          ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
-          break;
-        case EmphasizeType.None:
-        default:
+      ExplodeApp.clearIsolate(this.state.viewport);
+      if (this.state.isolate) {
+        ExplodeApp.isolateElements(this.state.viewport, this.state.object.elementIds);
+        ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
       }
     }
     // Handling it in the animator is faster.

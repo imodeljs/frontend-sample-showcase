@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport, ViewTool } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import * as React from "react";
@@ -27,7 +27,7 @@ export default class ExplodeApp implements SampleApp {
   /** This method is called by the showcase before changing samples. */
   public static async teardown() {
     IModelApp.viewManager.forEachViewport((vp) => {
-      ExplodeApp.clearIsolateAndEmphasized(vp);
+      ExplodeApp.clearIsolate(vp);
       ExplodeProvider.getOrCreate(vp).drop();
     });
     ExplodeApp.cleanUpCallbacks.forEach((func) => func());
@@ -60,7 +60,7 @@ export default class ExplodeApp implements SampleApp {
     emph.isolateElements(elementIds, vp);
   }
   /** Uses the  EmphasizeElements API to clear all isolated and emphasized. */
-  public static clearIsolateAndEmphasized(vp: Viewport) {
+  public static clearIsolate(vp: Viewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearIsolatedElements(vp);
   }
