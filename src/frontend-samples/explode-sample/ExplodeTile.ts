@@ -140,7 +140,6 @@ export type TreeDataListener = (name: string, didRangeUpdate: boolean, didElemen
 
 /** References the unique TileTree for the currently exploded object. */
 export class ExplodeTreeReference extends TileTreeReference {
-  // These methods facilitate communication from the TileTree to the App and Provider.
   private static treeDataMap = new Map<string, TreeData>();
   /** Event is raised when any TileTree reports a new range or tile loaded. */
   public static onTreeDataUpdated = new BeEvent<TreeDataListener>();
@@ -174,7 +173,6 @@ export class ExplodeTreeReference extends TileTreeReference {
     return Range3d.isNull(range) ? undefined : range.clone();
   }
 
-  // These methods support the functionality of the TileTreeReference itself.
   public static supplier = new ExplodeTreeSupplier();
   /** Uniquely identifies which TileTree this is referencing. */
   public id: ExplodeTreeId = { name: "", ids: [] };

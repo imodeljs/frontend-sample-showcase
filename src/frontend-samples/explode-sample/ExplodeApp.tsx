@@ -112,7 +112,6 @@ export default class ExplodeApp implements SampleApp {
 
 /** This provider both hides the original graphics of the element and inserts the transformed graphics. */
 class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider {
-  // These methods support the provider as an object.
   /** Returns a provider associated with a given viewport. If one does not exist, it will be created. */
   public static getOrCreate(vp: Viewport) {
     let provider = vp.findFeatureOverrideProviderOfType(ExplodeProvider);
@@ -150,7 +149,6 @@ class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider 
     this.vp.setFeatureOverrideProviderChanged();
   }
 
-  // These methods support the functionality of the provider.
   public constructor(public vp: Viewport) {
     const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name, _, elementIdsDidUpdate) => {
       const currentTree = this.explodeTileTreeRef.id;
