@@ -11,12 +11,22 @@ export function getSerializeViewSpec(): SampleSpec {
     name: "serialize-view-sample",
     label: "Serialize View",
     image: "serialize-view-thumbnail.png",
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation],
+    customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp"), entry: true },
-      { name: "SerializeViewUI.tsx", import: import("!!raw-loader!./SerializeViewUI") },
-      { name: "SampleViewStates.ts", import: import("!!raw-loader!./SampleViewStates") },
+      {
+        name: "SerializeViewApp.tsx",
+        import: import("!!raw-loader!./SerializeViewApp"),
+        entry: true,
+      },
+      {
+        name: "SerializeViewUI.tsx",
+        import: import("!!raw-loader!./SerializeViewUI"),
+      },
+      {
+        name: "SampleViewStates.ts",
+        import: import("!!raw-loader!./SampleViewStates"),
+      },
     ],
     setup: SerializeViewApp.setup.bind(SerializeViewApp),
   };

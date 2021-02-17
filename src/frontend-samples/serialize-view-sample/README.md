@@ -16,8 +16,8 @@ The main purpose is to demonstrate how to serialize a viewstate and reload that 
 
 Being able save and reload a view of an IModel is a fundamental feature. This sample shows the two functions required to save a view's properties to json format and reload them.
 
-The "Save State" button will allow the user to save the current view to json format. Then to reload the view, use the "Select View" drop down to select the desired view and press the "Load State" button. The will transition the view to the saved view state.
+The "Save State" button will allow the user to save the current view to json format. Then to reload the view, use the "Select View" drop down to select the desired view and press the "Load State" button. This will transition the view to the saved view state.
 
 Use the "Show Json" button to show the json of the saved view in a popup window and the "Save View" to save the view. Then use "Load View" with the view selected to reload with its new settings.
 
-We invite you to create new views, manipulate the them via the json viewer popup window, and maniuplate the default sample views in [SampleViewStates.json](./SampleViewStates.json).
+The default views for each iModel are located in [SampleViewStates.json](./SampleViewStates.json) and are editable but will require recompiling.

@@ -16,7 +16,7 @@ export interface IModelViews {
 
 export const sampleViewStates: IModelViews[] = [
   {
-    iModelName: "Metrostation",
+    iModelName: "Metrostation Sample",
     views: [
       {
         name: "Underground",
@@ -1279,7 +1279,7 @@ export const sampleViewStates: IModelViews[] = [
     ],
   },
   {
-    iModelName: "Retail Building",
+    iModelName: "Retail Building Sample",
     views: [
       {
         name: "First Floor",

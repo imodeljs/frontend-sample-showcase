@@ -20,28 +20,23 @@ interface SerializeViewUIProps {
 
 interface SerializeViewUIState {
   viewport?: Viewport;
-  iModelViews: ViewStateWithName[];
-  iModelViewIndex: number;
+  views: ViewStateWithName[];
+  currentViewIndex: number;
   jsonMenuVisible: boolean;
   jsonMenuValue: string;
   jsonError: string | undefined;
   loadStateError: string | undefined;
 }
 
-const iModelIdToNameDict: { [id: string]: string } = {
-  "bef6d098-bcf4-41cf-a0b2-4a49553fefa2": "Metrostation",
-  "97a67f36-8efa-499c-a6ed-a8e07f38a410": "Retail Building",
-}
-
 export default class SerializeViewUI extends React.Component<SerializeViewUIProps, SerializeViewUIState> {
 
   public state: SerializeViewUIState = {
-    iModelViews: [],
+    views: [],
+    currentViewIndex: 0,
+    loadStateError: "",
     jsonMenuVisible: false,
     jsonMenuValue: "",
-    iModelViewIndex: 0,
     jsonError: "",
-    loadStateError: "",
   }
 
   /** Dictionary of imodelId's to array of viewstates */
@@ -57,7 +52,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
 
       /** Add that serialized view to the list of views to select from */
       this.setState((prevState) => (
-        { iModelViews: [...prevState.iModelViews, { name: `Saved View: ${prevState.iModelViews.length + 1}`, view: viewStateProps }] }
+        { views: [...prevState.views, { name: `Saved View: ${prevState.views.length + 1}`, view: viewStateProps }], currentViewIndex: prevState.views.length }
       ));
     }
   }
@@ -65,7 +60,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
   /** Loads the view selected */
   private readonly _onLoadStateClick = () => {
     if (undefined !== this.state.viewport) {
-      const view = this.state.iModelViews[this.state.iModelViewIndex].view;
+      const view = this.state.views[this.state.currentViewIndex].view;
 
       //* * Load the view state. Display error message if there is one */
       SerializeViewApp.loadViewState(this.state.viewport, view)
@@ -94,22 +89,21 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       /** Grab the IModel with views that match the imodel loaded. */
-      const iModelId = viewport.iModel.iModelId !== undefined ? viewport.iModel.iModelId : "";
       const iModelWithViews = this.allSavedViews.filter((iModelViews) => {
-        return iModelViews.iModelName === iModelIdToNameDict[iModelId];
+        return iModelViews.iModelName === this.props.iModelName;
       });
 
       const views = iModelWithViews.length > 0 ? iModelWithViews[0].views : [];
 
       /** Prettify the json string */
-      const menuValue = undefined !== views[this.state.iModelViewIndex] ?
-        JSON.stringify(views[this.state.iModelViewIndex].view, null, 2)
+      const menuValue = undefined !== views[this.state.currentViewIndex] ?
+        JSON.stringify(views[this.state.currentViewIndex].view, null, 2)
         : "No View Selected";
 
       /** Set the views for the imodel in the stae */
       this.setState({
         viewport,
-        iModelViews: views,
+        views,
         jsonMenuValue: menuValue,
       });
     });
@@ -119,8 +113,8 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
     this.setState((prevState) => ({
-      iModelViewIndex: index,
-      jsonMenuValue: JSON.stringify(prevState.iModelViews[index].view, null, 2),
+      currentViewIndex: index,
+      jsonMenuValue: JSON.stringify(prevState.views[index].view, null, 2),
     }));
   }
 
@@ -137,18 +131,18 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
   /** Called when user selects 'Save View' */
   private _onSaveJsonViewClick = async () => {
     if (undefined !== this.state.viewport) {
-      const views = [...this.state.iModelViews];
+      const views = [...this.state.views];
       const viewStateProps = JSON.parse(this.state.jsonMenuValue) as ViewStateProps;
       if (undefined !== viewStateProps) {
-        views[this.state.iModelViewIndex].view = viewStateProps;
-        this.setState({ iModelViews: views });
+        views[this.state.currentViewIndex].view = viewStateProps;
+        this.setState({ views });
       }
     }
   }
 
   /** Gets the options for the dropdown menu to select views */
   private getOptions(): SelectOption[] {
-    return this.state.iModelViews.map((viewStateWithName: ViewStateWithName, index: number) => {
+    return this.state.views.map((viewStateWithName: ViewStateWithName, index: number) => {
       return { label: viewStateWithName.name, value: index }
     });
   }
@@ -177,8 +171,8 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
             <Button buttonType={ButtonType.Hollow} onClick={this._onHideJsonViewerClick} style={{ border: "0" }}><Icon iconSpec="icon-close" /></Button>
           </div>
           <div className="item" style={{ marginRight: "auto" }}>
-            {undefined !== this.state.viewport && undefined !== this.state.iModelViews[this.state.iModelViewIndex] ?
-              this.state.iModelViews[this.state.iModelViewIndex].name
+            {undefined !== this.state.viewport && undefined !== this.state.views[this.state.currentViewIndex] ?
+              this.state.views[this.state.currentViewIndex].name
               : ""}
           </div>
         </div>
@@ -199,7 +193,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
       <>
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <span>Select View:</span>
-          <Select options={this.getOptions()} onChange={this._handleSelection} style={{ width: "fit-content" }} disabled={0 === this.state.iModelViews.length} />
+          <Select options={this.getOptions()} onChange={this._handleSelection} style={{ width: "fit-content" }} disabled={0 === this.state.views.length} value={this.state.currentViewIndex} />
         </div>
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <Button onClick={this._onSaveStateClick}>Save State</Button>
@@ -207,7 +201,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         </div>
         {this.showError(this.state.loadStateError)}
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={this._onShowJsonViewerClick} disabled={0 === this.state.iModelViews.length}>Show Json</Button>
+          <Button onClick={this._onShowJsonViewerClick} disabled={0 === this.state.views.length}>Show Json</Button>
         </div>
       </>
     );
@@ -215,7 +209,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
 
   /** The sample's render method */
   public render() {
-    const instruction = "Use the \"Save State\" button to save the current view. Then manipulate the view and select \"Load State\" to reload the saved view.";
+    const instruction = "Choose a view from the list to \"Load\" it into the viewport. Or manipulate the view and select \"Save\" to serialize it.";
     return (
       <>
         {this.state.jsonMenuVisible ? this.getJsonViewer() : ""}
