@@ -8,7 +8,7 @@ import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector, SampleIModels } from "../IModelSelector/IModelSelector";
+import { IModelSelector } from "../IModelSelector/IModelSelector";
 import { ConnectedSampleEditor } from "../SampleEditor/SampleEditor";
 import { editorCommonActionContext, IInternalFile, SplitScreen } from "@bentley/monaco-editor/editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
@@ -39,6 +39,7 @@ interface ShowcaseState {
   sampleUI?: React.ReactNode;
   showEditor: boolean;
   showGallery: boolean;
+  dragging: boolean;
 }
 
 /** A React component that renders the UI for the showcase */
@@ -63,6 +64,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       activeSampleName: names.sample,
       showEditor: true,
       showGallery: true,
+      dragging: false,
     };
 
   }
@@ -83,34 +85,31 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       sample = urlSampleName;
     }
 
-    let imodel = "";
-
-    if (iModelName) {
-      const sampleImodels: string[] = Object.values(SampleIModels);
-      if (sampleImodels.includes(iModelName)) {
-        imodel = iModelName;
-      } else {
-        imodel = IModelSelector.defaultIModel;
-      }
-    } else {
-      imodel = IModelSelector.defaultIModel;
-    }
-
     if (!namesAreValid) {
       group = this._samples[0].groupName;
       sample = this._samples[0].samples[0].name;
     }
 
+    let imodel = iModelName;
+    const spec = this.getSampleByName(group, sample)!;
+    const iModelList = this.getIModelList(spec);
+
+    if (0 === iModelList.length) {
+      imodel = "";
+    } else if (!imodel || !iModelList.includes(imodel)) {
+      imodel = iModelList[0];
+    }
+
     return { group, sample, imodel };
   }
 
-  private updateURLParams() {
+  private updateURLParams(group: string, sample: string, imodel?: string) {
     const params = new URLSearchParams();
-    params.append("group", this.state.activeSampleGroup);
-    params.append("sample", this.state.activeSampleName);
+    params.append("group", group);
+    params.append("sample", sample);
 
-    if (this.state.iModelName) {
-      params.append("imodel", this.state.iModelName);
+    if (imodel) {
+      params.append("imodel", imodel);
     }
 
     // Detect if editor was enabled in URL params as a semi-backdoor, this
@@ -118,7 +117,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     const editorEnabled = new URLSearchParams(window.location.search).get("editor");
     if (editorEnabled) params.append("editor", editorEnabled);
 
-    window.history.replaceState(null, "", `?${params.toString()}`);
+    window.history.pushState(null, "", `?${params.toString()}`);
 
     // Send to parent if within an iframe.
     if (window.self !== window.top) {
@@ -132,28 +131,32 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   public componentDidMount() {
-    this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
+    this._onActiveSampleChange("", "");
 
     document.documentElement.setAttribute("data-theme", "dark");
+
+    window.onpopstate = (_ev: PopStateEvent) => {
+      const names = this.getNamesFromURLParams();
+      this._wantScroll = true;
+      this.setState({ iModelName: names.imodel, activeSampleGroup: names.group, activeSampleName: names.sample });
+    };
 
     SampleShowcase._sampleNamespace = IModelApp.i18n.registerNamespace("sample-showcase-i18n-namespace");
     MovePointTool.register(SampleShowcase._sampleNamespace);
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: ShowcaseState) {
+
     if (prevState.activeSampleGroup !== this.state.activeSampleGroup ||
       prevState.activeSampleName !== this.state.activeSampleName ||
       prevState.iModelName !== this.state.iModelName) {
 
-      this.updateURLParams();
-
       if (this._wantScroll && this._galleryRef.current) {
-        this._galleryRef.current.scrollToActiveSample();
         this._wantScroll = false;
+        this._galleryRef.current.scrollToActiveSample();
       }
 
-      if (prevState.iModelName !== this.state.iModelName)
-        this._onActiveSampleChange(this.state.activeSampleGroup, this.state.activeSampleName);
+      this._onActiveSampleChange(prevState.activeSampleGroup, prevState.activeSampleName);
     }
   }
 
@@ -181,58 +184,67 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return undefined;
   }
 
-  private async setupNewSample(groupName: string, sampleName: string) {
+  private async setupNewSample() {
 
-    const newSampleSpec = this.getSampleByName(groupName, sampleName);
+    const newSampleSpec = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined === newSampleSpec) {
-      this.setState({ activeSampleGroup: "", activeSampleName: "" });
+      this.setState({ activeSampleGroup: "", activeSampleName: "", iModelName: "" });
       return;
     }
 
     let sampleUI: React.ReactNode;
-    let iModelName = this.state.iModelName;
 
-    if (newSampleSpec && newSampleSpec.setup) {
+    if (newSampleSpec.setup) {
       const iModelList = this.getIModelList(newSampleSpec);
-
-      if (newSampleSpec.name !== this.state.activeSampleName) {
-        iModelName = iModelList[0];
-      }
-      const iModelSelector = this.getIModelSelector(iModelName, iModelList);
-      sampleUI = await newSampleSpec.setup(iModelName, iModelSelector);
+      const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
+      sampleUI = await newSampleSpec.setup(this.state.iModelName, iModelSelector);
     }
 
-    this.setState({ activeSampleGroup: groupName, activeSampleName: sampleName, sampleUI, iModelName });
+    this.setState({ sampleUI });
+  }
+
+  private _updateNames = (names: { group: string, sample: string, imodel?: string }) => {
+    if (this._prevSampleSetup) {
+      if (!window.confirm("Changes made to the code will not be saved!")) {
+        return;
+      }
+
+      const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
+      activeSample.setup = this._prevSampleSetup;
+      activeSample.teardown = this._prevSampleTeardown;
+      this._prevSampleSetup = undefined;
+      this._prevSampleTeardown = undefined;
+    }
+
+    let iModelName = names.imodel;
+    if (names.group !== this.state.activeSampleGroup || names.sample !== this.state.activeSampleName) {
+      const newSampleSpec = this.getSampleByName(names.group, names.sample);
+
+      if (newSampleSpec) {
+        const iModelList = this.getIModelList(newSampleSpec);
+        iModelName = iModelList[0];
+      }
+    }
+
+    this.updateURLParams(names.group, names.sample, iModelName);
+    this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName: iModelName ? iModelName : "" });
   }
 
   private _onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
-
     this._wantScroll = wantScroll;
-
-    if (this._prevSampleSetup) {
-      if (window.confirm("Changes made to the code will not be saved!")) {
-        const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-        activeSample.setup = this._prevSampleSetup;
-        activeSample.teardown = this._prevSampleTeardown;
-        this._prevSampleSetup = undefined;
-        this._prevSampleTeardown = undefined;
-        this._onActiveSampleChange(groupName, sampleName);
-      }
-    } else {
-      this._onActiveSampleChange(groupName, sampleName);
-    }
+    this._updateNames({ group: groupName, sample: sampleName })
   }
 
-  private _onActiveSampleChange = (groupName: string, sampleName: string) => {
-    const oldSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
+  private _onActiveSampleChange = (prevGroupName: string, prevSampleName: string) => {
+    const oldSample = this.getSampleByName(prevGroupName, prevSampleName);
     if (undefined !== oldSample && oldSample.teardown)
       oldSample.teardown();
 
-    this.setupNewSample(groupName, sampleName);
+    this.setupNewSample();
   }
 
   private _onIModelChange = (iModelName: string) => {
-    this.setState({ iModelName });
+    this._updateNames({ group: this.state.activeSampleGroup, sample: this.state.activeSampleName, imodel: iModelName })
   }
 
   private _onEditorButtonClick = () => {
@@ -280,24 +292,53 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
   }
 
+  private _onDragStarted = () => {
+    this.setState({ dragging: true });
+  }
+
+  private _onDragFinished = () => {
+    this.setState({ dragging: false });
+  }
+
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     const readme = activeSample ? activeSample.readme : undefined;
     const files = activeSample ? activeSample.files : undefined;
 
+    const showEditor = this.state.showEditor;
+    const showGallery = this.state.showGallery;
+
+    /* To hide the side panels, we are setting their width to zero.  It would be better to translate them
+       off the screen but I can't make that work with the SplitPanel.  One negative side effect is that
+       the contents of the panels resize during the hide/show transition.  To prevent the user from seeing
+       the resize, we set the opacity to zero.
+
+       When closing, set the opacity to 0 immediately.  When opening, delay until the panel is fully open. */
+    const closeTransition = this.state.dragging ? {} : { transition: "width .2s ease" };
+    const openTransition = this.state.dragging ? {} : { transition: "width .2s ease, opacity .1s .2s" };
+    const closedPanelStyle = { ...closeTransition, width: "0", opacity: "0" };
+
+    const openEditorPanelStyle = { ...openTransition, maxWidth: "80%" };
+    const editorPanelStyle = showEditor ? openEditorPanelStyle : closedPanelStyle;
+
+    const openGalleryPanelStyle = { ...openTransition, maxWidth: "25%" };
+    const galleryPanelStyle = showGallery ? openGalleryPanelStyle : closedPanelStyle;
+
     return (
       <div className="showcase">
-        <SplitScreen primary="second" resizerStyle={this.state.showGallery ? undefined : { display: "none" }} minSize={this.state.showGallery ? 100 : 150} size={this.state.showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={this.state.showGallery ? { maxWidth: "25%" } : { width: 0 }} onChange={this._onSampleGallerySizeChange}>
-          <SplitScreen style={{ position: "relative" }} resizerStyle={this.state.showEditor ? undefined : { display: "none" }} minSize={this.state.showEditor ? 190 : 210} size={this.state.showEditor ? 500 : 0} maxSize={1450} pane1Style={this.state.showEditor ? { maxWidth: "80%" } : { width: 0 }} onChange={this._onEditorSizeChange}>
+        <SplitScreen primary="second" resizerStyle={showGallery ? undefined : { display: "none" }} minSize={showGallery ? 100 : 150} size={showGallery ? "20%" : 0} split="vertical" defaultSize="20%" pane1Style={{ minWidth: "75%" }} pane2Style={galleryPanelStyle} onChange={this._onSampleGallerySizeChange} onDragStarted={this._onDragStarted} onDragEnd={this._onDragFinished}>
+          <SplitScreen style={{ position: "relative" }} resizerStyle={showEditor ? undefined : { display: "none" }} minSize={showEditor ? 190 : 210} size={showEditor ? 500 : 0} maxSize={1450} pane1Style={editorPanelStyle} onChange={this._onEditorSizeChange} onDragStarted={this._onDragStarted} onDragEnd={this._onDragFinished}>
             <ConnectedSampleEditor files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
             <div style={{ height: "100%" }}>
+              {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+              {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
               <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
-                {!this.state.showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
                 <ErrorBoundary>
                   {this.state.sampleUI || null}
                 </ErrorBoundary>
               </div>
-              {this.state.showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
+              {showGallery ? undefined : <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => this.setState({ showGallery: true })}><span className="icon icon-chevron-left"></span></Button>}
+              {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={() => this.setState({ showGallery: false })}><span className="icon icon-chevron-right"></span></Button>}
             </div>
           </SplitScreen>
           <SampleGallery ref={this._galleryRef} samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryCardClicked} onCollapse={() => this.setState({ showGallery: false })} />

@@ -4,8 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { Geometry, Point3d, Range2d, Range3d, Transform } from "@bentley/geometry-core";
-import { ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping,
-  ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings } from "@bentley/imodeljs-common";
+import {
+  ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping,
+  ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings,
+} from "@bentley/imodeljs-common";
 import { dispose } from "@bentley/bentleyjs-core";
 
 /** This file contains the code that implements the heatmap decorator including
@@ -18,10 +20,28 @@ import { dispose } from "@bentley/bentleyjs-core";
  * * Z coordinates are initially constant
  * * z values are modified by later directives.
  */
-class SampleGridBuilder {
+export class SampleGridBuilder {
   private _range: Range3d;
   private _gridSize: number;
   public data: number[][];
+
+  /** Build a sampled grid with
+   * * grid that covers the range of the given points.
+   * * is a square with side length 2^N
+   * * value at grid point is the max over value of all points for which this is the closest grid point.
+   */
+  public static build(gridSize: number, spreadFactor: number, range: Range3d, points: Point3d[]): number[][] {
+    const baseRadius: number = gridSize * (spreadFactor / 100);
+
+    const grid = new SampleGridBuilder(range, gridSize);
+    for (const point of points) {
+      const i = grid.closestXIndex(point.x);
+      const j = grid.closestYIndex(point.y);
+      const r = point.z * baseRadius;
+      grid.setGridZToCubicMax(i, j, point.z, r);
+    }
+    return grid.data;
+  }
 
   public constructor(range: Range3d, gridSize: number) {
     this._gridSize = gridSize;

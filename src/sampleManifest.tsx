@@ -6,6 +6,7 @@ import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
+import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
 import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
@@ -18,6 +19,7 @@ import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-samp
 import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
+import { getViewCameraSpec } from "./frontend-samples/camera-path-sample/sampleSpec";
 import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sampleSpec";
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
@@ -75,6 +77,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "Viewer Features", samples: [
+    getViewCameraSpec(),
     getDisplayStylesSpec(),
     getClassifierSpec(),
     getEmphasizeElementsSpec(),
@@ -86,6 +89,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMultiViewportSpec(),
     getPropertyFormattingSpec(),
     getReadSettingsSpec(),
+    getScreenSpaceEffectsSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),

@@ -45,7 +45,8 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     }
 
     if (prevState.showClipBlock !== this.state.showClipBlock ||
-      prevState.clipPlane !== this.state.clipPlane) {
+      prevState.clipPlane !== this.state.clipPlane ||
+      prevState.imodel?.name !== this.state.imodel.name) {
 
       if (this.state.clipPlane === "None" && !this.state.showClipBlock) {
         ViewClipApp.clearClips(vp);
@@ -103,6 +104,9 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     const viewState = await ViewSetup.getDefaultView(imodel);
 
     if (viewState.is3d()) {
+      const displayStyle = viewState.getDisplayStyle3d();
+      displayStyle.changeBackgroundMapProps({ transparency: 1.0 });
+
       // Rotate the view to make the view clip look better.
       viewState.setStandardRotation(StandardViewId.RightIso);
 
