@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
+import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
@@ -87,6 +88,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMultiViewportSpec(),
     getPropertyFormattingSpec(),
     getReadSettingsSpec(),
+    getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),

@@ -61,3 +61,23 @@
   flex-shrink: 0;
   flex-direction: row;
 }
+
+.sample-control-ui {
+  position: absolute;
+  display: block;
+  float: right;
+  background-origin: border-box;
+  background-color: #333;
+  color: white;
+  bottom: 2%;
+  left: 2%;
+  -webkit-transition: all 500ms ease;
+  -o-transition: all 500ms ease;
+  transition: all 500ms ease;
+  cursor: default;
+  border-radius: 5px;
+  border-color: var(--buic-foreground-body);
+  padding: 10px;
+  border-style: solid;
+  z-index: 2;
+}
