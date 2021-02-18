@@ -9,7 +9,7 @@ import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import { PlaceMarkerTool } from "frontend-samples/marker-pin-sample/PlaceMarkerTool";
 import * as React from "react";
-import FireDecorationUI from "./FireDecorationUI";
+import FireDecorationUI from "./ParticleSampleUI";
 
 // cSpell:ignore imodels
 
