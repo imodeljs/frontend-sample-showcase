@@ -239,7 +239,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
   public getControls() {
 
     const colorSchemeOptions = mapOptions(ThematicGradientColorScheme);
-    delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom options are not supported for this sample.
+    delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom colors are not supported for this sample.
 
     const gradientModeOptions = mapOptions(ThematicGradientMode);
     if (this.state.displayMode !== ThematicDisplayMode.Height) {
@@ -286,11 +286,11 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
             </span> : <span style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ display: "flex", flexDirection: "row" }}>
                 <label style={{ marginRight: 7 }}>Azimuth</label>
-                <Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={(values) => { this.setState({azimuth: values[0]}); }} />
+                <Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={(values) => { this.setState({ azimuth: values[0] }); }} />
               </span>
               <span style={{ display: "flex", flexDirection: "row" }}>
                 <label style={{ marginRight: 7 }}>Elevation</label>
-                <Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={(values) => { this.setState({elevation: values[0]}); }} />
+                <Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={(values) => { this.setState({ elevation: values[0] }); }} />
               </span>
             </span>}
         </div>
