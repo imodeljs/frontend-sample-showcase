@@ -78,7 +78,9 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     if (currentBounds.height !== prevProps.bounds.height
       || currentBounds.width !== prevProps.bounds.width) {
       const left = ((this.state.left - prevProps.bounds.left) / prevProps.bounds.width) * this.props.bounds.width + this.props.bounds.left;
-      this.setState({ bounds: this.props.bounds, left });
+      this.setState((_prevState, props) => {
+        return { bounds: props.bounds, left };
+      });
     }
 
     if (this.state.left !== prevState.left)
