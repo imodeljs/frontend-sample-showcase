@@ -73,9 +73,8 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     });
   }
 
-  private readonly _onChangeLensAngle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const lensAngle = Number(event.target.value);
-    this.setState({ lensAngle });
+  private readonly _onUpdateLensAngle = (values: readonly number[]) => {
+    this.setState({ lensAngle: values[0] });
   }
 
   public componentDidUpdate(_prevProp: UIProps, prevState: UIState) {
@@ -121,6 +120,12 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   }
 
   private getControls(): React.ReactNode {
+    // When the view is opened, the lens angel can be outside the normal range.  This will leave it unchanged until the user adjust it.
+    const lensAngleMin = 90, lensAngleMax = 160;
+    let lensAngleValue = this.state.lensAngle;
+    lensAngleValue = Math.min(lensAngleValue, lensAngleMax);
+    lensAngleValue = Math.max(lensAngleValue, lensAngleMin);
+
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Saturation</span>
@@ -134,7 +139,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
         <span>Lens Distortion</span>
         <Toggle isOn={this.state.enableLensDistortion} onChange={(enableLensDistortion) => this.setState({ enableLensDistortion })} />
         <span>Lens Angle</span>
-        <input type="range" min="90" max="160" step="5" value={this.state.lensAngle} onInput={this._onChangeLensAngle} disabled={!this.state.enableLensDistortion}></input>
+        <Slider showMinMax={true} min={lensAngleMin} max={lensAngleMax} step={5} values={[lensAngleValue]} disabled={!this.state.enableLensDistortion} onUpdate={this._onUpdateLensAngle} />
         {this.createSlider("Strength", this.state.effectsConfig.lensDistortion.strength, 0, 1, 0.05, "enableLensDistortion", (config, val) => config.lensDistortion.strength = val)}
         {this.createSlider("Cylindrical Ratio", this.state.effectsConfig.lensDistortion.cylindricalRatio, 0, 1, 0.05, "enableLensDistortion", (config, val) => config.lensDistortion.cylindricalRatio = val)}
       </div>
