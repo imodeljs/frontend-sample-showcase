@@ -62,6 +62,7 @@ import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
+import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -81,6 +82,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getClassifierSpec(),
     getEmphasizeElementsSpec(),
+    getExplodeSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
     getCrossProbingSpec(),
