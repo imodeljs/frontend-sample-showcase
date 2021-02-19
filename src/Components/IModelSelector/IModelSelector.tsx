@@ -22,6 +22,7 @@ export enum SampleIModels {
   House = "House Sample",
   Stadium = "Stadium",
   ExtonCampus = "Exton Campus",
+  Villa = "Villa",
 }
 
 export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
@@ -46,7 +47,7 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
         <span>Select iModel: </span>
         <Select
           className="imodel-list"
-          value={value}
+          value={value.toString()}
           onChange={this._handleSelection}
           options={Object.fromEntries(iModelNames.map((name, index) => [index, name]))} />
       </div>

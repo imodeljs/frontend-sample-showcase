@@ -6,7 +6,7 @@ import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, Rend
 import { Geometry, Point3d, Range2d, Range3d, Transform } from "@bentley/geometry-core";
 import {
   ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping,
-  ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings
+  ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings,
 } from "@bentley/imodeljs-common";
 import { dispose } from "@bentley/bentleyjs-core";
 
