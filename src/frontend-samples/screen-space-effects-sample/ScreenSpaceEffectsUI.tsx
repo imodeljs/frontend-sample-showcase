@@ -82,14 +82,18 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     if (!viewport)
       return;
 
+    // Was a new iModel opened?
+    const newViewport = this.state.viewport?.viewportId !== prevState.viewport?.viewportId;
+
     let changed = false;
     if (this.state.lensAngle !== prevState.lensAngle) {
       changed = true;
       viewport.turnCameraOn(Angle.createDegrees(this.state.lensAngle));
+      viewport.invalidateScene();
     }
 
     // Was an effect toggled on or off?
-    if (this.state.enableSaturation !== prevState.enableSaturation || this.state.enableVignette !== prevState.enableVignette || this.state.enableLensDistortion !== prevState.enableLensDistortion) {
+    if (newViewport || this.state.enableSaturation !== prevState.enableSaturation || this.state.enableVignette !== prevState.enableVignette || this.state.enableLensDistortion !== prevState.enableLensDistortion) {
       changed = true;
 
       // Screen-space effects are applied in the order in which they are added to the viewport.
@@ -147,7 +151,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   }
 
   public render() {
-    const instructions = "Use the drop-down below to select which effect is applied to the viewport.";
+    const instructions = "Use the toggles below to select which effect is applied to the viewport.  Move the sliders to control those effects.";
     return (
       <>
         <ControlPane instructions={instructions} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
