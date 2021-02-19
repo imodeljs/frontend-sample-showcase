@@ -28,9 +28,9 @@ interface UIProps {
 
 export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UIState> {
   public state: UIState = {
-    enableSaturation: false,
-    enableVignette: false,
-    enableLensDistortion: false,
+    enableLensDistortion: true,
+    enableVignette: true,
+    enableSaturation: true,
     effectsConfig: getCurrentEffectsConfig(),
     lensAngle: 90,
   };
