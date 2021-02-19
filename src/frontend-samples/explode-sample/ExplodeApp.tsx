@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport, ViewTool } from "@bentley/imodeljs-frontend";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import * as React from "react";
