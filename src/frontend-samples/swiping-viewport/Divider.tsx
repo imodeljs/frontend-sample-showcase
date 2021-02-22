@@ -7,8 +7,6 @@ import "./Divider.scss";
 
 export interface DividerComponentState {
   left: number;
-  bounds: ClientRect;
-  // children updates
 }
 
 export interface DividerComponentProps {
@@ -67,10 +65,7 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     left = Math.min(left, this.props.bounds.right - this._buffer);
     left = Math.max(left, this.props.bounds.left + this._buffer);
 
-    this.state = {
-      left,
-      bounds: props.bounds,
-    };
+    this.state = { left };
   }
 
   public componentDidUpdate(prevProps: DividerComponentProps, prevState: DividerComponentState) {
@@ -78,9 +73,7 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     if (currentBounds.height !== prevProps.bounds.height
       || currentBounds.width !== prevProps.bounds.width) {
       const left = ((this.state.left - prevProps.bounds.left) / prevProps.bounds.width) * this.props.bounds.width + this.props.bounds.left;
-      this.setState((_prevState, props) => {
-        return { bounds: props.bounds, left };
-      });
+      this.setState({ left });
     }
 
     if (this.state.left !== prevState.left)
@@ -124,9 +117,9 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
       <>
         <div id={"divider-panel-left"} className={"divider-panel"}
           style={{
-            top: this.state.bounds.top,
-            height: this.state.bounds.height,
-            left: this.state.bounds.left,
+            top: this.props.bounds.top,
+            height: this.props.bounds.height,
+            left: this.props.bounds.left,
             width: this.state.left,
           }}
         >
@@ -136,8 +129,8 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
           ref={(element) => this._container = element}
           style={{
             left: this.state.left,
-            top: this.state.bounds.top,
-            height: this.state.bounds.height,
+            top: this.props.bounds.top,
+            height: this.props.bounds.height,
           }}
           id={"divider-div"}
           onMouseDown={this._mouseDownDraggable}
@@ -146,10 +139,10 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
         </div>
         <div id={"divider-panel-right"} className={"divider-panel"}
           style={{
-            top: this.state.bounds.top,
-            height: this.state.bounds.height,
+            top: this.props.bounds.top,
+            height: this.props.bounds.height,
             left: this.state.left,
-            width: this.state.bounds.right - this.state.left,
+            width: this.props.bounds.right - this.state.left,
           }}
         >
           {this.props.rightChildren}
