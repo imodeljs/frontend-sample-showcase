@@ -89,7 +89,9 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     if (this.state.lensAngle !== prevState.lensAngle) {
       changed = true;
       viewport.turnCameraOn(Angle.createDegrees(this.state.lensAngle));
-      viewport.invalidateScene();
+
+      // ###TODO turnCameraOn is supposed to do this, but currently doesn't. Remove once that is fixed.
+      viewport.invalidateRenderPlan();
     }
 
     // Was an effect toggled on or off?
