@@ -126,7 +126,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   }
 
   private getControls(): React.ReactNode {
-    // When the view is opened, the lens angel can be outside the normal range.  This will leave it unchanged until the user adjust it.
+    // When the view is opened, the lens angle can be outside the normal range.  This will leave it unchanged until the user adjusts it.
     const lensAngleMin = 90, lensAngleMax = 160;
     let lensAngleValue = this.state.lensAngle;
     lensAngleValue = Math.min(lensAngleValue, lensAngleMax);
