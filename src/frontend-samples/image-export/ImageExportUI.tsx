@@ -23,7 +23,7 @@ export default class ImageExportyUI extends React.Component<{ iModelName: string
   public getControls() {
     return (
       <div>
-        <Button buttonType={ButtonType.Hollow} onClick={ImageExportApp.exportImage}>Save as png</Button>
+        <Button buttonType={ButtonType.Hollow} onClick={ImageExportApp.exportImage.bind(ImageExportApp)}>Save as png</Button>
       </div>
     );
   }

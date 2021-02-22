@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
+import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
@@ -62,6 +63,7 @@ import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-s
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
 import { getParticleSampleSpec } from "frontend-samples/fire-decoration-sample/sampleSpec";
+import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -81,14 +83,16 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getClassifierSpec(),
     getEmphasizeElementsSpec(),
-    getParticleSampleSpec(),
+    getExplodeSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
     getCrossProbingSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
+    getParticleSampleSpec(),
     getPropertyFormattingSpec(),
     getReadSettingsSpec(),
+    getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
