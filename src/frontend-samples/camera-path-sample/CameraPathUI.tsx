@@ -8,7 +8,6 @@ import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Select } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 
 import CameraPathApp, { CameraPath } from "./CameraPathApp";

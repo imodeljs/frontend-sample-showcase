@@ -10,6 +10,7 @@ import * as React from "react";
 import DisplayStylesApp from "./DisplayStylesApp";
 import { DisplayStyle } from "./Styles";
 import { Select, Toggle } from "@bentley/ui-core";
+import { displayStyles } from "./Styles";
 
 interface DisplayStylesUIState {
   activePresetIndex: number;
@@ -59,10 +60,10 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
       updateDisplayStyle = true;
 
     if (updateDisplayStyle && undefined !== this.state.viewport) {
-      const style = this.props.displayStyles[this.state.activePresetIndex];
+      const style = displayStyles[this.state.activePresetIndex];
       DisplayStylesApp.applyDisplayStyle(this.state.viewport, style);
       if (this.state.merge && CUSTOM_STYLE_INDEX !== this.state.activePresetIndex) {
-        const custom = this.props.displayStyles[CUSTOM_STYLE_INDEX];
+        const custom = displayStyles[CUSTOM_STYLE_INDEX];
         DisplayStylesApp.applyDisplayStyle(this.state.viewport, custom);
       }
     }
@@ -70,7 +71,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
 
   private getControls(): React.ReactNode {
     const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after the selected style is applied.";
-    const options = Object.assign({}, this.props.displayStyles.map((style) => style.name));
+    const options = Object.assign({}, displayStyles.map((style) => style.name));
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Select Style:</span>

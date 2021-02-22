@@ -2,13 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import CameraPathUI from "./CameraPathUI";
-import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { CameraPathTool } from "./CameraPathTool";
+import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";

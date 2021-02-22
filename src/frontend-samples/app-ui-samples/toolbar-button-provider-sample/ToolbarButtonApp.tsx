@@ -16,7 +16,18 @@ import { ControlPane } from "common/ControlPane/ControlPane";
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
 export class ToolbarButtonSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> implements SampleApp {
-  public async componentDidMount() {
+  public async componentWillMount() {
+    // Initialize utility class for AppUi samples
+    AppUi.initialize();
+    // Register provider for to AppUi for toolbar items
+    if (undefined === UiItemsManager.getUiItemsProvider("ToolbarButtonProvider"))
+      UiItemsManager.register(new ToolbarButtonProvider());
+
+    // set up iModel and AppUi Frontstage
+    await AppUi.setIModelAndFrontstage(this.props.iModelName, "ViewportFrontstage");
+  }
+
+  public async componentDidUpdate() {
     // Initialize utility class for AppUi samples
     AppUi.initialize();
     // Register provider for to AppUi for toolbar items

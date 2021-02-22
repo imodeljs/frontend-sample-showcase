@@ -8,8 +8,6 @@ import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNode
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 import "@fortawesome/fontawesome-free/css/all.css";
-import SampleApp from "common/SampleApp";
-import { CustomWebfontIconsTreeUI } from "./CustomWebfontIconsTreeUI";
 const PAGING_SIZE = 20;
 const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json");  // eslint-disable-line @typescript-eslint/no-var-requires
 

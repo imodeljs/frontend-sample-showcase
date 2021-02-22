@@ -6,7 +6,6 @@ import * as  React from "react";
 import { BlankConnection, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { StartupComponent } from "../../common/Startup/Startup";
 import { ViewSetup } from "api/viewSetup";
-import { IModelSelector } from "common/IModelSelector/IModelSelector";
 import { BlankViewport } from "common/Geometry/BlankViewport";
 import { Range3d } from "@bentley/geometry-core";
 

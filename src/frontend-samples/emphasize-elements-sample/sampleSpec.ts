@@ -18,6 +18,6 @@ export function getEmphasizeElementsSpec(): SampleSpec {
 
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    sampleClass: EmphasizeElementsUI
+    sampleClass: EmphasizeElementsUI,
   });
 }

@@ -6,9 +6,6 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp, ScreenViewport, SelectedViewportChangedArgs, TwoWayViewportSync, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
-import * as React from "react";
-import MultiViewportUI from "./MultiViewportUI";
-
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApp implements SampleApp {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();

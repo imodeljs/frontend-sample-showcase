@@ -7,8 +7,6 @@ import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Tran
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
 import { EditManipulator, FeatureSymbology, findAvailableUnattachedRealityModels, GraphicBranch, IModelApp, IModelConnection, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
-import * as React from "react";
-import SwipingComparisonUI from "./SwipingComparisonUI";
 
 export enum ComparisonType {
   Wireframe,

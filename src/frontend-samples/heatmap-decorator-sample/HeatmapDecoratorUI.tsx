@@ -5,7 +5,7 @@
 import * as React from "react";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
-import { Toggle } from "@bentley/ui-core";
+import { Slider, Toggle } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { PointSelector } from "common/PointSelector/PointSelector";
@@ -46,11 +46,13 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: HeatmapDecoratorUIState) {
-    if (prevState.imodel !== this.state.imodel)
+    if (prevState.imodel !== this.state.imodel) {
+      HeatmapDecoratorApp.disableDecorations();
+      HeatmapDecoratorApp.setupDecorator(this.state.points, this.state.range, this.state.spreadFactor, this.state.height);
       if (this.state.showDecorator) {
-        HeatmapDecoratorApp.setupDecorator(this.state.points, this.state.range, this.state.spreadFactor, this.state.height);
         HeatmapDecoratorApp.enableDecorations();
       }
+    }
 
     if (prevState.points !== this.state.points) {
       if (HeatmapDecoratorApp.decorator)
@@ -78,8 +80,8 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     this.setState({ points });
   }
 
-  private _onChangeSpreadFactor = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ spreadFactor: Number(event.target.value) });
+  private _onChangeSpreadFactor = (values: readonly number[]) => {
+    this.setState({ spreadFactor: values[0] });
   }
 
   private _onChangeShowHeatmap = (checked: boolean) => {
@@ -132,7 +134,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
           <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowHeatmap} />
           <PointSelector onPointsChanged={this._onPointsChanged} range={this.state.range} />
           <span>Spread Factor</span>
-          <input type="range" min="1" max="100" value={this.state.spreadFactor} onChange={this._onChangeSpreadFactor}></input>
+          <Slider min={0} max={100} values={[this.state.spreadFactor]} step={1} onUpdate={this._onChangeSpreadFactor} />
         </div>
       </>
     );

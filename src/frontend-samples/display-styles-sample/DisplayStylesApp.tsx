@@ -7,9 +7,6 @@ import { DisplayStyle3dSettingsProps } from "@bentley/imodeljs-common";
 import { Viewport } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
-import * as React from "react";
-import DisplayStylesUI from "./DisplayStylesUI";
-import { displayStyles } from "./Styles";
 
 export default class DisplayStylesApp implements SampleApp {
   /** Overrides the current display styles using the viewport API. */

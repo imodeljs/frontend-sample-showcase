@@ -2,10 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import ViewerOnly2dUI from "./ViewerOnly2dUI";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewCreator2d } from "./ViewCreator2d";
 import { ModelProps } from "@bentley/imodeljs-common";

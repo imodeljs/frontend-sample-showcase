@@ -15,8 +15,6 @@ import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
-import SampleApp from "common/SampleApp";
-import { CustomNodeLoadingTreeUI } from "./CustomNodeLoadingTreeUI";
 
 export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;

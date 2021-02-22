@@ -2,13 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { ProxyToolAdmin, ShowcaseToolAdmin } from "api/showcasetooladmin";
-import { ElemProperty, TooltipCustomizeSettings, TooltipCustomizeUI } from "./TooltipCustomizeUI";
+import { ProxyToolAdmin } from "api/showcasetooladmin";
+import { ElemProperty, TooltipCustomizeSettings } from "./TooltipCustomizeUI";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 
 
 // SampleToolAdmin would typically extend ToolAdmin

@@ -17,8 +17,6 @@ import {
 } from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import SampleApp from "common/SampleApp";
-import * as React from "react";
-import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
 // cSpell:ignore imodels
 

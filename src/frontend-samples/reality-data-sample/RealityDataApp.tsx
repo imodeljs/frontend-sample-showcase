@@ -5,12 +5,10 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import SampleApp from "common/SampleApp";
-import * as React from "react";
 import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
 import {
   ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport,
 } from "@bentley/imodeljs-frontend";
-import RealityDataUI from "./RealityDataUI";
 
 export default class RealityDataApp implements SampleApp {
 

@@ -5,7 +5,7 @@
 import * as React from "react";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { BasePointGenerator, CirclePointGenerator, CrossPointGenerator, RandomPointGenerator } from "./PointGenerators";
-import { Select } from "@bentley/ui-core";
+import { Select, Slider } from "@bentley/ui-core";
 
 export enum PointMode {
   Random = "1",
@@ -64,8 +64,8 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
     this.setState({ pointGenerator });
   }
 
-  private _onChangePointCount = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ pointCount: Number(event.target.value) });
+  private _onChangePointCount = (values: readonly number[]) => {
+    this.setState({ pointCount: values[0] });
   }
 
   public componentDidMount() {
@@ -87,7 +87,7 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
         <span>Points</span>
         <Select onChange={this._onChangePointMode} options={{ [PointMode.Random]: "Random", [PointMode.Circle]: "Circle", [PointMode.Cross]: "Cross" }} />
         <span>Point Count</span>
-        <input type="range" min="1" max="500" value={this.state.pointCount} onChange={this._onChangePointCount}></input>
+        <Slider min={0} max={500} values={[this.state.pointCount]} step={1} onUpdate={this._onChangePointCount} />
       </>
     );
   }

@@ -14,8 +14,6 @@ import { ExpansionToggle } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import "./TableNodeTree.scss";
-import SampleApp from "common/SampleApp";
-import { TableNodeTreeUI } from "./CustomTableNodeTreeUI";
 
 /**
  * This component demonstrates use `ControlledTree` with custom nodes rendering. It uses

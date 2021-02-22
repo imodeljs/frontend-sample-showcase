@@ -14,11 +14,9 @@ import { editorCommonActionContext, IInternalFile, SplitScreen } from "@bentley/
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
-import SampleApp from "common/SampleApp";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
-import SampleLoader from "../SampleLoader/SampleLoader";
 // cSpell:ignore imodels
 
 export interface SampleSpec {
@@ -208,6 +206,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         iModelName: this.state.iModelName,
         iModelSelector,
       }
+
+      try {
+        sampleUI = sampleUI = React.createElement(newSampleSpec.sampleClass, props);
+      } catch (err) {
+        sampleUI = <DisplayError error={err} />
+      }
       sampleUI = React.createElement(newSampleSpec.sampleClass, props)
     }
 
@@ -272,17 +276,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     if (!this._prevSampleTeardown) {
       this._prevSampleTeardown = activeSample.teardown;
     }
-    console.log(activeSample)
-    console.log(sampleUi)
-    activeSample.sampleClass = sampleUi /*async (iModelName: string, iModelSelector: React.ReactNode) => {
-      try {
-        return SampleLoader.showSample(activeSample.setup, this.state.iModelName, undefined, iModelSelector,);
-      } catch (err) {
-        return (
-          <DisplayError error={err} />
-        );
-      }
-    };*/
+    activeSample.sampleClass = sampleUi;
 
     const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
