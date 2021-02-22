@@ -3,15 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Button, ButtonType, ReactMessage, Select, UnderlinedButton } from "@bentley/ui-core";
+import { Button, ButtonType, Select, UnderlinedButton } from "@bentley/ui-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import IotAlertApp, { ClearOverrideAction, OverrideAction } from "./IotAlertApp";
+import IotAlertApp from "./IotAlertApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { IModelApp, IModelConnection, OutputMessagePriority, ViewChangeOptions } from "@bentley/imodeljs-frontend";
+import { IModelConnection, OutputMessagePriority } from "@bentley/imodeljs-frontend";
 
 import "./IotAlert.scss";
 import { MessageManager, MessageRenderer, ReactNotifyMessageDetails } from "@bentley/ui-framework";
-import { ColorDef } from "@bentley/imodeljs-common";
 
 /** React state of the Sample component */
 interface IotAlertState {
@@ -34,9 +33,9 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
       wantEmphasis: false,
       elementsMap: new Map(),
       elementNameIdMap: new Map(),
-      elements: ["EX-201", "EX-202", "EX-203", "EX-204", "EX-205"],
+      elements: [],
       isImodelReady: false,
-      selectedElement: "EX-201",
+      selectedElement: "",
       blinkingElements: [],
     };
   }
@@ -49,8 +48,8 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
       return elementNames;
     }
     for (const element of classElements) {
-      elementNames.push(element.cOMPONENT_NAME);
-      tempMap.set(element.cOMPONENT_NAME, element.id);
+      elementNames.push(element.userLabel);
+      tempMap.set(element.userLabel, element.id);
     }
     this.setState({ elementNameIdMap: tempMap });
 
@@ -62,22 +61,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     // console.log(`_clearAll: Before clearing elements: blinkingElements: ${this.state.blinkingElements}`);
     this.setState({ blinkingElements: [], wantEmphasis: false });
     // console.log(`_clearAll: After clearing elements: blinkingElements: ${this.state.blinkingElements}`);
-  }
-
-  private doBlinking = (blinkingElementSet: string[], elementNameIdMap: Map<string, string>) => {
-    const timer = setInterval(() => {
-      setTimeout(() => {
-        new OverrideAction(ColorDef.white).run(blinkingElementSet, elementNameIdMap);
-      }, 1000);
-
-      setTimeout(() => {
-        new ClearOverrideAction().run(blinkingElementSet, elementNameIdMap);
-      }, 2000);
-
-      if (!this.state.wantEmphasis) {
-        clearInterval(timer);
-      }
-    }, 2000);
+    IotAlertApp.setEmphasis(false);
   }
 
   private _onToggleEmphasis = () => {
@@ -86,62 +70,44 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     tempSet.push(this.state.selectedElement);
     this.setState({ blinkingElements: tempSet, wantEmphasis: true });
     // console.log(`_onToggleEmphasis:  After setting blinkingElements: ${this.state.blinkingElements}`);
-    MessageManager.outputMessage(new ReactNotifyMessageDetails(OutputMessagePriority.Warning, ``, this._reactMessage(this.state.selectedElement)));
-    this.doBlinking(this.state.blinkingElements, this.state.elementNameIdMap);
+    MessageManager.outputMessage(new ReactNotifyMessageDetails(OutputMessagePriority.Warning, ``, IotAlertApp.reactMessage(this.state.selectedElement, this.state.elementNameIdMap)));
+    IotAlertApp.setEmphasis(true);
+
+    IotAlertApp.doBlinking(this.state.blinkingElements, this.state.elementNameIdMap);
   }
 
-  private _reactMessage(element: string): ReactMessage {
-    // console.log(`_reactMessage: ${element}`);
-    const reactNode = (
-      <span>
-        Alert! There is an issue with <UnderlinedButton onClick={async () => this._zoomToElements(element)}>{element}</UnderlinedButton>
-      </span>
-    );
-    return ({ reactNode });
+  private _executeQuery = async (imodel: IModelConnection, query: string) => {
+    const rows = [];
+    for await (const row of imodel.query(query))
+      rows.push(row);
+    return rows;
   }
 
-  private _zoomToElements = async (id: string) => {
-    const viewChangeOpts: ViewChangeOptions = {};
-    viewChangeOpts.animateFrustumChange = true;
-    const vp = IModelApp.viewManager.selectedView!;
-    const ids = new Set<string>();
-    for (const [key, value] of this.state.elementNameIdMap) {
-      if (key === id) {
-        ids.add(value);
-        // console.log(`_zoomToElements: ${id}`);
-      }
-    }
-    await vp.zoomToElements(ids, { ...viewChangeOpts });
+  private async fetchElements(imodel: IModelConnection, className: string) {
+    const elementMapQuery = `SELECT EcInstanceId, userLabel FROM ${className}`;
+    return this._executeQuery(imodel, elementMapQuery);
   }
 
   private _classList = ["SHELL_AND_TUBE_HEAT_EXCHANGER_PAR", "VERTICAL_VESSEL_PAR", "PLATE_TYPE_HEAT_EXCHANGER", "REBOILER_PAR"];
 
   private _onIModelReady = async (imodel: IModelConnection) => {
     const classElementsMap = new Map();
-    for (const c of this._classList) {
-      const elements = await IotAlertApp.fetchElements(imodel, c);
-      classElementsMap.set(c, elements);
+    for (const className of this._classList) {
+      const fullClassName = `ProcessPhysical.${className}`;
+      const elements = await this.fetchElements(imodel, fullClassName);
+      // console.log(`_onIModelReady: ${elements}`);
+      classElementsMap.set(className, elements);
     }
     this.setState({ elementsMap: classElementsMap });
-    const elementNames = this._getElementsFromClass("SHELL_AND_TUBE_HEAT_EXCHANGER_PAR", this.state.elementsMap);
-    this.setState(elementNames);
-    this.setState({ selectedElement: "EX-201" });
-    this.setState({ isImodelReady: true });
+    const elementNames = this._getElementsFromClass(this._classList[0], this.state.elementsMap);
+    this.setState({ selectedElement: elementNames[0], elements: elementNames, isImodelReady: true });
   }
 
   private _onClassChange = (e: any) => {
     const className = e.target.value;
     const elementNames = this._getElementsFromClass(className, this.state.elementsMap);
     this.setState({ elements: elementNames });
-    if (className === "SHELL_AND_TUBE_HEAT_EXCHANGER_PAR") {
-      this.setState({ selectedElement: "EX-201" });
-    } else if (className === "VERTICAL_VESSEL_PAR") {
-      this.setState({ selectedElement: "V-301" });
-    } else if (className === "PLATE_TYPE_HEAT_EXCHANGER") {
-      this.setState({ selectedElement: "E-101" });
-    } else if (className === "REBOILER_PAR") {
-      this.setState({ selectedElement: "EX-302" });
-    }
+    this.setState({ selectedElement: elementNames[0] });
   }
 
   private _onElementChange = (e: any) => {
@@ -195,7 +161,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
                 <ul className="input-tag__tags">
                   {tags !== undefined ? tags.map((tag, i) => (
                     <li key={tag}>
-                      <UnderlinedButton onClick={async () => this._zoomToElements(tag)}>{tag}</UnderlinedButton>
+                      <UnderlinedButton onClick={async () => IotAlertApp._zoomToElements(tag, this.state.elementNameIdMap)}>{tag}</UnderlinedButton>
                       <button type="button" onClick={() => { this._removeTag(i); }}>+</button>
                     </li>
                   )) : ""}
