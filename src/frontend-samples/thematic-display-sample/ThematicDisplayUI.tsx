@@ -34,10 +34,10 @@ interface ThematicDisplaySampleUIProps {
 
 function mapOptions(o: {}): {} {
   const keys = Object.keys(o).filter((key: any) => isNaN(key));
-  return Object.assign({}, keys);
+  return keys.map((label, index) => {
+    return { label, value: index, disabled: false };
+  });
 }
-const _defaultAzimuth = 315.0;
-const _defaultElevation = 45.0;
 
 /** A React component that renders the UI specific for this sample */
 export default class ThematicDisplayUI extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
@@ -245,12 +245,12 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
   public getControls() {
 
     const colorSchemeOptions = mapOptions(ThematicGradientColorScheme);
-    delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom options are not supported for this sample.
+    delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom colors are not supported for this sample.
 
     const gradientModeOptions = mapOptions(ThematicGradientMode);
     if (this.state.displayMode !== ThematicDisplayMode.Height) {
-      delete (gradientModeOptions as any)[ThematicGradientMode.IsoLines];
-      delete (gradientModeOptions as any)[ThematicGradientMode.SteppedWithDelimiter];
+      (gradientModeOptions as any)[ThematicGradientMode.IsoLines].disabled = true;
+      (gradientModeOptions as any)[ThematicGradientMode.SteppedWithDelimiter].disabled = true;
     }
 
     const displayModeOptions = mapOptions(ThematicDisplayMode);

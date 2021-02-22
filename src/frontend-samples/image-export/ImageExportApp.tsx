@@ -13,7 +13,7 @@ export default class ImageExportApp {
     const viewPort = IModelApp.viewManager.getFirstOpenView();
     if (viewPort !== undefined) {
       const canvas = viewPort.readImageToCanvas();
-      const imageUrl = canvas!.toDataURL("image/png");
+      const imageUrl = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.setAttribute("download", "viewport.png")
       link.setAttribute("href", imageUrl);

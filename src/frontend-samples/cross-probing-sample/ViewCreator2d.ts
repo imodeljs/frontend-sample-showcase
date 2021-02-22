@@ -64,7 +64,7 @@ export class ViewCreator2d {
     const baseClassName = await this._imodel.findClassFor(modelType, undefined);
 
     if (baseClassName === undefined)
-      throw new IModelError(IModelStatus.WrongClass, "ViewCreator2d.getViewForModel: modelType is invalid", Logger.logError, loggerCategory, () => ({ modelType, modelId }))
+      throw new IModelError(IModelStatus.WrongClass, "ViewCreator2d.getViewForModel: modelType is invalid", Logger.logError.bind(Logger), loggerCategory, () => ({ modelType, modelId }))
 
     const viewState = await this._createViewState2d(modelId, baseClassName.classFullName, options);
     try {
@@ -91,7 +91,7 @@ export class ViewCreator2d {
       props = await this._addSheetViewProps(modelId, props);
       viewState = SheetViewState.createFromProps(props, this._imodel);
     } else
-      throw new IModelError(IModelStatus.WrongClass, "ViewCreator2d._createViewState2d: modelType not supported", Logger.logError, loggerCategory, () => ({ modelType, modelId }))
+      throw new IModelError(IModelStatus.WrongClass, "ViewCreator2d._createViewState2d: modelType not supported", Logger.logError.bind(Logger), loggerCategory, () => ({ modelType, modelId }))
 
     return viewState;
   }
@@ -209,10 +209,10 @@ export class ViewCreator2d {
   }
 
   /**
-    * Merges a seed view in the iModel with the passed view state props. It will be a no-op if there are no 2D views for target model.
-    * @param modelId of target model.
-    * @param props Input view props to be merged
-    */
+   * Merges a seed view in the iModel with the passed view state props. It will be a no-op if there are no 2D views for target model.
+   * @param modelId of target model.
+   * @param props Input view props to be merged
+   */
   private async _mergeSeedView(modelId: Id64String, props: ViewStateProps): Promise<ViewStateProps> {
     const viewDefinitionId = await this._getViewDefinitionsIdForModel(modelId);
     // Return incase no viewDefinition found.
