@@ -18,6 +18,6 @@ export function getReadSettingsSpec(): SampleSpec {
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown],
-    setup: ReadSettingsApp.setup,
+    setup: ReadSettingsApp.setup.bind(ReadSettingsApp),
   });
 }
