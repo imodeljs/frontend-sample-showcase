@@ -6,7 +6,6 @@ import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { StartupComponent } from "../Startup/Startup";
 
-// TODO: Extend The ReloadableConnection to Work Generically with any UI that requires an iModelConnection
 // Currently this class only acts as a wrapper to the Startup Component
 
 export interface SandboxIModelConnectionProps {

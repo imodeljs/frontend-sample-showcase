@@ -71,7 +71,7 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
   }
 
   /**
-   * This callback will be executed by ReloadableViewport once the iModel has been loaded.
+   * This callback will be executed by SandboxViewport once the iModel has been loaded.
    * The reality models will default to on.
    */
   private _onIModelReady = (imodel: IModelConnection) => {

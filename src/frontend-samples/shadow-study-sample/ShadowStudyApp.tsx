@@ -5,9 +5,8 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 
-export default class ShadowStudyApp implements SampleApp {
+export default class ShadowStudyApp {
 
   // Updates the sun time for the current model
   public static updateSunTime(time: number) {

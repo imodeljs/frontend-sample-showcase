@@ -141,7 +141,7 @@ export default class MarkerPinsUI extends React.Component<{
     IModelApp.tools.run(PlaceMarkerTool.toolId, this._manuallyAddMarker);
   }
 
-  /** This callback will be executed by ReloadableViewport to initialize the viewstate */
+  /** This callback will be executed by SandboxViewport to initialize the viewstate */
   public static async getTopView(imodel: IModelConnection): Promise<ViewState> {
     const viewState = await ViewSetup.getDefaultView(imodel);
 
@@ -156,7 +156,7 @@ export default class MarkerPinsUI extends React.Component<{
     return viewState;
   }
 
-  /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
+  /** This callback will be executed by SandboxViewport once the iModel has been loaded */
   private onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
 

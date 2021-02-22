@@ -10,12 +10,11 @@ import "common/samples-common.scss";
 import "common/AppUi/app-ui.scss";
 import { SampleAppUiComponent } from "common/AppUi/SampleAppUiComponent";
 import { AppUi } from "common/AppUi/AppUi";
-import SampleApp from "common/SampleApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
-export class ToolbarButtonSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> implements SampleApp {
+export class ToolbarButtonSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> {
   public async componentWillMount() {
     // Initialize utility class for AppUi samples
     AppUi.initialize();

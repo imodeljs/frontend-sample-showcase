@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import SampleApp from "common/SampleApp";
 import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, Viewport } from "@bentley/imodeljs-frontend";
 import { ViewCreator2d } from "frontend-samples/cross-probing-sample/ViewCreator2d";
 import { ColorDef } from "@bentley/imodeljs-common";
@@ -16,7 +15,7 @@ import { ColorDef } from "@bentley/imodeljs-common";
  * The target element is then zoomed into.
  */
 
-export default class CrossProbingApp implements SampleApp {
+export default class CrossProbingApp {
 
   // keep track of last element selected (to avoid double clicks).
   private static lastElementSelected: string | undefined;

@@ -6,9 +6,8 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp, MarginPercent, ViewChangeOptions, ZoomToOptions } from "@bentley/imodeljs-frontend";
 import { ZoomToState } from "./ZoomToElementsUI";
-import SampleApp from "common/SampleApp";
 
-export default class ZoomToElementsApp implements SampleApp {
+export default class ZoomToElementsApp {
 
   public static zoomToElements = async (state: ZoomToState) => {
     const viewChangeOpts: ViewChangeOptions = {};

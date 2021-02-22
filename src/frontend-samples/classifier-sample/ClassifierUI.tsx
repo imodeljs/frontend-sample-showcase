@@ -64,7 +64,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
   }
 
   /**
-   * This callback will be executed by ReloadableViewport once the iModel has been loaded.
+   * This callback will be executed by SandboxViewport once the iModel has been loaded.
    * The reality model will default to on.
    */
   private _onIModelReady = async (imodel: IModelConnection) => {
@@ -153,7 +153,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     this.setState({ insideDisplayKey: event.target.value });
   }
 
-  /** This callback will be executed by ReloadableViewport to initialize the ViewState.
+  /** This callback will be executed by SandboxViewport to initialize the ViewState.
    * Set up camera looking at Rittenhouse Square.
    */
   public static getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {

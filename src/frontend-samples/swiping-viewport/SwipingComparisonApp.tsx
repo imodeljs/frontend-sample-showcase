@@ -6,14 +6,13 @@
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
 import { EditManipulator, FeatureSymbology, findAvailableUnattachedRealityModels, GraphicBranch, IModelApp, IModelConnection, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 
 export enum ComparisonType {
   Wireframe,
   RealityData,
 }
 
-export default class SwipingViewportApp implements SampleApp {
+export default class SwipingViewportApp {
   private static _provider: SampleTiledGraphicsProvider | undefined;
   private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;

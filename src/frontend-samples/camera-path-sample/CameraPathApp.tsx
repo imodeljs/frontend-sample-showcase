@@ -5,7 +5,6 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
@@ -15,7 +14,7 @@ export interface CameraPoint {
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class CameraPathApp implements SampleApp {
+export default class CameraPathApp {
 
   public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport, keyDown: boolean) {
     if (!keyDown)

@@ -16,11 +16,10 @@ import {
   ThematicGradientMode,
 } from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 
 // cSpell:ignore imodels
 
-export default class ThematicDisplayApp implements SampleApp {
+export default class ThematicDisplayApp {
   public static originalProps?: ThematicDisplayProps;
   public static originalFlag: boolean = false;
   public static viewport?: Viewport;

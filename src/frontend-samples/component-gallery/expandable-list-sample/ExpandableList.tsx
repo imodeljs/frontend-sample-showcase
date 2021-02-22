@@ -9,7 +9,6 @@ import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
-import SampleApp from "common/SampleApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -17,7 +16,7 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 
-export default class ExpandableListList extends React.Component<{}> implements SampleApp {
+export default class ExpandableListList extends React.Component<{}> {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getExpandableListData(): UIComponentExampleProps[] {

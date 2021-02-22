@@ -152,11 +152,6 @@
       "typedef": true
     },
     {
-      "name": "common/SampleApp",
-      "import": "./src/common/SampleApp",
-      "typedef": true
-    },
-    {
       "name": "frontend-samples/cross-probing-sample/ViewCreator2d",
       "import": "./src/frontend-samples/cross-probing-sample/ViewCreator2d",
       "typedef": true

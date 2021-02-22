@@ -6,7 +6,6 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Environment, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { RenderMode } from "@bentley/imodeljs-common";
-import SampleApp from "common/SampleApp";
 
 // cSpell:ignore imodels
 
@@ -29,7 +28,7 @@ export interface AttrValues {
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class ViewAttributesApp implements SampleApp {
+export default class ViewAttributesApp {
 
   public static getAttrValues(vp: Viewport): AttrValues {
     return {

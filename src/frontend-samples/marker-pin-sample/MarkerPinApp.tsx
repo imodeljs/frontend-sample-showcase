@@ -8,9 +8,8 @@ import { Point3d } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MarkerPinDecorator } from "./MarkerPinDecorator";
-import SampleApp from "common/SampleApp";
 
-export default class MarkerPinApp implements SampleApp {
+export default class MarkerPinApp {
   public static _sampleNamespace: I18NNamespace;
   public static _markerDecorator?: MarkerPinDecorator;
   public static _images: Map<string, HTMLImageElement>;

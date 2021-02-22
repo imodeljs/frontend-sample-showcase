@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import SampleApp from "common/SampleApp";
 import { AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelQuery } from "@bentley/imodelhub-client";
@@ -17,7 +16,7 @@ interface ProjectContext {
 
 const namespace = "showcase";
 
-export default class ReadSettingsApp implements SampleApp {
+export default class ReadSettingsApp {
 
   public static projectContext: ProjectContext;
 

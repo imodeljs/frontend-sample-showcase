@@ -2,10 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import SampleApp from "common/SampleApp";
 import { Angle, Arc3d, LinearSweep, LineString3d, Path, Point3d, PolyfaceBuilder, Ray3d, RotationalSweep, RuledSweep, StrokeOptions, Vector3d } from "@bentley/geometry-core";
 
-export default class Advanced3dApp implements SampleApp {
+export default class Advanced3dApp {
 
   public static createLinearSweep() {
     const centerLine = Arc3d.createXY(new Point3d(0, 0, 0), 5);

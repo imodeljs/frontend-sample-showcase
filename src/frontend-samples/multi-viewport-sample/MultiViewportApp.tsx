@@ -4,10 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp, ScreenViewport, SelectedViewportChangedArgs, TwoWayViewportSync, Viewport } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class MultiViewportApp implements SampleApp {
+export default class MultiViewportApp {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();
   public static selectedViewportChangedListeners: Array<() => void> = [];
   public static viewOpenedListeners: Array<() => void> = [];

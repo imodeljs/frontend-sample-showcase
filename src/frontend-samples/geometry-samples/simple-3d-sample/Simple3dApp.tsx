@@ -2,10 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import SampleApp from "common/SampleApp";
 import { Angle, AngleSweep, Arc3d, Box, Cone, Point3d, Range3d, Sphere, TorusPipe } from "@bentley/geometry-core";
 
-export default class Simple3dApp implements SampleApp {
+export default class Simple3dApp {
 
   public static createCone(height: number, lowerRadius: number, upperRadius: number): Cone | undefined {
     return Cone.createAxisPoints(Point3d.create(0, 0, 0), Point3d.create(0, 0, height), lowerRadius, upperRadius, true);

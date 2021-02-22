@@ -6,9 +6,8 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, Viewport } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
-import SampleApp from "common/SampleApp";
 
-export default class ViewClipApp implements SampleApp {
+export default class ViewClipApp {
 
   /* Method for clearing all clips in the viewport */
   public static clearClips(vp: ScreenViewport) {

@@ -88,7 +88,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     this.setState({ showDecorator: checked });
   }
 
-  /** This callback will be executed by ReloadableViewport to initialize the viewstate */
+  /** This callback will be executed by SandboxViewport to initialize the viewstate */
   public static getTopView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
 
@@ -110,7 +110,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     return viewState;
   }
 
-  /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
+  /** This callback will be executed by SandboxViewport once the iModel has been loaded */
   private onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
 

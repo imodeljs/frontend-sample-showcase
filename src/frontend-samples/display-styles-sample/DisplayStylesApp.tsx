@@ -5,10 +5,9 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { DisplayStyle3dSettingsProps } from "@bentley/imodeljs-common";
 import { Viewport } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 
-export default class DisplayStylesApp implements SampleApp {
+export default class DisplayStylesApp {
   /** Overrides the current display styles using the viewport API. */
   public static applyDisplayStyle(viewport: Viewport, style: DisplayStyle3dSettingsProps) {
     viewport.overrideDisplayStyle(style);

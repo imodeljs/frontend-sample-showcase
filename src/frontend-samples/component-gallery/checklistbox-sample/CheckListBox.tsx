@@ -8,7 +8,6 @@ import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { CheckListBox, CheckListBoxItem, CheckListBoxSeparator } from "@bentley/ui-core";
-import SampleApp from "common/SampleApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -16,7 +15,7 @@ export const createComponentExample = (title: string, description: string | unde
   return { title, description, content };
 };
 
-export default class CheckListBoxList extends React.Component<{}> implements SampleApp {
+export default class CheckListBoxList extends React.Component<{}>  {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getCheckListBoxData(): UIComponentExampleProps[] {

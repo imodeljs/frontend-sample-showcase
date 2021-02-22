@@ -27,7 +27,6 @@ export interface SampleSpec {
   files: IInternalFile[];
   customModelList?: string[];
   sampleClass: typeof React.Component;
-  teardown?: () => void;
 }
 
 interface ShowcaseState {
@@ -53,8 +52,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   public static contextType = editorCommonActionContext;
   public context!: React.ContextType<typeof editorCommonActionContext>;
   private _samples = sampleManifest;
-  private _prevSampleSetup?: any;
-  private _prevSampleTeardown?: any;
+  private _prevSampleClass: any;
   private _wantScroll = false;
   private _galleryRef = React.createRef<SampleGallery>();
 
@@ -136,7 +134,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   public componentDidMount() {
-    this._onActiveSampleChange("", "");
+    this._onActiveSampleChange();
 
     document.documentElement.setAttribute("data-theme", "dark");
 
@@ -161,7 +159,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._galleryRef.current.scrollToActiveSample();
       }
 
-      this._onActiveSampleChange(prevState.activeSampleGroup, prevState.activeSampleName);
+      this._onActiveSampleChange();
     }
   }
 
@@ -219,16 +217,14 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   private _updateNames = (names: { group: string, sample: string, imodel?: string }) => {
-    if (this._prevSampleSetup) {
+    if (this._prevSampleClass) {
       if (!window.confirm("Changes made to the code will not be saved!")) {
         return;
       }
 
       const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-      activeSample.sampleClass = this._prevSampleSetup;
-      activeSample.teardown = this._prevSampleTeardown;
-      this._prevSampleSetup = undefined;
-      this._prevSampleTeardown = undefined;
+      activeSample.sampleClass = this._prevSampleClass;
+      this._prevSampleClass = undefined;
     }
 
     let iModelName = names.imodel;
@@ -250,11 +246,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._updateNames({ group: groupName, sample: sampleName })
   }
 
-  private _onActiveSampleChange = (prevGroupName: string, prevSampleName: string) => {
-    const oldSample = this.getSampleByName(prevGroupName, prevSampleName);
-    if (undefined !== oldSample && oldSample.teardown)
-      oldSample.teardown();
-
+  private _onActiveSampleChange = () => {
     this.setupNewSample();
   }
 
@@ -270,18 +262,16 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
     const sampleUi = (await import( /* webpackIgnore: true */ blob)).default as typeof React.Component;
 
-    if (!this._prevSampleSetup) {
-      this._prevSampleSetup = activeSample.sampleClass;
+    if (!this._prevSampleClass) {
+      this._prevSampleClass = activeSample.sampleClass;
     }
-    if (!this._prevSampleTeardown) {
-      this._prevSampleTeardown = activeSample.teardown;
-    }
+
     activeSample.sampleClass = sampleUi;
 
     const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
     group.samples.splice(sampleIndex, 1, activeSample);
-    this._onActiveSampleChange(group.groupName, activeSample.name);
+    this._onActiveSampleChange();
   }
 
   private _onEditorSizeChange = (size: number) => {

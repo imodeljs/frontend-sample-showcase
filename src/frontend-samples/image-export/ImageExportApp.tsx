@@ -4,10 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import SampleApp from "common/SampleApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 
-export default class ImageExportApp implements SampleApp {
+export default class ImageExportApp {
 
   // Capture image of currently active viewport and trigger browser's download action.
   public static exportImage() {
