@@ -153,7 +153,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
   }
 
   public render() {
-    const instructions = "Use the toggles below to select which effect is applied to the viewport.  Move the sliders to control those effects.";
+    const instructions = "Use the toggles below to select which effects are applied to the viewport.";
     return (
       <>
         <ControlPane instructions={instructions} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
