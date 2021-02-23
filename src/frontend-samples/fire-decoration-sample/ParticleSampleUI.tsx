@@ -13,12 +13,14 @@ import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { PlaceMarkerTool } from "frontend-samples/marker-pin-sample/PlaceMarkerTool";
 import * as React from "react";
+import { FireDecorator } from "./Particle";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
 interface ParticleSampleState {
   viewport?: Viewport;
   effect: Effect;
+  isLoading: boolean;
 }
 interface ParticleSampleProps {
   iModelName: string;
@@ -54,6 +56,10 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
 
   private readonly _effects: Effect[] = [
     {
+      effectName: "Fire",
+      environment: defaultStyle,
+    },
+    {
       effectName: "Snow",
       environment: snowStyle,
     },
@@ -62,19 +68,16 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
       environment: rainStyle,
     },
     {
-      effectName: "Fire",
-      environment: defaultStyle,
-    },
-    {
       effectName: "None",
       environment: defaultStyle,
     },
   ];
 
   /** Creates a Sample instance */
-  constructor(props?: any) {
+  constructor(props: ParticleSampleProps) {
     super(props);
     this.state = {
+      isLoading: true,
       effect: this._effects[0],
     };
   }
@@ -82,28 +85,25 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
   public getControls(): React.ReactNode {
     const entries = this._effects.map((effect) => effect.effectName);
     return (<>
-      <Button onClick={() => {
-        const vp = IModelApp.viewManager.selectedView;
-        if (undefined === vp)
-          return;
-
-      }}>Fire</Button>
-      {/* <Button onClick={() => {
-        const vp = IModelApp.viewManager.selectedView;
-        if (undefined === vp)
-          return;
-        IModelApp.tools.run(PlaceMarkerTool.toolId, (point: Point3d) => {
-
-        });
-      }}>Placement</Button> */}
-      <Select value={this.state.effect.effectName} options={entries} onChange={(event) => this.setState({ effect: this._effects.find((effect) => effect.effectName === event.target.value)! })} />
+      <span>
+        <Button disabled={this.state.isLoading} onClick={() => {
+          const vp = IModelApp.viewManager.selectedView;
+          if (undefined === vp)
+            return;
+          IModelApp.tools.run(PlaceMarkerTool.toolId, (point: Point3d) => {
+            FireDecorator.create(vp, point);
+          });
+        }}>Place Emitter</Button>
+      </span>
+      <div className={"sample-options-2col"}>
+        <label>Particles</label>
+        <Select value={this.state.effect.effectName} options={entries} onChange={(event) => this.setState({ effect: this._effects.find((effect) => effect.effectName === event.target.value)! })} />
+      </div>
     </>);
   }
 
   private onIModelReady = (_imodel: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
-      this.setState({ viewport: vp });
-    });
+    this.setState({ isLoading: false });
   }
 
   // public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {

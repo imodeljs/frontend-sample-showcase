@@ -11,7 +11,7 @@ export function getParticleSampleSpec(): SampleSpec {
     name: "particle-sample",
     label: "Particle Decoration",
     image: "view-attributes-thumbnail.png",
-    customModelList: [SampleIModels.RetailBuilding],
+    customModelList: [SampleIModels.BayTown],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       { name: "ParticleSampleApp.tsx", import: import("!!raw-loader!./ParticleSampleApp"), entry: true },
