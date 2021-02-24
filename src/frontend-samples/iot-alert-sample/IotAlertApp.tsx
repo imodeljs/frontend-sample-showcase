@@ -35,13 +35,11 @@ export default class IotAlertApp implements SampleApp {
     const viewChangeOpts: ViewChangeOptions = {};
     viewChangeOpts.animateFrustumChange = true;
     const vp = IModelApp.viewManager.selectedView!;
-    const ids = new Set<string>();
-    for (const [key, value] of elementNameIdMap) {
-      if (key === id) {
-        ids.add(value);
-      }
+    const zoomElementId = elementNameIdMap.get(id);
+    if (zoomElementId === undefined) {
+      return;
     }
-    await vp.zoomToElements(ids, { ...viewChangeOpts });
+    await vp.zoomToElements(zoomElementId, { ...viewChangeOpts });
   }
 
   public static teardown() {
