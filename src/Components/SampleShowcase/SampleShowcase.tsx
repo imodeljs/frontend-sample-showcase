@@ -210,7 +210,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       } catch (err) {
         sampleUI = <DisplayError error={err} />
       }
-      sampleUI = React.createElement(newSampleSpec.sampleClass, props)
     }
 
     this.setState({ sampleUI });
