@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { TooltipCustomizeUI } from "./TooltipCustomizeUI";
+import TooltipCustomizeUI from "./TooltipCustomizeUI";
 
 export function getTooltipCustomizeSpec(): SampleSpec {
   return ({

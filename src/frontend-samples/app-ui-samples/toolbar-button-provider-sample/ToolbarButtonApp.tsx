@@ -14,7 +14,8 @@ import { ControlPane } from "common/ControlPane/ControlPane";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
-export class ToolbarButtonSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> {
+export default class ToolbarButtonSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> {
+  // eslint-disable-next-line react/no-deprecated
   public async componentWillMount() {
     // Initialize utility class for AppUi samples
     AppUi.initialize();

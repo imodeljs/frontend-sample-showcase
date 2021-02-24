@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomEventHandlerTreeUI } from "./CustomEventHandlerTreeUI";
+import CustomEventHandlerTreeUI from "./CustomEventHandlerTreeUI";
 
 export function getCustomEventHandlerTreeSpec(): SampleSpec {
   return ({

@@ -7,7 +7,6 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import "@fortawesome/fontawesome-free/css/all.css";
 const PAGING_SIZE = 20;
 const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json");  // eslint-disable-line @typescript-eslint/no-var-requires
 

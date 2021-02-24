@@ -14,6 +14,7 @@ import { ControlPane } from "common/ControlPane/ControlPane";
 /** A React component that renders the UI specific for this sample */
 export default class ViewportFrontstageSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> {
 
+  // eslint-disable-next-line react/no-deprecated
   public async componentWillMount() {
     // Initialize utility class for AppUi samples
     AppUi.initialize();

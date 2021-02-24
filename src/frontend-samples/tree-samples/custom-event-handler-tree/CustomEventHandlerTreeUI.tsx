@@ -7,7 +7,7 @@ import "common/DataProvider/Trees.scss";
 import { CustomEventHandlerTree } from "./CustomEventHandlerTreeApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class CustomEventHandlerTreeUI extends React.Component<{}> {
+export default class CustomEventHandlerTreeUI extends React.Component<{}> {
 
   public render() {
     return (

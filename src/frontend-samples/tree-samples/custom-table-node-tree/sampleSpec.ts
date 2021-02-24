@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { TableNodeTreeUI } from "./CustomTableNodeTreeUI";
+import TableNodeTreeUI from "./CustomTableNodeTreeUI";
 
 export function getCustomTableNodeTreeSpec(): SampleSpec {
   return ({

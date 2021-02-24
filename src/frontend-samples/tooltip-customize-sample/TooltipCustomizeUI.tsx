@@ -27,13 +27,15 @@ export interface TooltipCustomizeSettings {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
+export default class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
 
   /** Creates a Sample instance */
   constructor(props?: any) {
+
     super(props);
     // ToolAdmin is typically initialized at application start.
     // See Notes at bottom of this file.
+
     ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin());
     // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of TooltipCustomizeApp.tsx.
     const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;

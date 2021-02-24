@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import { ViewClipUI } from "./ViewClipUI";
+import ViewClipUI from "./ViewClipUI";
 
 export function getViewClipSpec(): SampleSpec {
   return ({

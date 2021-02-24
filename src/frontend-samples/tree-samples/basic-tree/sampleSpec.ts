@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { BasicTreeUI } from "./BasicTreeUI";
+import BasicTreeUI from "./BasicTreeUI";
 
 export function getBasicTreeSpec(): SampleSpec {
   return ({

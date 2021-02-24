@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomNodeLoadingTreeUI } from "./CustomNodeLoadingTreeUI";
+import CustomNodeLoadingTreeUI from "./CustomNodeLoadingTreeUI";
 
 export function getCustomNodeLoadingTreeSpec(): SampleSpec {
   return ({

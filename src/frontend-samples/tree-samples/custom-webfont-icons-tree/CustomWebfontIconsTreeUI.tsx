@@ -9,7 +9,7 @@ import { SandboxIModelConnection } from "common/SandboxIModelConnection/SandboxI
 import { CustomWebfontIconsTree } from "./CustomWebfontIconsTreeApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class CustomWebfontIconsTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> {
+export default class CustomWebfontIconsTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel?: IModelConnection }> {
 
   public onIModelReady = (imodel: IModelConnection) => {
     this.setState({

@@ -8,7 +8,7 @@ import { SandboxIModelConnection } from "common/SandboxIModelConnection/SandboxI
 import { CustomNodeLoadingTree } from "./CustomNodeLoadingTreeApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class CustomNodeLoadingTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export default class CustomNodeLoadingTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
 
   public onIModelReady = (imodel: IModelConnection) => {
     this.setState({

@@ -5,11 +5,12 @@
 import { Angle } from "@bentley/geometry-core";
 import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import { Slider, Toggle } from "@bentley/ui-core";
 import { cloneEffectsConfig, EffectsConfig, equalEffectsConfigs, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
+import ScreenSpaceEffectsApp from "./ScreenSpaceEffectsApp"
 
 interface UIState {
   enableSaturation: boolean;
@@ -34,6 +35,14 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     effectsConfig: getCurrentEffectsConfig(),
     lensAngle: 90,
   };
+
+  public componentDidMount() {
+    // We need to register the effects once, after IModelApp.startup is invoked.
+    if (!ScreenSpaceEffectsApp._effectsRegistered) {
+      ScreenSpaceEffectsApp.registerEffects();
+      ScreenSpaceEffectsApp._effectsRegistered = true;
+    }
+  }
 
   // Create a slider to adjust one of the properties of `EffectsConfig`.
   private createSlider(label: string, value: number, min: number, max: number, step: number, enableIf: "enableSaturation" | "enableLensDistortion" | "enableVignette",
@@ -157,7 +166,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
     return (
       <>
         <ControlPane instructions={instructions} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
-        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );
   }

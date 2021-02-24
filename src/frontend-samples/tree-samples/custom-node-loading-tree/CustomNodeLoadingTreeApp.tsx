@@ -21,7 +21,7 @@ export interface CustomNodeLoadingTreeProps {
 }
 
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
+const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
 /**
  * This component demonstrates how to use `ControlledTree` with custom nodes loading to load nodes from
  * multiple data providers. Default node loaders `TreeNodeLoader` and `PagedTreeNodeLoader` works with

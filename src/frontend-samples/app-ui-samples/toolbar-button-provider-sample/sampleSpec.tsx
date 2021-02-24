@@ -5,7 +5,7 @@
 
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import { ToolbarButtonSample } from "./ToolbarButtonApp";
+import ToolbarButtonSample from "./ToolbarButtonApp";
 
 export function getToolbarButtonSample(): SampleSpec {
   return ({

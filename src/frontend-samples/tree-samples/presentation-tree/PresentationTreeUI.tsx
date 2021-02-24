@@ -12,7 +12,7 @@ export interface PresentationTreeProps {
   imodel: IModelConnection;
 }
 
-export class PresentationTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export default class PresentationTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
 
   public onIModelReady = (imodel: IModelConnection) => {
     this.setState({

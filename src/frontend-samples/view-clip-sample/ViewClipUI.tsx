@@ -25,7 +25,7 @@ interface ViewClipUIState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
+export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
   /** Creates an Sample instance */
   constructor(props?: any) {
     super(props);

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomCheckboxesTreeUI } from "./CustomCheckboxesTreeUI";
+import CustomCheckboxesTreeUI from "./CustomCheckboxesTreeUI";
 
 export function getCustomCheckboxesTreeSpec(): SampleSpec {
   return ({

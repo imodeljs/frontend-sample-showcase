@@ -8,7 +8,7 @@ import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
+const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface UnifiedSelectionTreeProps {
   imodel: IModelConnection;

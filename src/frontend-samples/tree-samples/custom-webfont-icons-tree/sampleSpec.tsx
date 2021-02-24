@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { CustomWebfontIconsTreeUI } from "./CustomWebfontIconsTreeUI";
+import CustomWebfontIconsTreeUI from "./CustomWebfontIconsTreeUI";
 
 export function getCustomWebfontIconsTreeSpec(): SampleSpec {
   return ({

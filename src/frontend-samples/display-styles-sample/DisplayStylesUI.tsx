@@ -8,9 +8,8 @@ import { ControlPane } from "common/ControlPane/ControlPane";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import DisplayStylesApp from "./DisplayStylesApp";
-import { DisplayStyle } from "./Styles";
+import { DisplayStyle, displayStyles } from "./Styles";
 import { Select, Toggle } from "@bentley/ui-core";
-import { displayStyles } from "./Styles";
 
 interface DisplayStylesUIState {
   activePresetIndex: number;

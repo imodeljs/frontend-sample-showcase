@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import { PresentationTreeUI } from "./PresentationTreeUI";
+import PresentationTreeUI from "./PresentationTreeUI";
 
 export function getPresentationTreeSpec(): SampleSpec {
   return ({

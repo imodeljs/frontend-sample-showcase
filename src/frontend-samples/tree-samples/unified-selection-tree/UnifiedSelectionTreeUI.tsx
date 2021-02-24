@@ -8,7 +8,7 @@ import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { UnifiedSelectionTree } from "./UnifiedSelectionTreeApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class UnifiedSelectionTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export default class UnifiedSelectionTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
 
   public onIModelReady = (imodel: IModelConnection) => {
     this.setState({
