@@ -5,12 +5,13 @@
 import * as React from "react";
 import { Button, ButtonType, Select, UnderlinedButton } from "@bentley/ui-core";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import IotAlertApp from "./IotAlertApp";
+import IotAlertApp, { BlinkingEffect } from "./IotAlertApp";
 import { ControlPane } from "Components/ControlPane/ControlPane";
-import { IModelConnection, OutputMessagePriority } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 import "./IotAlert.scss";
-import { MessageManager, MessageRenderer, ReactNotifyMessageDetails } from "@bentley/ui-framework";
+import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
+import { Id64String } from "@bentley/bentleyjs-core";
 
 /** React state of the Sample component */
 interface IotAlertState {
@@ -40,52 +41,53 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     };
   }
 
+  private createBlinkingElementIdSet(blinkingElements: string[], elementNameIdMap: Map<string, string>) {
+    const ids = new Set<Id64String>();
+    for (const [key, value] of elementNameIdMap) {
+      for (const element of blinkingElements) {
+        if (key === element) {
+          ids.add(value);
+        }
+      }
+    }
+    return ids;
+  }
+
   private _getElementsFromClass = (className: string, elementsMap: Map<string, []>) => {
     const classElements: any = elementsMap.get(className);
     const elementNames: any = [];
-    const tempMap = new Map();
     if (classElements === undefined) {
       return elementNames;
     }
     for (const element of classElements) {
       elementNames.push(element.userLabel);
-      tempMap.set(element.userLabel, element.id);
     }
-    this.setState({ elementNameIdMap: tempMap });
-
     return elementNames;
   }
 
   private _clearAll = () => {
     MessageManager.clearMessages();
-    // console.log(`_clearAll: Before clearing elements: blinkingElements: ${this.state.blinkingElements}`);
     this.setState({ blinkingElements: [], wantEmphasis: false });
-    // console.log(`_clearAll: After clearing elements: blinkingElements: ${this.state.blinkingElements}`);
-    IotAlertApp.setEmphasis(false);
+    const ids = this.createBlinkingElementIdSet([], this.state.elementNameIdMap);
+    BlinkingEffect.stopBlinking(ids);
   }
 
-  private _onToggleEmphasis = () => {
-    // console.log(`_onToggleEmphasis:  Before setting blinkingElements: ${this.state.blinkingElements}`);
+  private _onCreateAlert = () => {
     const tempSet = this.state.blinkingElements;
     tempSet.push(this.state.selectedElement);
     this.setState({ blinkingElements: tempSet, wantEmphasis: true });
-    // console.log(`_onToggleEmphasis:  After setting blinkingElements: ${this.state.blinkingElements}`);
-    MessageManager.outputMessage(new ReactNotifyMessageDetails(OutputMessagePriority.Warning, ``, IotAlertApp.reactMessage(this.state.selectedElement, this.state.elementNameIdMap)));
-    IotAlertApp.setEmphasis(true);
-
-    IotAlertApp.doBlinking(this.state.blinkingElements, this.state.elementNameIdMap);
-  }
-
-  private _executeQuery = async (imodel: IModelConnection, query: string) => {
-    const rows = [];
-    for await (const row of imodel.query(query))
-      rows.push(row);
-    return rows;
+    IotAlertApp.showAlertNotification(this.state.selectedElement, this.state.elementNameIdMap);
+    const ids = this.createBlinkingElementIdSet(this.state.blinkingElements, this.state.elementNameIdMap);
+    BlinkingEffect.doBlink(ids);
   }
 
   private async fetchElements(imodel: IModelConnection, className: string) {
-    const elementMapQuery = `SELECT EcInstanceId, userLabel FROM ${className}`;
-    return this._executeQuery(imodel, elementMapQuery);
+    const query = `SELECT EcInstanceId, userLabel FROM ${className}`;
+    const rows = [];
+    for await (const row of imodel.query(query)) {
+      rows.push(row);
+    }
+    return rows;
   }
 
   private _classList = ["SHELL_AND_TUBE_HEAT_EXCHANGER_PAR", "VERTICAL_VESSEL_PAR", "PLATE_TYPE_HEAT_EXCHANGER", "REBOILER_PAR"];
@@ -95,12 +97,25 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     for (const className of this._classList) {
       const fullClassName = `ProcessPhysical.${className}`;
       const elements = await this.fetchElements(imodel, fullClassName);
-      // console.log(`_onIModelReady: ${elements}`);
       classElementsMap.set(className, elements);
     }
-    this.setState({ elementsMap: classElementsMap });
-    const elementNames = this._getElementsFromClass(this._classList[0], this.state.elementsMap);
-    this.setState({ selectedElement: elementNames[0], elements: elementNames, isImodelReady: true });
+    const elementNames = this._getElementsFromClass(this._classList[0], classElementsMap);
+    const nameIdMap = this._populateNameIdMap(classElementsMap);
+    this.setState({ selectedElement: elementNames[0], elements: elementNames, elementNameIdMap: nameIdMap, elementsMap: classElementsMap, isImodelReady: true });
+  }
+
+  private _populateNameIdMap(elementsMap: Map<string, []>) {
+    const nameIdMap = new Map();
+    for (const className of this._classList) {
+      const classElements: any = elementsMap.get(className);
+      if (classElements === undefined) {
+        continue;
+      }
+      for (const element of classElements) {
+        nameIdMap.set(element.userLabel, element.id);
+      }
+    }
+    return nameIdMap;
   }
 
   private _onClassChange = (e: any) => {
@@ -116,12 +131,11 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
   }
 
   private _removeTag = (i: any) => {
-    // console.log(`_removeTag: Before removing element: blinkingElements: ${this.state.blinkingElements}`);
     const newTags = this.state.blinkingElements;
     newTags.splice(i, 1);
-    // console.log(`_removeTag: newTags: ${newTags}`);
     this.setState({ blinkingElements: newTags });
-    // console.log(`_removeTag: After removing element: blinkingElements: ${this.state.blinkingElements}`);
+    const ids = this.createBlinkingElementIdSet(newTags, this.state.elementNameIdMap);
+    BlinkingEffect.stopBlinking(ids);
     if (this.state.blinkingElements.length === 0) {
       this.setState({ wantEmphasis: false });
       MessageManager.clearMessages();
@@ -151,7 +165,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
           />
           <span>Alert</span>
           <div className="sample-options-2col-1">
-            <Button buttonType={ButtonType.Primary} onClick={() => this._onToggleEmphasis()} disabled={!enableCreateAlertButton}>Create</Button>
+            <Button buttonType={ButtonType.Primary} onClick={() => this._onCreateAlert()} disabled={!enableCreateAlertButton}>Create</Button>
             <Button buttonType={ButtonType.Primary} onClick={() => this._clearAll()} disabled={!enableClearAllAlertButton}>Clear all</Button>
           </div>
           <span>Active Alert(s) </span>
