@@ -5,32 +5,26 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { Point3d, Range2d } from "@bentley/geometry-core";
+import { Point3d } from "@bentley/geometry-core";
 import {
   IModelApp,
   IModelConnection,
   ScreenViewport,
-  StandardViewId,
-  ViewState,
 } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
+import { Button, ButtonType } from "@bentley/ui-core";
 import ToolsProvider, { ToolsContext } from "./ReactMarkerTools";
-// import { PointSelector } from "common/PointSelector/PointSelector";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { IModelJsViewProvider } from "@bentley/imodel-react-hooks";
 import ReactMarker from "./ReactMarker";
 import ReactMarkerApp from "./ReactMarkerApp";
+import { request } from "@bentley/itwin-client";
 
 export default function ReactMarkerUI(props: {
   iModelName: string;
   iModelSelector: React.ReactNode;
 }) {
-  const [showDecorator, setShowDecorator] = React.useState(true);
-  const [points, setPoints] = React.useState<{ worldLocation: Point3d }[]>([]);
-  const [_range, setRange] = React.useState(Range2d.createXYXY(0, 0, 1, 1));
-  const [_height, setHeight] = React.useState(0);
+  const [points, setPoints] = React.useState<ReactMarker.Props[]>([]);
 
   const addMarker = (pt: Point3d) => {
     setPoints((pts) => pts.concat({ worldLocation: pt }));
@@ -39,10 +33,24 @@ export default function ReactMarkerUI(props: {
   /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
   const onIModelReady = React.useCallback((_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
-      // Grab range of the contents of the view. We'll use this to position the random markers.
+      // Grab range of the contents of the view. We'll use this to position the first marker
       const range3d = viewport.view.computeFitRange();
-      setHeight(range3d.zHigh);
-      setRange(Range2d.createFrom(range3d));
+      setPoints([{ worldLocation: range3d.center }]);
+
+      // FIXME: need on every animation...
+      //requestAnimationFrame(() => );
+      viewport.onViewChanged.addListener((vp) => {
+        console.log("view changed");
+        const cameraLoc = vp.getFrustum().getEyePoint();
+        if (cameraLoc) {
+          setPoints((prevPoints) =>
+            prevPoints.map(({ worldLocation }) => ({
+              worldLocation,
+              distanceFromCamera: cameraLoc.distance(worldLocation),
+            }))
+          );
+        }
+      });
     });
   }, []);
 
@@ -51,17 +59,13 @@ export default function ReactMarkerUI(props: {
     <>
       <div className="sample-options-2col">
         <span>Show Markers</span>
-        <Toggle
-          isOn={showDecorator}
-          onChange={() => setShowDecorator(!showDecorator)}
-        />
-      </div>
-      <hr></hr>
-      <div className="sample-heading">
-        <span>Auto-generate locations</span>
-      </div>
-      <div className="sample-options-2col">
-        {/* <PointSelector onPointsChanged={setPoints} range={range} /> */}
+        <Button
+          buttonType={ButtonType.Blue}
+          onClick={() => setPoints([])}
+          title="Remove all markers placed in the viewport"
+        >
+          Remove All Markers
+        </Button>
       </div>
       <hr></hr>
       <div className="sample-heading">
@@ -101,10 +105,9 @@ export default function ReactMarkerUI(props: {
         onIModelReady={onIModelReady}
       />
       <IModelJsViewProvider>
-        {showDecorator &&
-          points.map((p, i) => (
-            <ReactMarker key={i} worldLocation={p.worldLocation} />
-          ))}
+        {points.map((p, i) => (
+          <ReactMarker key={i} worldLocation={p.worldLocation} />
+        ))}
       </IModelJsViewProvider>
     </ToolsProvider>
   );
