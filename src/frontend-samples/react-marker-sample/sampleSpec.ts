@@ -3,32 +3,31 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import MarkerPinApp from "./MarkerPinApp";
+import ReactMarkerApp from "./ReactMarkerApp";
 
 export function getMarkerPinSpec(): SampleSpec {
   return {
-    name: "jsx-marker-sample",
-    label: "JSX Markers",
-    image: "jsx-marker-thumbnail.png",
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
+    name: "react-marker-sample",
+    label: "React Markers",
+    image: "react-marker-thumbnail.png",
+    readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       {
         name: "MarkerPinApp.tsx",
-        import: import("!!raw-loader!./MarkerPinApp.tsx"),
+        import: import("!!raw-loader!./ReactMarkerApp.tsx"),
         entry: true,
       },
       {
         name: "MarkerPinUI.tsx",
-        import: import("!!raw-loader!./MarkerPinUI.tsx"),
+        import: import("!!raw-loader!./ReactMarkerUI.tsx"),
       },
-      { name: "Marker.tsx", import: import("!!raw-loader!./Marker.tsx") },
+      { name: "Marker.tsx", import: import("!!raw-loader!./ReactMarker.tsx") },
       {
         name: "PlaceMarkerTool.ts",
-        import: import("!!raw-loader!./PlaceMarkerTool"),
+        import: import("!!raw-loader!./ReactMarkerTools"),
       },
-      { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
     ],
-    setup: MarkerPinApp.setup,
-    teardown: MarkerPinApp.teardown,
+    setup: ReactMarkerApp.setup,
+    teardown: ReactMarkerApp.teardown,
   };
 }

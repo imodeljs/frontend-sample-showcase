@@ -11,45 +11,52 @@ import {
   Viewport,
 } from "@bentley/imodeljs-frontend";
 import { Point3d } from "@bentley/geometry-core";
+import { I18NNamespace } from "@bentley/imodeljs-i18n";
 
-namespace ToolsProvider {
-  export interface Props {}
-}
-
-export interface ToolsContextType {
-  PlaceMarkerTool: PrimitiveTool;
-}
-
+/* this creates objects that throw errors on access, perfect for objects that
+ * should be considered a runtime error to use, such as default context state for
+ * react contexts that require a valid provider */
 function createUnusableObject<T extends {}>(usageErrorMessage: string): T {
   return new Proxy({} as T, {
-    get(_target, key) {
+    get() {
       throw Error("Tried to use unusable object: " + usageErrorMessage);
     },
   });
 }
 
+export interface ToolsContextType {
+  PlaceMarkerTool: typeof PrimitiveTool;
+}
+
+/** the default value of our ToolsContext is invalid, it will show this string
+ * as an error to remind programmers that they need to make sure they included
+ * a ToolsProvider as an ancestor in the component tree */
 const defaultToolsContextValue = createUnusableObject<ToolsContextType>(
-  "default context is invalid, must have a ToolsProvider as an ancestor"
+  "default context state is invalid, ensure you have a ToolsProvider as an ancestor"
 );
 
-const ToolsContext = React.createContext(defaultToolsContextValue);
+export const ToolsContext = React.createContext(defaultToolsContextValue);
 
-/** This class defines the user's interaction while placing a new marker. It is launched by a button in the UI.
- *  While it is active, the tool handles events from the user, notably mouse clicks in the viewport.
- */
+namespace ToolsProvider {
+  export interface Props {
+    i18nNamespace: I18NNamespace;
+    addMarker: (p: Point3d) => void;
+  }
+}
+
 class ToolsProvider extends React.Component<ToolsProvider.Props> {
+  // this function-initialized property will create our tool class for us on creation
+  // but we can use the ToolsProvider's this to access all React state and props
   PlaceMarkerTool = (() => {
-    const componentThis = this;
+    // need an alias to the ToolProvider instance `this` during construction of this property,
+    // because the `this` keyword will refer to the PrimitiveTool instance in its methods
+    const toolProviderThis = this;
+
+    /** This class defines the user's interaction while placing a new marker. It is launched by a button in the UI.
+     *  While it is active, the tool handles events from the user, notably mouse clicks in the viewport. */
     return class PlaceMarkerTool extends PrimitiveTool {
       public static toolId = "Test.DefineLocation"; // <== Used to find flyover (tool name), description, and keyin from namespace tool registered with...see CoreTools.json for example...
       public static iconSpec = "icon-star"; // <== Tool button should use whatever icon you have here...
-      private _createMarkerCallback: (pt: Point3d) => {};
-
-      constructor(callback: (pt: Point3d) => {}) {
-        super();
-
-        this._createMarkerCallback = callback;
-      }
 
       public isCompatibleViewport(
         vp: Viewport | undefined,
@@ -61,19 +68,16 @@ class ToolsProvider extends React.Component<ToolsProvider.Props> {
           vp.view.isSpatialView()
         );
       }
-      public isValidLocation(
-        _ev: BeButtonEvent,
-        _isButtonEvent: boolean
-      ): boolean {
-        return true;
-      } // Allow snapping to terrain, etc. outside project extents.
-      public requireWriteableTarget(): boolean {
-        return false;
-      } // Tool doesn't modify the imodel.
+
+      public isValidLocation = () => true; // Allow snapping to terrain, etc. outside project extents.
+
+      public requireWriteableTarget = () => false; // Tool doesn't modify the imodel.
+
       public onPostInstall() {
         super.onPostInstall();
         this.setupAndPromptForNextAction();
       }
+
       public onRestartTool(): void {
         this.exitTool();
       }
@@ -94,7 +98,7 @@ class ToolsProvider extends React.Component<ToolsProvider.Props> {
         if (undefined === ev.viewport) return EventHandled.No; // Shouldn't really happen
 
         // ev.point is the current world coordinate point adjusted for snap and locks
-        this._createMarkerCallback(ev.point);
+        toolProviderThis.props.addMarker(ev.point);
 
         this.onReinitialize(); // Calls onRestartTool to exit
         return EventHandled.No;
@@ -103,14 +107,17 @@ class ToolsProvider extends React.Component<ToolsProvider.Props> {
   })();
 
   public componentDidMount() {
-    this.PlaceMarkerTool.register(this._sampleNamespace);
+    // when this "ToolContext" component mounts, register the react-connected tool
+    this.PlaceMarkerTool.register(this.props.i18nNamespace);
   }
 
   public componentWillUnmount() {
+    // when this "ToolContext" component unmounts, unregister the react-connected tool
     IModelApp.tools.unRegister(this.PlaceMarkerTool.toolId);
   }
 
   public render() {
+    // when rendering, provide a react context with a reference to the internal tools through this
     return (
       <ToolsContext.Provider value={this}>
         {this.props.children}

@@ -14,13 +14,14 @@ import {
   ViewState,
 } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { PlaceMarkerTool } from "./PlaceMarkerTool";
+import ToolsProvider, { ToolsContext } from "./PlaceMarkerTool";
 import { PointSelector } from "common/PointSelector/PointSelector";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { IModelJsViewProvider } from "@bentley/imodel-react-hooks";
 import ReactMarker from "./Marker";
+import MarkerPinApp from "./MarkerPinApp";
 
 export default function MarkerPinsUI(props: {
   iModelName: string;
@@ -33,13 +34,6 @@ export default function MarkerPinsUI(props: {
 
   const addMarker = (point: Point3d) => {
     setPoints((points) => points.concat({ worldLocation: point }));
-  };
-
-  /** This callback will be executed when the user clicks the UI button.  It will start the tool which
-   * handles further user input.
-   */
-  const startPlaceMarkerTool = () => {
-    IModelApp.tools.run(PlaceMarkerTool.toolId, addMarker);
   };
 
   /** This callback will be executed by ReloadableViewport to initialize the viewstate */
@@ -92,20 +86,30 @@ export default function MarkerPinsUI(props: {
         <span>Manual placement</span>
       </div>
       <div style={{ textAlign: "center" }}>
-        <Button
-          buttonType={ButtonType.Primary}
-          onClick={startPlaceMarkerTool}
-          title="Click here and then click the view to place a new marker"
-        >
-          Place Marker
-        </Button>
+        <ToolsContext.Consumer>
+          {(tools) => (
+            <Button
+              buttonType={ButtonType.Primary}
+              onClick={() =>
+                // this will start the tool to handle user input
+                IModelApp.tools.run(tools.PlaceMarkerTool.toolId, addMarker)
+              }
+              title="Click here and then click the view to place a new marker"
+            >
+              Place Marker
+            </Button>
+          )}
+        </ToolsContext.Consumer>
       </div>
     </>
   );
 
   /** The sample's render method */
   return (
-    <>
+    <ToolsProvider
+      i18nNamespace={MarkerPinApp._sampleNamespace}
+      addMarker={addMarker}
+    >
       <ControlPane
         instructions="Use the options below to control the marker pins.  Click a marker to open a menu of options."
         controls={controls}
@@ -120,6 +124,6 @@ export default function MarkerPinsUI(props: {
         {showDecorator &&
           points.map((p) => <ReactMarker worldLocation={p.worldLocation} />)}
       </IModelJsViewProvider>
-    </>
+    </ToolsProvider>
   );
 }
