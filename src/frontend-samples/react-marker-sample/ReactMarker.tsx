@@ -5,6 +5,7 @@
 import React from "react";
 import { Point3d } from "@bentley/geometry-core";
 import { Marker } from "@bentley/imodel-react-hooks";
+import styles from "./ReactMarker.module.scss";
 
 declare namespace ReactMarker {
   export interface Props {
@@ -22,11 +23,18 @@ function ReactMarker(props: ReactMarker.Props) {
       worldLocation={props.worldLocation}
       // pass arbitrary jsx without setting up your own htmlElement
       jsxElement={
-        <span style={{ backgroundColor: "#fff", borderRadius: 5 }}>
+        <div
+          className={styles.markerContent}
+          style={{ backgroundColor: "#fff", borderRadius: 5 }}
+        >
+          <video controls height="240" width="320">
+            <source src="/cat_walking.mp4" type="video/mp4" />
+            Your browser does not support video tags :(
+          </video>
           <button onClick={() => setCounter((prev) => prev + 1)}>+</button>
           <span>{counter}</span>
           <button onClick={() => setCounter((prev) => prev - 1)}>-</button>
-        </span>
+        </div>
       }
     />
   );

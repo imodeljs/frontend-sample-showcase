@@ -36,24 +36,6 @@ export default function ReactMarkerUI(props: {
     setPoints((pts) => pts.concat({ worldLocation: pt }));
   };
 
-  /** This callback will be executed by ReloadableViewport to initialize the viewstate */
-  const getTopView = React.useCallback(
-    async (imodel: IModelConnection): Promise<ViewState> => {
-      const viewState = await ViewSetup.getDefaultView(imodel);
-
-      // The marker pins look better in a top view
-      viewState.setStandardRotation(StandardViewId.Top);
-
-      const viewRange = viewState.computeFitRange();
-      const aspect = viewState.getAspectRatio();
-
-      viewState.lookAtVolume(viewRange, aspect);
-
-      return viewState;
-    },
-    []
-  );
-
   /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
   const onIModelReady = React.useCallback((_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
@@ -117,7 +99,6 @@ export default function ReactMarkerUI(props: {
       <ReloadableViewport
         iModelName={props.iModelName}
         onIModelReady={onIModelReady}
-        getCustomViewState={getTopView}
       />
       <IModelJsViewProvider>
         {showDecorator &&
