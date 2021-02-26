@@ -22,20 +22,21 @@ function ReactMarker(props: ReactMarker.Props) {
     <Marker
       worldLocation={props.worldLocation}
       // pass arbitrary jsx without setting up your own htmlElement
-      jsxElement={
-        <div
-          className={styles.markerContent}
-          style={{ backgroundColor: "#fff", borderRadius: 5 }}
-        >
-          <video controls height="240" width="320">
-            <source src="/cat_walking.mp4" type="video/mp4" />
-            Your browser does not support video tags :(
-          </video>
-          <button onClick={() => setCounter((prev) => prev + 1)}>+</button>
-          <span>{counter}</span>
-          <button onClick={() => setCounter((prev) => prev - 1)}>-</button>
-        </div>
-      }
+      size={[490, 265]}
+      jsxElement={React.useMemo(
+        () => (
+          <div className={styles.markerContent}>
+            <video controls loop muted>
+              <source src="/cat_walking.mp4" type="video/mp4" />
+              Your browser does not support video tags :(
+            </video>
+            <button onClick={() => setCounter((prev) => prev + 1)}>+</button>
+            <span>{counter}</span>
+            <button onClick={() => setCounter((prev) => prev - 1)}>-</button>
+          </div>
+        ),
+        [counter]
+      )}
     />
   );
 }

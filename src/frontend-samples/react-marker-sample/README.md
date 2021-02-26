@@ -1,4 +1,4 @@
-# Marker Pin Sample
+# React Marker Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 

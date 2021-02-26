@@ -29,6 +29,10 @@ export function getReactMarkerSpec(): SampleSpec {
         name: "ReactMarkerTools.tsx",
         import: import("!!raw-loader!./ReactMarkerTools.tsx"),
       },
+      {
+        name: "ReactMarker.module.scss",
+        import: import("!!raw-loader!./ReactMarker.module.scss"),
+      },
     ],
     setup: ReactMarkerApp.setup,
     teardown: ReactMarkerApp.teardown,

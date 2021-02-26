@@ -2,12 +2,15 @@
   padding: 11px;
   pointer-events: auto;
   box-shadow: 1px 1px 3px 3px rgba(0, 0, 0, 0.5);
-
-  > video {
-  }
+  background-color: white;
+  border-radius: 5px;
 
   > button {
     height: 16px;
     width: 16px;
+
+    &:hover {
+      background-color: rgba(240, 240, 255, 1);
+    }
   }
 }
