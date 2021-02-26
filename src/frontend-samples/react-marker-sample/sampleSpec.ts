@@ -5,7 +5,7 @@
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import ReactMarkerApp from "./ReactMarkerApp";
 
-export function getMarkerPinSpec(): SampleSpec {
+export function getReactMarkerSpec(): SampleSpec {
   return {
     name: "react-marker-sample",
     label: "React Markers",
@@ -13,18 +13,21 @@ export function getMarkerPinSpec(): SampleSpec {
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       {
-        name: "MarkerPinApp.tsx",
+        name: "ReactMarkerApp.tsx",
         import: import("!!raw-loader!./ReactMarkerApp.tsx"),
         entry: true,
       },
       {
-        name: "MarkerPinUI.tsx",
+        name: "ReactMarkerUI.tsx",
         import: import("!!raw-loader!./ReactMarkerUI.tsx"),
       },
-      { name: "Marker.tsx", import: import("!!raw-loader!./ReactMarker.tsx") },
       {
-        name: "PlaceMarkerTool.ts",
-        import: import("!!raw-loader!./ReactMarkerTools"),
+        name: "ReactMarker.tsx",
+        import: import("!!raw-loader!./ReactMarker.tsx"),
+      },
+      {
+        name: "ReactMarkerTools.tsx",
+        import: import("!!raw-loader!./ReactMarkerTools.tsx"),
       },
     ],
     setup: ReactMarkerApp.setup,

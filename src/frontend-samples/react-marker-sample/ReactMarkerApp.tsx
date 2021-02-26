@@ -7,14 +7,14 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import MarkerPinsUI from "./MarkerPinUI";
+import ReactMarkerUI from "./ReactMarkerUI";
 import SampleApp from "common/SampleApp";
 
-export default class MarkerPinApp implements SampleApp {
+export default class ReactMarkerApp implements SampleApp {
   public static _sampleNamespace: I18NNamespace;
 
   public static setup = async function (
-    this: typeof MarkerPinApp,
+    this: typeof ReactMarkerApp,
     iModelName: string,
     iModelSelector: React.ReactNode
   ): Promise<React.ReactNode> {
@@ -23,7 +23,7 @@ export default class MarkerPinApp implements SampleApp {
     );
 
     return (
-      <MarkerPinsUI iModelName={iModelName} iModelSelector={iModelSelector} />
+      <ReactMarkerUI iModelName={iModelName} iModelSelector={iModelSelector} />
     );
   };
 

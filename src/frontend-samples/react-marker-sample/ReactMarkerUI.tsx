@@ -20,10 +20,10 @@ import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { IModelJsViewProvider } from "@bentley/imodel-react-hooks";
-import ReactMarker from "./Marker";
-import MarkerPinApp from "./MarkerPinApp";
+import ReactMarker from "./ReactMarker";
+import ReactMarkerApp from "./ReactMarkerApp";
 
-export default function MarkerPinsUI(props: {
+export default function ReactMarkerUI(props: {
   iModelName: string;
   iModelSelector: React.ReactNode;
 }) {
@@ -64,7 +64,7 @@ export default function MarkerPinsUI(props: {
     });
   }, []);
 
-  /** Components for rendering the sample's instructions and controls */
+  /** the sample's instructions and controls */
   const controls = (
     <>
       <div className="sample-options-2col">
@@ -104,10 +104,9 @@ export default function MarkerPinsUI(props: {
     </>
   );
 
-  /** The sample's render method */
   return (
     <ToolsProvider
-      i18nNamespace={MarkerPinApp._sampleNamespace}
+      i18nNamespace={ReactMarkerApp._sampleNamespace}
       addMarker={addMarker}
     >
       <ControlPane
