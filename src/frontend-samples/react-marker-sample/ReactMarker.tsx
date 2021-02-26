@@ -6,12 +6,13 @@ import React from "react";
 import { Point3d } from "@bentley/geometry-core";
 import { Marker } from "@bentley/imodel-react-hooks";
 
-namespace ReactMarker {
+declare namespace ReactMarker {
   export interface Props {
     worldLocation: Point3d;
   }
 }
 
+// eslint-disable-next-line no-redeclare
 function ReactMarker(props: ReactMarker.Props) {
   const [counter, setCounter] = React.useState(0);
 

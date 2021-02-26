@@ -14,8 +14,8 @@ import {
   ViewState,
 } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import ToolsProvider, { ToolsContext } from "./PlaceMarkerTool";
-import { PointSelector } from "common/PointSelector/PointSelector";
+import ToolsProvider, { ToolsContext } from "./ReactMarkerTools";
+// import { PointSelector } from "common/PointSelector/PointSelector";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ViewSetup } from "api/viewSetup";
 import { ControlPane } from "Components/ControlPane/ControlPane";
@@ -29,11 +29,11 @@ export default function ReactMarkerUI(props: {
 }) {
   const [showDecorator, setShowDecorator] = React.useState(true);
   const [points, setPoints] = React.useState<{ worldLocation: Point3d }[]>([]);
-  const [range, setRange] = React.useState(Range2d.createXYXY(0, 0, 1, 1));
-  const [height, setHeight] = React.useState(0);
+  const [_range, setRange] = React.useState(Range2d.createXYXY(0, 0, 1, 1));
+  const [_height, setHeight] = React.useState(0);
 
-  const addMarker = (point: Point3d) => {
-    setPoints((points) => points.concat({ worldLocation: point }));
+  const addMarker = (pt: Point3d) => {
+    setPoints((pts) => pts.concat({ worldLocation: pt }));
   };
 
   /** This callback will be executed by ReloadableViewport to initialize the viewstate */
@@ -44,10 +44,10 @@ export default function ReactMarkerUI(props: {
       // The marker pins look better in a top view
       viewState.setStandardRotation(StandardViewId.Top);
 
-      const range = viewState.computeFitRange();
+      const viewRange = viewState.computeFitRange();
       const aspect = viewState.getAspectRatio();
 
-      viewState.lookAtVolume(range, aspect);
+      viewState.lookAtVolume(viewRange, aspect);
 
       return viewState;
     },
@@ -55,7 +55,7 @@ export default function ReactMarkerUI(props: {
   );
 
   /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
-  const onIModelReady = React.useCallback((imodel: IModelConnection) => {
+  const onIModelReady = React.useCallback((_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       // Grab range of the contents of the view. We'll use this to position the random markers.
       const range3d = viewport.view.computeFitRange();
@@ -79,7 +79,7 @@ export default function ReactMarkerUI(props: {
         <span>Auto-generate locations</span>
       </div>
       <div className="sample-options-2col">
-        <PointSelector onPointsChanged={setPoints} range={range} />
+        {/* <PointSelector onPointsChanged={setPoints} range={range} /> */}
       </div>
       <hr></hr>
       <div className="sample-heading">
@@ -121,7 +121,9 @@ export default function ReactMarkerUI(props: {
       />
       <IModelJsViewProvider>
         {showDecorator &&
-          points.map((p) => <ReactMarker worldLocation={p.worldLocation} />)}
+          points.map((p, i) => (
+            <ReactMarker key={i} worldLocation={p.worldLocation} />
+          ))}
       </IModelJsViewProvider>
     </ToolsProvider>
   );

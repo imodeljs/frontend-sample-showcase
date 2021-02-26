@@ -9,7 +9,7 @@ export function getReactMarkerSpec(): SampleSpec {
   return {
     name: "react-marker-sample",
     label: "React Markers",
-    image: "react-marker-thumbnail.png",
+    image: "marker-pin-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       {

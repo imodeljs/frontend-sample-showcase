@@ -37,7 +37,7 @@ const defaultToolsContextValue = createUnusableObject<ToolsContextType>(
 
 export const ToolsContext = React.createContext(defaultToolsContextValue);
 
-namespace ToolsProvider {
+declare namespace ToolsProvider {
   export interface Props {
     i18nNamespace: I18NNamespace;
     addMarker: (p: Point3d) => void;
@@ -47,7 +47,7 @@ namespace ToolsProvider {
 class ToolsProvider extends React.Component<ToolsProvider.Props> {
   // this function-initialized property will create our tool class for us on creation
   // but we can use the ToolsProvider's this to access all React state and props
-  PlaceMarkerTool = (() => {
+  public PlaceMarkerTool = (() => {
     // need an alias to the ToolProvider instance `this` during construction of this property,
     // because the `this` keyword will refer to the PrimitiveTool instance in its methods
     const toolProviderThis = this;

@@ -11,6 +11,7 @@ import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getPropertyFormattingSpec } from "./frontend-samples/property-formatting-sample/sampleSpec";
+import { getReactMarkerSpec } from "./frontend-samples/react-marker-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
 import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
@@ -89,6 +90,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getPropertyFormattingSpec(),
+    getReactMarkerSpec(),
     getReadSettingsSpec(),
     getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),

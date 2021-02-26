@@ -10,16 +10,17 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import ReactMarkerUI from "./ReactMarkerUI";
 import SampleApp from "common/SampleApp";
 
+const i18nNamespaceKey = "react-marker-i18n-namespace" as string;
+
 export default class ReactMarkerApp implements SampleApp {
   public static _sampleNamespace: I18NNamespace;
 
-  public static setup = async function (
-    this: typeof ReactMarkerApp,
+  public static setup = async (
     iModelName: string,
     iModelSelector: React.ReactNode
-  ): Promise<React.ReactNode> {
-    this._sampleNamespace = IModelApp.i18n.registerNamespace(
-      "marker-pin-i18n-namespace"
+  ): Promise<React.ReactNode> => {
+    ReactMarkerApp._sampleNamespace = IModelApp.i18n.registerNamespace(
+      i18nNamespaceKey
     );
 
     return (
@@ -28,6 +29,6 @@ export default class ReactMarkerApp implements SampleApp {
   };
 
   public static teardown = async () => {
-    IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
+    IModelApp.i18n.unregisterNamespace(i18nNamespaceKey);
   };
 }
