@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import Simple3dApp from "./Simple3dApp";
+import Simple3dUI from "./Simple3dUI";
 
 export function getSimple3dSpec(): SampleSpec {
   return ({
@@ -13,9 +13,9 @@ export function getSimple3dSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp"), entry: true },
-      { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI") },
+      { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI"), entry: true },
+      { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp") },
     ],
-    setup: Simple3dApp.setup.bind(Simple3dApp),
+    sampleClass: Simple3dUI,
   });
 }

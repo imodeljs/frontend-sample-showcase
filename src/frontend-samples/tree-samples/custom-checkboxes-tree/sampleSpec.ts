@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomCheckboxesTreeApp from "./CustomCheckboxesTreeApp";
+import CustomCheckboxesTreeUI from "./CustomCheckboxesTreeUI";
 
 export function getCustomCheckboxesTreeSpec(): SampleSpec {
   return ({
@@ -14,9 +14,9 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp"), entry: true },
       { name: "CustomCheckboxesTreeUI.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeUI"), entry: true },
+      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp") },
     ],
-    setup: CustomCheckboxesTreeApp.setup.bind(CustomCheckboxesTreeApp),
+    sampleClass: CustomCheckboxesTreeUI,
   });
 }

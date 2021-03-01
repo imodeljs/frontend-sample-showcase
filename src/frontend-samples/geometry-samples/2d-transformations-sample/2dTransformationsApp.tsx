@@ -2,12 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import SampleApp from "common/SampleApp";
 import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Transform } from "@bentley/geometry-core";
-import Transformations2dUI from "./2dTransformationsUI";
 
-export default class Transformations2dApp implements SampleApp {
+export default class Transformations2dApp {
 
   public static handleTranslation(geometry: Loop, xTrans: number, yTrans: number): Loop | undefined {
     const newGeometry = geometry;
@@ -59,10 +56,6 @@ export default class Transformations2dApp implements SampleApp {
     const hullGeometry = LineString3d.create(hullPoints);
     const loop = Loop.create(hullGeometry.clone());
     return loop;
-  }
-
-  public static async setup(): Promise<React.ReactNode> {
-    return <Transformations2dUI></Transformations2dUI>;
   }
 
 }

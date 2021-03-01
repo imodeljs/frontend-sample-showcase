@@ -3,16 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
+import { BlankViewport } from "common/Geometry/BlankViewport";
 import { Range3d } from "@bentley/geometry-core";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { NumericInput, Timer } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 import SimpleAnimatedApp from "./SimpleAnimatedApp";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 
 export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number, decorator: GeometryDecorator }> {
 

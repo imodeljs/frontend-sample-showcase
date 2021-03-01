@@ -8,17 +8,15 @@ import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector } from "../IModelSelector/IModelSelector";
+import { IModelSelector } from "common/IModelSelector/IModelSelector";
 import { ConnectedSampleEditor } from "../SampleEditor/SampleEditor";
 import { editorCommonActionContext, IInternalFile, SplitScreen } from "@bentley/monaco-editor/editor";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
-import SampleApp from "common/SampleApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { MovePointTool } from "common/GeometryCommon/InteractivePointMarker";
-
+import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 // cSpell:ignore imodels
 
 export interface SampleSpec {
@@ -28,8 +26,7 @@ export interface SampleSpec {
   readme?: IInternalFile;
   files: IInternalFile[];
   customModelList?: string[];
-  setup: (iModelName: string, iModelSelector: React.ReactNode, iModelName2?: string) => Promise<React.ReactNode>;
-  teardown?: () => void;
+  sampleClass: typeof React.Component;
 }
 
 interface ShowcaseState {
@@ -42,14 +39,20 @@ interface ShowcaseState {
   dragging: boolean;
 }
 
+
+export interface SampleProps extends React.Attributes {
+  iModelName?: string;
+  iModelSelector?: React.ReactNode;
+}
+
+
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private static _sampleNamespace: I18NNamespace;
   public static contextType = editorCommonActionContext;
   public context!: React.ContextType<typeof editorCommonActionContext>;
   private _samples = sampleManifest;
-  private _prevSampleSetup?: any;
-  private _prevSampleTeardown?: any;
+  private _prevSampleClass: any;
   private _wantScroll = false;
   private _galleryRef = React.createRef<SampleGallery>();
 
@@ -131,7 +134,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   public componentDidMount() {
-    this._onActiveSampleChange("", "");
+    this._onActiveSampleChange();
 
     document.documentElement.setAttribute("data-theme", "dark");
 
@@ -156,7 +159,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
         this._galleryRef.current.scrollToActiveSample();
       }
 
-      this._onActiveSampleChange(prevState.activeSampleGroup, prevState.activeSampleName);
+      this._onActiveSampleChange();
     }
   }
 
@@ -194,26 +197,33 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     let sampleUI: React.ReactNode;
 
-    if (newSampleSpec.setup) {
+    if (newSampleSpec.sampleClass) {
       const iModelList = this.getIModelList(newSampleSpec);
       const iModelSelector = this.getIModelSelector(this.state.iModelName, iModelList);
-      sampleUI = await newSampleSpec.setup(this.state.iModelName, iModelSelector);
+      const props: SampleProps = {
+        iModelName: this.state.iModelName,
+        iModelSelector,
+      }
+
+      try {
+        sampleUI = sampleUI = React.createElement(newSampleSpec.sampleClass, props);
+      } catch (err) {
+        sampleUI = <DisplayError error={err} />
+      }
     }
 
     this.setState({ sampleUI });
   }
 
   private _updateNames = (names: { group: string, sample: string, imodel?: string }) => {
-    if (this._prevSampleSetup) {
+    if (this._prevSampleClass) {
       if (!window.confirm("Changes made to the code will not be saved!")) {
         return;
       }
 
       const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-      activeSample.setup = this._prevSampleSetup;
-      activeSample.teardown = this._prevSampleTeardown;
-      this._prevSampleSetup = undefined;
-      this._prevSampleTeardown = undefined;
+      activeSample.sampleClass = this._prevSampleClass;
+      this._prevSampleClass = undefined;
     }
 
     let iModelName = names.imodel;
@@ -235,11 +245,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this._updateNames({ group: groupName, sample: sampleName })
   }
 
-  private _onActiveSampleChange = (prevGroupName: string, prevSampleName: string) => {
-    const oldSample = this.getSampleByName(prevGroupName, prevSampleName);
-    if (undefined !== oldSample && oldSample.teardown)
-      oldSample.teardown();
-
+  private _onActiveSampleChange = () => {
     this.setupNewSample();
   }
 
@@ -253,31 +259,18 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   private _onSampleTranspiled = async (blob: string) => {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
-    const sampleUi = (await import( /* webpackIgnore: true */ blob)).default as typeof SampleApp;
+    const sampleUi = (await import( /* webpackIgnore: true */ blob)).default as typeof React.Component;
 
-    if (!this._prevSampleSetup) {
-      this._prevSampleSetup = activeSample.setup;
-    }
-    if (!this._prevSampleTeardown) {
-      this._prevSampleTeardown = activeSample.teardown;
+    if (!this._prevSampleClass) {
+      this._prevSampleClass = activeSample.sampleClass;
     }
 
-    activeSample.setup = async (iModelName: string, iModelSelector: React.ReactNode) => {
-      try {
-        return sampleUi.setup(iModelName, iModelSelector);
-      } catch (err) {
-        return (
-          <DisplayError error={err} />
-        );
-      }
-    };
-
-    activeSample.teardown = sampleUi.teardown || this._prevSampleTeardown;
+    activeSample.sampleClass = sampleUi;
 
     const group = sampleManifest.find((v) => v.groupName === this.state.activeSampleGroup)!;
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
     group.samples.splice(sampleIndex, 1, activeSample);
-    this._onActiveSampleChange(group.groupName, activeSample.name);
+    this._onActiveSampleChange();
   }
 
   private _onEditorSizeChange = (size: number) => {

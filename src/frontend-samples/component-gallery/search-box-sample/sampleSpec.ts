@@ -16,6 +16,6 @@ export function getSearchBoxSpec(): SampleSpec {
     files: [
       { name: "SearchBox.tsx", import: import("!!raw-loader!./SearchBox"), entry: true },
     ],
-    setup: SearchBoxList.setup.bind(SearchBoxList),
+    sampleClass: SearchBoxList,
   });
 }

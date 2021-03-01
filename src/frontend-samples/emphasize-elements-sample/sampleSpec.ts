@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import EmphasizeElementsApp from "./EmphasizeElementsApp";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import EmphasizeElementsUI from "./EmphasizeElementsUI";
 
 export function getEmphasizeElementsSpec(): SampleSpec {
   return ({
@@ -13,12 +13,11 @@ export function getEmphasizeElementsSpec(): SampleSpec {
     image: "emphasize-elements-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp"), entry: true },
-      { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI") },
+      { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI"), entry: true },
+      { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp") },
 
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    setup: EmphasizeElementsApp.setup.bind(EmphasizeElementsApp),
-    teardown: EmphasizeElementsApp.teardown.bind(EmphasizeElementsApp),
+    sampleClass: EmphasizeElementsUI,
   });
 }

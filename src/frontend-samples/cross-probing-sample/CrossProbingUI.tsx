@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewportAndNavigation } from "Components/Viewport/ViewportAndNavigation";
+import { ViewportAndNavigation } from "common/SandboxViewport/ViewportAndNavigation";
 import { ViewCreator2d } from "frontend-samples/cross-probing-sample/ViewCreator2d";
 import { ColorDef } from "@bentley/imodeljs-common";
 import CrossProbingApp from "./CrossProbingApp";
@@ -56,7 +56,7 @@ export default class CrossProbingUI extends React.Component<{ iModelName: string
         <ControlPane instructions="Click on an element in either of the views to zoom to corresponding element in the other view." iModelSelector={this.props.iModelSelector}></ControlPane>
         { /* Viewport to display the 3D model */}
         <div style={{ width: "100%", height: "50%", float: "left" }}>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
         { /* Second viewport to display the 2D Model */}
         {drawingViewport}

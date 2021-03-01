@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import TooltipCustomizeApp from "./TooltipCustomizeApp";
+import TooltipCustomizeUI from "./TooltipCustomizeUI";
 
 export function getTooltipCustomizeSpec(): SampleSpec {
   return ({
@@ -12,10 +12,9 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     image: "tooltip-customize-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp"), entry: true },
-      { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI") },
+      { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI"), entry: true },
+      { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp") },
     ],
-    setup: TooltipCustomizeApp.setup.bind(TooltipCustomizeApp),
-    teardown: TooltipCustomizeApp.teardown.bind(TooltipCustomizeApp),
+    sampleClass: TooltipCustomizeUI,
   });
 }

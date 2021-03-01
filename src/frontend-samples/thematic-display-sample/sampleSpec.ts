@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
-import ThematicDisplaySampleApp from "./ThematicDisplayApp";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
 export function getThematicDisplaySpec(): SampleSpec {
   return ({
@@ -13,11 +13,10 @@ export function getThematicDisplaySpec(): SampleSpec {
     image: "thematic-display-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp"), entry: true },
-      { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI") },
+      { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI"), entry: true },
+      { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp") },
     ],
     customModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
-    setup: ThematicDisplaySampleApp.setup.bind(ThematicDisplaySampleApp),
-    teardown: ThematicDisplaySampleApp.teardown.bind(ThematicDisplaySampleApp),
+    sampleClass: ThematicDisplaySampleUI,
   });
 }

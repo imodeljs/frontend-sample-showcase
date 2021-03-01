@@ -5,15 +5,9 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { ViewStateProps } from "@bentley/imodeljs-common";
 import { EntityState, Viewport, ViewState } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
-import * as React from "react";
-import SerializeViewUI from "./SerializeViewUI";
 
-export default class SerializeViewApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <SerializeViewUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
+export default class SerializeViewApp {
 
   public static serializeCurrentViewState(viewport: Viewport): ViewStateProps {
     /** Create a deep copy of the view and save its properties */

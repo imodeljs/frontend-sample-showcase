@@ -2,12 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import SampleApp from "common/SampleApp";
 import { Angle, AngleSweep, Arc3d, Box, Cone, Point3d, Range3d, Sphere, TorusPipe } from "@bentley/geometry-core";
-import Simple3dUI from "./Simple3dUI";
 
-export default class Simple3dApp implements SampleApp {
+export default class Simple3dApp {
 
   public static createCone(height: number, lowerRadius: number, upperRadius: number): Cone | undefined {
     return Cone.createAxisPoints(Point3d.create(0, 0, 0), Point3d.create(0, 0, height), lowerRadius, upperRadius, true);
@@ -23,10 +20,6 @@ export default class Simple3dApp implements SampleApp {
 
   public static createTorusPipe(outerRadius: number, innerRadius: number, sweep: number) {
     return TorusPipe.createAlongArc(Arc3d.createXY(new Point3d(0, 0, innerRadius), outerRadius, AngleSweep.create(Angle.createDegrees(sweep))), innerRadius, false);
-  }
-
-  public static async setup(): Promise<React.ReactNode> {
-    return <Simple3dUI></Simple3dUI>;
   }
 
 }

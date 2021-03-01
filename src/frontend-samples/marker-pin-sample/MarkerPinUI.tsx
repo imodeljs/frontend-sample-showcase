@@ -6,16 +6,16 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Point3d, Range2d } from "@bentley/geometry-core";
-import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { PopupMenu } from "./PopupMenu";
 import { RadioCard, RadioCardEntry } from "frontend-samples/marker-pin-sample/RadioCard/RadioCard";
 import { PointSelector } from "common/PointSelector/PointSelector";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import MarkerPinApp from "./MarkerPinApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 interface ManualPinSelection {
   name: string;
@@ -46,6 +46,28 @@ export default class MarkerPinsUI extends React.Component<{
       range: Range2d.createNull(),
       height: 0,
     };
+  }
+
+  public async componentDidMount() {
+
+    MarkerPinApp._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
+
+    PlaceMarkerTool.register(MarkerPinApp._sampleNamespace);
+
+    MarkerPinApp._images = new Map();
+    MarkerPinApp._images.set("Google_Maps_pin.svg", await imageElementFromUrl(".\\Google_Maps_pin.svg"));
+    MarkerPinApp._images.set("pin_celery.svg", await imageElementFromUrl(".\\pin_celery.svg"));
+    MarkerPinApp._images.set("pin_poloblue.svg", await imageElementFromUrl(".\\pin_poloblue.svg"));
+
+    return <MarkerPinsUI iModelName={this.props.iModelName} iModelSelector={this.props.iModelSelector} />;
+  }
+
+  public componentWillUnmount() {
+    MarkerPinApp.disableDecorations();
+    MarkerPinApp._markerDecorator = undefined;
+
+    IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
+    IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: MarkerPinsUIState) {
@@ -119,7 +141,7 @@ export default class MarkerPinsUI extends React.Component<{
     IModelApp.tools.run(PlaceMarkerTool.toolId, this._manuallyAddMarker);
   }
 
-  /** This callback will be executed by ReloadableViewport to initialize the viewstate */
+  /** This callback will be executed by SandboxViewport to initialize the viewstate */
   public static async getTopView(imodel: IModelConnection): Promise<ViewState> {
     const viewState = await ViewSetup.getDefaultView(imodel);
 
@@ -134,7 +156,7 @@ export default class MarkerPinsUI extends React.Component<{
     return viewState;
   }
 
-  /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
+  /** This callback will be executed by SandboxViewport once the iModel has been loaded */
   private onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
 
@@ -182,8 +204,7 @@ export default class MarkerPinsUI extends React.Component<{
     return (
       <>
         <ControlPane instructions="Use the options below to control the marker pins.  Click a marker to open a menu of options." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsUI.getTopView.bind(MarkerPinsUI)} />
-      </>
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={MarkerPinsUI.getTopView.bind(MarkerPinsUI)} />      </>
     );
   }
 }
