@@ -11,12 +11,15 @@ export function getParticleSampleSpec(): SampleSpec {
     name: "particle-sample",
     label: "Particle Decoration",
     image: "view-attributes-thumbnail.png",
-    customModelList: [SampleIModels.BayTown],
+    customModelList: [SampleIModels.BayTown, SampleIModels.House, SampleIModels.Villa],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       { name: "ParticleSampleApp.tsx", import: import("!!raw-loader!./ParticleSampleApp"), entry: true },
       { name: "ParticleSampleUI.tsx", import: import("!!raw-loader!./ParticleSampleUI") },
+      { name: "Particle.ts", import: import("!!raw-loader!./Particle") },
+      { name: "PlacementTool.ts", import: import("!!raw-loader!./PlacementTool") },
     ],
     setup: FireDecorationApp.setup.bind(FireDecorationApp),
+    teardown: FireDecorationApp.teardown.bind(FireDecorationApp),
   });
 }
