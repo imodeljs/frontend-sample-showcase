@@ -1,3 +1,4 @@
+// .markerContent.video
 .markerContent {
   padding: 11px;
   pointer-events: auto;
@@ -13,4 +14,22 @@
       background-color: rgba(240, 240, 255, 1);
     }
   }
+}
+
+.sampleOpts2Col {
+  display: grid;
+  row-gap: 8px;
+  column-gap: 8px;
+  grid-template-columns: auto auto;
+  align-items: center;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.simpleCenter {
+  text-align: center;
 }

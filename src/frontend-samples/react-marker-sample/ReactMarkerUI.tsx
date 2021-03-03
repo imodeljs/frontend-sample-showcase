@@ -5,20 +5,26 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
+import styles from "./ReactMarker.module.scss";
 import { Point3d } from "@bentley/geometry-core";
 import {
   IModelApp,
   IModelConnection,
   ScreenViewport,
 } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType } from "@bentley/ui-core";
+import { Button, ButtonType, Select } from "@bentley/ui-core";
 import ToolsProvider, { ToolsContext } from "./ReactMarkerTools";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { IModelJsViewProvider } from "@bentley/imodel-react-hooks";
 import ReactMarker from "./ReactMarker";
 import ReactMarkerApp from "./ReactMarkerApp";
-import { request } from "@bentley/itwin-client";
+
+export enum HtmlContentMode {
+  Picture = "picture",
+  Video = "video",
+  Form = "form",
+}
 
 export default function ReactMarkerUI(props: {
   iModelName: string;
@@ -36,29 +42,32 @@ export default function ReactMarkerUI(props: {
       // Grab range of the contents of the view. We'll use this to position the first marker
       const range3d = viewport.view.computeFitRange();
       setPoints([{ worldLocation: range3d.center }]);
-
-      // FIXME: need on every animation...
-      //requestAnimationFrame(() => );
-      viewport.onViewChanged.addListener((vp) => {
-        console.log("view changed");
-        const cameraLoc = vp.getFrustum().getEyePoint();
-        if (cameraLoc) {
-          setPoints((prevPoints) =>
-            prevPoints.map(({ worldLocation }) => ({
-              worldLocation,
-              distanceFromCamera: cameraLoc.distance(worldLocation),
-            }))
-          );
-        }
-      });
     });
   }, []);
+
+  const [htmlContentMode, setHtmlContentMode] = React.useState(
+    HtmlContentMode.Form
+  );
 
   /** the sample's instructions and controls */
   const controls = (
     <>
-      <div className="sample-options-2col">
-        <span>Show Markers</span>
+      <div className={styles.sampleOpts2Col}>
+        <span>HTML Content Type</span>
+        <Select
+          value={htmlContentMode}
+          onChange={(e) =>
+            setHtmlContentMode(e.target.value as HtmlContentMode)
+          }
+          options={{
+            [HtmlContentMode.Picture]: "picture",
+            [HtmlContentMode.Video]: "video",
+            [HtmlContentMode.Form]: "form",
+          }}
+        />
+      </div>
+      <hr></hr>
+      <div className={styles.sampleOpts2Col}>
         <Button
           buttonType={ButtonType.Blue}
           onClick={() => setPoints([])}
@@ -66,12 +75,6 @@ export default function ReactMarkerUI(props: {
         >
           Remove All Markers
         </Button>
-      </div>
-      <hr></hr>
-      <div className="sample-heading">
-        <span>Manual placement</span>
-      </div>
-      <div style={{ textAlign: "center" }}>
         <ToolsContext.Consumer>
           {(tools) => (
             <Button
@@ -80,7 +83,7 @@ export default function ReactMarkerUI(props: {
                 // this will start the tool to handle user input
                 IModelApp.tools.run(tools.PlaceMarkerTool.toolId, addMarker)
               }
-              title="Click here and then click the view to place a new marker"
+              title="Click here and then click in the view to place a new marker"
             >
               Place Marker
             </Button>
