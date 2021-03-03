@@ -3,10 +3,19 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { dispose } from "@bentley/bentleyjs-core";
-import { randomFloat, randomInteger } from "@bentley/frontend-devtools";
 import { Point3d, Range1d, Range2d, Range3d, Vector3d } from "@bentley/geometry-core";
 import { RenderTexture } from "@bentley/imodeljs-common";
 import { DecorateContext, Decorator, GraphicType, imageElementFromUrl, IModelApp, ParticleCollectionBuilder, ParticleProps, Viewport } from "@bentley/imodeljs-frontend";
+
+/** Generate integer in [min, max]. */
+export function randomInteger(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/** Generate random floating-point number in [min, max). */
+export function randomFloat(min: number, max: number): number {
+  return Math.random() * (max - min) + min;
+}
 
 interface MobileParticle extends ParticleProps {
   /** Make x, y, and z from ParticleProps writable. */
