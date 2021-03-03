@@ -8,8 +8,8 @@ import FireDecorationUI from "./ParticleSampleUI";
 
 export function getParticleSampleSpec(): SampleSpec {
   return ({
-    name: "particle-sample",
-    label: "Particle Decoration",
+    name: "fire-sample",
+    label: "Fire Decorator",
     image: "view-attributes-thumbnail.png",
     customModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
