@@ -6,12 +6,11 @@ Copyright © Bentley Systems, Incorporated. All rights reserved.
 
 ## Purpose
 
-###TODO:
-
 The purpose of this sample is to demonstrate the following:
 
-* Modifying view attributes using the Viewport API.
-* The effect of those attributes on the display.
+* The visualizing fire in an iModel.
+* Working with particle in Decorators.
+* The placement and selection of arbitary 
 
 ## Description
 

@@ -23,7 +23,7 @@ interface MobileParticle extends ParticleProps {
 export interface FireParams {
   /** This scales the number of particles from 0 at a value of 0 to 7000 at a value of 1, at an exponential rate. */
   particleNumScale: number;
-  /** Range from which to randomly select each particle's size, in pixels. */
+  /** Range from which to randomly select each fire particle's size, in pixels. */
   sizeRange: Range1d;
   /** Range from which to randomly select each particle's transparency. */
   transparencyRange: Range1d;
@@ -31,19 +31,19 @@ export interface FireParams {
   velocityRange: Range3d;
   /** Range from which to randomly select an acceleration to apply to each particle's velocity each frame. */
   accelerationRange: Range3d;
-  /** Wind velocity in meters per second.  This is very effective. */
+  /** Wind velocity. */
   windVelocity: number;
-  /**  */
+  /** Wind direction normalized. */
   windDirection: Vector3d;
-
-  /** in meters */
+  /** The height of the flames in meters. */
   height: number;
-
-  /** in meters */
+  /** The range which fire particles can be emitted. */
   effectRange: Range2d;
-
+  /** When true, the particles will be rendered as a WorldOverlay, on top of the scene. */
   isOverlay: boolean;
+  /** When enabled, the smoke will be emitted at the end of the flames (will extend pass the specified height). */
   enableSmoke: boolean;
+  /** Range from which to randomly select each smoke particle's size, in pixels. */
   smokeSizeRange: Range1d;
 }
 

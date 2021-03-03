@@ -3,20 +3,17 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@bentley/bentleyjs-core";
-import { Point3d, Range1d, Range2d, Range3d, Vector3d } from "@bentley/geometry-core";
+import { Point3d, Range2d, Transform } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
-import { ViewSetup } from "api/viewSetup";
 import "common/samples-common.scss";
 import { ControlPane } from "Components/ControlPane/ControlPane";
 import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { PlaceMarkerTool } from "frontend-samples/marker-pin-sample/PlaceMarkerTool";
 import * as React from "react";
-import { FireDecorator, FireParams } from "./Particle";
+import { FireDecorator } from "./Particle";
 import FireDecorationApp from "./ParticleSampleApp";
 
-// cSpell:ignore imodels
 /** The React state for this UI component */
 interface ParticleSampleState {
   isLoading: boolean;
@@ -28,74 +25,19 @@ interface ParticleSampleProps {
   iModelSelector: React.ReactNode;
 }
 
+/** Corresponded to FireParams from Particle.ts. */
 interface FireProps {
   particleNumScale: number;
   height: number;
-  effectRange: Range2d;
+  effectRange: Range2d; // Assumed to be a square.
   enableSmoke: boolean;
   isOverlay: boolean;
 }
 
-const predefinedParams = new Map<string, FireParams>(
-  [
-    [
-      "Candle",
-      {
-        particleNumScale: 0.02,
-        sizeRange: Range1d.createXX(0.01, 0.2),
-        transparencyRange: Range1d.createXX(0, 50),
-        velocityRange: new Range3d(-.01, .5, -.01, .5, -.01, .5),
-        accelerationRange: new Range3d(-1, -0.25, 1, 0.25, 1, 0.25),
-        windVelocity: 0,
-        windDirection: Vector3d.createZero(),
-        effectRange: new Range2d(0, 0, 0, 0),
-        height: 0.2,
-        isOverlay: false,
-        enableSmoke: false,
-        smokeSizeRange: Range1d.createXX(0.1, 0.25),
-      },
-    ],
-    [
-      "Camp Fire",
-      {
-        particleNumScale: 0.2,
-        sizeRange: Range1d.createXX(0.01, 0.2),
-        transparencyRange: Range1d.createXX(0, 50),
-        velocityRange: new Range3d(-.01, .5, -.01, .5, -.01, .5),
-        accelerationRange: new Range3d(-1, -0.25, 1, 0.25, 1, 0.25),
-        windVelocity: 0.1,
-        windDirection: Vector3d.unitX(),
-        effectRange: new Range2d(-0.5, -0.5, 0.5, 0.5),
-        height: 1,
-        isOverlay: false,
-        enableSmoke: true,
-        smokeSizeRange: Range1d.createXX(0.1, 0.25),
-      },
-    ],
-    [
-      "Inferno",
-      {
-        particleNumScale: 0.99,
-        sizeRange: Range1d.createXX(0.01, 0.2),
-        transparencyRange: Range1d.createXX(0, 50),
-        velocityRange: new Range3d(-.01, .5, -.01, .5, -.01, .5),
-        accelerationRange: new Range3d(-1, -0.25, 1, 0.25, 1, 0.25),
-        windVelocity: 0.1,
-        windDirection: Vector3d.unitX(),
-        effectRange: new Range2d(-3, -3, 3, 3),
-        height: 2,
-        isOverlay: false,
-        enableSmoke: true,
-        smokeSizeRange: Range1d.createXX(0.1, 0.25),
-      },
-    ],
-  ],
-);
-
 /** A React component that renders the UI specific for this sample */
 export default class FireDecorationUI extends React.Component<ParticleSampleProps, ParticleSampleState> {
-
-  private _defaultProps: FireProps = {
+  private readonly _lampElementIds = ["0x3a5", "0x1ab", "0x32b", "0x2ab", "0x22b"];
+  private readonly _defaultProps: FireProps = {
     particleNumScale: 0,
     height: 0,
     effectRange: Range2d.createXYXY(0, 0, 0, 0),
@@ -108,44 +50,35 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     super(props);
     this.state = {
       isLoading: true,
-      paramsName: predefinedParams.keys().next().value,
+      paramsName: FireDecorationApp.predefinedParams.keys().next().value,
     };
   }
 
+  /** Starts a tool that will place a new emitter. */
   private readonly startPlacementTool = () => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp === undefined)
       return;
-    IModelApp.tools.run(PlaceMarkerTool.toolId, async (point: Point3d) => {
-      const params = predefinedParams.get(this.state.paramsName);
+    FireDecorationApp.startPlacementTool(async (point: Point3d) => {
+      const params = FireDecorationApp.predefinedParams.get(this.state.paramsName);
       assert(params !== undefined, "Value is set based on keys of map.");
       const emitter = await FireDecorator.create(vp, point, params);
       this.setState({ emitter });
     });
   }
 
+  /** Starts a tool that will select for configuration a previously placed tool. */
+  private readonly startSelectionTool = () => {
+    FireDecorationApp.startSelectTool((point) => {
+      const emitter = FireDecorationApp.getClosestEmitter(point);
+      this.setState({ emitter });
+    });
+  }
+
+  /** Deletes the selected fire decorator emitter. */
   private readonly dropSelected = () => {
     this.state.emitter?.dispose();
     this.setState({ emitter: undefined });
-  }
-  private readonly startSelectionTool = () => {
-    IModelApp.tools.run(PlaceMarkerTool.toolId, async (point: Point3d) => {
-      let closestEmitter: FireDecorator | undefined;
-      let min = Number.MAX_SAFE_INTEGER;
-      IModelApp.viewManager.decorators.forEach((decorator) => {
-        if (decorator instanceof FireDecorator) {
-          if (closestEmitter === undefined)
-            closestEmitter = decorator;
-          const distance = decorator.source.distance(point);
-          if (distance < min) {
-            min = distance;
-            closestEmitter = decorator;
-          }
-        }
-      });
-      const targetRadius = closestEmitter ? (closestEmitter.params.effectRange.xLength() / 2) + 0.5 : 0;
-      this.setState({ emitter: min < targetRadius ? closestEmitter : undefined });
-    });
   }
 
   public getControls(): React.ReactNode {
@@ -159,7 +92,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
         </div>
         <div className={"sample-options-2col"}>
           <Button disabled={this.state.isLoading} onClick={this.startPlacementTool}>Place Emitter</Button>
-          <Select options={[...predefinedParams.keys()]} value={this.state.paramsName} onChange={(event) => this.setState({ paramsName: event.target.value })} />
+          <Select options={[...FireDecorationApp.predefinedParams.keys()]} value={this.state.paramsName} onChange={(event) => this.setState({ paramsName: event.target.value })} />
         </div>
       </div>
       <hr></hr>
@@ -172,42 +105,56 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
         <label>Height</label>
         <Slider min={0} max={5} step={0.02} values={[currentParams.height]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.configureEmitter({ height: values[0] })} />
         <label>Source Size</label>
+        {/* The UI of this sample assumes effectRange is a square. */}
         <Slider min={0} max={6} step={0.2} values={[currentParams.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.configureEmitter({ effectRange: this.createSquareRange2d(values[0]) })} />
         <label>Smoke</label>
         <Toggle isOn={currentParams.enableSmoke} disabled={noEmitterSelected} onChange={(checked) => this.configureEmitter({ enableSmoke: checked })} />
-        <label>Overlay</label>
+        <label>Overlay Graphics</label>
         <Toggle isOn={currentParams.isOverlay} disabled={noEmitterSelected} onChange={(checked) => this.configureEmitter({ isOverlay: checked })} />
         <Button disabled={noEmitterSelected} onClick={this.dropSelected}> Drop Emitter</Button>
       </div>
     </>);
   }
 
+  /** Configures the selected fire decorator. */
   private configureEmitter(params: Partial<FireProps>) {
     if (!this.state.emitter)
       return;
     this.state.emitter.configure(params);
   }
 
+  /** Creates a square 2d range with a given length. */
   private createSquareRange2d(length: number): Range2d {
     const half = length / 2;
     return Range2d.createXYXY(-half, -half, half, half);
   }
 
-  // private _onUpdateParticleCount = (values: readonly number[]) => {
+  /** Is called by the showcase with then iModel is ready. */
+  private onIModelReady = (_iModel: IModelConnection) => {
+    if (this.props.iModelName !== "Villa") {
+      this.setState({ isLoading: false });
+      return;
+    }
+    IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
 
-  // }
-
-  private onIModelReady = (_imodel: IModelConnection) => {
-    this.setState({ isLoading: false });
+      FireDecorationApp.queryElements(viewport.iModel, this._lampElementIds).then(async (results) => {
+        const params = FireDecorationApp.predefinedParams.get("Candle") ?? FireDecorationApp.predefinedParams.keys().next().value;
+        results.forEach((source, index) => {
+          if (index === 0) {
+            let volume = source.bBox.clone();
+            // manipulate the 
+            volume.scaleAboutCenterInPlace(5);
+            volume = Transform.createTranslationXYZ(0, 0, volume.zLength() * 0.25).multiplyRange(volume);
+            viewport.zoomToVolume(volume);
+          }
+          FireDecorator.create(viewport, source.origin, params);
+        });
+        this.setState({ isLoading: false });
+      });
+    });
   }
 
-  // public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
-  //   const viewState = await ViewSetup.getDefaultView(imodel);
-  //   // Make view edits here
-
-  //   return viewState;
-  // }
-
+  /** An overridden React method that is called when there's an update to the react component (e.g. this.setState). */
   public componentDidUpdate(_prevProps: any, _preState: ParticleSampleState) {
     FireDecorationApp.highlightEmitter(this.state.emitter);
   }
@@ -216,7 +163,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
   public render() {
     return (
       <>
-        <ControlPane instructions="click button to start fire." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Use the button to create a new fire particle emitter.  Use the drop down change the base params for new emitters.  Use the controls to configure the selected emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
