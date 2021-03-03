@@ -7,9 +7,9 @@ import { Point3d, Range2d, Transform } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import { FireDecorator } from "./Particle";
 import FireDecorationApp from "./ParticleSampleApp";
@@ -52,6 +52,16 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
       isLoading: true,
       paramsName: FireDecorationApp.predefinedParams.keys().next().value,
     };
+  }
+
+  public componentDidMount() {
+    FireDecorationApp.initTools();
+
+    FireDecorationApp.highlighter.enable(true);
+  }
+
+  public componentWillUnmount() {
+    FireDecorationApp.highlighter.enable(false);
   }
 
   /** Starts a tool that will place a new emitter. */
@@ -142,7 +152,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
         results.forEach((source, index) => {
           if (index === 0) {
             let volume = source.bBox.clone();
-            // manipulate the 
+            // Manipulate the volume that the viewport will zoom to.
             volume.scaleAboutCenterInPlace(5);
             volume = Transform.createTranslationXYZ(0, 0, volume.zLength() * 0.25).multiplyRange(volume);
             viewport.zoomToVolume(volume);
@@ -163,8 +173,10 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
   public render() {
     return (
       <>
-        <ControlPane instructions="Use the button to create a new fire particle emitter.  Use the drop down change the base params for new emitters.  Use the controls to configure the selected emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        { /* Display the instructions and iModelSelector for the sample on a control pane */}
+        <ControlPane instructions="Use the button to create a new fire particle emitter.  Use the drop down change the base params for new emitters.  Use the controls to configure the selected emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
+        { /* Viewport to display the iModel */}
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
   }

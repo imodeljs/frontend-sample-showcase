@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import FireDecorationApp from "./ParticleSampleApp";
+import FireDecorationUI from "./ParticleSampleUI";
 
 export function getParticleSampleSpec(): SampleSpec {
   return ({
@@ -14,12 +14,11 @@ export function getParticleSampleSpec(): SampleSpec {
     customModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "ParticleSampleApp.tsx", import: import("!!raw-loader!./ParticleSampleApp"), entry: true },
-      { name: "ParticleSampleUI.tsx", import: import("!!raw-loader!./ParticleSampleUI") },
+      { name: "ParticleSampleUI.tsx", import: import("!!raw-loader!./ParticleSampleUI"), entry: true },
+      { name: "ParticleSampleApp.tsx", import: import("!!raw-loader!./ParticleSampleApp") },
       { name: "Particle.ts", import: import("!!raw-loader!./Particle") },
       { name: "PlacementTool.ts", import: import("!!raw-loader!./PlacementTool") },
     ],
-    setup: FireDecorationApp.setup.bind(FireDecorationApp),
-    teardown: FireDecorationApp.teardown.bind(FireDecorationApp),
+    sampleClass: FireDecorationUI,
   });
 }

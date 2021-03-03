@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import TableNodeTreeApp from "./CustomTableNodeTreeApp";
+import TableNodeTreeUI from "./CustomTableNodeTreeUI";
 
 export function getCustomTableNodeTreeSpec(): SampleSpec {
   return ({
@@ -14,10 +14,10 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp"), entry: true },
       { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },
+      { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
-    setup: TableNodeTreeApp.setup.bind(TableNodeTreeApp),
+    sampleClass: TableNodeTreeUI,
   });
 }

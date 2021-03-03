@@ -2,12 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import SampleApp from "common/SampleApp";
 import { LineString3d, Loop, Point3d } from "@bentley/geometry-core";
-import SimpleAnimatedUI from "./SimpleAnimatedUI";
 
-export default class SimpleAnimatedApp implements SampleApp {
+export default class SimpleAnimatedApp {
 
   public static createGridSquares(grid: boolean[][]) {
     const squares: Loop[] = [];
@@ -30,10 +27,5 @@ export default class SimpleAnimatedApp implements SampleApp {
     }
     return squares;
   }
-
-  public static async setup(): Promise<React.ReactNode> {
-    return <SimpleAnimatedUI></SimpleAnimatedUI>;
-  }
-
 
 }

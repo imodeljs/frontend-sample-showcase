@@ -16,6 +16,6 @@ export function getSliderSpec(): SampleSpec {
     files: [
       { name: "Slider.tsx", import: import("!!raw-loader!./Slider"), entry: true },
     ],
-    setup: SliderList.setup.bind(SliderList),
+    sampleClass: SliderList,
   });
 }

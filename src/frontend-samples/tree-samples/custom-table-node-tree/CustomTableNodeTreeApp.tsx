@@ -14,16 +14,7 @@ import { ExpansionToggle } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import "./TableNodeTree.scss";
-import SampleApp from "common/SampleApp";
-import { TableNodeTreeUI } from "./CustomTableNodeTreeUI";
 
-export default class TableNodeTreeApp extends React.Component<{}> implements SampleApp {
-
-  public static async setup(_iModelName: string) {
-    return <TableNodeTreeUI></TableNodeTreeUI>;
-  }
-
-}
 /**
  * This component demonstrates use `ControlledTree` with custom nodes rendering. It uses
  * `DataProvider` class to get some fake data to show. Tree by this component is rendered

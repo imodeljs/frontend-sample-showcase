@@ -144,6 +144,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
   ],
+
 },
 ];
 

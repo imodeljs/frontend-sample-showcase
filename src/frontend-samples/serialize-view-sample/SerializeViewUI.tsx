@@ -5,8 +5,8 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import SerializeViewApp from "./SerializeViewApp";
 import { Button, ButtonType, Icon, Select, SelectOption, SmallText, Textarea } from "@bentley/ui-core";
@@ -222,7 +222,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions={instruction} iModelSelector={this.props.iModelSelector} controls={this.getControls()} />
         { /* Viewport to display the iModel */}
-        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );
   }

@@ -5,10 +5,10 @@
 import { Animator, IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
-import ExplodeApp from "./ExplodeApp";
+import ExplodeApp, { ExplodeProvider } from "./ExplodeApp";
 
 interface SampleProps {
   iModelName: string;
@@ -60,6 +60,18 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
       explodeFactor: (ExplodeApp.explodeAttributes.min + ExplodeApp.explodeAttributes.max) / 2,
       isolate: false,  // Will be set to "true" after initialized.
     };
+  }
+
+  public componentDidMount() {
+    ExplodeApp.cleanUpCallbacks = [];
+  }
+
+  public componentWillUnmount() {
+    IModelApp.viewManager.forEachViewport((vp) => {
+      ExplodeApp.clearIsolate(vp);
+      ExplodeProvider.getOrCreate(vp).drop();
+    });
+    ExplodeApp.cleanUpCallbacks.forEach((func) => func());
   }
 
   /** Populates the element ids of objects defined by category codes. */
@@ -217,7 +229,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions="Use the 'Explode' button to watch the object separate. Change objects using the drop down menu." iModelSelector={this.props.iModelSelector} controls={this.getControls()} />
         { /* Viewport to display the iModel */}
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
   }

@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import CrossProbingApp from "./CrossProbingApp";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import CrossProbingUI from "./CrossProbingUI";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
 export function getCrossProbingSpec(): SampleSpec {
   return ({
@@ -14,9 +14,9 @@ export function getCrossProbingSpec(): SampleSpec {
     customModelList: [SampleIModels.BayTown],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp"), entry: true },
-      { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI") },
+      { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI"), entry: true },
+      { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp") },
     ],
-    setup: CrossProbingApp.setup.bind(CrossProbingApp),
+    sampleClass: CrossProbingUI,
   });
 }

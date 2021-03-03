@@ -4,21 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "common/DataProvider/Trees.scss";
-import SampleApp from "common/SampleApp";
 import {
   ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps,
   useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes,
 } from "@bentley/ui-components";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import { ImageCheckBox, NodeCheckboxRenderProps } from "@bentley/ui-core";
-import { CustomCheckboxesTreeUI } from "./CustomCheckboxesTreeUI";
 
-export default class CustomCheckboxesTreeApp extends React.Component<{}> implements SampleApp {
 
-  public static async setup(_iModelName: string) {
-    return <CustomCheckboxesTreeUI></CustomCheckboxesTreeUI>;
-  }
-}
 /**
  * This component demonstrates how use `ControlledTree` with custom checkbox rendering.
  * It uses `NodesWithCheckboxProvider` to get fake data to show.

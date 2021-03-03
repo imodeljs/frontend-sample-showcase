@@ -9,9 +9,7 @@ import { DecorateContext, Decorator, GraphicType, IModelApp, IModelConnection, S
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
-import * as React from "react";
 import { FireDecorator, FireParams } from "./Particle";
-import FireDecorationUI from "./ParticleSampleUI";
 import { PlacementTool } from "./PlacementTool";
 
 /** This decorator functions to highlight a given emitter by outlining the source range. */
@@ -34,12 +32,19 @@ class EmitterHighlighter implements Decorator {
     builder.addRangeBox(transform.multiplyRange(range));
     context.addDecoration(GraphicType.WorldOverlay, builder.finish());
   }
+
+  public enable(isOn: boolean) {
+    if (isOn)
+      IModelApp.viewManager.addDecorator(this);
+    else
+      IModelApp.viewManager.addDecorator(this);
+  }
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class FireDecorationApp implements SampleApp {
   private static _sampleNamespace: I18NNamespace;
-  private static _highlighter = new EmitterHighlighter();
+  public static highlighter = new EmitterHighlighter();
   public static readonly predefinedParams = new Map<string, FireParams>(
     [
       [
@@ -113,24 +118,15 @@ export default class FireDecorationApp implements SampleApp {
     ],
   );
 
-  /** Called by the showcase when loading the sample. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+  /** Registers tools used by sample. */
+  public static initTools() {
     this._sampleNamespace = IModelApp.i18n.registerNamespace("fire-i18n-namespace");
     PlacementTool.register(this._sampleNamespace);
-
-    IModelApp.viewManager.addDecorator(this._highlighter);
-
-    return <FireDecorationUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
-  /** Called by the showcase when closing the sample. */
-  public static teardown() {
-    IModelApp.viewManager.dropDecorator(this._highlighter);
   }
 
   /** Using a decorator, sets a box around the specified emitter.  Hand undefined as an argument to clear highlighting. */
   public static highlightEmitter(emitter?: FireDecorator) {
-    FireDecorationApp._highlighter.emitter = emitter;
+    FireDecorationApp.highlighter.emitter = emitter;
   }
 
   public static zoomToVolume(viewport: ScreenViewport, volume: Range3d) {

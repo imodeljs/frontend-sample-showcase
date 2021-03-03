@@ -2,14 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import CameraPathUI from "./CameraPathUI";
-import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { CameraPathTool } from "./CameraPathTool";
-import SampleApp from "common/SampleApp";
+import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
@@ -19,14 +14,7 @@ export interface CameraPoint {
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class CameraPathApp implements SampleApp {
-  private static _sampleNamespace: I18NNamespace;
-
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    this._sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
-    CameraPathTool.register(this._sampleNamespace);
-    return <CameraPathUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
+export default class CameraPathApp {
 
   public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport, keyDown: boolean) {
     if (!keyDown)
@@ -47,10 +35,6 @@ export default class CameraPathApp implements SampleApp {
     return new Promise((resolve) => setTimeout(resolve, Math.pow(10, -4)));
   }
 
-  public static teardown() {
-    IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
-    IModelApp.tools.unRegister(CameraPathTool.toolId);
-  }
 }
 
 // A CameraPath consists of a CurveChain representing the camera location and an array

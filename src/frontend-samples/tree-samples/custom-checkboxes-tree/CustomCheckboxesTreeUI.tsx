@@ -6,9 +6,9 @@ import * as React from "react";
 import "common/DataProvider/Trees.scss";
 
 import { CustomCheckboxesTree } from "./CustomCheckboxesTreeApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class CustomCheckboxesTreeUI extends React.Component<{}> {
+export default class CustomCheckboxesTreeUI extends React.Component<{}> {
 
   public render() {
     return (

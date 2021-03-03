@@ -17,6 +17,6 @@ export function getExpandableListSpec(): SampleSpec {
       { name: "ExpandableList.tsx", import: import("!!raw-loader!./ExpandableList"), entry: true },
       { name: "SampleExpandableBlock.tsx", import: import("!!raw-loader!./SampleExpandableBlock") },
     ],
-    setup: ExpandableListList.setup.bind(ExpandableListList),
+    sampleClass: ExpandableListList,
   });
 }
