@@ -292,7 +292,7 @@ export class FireDecorator implements Decorator {
 
       // Particles that travel beyond the height, they are replace with a new particle.
       const origin = Point3d.createZero();
-      let distance = (origin.distance(particle) + particle.z) / 2;
+      let distance = (origin.distance(particle) * 0.75) + (particle.z * 0.25);
       if (particle.type === "Smoke" && particle.transparency) {
         distance /= 2;
         const linear = Math.round(((distance / this._params.height) * 255));
