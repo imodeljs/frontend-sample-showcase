@@ -73,6 +73,7 @@ export class FireDecorator implements Decorator {
 
   public readonly particles: MobileParticle[] = [];
   public readonly source: Point3d;
+  private readonly _pickableId: string;
   private _lastUpdateTime: number;
   private _params: FireParams;
 
@@ -120,7 +121,7 @@ export class FireDecorator implements Decorator {
     if (!await FireDecorator.tryTextures())
       return undefined;
 
-    const fireDecorator = new this(source, params);
+    const fireDecorator = new this(viewport.iModel.transientIds.next, source, params);
 
     if (FireDecorator.decorators.size === 0) {
       // When the iModel is closed, dispose of any decorations.
@@ -155,8 +156,9 @@ export class FireDecorator implements Decorator {
     return Math.round(exponentialDensityScaling * maximumMass * smokeMultiplier);
   }
 
-  private constructor(source: Point3d, params: FireParams) {
+  private constructor(id: string, source: Point3d, params: FireParams) {
     this.source = source;
+    this._pickableId = id;
     this._params = { ...params };
     this._lastUpdateTime = Date.now();
 
@@ -193,6 +195,7 @@ export class FireDecorator implements Decorator {
       texture: FireDecorator._smokeTexture,
       origin: this.source,
       size: (this._params.sizeRange.high - this._params.sizeRange.low) / 2,
+      pickableId: this._pickableId,
     });
 
     // Create particle graphics.
@@ -201,6 +204,7 @@ export class FireDecorator implements Decorator {
       texture: FireDecorator._fireTexture,
       origin: this.source,
       size: (this._params.sizeRange.high - this._params.sizeRange.low) / 2,
+      pickableId: this._pickableId,
     });
 
     // Process Particles

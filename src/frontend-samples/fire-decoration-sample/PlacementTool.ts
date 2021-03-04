@@ -2,9 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { BeButtonEvent, EventHandled, IModelApp, PrimitiveTool, Viewport } from "@bentley/imodeljs-frontend";
 import { Point3d } from "@bentley/geometry-core";
-import FireDecorationApp from "./ParticleSampleApp";
+import { BeButtonEvent, EventHandled, IModelApp, PrimitiveTool, Viewport } from "@bentley/imodeljs-frontend";
 
 /** This class defines the user's interaction while interacting with the model and fire emitter.
  *  While it is active, the tool handles events from the user, notably mouse clicks in the viewport.
@@ -14,7 +13,7 @@ export class PlacementTool extends PrimitiveTool {
   public static iconSpec = "icon-star"; // <== Tool button should use whatever icon you have here...
   private _createMarkerCallback: (pt: Point3d) => {};
 
-  constructor(public highlightOnHover: boolean, callback: (pt: Point3d) => {}) {
+  constructor(callback: (pt: Point3d) => {}) {
     super();
 
     this._createMarkerCallback = callback;
@@ -30,15 +29,6 @@ export class PlacementTool extends PrimitiveTool {
   public async onResetButtonUp(_ev: BeButtonEvent): Promise<EventHandled> {
     this.onReinitialize(); // Calls onRestartTool to exit
     return EventHandled.No;
-  }
-
-  public async onMouseMotion(ev: BeButtonEvent) {
-    if (this.highlightOnHover) {
-      const emitter = FireDecorationApp.getClosestEmitter(ev.point);
-
-      FireDecorationApp.highlightEmitter(emitter);
-      ev.viewport?.invalidateDecorations();
-    }
   }
 
   // A data button is the primary action button, ex. left mouse button.

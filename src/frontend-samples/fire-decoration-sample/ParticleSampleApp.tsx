@@ -18,14 +18,16 @@ class EmitterHighlighter implements Decorator {
   public decorate(context: DecorateContext) {
     if (undefined === this.emitter)
       return;
+    const minium = this.emitter.params.smokeSizeRange.low;
     const range = Range3d.createXYZXYZ(
-      this.emitter.params.effectRange.low.x,
-      this.emitter.params.effectRange.low.y,
+      Math.min(this.emitter.params.effectRange.low.x, -minium),
+      Math.min(this.emitter.params.effectRange.low.y, -minium),
       0,
-      this.emitter.params.effectRange.high.x,
-      this.emitter.params.effectRange.high.y,
+      Math.max(this.emitter.params.effectRange.high.x, minium),
+      Math.max(this.emitter.params.effectRange.high.y, minium),
       this.emitter.params.height,
     );
+    console.debug(range);
     const transform = Transform.createTranslation(this.emitter.source);
     const builder = context.createSceneGraphicBuilder();
     builder.setSymbology(context.viewport.getContrastToBackgroundColor(), ColorDef.black, 3);
@@ -133,14 +135,9 @@ export default class FireDecorationApp implements SampleApp {
     viewport.zoomToVolume(volume);
   }
 
-  /** Runs the Placement Tool with highlighting enabled using the tool registry API. */
-  public static startSelectTool(confirmedPointCallBack: (point: Point3d) => void) {
-    IModelApp.tools.run(PlacementTool.toolId, true, confirmedPointCallBack);
-  }
-
   /** Runs the Placement Tool with highlighting disenabled using the tool registry API. */
   public static startPlacementTool(confirmedPointCallBack: (point: Point3d) => void) {
-    IModelApp.tools.run(PlacementTool.toolId, false, confirmedPointCallBack);
+    IModelApp.tools.run(PlacementTool.toolId, confirmedPointCallBack);
   }
 
   /** Iterates though all decorators and returns the closest FireDecorator within a half meter. */

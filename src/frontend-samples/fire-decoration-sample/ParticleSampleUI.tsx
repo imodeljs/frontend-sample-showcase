@@ -15,9 +15,9 @@ import { FireDecorator } from "./Particle";
 import FireDecorationApp from "./ParticleSampleApp";
 
 /** The React state for this UI component */
-interface ParticleSampleState {
+interface ParticleSampleState extends FireProps {
   isLoading: boolean;
-  emitter?: FireDecorator;
+  selectedEmitter?: FireDecorator;
   paramsName: string;
 }
 interface ParticleSampleProps {
@@ -37,6 +37,7 @@ interface FireProps {
 /** A React component that renders the UI specific for this sample */
 export default class FireDecorationUI extends React.Component<ParticleSampleProps, ParticleSampleState> {
   private readonly _lampElementIds = ["0x3a5", "0x1ab", "0x32b", "0x2ab", "0x22b"];
+  private _dropListeners: VoidFunction[] = [];
   private readonly _defaultProps: FireProps = {
     particleNumScale: 0,
     height: 0,
@@ -51,17 +52,23 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     this.state = {
       isLoading: true,
       paramsName: FireDecorationApp.predefinedParams.keys().next().value,
+      ...this._defaultProps,
     };
   }
 
   public componentDidMount() {
     FireDecorationApp.initTools();
-
-    FireDecorationApp.highlighter.enable(true);
+    // Should allow for selecting the particles (but doesn't)
+    IModelApp.locateManager.options.allowDecorations = true;
+    IModelApp.viewManager.addDecorator(FireDecorationApp.highlighter);
   }
 
   public componentWillUnmount() {
-    FireDecorationApp.highlighter.enable(false);
+    // Resetting the IModelApp to the default state.
+    IModelApp.locateManager.options.allowDecorations = false;
+    this._dropListeners.flatMap((callback) => callback());
+    this._dropListeners = [];
+    IModelApp.viewManager.dropDecorator(FireDecorationApp.highlighter);
   }
 
   /** Starts a tool that will place a new emitter. */
@@ -69,39 +76,36 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     const vp = IModelApp.viewManager.selectedView;
     if (vp === undefined)
       return;
+
     FireDecorationApp.startPlacementTool(async (point: Point3d) => {
       const params = FireDecorationApp.predefinedParams.get(this.state.paramsName);
       assert(params !== undefined, "Value is set based on keys of map.");
-      const emitter = await FireDecorator.create(vp, point, params);
-      this.setState({ emitter });
-    });
-  }
-
-  /** Starts a tool that will select for configuration a previously placed tool. */
-  private readonly startSelectionTool = () => {
-    FireDecorationApp.startSelectTool((point) => {
-      const emitter = FireDecorationApp.getClosestEmitter(point);
-      this.setState({ emitter });
+      const selectedEmitter = await FireDecorator.create(vp, point, params);
+      this.setState({ selectedEmitter });
     });
   }
 
   /** Deletes the selected fire decorator emitter. */
   private readonly dropSelected = () => {
-    this.state.emitter?.dispose();
-    this.setState({ emitter: undefined });
+    this.state.selectedEmitter?.dispose();
+    this.setState({ selectedEmitter: undefined });
+  }
+
+  /** Deletes all Decorates. */
+  private readonly dropAllEmitters = () => {
+    this.setState({ selectedEmitter: undefined });
+    FireDecorator.dispose();
   }
 
   public getControls(): React.ReactNode {
-    const noEmitterSelected = this.state.emitter === undefined;
-    const currentParams: FireProps = this.state.emitter?.params ?? this._defaultProps;
+    const noEmitterSelected = this.state.selectedEmitter === undefined;
     return (<>
       <div>
-        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-          <Button disabled={this.state.isLoading} onClick={this.startSelectionTool}>Select Emitter</Button>
-          <Button disabled={this.state.isLoading || noEmitterSelected} onClick={() => this.setState({ emitter: undefined })}>Deselect Emitter</Button>
-        </div>
         <div className="sample-heading">
           <span>Place New Emitter</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Button disabled={this.state.isLoading} onClick={this.dropAllEmitters}>Delete All Emitters</Button>
         </div>
         <div className={"sample-options-2col"}>
           <Button disabled={this.state.isLoading} onClick={this.startPlacementTool}>Place</Button>
@@ -114,26 +118,32 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
       </div>
       <div className={"sample-options-2col"}>
         <label>Particle Count</label>
-        <Slider min={0} max={1} step={0.02} values={[currentParams.particleNumScale]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.configureEmitter({ particleNumScale: values[0] })} />
+        <Slider min={0} max={1} step={0.02} values={[this.state.particleNumScale]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.setState({ particleNumScale: values[0] })} />
         <label>Height</label>
-        <Slider min={0} max={5} step={0.02} values={[currentParams.height]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.configureEmitter({ height: values[0] })} />
+        <Slider min={0} max={5} step={0.02} values={[this.state.height]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.setState({ height: values[0] })} />
         <label>Source Size</label>
         {/* The UI of this sample assumes effectRange is a square. */}
-        <Slider min={0} max={6} step={0.2} values={[currentParams.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.configureEmitter({ effectRange: this.createSquareRange2d(values[0]) })} />
+        <Slider min={0} max={6} step={0.2} values={[this.state.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.setState({ effectRange: this.createSquareRange2d(values[0]) })} />
         <label>Smoke</label>
-        <Toggle isOn={currentParams.enableSmoke} disabled={noEmitterSelected} onChange={(checked) => this.configureEmitter({ enableSmoke: checked })} />
+        <Toggle isOn={this.state.enableSmoke} disabled={noEmitterSelected} onChange={(checked) => this.setState({ enableSmoke: checked })} />
         <label>Overlay Graphics</label>
-        <Toggle isOn={currentParams.isOverlay} disabled={noEmitterSelected} onChange={(checked) => this.configureEmitter({ isOverlay: checked })} />
-        <Button disabled={noEmitterSelected} onClick={this.dropSelected}> Drop Emitter</Button>
+        <Toggle isOn={this.state.isOverlay} disabled={noEmitterSelected} onChange={(checked) => this.setState({ isOverlay: checked })} />
+
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+        <Button disabled={noEmitterSelected} onClick={this.dropSelected}>Drop</Button>
+        <Button disabled={this.state.isLoading || noEmitterSelected} onClick={() => this.setState({ selectedEmitter: undefined })}>Deselect</Button>
+        {/* <Button disabled={this.state.isLoading} onClick={this.startSelectionTool}>Select Emitter</Button>
+        <Button disabled={this.state.isLoading || noEmitterSelected} onClick={() => this.setState({ selectedEmitter: undefined })}>Deselect Emitter</Button> */}
       </div>
     </>);
   }
 
   /** Configures the selected fire decorator. */
   private configureEmitter(params: Partial<FireProps>) {
-    if (!this.state.emitter)
+    if (!this.state.selectedEmitter)
       return;
-    this.state.emitter.configure(params);
+    this.state.selectedEmitter.configure(params);
   }
 
   /** Creates a square 2d range with a given length. */
@@ -144,32 +154,44 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
 
   /** Is called by the showcase with then iModel is ready. */
   private onIModelReady = (_iModel: IModelConnection) => {
-    if (this.props.iModelName !== "Villa") {
-      this.setState({ isLoading: false });
-      return;
-    }
-    IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
+    // this._dropListeners.push(iModel.selectionSet.onChanged.addListener((ev) => {
+    //   let selectedEmitter: FireDecorator | undefined;
+    //   if (ev.set.size === 1)
+    //     selectedEmitter = FireDecorator.decorators.get(ev.set.elements.entries().next().value[0]);
+    //   this.setState({ selectedEmitter });
+    // }));
 
-      FireDecorationApp.queryElements(viewport.iModel, this._lampElementIds).then(async (results) => {
-        const params = FireDecorationApp.predefinedParams.get("Candle") ?? FireDecorationApp.predefinedParams.keys().next().value;
-        results.forEach((source, index) => {
-          if (index === 0) {
-            let volume = source.bBox.clone();
-            // Manipulate the volume that the viewport will zoom to.
-            volume.scaleAboutCenterInPlace(5);
-            volume = Transform.createTranslationXYZ(0, 0, volume.zLength() * 0.25).multiplyRange(volume);
-            viewport.zoomToVolume(volume);
-          }
-          FireDecorator.create(viewport, source.origin, params);
+    // Villa will have some decorators initially placed as a demo.
+    if (this.props.iModelName === "Villa") {
+      this._dropListeners.push(IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
+        FireDecorationApp.queryElements(viewport.iModel, this._lampElementIds).then(async (results) => {
+          const params = FireDecorationApp.predefinedParams.get("Candle") ?? FireDecorationApp.predefinedParams.keys().next().value;
+          results.forEach((source, index) => {
+            FireDecorator.create(viewport, source.origin, params);
+            // If it's the first place, zoom to it.
+            if (index === 0) {
+              let volume = source.bBox.clone();
+              // Manipulate the volume that the viewport will zoom to.
+              volume.scaleAboutCenterInPlace(5);
+              volume = Transform.createTranslationXYZ(0, 0, volume.zLength() * 0.25).multiplyRange(volume);
+              viewport.zoomToVolume(volume);
+            }
+          });
         });
-        this.setState({ isLoading: false });
-      });
-    });
+      }));
+    }
+    this.setState({ isLoading: false });
   }
 
   /** An overridden React method that is called when there's an update to the react component (e.g. this.setState). */
-  public componentDidUpdate(_prevProps: any, _preState: ParticleSampleState) {
-    FireDecorationApp.highlightEmitter(this.state.emitter);
+  public componentDidUpdate(_prevProps: any, preState: ParticleSampleState) {
+    FireDecorationApp.highlightEmitter(this.state.selectedEmitter);
+    if (this.state.selectedEmitter !== preState.selectedEmitter) {
+      const currentParams: FireProps = this.state.selectedEmitter?.params ?? this._defaultProps;
+      this.setState({ ...currentParams });
+    } else {
+      this.configureEmitter(this.state);
+    }
   }
 
   /** The sample's render method */
