@@ -37,7 +37,7 @@ class EmitterHighlighter implements Decorator {
     if (isOn)
       IModelApp.viewManager.addDecorator(this);
     else
-      IModelApp.viewManager.addDecorator(this);
+      IModelApp.viewManager.dropDecorator(this);
   }
 }
 
