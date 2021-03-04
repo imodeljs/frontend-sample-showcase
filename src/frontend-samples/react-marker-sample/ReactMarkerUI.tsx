@@ -16,11 +16,12 @@ import {
 } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Select } from "@bentley/ui-core";
 import ToolsProvider, { ToolsContext } from "./ReactMarkerTools";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { IModelJsViewProvider } from "@bentley/imodel-react-hooks";
 import ReactMarker from "./ReactMarker";
-import ReactMarkerApp from "./ReactMarkerApp";
+
+const i18nNamespaceKey = "react-marker-i18n-namespace" as string;
 
 export enum HtmlContentMode {
   Image = "picture",
@@ -41,6 +42,12 @@ export default function ReactMarkerUI(props: {
     setPoints((pts) => pts.concat(pt));
   };
 
+  const sampleNamespace = IModelApp.i18n.registerNamespace(i18nNamespaceKey);
+
+  React.useEffect(() => () =>
+    IModelApp.i18n.unregisterNamespace(i18nNamespaceKey)
+  );
+
   /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
   const onIModelReady = React.useCallback((_imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
@@ -50,35 +57,7 @@ export default function ReactMarkerUI(props: {
 
       // HACK: prevent mousedown event from being stolen on html decorations...
       viewport.setEventController(
-        new ((class {
-          private readonly _removals: (() => void)[] = [];
-
-          constructor(public vp: ScreenViewport) {
-            const element = vp.parentDiv;
-            if (element === undefined) return;
-            this.destroy();
-            this.addDomListeners(
-              [
-                "mousedown",
-                "mouseup",
-                "mousemove",
-                "mouseover",
-                "mouseout",
-                "wheel",
-                "touchstart",
-                "touchend",
-                "touchcancel",
-                "touchmove",
-              ],
-              element
-            );
-            element.oncontextmenu = element.onselectstart = () => false;
-          }
-
-          public destroy() {
-            this._removals.forEach((remove) => remove());
-          }
-
+        new ((class extends (EventController as any) {
           private addDomListeners(domType: string[], element: HTMLElement) {
             const vp = this.vp;
             const listener = (ev: Event) => {
@@ -143,16 +122,13 @@ export default function ReactMarkerUI(props: {
   );
 
   return (
-    <ToolsProvider
-      i18nNamespace={ReactMarkerApp._sampleNamespace}
-      addMarker={addMarker}
-    >
+    <ToolsProvider i18nNamespace={sampleNamespace} addMarker={addMarker}>
       <ControlPane
         instructions="Use the options below to control the marker pins.  Click a marker to open a menu of options."
         controls={controls}
         iModelSelector={props.iModelSelector}
       ></ControlPane>
-      <ReloadableViewport
+      <SandboxViewport
         iModelName={props.iModelName}
         onIModelReady={onIModelReady}
       />

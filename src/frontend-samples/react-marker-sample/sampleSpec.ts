@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ReactMarkerApp from "./ReactMarkerApp";
+import ReactMarkerUI from "./ReactMarkerUI";
 
 export function getReactMarkerSpec(): SampleSpec {
   return {
@@ -13,13 +13,9 @@ export function getReactMarkerSpec(): SampleSpec {
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       {
-        name: "ReactMarkerApp.tsx",
-        import: import("!!raw-loader!./ReactMarkerApp.tsx"),
-        entry: true,
-      },
-      {
         name: "ReactMarkerUI.tsx",
         import: import("!!raw-loader!./ReactMarkerUI.tsx"),
+        entry: true,
       },
       {
         name: "ReactMarker.tsx",
@@ -34,7 +30,6 @@ export function getReactMarkerSpec(): SampleSpec {
         import: import("!!raw-loader!./ReactMarker.module.scss"),
       },
     ],
-    setup: ReactMarkerApp.setup,
-    teardown: ReactMarkerApp.teardown,
+    sampleClass: ReactMarkerUI,
   };
 }

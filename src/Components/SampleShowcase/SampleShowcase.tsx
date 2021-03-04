@@ -31,7 +31,7 @@ export interface SampleSpec {
   readme?: SampleSpecFile;
   files: SampleSpecFile[];
   customModelList?: string[];
-  sampleClass: typeof React.Component;
+  sampleClass: React.ComponentType<any>;
 }
 
 interface ShowcaseState {
@@ -211,7 +211,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       }
 
       try {
-        sampleUI = sampleUI = React.createElement(newSampleSpec.sampleClass, props);
+        sampleUI = React.createElement(newSampleSpec.sampleClass, props);
       } catch (err) {
         sampleUI = <DisplayError error={err} />
       }
