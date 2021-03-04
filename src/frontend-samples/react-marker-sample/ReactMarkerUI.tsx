@@ -21,7 +21,7 @@ import ReactMarker from "./ReactMarker";
 import ReactMarkerApp from "./ReactMarkerApp";
 
 export enum HtmlContentMode {
-  Picture = "picture",
+  Image = "picture",
   Video = "video",
   Form = "form",
 }
@@ -30,10 +30,13 @@ export default function ReactMarkerUI(props: {
   iModelName: string;
   iModelSelector: React.ReactNode;
 }) {
-  const [points, setPoints] = React.useState<ReactMarker.Props[]>([]);
+  const [points, setPoints] = React.useState<Point3d[]>([]);
+  const [htmlContentMode, setHtmlContentMode] = React.useState(
+    HtmlContentMode.Form
+  );
 
   const addMarker = (pt: Point3d) => {
-    setPoints((pts) => pts.concat({ worldLocation: pt }));
+    setPoints((pts) => pts.concat(pt));
   };
 
   /** This callback will be executed by ReloadableViewport once the iModel has been loaded */
@@ -41,13 +44,9 @@ export default function ReactMarkerUI(props: {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       // Grab range of the contents of the view. We'll use this to position the first marker
       const range3d = viewport.view.computeFitRange();
-      setPoints([{ worldLocation: range3d.center }]);
+      setPoints([range3d.center]);
     });
   }, []);
-
-  const [htmlContentMode, setHtmlContentMode] = React.useState(
-    HtmlContentMode.Form
-  );
 
   /** the sample's instructions and controls */
   const controls = (
@@ -60,7 +59,7 @@ export default function ReactMarkerUI(props: {
             setHtmlContentMode(e.target.value as HtmlContentMode)
           }
           options={{
-            [HtmlContentMode.Picture]: "picture",
+            [HtmlContentMode.Image]: "picture",
             [HtmlContentMode.Video]: "video",
             [HtmlContentMode.Form]: "form",
           }}
@@ -109,7 +108,11 @@ export default function ReactMarkerUI(props: {
       />
       <IModelJsViewProvider>
         {points.map((p, i) => (
-          <ReactMarker key={i} worldLocation={p.worldLocation} />
+          <ReactMarker
+            key={i}
+            worldLocation={p}
+            htmlContentMode={htmlContentMode}
+          />
         ))}
       </IModelJsViewProvider>
     </ToolsProvider>
