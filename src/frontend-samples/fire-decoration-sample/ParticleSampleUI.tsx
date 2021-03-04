@@ -97,17 +97,20 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     return (<>
       <div>
         <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-          <Button disabled={this.state.isLoading || FireDecorator.decorators.size <= 0} onClick={this.startSelectionTool}>Select Emitter</Button>
+          <Button disabled={this.state.isLoading} onClick={this.startSelectionTool}>Select Emitter</Button>
           <Button disabled={this.state.isLoading || noEmitterSelected} onClick={() => this.setState({ emitter: undefined })}>Deselect Emitter</Button>
         </div>
+        <div className="sample-heading">
+          <span>Place New Emitter</span>
+        </div>
         <div className={"sample-options-2col"}>
-          <Button disabled={this.state.isLoading} onClick={this.startPlacementTool}>Place Emitter</Button>
+          <Button disabled={this.state.isLoading} onClick={this.startPlacementTool}>Place</Button>
           <Select options={[...FireDecorationApp.predefinedParams.keys()]} value={this.state.paramsName} onChange={(event) => this.setState({ paramsName: event.target.value })} />
         </div>
       </div>
       <hr></hr>
       <div className="sample-heading">
-        <span>Configure Emitter</span>
+        <span>Configure Selected Emitter</span>
       </div>
       <div className={"sample-options-2col"}>
         <label>Particle Count</label>
