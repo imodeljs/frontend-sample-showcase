@@ -56,6 +56,7 @@ export default function ReactMarkerUI(props: {
       setPoints([range3d.center]);
 
       // HACK: prevent mousedown event from being stolen on html decorations...
+      /*
       viewport.setEventController(
         new ((class extends (EventController as any) {
           private addDomListeners(domType: string[], element: HTMLElement) {
@@ -74,6 +75,7 @@ export default function ReactMarkerUI(props: {
           }
         } as any) as typeof EventController)(viewport)
       );
+      */
     });
   }, []);
 

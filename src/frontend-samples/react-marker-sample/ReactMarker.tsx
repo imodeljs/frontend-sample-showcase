@@ -125,7 +125,28 @@ function ReactMarker(props: ReactMarker.Props) {
       worldLocation={props.worldLocation}
       // pass arbitrary jsx without setting up your own htmlElement
       jsxElement={
-        <div onMouseDownCapture={(e) => e.stopPropagation()}>
+        <div
+          onMouseDown={(e) => e.stopPropagation()}
+          onMouseUp={(e) => e.stopPropagation()}
+          onMouseMove={(e) => e.stopPropagation()}
+          onMouseOver={(e) => e.stopPropagation()}
+          onMouseOut={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
+          onTouchCancel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+          onMouseDownCapture={(e) => e.stopPropagation()}
+          onMouseUpCapture={(e) => e.stopPropagation()}
+          onMouseMoveCapture={(e) => e.stopPropagation()}
+          onMouseOverCapture={(e) => e.stopPropagation()}
+          onMouseOutCapture={(e) => e.stopPropagation()}
+          onWheelCapture={(e) => e.stopPropagation()}
+          onTouchStartCapture={(e) => e.stopPropagation()}
+          onTouchEndCapture={(e) => e.stopPropagation()}
+          onTouchCancelCapture={(e) => e.stopPropagation()}
+          onTouchMoveCapture={(e) => e.stopPropagation()}
+        >
           <div className={styles.markerContent}>
             <ContentComponent {...contentProps} />
           </div>
