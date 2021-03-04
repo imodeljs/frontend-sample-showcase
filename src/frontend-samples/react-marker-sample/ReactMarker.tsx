@@ -3,7 +3,6 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import ReactDOM from "react-dom";
 import { Point3d } from "@bentley/geometry-core";
 import { Marker, DecorateContext } from "@bentley/imodeljs-frontend";
 import {
@@ -63,11 +62,6 @@ function FormContent(_props: ContentProps) {
   return (
     <form
       className={styles.form}
-      //onClickCapture={(e) => e.stopPropagation()}
-      //onMouseOverCapture={(e) => e.stopPropagation()}
-      //onMouseMoveCapture={(e) => e.stopPropagation()}
-      //onMouseDownCapture={(e) => e.stopPropagation()}
-      //onMouseUpCapture={(e) => e.stopPropagation()}
       // prevent default behavior (browser refresh + request send)
       onSubmit={(e) => e.preventDefault()}
     >
@@ -78,16 +72,6 @@ function FormContent(_props: ContentProps) {
           name="field1"
           value={field1Value}
           onChange={(e) => setField1Value(e.target.value)}
-          //onClick={() => console.log("click")}
-          //onClickCapture={() => console.log("click capture")}
-          //onMouseDown={() => console.log("mousedown")}
-          //onMouseDownCapture={() => console.log("mousedown capture")}
-          //onFocusCapture={() => console.log("focus")}
-          //onBlurCapture={() => console.log("blur")}
-          //onMouseMove={() => console.log("mousemove")}
-          //onMouseMoveCapture={() => console.log("mousemove capture")}
-          //onMouseOver={() => console.log("mouseover capture")}
-          //onMouseOverCapture={() => console.log("mouseover capture")}
         />
       </label>
       <label>
@@ -135,42 +119,16 @@ function ReactMarker(props: ReactMarker.Props) {
 
   const contentProps = { height, width };
 
-  const portalElem = React.useRef(document.createElement("div")).current;
-  React.useEffect(() => {
-    document.body.append(portalElem);
-  }, []);
-
-  const portalBridgeElem = React.useRef<HTMLDivElement>(null);
-
-  // older versions of imodeljs
-  const portalElemStyle = (() => {
-    const parentElem = portalBridgeElem.current?.parentElement;
-    console.log(parentElem);
-    if (parentElem && !parentElem.classList.contains("overlay-decorators")) {
-      const markerPositionerElem = parentElem;
-      const rect = markerPositionerElem.getBoundingClientRect();
-      return {
-        left: `${rect.left + 0.5 * rect.width}px`,
-        top: `${rect.top + 0.5 * rect.height}px`,
-        position: "absolute" as const,
-      };
-    }
-    return { display: "none" };
-  })();
-
   return (
     // to use the Marker component we need an IModelJsViewProvider as an ancestor
     <MarkerComponent
       worldLocation={props.worldLocation}
       // pass arbitrary jsx without setting up your own htmlElement
       jsxElement={
-        <div ref={portalBridgeElem}>
-          {ReactDOM.createPortal(
-            <div className={styles.markerContent} style={portalElemStyle}>
-              <ContentComponent {...contentProps} />
-            </div>,
-            portalElem
-          )}
+        <div onMouseDownCapture={(e) => e.stopPropagation()}>
+          <div className={styles.markerContent}>
+            <ContentComponent {...contentProps} />
+          </div>
         </div>
       }
       addDecoration={function (this: Marker, ctx: DecorateContext) {
