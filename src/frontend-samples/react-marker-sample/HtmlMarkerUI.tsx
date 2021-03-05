@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import styles from "./ReactMarker.module.scss";
+import styles from "./HtmlMarker.module.scss";
 import { Point3d } from "@bentley/geometry-core";
 import {
   IModelApp,
@@ -13,11 +13,11 @@ import {
   ScreenViewport,
 } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Select } from "@bentley/ui-core";
-import ToolsProvider, { ToolsContext } from "./ReactMarkerTools";
+import ToolsProvider, { ToolsContext } from "./HtmlMarkerTools";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { IModelJsViewProvider } from "@bentley/imodel-react-hooks";
-import ReactMarker from "./ReactMarker";
+import HtmlMarker from "./HtmlMarker";
 
 const i18nNamespaceKey = "react-marker-i18n-namespace" as string;
 
@@ -27,7 +27,7 @@ export enum HtmlContentMode {
   Form = "form",
 }
 
-export default function ReactMarkerUI(props: {
+export default function HtmlMarkerUI(props: {
   iModelName: string;
   iModelSelector: React.ReactNode;
 }) {
@@ -112,7 +112,7 @@ export default function ReactMarkerUI(props: {
       />
       <IModelJsViewProvider>
         {points.map((p) => (
-          <ReactMarker
+          <HtmlMarker
             key={`${p.x}_${p.y}_${p.z}`}
             worldLocation={p}
             htmlContentMode={htmlContentMode}

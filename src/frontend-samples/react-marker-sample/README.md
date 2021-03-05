@@ -1,4 +1,4 @@
-# React Marker Sample
+# HTML Marker Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 

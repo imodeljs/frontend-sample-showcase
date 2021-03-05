@@ -9,11 +9,11 @@ import {
   Marker as MarkerComponent,
   getSuper,
 } from "@bentley/imodel-react-hooks";
-import styles from "./ReactMarker.module.scss";
-import { HtmlContentMode } from "./ReactMarkerUI";
+import styles from "./HtmlMarker.module.scss";
+import { HtmlContentMode } from "./HtmlMarkerUI";
 import { HtmlMarkerWrapper, clamp } from "./utils";
 
-declare namespace ReactMarker {
+declare namespace HtmlMarker {
   export interface Props {
     worldLocation: Point3d;
     htmlContentMode: HtmlContentMode;
@@ -93,7 +93,7 @@ function FormContent(_props: ContentProps) {
 }
 
 /** the component that orchestrates the marker state */
-function ReactMarker(props: ReactMarker.Props) {
+function HtmlMarker(props: HtmlMarker.Props) {
   const [height, setHeight] = React.useState(minHeight);
   const [width, setWidth] = React.useState(minWidth);
 
@@ -144,4 +144,4 @@ function ReactMarker(props: ReactMarker.Props) {
   );
 }
 
-export default ReactMarker;
+export default HtmlMarker;

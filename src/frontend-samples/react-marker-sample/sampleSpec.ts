@@ -3,33 +3,33 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ReactMarkerUI from "./ReactMarkerUI";
+import HtmlMarkerUI from "./HtmlMarkerUI";
 
-export function getReactMarkerSpec(): SampleSpec {
+export function getHtmlMarkerSpec(): SampleSpec {
   return {
-    name: "react-marker-sample",
-    label: "React Markers",
-    image: "marker-pin-thumbnail.png",
+    name: "html-marker-sample",
+    label: "HTML Markers",
+    image: "html-markers-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
       {
-        name: "ReactMarkerUI.tsx",
-        import: import("!!raw-loader!./ReactMarkerUI.tsx"),
+        name: "HtmlMarkerUI.tsx",
+        import: import("!!raw-loader!./HtmlMarkerUI.tsx"),
         entry: true,
       },
       {
-        name: "ReactMarker.tsx",
-        import: import("!!raw-loader!./ReactMarker.tsx"),
+        name: "HtmlMarker.tsx",
+        import: import("!!raw-loader!./HtmlMarker.tsx"),
       },
       {
-        name: "ReactMarkerTools.tsx",
-        import: import("!!raw-loader!./ReactMarkerTools.tsx"),
+        name: "HtmlMarkerTools.tsx",
+        import: import("!!raw-loader!./HtmlMarkerTools.tsx"),
       },
       {
-        name: "ReactMarker.module.scss",
-        import: import("!!raw-loader!./ReactMarker.module.scss"),
+        name: "HtmlMarker.module.scss",
+        import: import("!!raw-loader!./HtmlMarker.module.scss"),
       },
     ],
-    sampleClass: ReactMarkerUI,
+    sampleClass: HtmlMarkerUI,
   };
 }
