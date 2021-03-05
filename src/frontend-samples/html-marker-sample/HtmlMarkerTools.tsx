@@ -19,7 +19,7 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 function createUnusableObject<T extends {}>(usageErrorMessage: string): T {
   return new Proxy({} as T, {
     get() {
-      throw Error("Tried to use unusable object: " + usageErrorMessage);
+      throw Error(`Tried to use unusable object: ${usageErrorMessage}`);
     },
   });
 }
@@ -44,12 +44,15 @@ declare namespace ToolsProvider {
   }
 }
 
+// this is a false-positive, when we update to  @typescript-eslint 4.0 we can use @typescript-eslint/no-redeclare
+// eslint-disable-next-line no-redeclare
 class ToolsProvider extends React.Component<ToolsProvider.Props> {
   // this function-initialized property will create our tool class for us on creation
   // but we can use the ToolsProvider's this to access all React state and props
   public PlaceMarkerTool = (() => {
     // need an alias to the ToolProvider instance `this` during construction of this property,
     // because the `this` keyword will refer to the PrimitiveTool instance in its methods
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const toolProviderThis = this;
 
     /** This class defines the user's interaction while placing a new marker. It is launched by a button in the UI.

@@ -4,14 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { Point3d } from "@bentley/geometry-core";
-import { Marker, DecorateContext } from "@bentley/imodeljs-frontend";
+import { DecorateContext, Marker } from "@bentley/imodeljs-frontend";
 import {
-  Marker as MarkerComponent,
   getSuper,
+  Marker as MarkerComponent,
 } from "@bentley/imodel-react-hooks";
 import styles from "./HtmlMarker.module.scss";
 import { HtmlContentMode } from "./HtmlMarkerUI";
-import { HtmlMarkerWrapper, clamp } from "./utils";
+import { clamp, HtmlMarkerWrapper } from "./utils";
 
 declare namespace HtmlMarker {
   export interface Props {
@@ -93,6 +93,8 @@ function FormContent(_props: ContentProps) {
 }
 
 /** the component that orchestrates the marker state */
+// this is a false-positive, when we update to  @typescript-eslint 4.0 we can use @typescript-eslint/no-redeclare
+// eslint-disable-next-line no-redeclare
 function HtmlMarker(props: HtmlMarker.Props) {
   const [height, setHeight] = React.useState(minHeight);
   const [width, setWidth] = React.useState(minWidth);

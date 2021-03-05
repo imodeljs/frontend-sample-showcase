@@ -98,9 +98,7 @@
       "*.d.ts"
     ],
     "rules": {
-      "deprecation/deprecation": "off",
-      "no-redeclare": "off",
-      "@typescript-eslint/no-redeclare": "on"
+      "deprecation/deprecation": "off"
     },
     "overrides": [
       {
