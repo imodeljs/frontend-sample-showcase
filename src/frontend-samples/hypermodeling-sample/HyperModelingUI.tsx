@@ -47,13 +47,28 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
       this.state.viewport.changeView(this.state.previousView);
       this.setState({ previousView: undefined });
     }
-  }
+  };
 
   private switchToDrawingView = async () => {
-    assert(undefined !== this.state.activeMarker && undefined !== this.state.viewport);
-    const previousView = this.state.viewport.view;
-    await HyperModelingApp.switchToDrawingView(this.state.viewport, this.state.activeMarker);
-    if (this.state.viewport.view !== previousView)
+    return this.switchTo2d("drawing");
+  };
+
+  private switchToSheetView = async () => {
+    return this.switchTo2d("sheet");
+  };
+
+  private async switchTo2d(which: "sheet" | "drawing") {
+    const viewport = this.state.viewport;
+    const marker = this.state.activeMarker;
+    assert(undefined !== viewport && undefined !== marker);
+
+    // Some section drawing locations are not associated with a sheet.
+    if ("sheet" === which && !marker.state.viewAttachment)
+      return;
+
+    const previousView = viewport.view;
+    const promise = "sheet" === which ? HyperModelingApp.switchToSheetView(viewport, marker) : HyperModelingApp.switchToDrawingView(viewport, marker);
+    if (await promise)
       this.setState({ previousView });
   }
 
@@ -66,7 +81,10 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
 
     if (this.state.activeMarker) {
       return (
-        <Button onClick={this.switchToDrawingView}>View section drawing</Button>
+        <>
+          <Button onClick={this.switchToDrawingView}>View section drawing</Button>
+          <Button onClick={this.switchToSheetView}>View on sheet</Button>
+        </>
       );
     }
 

@@ -55,15 +55,13 @@ export default class HyperModelingApp {
     return HyperModelingDecorator.getForViewport(viewport);
   }
 
-  public static async switchToDrawingView(viewport: ScreenViewport, marker: SectionMarker) {
+  public static async switchToDrawingView(viewport: ScreenViewport, marker: SectionMarker): Promise<boolean> {
     const decorator = this.getDecorator(viewport);
-    if (decorator && await decorator.openSection(marker))
-      {}// this.markerHandler.setActiveMarker(undefined);
+    return undefined !== decorator && await decorator.openSection(marker);
   }
 
-  public static async switchToSheetView(viewport: ScreenViewport, marker: SectionMarker) {
+  public static async switchToSheetView(viewport: ScreenViewport, marker: SectionMarker): Promise<boolean> {
     const decorator = this.getDecorator(viewport);
-    if (decorator && await decorator.openSheet(marker))
-      {}// this.markerHandler.setActiveMarker(undefined);
+    return undefined !== decorator && await decorator.openSheet(marker);
   }
 }
