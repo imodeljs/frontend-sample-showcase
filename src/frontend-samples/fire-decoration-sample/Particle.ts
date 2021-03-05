@@ -80,7 +80,7 @@ export class FireDecorator implements Decorator {
   /** If the textures are not created yet, will attempt to create them.  Returns true if successful. */
   private static async tryTextures(): Promise<boolean> {
     const isOwned = true;
-    // Note: the decorator takes ownership of the texture, and disposes of it when the decorator is disposed.
+    // Note: the decorator takes ownership of the textures, and disposes of them when the decorator is disposed.
     const params = new RenderTexture.Params(undefined, undefined, isOwned);
     if (!FireDecorator._fireTexture) {
       const fireImage = await imageElementFromUrl("./particle-gradient-flame.png");
@@ -99,17 +99,16 @@ export class FireDecorator implements Decorator {
       FireDecorator._fireTexture = dispose(FireDecorator._fireTexture);
       FireDecorator._smokeTexture = dispose(FireDecorator._smokeTexture);
       // Remove listeners
-      if (FireDecorator._removeOnRender !== undefined)
-        FireDecorator._removeOnRender();
-      FireDecorator._removeOnRender = undefined;
-      if (FireDecorator._removeOnDispose !== undefined)
-        FireDecorator._removeOnDispose();
-      FireDecorator._removeOnDispose = undefined;
-      if (FireDecorator._removeOnClose !== undefined)
-        FireDecorator._removeOnClose();
-      FireDecorator._removeOnClose = undefined;
+      const tryDisposeListen = (func?: () => void) => {
+        if (func !== undefined) func();
+        func = undefined;
+      };
+      tryDisposeListen(FireDecorator._removeOnRender);
+      tryDisposeListen(FireDecorator._removeOnDispose);
+      tryDisposeListen(FireDecorator._removeOnClose);
     }
   }
+
   /** Drops all decorators and disposes of owed resources. */
   public static dispose() {
     FireDecorator.decorators.forEach((fire) => fire.dispose());

@@ -56,6 +56,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     };
   }
 
+  /** A React method that is called when the sample is mounted (startup) */
   public componentDidMount() {
     FireDecorationApp.initTools();
     // Should allow for selecting the particles (but doesn't)
@@ -63,12 +64,14 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     IModelApp.viewManager.addDecorator(FireDecorationApp.highlighter);
   }
 
+  /** A React method that is called just before the sample is unmounted (disposed) */
   public componentWillUnmount() {
     // Resetting the IModelApp to the default state.
     IModelApp.locateManager.options.allowDecorations = false;
     this._dropListeners.flatMap((callback) => callback());
     this._dropListeners = [];
     IModelApp.viewManager.dropDecorator(FireDecorationApp.highlighter);
+    // Listeners on the FireDecorator will be triggered when the sample is closing.  It will handle disposing itself.
   }
 
   /** Starts a tool that will place a new emitter. */
@@ -133,8 +136,6 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
       <div style={{ display: "flex", justifyContent: "space-evenly" }}>
         <Button disabled={noEmitterSelected} onClick={this.dropSelected}>Drop</Button>
         <Button disabled={this.state.isLoading || noEmitterSelected} onClick={() => this.setState({ selectedEmitter: undefined })}>Deselect</Button>
-        {/* <Button disabled={this.state.isLoading} onClick={this.startSelectionTool}>Select Emitter</Button>
-        <Button disabled={this.state.isLoading || noEmitterSelected} onClick={() => this.setState({ selectedEmitter: undefined })}>Deselect Emitter</Button> */}
       </div>
     </>);
   }
@@ -154,16 +155,11 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
 
   /** Is called by the showcase with then iModel is ready. */
   private onIModelReady = (_iModel: IModelConnection) => {
-    // this._dropListeners.push(iModel.selectionSet.onChanged.addListener((ev) => {
-    //   let selectedEmitter: FireDecorator | undefined;
-    //   if (ev.set.size === 1)
-    //     selectedEmitter = FireDecorator.decorators.get(ev.set.elements.entries().next().value[0]);
-    //   this.setState({ selectedEmitter });
-    // }));
-
     // Villa will have some decorators initially placed as a demo.
     if (this.props.iModelName === "Villa") {
       this._dropListeners.push(IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
+
+        // Query for element origin and bounding box.
         FireDecorationApp.queryElements(viewport.iModel, this._lampElementIds).then(async (results) => {
           const params = FireDecorationApp.predefinedParams.get("Candle") ?? FireDecorationApp.predefinedParams.keys().next().value;
           results.forEach((source, index) => {

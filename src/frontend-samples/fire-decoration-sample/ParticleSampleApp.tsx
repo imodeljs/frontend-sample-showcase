@@ -27,19 +27,11 @@ class EmitterHighlighter implements Decorator {
       Math.max(this.emitter.params.effectRange.high.y, minium),
       this.emitter.params.height,
     );
-    console.debug(range);
     const transform = Transform.createTranslation(this.emitter.source);
     const builder = context.createSceneGraphicBuilder();
     builder.setSymbology(context.viewport.getContrastToBackgroundColor(), ColorDef.black, 3);
     builder.addRangeBox(transform.multiplyRange(range));
     context.addDecoration(GraphicType.WorldOverlay, builder.finish());
-  }
-
-  public enable(isOn: boolean) {
-    if (isOn)
-      IModelApp.viewManager.addDecorator(this);
-    else
-      IModelApp.viewManager.dropDecorator(this);
   }
 }
 
@@ -131,6 +123,7 @@ export default class FireDecorationApp implements SampleApp {
     FireDecorationApp.highlighter.emitter = emitter;
   }
 
+  /** Zooms the view to a specific volume in the model using the viewport API. */
   public static zoomToVolume(viewport: ScreenViewport, volume: Range3d) {
     viewport.zoomToVolume(volume);
   }
@@ -160,21 +153,20 @@ export default class FireDecorationApp implements SampleApp {
   }
 
   /** Queries the backend for the elements to explode.  It also populates the data it can interpolate with a single pass. */
-  public static async queryElements(iModel: IModelConnection, elementsIds: string[]): Promise<Array<{ elementId: string, origin: Point3d, bBox: Range3d }>> {
-    const query = `Select ECInstanceID,Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
-    const data: Array<{ elementId: string, origin: Point3d, bBox: Range3d }> = [];
+  public static async queryElements(iModel: IModelConnection, elementsIds: string[]): Promise<Array<{ origin: Point3d, bBox: Range3d }>> {
+    const query = `Select Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
+    const data: Array<{ origin: Point3d, bBox: Range3d }> = [];
 
     for await (const row of iModel.query(query)) {
-      const element = (row as { id: string, origin: XYAndZ, pitch: number, roll: number, yaw: number, bBoxLow: XYAndZ, bBoxHigh: XYAndZ });
+      const element = (row as { origin: XYAndZ, pitch: number, roll: number, yaw: number, bBoxLow: XYAndZ, bBoxHigh: XYAndZ });
 
       const bBoxModelSpace = Range3d.create(Point3d.fromJSON(element.bBoxLow), Point3d.fromJSON(element.bBoxHigh));
       const placement = Placement3d.fromJSON({ origin: element.origin, angles: { pitch: element.pitch, roll: element.roll, yaw: element.yaw } });
       const transform = placement.transform;
       const bBox = transform.multiplyRange(bBoxModelSpace);
-      const elementId = element.id;
       const origin = Point3d.fromJSON(element.origin);
 
-      data.push({ elementId, origin, bBox });
+      data.push({ origin, bBox });
     }
 
     return data;
