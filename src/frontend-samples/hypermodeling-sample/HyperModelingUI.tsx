@@ -6,14 +6,16 @@ import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
+import { assert } from "@bentley/bentleyjs-core";
 import { IModelApp, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import { HyperModeling } from "@bentley/hypermodeling-frontend";
+import { HyperModeling, SectionMarker } from "@bentley/hypermodeling-frontend";
 import { Button } from "@bentley/ui-core";
 import HyperModelingApp from "./HyperModelingApp";
 
 interface HyperModelingState {
   viewport?: ScreenViewport;
   previousView?: ViewState;
+  activeMarker?: SectionMarker;
 }
 
 interface HyperModelingProps {
@@ -31,6 +33,7 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
     IModelApp.viewManager.onViewOpen.addOnce(async (viewport: ScreenViewport) => {
       this.setState({ viewport });
       await HyperModelingApp.enableHyperModeling(viewport);
+      HyperModelingApp.markerHandler.onActiveMarkerChanged.addListener((activeMarker) => this.setState({ activeMarker }));
     });
   };
 
@@ -39,28 +42,40 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
       await HyperModelingApp.disableHyperModeling(this.state.viewport);
   }
 
-  private returnToPreviousView(): void {
+  private returnToPreviousView = () => {
     if (this.state.viewport && this.state.previousView) {
       this.state.viewport.changeView(this.state.previousView);
       this.setState({ previousView: undefined });
     }
   }
 
+  private switchToDrawingView = async () => {
+    assert(undefined !== this.state.activeMarker && undefined !== this.state.viewport);
+    const previousView = this.state.viewport.view;
+    await HyperModelingApp.switchToDrawingView(this.state.viewport, this.state.activeMarker);
+    if (this.state.viewport.view !== previousView)
+      this.setState({ previousView });
+  }
+
   private getControls() {
-    if (!this.state.previousView) {
+    if (this.state.previousView) {
       return (
-        <>
-          <div className="sample-options-2col">
-            <span>Something</span>
-            <span>Ok</span>
-          </div>
-        </>
+        <Button onClick={this.returnToPreviousView}>Return to 3d view</Button>
+      );
+    }
+
+    if (this.state.activeMarker) {
+      return (
+        <Button onClick={this.switchToDrawingView}>View section drawing</Button>
       );
     }
 
     return (
       <>
-        <Button onClick={this.returnToPreviousView}>Return to 3d view</Button>
+        <div className="sample-options-2col">
+          <span>Something</span>
+          <span>Ok</span>
+        </div>
       </>
     );
   }
