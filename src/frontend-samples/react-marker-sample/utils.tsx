@@ -4,6 +4,9 @@
  *--------------------------------------------------------------------------------------------*/
 import React from "react";
 
+/** given a range of min-max, if val is outside that range,
+ * clamp it to the nearest boundary
+ */
 export function clamp(val: number, min: number, max: number) {
   return Math.min(max, Math.max(val, min));
 }

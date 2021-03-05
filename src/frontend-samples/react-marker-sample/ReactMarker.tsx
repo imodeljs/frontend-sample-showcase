@@ -32,21 +32,22 @@ interface ContentProps {
   height: number;
 }
 
+/** the jsx to render when in video content mode */
 function VideoContent(props: ContentProps) {
   return (
-    <video controls loop muted width={props.width} height={props.height}>
+    <video controls loop muted width={props.width}>
       <source src="/cat_walking.mp4" type="video/mp4" />
       Your browser does not support video tags :(
     </video>
   );
 }
 
+/** the jsx to render when in image content mode */
 function ImageContent(props: ContentProps) {
-  return (
-    <img src="/cat_sitting.png" width={props.width} height={props.height} />
-  );
+  return <img src="/vintage_cats_small.jpg" width={props.width} />;
 }
 
+/** the jsx to render when in form content mode */
 function FormContent(_props: ContentProps) {
   const [field1Value, setField1Value] = React.useState("");
   const [field2Value, setField2Value] = React.useState("red");
@@ -91,6 +92,7 @@ function FormContent(_props: ContentProps) {
   );
 }
 
+/** the component that orchestrates the marker state */
 function ReactMarker(props: ReactMarker.Props) {
   const [height, setHeight] = React.useState(minHeight);
   const [width, setWidth] = React.useState(minWidth);
@@ -128,8 +130,10 @@ function ReactMarker(props: ReactMarker.Props) {
           </div>
         </HtmlMarkerWrapper>
       }
+      // add decoration is ran every frame, so we can use it to update our distance
+      // from the camera every frame
       addDecoration={function (this: Marker, ctx: DecorateContext) {
-        const cameraLoc = ctx.screenViewport.getFrustum().getEyePoint();
+        const cameraLoc = ctx.viewport.getFrustum().getEyePoint();
         if (cameraLoc) {
           const cameraDistance = cameraLoc.distance(this.worldLocation);
           updateSize(cameraDistance);
