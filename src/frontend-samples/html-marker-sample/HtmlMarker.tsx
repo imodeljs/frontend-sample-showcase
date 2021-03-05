@@ -9,7 +9,7 @@ import {
   getSuper,
   Marker as MarkerComponent,
 } from "@bentley/imodel-react-hooks";
-import styles from "./HtmlMarker.module.scss";
+import "./HtmlMarker.scss";
 import { HtmlContentMode } from "./HtmlMarkerUI";
 import { clamp, HtmlMarkerWrapper } from "./utils";
 
@@ -59,7 +59,7 @@ function FormContent(_props: ContentProps) {
 
   return (
     <form
-      className={styles.form}
+      className="html-marekrs_form"
       // prevent default behavior (browser refresh + request send)
       onSubmit={(e) => e.preventDefault()}
     >
@@ -85,7 +85,7 @@ function FormContent(_props: ContentProps) {
           ))}
         </select>
       </label>
-      <div className={styles.center}>
+      <div className="html_markers-center">
         <input type="submit" value="Submit" />
       </div>
     </form>
@@ -127,7 +127,7 @@ function HtmlMarker(props: HtmlMarker.Props) {
       // pass arbitrary jsx without setting up your own htmlElement
       jsxElement={
         <HtmlMarkerWrapper>
-          <div className={styles.markerContent}>
+          <div className="html_markers-markerContent">
             <ContentComponent {...contentProps} />
           </div>
         </HtmlMarkerWrapper>

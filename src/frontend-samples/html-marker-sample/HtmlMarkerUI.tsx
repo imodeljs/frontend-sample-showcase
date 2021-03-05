@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import styles from "./HtmlMarker.module.scss";
+import "./HtmlMarker.scss";
 import { Point3d } from "@bentley/geometry-core";
 import {
   IModelApp,
@@ -58,7 +58,7 @@ export default function HtmlMarkerUI(props: {
   /** the sample's instructions and controls */
   const controls = (
     <>
-      <div className={styles.sampleOpts2Col}>
+      <div className="html_markers-sample-opts-2-col">
         <span>HTML Content Type</span>
         <Select
           value={htmlContentMode}
@@ -73,7 +73,7 @@ export default function HtmlMarkerUI(props: {
         />
       </div>
       <hr></hr>
-      <div className={styles.sampleOpts2Col}>
+      <div className="html_markers-sample-opts-2-col">
         <Button
           buttonType={ButtonType.Blue}
           onClick={() => setPoints([])}

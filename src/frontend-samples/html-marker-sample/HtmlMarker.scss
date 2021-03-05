@@ -1,4 +1,4 @@
-.markerContent {
+.html-markers_marker-content {
   padding: 11px;
   box-shadow: 1px 1px 3px 3px rgba(0, 0, 0, 0.5);
   background-color: white;
@@ -7,7 +7,7 @@
   pointer-events: auto;
 }
 
-.sampleOpts2Col {
+.html-markers_sample-opts-2-col {
   display: grid;
   row-gap: 8px;
   column-gap: 8px;
@@ -15,17 +15,13 @@
   align-items: center;
 }
 
-.center {
+.html-markers_center {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.simpleCenter {
-  text-align: center;
-}
-
-.form {
+.html-markers_form {
   > label {
     display: flex;
     justify-content: space-between;
