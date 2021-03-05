@@ -64,7 +64,7 @@ export default class HyperModelingApp {
     if (!await promise)
       return false;
 
-    await this.disableHyperModeling(viewport);
+    await HyperModeling.startOrStop(viewport, false);
     return true;
   }
 

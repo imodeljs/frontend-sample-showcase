@@ -95,16 +95,18 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
   private getControls() {
     if (this.state.previous) {
       return (
-        <div className="sample-options-2col">
+        <div className="sample-options-3col-even">
+          <span />
           <Button onClick={this.returnTo3d}>Return to 3d view</Button>
         </div>
       );
     }
 
     return (
-      <div className="sample-options-2col">
+      <div className="sample-options-3col-even">
         <span>Display 2d graphics</span>
         <Toggle isOn={this.state.display2dGraphics} onChange={this.onToggle2dGraphics} disabled={!this.state.activeMarker} />
+        <span />
         <Button onClick={this.switchToDrawingView} disabled={!this.state.activeMarker}>View section drawing</Button>
         <Button onClick={this.switchToSheetView} disabled={!this.state.activeMarker?.state.viewAttachment}>View on sheet</Button>
         <Button onClick={this.clearActiveMarker} disabled={!this.state.activeMarker}>Select new marker</Button>
