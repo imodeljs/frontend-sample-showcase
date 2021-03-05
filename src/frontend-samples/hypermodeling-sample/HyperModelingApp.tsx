@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { BeEvent } from "@bentley/bentleyjs-core";
-import { ScreenViewport } from "@bentley/imodeljs-frontend";
+import { BeEvent, Id64String } from "@bentley/bentleyjs-core";
+import { ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
 import { HyperModeling, HyperModelingDecorator, SectionMarker, SectionMarkerHandler } from "@bentley/hypermodeling-frontend";
 import "common/samples-common.scss";
 
@@ -55,13 +55,43 @@ export default class HyperModelingApp {
     return HyperModelingDecorator.getForViewport(viewport);
   }
 
-  public static async switchToDrawingView(viewport: ScreenViewport, marker: SectionMarker): Promise<boolean> {
+  public static async switchTo2d(viewport: ScreenViewport, marker: SectionMarker, which: "drawing" | "sheet"): Promise<boolean> {
     const decorator = this.getDecorator(viewport);
-    return undefined !== decorator && await decorator.openSection(marker);
+    if (!decorator)
+      return false;
+
+    const promise = "drawing" === which ? decorator.openSection(marker) : decorator.openSheet(marker);
+    if (!await promise)
+      return false;
+
+    await this.disableHyperModeling(viewport);
+    return true;
   }
 
-  public static async switchToSheetView(viewport: ScreenViewport, marker: SectionMarker): Promise<boolean> {
-    const decorator = this.getDecorator(viewport);
-    return undefined !== decorator && await decorator.openSheet(marker);
+  public static async switchTo3d(viewport: ScreenViewport, view: ViewState, activeMarkerId: Id64String): Promise<void> {
+    viewport.changeView(view);
+    const decorator = await HyperModeling.startOrStop(viewport, true);
+    if (!decorator)
+      return;
+
+    for (const marker of decorator.markers.markers) {
+      if (marker.state.id === activeMarkerId) {
+        decorator.setActiveMarker(marker);
+        break;
+      }
+    }
+  }
+
+  public static clearActiveMarker(viewport: ScreenViewport) {
+    this.getDecorator(viewport)?.setActiveMarker(undefined);
+  }
+
+  public static toggle2dGraphics(display2d: boolean) {
+    HyperModeling.updateConfiguration({
+      graphics: {
+        hideSectionGraphics: !display2d,
+        hideSheetAnnotations: !display2d,
+      },
+    });
   }
 }
