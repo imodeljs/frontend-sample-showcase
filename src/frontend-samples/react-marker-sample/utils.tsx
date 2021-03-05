@@ -19,16 +19,6 @@ const toolManagerDomEvents = [
   "touchend",
   "touchcancel",
   "touchmove",
-  "mousedown",
-  "mouseup",
-  "mousemove",
-  "mouseover",
-  "mouseout",
-  "wheel",
-  "touchstart",
-  "touchend",
-  "touchcancel",
-  "touchmove",
 ];
 
 /** the ToolManager typically handles dom events from the viewport. As part of that,
