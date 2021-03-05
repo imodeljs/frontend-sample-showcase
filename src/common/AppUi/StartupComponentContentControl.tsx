@@ -5,7 +5,7 @@
 import { ConfigurableCreateInfo, ConfigurableUiManager, ContentControl, UiFramework } from "@bentley/ui-framework";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewSetup } from "../../api/viewSetup";
-import { StartupComponent } from "../../Components/Startup/Startup";
+import { StartupComponent } from "common/Startup/Startup";
 import React from "react";
 import { AppUi } from "./AppUi";
 

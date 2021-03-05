@@ -3,16 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { BlankViewport } from "common/Geometry/BlankViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { NumericInput, Slider } from "@bentley/ui-core";
 import CurveFractionApp from "./CurveFractionApp";
-import { SampleCurveFactory } from "common/GeometryCommon/SampleCurveFactory";
-import { InteractivePointMarker } from "common/GeometryCommon/InteractivePointMarker";
+import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
+import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
 import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
 import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 
 interface CurveData {
   curve: CurvePrimitive;

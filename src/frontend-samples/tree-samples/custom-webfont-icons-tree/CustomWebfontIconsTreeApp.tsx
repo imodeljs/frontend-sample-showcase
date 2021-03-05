@@ -7,9 +7,6 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import "@fortawesome/fontawesome-free/css/all.css";
-import SampleApp from "common/SampleApp";
-import { CustomWebfontIconsTreeUI } from "./CustomWebfontIconsTreeUI";
 const PAGING_SIZE = 20;
 const RULESET_TREE_WITH_ICONS: Ruleset = require("./TreeWithIcons.json");  // eslint-disable-line @typescript-eslint/no-var-requires
 
@@ -17,11 +14,6 @@ export interface CustomWebfontIconsTreeProps {
   imodel: IModelConnection;
 }
 
-export default class CustomWebfontIconsTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomWebfontIconsTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomWebfontIconsTreeUI>;
-  }
-}
 /**
  * This component demonstrates how to use `ControlledTree` with node icons from webfonts library.
  * It uses presentation rules defined in './TreeWithIcons.json' to load data from supplied iModel.

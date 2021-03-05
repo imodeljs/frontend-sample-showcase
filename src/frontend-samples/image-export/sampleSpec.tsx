@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ImageExportApp from "./ImageExportApp";
+import ImageExportUI from "./ImageExportUI";
 
 export function getImageExportSpec(): SampleSpec {
   return ({
@@ -12,9 +12,9 @@ export function getImageExportSpec(): SampleSpec {
     image: "image-export-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "ImageExportApp.tsx", import: import("!!raw-loader!./ImageExportApp"), entry: true },
-      { name: "ImageExportUI.tsx", import: import("!!raw-loader!./ImageExportUI") },
+      { name: "ImageExportUI.tsx", import: import("!!raw-loader!./ImageExportUI"), entry: true },
+      { name: "ImageExportApp.tsx", import: import("!!raw-loader!./ImageExportApp") },
     ],
-    setup: ImageExportApp.setup.bind(ImageExportApp),
+    sampleClass: ImageExportUI,
   });
 }

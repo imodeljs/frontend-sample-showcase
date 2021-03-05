@@ -7,19 +7,11 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import SampleApp from "common/SampleApp";
-import { PresentationTreeUI } from "./PresentationTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json");  // eslint-disable-line @typescript-eslint/no-var-requires
+const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface PresentationTreeProps {
   imodel: IModelConnection;
-}
-
-export default class PresentationTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <PresentationTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></PresentationTreeUI>;
-  }
 }
 
 /**

@@ -5,6 +5,10 @@
 import * as React from "react";
 import { ContextMenuItem, GlobalContextMenu, UiEvent } from "@bentley/ui-core";
 
+export interface PopupMenuProps {
+  canvas: HTMLCanvasElement | undefined;
+}
+
 export interface PopupMenuEntry {
   label: string;
   onPicked: (entry: PopupMenuEntry) => void;
@@ -21,7 +25,7 @@ export interface PopupMenuState {
 export class PopupMenuEvent extends UiEvent<PopupMenuState> { }
 
 /** A React component that renders the UI for a simple popup menu */
-export class PopupMenu extends React.Component<{}, PopupMenuState> {
+export class PopupMenu extends React.Component<PopupMenuProps, PopupMenuState> {
 
   /** @hidden */
   public readonly state: PopupMenuState = {
@@ -47,10 +51,20 @@ export class PopupMenu extends React.Component<{}, PopupMenuState> {
     this.setState(state);
   }
 
+  // Helper method to get the offset position of an element on the browser
+  private getOffset(element: HTMLElement) {
+    const rect = element.getBoundingClientRect();
+    return {
+      left: rect.left + window.scrollX,
+      top: rect.top + window.scrollY,
+    };
+  }
+
   /** The popup menu's render method */
   public render(): React.ReactNode {
     const { entries, menuX, menuY, menuVisible } = this.state;
     const onClose = this._hideContextMenu;
+    const offset = this.props.canvas ? this.getOffset(this.props.canvas) : undefined
 
     if (menuVisible) {
       const items = this.getMenuItems(entries);
@@ -58,8 +72,8 @@ export class PopupMenu extends React.Component<{}, PopupMenuState> {
       return (
         <GlobalContextMenu
           identifier="popup-menu"
-          x={menuX}
-          y={menuY}
+          x={menuX + (offset ? offset.left : 0)}
+          y={menuY + (offset ? offset.top : 0)}
           opened={menuVisible}
           onEsc={onClose}
           onOutsideClick={onClose}

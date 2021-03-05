@@ -7,10 +7,10 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { KeySet } from "@bentley/presentation-common";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import "./PropertyFormatting.scss";
 import { PropertyFormattingApp } from "./PropertyFormattingApp";
 import { Approach1UI } from "./approach-1-UI";
@@ -45,6 +45,11 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
       approach: Approach.UsePropertyDataProvider_1,
       keys: new KeySet(),
     };
+  }
+
+
+  public componentWillUnmount() {
+    PropertyFormattingApp.removeSelectionListener();
   }
 
   private onIModelReady = (imodel: IModelConnection) => {
@@ -95,7 +100,7 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
     return (
       <>
         <ControlPane instructions="Select an element in the view and choose an approach to display its properties." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
   }

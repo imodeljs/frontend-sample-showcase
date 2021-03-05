@@ -2,14 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 import "../../common/samples-common.scss";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 import { Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
-import SampleApp from "common/SampleApp";
-import { PropertyFormattingUI } from "./PropertyFormattingUI";
 import { OverlySimplePropertyRecord } from "./approach-3-UI";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider, PresentationTableDataProvider } from "@bentley/presentation-components";
@@ -22,16 +19,9 @@ export interface PropertyProps {
 
 /* This class demonstrates the key APIs needed to access formatted property information
    suitable to present to end users. */
-export class PropertyFormattingApp implements SampleApp {
+export class PropertyFormattingApp {
   private static selectionListener: SelectionChangesListener;
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <PropertyFormattingUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
-  public static teardown() {
-    PropertyFormattingApp.removeSelectionListener();
-  }
 
   public static addSelectionListener(listener: SelectionChangesListener) {
     this.selectionListener = listener;

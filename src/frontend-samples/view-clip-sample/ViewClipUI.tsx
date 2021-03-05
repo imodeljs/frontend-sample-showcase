@@ -8,10 +8,10 @@ import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import ViewClipApp from "./ViewClipApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 interface ViewClipUIProps {
   iModelName: string;
@@ -25,7 +25,7 @@ interface ViewClipUIState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
+export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
   /** Creates an Sample instance */
   constructor(props?: any) {
     super(props);
@@ -152,7 +152,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     return (
       <>
         <ControlPane instructions="Use the options below to control the view clip." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
       </>
     );
   }

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomEventHandlerTreeApp from "./CustomEventHandlerTreeApp";
+import CustomEventHandlerTreeUI from "./CustomEventHandlerTreeUI";
 
 export function getCustomEventHandlerTreeSpec(): SampleSpec {
   return ({
@@ -14,9 +14,9 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp"), entry: true },
       { name: "CustomEventHandlerTreeUI.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeUI"), entry: true },
+      { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp") },
     ],
-    setup: CustomEventHandlerTreeApp.setup.bind(CustomEventHandlerTreeApp),
+    sampleClass: CustomEventHandlerTreeUI,
   });
 }

@@ -7,7 +7,7 @@ const { Builder, By, until } = require("selenium-webdriver");
 require("chromedriver");
 
 const SHOWCASE_URL = "https://www.itwinjs.org/sample-showcase/frontend-sample-showcase/";
-const TIMEOUT = 40000;
+const TIMEOUT = 100000;
 
 (async function testSampleShowcase() {
 

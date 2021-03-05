@@ -4,18 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import SampleApp from "common/SampleApp";
-import * as React from "react";
 import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
 import {
   ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport,
 } from "@bentley/imodeljs-frontend";
-import RealityDataUI from "./RealityDataUI";
 
-export default class RealityDataApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <RealityDataUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
+export default class RealityDataApp {
 
   public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
     const style = viewPort.displayStyle.clone();

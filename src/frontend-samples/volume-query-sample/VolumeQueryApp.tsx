@@ -2,12 +2,9 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { EmphasizeElements, IModelApp, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@bentley/geometry-core";
-import SampleApp from "common/SampleApp";
-import VolumeQueryUI from "./VolumeQueryUI";
 import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
 import { BentleyStatus, Id64Array } from "@bentley/bentleyjs-core";
 import { PresentationLabelsProvider } from "@bentley/presentation-components";
@@ -32,10 +29,7 @@ export interface SpatialElement {
   className: string;
 }
 
-export class VolumeQueryApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <VolumeQueryUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
+export class VolumeQueryApp {
 
   /* Method for clearing all clips in the viewport */
   public static clearClips(vp: ScreenViewport) {

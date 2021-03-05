@@ -9,9 +9,9 @@ import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { Button, ButtonType, Input, Select, Toggle } from "@bentley/ui-core";
 import "./index.scss";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import ZoomToElementsApp from "./ZoomToElementsApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 /** React props */
 interface ZoomToProps {
@@ -150,7 +150,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
     return (
       <>
         <ControlPane instructions="Select one or more elements.  Click to capture their Ids into a list.  Set the options and then click Zoom to Elements." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
   }

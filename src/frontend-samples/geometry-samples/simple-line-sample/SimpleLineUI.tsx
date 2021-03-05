@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { BlankViewport } from "common/Geometry/BlankViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { NumericInput } from "@bentley/ui-core";
 import SimpleLineApp from "./SimpleLineApp";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { InteractivePointMarker } from "common/GeometryCommon/InteractivePointMarker";
+import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 
 interface SimpleLineState {
