@@ -127,7 +127,7 @@ function HtmlMarker(props: HtmlMarker.Props) {
       // pass arbitrary jsx without setting up your own htmlElement
       jsxElement={
         <HtmlMarkerWrapper>
-          <div className="html-markers_markerContent">
+          <div className="html-markers_marker-content">
             <ContentComponent {...contentProps} />
           </div>
         </HtmlMarkerWrapper>
