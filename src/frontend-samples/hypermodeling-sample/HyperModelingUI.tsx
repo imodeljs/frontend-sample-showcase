@@ -47,6 +47,10 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
     if (!this.state.previousView) {
       return (
         <>
+          <div className="sample-options-2col">
+            <span>Something</span>
+            <span>Ok</span>
+          </div>
         </>
       );
     }
@@ -61,10 +65,7 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
   public render() {
     return (
       <>
-        <ControlPane
-          instructions="Click on markers to toggle corresponding 2d section-cut graphics. Hover over markers to show toolbars allowing navigation to the corresponding drawing or sheet."
-          controls={this.getControls()} iModelSelector={this.props.iModelSelector}
-        />
+        <ControlPane instructions="Click on markers to toggle the corresponding 2d section-cut graphics." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
         <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );
