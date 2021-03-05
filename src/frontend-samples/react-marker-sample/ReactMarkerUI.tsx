@@ -8,11 +8,9 @@ import "common/samples-common.scss";
 import styles from "./ReactMarker.module.scss";
 import { Point3d } from "@bentley/geometry-core";
 import {
-  EventController,
   IModelApp,
   IModelConnection,
   ScreenViewport,
-  ToolAdmin,
 } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Select } from "@bentley/ui-core";
 import ToolsProvider, { ToolsContext } from "./ReactMarkerTools";
@@ -54,28 +52,6 @@ export default function ReactMarkerUI(props: {
       // Grab range of the contents of the view. We'll use this to position the first marker
       const range3d = viewport.view.computeFitRange();
       setPoints([range3d.center]);
-
-      // HACK: prevent mousedown event from being stolen on html decorations...
-      /*
-      viewport.setEventController(
-        new ((class extends (EventController as any) {
-          private addDomListeners(domType: string[], element: HTMLElement) {
-            const vp = this.vp;
-            const listener = (ev: Event) => {
-              if (!vp.decorationDiv.contains(ev.target as Element))
-                ev.preventDefault();
-              ToolAdmin.addEvent(ev, vp);
-            };
-            domType.forEach((type) => {
-              element.addEventListener(type, listener, false);
-              this._removals.push(() =>
-                element.removeEventListener(type, listener, false)
-              );
-            });
-          }
-        } as any) as typeof EventController)(viewport)
-      );
-      */
     });
   }, []);
 
