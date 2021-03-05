@@ -8,7 +8,7 @@ import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import { assert, Id64String } from "@bentley/bentleyjs-core";
 import { IModelApp, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import { } from "@bentley/hypermodeling-frontend";
+import { SectionMarker } from "@bentley/hypermodeling-frontend";
 import { Button, Toggle } from "@bentley/ui-core";
 import HyperModelingApp from "./HyperModelingApp";
 
