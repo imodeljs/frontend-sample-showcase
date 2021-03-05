@@ -5,7 +5,7 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { BeEvent, Id64String } from "@bentley/bentleyjs-core";
 import { ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import { HyperModeling, HyperModelingDecorator, SectionMarker, SectionMarkerHandler } from "@bentley/hypermodeling-frontend";
+import { HyperModeling, HyperModelingDecorator, SectionMarker, SectionMarkerConfig, SectionMarkerHandler } from "@bentley/hypermodeling-frontend";
 import "common/samples-common.scss";
 
 /** Dispatches an event when the selected section marker changes. */
@@ -37,6 +37,11 @@ class MarkerHandler extends SectionMarkerHandler {
   public reset() {
     this._activeMarker = undefined;
     this.onActiveMarkerChanged.clear();
+  }
+
+  public isMarkerVisible(marker: SectionMarker, decorator: HyperModelingDecorator, config: SectionMarkerConfig): boolean {
+    // One of the section drawings in the source model is bad - hide it.
+    return marker.state.id !== "0x170c" && super.isMarkerVisible(marker, decorator, config);
   }
 }
 
