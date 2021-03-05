@@ -43,6 +43,7 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
       this.setState({ viewport });
       await HyperModelingApp.enableHyperModeling(viewport);
       HyperModelingApp.markerHandler.onActiveMarkerChanged.addListener((activeMarker) => this.setState({ activeMarker }));
+      await HyperModelingApp.activateMarkerByName(viewport, "Section-Left");
     });
   };
 
@@ -94,7 +95,7 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
     if (this.state.previous)
       return "Click the button to return to the 3d view.";
     else
-      return "Click on a marker to apply the section.";
+      return "Click on a marker to toggle the section.";
   }
 
   private getControls() {

@@ -101,6 +101,19 @@ export default class HyperModelingApp {
     this.getDecorator(viewport)?.setActiveMarker(undefined);
   }
 
+  public static async activateMarkerByName(viewport: ScreenViewport, name: string) {
+    const decorator = this.getDecorator(viewport);
+    if (!decorator)
+      return;
+
+    for (const marker of decorator.markers.markers) {
+      if (marker.state.userLabel === name) {
+        decorator.setActiveMarker(marker);
+        break;
+      }
+    }
+  }
+
   /** Toggle whether 2d section graphics and sheet annotations are displayed in the 3d view. */
   public static toggle2dGraphics(display2d: boolean) {
     HyperModeling.updateConfiguration({
