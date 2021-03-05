@@ -4,10 +4,7 @@
   background-color: white;
   border-radius: 5px;
 
-  pointer-events: all;
-  * {
-    pointer-events: all;
-  }
+  pointer-events: auto;
 }
 
 .sampleOpts2Col {

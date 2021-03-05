@@ -11,6 +11,7 @@ import {
 } from "@bentley/imodel-react-hooks";
 import styles from "./ReactMarker.module.scss";
 import { HtmlContentMode } from "./ReactMarkerUI";
+import { HtmlMarkerWrapper, clamp } from "./utils";
 
 declare namespace ReactMarker {
   export interface Props {
@@ -19,16 +20,12 @@ declare namespace ReactMarker {
   }
 }
 
-const minWidth = 320;
-const minHeight = 180;
+const minWidth = 320 / 3;
+const minHeight = 180 / 3;
 const aspectRatio = minWidth / minHeight;
 const maxHeight = 360;
 const minCameraDistanceScale = 50;
 const maxCameraDistanceScale = 500;
-
-function clamp(val: number, min: number, max: number) {
-  return Math.min(max, Math.max(val, min));
-}
 
 interface ContentProps {
   width: number;
@@ -125,32 +122,11 @@ function ReactMarker(props: ReactMarker.Props) {
       worldLocation={props.worldLocation}
       // pass arbitrary jsx without setting up your own htmlElement
       jsxElement={
-        <div
-          onMouseDown={(e) => e.stopPropagation()}
-          onMouseUp={(e) => e.stopPropagation()}
-          onMouseMove={(e) => e.stopPropagation()}
-          onMouseOver={(e) => e.stopPropagation()}
-          onMouseOut={(e) => e.stopPropagation()}
-          onWheel={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          onTouchEnd={(e) => e.stopPropagation()}
-          onTouchCancel={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
-          onMouseDownCapture={(e) => e.stopPropagation()}
-          onMouseUpCapture={(e) => e.stopPropagation()}
-          onMouseMoveCapture={(e) => e.stopPropagation()}
-          onMouseOverCapture={(e) => e.stopPropagation()}
-          onMouseOutCapture={(e) => e.stopPropagation()}
-          onWheelCapture={(e) => e.stopPropagation()}
-          onTouchStartCapture={(e) => e.stopPropagation()}
-          onTouchEndCapture={(e) => e.stopPropagation()}
-          onTouchCancelCapture={(e) => e.stopPropagation()}
-          onTouchMoveCapture={(e) => e.stopPropagation()}
-        >
+        <HtmlMarkerWrapper>
           <div className={styles.markerContent}>
             <ContentComponent {...contentProps} />
           </div>
-        </div>
+        </HtmlMarkerWrapper>
       }
       addDecoration={function (this: Marker, ctx: DecorateContext) {
         const cameraLoc = ctx.screenViewport.getFrustum().getEyePoint();
