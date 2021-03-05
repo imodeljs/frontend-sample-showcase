@@ -135,9 +135,9 @@ export default function ReactMarkerUI(props: {
         onIModelReady={onIModelReady}
       />
       <IModelJsViewProvider>
-        {points.map((p, i) => (
+        {points.map((p) => (
           <ReactMarker
-            key={i}
+            key={`${p.x}_${p.y}_${p.z}`}
             worldLocation={p}
             htmlContentMode={htmlContentMode}
           />
