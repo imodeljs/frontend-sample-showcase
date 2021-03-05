@@ -14,10 +14,15 @@ import HyperModelingApp from "./HyperModelingApp";
 
 interface HyperModelingState {
   viewport?: ScreenViewport;
+  /** Whether to display 2d section graphics and sheet annotations in the 3d view. */
   display2dGraphics: boolean;
+  /** The selected section marker. */
   activeMarker?: SectionMarker;
+  /** The 3d context that was active before switching to a 2d view. */
   previous?: {
+    /** The 3d view. */
     view: ViewState;
+    /** The Id of the previously-active section marker. */
     markerId: Id64String;
   };
 }

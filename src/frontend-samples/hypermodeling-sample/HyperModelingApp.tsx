@@ -8,8 +8,10 @@ import { ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
 import { HyperModeling, HyperModelingDecorator, SectionMarker, SectionMarkerHandler } from "@bentley/hypermodeling-frontend";
 import "common/samples-common.scss";
 
+/** Dispatches an event when the selected section marker changes. */
 class MarkerHandler extends SectionMarkerHandler {
   private _activeMarker?: SectionMarker;
+
   public readonly onActiveMarkerChanged = new BeEvent<(activeMarker: SectionMarker | undefined) => void>();
 
   public async activateMarker(marker: SectionMarker, decorator: HyperModelingDecorator): Promise<boolean> {
@@ -41,11 +43,17 @@ class MarkerHandler extends SectionMarkerHandler {
 export default class HyperModelingApp {
   public static markerHandler = new MarkerHandler();
 
+  /** Turn on hyper-modeling for the viewport. */
   public static async enableHyperModeling(viewport: ScreenViewport) {
+    // The hypermodeling package must be initialized before first use. Often applications will do so just after calling `IModelApp.startup`.
+    // It's fine to call it more than once.
     await HyperModeling.initialize({ markerHandler: this.markerHandler });
+
+    // Turn on hypermodeling for the viewport.
     await HyperModeling.startOrStop(viewport, true);
   }
 
+  /** Turn off hyper-modeling for the viewport. */
   public static async disableHyperModeling(viewport: ScreenViewport) {
     this.markerHandler.reset();
     await HyperModeling.startOrStop(viewport, false);
@@ -55,6 +63,7 @@ export default class HyperModelingApp {
     return HyperModelingDecorator.getForViewport(viewport);
   }
 
+  /** Switch to the sheet or drawing view associated with the section marker. */
   public static async switchTo2d(viewport: ScreenViewport, marker: SectionMarker, which: "drawing" | "sheet"): Promise<boolean> {
     const decorator = this.getDecorator(viewport);
     if (!decorator)
@@ -68,6 +77,7 @@ export default class HyperModelingApp {
     return true;
   }
 
+  /** Restore a 3d view and activate the specified section marker. */
   public static async switchTo3d(viewport: ScreenViewport, view: ViewState, activeMarkerId: Id64String): Promise<void> {
     viewport.changeView(view);
     const decorator = await HyperModeling.startOrStop(viewport, true);
@@ -86,6 +96,7 @@ export default class HyperModelingApp {
     this.getDecorator(viewport)?.setActiveMarker(undefined);
   }
 
+  /** Toggle whether 2d section graphics and sheet annotations are displayed in the 3d view. */
   public static toggle2dGraphics(display2d: boolean) {
     HyperModeling.updateConfiguration({
       graphics: {
