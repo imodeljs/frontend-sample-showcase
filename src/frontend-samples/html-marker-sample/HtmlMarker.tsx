@@ -59,7 +59,7 @@ function FormContent(_props: ContentProps) {
 
   return (
     <form
-      className="html-marekrs_form"
+      className="html-markers_form"
       // prevent default behavior (browser refresh + request send)
       onSubmit={(e) => e.preventDefault()}
     >
@@ -85,7 +85,7 @@ function FormContent(_props: ContentProps) {
           ))}
         </select>
       </label>
-      <div className="html_markers-center">
+      <div className="html-markers_center">
         <input type="submit" value="Submit" />
       </div>
     </form>
@@ -127,7 +127,7 @@ function HtmlMarker(props: HtmlMarker.Props) {
       // pass arbitrary jsx without setting up your own htmlElement
       jsxElement={
         <HtmlMarkerWrapper>
-          <div className="html_markers-markerContent">
+          <div className="html-markers_markerContent">
             <ContentComponent {...contentProps} />
           </div>
         </HtmlMarkerWrapper>

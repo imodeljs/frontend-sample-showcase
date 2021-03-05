@@ -58,7 +58,7 @@ export default function HtmlMarkerUI(props: {
   /** the sample's instructions and controls */
   const controls = (
     <>
-      <div className="html_markers-sample-opts-2-col">
+      <div className="html-markers_sample-opts-2-col">
         <span>HTML Content Type</span>
         <Select
           value={htmlContentMode}
@@ -73,7 +73,7 @@ export default function HtmlMarkerUI(props: {
         />
       </div>
       <hr></hr>
-      <div className="html_markers-sample-opts-2-col">
+      <div className="html-markers_sample-opts-2-col">
         <Button
           buttonType={ButtonType.Blue}
           onClick={() => setPoints([])}
