@@ -152,11 +152,11 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
   private getControls(): React.ReactNode {
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
-        <span title={"Display 3d terrain"}>Terrain</span>
+        <span title={"Display 3d terrain from Cesium World Terrain Service"}>Terrain</span>
         <Toggle isOn={this.state.terrain} onChange={(terrain) => this.setState({ terrain })} />
-        <span title={"Include labels in the map imagery"}>Map Labels</span>
+        <span title={"Include labels in the Bing map imagery"}>Map Labels</span>
         <Toggle isOn={this.state.mapLabels} onChange={(mapLabels) => this.setState({ mapLabels })} />
-        <span title={"Display OpenStreetMap building meshes"}>Buildings</span>
+        <span title={"Display building meshes from Open Street Map"}>Buildings</span>
         <Toggle isOn={this.state.buildings} onChange={(buildings) => this.setState({ buildings })} />
         <span title={"Display the edges of the building meshes"}>Building Edges</span>
         <Toggle isOn={this.state.buildingEdges} onChange={(buildingEdges) => this.setState({ buildingEdges})} disabled={!this.state.buildings} />
