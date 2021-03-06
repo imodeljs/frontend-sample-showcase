@@ -81,7 +81,7 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
         styles: {
           backgroundMap: {
             applyTerrain: true,
-            terrainSettings: {heightOriginMode: 0}
+            terrainSettings: {heightOriginMode: 0},
           },
           environment: {
             ground: {
@@ -92,15 +92,15 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
               groundColor: 8228728,
               nadirColor: 3880,
               skyColor: 16764303,
-              zenithColor: 16741686
-            }
+              zenithColor: 16741686,
+            },
           },
           viewflags: {
             backgroundMap: true,
             grid: false,
             renderMode: 6,
-            visEdges: true
-          }
+            visEdges: true,
+          },
         },
       },
     };
