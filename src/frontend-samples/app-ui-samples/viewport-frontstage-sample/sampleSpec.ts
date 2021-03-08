@@ -1,25 +1,21 @@
+
 /*---------------------------------------------------------------------------------------------
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
-
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import ToolbarButtonSample from "./ToolbarButtonApp";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
-export function getToolbarButtonSample(): SampleSpec {
+export function getViewportFrontstageSample(): SampleSpec {
   return ({
-    name: "toolbar-button-sample",
-    label: "Add Toolbar Button (Dynamically)",
-    image: "toolbar-button-thumbnail.png",
+    name: "viewport-frontstage-sample",
+    label: "Viewport Frontstage",
+    image: "viewport-frontstage-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi"), entry: true },
-      { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp") },
+      { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage"), entry: true },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    sampleClass: ToolbarButtonSample,
-    type: "ToolbarButtonSample",
+    type: "ViewportFrontstageSample",
   });
 }

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import SimpleAnimatedUI from "./SimpleAnimatedUI";
 
 export function getSimpleAnimatedSpec(): SampleSpec {
   return ({
@@ -18,7 +17,6 @@ export function getSimpleAnimatedSpec(): SampleSpec {
       { name: "SimpleAnimatedApp.tsx", import: import("!!raw-loader!./SimpleAnimatedApp") },
       { name: "ConwaysGameOfLife.ts", import: import("!!raw-loader!./ConwaysGameOfLife") },
     ],
-    sampleClass: SimpleAnimatedUI,
     type: "SimpleAnimatedUI",
   });
 }

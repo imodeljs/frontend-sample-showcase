@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import SliderList from "./Slider";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getSliderSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getSliderSpec(): SampleSpec {
     files: () => [
       { name: "Slider.tsx", import: import("!!raw-loader!./Slider"), entry: true },
     ],
-    sampleClass: SliderList,
     type: "SliderList",
   });
 }

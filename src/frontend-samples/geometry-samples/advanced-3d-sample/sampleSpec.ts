@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import Advanced3dUI from "./Advanced3dUI";
 
 export function getAdvanced3dSpec(): SampleSpec {
   return ({
@@ -18,7 +17,6 @@ export function getAdvanced3dSpec(): SampleSpec {
       { name: "Advanced3dApp.tsx", import: import("!!raw-loader!./Advanced3dApp") },
 
     ],
-    sampleClass: Advanced3dUI,
     type: "Advanced3dUI",
   });
 }

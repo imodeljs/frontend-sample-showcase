@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import LoadingList from "./Loading";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getLoadingSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getLoadingSpec(): SampleSpec {
     files: () => [
       { name: "Loading.tsx", import: import("!!raw-loader!./Loading"), entry: true },
     ],
-    sampleClass: LoadingList,
     type: "LoadingList",
   });
 }

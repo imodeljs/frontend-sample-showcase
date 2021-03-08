@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import TilesList from "./Tiles";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getTilesSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getTilesSpec(): SampleSpec {
     files: () => [
       { name: "Tiles.tsx", import: import("!!raw-loader!./Tiles"), entry: true },
     ],
-    sampleClass: TilesList,
     type: "TilesList",
   });
 }

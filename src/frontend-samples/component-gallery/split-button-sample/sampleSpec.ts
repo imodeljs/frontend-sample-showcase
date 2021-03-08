@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import SplitButtonList from "./SplitButton";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getSplitButtonSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getSplitButtonSpec(): SampleSpec {
     files: () => [
       { name: "SplitButton.tsx", import: import("!!raw-loader!./SplitButton"), entry: true },
     ],
-    sampleClass: SplitButtonList,
     type: "SplitButtonList",
   });
 }

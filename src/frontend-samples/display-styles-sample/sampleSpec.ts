@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import DisplayStylesUI from "./DisplayStylesUI";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
 
@@ -19,7 +18,6 @@ export function getDisplayStylesSpec(): SampleSpec {
       { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp") },
       { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
     ],
-    sampleClass: DisplayStylesUI,
     type: "DisplayStylesUI",
   });
 }

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import CheckListBoxList from "./CheckListBox";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getCheckListBoxSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getCheckListBoxSpec(): SampleSpec {
     files: () => [
       { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },
     ],
-    sampleClass: CheckListBoxList,
     type: "CheckListBoxList",
   });
 }

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import Simple3dUI from "./Simple3dUI";
 
 export function getSimple3dSpec(): SampleSpec {
   return ({
@@ -17,7 +16,6 @@ export function getSimple3dSpec(): SampleSpec {
       { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI"), entry: true },
       { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp") },
     ],
-    sampleClass: Simple3dUI,
     type: "Simple3dUI",
   });
 }

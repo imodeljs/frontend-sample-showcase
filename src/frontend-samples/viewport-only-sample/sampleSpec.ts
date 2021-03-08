@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import ViewportOnlyUI from "./ViewportOnlyUI";
 
 export function getViewportOnlySpec(): SampleSpec {
   return ({
@@ -15,7 +14,6 @@ export function getViewportOnlySpec(): SampleSpec {
     files: () => [
       { name: "ViewportOnlyUI.tsx", import: import("!!raw-loader!./ViewportOnlyUI"), entry: true },
     ],
-    sampleClass: ViewportOnlyUI,
     type: "ViewportOnlyUI",
   });
 }

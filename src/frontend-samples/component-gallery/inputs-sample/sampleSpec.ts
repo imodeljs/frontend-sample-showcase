@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import InputsList from "./Inputs";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getInputsSpec(): SampleSpec {
@@ -18,7 +17,6 @@ export function getInputsSpec(): SampleSpec {
       { name: "Inputs.tsx", import: import("!!raw-loader!./Inputs"), entry: true },
       { name: "SampleImageCheckBox.tsx", import: import("!!raw-loader!./SampleImageCheckBox") },
     ],
-    sampleClass: InputsList,
     type: "InputsList",
   });
 }

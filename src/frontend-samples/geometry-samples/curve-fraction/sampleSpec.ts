@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import CurveFractionUI from "./CurveFractionUI";
 
 export function getCurveFractionSpec(): SampleSpec {
   return ({
@@ -19,7 +18,6 @@ export function getCurveFractionSpec(): SampleSpec {
       { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!common/Geometry/SampleCurveFactory") },
       { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!common/Geometry/InteractivePointMarker") },
     ],
-    sampleClass: CurveFractionUI,
     type: "CurveFractionUI",
   });
 }

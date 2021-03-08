@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import ShadowStudyUI from "./ShadowStudyUI";
 
 export function getShadowStudySpec(): SampleSpec {
   return ({
@@ -17,7 +16,6 @@ export function getShadowStudySpec(): SampleSpec {
       { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp") },
 
     ],
-    sampleClass: ShadowStudyUI,
     type: "ShadowStudyUI",
   });
 }

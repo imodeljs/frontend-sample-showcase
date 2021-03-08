@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import CameraPathUI from "./CameraPathUI";
 
 export function getViewCameraSpec(): SampleSpec {
   return ({
@@ -19,7 +18,6 @@ export function getViewCameraSpec(): SampleSpec {
       { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
 
     ],
-    sampleClass: CameraPathUI,
     type: "CameraPathUI",
   });
 }

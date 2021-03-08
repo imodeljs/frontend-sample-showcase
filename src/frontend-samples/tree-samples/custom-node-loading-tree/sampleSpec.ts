@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import CustomNodeLoadingTreeUI from "./CustomNodeLoadingTreeUI";
 
 export function getCustomNodeLoadingTreeSpec(): SampleSpec {
   return ({
@@ -16,7 +15,6 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
       { name: "CustomNodeLoadingTreeUI.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
       { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp") },
     ],
-    sampleClass: CustomNodeLoadingTreeUI,
     type: "CustomNodeLoadingTreeUI",
   });
 }

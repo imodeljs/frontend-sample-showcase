@@ -3,22 +3,20 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import RealityDataUI from "./RealityDataUI";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
 
-export function getRealityDataSpec(): SampleSpec {
+export function getCrossProbingSpec(): SampleSpec {
   return ({
-    name: "reality-data-sample",
-    label: "Reality Data",
-    image: "reality-data-thumbnail.png",
+    name: "cross-probing-sample",
+    label: "Cross-Probing",
+    image: "cross-probing-thumbnail.png",
+    customModelList: [SampleIModels.BayTown],
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },
-      { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
+      { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI"), entry: true },
+      { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp") },
     ],
-    customModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
-    sampleClass: RealityDataUI,
-    type: "RealityDataUI",
+    type: "CrossProbingUI",
   });
 }

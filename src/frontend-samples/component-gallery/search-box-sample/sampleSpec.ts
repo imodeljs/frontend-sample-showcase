@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import SearchBoxList from "./SearchBox";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getSearchBoxSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getSearchBoxSpec(): SampleSpec {
     files: () => [
       { name: "SearchBox.tsx", import: import("!!raw-loader!./SearchBox"), entry: true },
     ],
-    sampleClass: SearchBoxList,
     type: "SearchBoxList",
   });
 }

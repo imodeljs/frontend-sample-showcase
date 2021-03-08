@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import PresentationTreeUI from "./PresentationTreeUI";
 
 export function getPresentationTreeSpec(): SampleSpec {
   return ({
@@ -16,7 +15,6 @@ export function getPresentationTreeSpec(): SampleSpec {
       { name: "PresentationTreeUI.tsx", import: import("!!raw-loader!./PresentationTreeUI"), entry: true },
       { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp") },
     ],
-    sampleClass: PresentationTreeUI,
     type: "PresentationTreeUI",
   });
 }

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import ButtonList from "./Button";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getButtonSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getButtonSpec(): SampleSpec {
     files: () => [
       { name: "Button.tsx", import: import("!!raw-loader!./Button"), entry: true },
     ],
-    sampleClass: ButtonList,
     type: "ButtonList",
   });
 }

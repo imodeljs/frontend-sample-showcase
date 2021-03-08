@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import ZoomToElementsUI from "./ZoomToElementsUI";
 
 export function getZoomToElementsSpec(): SampleSpec {
   return ({
@@ -19,7 +18,6 @@ export function getZoomToElementsSpec(): SampleSpec {
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
-    sampleClass: ZoomToElementsUI,
     type: "ZoomToElementsUI",
   });
 }

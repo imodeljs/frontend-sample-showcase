@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import MultiViewportUI from "./MultiViewportUI";
 
 export function getMultiViewportSpec(): SampleSpec {
   return ({
@@ -17,7 +16,6 @@ export function getMultiViewportSpec(): SampleSpec {
       { name: "MultiViewportApp.tsx", import: import("!!raw-loader!./MultiViewportApp") },
       { name: "multi-view-sample.scss", import: import("!!raw-loader!./multi-view-sample.scss") },
     ],
-    sampleClass: MultiViewportUI,
     type: "MultiViewportUI",
   });
 }

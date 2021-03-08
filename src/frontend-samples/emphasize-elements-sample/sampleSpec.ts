@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import EmphasizeElementsUI from "./EmphasizeElementsUI";
 
 export function getEmphasizeElementsSpec(): SampleSpec {
   return ({
@@ -19,7 +18,6 @@ export function getEmphasizeElementsSpec(): SampleSpec {
 
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    sampleClass: EmphasizeElementsUI,
     type: "EmphasizeElementsUI",
   });
 }

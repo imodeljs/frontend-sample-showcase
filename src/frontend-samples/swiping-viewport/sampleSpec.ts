@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import SwipingComparisonUI from "./SwipingComparisonUI";
 
 export function getSwipingComparisonSpec(): SampleSpec {
   return ({
@@ -20,7 +19,6 @@ export function getSwipingComparisonSpec(): SampleSpec {
       { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
       { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
     ],
-    sampleClass: SwipingComparisonUI,
     type: "SwipingComparisonUI",
   });
 }

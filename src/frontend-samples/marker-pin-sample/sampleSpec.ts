@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import MarkerPinUI from "./MarkerPinUI";
 
 export function getMarkerPinSpec(): SampleSpec {
   return ({
@@ -19,7 +18,6 @@ export function getMarkerPinSpec(): SampleSpec {
       { name: "PlaceMarkerTool.ts", import: import("!!raw-loader!./PlaceMarkerTool") },
       { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
     ],
-    sampleClass: MarkerPinUI,
     type: "MarkerPinUI",
   });
 }

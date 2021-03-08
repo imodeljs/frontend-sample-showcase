@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import ExplodeUI from "./ExplodeUI";
 
 export function getExplodeSpec(): SampleSpec {
   return ({
@@ -19,7 +18,6 @@ export function getExplodeSpec(): SampleSpec {
       { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp") },
       { name: "ExplodeTile.ts", import: import("!!raw-loader!./ExplodeTile") },
     ],
-    sampleClass: ExplodeUI,
     type: "ExplodeUI",
   });
 }

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import CustomEventHandlerTreeUI from "./CustomEventHandlerTreeUI";
 
 export function getCustomEventHandlerTreeSpec(): SampleSpec {
   return ({
@@ -17,7 +16,6 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
       { name: "CustomEventHandlerTreeUI.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeUI"), entry: true },
       { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp") },
     ],
-    sampleClass: CustomEventHandlerTreeUI,
     type: "CustomEventHandlerTreeUI",
   });
 }

@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import VolumeQueryUI from "./VolumeQueryUI";
 
 export function getVolumeQuerySpec(): SampleSpec {
   return ({
@@ -25,7 +24,6 @@ export function getVolumeQuerySpec(): SampleSpec {
       SampleIModels.Stadium,
       SampleIModels.MetroStation,
     ],
-    sampleClass: VolumeQueryUI,
     type: "VolumeQueryUI",
   });
 }

@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import TooltipCustomizeUI from "./TooltipCustomizeUI";
 
 export function getTooltipCustomizeSpec(): SampleSpec {
   return ({
@@ -16,7 +15,6 @@ export function getTooltipCustomizeSpec(): SampleSpec {
       { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI"), entry: true },
       { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp") },
     ],
-    sampleClass: TooltipCustomizeUI,
     type: "TooltipCustomizeUI",
   });
 }

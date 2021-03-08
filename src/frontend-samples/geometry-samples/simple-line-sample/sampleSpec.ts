@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import SimpleLineUI from "./SimpleLineUI";
 
 export function getSimpleLineSpec(): SampleSpec {
   return ({
@@ -17,7 +16,6 @@ export function getSimpleLineSpec(): SampleSpec {
       { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI"), entry: true },
       { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp") },
     ],
-    sampleClass: SimpleLineUI,
     type: "SimpleLineUI",
   });
 }

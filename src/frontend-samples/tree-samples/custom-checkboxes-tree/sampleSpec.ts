@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import CustomCheckboxesTreeUI from "./CustomCheckboxesTreeUI";
 
 export function getCustomCheckboxesTreeSpec(): SampleSpec {
   return ({
@@ -17,7 +16,6 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
       { name: "CustomCheckboxesTreeUI.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeUI"), entry: true },
       { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp") },
     ],
-    sampleClass: CustomCheckboxesTreeUI,
     type: "CustomCheckboxesTreeUI",
   });
 }

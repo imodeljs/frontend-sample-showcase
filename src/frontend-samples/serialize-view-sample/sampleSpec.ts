@@ -3,7 +3,6 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import SerializeViewUI from "./SerializeViewUI";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
 
@@ -19,7 +18,6 @@ export function getSerializeViewSpec(): SampleSpec {
       { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp") },
       { name: "SampleViewStates.ts", import: import("!!raw-loader!./SampleViewStates") },
     ],
-    sampleClass: SerializeViewUI,
     type: "SerializeViewUI",
   };
 }

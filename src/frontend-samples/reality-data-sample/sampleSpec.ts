@@ -6,18 +6,17 @@
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
 
-export function getViewerOnly2dSpec(): SampleSpec {
+export function getRealityDataSpec(): SampleSpec {
   return ({
-    name: "viewer-only-2d-sample",
-    label: "2d",
-    image: "viewer-only-2d-thumbnail.png",
+    name: "reality-data-sample",
+    label: "Reality Data",
+    image: "reality-data-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI"), entry: true },
-      { name: "ViewerOnly2dApp.tsx", import: import("!!raw-loader!./ViewerOnly2dApp") },
-      { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
+      { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },
+      { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
     ],
-    customModelList: [SampleIModels.House, SampleIModels.MetroStation],
-    type: "ViewerOnly2dUI",
+    customModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
+    type: "RealityDataUI",
   });
 }

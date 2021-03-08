@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import ViewAttributesUI from "./ViewAttributesUI";
 
 export function getViewAttributesSpec(): SampleSpec {
   return ({
@@ -16,7 +15,6 @@ export function getViewAttributesSpec(): SampleSpec {
       { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI"), entry: true },
       { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp") },
     ],
-    sampleClass: ViewAttributesUI,
     type: "ViewAttributesUI",
   });
 }

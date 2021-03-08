@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import ReadSettingsUI from "./ReadSettingsUI";
 
 export function getReadSettingsSpec(): SampleSpec {
   return ({
@@ -19,7 +18,6 @@ export function getReadSettingsSpec(): SampleSpec {
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown],
-    sampleClass: ReadSettingsUI,
     type: "ReadSettingsUI",
   });
 }

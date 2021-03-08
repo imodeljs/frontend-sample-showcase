@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import CustomWebfontIconsTreeUI from "./CustomWebfontIconsTreeUI";
 
 export function getCustomWebfontIconsTreeSpec(): SampleSpec {
   return ({
@@ -16,7 +15,6 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
       { name: "CustomWebfontIconsTreeUI.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeUI"), entry: true },
       { name: "CustomWebfontIconsTreeApp.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeApp") },
     ],
-    sampleClass: CustomWebfontIconsTreeUI,
     type: "CustomWebfontIconsTreeUI",
   });
 }

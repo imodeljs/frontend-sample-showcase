@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import ExpandableListList from "./ExpandableList";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getExpandableListSpec(): SampleSpec {
@@ -18,7 +17,6 @@ export function getExpandableListSpec(): SampleSpec {
       { name: "ExpandableList.tsx", import: import("!!raw-loader!./ExpandableList"), entry: true },
       { name: "SampleExpandableBlock.tsx", import: import("!!raw-loader!./SampleExpandableBlock") },
     ],
-    sampleClass: ExpandableListList,
     type: "ExpandableListList",
   });
 }

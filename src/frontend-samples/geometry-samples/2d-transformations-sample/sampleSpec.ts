@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import Transformations2dUI from "./2dTransformationsUI";
 
 export function get2dTransformationsSpec(): SampleSpec {
   return ({
@@ -18,7 +17,6 @@ export function get2dTransformationsSpec(): SampleSpec {
       { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp") },
 
     ],
-    sampleClass: Transformations2dUI,
     type: "Transformations2dUI",
   });
 }

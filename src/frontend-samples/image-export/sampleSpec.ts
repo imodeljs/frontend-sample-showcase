@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import ImageExportUI from "./ImageExportUI";
 
 export function getImageExportSpec(): SampleSpec {
   return ({
@@ -16,7 +15,6 @@ export function getImageExportSpec(): SampleSpec {
       { name: "ImageExportUI.tsx", import: import("!!raw-loader!./ImageExportUI"), entry: true },
       { name: "ImageExportApp.tsx", import: import("!!raw-loader!./ImageExportApp") },
     ],
-    sampleClass: ImageExportUI,
     type: "ImageExportUI",
   });
 }

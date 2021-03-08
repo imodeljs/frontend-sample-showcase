@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import ViewClipUI from "./ViewClipUI";
 
 export function getViewClipSpec(): SampleSpec {
   return ({
@@ -17,7 +16,6 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
       { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
     ],
-    sampleClass: ViewClipUI,
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     type: "ViewClipUI",
   });

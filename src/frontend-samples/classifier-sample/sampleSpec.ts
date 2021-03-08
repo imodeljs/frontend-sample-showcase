@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import ClassifierUI from "./ClassifierUI";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
 export function getClassifierSpec(): SampleSpec {
@@ -19,7 +18,6 @@ export function getClassifierSpec(): SampleSpec {
       { name: "ClassifierProperties.tsx", import: import("!!raw-loader!./ClassifierProperties") },
     ],
     customModelList: [SampleIModels.MetroStation],
-    sampleClass: ClassifierUI,
     type: "ClassifierUI",
   });
 }

@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
 export function getThematicDisplaySpec(): SampleSpec {
   return ({
@@ -18,7 +17,6 @@ export function getThematicDisplaySpec(): SampleSpec {
       { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp") },
     ],
     customModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
-    sampleClass: ThematicDisplaySampleUI,
     type: "ThematicDisplaySampleUI",
   });
 }

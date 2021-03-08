@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import ScreenSpaceEffectsUI from "./ScreenSpaceEffectsUI";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
 
@@ -20,7 +19,6 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
 
       { name: "Effects.ts", import: import("!!raw-loader!./Effects") },
     ],
-    sampleClass: ScreenSpaceEffectsUI,
     type: "ScreenSpaceEffectsUI",
   });
 }

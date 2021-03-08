@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import TableNodeTreeUI from "./CustomTableNodeTreeUI";
 
 export function getCustomTableNodeTreeSpec(): SampleSpec {
   return ({
@@ -18,7 +17,6 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
       { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
-    sampleClass: TableNodeTreeUI,
     type: "TableNodeTreeUI",
   });
 }

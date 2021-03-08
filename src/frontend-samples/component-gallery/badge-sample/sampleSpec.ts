@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import BadgeList from "./Badge";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getBadgeSpec(): SampleSpec {
@@ -17,7 +16,6 @@ export function getBadgeSpec(): SampleSpec {
     files: () => [
       { name: "Badge.tsx", import: import("!!raw-loader!./Badge"), entry: true },
     ],
-    sampleClass: BadgeList,
     type: "BadgeList",
   });
 }
