@@ -20,7 +20,7 @@ interface SampleSpec {
   /** A list of files that will be imported by the code editor of the showcase. */
   files: IInternalFile[];
   /** The list of models this sample can use, in the case that the sample cannot use all available models */
-  customModelList?: string[];
+  modelList?: string[];
   /** The class name for the sample */
   sampleClass: typeof React.Component;
 ```
@@ -84,7 +84,7 @@ Since I would like this file to be editable, my SampleSpec should reflect it:
 
 ```ts
 import MySampleApp from "./MySampleApp";
-export function getMySampleAppSampleSpec(): SampleSpec {
+export function getMySampleAppSampleSpec(): SampleMetadata {
   return ({
     [...]
     files: [

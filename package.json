@@ -5,6 +5,7 @@
   "dependencies": {
     "@bentley/bentleyjs-core": "2.12.1",
     "@bentley/context-registry-client": "2.12.1",
+    "@bentley/frontend-application-insights-client": "^2.12.2",
     "@bentley/frontend-authorization-client": "2.12.1",
     "@bentley/geometry-core": "2.12.1",
     "@bentley/icons-generic-webfont": "^1.0.15",
@@ -15,6 +16,7 @@
     "@bentley/imodeljs-markup": "2.12.1",
     "@bentley/imodeljs-quantity": "2.12.1",
     "@bentley/itwin-client": "2.12.1",
+    "@bentley/itwin-viewer-react": "^6.1.0",
     "@bentley/monaco-editor": "^5.1.0",
     "@bentley/orbitgt-core": "2.12.1",
     "@bentley/presentation-common": "2.12.1",
