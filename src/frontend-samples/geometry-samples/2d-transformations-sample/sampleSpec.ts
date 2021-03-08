@@ -13,9 +13,8 @@ export function get2dTransformationsSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI"), entry: true },
       { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp") },
-
+      { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI"), entry: true },
     ],
     sampleClass: Transformations2dUI,
   });
