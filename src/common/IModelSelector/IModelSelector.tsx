@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import { Select } from "@bentley/ui-core";
+import React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
+import { Select } from "@bentley/ui-core/lib/ui-core/select/Select";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {

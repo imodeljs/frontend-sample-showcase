@@ -8,16 +8,21 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import { App } from "./Components/App/App";
 import * as serviceWorker from "./serviceWorker";
-import { SampleBaseApp } from "./SampleBaseApp";
+// import { SampleBaseApp } from "./SampleBaseApp";
 
-(async () => {
-  await SampleBaseApp.startup();
+// (async () => {
+//   await SampleBaseApp.startup();
 
-  ReactDOM.render(
-    <App />,
-    document.getElementById("root"),
-  );
-})();
+//   ReactDOM.render(
+//     <App />,
+//     document.getElementById("root"),
+//   );
+// })();
+
+ReactDOM.render(
+  <App />,
+  document.getElementById("root"),
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

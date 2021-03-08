@@ -26,3 +26,5 @@ export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
     </EditorEnvironmentContextProvider>
   )
 }
+
+export default SampleEditorContext;

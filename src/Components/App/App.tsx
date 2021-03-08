@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "./App.css";
-import { SampleShowcase } from "../SampleShowcase/SampleShowcase";
+//import { SampleShowcase } from "../SampleShowcase/SampleShowcase";
+import { Showcase } from "Components/SampleShowcase/Showcase";
 
 export class App extends React.Component<{}, {}> {
 
@@ -16,7 +17,7 @@ export class App extends React.Component<{}, {}> {
 
   public render() {
     return (
-      <SampleShowcase />
+      <Showcase />
     );
   }
 }

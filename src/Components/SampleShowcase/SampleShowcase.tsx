@@ -17,7 +17,7 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { Pane, SplitScreen } from "@bentley/monaco-editor";
 import { SampleSpec } from "SampleSpec";
-import { SampleEditorContext } from "Components/SampleEditor/SampleEditorContext";
+import SampleEditorContext from "Components/SampleEditor/SampleEditorContext";
 // cSpell:ignore imodels
 
 interface ShowcaseState {
