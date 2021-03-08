@@ -91,7 +91,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     this.props.onChange(names.groupName, names.sampleName, false);
   }
 
-  private createElementsForSample(sample: SampleSpec, groupName: string) {
+  private createElementsForSample(sample: SampleSpec, groupName: string, index: number) {
     const isChecked = this.props.selected === sample.name;
     const idString = this._idFromNames(sample.name, groupName);
     const image = sample.image;
@@ -100,7 +100,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     const image2x = `${imageBase}@2x.${imageExt} 2x`;
 
     return (
-      <label ref={this.myItemRefs[idString]} className="gallery-card-radio-btn">
+      <label key={`${index}#${idString}`} ref={this.myItemRefs[idString]} className="gallery-card-radio-btn">
         <span>{sample.label}</span>
         <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
         <div className="icon icon-status-success gallery-selection-icon"></div>
@@ -138,7 +138,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
 
     return (
       <ExpandableBlock className="gallery-card-block" title={group.groupName} key={group.groupName} isExpanded={isExpanded} onClick={onClick}>
-        {group.samples.map((sample: SampleSpec) => this.createElementsForSample(sample, group.groupName))}
+        {group.samples.map((sample: SampleSpec, index: number) => this.createElementsForSample(sample, group.groupName, index))}
       </ExpandableBlock>
     );
   }
