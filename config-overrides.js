@@ -4,6 +4,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const StatoscopeWebpackPlugin = require('@statoscope/ui-webpack');
 
 const {
   override,
@@ -28,6 +30,8 @@ module.exports = function (config, env) {
   }
 
   return Object.assign(config, override(
+    addWebpackPlugin(new BundleAnalyzerPlugin()),
+    addWebpackPlugin(new StatoscopeWebpackPlugin()),
     addWebpackPlugin(new MonacoWebpackPlugin({
       nodeModulesLocations: ["node_modules"],
       filename: "[name].[contenthash:8].worker.js",
