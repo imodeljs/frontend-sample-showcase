@@ -2,7 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
+
+import { SampleSpec } from "SampleSpec";
 import SearchBoxList from "./SearchBox";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
@@ -12,10 +13,11 @@ export function getSearchBoxSpec(): SampleSpec {
     label: "UI-Search Boxes",
     image: "ui-search-boxes-thumbnail.png",
     customModelList: [],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
+    readme: () => import("!!raw-loader!./readme.md"),
+    files: () => [
       { name: "SearchBox.tsx", import: import("!!raw-loader!./SearchBox"), entry: true },
     ],
     sampleClass: SearchBoxList,
+    type: "SearchBoxList",
   });
 }

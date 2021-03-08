@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import TableNodeTreeUI from "./CustomTableNodeTreeUI";
 
 export function getCustomTableNodeTreeSpec(): SampleSpec {
@@ -12,12 +12,13 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     label: "Custom Table Node Tree",
     image: "custom-table-node-tree-thumbnail.png",
     customModelList: [],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
+    readme: () => import("!!raw-loader!./readme.md"),
+    files: () => [
       { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },
       { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
     sampleClass: TableNodeTreeUI,
+    type: "TableNodeTreeUI",
   });
 }

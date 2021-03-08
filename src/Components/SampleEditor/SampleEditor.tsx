@@ -10,7 +10,8 @@ import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import Drawer from "./Drawer/Drawer";
 import modules from "./Modules";
-import { SampleSpecFile } from "Components/SampleShowcase/SampleShowcase";
+import { SampleSpecFile } from "SampleSpec";
+
 
 export interface IRange {
   readonly startLineNumber: number;
@@ -22,8 +23,8 @@ export interface IRange {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 export interface SampleEditorProps {
-  files?: SampleSpecFile[];
-  readme?: SampleSpecFile;
+  files?: () => SampleSpecFile[];
+  readme?: () => Promise<{ default: string }>;
   minSize?: number;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
@@ -40,9 +41,12 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
   const [readme, setReadme] = React.useState<string>("");
 
   React.useEffect(() => {
-    Promise.all((props.files || []).map(async (file) => ({ content: (await file.import).default, name: file.name })))
-      .then(fileActions.setFiles)
-      .then(() => entryActions.setEntry(props.files?.find((file) => file.entry)?.name || null));
+    if (props.files) {
+      const files = props.files() || [];
+      Promise.all(files.map(async (file) => ({ content: (await file.import).default, name: file.name })))
+        .then(fileActions.setFiles)
+        .then(() => entryActions.setEntry(files.find((file) => file.entry)?.name || null));
+    }
     return () => {
       setEditorState(null, []);
     }
@@ -54,11 +58,10 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
 
   React.useEffect(() => {
     if (props.readme) {
-      props.readme.import
-        .then((fileData) => {
-          setReadme(fileData.default);
-          setShowReadme(true);
-        })
+      props.readme().then((fileData) => {
+        setReadme(fileData.default);
+        setShowReadme(true);
+      })
     }
   }, [props.readme, setReadme, setShowReadme]);
 

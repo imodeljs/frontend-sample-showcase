@@ -7,8 +7,9 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleGallery.scss";
 import { ExpandableBlock } from "@bentley/ui-core";
 import { SampleSpecGroup } from "../../sampleManifest";
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+
 import { MyExpandableList } from "Components/MyExpandableList/ExpandableList";
+import { SampleSpec } from "SampleSpec";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];

@@ -2,7 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+
+import { SampleSpec } from "SampleSpec";
 import MarkerPinUI from "./MarkerPinUI";
 
 export function getMarkerPinSpec(): SampleSpec {
@@ -10,8 +11,8 @@ export function getMarkerPinSpec(): SampleSpec {
     name: "marker-pin-sample",
     label: "Marker Pins",
     image: "marker-pin-thumbnail.png",
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
+    readme: () => import("!!raw-loader!./readme.md"),
+    files: () => [
       { name: "MarkerPinUI.tsx", import: import("!!raw-loader!./MarkerPinUI.tsx"), entry: true },
       { name: "MarkerPinApp.tsx", import: import("!!raw-loader!./MarkerPinApp.tsx") },
       { name: "MarkerPinDecorator.tsx", import: import("!!raw-loader!./MarkerPinDecorator") },
@@ -19,5 +20,6 @@ export function getMarkerPinSpec(): SampleSpec {
       { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
     ],
     sampleClass: MarkerPinUI,
+    type: "MarkerPinUI",
   });
 }

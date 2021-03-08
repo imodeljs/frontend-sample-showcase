@@ -2,7 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
+
+import { SampleSpec } from "SampleSpec";
 import SliderList from "./Slider";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
@@ -12,10 +13,11 @@ export function getSliderSpec(): SampleSpec {
     label: "UI-Sliders",
     image: "ui-sliders-thumbnail.png",
     customModelList: [],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
+    readme: () => import("!!raw-loader!./readme.md"),
+    files: () => [
       { name: "Slider.tsx", import: import("!!raw-loader!./Slider"), entry: true },
     ],
     sampleClass: SliderList,
+    type: "SliderList",
   });
 }

@@ -2,9 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+
 import CrossProbingUI from "./CrossProbingUI";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleSpec } from "SampleSpec";
 
 export function getCrossProbingSpec(): SampleSpec {
   return ({
@@ -12,11 +13,12 @@ export function getCrossProbingSpec(): SampleSpec {
     label: "Cross-Probing",
     image: "cross-probing-thumbnail.png",
     customModelList: [SampleIModels.BayTown],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
+    readme: () => import("!!raw-loader!./readme.md"),
+    files: () => [
       { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI"), entry: true },
       { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp") },
     ],
     sampleClass: CrossProbingUI,
+    type: "CrossProbingUI",
   });
 }

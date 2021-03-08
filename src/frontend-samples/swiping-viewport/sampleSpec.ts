@@ -2,8 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleSpec } from "SampleSpec";
 import SwipingComparisonUI from "./SwipingComparisonUI";
 
 export function getSwipingComparisonSpec(): SampleSpec {
@@ -11,14 +12,15 @@ export function getSwipingComparisonSpec(): SampleSpec {
     name: "swiping-viewport-sample",
     label: "Swiping Comparison",
     image: "swiping-viewport-thumbnail.png",
-    readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
+    readme: () => import("!!raw-loader!./README.md"),
     customModelList: [SampleIModels.ExtonCampus],
-    files: [
+    files: () => [
       { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI"), entry: true },
       { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp") },
       { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
       { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
     ],
     sampleClass: SwipingComparisonUI,
+    type: "SwipingComparisonUI",
   });
 }

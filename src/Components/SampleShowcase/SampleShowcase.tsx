@@ -17,22 +17,8 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { Pane, SplitScreen } from "@bentley/monaco-editor";
 import { SampleEditor } from "Components/SampleEditor/SampleEditor";
+import { SampleSpec } from "SampleSpec";
 // cSpell:ignore imodels
-
-export interface SampleSpecFile {
-  name: string;
-  import: Promise<{ default: string }>;
-  entry?: boolean;
-};
-export interface SampleSpec {
-  name: string;
-  label: string;
-  image: string;
-  readme?: SampleSpecFile;
-  files: SampleSpecFile[];
-  customModelList?: string[];
-  sampleClass: typeof React.Component;
-}
 
 interface ShowcaseState {
   iModelName: string;
