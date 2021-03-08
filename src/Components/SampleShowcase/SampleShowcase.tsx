@@ -16,8 +16,8 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { Pane, SplitScreen } from "@bentley/monaco-editor";
-import { SampleEditor } from "Components/SampleEditor/SampleEditor";
 import { SampleSpec } from "SampleSpec";
+import { SampleEditorContext } from "Components/SampleEditor/SampleEditorContext";
 // cSpell:ignore imodels
 
 interface ShowcaseState {
@@ -325,7 +325,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       <div className="showcase" ref={this._showcaseRef}>
         <SplitScreen split="vertical" onResizeStart={this._onDragStarted} onResizeEnd={this._onDragFinished}>
           <Pane className={editorClassName} snapSize={"200px"} defaultSize={this._sizes[0]} size={editorSize} onChange={this._onEditorSizeChange} disabled={!showEditor}>
-            <SampleEditor minSize={editorMinSize} files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
+            <SampleEditorContext minSize={editorMinSize} files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
           </Pane>
           <Pane className="preview" minSize={"500px"}>
             {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}

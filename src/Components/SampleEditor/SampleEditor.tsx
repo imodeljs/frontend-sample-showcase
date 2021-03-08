@@ -10,8 +10,7 @@ import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import Drawer from "./Drawer/Drawer";
 import modules from "./Modules";
-import { SampleSpecFile } from "SampleSpec";
-
+import { EditorProps } from "./SampleEditorContext";
 
 export interface IRange {
   readonly startLineNumber: number;
@@ -22,16 +21,8 @@ export interface IRange {
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
-export interface SampleEditorProps {
-  files?: () => SampleSpecFile[];
-  readme?: () => Promise<{ default: string }>;
-  minSize?: number;
-  onCloseClick: () => void;
-  onTranspiled: ((blobUrl: string) => void);
-  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
-}
 
-export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) => {
+export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const fileActions = useFileState()[1];
   const moduleActions = useModuleState()[1];
   const [activityState, activityActions] = useActivityState();
@@ -122,5 +113,4 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
       </SplitScreen>
     </div>
   );
-
 }
