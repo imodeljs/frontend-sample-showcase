@@ -12,7 +12,7 @@ type SampleVisualizerProps = {
 }
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
-  const { type, transpileResult, iModelName } = props;
+  const { type, transpileResult, iModelName, iModelSelector } = props;
   const [appReady, setAppReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
@@ -36,10 +36,8 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
     if (!ComponentRegistry[type])
       setSampleUi(<div>Failed to resolve by type {type}</div>);
     else
-      setSampleUi(React.createElement(ComponentRegistry[type], { iModelName: props.iModelName, iModelSelector: props.iModelSelector }));
-
-    console.log("imodelname", iModelName)
-  }, [type])
+      setSampleUi(React.createElement(ComponentRegistry[type], { iModelName, iModelSelector }));
+  }, [type, iModelName, iModelSelector])
 
   // Refresh sample UI on transpile
   useEffect(() => {
@@ -62,7 +60,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
     return (<div>Transpile loading...</div>);
   }
 
-  return <div>{sampleUi}</div>;
+  return <>{sampleUi}</>;
 }
 
 export default SampleVisualizer;

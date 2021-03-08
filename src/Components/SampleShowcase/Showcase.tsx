@@ -42,7 +42,7 @@ export const Showcase: FunctionComponent = () => {
       galleryRef.current.scrollToActiveSample();
       setScrollTo(false);
     }
-  });
+  }, [scrollTo, galleryRef]);
 
   const editorSize = !dragState.dragging && !showEditor ? "0%" : dragState.paneSizes[0];
   const gallerySize = !dragState.dragging && !showGallery ? "0%" : dragState.paneSizes[2];
