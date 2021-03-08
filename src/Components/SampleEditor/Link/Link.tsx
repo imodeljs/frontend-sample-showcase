@@ -50,7 +50,7 @@ export class Link extends React.Component<LinkProps> {
   };
 
   public render() {
-    const anchorProps = { ...this.props, onClick: this.onClick, target: "_blank" };
+    const anchorProps = { href: this.props.href, onClick: this.onClick, target: "_blank" };
     return (<a {...anchorProps}>{this.props.children}</a>);
   }
 }
