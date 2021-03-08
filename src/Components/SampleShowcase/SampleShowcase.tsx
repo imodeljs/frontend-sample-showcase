@@ -50,6 +50,8 @@ export interface SampleProps extends React.Attributes {
   iModelSelector?: React.ReactNode;
 }
 
+const defaultSizes = ["20%", "1", "20%"];
+
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
@@ -59,7 +61,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private _wantScroll = false;
   private _galleryRef = React.createRef<SampleGallery>();
   private _showcaseRef = React.createRef<HTMLDivElement>();
-  private _sizes: string[] = ["20%", "1", "20%"];
+  private _sizes: string[] = defaultSizes;
 
   constructor(props?: any) {
     super(props);
@@ -307,7 +309,8 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   }
 
   private _onDragFinished = (sizes: string[]) => {
-    this._sizes = sizes;
+    const nonZeroSizes = sizes.map((size, index) => parseInt(size, 10) === 0 ? defaultSizes[index] : size)
+    this._sizes = nonZeroSizes;
     this.setState({ dragging: false });
   }
 
