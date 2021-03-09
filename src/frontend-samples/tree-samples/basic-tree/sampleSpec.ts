@@ -16,6 +16,6 @@ export function getBasicTreeSpec(): SampleSpec {
       { name: "BasicTreeUI.tsx", import: import("!!raw-loader!./BasicTreeUI"), entry: true },
       { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp") },
     ],
-    type: "BasicTreeUI",
+    type: "BasicTreeUI.tsx",
   });
 }

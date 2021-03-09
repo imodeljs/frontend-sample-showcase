@@ -15,6 +15,6 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
       { name: "CustomNodeLoadingTreeUI.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
       { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp") },
     ],
-    type: "CustomNodeLoadingTreeUI",
+    type: "CustomNodeLoadingTreeUI.tsx",
   });
 }

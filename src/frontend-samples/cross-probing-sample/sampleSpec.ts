@@ -17,6 +17,6 @@ export function getCrossProbingSpec(): SampleSpec {
       { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI"), entry: true },
       { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp") },
     ],
-    type: "CrossProbingUI",
+    type: "CrossProbingUI.tsx",
   });
 }

@@ -24,6 +24,6 @@ export function getVolumeQuerySpec(): SampleSpec {
       SampleIModels.Stadium,
       SampleIModels.MetroStation,
     ],
-    type: "VolumeQueryUI",
+    type: "VolumeQueryUI.tsx",
   });
 }

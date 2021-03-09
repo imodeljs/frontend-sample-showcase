@@ -16,6 +16,6 @@ export function getBadgeSpec(): SampleSpec {
     files: () => [
       { name: "Badge.tsx", import: import("!!raw-loader!./Badge"), entry: true },
     ],
-    type: "BadgeList",
+    type: "Badge.tsx",
   });
 }

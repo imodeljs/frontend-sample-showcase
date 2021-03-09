@@ -19,7 +19,7 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
 
       { name: "Effects.ts", import: import("!!raw-loader!./Effects") },
     ],
-    type: "ScreenSpaceEffectsUI",
+    type: "ScreenSpaceEffectsUI.tsx",
   });
 }
 

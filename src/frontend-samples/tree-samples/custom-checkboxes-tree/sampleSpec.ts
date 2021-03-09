@@ -16,6 +16,6 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
       { name: "CustomCheckboxesTreeUI.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeUI"), entry: true },
       { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp") },
     ],
-    type: "CustomCheckboxesTreeUI",
+    type: "CustomCheckboxesTreeUI.tsx",
   });
 }

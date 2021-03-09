@@ -38,7 +38,7 @@ interface PropertyFormattingState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
+export default class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
   constructor(props?: any) {
     super(props);
     this.state = {

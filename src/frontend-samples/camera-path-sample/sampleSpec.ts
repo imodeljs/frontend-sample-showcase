@@ -18,6 +18,6 @@ export function getViewCameraSpec(): SampleSpec {
       { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
 
     ],
-    type: "CameraPathUI",
+    type: "CameraPathUI.tsx",
   });
 }

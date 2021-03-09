@@ -20,6 +20,6 @@ export function getPropertyFormattingSpec(): SampleSpec {
       { name: "approach-2-UI.tsx", import: import("!!raw-loader!./approach-2-UI") },
       { name: "approach-3-UI.tsx", import: import("!!raw-loader!./approach-3-UI") },
     ],
-    type: "PropertyFormattingUI",
+    type: "PropertyFormattingUI.tsx",
   });
 }

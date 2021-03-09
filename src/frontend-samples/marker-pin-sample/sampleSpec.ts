@@ -18,6 +18,6 @@ export function getMarkerPinSpec(): SampleSpec {
       { name: "PlaceMarkerTool.ts", import: import("!!raw-loader!./PlaceMarkerTool") },
       { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
     ],
-    type: "MarkerPinUI",
+    type: "MarkerPinUI.tsx",
   });
 }

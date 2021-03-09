@@ -15,6 +15,6 @@ export function getPresentationTreeSpec(): SampleSpec {
       { name: "PresentationTreeUI.tsx", import: import("!!raw-loader!./PresentationTreeUI"), entry: true },
       { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp") },
     ],
-    type: "PresentationTreeUI",
+    type: "PresentationTreeUI.tsx",
   });
 }

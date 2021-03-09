@@ -16,6 +16,6 @@ export function getCheckListBoxSpec(): SampleSpec {
     files: () => [
       { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },
     ],
-    type: "CheckListBoxList",
+    type: "CheckListBox.tsx",
   });
 }

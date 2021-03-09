@@ -1,14 +1,18 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
-import * as Registry from "./../../frontend-samples/registry";
 
-const ComponentRegistry = Registry as Record<string, any>;
+const context = (require as any).context('./../../frontend-samples', true, /\.tsx$/);
 
 type SampleVisualizerProps = {
-  type: string;
-  iModelName: string;
-  iModelSelector: React.ReactNode;
-  transpileResult?: string;
+  type: string,
+  iModelName: string,
+  iModelSelector: React.ReactNode,
+  transpileResult?: string,
+}
+
+type SampleProps = {
+  iModelName: string,
+  iModelSelector: React.ReactNode,
 }
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
@@ -33,23 +37,26 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
 
   // Set sample UI 
   useEffect(() => {
-    if (!ComponentRegistry[type])
-      setSampleUi(<div>Failed to resolve by type {type}</div>);
-    else
-      setSampleUi(React.createElement(ComponentRegistry[type], { iModelName, iModelSelector }));
-  }, [type, iModelName, iModelSelector])
+    const key = context.keys().find((key: string) => key.includes(type));
+    if (key) {
+      const sampleUi = context(key).default as React.ComponentClass<SampleProps>;
+      setSampleUi(React.createElement(sampleUi, { iModelName, iModelSelector }));
+    } else {
+      setSampleUi(<div>Failed to resolve sample '{type}'</div>);
+    }
+  }, [type])
 
   // Refresh sample UI on transpile
   useEffect(() => {
     if (transpileResult) {
       setLoading(true);
       import( /* webpackIgnore: true */ transpileResult).then(module => {
-        const sampleUi = module.default as typeof React.Component;
-        setSampleUi(sampleUi);
+        const sampleUi = module.default as React.ComponentClass<SampleProps>;
+        setSampleUi(React.createElement(sampleUi, { iModelName, iModelSelector }));
         setLoading(false);
       })
     }
-  }, [type, transpileResult]);
+  }, [transpileResult]);
 
 
   if (!appReady) {

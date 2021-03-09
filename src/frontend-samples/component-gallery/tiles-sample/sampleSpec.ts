@@ -16,6 +16,6 @@ export function getTilesSpec(): SampleSpec {
     files: () => [
       { name: "Tiles.tsx", import: import("!!raw-loader!./Tiles"), entry: true },
     ],
-    type: "TilesList",
+    type: "Tiles.tsx",
   });
 }

@@ -2,11 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import React from "react";
 import "./SampleGallery.scss";
 import { SampleSpecGroup } from "../../sampleManifest";
-
 import { MyExpandableList } from "Components/MyExpandableList/ExpandableList";
 import { SampleSpec } from "SampleSpec";
 import { ExpandableBlock } from "@bentley/ui-core/lib/ui-core/expandable/ExpandableBlock";

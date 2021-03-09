@@ -16,6 +16,6 @@ export function getShadowStudySpec(): SampleSpec {
       { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp") },
 
     ],
-    type: "ShadowStudyUI",
+    type: "ShadowStudyUI.tsx",
   });
 }

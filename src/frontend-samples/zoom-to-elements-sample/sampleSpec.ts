@@ -18,6 +18,6 @@ export function getZoomToElementsSpec(): SampleSpec {
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
-    type: "ZoomToElementsUI",
+    type: "ZoomToElementsUI.tsx",
   });
 }

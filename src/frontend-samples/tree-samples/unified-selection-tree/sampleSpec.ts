@@ -15,6 +15,6 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
       { name: "UnifiedSelectionTreeUI.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeUI"), entry: true },
       { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp") },
     ],
-    type: "UnifiedSelectionTreeUI",
+    type: "UnifiedSelectionTreeUI.tsx",
   });
 }

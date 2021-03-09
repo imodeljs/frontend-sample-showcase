@@ -16,6 +16,6 @@ export function getSplitButtonSpec(): SampleSpec {
     files: () => [
       { name: "SplitButton.tsx", import: import("!!raw-loader!./SplitButton"), entry: true },
     ],
-    type: "SplitButtonList",
+    type: "SplitButton.tsx",
   });
 }

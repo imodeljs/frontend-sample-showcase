@@ -18,6 +18,6 @@ export function getViewerOnly2dSpec(): SampleSpec {
       { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
     ],
     customModelList: [SampleIModels.House, SampleIModels.MetroStation],
-    type: "ViewerOnly2dUI",
+    type: "ViewerOnly2dUI.tsx",
   });
 }

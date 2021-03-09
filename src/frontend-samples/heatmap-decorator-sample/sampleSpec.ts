@@ -16,6 +16,6 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
       { name: "HeatmapDecoratorApp.tsx", import: import("!!raw-loader!./HeatmapDecoratorApp") },
       { name: "HeatmapDecorator.ts", import: import("!!raw-loader!./HeatmapDecorator") },
     ],
-    type: "HeatmapDecoratorUI",
+    type: "HeatmapDecoratorUI.tsx",
   });
 }

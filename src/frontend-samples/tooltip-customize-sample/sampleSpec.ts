@@ -15,6 +15,6 @@ export function getTooltipCustomizeSpec(): SampleSpec {
       { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI"), entry: true },
       { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp") },
     ],
-    type: "TooltipCustomizeUI",
+    type: "TooltipCustomizeUI.tsx",
   });
 }

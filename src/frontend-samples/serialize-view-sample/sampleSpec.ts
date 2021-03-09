@@ -18,6 +18,6 @@ export function getSerializeViewSpec(): SampleSpec {
       { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp") },
       { name: "SampleViewStates.ts", import: import("!!raw-loader!./SampleViewStates") },
     ],
-    type: "SerializeViewUI",
+    type: "SerializeViewUI.tsx",
   };
 }

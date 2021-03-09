@@ -18,6 +18,6 @@ export function getDisplayStylesSpec(): SampleSpec {
       { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp") },
       { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
     ],
-    type: "DisplayStylesUI",
+    type: "DisplayStylesUI.tsx",
   });
 }

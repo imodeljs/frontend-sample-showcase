@@ -18,6 +18,6 @@ export function getExplodeSpec(): SampleSpec {
       { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp") },
       { name: "ExplodeTile.ts", import: import("!!raw-loader!./ExplodeTile") },
     ],
-    type: "ExplodeUI",
+    type: "ExplodeUI.tsx",
   });
 }

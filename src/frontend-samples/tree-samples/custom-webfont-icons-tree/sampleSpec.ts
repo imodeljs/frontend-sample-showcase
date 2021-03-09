@@ -15,6 +15,6 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
       { name: "CustomWebfontIconsTreeUI.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeUI"), entry: true },
       { name: "CustomWebfontIconsTreeApp.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeApp") },
     ],
-    type: "CustomWebfontIconsTreeUI",
+    type: "CustomWebfontIconsTreeUI.tsx",
   });
 }

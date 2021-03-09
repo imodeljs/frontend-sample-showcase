@@ -3,10 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
-import ToolbarButtonSample from "./ToolbarButtonApp";
 
 export function getToolbarButtonSample(): SampleSpec {
   return ({
@@ -19,6 +17,6 @@ export function getToolbarButtonSample(): SampleSpec {
       { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp") },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
-    type: "ToolbarButtonSample",
+    type: "ToolbarButtonApp.tsx",
   });
 }

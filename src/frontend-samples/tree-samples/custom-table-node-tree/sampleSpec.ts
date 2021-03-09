@@ -17,6 +17,6 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
       { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
-    type: "TableNodeTreeUI",
+    type: "CustomTableNodeTreeUI.tsx",
   });
 }
