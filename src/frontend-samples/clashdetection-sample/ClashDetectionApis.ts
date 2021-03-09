@@ -1,0 +1,149 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+import { IncludePrefix, request, Response } from "@bentley/itwin-client";
+import ClashDetectionApp from "./ClashDetectionApp";
+import { IModelHubClient, VersionQuery } from "@bentley/imodelhub-client";
+import { SampleBaseApp } from "SampleBaseApp";
+
+// NOTE: The following samples for calling the Validation APIs will not succeed within the
+//       frontend sample showcase due to the incompatibility of the authorization token.
+
+export default class ClashDetectionApis {
+
+  // Retrieves a list of Design Validation tests for the project specified by the project id.
+  // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-tests
+  public static async getProjectValidationTests(): Promise<any | undefined> {
+    const { projectId, imodelId, requestContext } = ClashDetectionApp.projectContext;
+    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
+    const url = "https://api.bentley.com/projects/" + projectId + "/validation/tests";
+    const options = {
+      method: "GET",
+      headers: {
+        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        Prefer: "return=representation",
+        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+      },
+    };
+    return request(requestContext, url, options)
+      .then((resp: Response): string | undefined => {
+        if (resp.body === undefined) return undefined;
+        return resp.body;
+        }).catch((_reason: any) => {
+          return undefined;
+        });
+  }
+
+  // Retrieves a list of Design Validation runs for the project specified by the project id.
+  // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-runs
+  public static async getProjectValidationRuns(): Promise<any | undefined> {
+    const { projectId, imodelId, requestContext } = ClashDetectionApp.projectContext;
+    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
+    const url = "https://api.bentley.com/projects/" + projectId + "/validation/runs";
+    const options = {
+      method: "GET",
+      headers: {
+        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        Prefer: "return=representation",
+        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+      },
+    };
+    return request(requestContext, url, options)
+      .then((resp: Response): string | undefined => {
+        if (resp.body === undefined) return undefined;
+        return resp.body;
+        }).catch((_reason: any) => {
+          return undefined;
+        });
+  }
+
+  // Gets the response body for the specified validation URL.
+  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-test
+  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result
+  public static async getValidationUrlResponse(url: string) {
+    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
+    if (url === undefined)
+      return undefined;
+    const options = {
+      method: "GET",
+      headers: {
+        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+      },
+    };
+    return request(ClashDetectionApp.projectContext.requestContext, url, options)
+      .then((resp: Response): any | undefined => {
+        return resp.body;
+      }).catch((_reason: any) => {
+        return undefined;
+      });
+  }
+
+  // Run a validation test for the specified test id and return the run id and URL link to monitor progress.
+  //   Sample response:
+  //   {
+  //     "validationRunLink": {
+  //         "runId": "ZuO3OCC8sUuVcgeXz1Ih_cd5x2CBBWdIpYrvJ8Y-qIY",
+  //         "_links": {
+  //             "run": {
+  //                 "href": "https://api.bentley.com/validation/runs/ZuO3OCC8sUuVcgeXz1Ih_cd5x2CBBWdIpYrvJ8Y-qIY"
+  //             }
+  //         }
+  //     }
+  // }
+  // You can pass the URL returned in the href to the following function:
+  //   const response = ClashDetectionApis.getValidationUrlResponse(body._links.run.href);
+  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/run-validation-test
+  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-run
+  public static async runValidationTest(testId: string) {
+    if (testId === undefined)
+      return undefined;
+    const { projectId, imodelId, requestContext } = ClashDetectionApp.projectContext;
+    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
+    const url = "https://dev-api.bentley.com/validation/runs/test/" + testId;
+    // Get the latest named version of the iModel
+    const hubClient = new IModelHubClient();
+    const namedVersions = await hubClient.versions.get(requestContext, imodelId, new VersionQuery().top(1));
+    if (namedVersions.length === 0 || namedVersions[0].id === undefined)
+      return undefined;
+    // Set the iModel id and named version id to pass in the body of the request
+    const data = { iModelId: imodelId, namedVersionId: namedVersions[0].id };
+    const options = {
+      method: "POST",
+      headers: {
+        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+      },
+      body: data,
+    };
+    return request(ClashDetectionApp.projectContext.requestContext, url, options)
+      .then((resp: Response): any | undefined => {
+        return resp.body;
+      }).catch((_reason: any) => {
+        return undefined;
+      });
+  }
+
+  // This sample test function demonstrates how the above functions can be called in a workflow
+  private async test() {
+    // Get list of tests for project
+    const testsResponse = await ClashDetectionApis.getProjectValidationTests();
+    if (testsResponse.validationTests !== undefined && testsResponse.validationTests.length !== 0) {
+      // Run validation test
+      const runResponse = await ClashDetectionApis.runValidationTest(testsResponse.validationTests[0].id);
+      // Get validation run details
+      const runDetails = await ClashDetectionApis.getValidationUrlResponse(runResponse.validationRunLink._links.run.href);
+      // Get validation test details
+      const testDetails = await ClashDetectionApis.getValidationUrlResponse(testsResponse.validationTests[0]._links.test.href);
+    }
+    // Get list of validation runs for project
+    const runsResponse = await ClashDetectionApis.getProjectValidationRuns();
+    if (runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
+      // Get validation result
+      const runResultDetails = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.result.href);
+      // Get validation run test
+      const runTestDetails = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.test.href);
+    }
+  }
+}
