@@ -6,9 +6,11 @@ import { ActiveSample } from './ActiveSample';
 import { SplitScreen } from '@bentley/monaco-editor/lib/components/split-screen/SplitScreen';
 import Pane from '@bentley/monaco-editor/lib/components/split-screen/Pane';
 import { Button, ButtonSize, ButtonType } from '@bentley/ui-core/lib/ui-core/button/Button';
+import { Spinner, SpinnerSize } from '@bentley/ui-core/lib/ui-core/loading/Spinner';
 import { ErrorBoundary } from 'Components/ErrorBoundary/ErrorBoundary';
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
+
 
 const Editor = React.lazy(() => import(/* webpackMode: "lazy" */ "./../SampleEditor/SampleEditorContext"));
 const Visualizer = React.lazy(() => import(/* webpackMode: "lazy" */ "./../SampleVisualizer/SampleVisualizer"));
@@ -83,11 +85,13 @@ export const Showcase: FunctionComponent = () => {
       </div>);
   }
 
+  const spinner = (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
+
   return (
     <div className="showcase" ref={showcaseRef}>
       <SplitScreen split="vertical" onResizeStart={() => setDragState({ ...dragState, dragging: true })} onResizeEnd={(sizes) => setDragState({ dragging: false, paneSizes: sizes })}>
         <Pane className={editorClassName} snapSize={"200px"} defaultSize={dragState.paneSizes[0]} size={editorSize} onChange={onEditorSizeChange} disabled={!showEditor}>
-          <React.Suspense fallback="Suspense loading...">
+          <React.Suspense fallback={spinner}>
             <Editor
               files={activeSample.getFiles}
               minSize={editorMinSize}
@@ -101,7 +105,7 @@ export const Showcase: FunctionComponent = () => {
           {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-right"></span></Button>}
           {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-left"></span></Button>}
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
-            <React.Suspense fallback="Suspense loading...">
+            <React.Suspense fallback={spinner}>
               <ErrorBoundary>
                 <Visualizer
                   iModelName={activeSample.imodel}

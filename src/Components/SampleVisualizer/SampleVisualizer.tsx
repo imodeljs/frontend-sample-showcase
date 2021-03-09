@@ -1,3 +1,4 @@
+import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
 
@@ -60,11 +61,11 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
 
 
   if (!appReady) {
-    return (<div>SampleBaseApp.startup...</div>);
+    return (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
   if (loading) {
-    return (<div>Transpile loading...</div>);
+    return (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
   return <>{sampleUi}</>;
