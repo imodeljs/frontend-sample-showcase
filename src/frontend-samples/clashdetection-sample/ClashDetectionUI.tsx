@@ -6,17 +6,15 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import "./ClashDetection.scss";
-import { Point3d, Range3d } from "@bentley/geometry-core";
+import { Point3d } from "@bentley/geometry-core";
 import { Id64String } from "@bentley/bentleyjs-core";
 import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
-import { GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import ClashDetectionApp from "./ClashDetectionApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { jsonData } from "./ClashDetectionJsonData";
-import { ClearEmphasizeAction, ClearOverrideAction } from "./EmphasizeElements";
 import GridWidget from "./ClashTable";
 
 export let applyZoom: boolean = true;
@@ -46,36 +44,6 @@ export default class ClashDetectionUI extends React.Component<{
     };
   }
 
-  private async setMarkerPoints(imodel: IModelConnection) {
-    const points: ClashMarkerPoint[] = [];
-    let count = 0;
-    for (const clash of jsonData.clashDetectionResult) {
-      const point = await this.calcClashCenter(imodel, clash.elementAId, clash.elementBId);
-      const clashMarkerPoint: ClashMarkerPoint = { point, jsonData: clash };
-      points.push(clashMarkerPoint);
-      count++;
-      if (count > 60)
-        break;
-    }
-    this.setState({ imodel, points });
-  }
-
-  private async calcClashCenter(imodel: IModelConnection, elementAId: string, elementBId: string): Promise<Point3d> {
-    const elementIds: Id64String[] = [];
-    elementIds.push(elementAId);
-    elementIds.push(elementBId);
-    const volume = Range3d.createNull();
-    const elemProps = (await imodel.elements.getProps(elementIds)) as GeometricElement3dProps[];
-
-    if (elemProps.length !== 0) {
-      elemProps.forEach((prop: GeometricElement3dProps) => {
-        const placement = Placement3d.fromJSON(prop.placement);
-        volume.extendRange(placement.calculateRange());
-      });
-    }
-    return volume.center;
-  }
-
   public async componentDidMount() {
 
     ClashDetectionApp._images = new Map();
@@ -83,7 +51,7 @@ export default class ClashDetectionUI extends React.Component<{
     ClashDetectionApp.projectContext = await ClashDetectionApp.getIModelInfo(this.props.iModelName);
 
     return <ClashDetectionUI iModelName={this.props.iModelName} iModelSelector={this.props.iModelSelector} />;
-    }
+  }
 
   public componentWillUnmount() {
     ClashDetectionApp.disableDecorations();
@@ -99,7 +67,7 @@ export default class ClashDetectionUI extends React.Component<{
 
     if (prevState.points !== this.state.points) {
       if (ClashDetectionApp.decoratorIsSetup())
-        ClashDetectionApp.setMarkerPoints(this.state.points);
+        ClashDetectionApp.setDecoratorPoints(this.state.points);
     }
 
     if (prevState.showDecorator !== this.state.showDecorator) {
@@ -144,15 +112,11 @@ export default class ClashDetectionUI extends React.Component<{
 
   /** This callback will be executed by SandboxViewport once the iModel has been loaded */
   private onIModelReady = (imodel: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
 
-      this.setMarkerPoints(imodel);
+      const points = await ClashDetectionApp.setMarkerPoints(imodel);
+      this.setState({ imodel, points });
     });
-  }
-
-  private resetDisplay() {
-    new ClearOverrideAction().run();
-    new ClearEmphasizeAction().run();
   }
 
   /** Components for rendering the sample's instructions and controls */
@@ -169,7 +133,7 @@ export default class ClashDetectionUI extends React.Component<{
         </div>
         <div className="sample-options-2col">
           <span>Display</span>
-          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} className="show-control-pane-button" onClick={this.resetDisplay.bind(this)}>Reset</Button>
+          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} className="show-control-pane-button" onClick={ClashDetectionApp.resetDisplay.bind(this)}>Reset</Button>
         </div>
       </>
     );
@@ -178,7 +142,7 @@ export default class ClashDetectionUI extends React.Component<{
   /** The sample's render method */
   public render() {
     return (
-        <>
+      <>
         <ControlPane instructions="Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to visualize clashes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <div className="app-content">
           <div className="top">

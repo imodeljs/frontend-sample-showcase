@@ -5,9 +5,8 @@
 import * as React from "react";
 import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat } from "@bentley/ui-abstract";
-import { IModelApp, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { ClearEmphasizeAction, ClearOverrideAction, EmphasizeAction, OverrideAction } from "./EmphasizeElements";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import ClashDetectionApp from "./ClashDetectionApp";
 import { applyZoom } from "./ClashDetectionUI";
 
 export interface Props {
@@ -22,10 +21,6 @@ export default class ClashTable extends React.PureComponent<Props> {
 
     // adding columns
     const columns: ColumnDescription[] = [];
-    // categoryList: [{
-    //   id: "0x4000000000d",
-    //   displayName: "Tag-Category",
-    // },
 
     columns.push({key: "elementALabel", label: "Element A Label"});
     columns.push({key: "elementBLabel", label: "Element B Label"});
@@ -41,7 +36,7 @@ export default class ClashTable extends React.PureComponent<Props> {
     // adding rows => cells => property record => value and description.
     this.props.data.clashDetectionResult.forEach((rowData: any) => {
       // Concatenate the element ids to set the row key  ie. "elementAId-elementBId"
-      const rowItemKey = rowData.elementAId + "-" + rowData.elementBId;
+      const rowItemKey = `${rowData.elementAId}-${rowData.elementBId}`;
       const rowItem: RowItem = {key: rowItemKey, cells: []};
       columns.forEach((column: ColumnDescription, i: number) => {
         let cellValue: string = "";
@@ -67,27 +62,15 @@ export default class ClashTable extends React.PureComponent<Props> {
   // bonus: zooming into and highlighting element when row is selected.
   private _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
 
-    const row = await rowIterator.next();
-
     if (!IModelApp.viewManager.selectedView)
       return Promise.resolve(true);
+
+    const row = await rowIterator.next();
 
     // Get the concatenated element ids from the row key  ie. "elementAId-elementBId"
     const elementIds = row.value.key.split("-");
 
-    new ClearOverrideAction().run();
-    new ClearEmphasizeAction().run();
-    new OverrideAction([elementIds[0]], ColorDef.red, true).run();
-    new OverrideAction([elementIds[1]], ColorDef.blue, false).run();
-    new EmphasizeAction([elementIds[0], elementIds[1]], true).run();
-
-    if (applyZoom) {
-      const viewChangeOpts: ViewChangeOptions = {};
-      viewChangeOpts.animateFrustumChange = true;
-      viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
-      const vp = IModelApp.viewManager.selectedView;
-      vp.zoomToElements([elementIds[0], elementIds[1]], { ...viewChangeOpts });
-    }
+    ClashDetectionApp.visualizeClash(elementIds[0], elementIds[1], applyZoom);
 
     return Promise.resolve(true);
   }

@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
-import ClashDetectionApp from "./ClashDetectionApp";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { IModelHubClient, VersionQuery } from "@bentley/imodelhub-client";
-import { SampleBaseApp } from "SampleBaseApp";
+import ClashDetectionApp from "./ClashDetectionApp";
 
 // NOTE: The following samples for calling the Validation APIs will not succeed within the
 //       frontend sample showcase due to the incompatibility of the authorization token.
@@ -15,14 +15,17 @@ export default class ClashDetectionApis {
   // Retrieves a list of Design Validation tests for the project specified by the project id.
   // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-tests
   public static async getProjectValidationTests(): Promise<any | undefined> {
-    const { projectId, imodelId, requestContext } = ClashDetectionApp.projectContext;
-    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
-    const url = "https://api.bentley.com/projects/" + projectId + "/validation/tests";
+    const { projectId, requestContext } = ClashDetectionApp.projectContext;
+    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
+    const url = `https://api.bentley.com/projects/${projectId}/validation/tests`;
     const options = {
       method: "GET",
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Prefer: "return=representation",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
       },
     };
@@ -30,22 +33,25 @@ export default class ClashDetectionApis {
       .then((resp: Response): string | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
-        }).catch((_reason: any) => {
-          return undefined;
-        });
+      }).catch((_reason: any) => {
+        return undefined;
+      });
   }
 
   // Retrieves a list of Design Validation runs for the project specified by the project id.
   // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-runs
   public static async getProjectValidationRuns(): Promise<any | undefined> {
-    const { projectId, imodelId, requestContext } = ClashDetectionApp.projectContext;
-    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
-    const url = "https://api.bentley.com/projects/" + projectId + "/validation/runs";
+    const { projectId, requestContext } = ClashDetectionApp.projectContext;
+    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
+    const url = `https://api.bentley.com/projects/${projectId}/validation/runs`;
     const options = {
       method: "GET",
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Prefer: "return=representation",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
       },
     };
@@ -53,22 +59,24 @@ export default class ClashDetectionApis {
       .then((resp: Response): string | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
-        }).catch((_reason: any) => {
-          return undefined;
-        });
+      }).catch((_reason: any) => {
+        return undefined;
+      });
   }
 
   // Gets the response body for the specified validation URL.
   // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-test
   // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result
   public static async getValidationUrlResponse(url: string) {
-    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
+    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
     if (url === undefined)
       return undefined;
     const options = {
       method: "GET",
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
       },
     };
@@ -99,9 +107,9 @@ export default class ClashDetectionApis {
   public static async runValidationTest(testId: string) {
     if (testId === undefined)
       return undefined;
-    const { projectId, imodelId, requestContext } = ClashDetectionApp.projectContext;
-    const accessToken = await SampleBaseApp.oidcClient.getAccessToken();
-    const url = "https://dev-api.bentley.com/validation/runs/test/" + testId;
+    const { imodelId, requestContext } = ClashDetectionApp.projectContext;
+    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
+    const url = `https://dev-api.bentley.com/validation/runs/test/${testId}`;
     // Get the latest named version of the iModel
     const hubClient = new IModelHubClient();
     const namedVersions = await hubClient.versions.get(requestContext, imodelId, new VersionQuery().top(1));
@@ -112,7 +120,9 @@ export default class ClashDetectionApis {
     const options = {
       method: "POST",
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
       },
       body: data,
@@ -133,16 +143,20 @@ export default class ClashDetectionApis {
       // Run validation test
       const runResponse = await ClashDetectionApis.runValidationTest(testsResponse.validationTests[0].id);
       // Get validation run details
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const runDetails = await ClashDetectionApis.getValidationUrlResponse(runResponse.validationRunLink._links.run.href);
       // Get validation test details
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const testDetails = await ClashDetectionApis.getValidationUrlResponse(testsResponse.validationTests[0]._links.test.href);
     }
     // Get list of validation runs for project
     const runsResponse = await ClashDetectionApis.getProjectValidationRuns();
     if (runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
       // Get validation result
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const runResultDetails = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.result.href);
       // Get validation run test
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const runTestDetails = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.test.href);
     }
   }

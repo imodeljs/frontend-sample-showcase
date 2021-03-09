@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Point2d, Point3d, XAndY, XYAndZ } from "@bentley/geometry-core";
-import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, MarginPercent, Marker, MarkerSet, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, Marker, MarkerSet } from "@bentley/imodeljs-frontend";
 import { applyZoom, ClashMarkerPoint } from "./ClashDetectionUI";
-import { ClearEmphasizeAction, ClearOverrideAction, EmphasizeAction, OverrideAction } from "./EmphasizeElements";
+import ClashDetectionApp from "./ClashDetectionApp";
 
 /**
  * There are four classes that cooperate to produce the markers.
@@ -28,7 +27,7 @@ import { ClearEmphasizeAction, ClearOverrideAction, EmphasizeAction, OverrideAct
 /** Shows a pin marking the location of a point. */
 class ClashMarker extends Marker {
   private _markerSet: ClashMarkerSet;
-  public _jsonData: any;
+  public jsonData: any;
   private static _height = 35;
 
   /** Create a new ClashMarker */
@@ -44,10 +43,10 @@ class ClashMarker extends Marker {
     this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
 
     // The JSON data is stored on the marker
-    this._jsonData = location.jsonData;
+    this.jsonData = location.jsonData;
 
     // The title will be shown as a tooltip when the user interacts with the marker
-    this.title = this._jsonData.elementALabel + "<br>" + this._jsonData.elementBLabel;
+    this.title = `${this.jsonData.elementALabel}<br>${this.jsonData.elementBLabel}`;
 
     // The scale factor adjusts the size of the image so it appears larger when close to the camera eye point.
     // Make size 75% at back of frustum and 200% at front of frustum (if camera is on)
@@ -70,31 +69,12 @@ class ClashMarker extends Marker {
     return pickRect.containsPoint(pt);
   }
 
-  public async visualizeClash() {
-    if (!IModelApp.viewManager.selectedView)
-      return;
-
-    new ClearOverrideAction().run();
-    new ClearEmphasizeAction().run();
-    new OverrideAction([this._jsonData.elementAId], ColorDef.red, true).run();
-    new OverrideAction([this._jsonData.elementBId], ColorDef.blue, false).run();
-    new EmphasizeAction([this._jsonData.elementAId, this._jsonData.elementBId], true).run();
-
-    if (applyZoom) {
-      const viewChangeOpts: ViewChangeOptions = {};
-      viewChangeOpts.animateFrustumChange = true;
-      viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
-      const vp = IModelApp.viewManager.selectedView;
-      vp.zoomToElements([this._jsonData.elementAId, this._jsonData.elementBId], { ...viewChangeOpts });
-    }
-  }
-
   /** This method will be called when the user clicks on a marker */
   public onMouseButton(ev: BeButtonEvent): boolean {
     if (BeButton.Data !== ev.button || !ev.isDown || !ev.viewport || !ev.viewport.view.isSpatialView())
       return true;
 
-    this.visualizeClash();
+    ClashDetectionApp.visualizeClash(this.jsonData.elementAId, this.jsonData.elementBId, applyZoom);
 
     return true; // Don't allow clicks to be sent to active tool
   }
@@ -120,12 +100,6 @@ class ClashCluster extends Marker {
     this.labelColor = "black";
     this.labelFont = "bold 14px san-serif";
 
-    // Display the pin image offset above the circle
-    if (undefined !== cluster.markers[0].image) {
-      this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5) + ClashCluster._radius);
-      this.setImage(cluster.markers[0].image);
-    }
-
     // Concatenate the tooltips from the markers to create the tooltip for the cluster
     const maxLen = 10;
     let title = "";
@@ -144,31 +118,12 @@ class ClashCluster extends Marker {
     this.title = div;
   }
 
-  public async visualizeClusterClash() {
-    if (!IModelApp.viewManager.selectedView)
-      return;
-
-    new ClearOverrideAction().run();
-    new ClearEmphasizeAction().run();
-    new OverrideAction([this._cluster.markers[0]._jsonData.elementAId], ColorDef.red, true).run();
-    new OverrideAction([this._cluster.markers[0]._jsonData.elementBId], ColorDef.blue, false).run();
-    new EmphasizeAction([this._cluster.markers[0]._jsonData.elementAId, this._cluster.markers[0]._jsonData.elementBId], true).run();
-
-    if (applyZoom) {
-      const viewChangeOpts: ViewChangeOptions = {};
-      viewChangeOpts.animateFrustumChange = true;
-      viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
-      const vp = IModelApp.viewManager.selectedView;
-      vp.zoomToElements([this._cluster.markers[0]._jsonData.elementAId, this._cluster.markers[0]._jsonData.elementBId], { ...viewChangeOpts });
-    }
-  }
-
   /** This method will be called when the user clicks on a marker */
   public onMouseButton(ev: BeButtonEvent): boolean {
     if (BeButton.Data !== ev.button || !ev.isDown || !ev.viewport || !ev.viewport.view.isSpatialView())
       return true;
 
-    this.visualizeClusterClash();
+    ClashDetectionApp.visualizeClash(this._cluster.markers[0].jsonData.elementAId, this._cluster.markers[0].jsonData.elementBId, applyZoom);
 
     return true; // Don't allow clicks to be sent to active tool
   }
@@ -176,9 +131,9 @@ class ClashCluster extends Marker {
   /** Show the cluster as a white circle with a thick outline */
   public drawFunc(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
-    ctx.strokeStyle = "#372528";
+    ctx.strokeStyle = "#FF";
     ctx.fillStyle = "white";
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 3;
     ctx.arc(0, 0, ClashCluster._radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();

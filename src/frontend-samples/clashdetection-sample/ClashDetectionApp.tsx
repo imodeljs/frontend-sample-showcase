@@ -5,11 +5,14 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
-import { AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
+import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
+import { Point3d, Range3d } from "@bentley/geometry-core";
+import { Id64String } from "@bentley/bentleyjs-core";
 import { IModelQuery } from "@bentley/imodelhub-client";
 import { ClashPinDecorator } from "./ClashMarkers";
 import { ClashMarkerPoint } from "./ClashDetectionUI";
-import SampleApp from "common/SampleApp";
+import { jsonData } from "./ClashDetectionJsonData";
 
 interface ProjectContext {
   projectId: string;
@@ -17,7 +20,7 @@ interface ProjectContext {
   requestContext: AuthorizedFrontendRequestContext;
 }
 
-export default class ClashDetectionApp implements SampleApp {
+export default class ClashDetectionApp {
   public static _clashPinDecorator?: ClashPinDecorator;
   public static _images: Map<string, HTMLImageElement>;
   public static projectContext: ProjectContext;
@@ -55,10 +58,10 @@ export default class ClashDetectionApp implements SampleApp {
       return;
 
     this._clashPinDecorator = new ClashPinDecorator();
-    this.setMarkerPoints(points);
+    this.setDecoratorPoints(points);
   }
 
-  public static setMarkerPoints(points: ClashMarkerPoint[]) {
+  public static setDecoratorPoints(points: ClashMarkerPoint[]) {
     if (this._clashPinDecorator)
       this._clashPinDecorator.setPoints(points, this._images.get("clash_pin.svg")!);
   }
@@ -71,5 +74,66 @@ export default class ClashDetectionApp implements SampleApp {
   public static disableDecorations() {
     if (null != this._clashPinDecorator)
       IModelApp.viewManager.dropDecorator(this._clashPinDecorator);
+  }
+
+  public static async setMarkerPoints(imodel: IModelConnection): Promise<ClashMarkerPoint[]> {
+    const points: ClashMarkerPoint[] = [];
+    let count = 0;
+    for (const clash of jsonData.clashDetectionResult) {
+      const point = await this.calcClashCenter(imodel, clash.elementAId, clash.elementBId);
+      const clashMarkerPoint: ClashMarkerPoint = { point, jsonData: clash };
+      points.push(clashMarkerPoint);
+      count++;
+      if (count > 60)
+        break;
+    }
+    return new Promise((resolve) => {resolve(points); });
+  }
+
+  private static async calcClashCenter(imodel: IModelConnection, elementAId: string, elementBId: string): Promise<Point3d> {
+    const elementIds: Id64String[] = [];
+    elementIds.push(elementAId);
+    elementIds.push(elementBId);
+    const volume = Range3d.createNull();
+    const elemProps = (await imodel.elements.getProps(elementIds)) as GeometricElement3dProps[];
+
+    if (elemProps.length !== 0) {
+      elemProps.forEach((prop: GeometricElement3dProps) => {
+        const placement = Placement3d.fromJSON(prop.placement);
+        volume.extendRange(placement.calculateRange());
+      });
+    }
+    return volume.center;
+  }
+
+  public static visualizeClash(elementAId: any, elementBId: any, applyZoom: boolean) {
+    if (!IModelApp.viewManager.selectedView)
+      return;
+
+    const vp = IModelApp.viewManager.selectedView;
+    const emph = EmphasizeElements.getOrCreate(vp);
+    emph.clearEmphasizedElements(vp);
+    emph.clearOverriddenElements(vp);
+    emph.overrideElements(elementAId, vp, ColorDef.red, FeatureOverrideType.ColorOnly, true);
+    emph.overrideElements(elementBId, vp, ColorDef.blue, FeatureOverrideType.ColorOnly, false);
+    emph.wantEmphasis = true;
+    emph.emphasizeElements([elementAId, elementBId], vp, undefined, false);
+
+    if (applyZoom) {
+      const viewChangeOpts: ViewChangeOptions = {};
+      viewChangeOpts.animateFrustumChange = true;
+      viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
+      vp.zoomToElements([elementAId, elementBId], { ...viewChangeOpts });
+    }
+  }
+
+  public static resetDisplay() {
+    if (!IModelApp.viewManager.selectedView)
+      return;
+
+    const vp = IModelApp.viewManager.selectedView;
+    const emph = EmphasizeElements.getOrCreate(vp);
+    emph.clearEmphasizedElements(vp);
+    emph.clearOverriddenElements(vp);
   }
 }
