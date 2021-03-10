@@ -75,6 +75,15 @@ export default class FireDecorationApp implements SampleApp {
     IModelApp.viewManager.dropDecorator(decorator);
   }
 
+  /** Disposes of each emitter, triggering dispose of their owed resources. */
+  public static disposeAllEmitters() {
+    // The FireEmitters collectively owns textures and will dispose of them when no longer required.
+    FireDecorationApp.getAllEmitters().forEach((fire) => {
+      FireDecorationApp.dropDecorator(fire);
+      fire.dispose();
+    });
+  }
+
   /** Allocates memory and creates a RenderTexture from a given URL. */
   public static async allocateTextureFromUrl(url: string): Promise<RenderTexture | undefined> {
     // Note: the caller takes ownership of the textures, and disposes of those resources when they are no longer needed.
@@ -94,11 +103,10 @@ export default class FireDecorationApp implements SampleApp {
       // Tell the viewport to re-render the decorations every frame so that the snow particles animate smoothly.
       FireDecorationApp._dropListeners.push(vp.onRender.addListener(() => vp.invalidateDecorations()));
 
-    // A transient id is needed for interacting with the mouse (tool tips).
-    const id = FireDecorationApp.getNextTransientId(vp.iModel);
     // The FireEmitter class itself handles ensuring the timely allocation of textures.
-    const fireDecorator = new FireEmitter(id, source, params);
-    FireDecorationApp.addDecorator(fireDecorator);
+    const fireDecorator = await FireEmitter.create(vp, source, params);
+    if (fireDecorator)
+      FireDecorationApp.addDecorator(fireDecorator);
     return fireDecorator;
   }
 
@@ -111,8 +119,7 @@ export default class FireDecorationApp implements SampleApp {
   public static dispose() {
     FireDecorationApp._dropListeners.forEach((func) => func());
     FireDecorationApp._dropListeners = [];
-    // The FireEmitters collectively owns textures and will dispose of them when no longer required.
-    FireEmitter.disposeAll();
+    FireDecorationApp.disposeAllEmitters();
   }
 
   /** Queries the backend for the elements that will act are targets for the demo on the Villa iModel. */

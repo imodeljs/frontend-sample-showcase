@@ -51,6 +51,7 @@ export class EmitterHighlighter implements Decorator {
   }
 }
 
+/** Parameters describing a Fire Emitter Decorator. */
 export interface FireParams {
   /** This scales the number of particles from 0 at a value of 0 to 7000 at a value of 1, at an exponential rate. */
   particleNumScale: number;
@@ -124,25 +125,21 @@ export class FireEmitter implements Decorator {
     }
   }
 
-  /** Drops all decorators and disposes of owed resources. */
-  public static disposeAll() {
-    FireDecorationApp.getAllEmitters().forEach((fire) => FireDecorationApp.dropDecorator(fire));
-    FireEmitter._tryDisposeTextures();
-  }
-
   /** Creates a new fire particle decorator at the given world position. */
   public static async create(viewport: Viewport, source: Point3d, params: FireParams): Promise<FireEmitter | undefined> {
     if (!await FireEmitter.tryTextures())
       return undefined;
 
-    const fireDecorator = new this(viewport.iModel.transientIds.next, source, params);
+    // A transient id is needed for interacting with the mouse (tool tips).
+    const id = FireDecorationApp.getNextTransientId(viewport.iModel);
+    const fireDecorator = new this(id, source, params);
 
     if (FireDecorationApp.length === 0) {
       // Due to the constructions of the showcase, we know when the viewport will be closed.  Under different circumstances, the methods below are example events to ensure the timely dispose of textures owned by the decorator.
       // When the iModel is closed, dispose of any decorations.
-      FireEmitter._removeOnClose = viewport.iModel.onClose.addOnce(() => FireEmitter.disposeAll());
+      FireEmitter._removeOnClose = viewport.iModel.onClose.addOnce(() => FireDecorationApp.disposeAllEmitters());
       // When the viewport is destroyed, dispose of any decorations. too.
-      FireEmitter._removeOnDispose = viewport.onDisposed.addListener(() => FireEmitter.disposeAll());
+      FireEmitter._removeOnDispose = viewport.onDisposed.addListener(() => FireDecorationApp.disposeAllEmitters());
     }
 
     return fireDecorator;
@@ -150,10 +147,10 @@ export class FireEmitter implements Decorator {
 
   /** Drop decorator and attempt to dispose of resources. */
   public dispose() {
-    FireDecorationApp.dropDecorator(this);
     FireEmitter._tryDisposeTextures();
   }
 
+  /** Calculate the number of particles based on the params' particleNumScale.  Is calculated along a exponential curve. */
   private calculateNumParticle(): number {
     // y(normalized change of survival) = a * b ^ x(distance) + c(-a)
     const maximumMass = FireEmitter._maximumParticles;
@@ -164,7 +161,7 @@ export class FireEmitter implements Decorator {
     return Math.round(exponentialDensityScaling * maximumMass);
   }
 
-  constructor(id: string, source: Point3d, params: FireParams) {
+  private constructor(id: string, source: Point3d, params: FireParams) {
     this.source = source;
     this._pickableId = id;
     this._params = { ...params };
@@ -187,7 +184,13 @@ export class FireEmitter implements Decorator {
     }
   }
 
+  /** Returns HTML describing the particular fire sample. */
   public async getDecorationToolTip(_hit: HitDetail): Promise<HTMLElement | string> {
+    /* Example tool tip format:
+     * "Name"
+     * Particle Count: #####
+     * Temperature: ~####
+     */
     const toolTip = document.createElement("div");
     const header = document.createElement("b");
     header.textContent = this.params.toolTipInfo ?? "Fire";
@@ -195,6 +198,7 @@ export class FireEmitter implements Decorator {
     info.textContent = `Particle Count: ${this.calculateNumParticle()}`;
     const temperature = document.createElement("label");
     let tempText = -273.15;
+    // Temperatures are estimated based on the base parameters type.
     if (this.params.toolTipInfo?.includes("Candle"))
       tempText = 1100;
     if (this.params.toolTipInfo?.includes("Campfire"))
@@ -210,12 +214,13 @@ export class FireEmitter implements Decorator {
     return toolTip;
   }
 
-  /** If the [[decorate]] method created pickable graphics, return true if the supplied Id is from this Decorator. */
+  /** Returns true if the id matches the pickable id of this decorator. */
   public testDecorationHit?(id: string): boolean {
     const rtn = id === this._pickableId;
     return rtn;
   }
 
+  /** Called by the render loop and adds the fire particles graphics to the context. */
   public decorate(context: DecorateContext): void {
     if (!FireEmitter._fireTexture || !FireEmitter._smokeTexture)
       return;
@@ -263,12 +268,12 @@ export class FireEmitter implements Decorator {
 
   /** Emit a new fire particle with randomized properties. */
   private emitFire(randomizeHeight: boolean): MobileParticle {
-    // weight for the middle 15% of effectRange
+    // weight for the middle 20% of effectRange
     let xy: XAndY = {
       x: randomFloat(this._params.effectRange.low.x, this._params.effectRange.high.x),
       y: randomFloat(this._params.effectRange.low.y, this._params.effectRange.high.y),
     };
-    const isCenterFlame = Math.random() > 0.75;
+    const isCenterFlame = Math.random() > 0.80;
     if (isCenterFlame) {
       xy = {
         x: xy.x * 0.25,
