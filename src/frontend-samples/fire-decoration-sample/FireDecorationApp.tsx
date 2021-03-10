@@ -55,7 +55,7 @@ export default class FireDecorationApp implements SampleApp {
     FireDecorationApp._dropListeners.push(dispose);
   }
 
-  /** Runs the Placement Tool with highlighting disenabled using the tool registry API. */
+  /** Runs the Placement Tool which will run the callback function passing the point the user confirms. */
   public static startPlacementTool(confirmedPointCallBack: (point: Point3d, viewport: Viewport) => void) {
     IModelApp.tools.run(PlacementTool.toolId, confirmedPointCallBack);
   }
@@ -75,9 +75,9 @@ export default class FireDecorationApp implements SampleApp {
     IModelApp.viewManager.dropDecorator(decorator);
   }
 
-  /** Disposes of each emitter, triggering dispose of their owed resources. */
+  /** Disposes of each emitter, triggering disposal of their owned resources. */
   public static disposeAllEmitters() {
-    // The FireEmitters collectively owns textures and will dispose of them when no longer required.
+    // The FireEmitters collectively own the textures and will dispose of them when no longer required.
     FireDecorationApp.getAllEmitters().forEach((fire) => {
       FireDecorationApp.dropDecorator(fire);
       fire.dispose();
@@ -100,7 +100,7 @@ export default class FireDecorationApp implements SampleApp {
       return undefined;
 
     if (FireDecorationApp.getAllEmitters().length === 0)
-      // Tell the viewport to re-render the decorations every frame so that the snow particles animate smoothly.
+      // Tell the viewport to re-render the decorations every frame so that the fire particles animate smoothly.
       FireDecorationApp._dropListeners.push(vp.onRender.addListener(() => vp.invalidateDecorations()));
 
     // The FireEmitter class itself handles ensuring the timely allocation of textures.
@@ -122,7 +122,7 @@ export default class FireDecorationApp implements SampleApp {
     FireDecorationApp.disposeAllEmitters();
   }
 
-  /** Queries the backend for the elements that will act are targets for the demo on the Villa iModel. */
+  /** Queries the backend for the elements that will act as targets for the demo on the Villa iModel. */
   public static async queryElements(iModel: IModelConnection, elementsIds: string[]): Promise<Array<{ origin: Point3d, bBox: Range3d }>> {
     const query = `Select Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
     const data: Array<{ origin: Point3d, bBox: Range3d }> = [];

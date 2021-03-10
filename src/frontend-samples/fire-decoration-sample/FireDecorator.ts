@@ -81,7 +81,7 @@ export interface FireParams {
   enableSmoke: boolean;
   /** Range from which to randomly select each smoke particle's size, in pixels. */
   smokeSizeRange: Range1d;
-  /** Information about this emitter that till be printed with the tool tip. */
+  /** Information about this emitter that will be printed with the tool tip. */
   toolTipInfo?: string;
 }
 
@@ -347,7 +347,7 @@ export class FireEmitter implements Decorator {
       particle.y += this._params.windVelocity * elapsedSeconds * this._params.windDirection.y;
       particle.z += this._params.windVelocity * elapsedSeconds * this._params.windDirection.z;
 
-      // Particles that travel beyond the height, they are replace with a new particle.
+      // Particles that travel beyond the height, are replace with a new particle.
       const origin = Point3d.createZero();
       let distance = (origin.distance(particle) * 0.75) + (particle.z * 0.25);
       if (particle.type === "Smoke" && particle.transparency) {
