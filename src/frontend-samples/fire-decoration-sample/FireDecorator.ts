@@ -18,7 +18,7 @@ function randomFloat(min: number, max: number): number {
   return Math.random() * (max - min) + min;
 }
 
-interface MobileParticle extends ParticleProps {
+interface FireParticle extends ParticleProps {
   /** Make x, y, and z from ParticleProps writable. */
   x: number;
   y: number;
@@ -26,7 +26,11 @@ interface MobileParticle extends ParticleProps {
 
   /** Current velocity, in pixels per second. */
   velocity: Vector3d;
-  /** Denotes the type of particle. */
+  /** Denotes the type of particle.
+   * Fire: the flames of the effect.
+   * Smoke: grey and puffy emitted at the ends of the flames (fire).
+   * Center: these particles are emitted at the center of the effect range. A yellowing effect is created by with a concentration of particles and this type helps encourage that.
+   */
   type: "Smoke" | "Fire" | "Center";
 }
 
@@ -94,7 +98,7 @@ export class FireEmitter implements Decorator {
   private static _removeOnDispose?: () => void;
   private static _removeOnClose?: () => void;
 
-  public readonly particles: MobileParticle[] = [];
+  public readonly particles: FireParticle[] = [];
   public readonly source: Point3d;
   private readonly _pickableId: string;
   private _lastUpdateTime: number;
@@ -267,7 +271,7 @@ export class FireEmitter implements Decorator {
   }
 
   /** Emit a new fire particle with randomized properties. */
-  private emitFire(randomizeHeight: boolean): MobileParticle {
+  private emitFire(randomizeHeight: boolean): FireParticle {
     // weight for the middle 20% of effectRange
     let xy: XAndY = {
       x: randomFloat(this._params.effectRange.low.x, this._params.effectRange.high.x),
@@ -295,7 +299,7 @@ export class FireEmitter implements Decorator {
   }
 
   /** Emit a new smoke particle base on the fire particle it came from with randomized size. */
-  private emitSmoke(parent: MobileParticle): MobileParticle {
+  private emitSmoke(parent: FireParticle): FireParticle {
     return {
       ...parent,
       type: "Smoke",

@@ -110,7 +110,7 @@ export default class FireDecorationApp implements SampleApp {
     return fireDecorator;
   }
 
-  /** Returns a filtered list of Decorators retrieved from the ViewManager API. */
+  /** Returns a list of FireEmitter decorators that have been added using the ViewManager API. */
   public static getAllEmitters(): FireEmitter[] {
     return IModelApp.viewManager.decorators.filter((decorator) => decorator instanceof FireEmitter) as FireEmitter[];
   }

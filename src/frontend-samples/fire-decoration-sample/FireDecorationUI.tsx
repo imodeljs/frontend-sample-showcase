@@ -25,7 +25,7 @@ interface ParticleSampleProps {
   iModelSelector: React.ReactNode;
 }
 
-/** Corresponded to FireParams from Particle.ts. */
+/** Corresponded to FireParams from FireDecorator.ts. */
 interface FireProps {
   particleNumScale: number;
   height: number;
@@ -82,7 +82,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     this.setState({ selectedEmitter: undefined });
   }
 
-  /** Deletes all Decorates. */
+  /** Deletes all decorates. */
   private readonly dropAllEmitters = () => {
     this.setState({ selectedEmitter: undefined });
     FireDecorationApp.disposeAllEmitters();
@@ -96,7 +96,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
           <span>Place New Emitter</span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-          <Button disabled={this.state.isLoading} onClick={this.dropAllEmitters}>Delete All Emitters</Button>
+          <Button disabled={this.state.isLoading} onClick={this.dropAllEmitters}>Delete all emitters</Button>
         </div>
         <div className={"sample-options-2col"}>
           <Button disabled={this.state.isLoading} onClick={this.startPlacementTool}>Place</Button>
