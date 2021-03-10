@@ -12,7 +12,7 @@ export function getSerializeViewSpec(): SampleSpec {
     label: "Serialize View",
     image: "serialize-view-thumbnail.png",
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding],
-    readme: () => import("!!raw-loader!./README.md"),
+    readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp") },
       { name: "SerializeViewUI.tsx", import: import("!!raw-loader!./SerializeViewUI"), entry: true },

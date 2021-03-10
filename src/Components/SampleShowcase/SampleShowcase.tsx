@@ -3,25 +3,25 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { SampleGallery } from 'Components/SampleGallery/SampleGallery';
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
+import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector } from 'common/IModelSelector/IModelSelector';
-import { ActiveSample } from './ActiveSample';
-import { SplitScreen } from '@bentley/monaco-editor/lib/components/split-screen/SplitScreen';
-import Pane from '@bentley/monaco-editor/lib/components/split-screen/Pane';
-import { Button, ButtonSize, ButtonType } from '@bentley/ui-core/lib/ui-core/button/Button';
-import { Spinner, SpinnerSize } from '@bentley/ui-core/lib/ui-core/loading/Spinner';
-import { ErrorBoundary } from 'Components/ErrorBoundary/ErrorBoundary';
+import { IModelSelector } from "common/IModelSelector/IModelSelector";
+import { ActiveSample } from "./ActiveSample";
+import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
+import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
+import { Button, ButtonSize, ButtonType } from "@bentley/ui-core/lib/ui-core/button/Button";
+import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 
-const Editor = React.lazy(() => import(/* webpackMode: "lazy" */ "../SampleEditor/SampleEditorContext"));
-const Visualizer = React.lazy(() => import(/* webpackMode: "lazy" */ "../SampleVisualizer/SampleVisualizer"));
+const Editor = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleEditor/SampleEditorContext"));
+const Visualizer = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleVisualizer/SampleVisualizer"));
 
-type DragState = {
-  dragging: boolean,
-  paneSizes: string[]
+interface DragState {
+  dragging: boolean;
+  paneSizes: string[];
 }
 
 const calculateMinSize = (containerSize: number, sizeStr: string = "0") => {
@@ -66,18 +66,25 @@ export const SampleShowcase: FunctionComponent = () => {
     setScrollTo(wantScroll);
     setActiveSample(new ActiveSample(groupName, sampleName));
     setTranspileResult(undefined);
-  }
+  };
 
   const onSampleGallerySizeChange = (size: number) => {
     if (dragState.dragging) {
-      size < 200 ? setShowGallery(false) : setShowGallery(true)
+      if (size < 200)
+        setShowGallery(false)
+      else
+        setShowGallery(true)
     }
-  }
+  };
+
   const onEditorSizeChange = (size: number) => {
     if (dragState.dragging) {
-      size < 200 ? setShowEditor(false) : setShowEditor(true)
+      if (size < 200)
+        setShowEditor(false)
+      else
+        setShowEditor(true)
     }
-  }
+  };
 
   const getImodelSelector = useCallback(() => {
     if (!activeSample.imodelList || !activeSample.imodelList.length)

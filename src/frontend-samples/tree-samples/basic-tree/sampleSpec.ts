@@ -11,7 +11,7 @@ export function getBasicTreeSpec(): SampleSpec {
     label: "Basic Tree",
     image: "basic-tree-thumbnail.png",
     customModelList: [],
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp") },
       { name: "BasicTreeUI.tsx", import: import("!!raw-loader!./BasicTreeUI"), entry: true },

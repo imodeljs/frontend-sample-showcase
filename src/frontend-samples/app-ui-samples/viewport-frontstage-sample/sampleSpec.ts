@@ -11,7 +11,7 @@ export function getViewportFrontstageSample(): SampleSpec {
     name: "viewport-frontstage-sample",
     label: "Viewport Frontstage",
     image: "viewport-frontstage-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage"), entry: true },
     ],

@@ -10,7 +10,7 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     name: "tooltip-customize-sample",
     label: "Tooltip Customize",
     image: "tooltip-customize-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp") },
       { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI"), entry: true },

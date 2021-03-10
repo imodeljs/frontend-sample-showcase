@@ -11,7 +11,7 @@ export function getReadSettingsSpec(): SampleSpec {
     name: "read-settings-sample",
     label: "Read Settings",
     image: "read-settings-thumbnail.png",
-    readme: () => import("!!raw-loader!./README.md"),
+    readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp") },
       { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI"), entry: true },

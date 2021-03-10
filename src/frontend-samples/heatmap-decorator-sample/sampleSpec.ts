@@ -10,7 +10,7 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
     name: "heatmap-decorator-sample",
     label: "Heatmap Decorator",
     image: "heatmap-decorator-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "HeatmapDecoratorApp.tsx", import: import("!!raw-loader!./HeatmapDecoratorApp") },
       { name: "HeatmapDecoratorUI.tsx", import: import("!!raw-loader!./HeatmapDecoratorUI"), entry: true },

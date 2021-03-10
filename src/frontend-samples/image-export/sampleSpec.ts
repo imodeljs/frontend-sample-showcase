@@ -10,7 +10,7 @@ export function getImageExportSpec(): SampleSpec {
     name: "image-export-sample",
     label: "Image Export",
     image: "image-export-thumbnail.png",
-    readme: () => import("!!raw-loader!./README.md"),
+    readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ImageExportApp.tsx", import: import("!!raw-loader!./ImageExportApp") },
       { name: "ImageExportUI.tsx", import: import("!!raw-loader!./ImageExportUI"), entry: true },

@@ -11,7 +11,7 @@ export function getThematicDisplaySpec(): SampleSpec {
     name: "thematic-display-sample",
     label: "Thematic Display",
     image: "thematic-display-thumbnail.png",
-    readme: () => import("!!raw-loader!./README.md"),
+    readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp") },
       { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI"), entry: true },

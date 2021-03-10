@@ -10,12 +10,12 @@ export function getHyperModelingSpec(): SampleSpec {
     name: "hypermodeling-sample",
     label: "Hyper-modeling",
     image: "hypermodeling-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "HyperModelingUI.tsx", import: import("!!raw-loader!./HyperModelingUI"), entry: true },
       { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp") },
     ],
     customModelList: [SampleIModels.House],
-    type: "HyperModelingUI.tsx"
+    type: "HyperModelingUI.tsx",
   });
 }

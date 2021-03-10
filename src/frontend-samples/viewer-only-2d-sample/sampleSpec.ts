@@ -11,7 +11,7 @@ export function getViewerOnly2dSpec(): SampleSpec {
     name: "viewer-only-2d-sample",
     label: "2d",
     image: "viewer-only-2d-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ViewerOnly2dApp.tsx", import: import("!!raw-loader!./ViewerOnly2dApp") },
       { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI"), entry: true },

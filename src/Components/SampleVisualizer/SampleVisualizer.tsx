@@ -11,18 +11,18 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
 
 const i18nNamespace = "sample-showcase-i18n-namespace";
-const context = (require as any).context('./../../frontend-samples', true, /\.tsx$/);
+const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 
-type SampleVisualizerProps = {
-  type: string,
-  iModelName: string,
-  iModelSelector: React.ReactNode,
-  transpileResult?: string,
+interface SampleVisualizerProps {
+  type: string;
+  iModelName: string;
+  iModelSelector: React.ReactNode;
+  transpileResult?: string;
 }
 
-type SampleProps = {
-  iModelName: string,
-  iModelSelector: React.ReactNode,
+interface SampleProps {
+  iModelName: string;
+  iModelSelector: React.ReactNode;
 }
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
@@ -39,8 +39,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
           setAppReady(true);
           MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
         })
-        .catch(error => {
-          console.error("SampleBaseApp.startup failure", error);
+        .catch(() => {
           setAppReady(true);
         });
     }
@@ -50,18 +49,17 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
     }
   }, [appReady]);
 
-  // Set sample UI 
+  // Set sample UI
   useEffect(() => {
-    const key = context.keys().find((key: string) => key.includes(type));
+    const key = context.keys().find((k: string) => k.includes(type));
     try {
       if (key) {
-        const sampleUi = context(key).default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(sampleUi, { iModelName, iModelSelector }));
+        const component = context(key).default as React.ComponentClass<SampleProps>;
+        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
       } else {
-        setSampleUi(<div>Failed to resolve sample '{type}'</div>);
+        setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
       }
-    }
-    catch (error) {
+    } catch (error) {
       setSampleUi(<DisplayError error={error} />)
     }
   }, [type, iModelName]);
@@ -71,8 +69,8 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
     if (transpileResult) {
       setLoading(true);
       import( /* webpackIgnore: true */ transpileResult).then(module => {
-        const sampleUi = module.default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(sampleUi, { iModelName, iModelSelector }));
+        const component = module.default as React.ComponentClass<SampleProps>;
+        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
         setLoading(false);
       })
     }

@@ -11,7 +11,7 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
     label: "Closest Point on Curve",
     image: "closest-point-curve-thumbnail.png",
     customModelList: [],
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp") },
       { name: "ClosestPointOnCurveUI.tsx", import: import("!!raw-loader!./ClosestPointOnCurveUI"), entry: true },

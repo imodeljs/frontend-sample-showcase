@@ -11,7 +11,7 @@ export function getClassifierSpec(): SampleSpec {
     name: "classifier-sample",
     label: "Classifiers",
     image: "classifier-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ClassifierApp.tsx", import: import("!!raw-loader!./ClassifierApp") },
       { name: "ClassifierUI.tsx", import: import("!!raw-loader!./ClassifierUI"), entry: true },

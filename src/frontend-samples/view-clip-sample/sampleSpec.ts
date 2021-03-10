@@ -11,7 +11,7 @@ export function getViewClipSpec(): SampleSpec {
     name: "view-clip-sample",
     label: "View Clipping",
     image: "view-clip-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
       { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },

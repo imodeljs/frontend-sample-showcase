@@ -10,7 +10,7 @@ export function getShadowStudySpec(): SampleSpec {
     name: "shadow-study-sample",
     label: "Shadow Study",
     image: "shadow-study-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp") },
       { name: "ShadowStudyUI.tsx", import: import("!!raw-loader!./ShadowStudyUI"), entry: true },

@@ -11,7 +11,7 @@ export function getCurveFractionSpec(): SampleSpec {
     label: "Curve Fractions",
     image: "curve-fraction-thumbnail.png",
     customModelList: [],
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp") },
       { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI"), entry: true },

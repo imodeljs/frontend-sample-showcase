@@ -11,7 +11,7 @@ export function getAdvanced3dSpec(): SampleSpec {
     label: "Advanced 3d",
     image: "advanced-3d-thumbnail.png",
     customModelList: [],
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "Advanced3dApp.tsx", import: import("!!raw-loader!./Advanced3dApp") },
       { name: "Advanced3dUI.tsx", import: import("!!raw-loader!./Advanced3dUI"), entry: true },

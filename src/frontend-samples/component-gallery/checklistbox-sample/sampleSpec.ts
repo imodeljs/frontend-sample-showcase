@@ -11,7 +11,7 @@ export function getCheckListBoxSpec(): SampleSpec {
     name: "checklistbox-sample",
     label: "UI-CheckListBoxes",
     image: "ui-checklistbox-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     customModelList: [],
     files: () => [
       { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },

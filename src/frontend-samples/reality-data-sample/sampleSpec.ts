@@ -11,7 +11,7 @@ export function getRealityDataSpec(): SampleSpec {
     name: "reality-data-sample",
     label: "Reality Data",
     image: "reality-data-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
       { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },

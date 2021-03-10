@@ -10,7 +10,7 @@ export function getMultiViewportSpec(): SampleSpec {
     name: "multi-viewport-sample",
     label: "Multiple Viewports",
     image: "multi-viewport-thumbnail.png",
-    readme: () => import("!!raw-loader!./README.md"),
+    readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "MultiViewportApp.tsx", import: import("!!raw-loader!./MultiViewportApp") },
       { name: "MultiViewportUI.tsx", import: import("!!raw-loader!./MultiViewportUI"), entry: true },

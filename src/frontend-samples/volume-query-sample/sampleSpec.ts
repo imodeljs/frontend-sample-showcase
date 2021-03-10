@@ -11,7 +11,7 @@ export function getVolumeQuerySpec(): SampleSpec {
     name: "volume-query-sample",
     label: "Volume Query",
     image: "volume-query-thumbnail.png",
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "VolumeQueryApp.tsx", import: import("!!raw-loader!./VolumeQueryApp") },
       { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },

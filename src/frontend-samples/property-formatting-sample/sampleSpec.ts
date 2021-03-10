@@ -12,7 +12,7 @@ export function getPropertyFormattingSpec(): SampleSpec {
     label: "Property Formatting",
     image: "property-formatting-thumbnail.png",
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp") },
       { name: "PropertyFormattingUI.tsx", import: import("!!raw-loader!./PropertyFormattingUI"), entry: true },

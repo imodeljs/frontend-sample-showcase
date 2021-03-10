@@ -11,7 +11,7 @@ export function getSimple3dSpec(): SampleSpec {
     label: "Simple 3d",
     image: "simple-3d-thumbnail.png",
     customModelList: [],
-    readme: () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp") },
       { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI"), entry: true },
