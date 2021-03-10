@@ -78,8 +78,8 @@
     "worker-loader": "^2.0.0"
   },
   "scripts": {
-    "start": "react-app-rewired start --scripts-version @bentley/react-scripts",
-    "build": "react-app-rewired build --scripts-version @bentley/react-scripts",
+    "start": "npm run-script build:typedefs && react-app-rewired start --scripts-version @bentley/react-scripts",
+    "build": "npm run-script build:typedefs && react-app-rewired build --scripts-version @bentley/react-scripts",
     "build:typedefs": "generate-modules ./Modules.json ./src/Components/SampleEditor/Modules.ts",
     "test": "react-app-rewired test --scripts-version @bentley/react-scripts",
     "eject": "react-app-rewired eject --scripts-version @bentley/react-scripts",
