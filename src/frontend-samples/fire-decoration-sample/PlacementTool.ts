@@ -11,12 +11,12 @@ import { BeButtonEvent, EventHandled, IModelApp, PrimitiveTool, Viewport } from 
 export class PlacementTool extends PrimitiveTool {
   public static toolId = "Test.Placement"; // <== Used to find flyover (tool name), description, and keyin from namespace tool registered with...see CoreTools.json for example...
   public static iconSpec = "icon-star"; // <== Tool button should use whatever icon you have here...
-  private _createMarkerCallback: (pt: Point3d) => {};
+  private _placementCallback: (pt: Point3d, viewport: Viewport) => void;
 
-  constructor(callback: (pt: Point3d) => {}) {
+  constructor(callback: (pt: Point3d, vp: Viewport) => void) {
     super();
 
-    this._createMarkerCallback = callback;
+    this._placementCallback = callback;
   }
 
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp && vp.view.isSpatialView()); }
@@ -37,7 +37,7 @@ export class PlacementTool extends PrimitiveTool {
       return EventHandled.No; // Shouldn't really happen
 
     // ev.point is the current world coordinate point adjusted for snap and locks
-    this._createMarkerCallback(ev.point);
+    this._placementCallback(ev.point, ev.viewport);
 
     this.onReinitialize(); // Calls onRestartTool to exit
     return EventHandled.No;

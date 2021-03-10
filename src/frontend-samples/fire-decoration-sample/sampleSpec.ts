@@ -4,19 +4,19 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import FireDecorationUI from "./ParticleSampleUI";
+import FireDecorationUI from "./FireDecorationUI";
 
-export function getParticleSampleSpec(): SampleSpec {
+export function getParticleFireSampleSpec(): SampleSpec {
   return ({
     name: "fire-sample",
-    label: "Fire Decorator",
+    label: "Particle Sample (Fire)",
     image: "view-attributes-thumbnail.png",
     customModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "ParticleSampleUI.tsx", import: import("!!raw-loader!./ParticleSampleUI"), entry: true },
-      { name: "ParticleSampleApp.tsx", import: import("!!raw-loader!./ParticleSampleApp") },
-      { name: "Particle.ts", import: import("!!raw-loader!./Particle") },
+      { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp"), entry: true },
+      { name: "FireDecorationUI.tsx", import: import("!!raw-loader!./FireDecorationUI") },
+      { name: "FireDecorator.ts", import: import("!!raw-loader!./FireDecorator") },
       { name: "PlacementTool.ts", import: import("!!raw-loader!./PlacementTool") },
     ],
     sampleClass: FireDecorationUI,

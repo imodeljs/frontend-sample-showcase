@@ -5,19 +5,19 @@
 import { assert } from "@bentley/bentleyjs-core";
 import { Point3d, Range2d, Transform } from "@bentley/geometry-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
 import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import "common/samples-common.scss";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
-import { FireDecorator } from "./Particle";
-import FireDecorationApp from "./ParticleSampleApp";
+import FireDecorationApp from "./FireDecorationApp";
+import { FireEmitter } from "./FireDecorator";
 
 /** The React state for this UI component */
 interface ParticleSampleState extends FireProps {
   isLoading: boolean;
-  selectedEmitter?: FireDecorator;
+  selectedEmitter?: FireEmitter;
   paramsName: string;
 }
 interface ParticleSampleProps {
@@ -37,7 +37,6 @@ interface FireProps {
 /** A React component that renders the UI specific for this sample */
 export default class FireDecorationUI extends React.Component<ParticleSampleProps, ParticleSampleState> {
   private readonly _lampElementIds = ["0x3a5", "0x1ab", "0x32b", "0x2ab", "0x22b"];
-  private _dropListeners: VoidFunction[] = [];
   private readonly _defaultProps: FireProps = {
     particleNumScale: 0,
     height: 0,
@@ -59,31 +58,20 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
   /** A React method that is called when the sample is mounted (startup) */
   public componentDidMount() {
     FireDecorationApp.initTools();
-    // Should allow for selecting the particles (but doesn't)
-    IModelApp.locateManager.options.allowDecorations = true;
-    IModelApp.viewManager.addDecorator(FireDecorationApp.highlighter);
   }
 
   /** A React method that is called just before the sample is unmounted (disposed) */
   public componentWillUnmount() {
-    // Resetting the IModelApp to the default state.
-    IModelApp.locateManager.options.allowDecorations = false;
-    this._dropListeners.flatMap((callback) => callback());
-    this._dropListeners = [];
-    IModelApp.viewManager.dropDecorator(FireDecorationApp.highlighter);
-    // Listeners on the FireDecorator will be triggered when the sample is closing.  It will handle disposing itself.
+    FireDecorationApp.dispose();
   }
 
   /** Starts a tool that will place a new emitter. */
   private readonly startPlacementTool = () => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp === undefined)
-      return;
-
-    FireDecorationApp.startPlacementTool(async (point: Point3d) => {
+    FireDecorationApp.startPlacementTool(async (point: Point3d, viewport: Viewport) => {
       const params = FireDecorationApp.predefinedParams.get(this.state.paramsName);
       assert(params !== undefined, "Value is set based on keys of map.");
-      const selectedEmitter = await FireDecorator.create(vp, point, params);
+      params.toolTipInfo = this.state.paramsName;
+      const selectedEmitter = await FireDecorationApp.createFireDecorator(point, params, viewport);
       this.setState({ selectedEmitter });
     });
   }
@@ -97,7 +85,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
   /** Deletes all Decorates. */
   private readonly dropAllEmitters = () => {
     this.setState({ selectedEmitter: undefined });
-    FireDecorator.dispose();
+    FireEmitter.disposeAll();
   }
 
   public getControls(): React.ReactNode {
@@ -157,24 +145,25 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
   private onIModelReady = (_iModel: IModelConnection) => {
     // Villa will have some decorators initially placed as a demo.
     if (this.props.iModelName === "Villa") {
-      this._dropListeners.push(IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
-
+      FireDecorationApp.onViewOpen("Once", (viewport) => {
         // Query for element origin and bounding box.
         FireDecorationApp.queryElements(viewport.iModel, this._lampElementIds).then(async (results) => {
           const params = FireDecorationApp.predefinedParams.get("Candle") ?? FireDecorationApp.predefinedParams.keys().next().value;
           results.forEach((source, index) => {
-            FireDecorator.create(viewport, source.origin, params);
-            // If it's the first place, zoom to it.
+            FireDecorationApp.createFireDecorator(source.origin, params, viewport);
+            // If it's the first placed, zoom to it.
             if (index === 0) {
               let volume = source.bBox.clone();
               // Manipulate the volume that the viewport will zoom to.
+              // We want the view to be zoomed out (scaling the volume up).
               volume.scaleAboutCenterInPlace(5);
+              // We want the element in the bottom half of the view (translate the volume along the positive z(up) axis).
               volume = Transform.createTranslationXYZ(0, 0, volume.zLength() * 0.25).multiplyRange(volume);
               viewport.zoomToVolume(volume);
             }
           });
         });
-      }));
+      });
     }
     this.setState({ isLoading: false });
   }
@@ -195,7 +184,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Use the button to create a new fire particle emitter.  Use the drop down change the base params for new emitters.  Use the controls to configure the selected emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
+        <ControlPane instructions="Use the ‘Place’ button to create a new fire particle emitter. After placing, use the controls to configure the new emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
         { /* Viewport to display the iModel */}
         <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>

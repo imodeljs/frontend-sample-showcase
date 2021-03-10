@@ -3,17 +3,18 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { dispose } from "@bentley/bentleyjs-core";
-import { Point3d, Range1d, Range2d, Range3d, Vector3d } from "@bentley/geometry-core";
-import { RenderTexture } from "@bentley/imodeljs-common";
-import { DecorateContext, Decorator, GraphicType, imageElementFromUrl, IModelApp, ParticleCollectionBuilder, ParticleProps, Viewport } from "@bentley/imodeljs-frontend";
+import { Point3d, Range1d, Range2d, Range3d, Transform, Vector3d, XAndY } from "@bentley/geometry-core";
+import { ColorDef, RenderTexture } from "@bentley/imodeljs-common";
+import { DecorateContext, Decorator, GraphicType, HitDetail, ParticleCollectionBuilder, ParticleProps, Viewport } from "@bentley/imodeljs-frontend";
+import FireDecorationApp from "./FireDecorationApp";
 
 /** Generate integer in [min, max]. */
-export function randomInteger(min: number, max: number): number {
+function randomInteger(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /** Generate random floating-point number in [min, max). */
-export function randomFloat(min: number, max: number): number {
+function randomFloat(min: number, max: number): number {
   return Math.random() * (max - min) + min;
 }
 
@@ -26,7 +27,28 @@ interface MobileParticle extends ParticleProps {
   /** Current velocity, in pixels per second. */
   velocity: Vector3d;
   /** Denotes the type of particle. */
-  type: "Smoke" | "Fire";
+  type: "Smoke" | "Fire" | "Center";
+}
+
+/** This decorator functions to highlight a given emitter by outlining the source range. */
+export class EmitterHighlighter implements Decorator {
+  constructor(public emitter: FireEmitter) { }
+  public decorate(context: DecorateContext) {
+    const minium = this.emitter.params.smokeSizeRange.low;
+    const range = Range3d.createXYZXYZ(
+      Math.min(this.emitter.params.effectRange.low.x, -minium),
+      Math.min(this.emitter.params.effectRange.low.y, -minium),
+      0,
+      Math.max(this.emitter.params.effectRange.high.x, minium),
+      Math.max(this.emitter.params.effectRange.high.y, minium),
+      this.emitter.params.height,
+    );
+    const transform = Transform.createTranslation(this.emitter.source);
+    const builder = context.createSceneGraphicBuilder();
+    builder.setSymbology(context.viewport.getContrastToBackgroundColor(), ColorDef.black, 2);
+    builder.addRangeBox(transform.multiplyRange(range));
+    context.addDecoration(GraphicType.WorldOverlay, builder.finish());
+  }
 }
 
 export interface FireParams {
@@ -54,20 +76,20 @@ export interface FireParams {
   enableSmoke: boolean;
   /** Range from which to randomly select each smoke particle's size, in pixels. */
   smokeSizeRange: Range1d;
+  /** Information about this emitter that till be printed with the tool tip. */
+  toolTipInfo?: string;
 }
 
 /** This decorator functions as a particle emitter at the given a XYZ source and the particles are stylized as a fire burning.
  * Note: Assumes up is Z.
  */
-export class FireDecorator implements Decorator {
+export class FireEmitter implements Decorator {
   private static readonly _rateOfDegeneration = 0.000001;
   private static readonly _rateOfGrowth = 0.1;
-  private static readonly _maximumParticles = 7000;
+  private static readonly _maximumParticles = 20000;
 
-  public static decorators = new Set<FireDecorator>();
   private static _fireTexture?: RenderTexture;
   private static _smokeTexture?: RenderTexture;
-  private static _removeOnRender?: () => void;
   private static _removeOnDispose?: () => void;
   private static _removeOnClose?: () => void;
 
@@ -79,83 +101,70 @@ export class FireDecorator implements Decorator {
 
   /** If the textures are not created yet, will attempt to create them.  Returns true if successful. */
   private static async tryTextures(): Promise<boolean> {
-    const isOwned = true;
-    // Note: the decorator takes ownership of the textures, and disposes of them when the decorator is disposed.
-    const params = new RenderTexture.Params(undefined, undefined, isOwned);
-    if (!FireDecorator._fireTexture) {
-      const fireImage = await imageElementFromUrl("./particle-gradient-flame.png");
-      FireDecorator._fireTexture = IModelApp.renderSystem.createTextureFromImage(fireImage, true, undefined, params);
-    }
-    if (!FireDecorator._smokeTexture) {
-      const smokeImage = await imageElementFromUrl("./particle-gradient-smoke.png");
-      FireDecorator._smokeTexture = IModelApp.renderSystem.createTextureFromImage(smokeImage, true, undefined, params);
-    }
-    return (FireDecorator._fireTexture !== undefined && FireDecorator._smokeTexture !== undefined);
+    if (!FireEmitter._fireTexture)
+      FireEmitter._fireTexture = await FireDecorationApp.allocateTextureFromUrl("./particle-gradient-flame.png");
+    if (!FireEmitter._smokeTexture)
+      FireEmitter._smokeTexture = await FireDecorationApp.allocateTextureFromUrl("./particle-gradient-smoke.png");
+    return (FireEmitter._fireTexture !== undefined && FireEmitter._smokeTexture !== undefined);
   }
 
   /** Only dispose of resources that are not used by any other decorators. */
   private static _tryDisposeTextures() {
-    if (FireDecorator.decorators.size === 0) {
-      FireDecorator._fireTexture = dispose(FireDecorator._fireTexture);
-      FireDecorator._smokeTexture = dispose(FireDecorator._smokeTexture);
+
+    if (FireDecorationApp.getAllEmitters().length === 0) {
+      FireEmitter._fireTexture = dispose(FireEmitter._fireTexture);
+      FireEmitter._smokeTexture = dispose(FireEmitter._smokeTexture);
       // Remove listeners
       const tryDisposeListen = (func?: () => void) => {
         if (func !== undefined) func();
         func = undefined;
       };
-      tryDisposeListen(FireDecorator._removeOnRender);
-      tryDisposeListen(FireDecorator._removeOnDispose);
-      tryDisposeListen(FireDecorator._removeOnClose);
+      tryDisposeListen(FireEmitter._removeOnDispose);
+      tryDisposeListen(FireEmitter._removeOnClose);
     }
   }
 
   /** Drops all decorators and disposes of owed resources. */
-  public static dispose() {
-    FireDecorator.decorators.forEach((fire) => fire.dispose());
-    FireDecorator._tryDisposeTextures();
+  public static disposeAll() {
+    FireDecorationApp.getAllEmitters().forEach((fire) => FireDecorationApp.dropDecorator(fire));
+    FireEmitter._tryDisposeTextures();
   }
 
   /** Creates a new fire particle decorator at the given world position. */
-  public static async create(viewport: Viewport, source: Point3d, params: FireParams): Promise<FireDecorator | undefined> {
-    if (!await FireDecorator.tryTextures())
+  public static async create(viewport: Viewport, source: Point3d, params: FireParams): Promise<FireEmitter | undefined> {
+    if (!await FireEmitter.tryTextures())
       return undefined;
 
     const fireDecorator = new this(viewport.iModel.transientIds.next, source, params);
 
-    if (FireDecorator.decorators.size === 0) {
+    if (FireDecorationApp.length === 0) {
+      // Due to the constructions of the showcase, we know when the viewport will be closed.  Under different circumstances, the methods below are example events to ensure the timely dispose of textures owned by the decorator.
       // When the iModel is closed, dispose of any decorations.
-      FireDecorator._removeOnClose = viewport.iModel.onClose.addOnce(() => FireDecorator.dispose());
+      FireEmitter._removeOnClose = viewport.iModel.onClose.addOnce(() => FireEmitter.disposeAll());
       // When the viewport is destroyed, dispose of any decorations. too.
-      FireDecorator._removeOnDispose = viewport.onDisposed.addListener(() => FireDecorator.dispose());
-      // Tell the viewport to re-render the decorations every frame so that the snow particles animate smoothly.
-      FireDecorator._removeOnRender = viewport.onRender.addListener(() => viewport.invalidateDecorations());
+      FireEmitter._removeOnDispose = viewport.onDisposed.addListener(() => FireEmitter.disposeAll());
     }
-
-    FireDecorator.decorators.add(fireDecorator);
-    IModelApp.viewManager.addDecorator(fireDecorator);
 
     return fireDecorator;
   }
 
   /** Drop decorator and attempt to dispose of resources. */
   public dispose() {
-    FireDecorator.decorators.delete(this);
-    IModelApp.viewManager.dropDecorator(this);
-    FireDecorator._tryDisposeTextures();
+    FireDecorationApp.dropDecorator(this);
+    FireEmitter._tryDisposeTextures();
   }
 
   private calculateNumParticle(): number {
     // y(normalized change of survival) = a * b ^ x(distance) + c(-a)
-    const maximumMass = FireDecorator._maximumParticles;
-    const a = FireDecorator._rateOfGrowth;
+    const maximumMass = FireEmitter._maximumParticles;
+    const a = FireEmitter._rateOfGrowth;
     const b = (1 + a) / a;
     const exponentialDensityScaling = (a * Math.pow(b, this._params.particleNumScale)) - a;
-    const smokeMultiplier = this._params.enableSmoke ? 1.75 : 1;
 
-    return Math.round(exponentialDensityScaling * maximumMass * smokeMultiplier);
+    return Math.round(exponentialDensityScaling * maximumMass);
   }
 
-  private constructor(id: string, source: Point3d, params: FireParams) {
+  constructor(id: string, source: Point3d, params: FireParams) {
     this.source = source;
     this._pickableId = id;
     this._params = { ...params };
@@ -178,8 +187,37 @@ export class FireDecorator implements Decorator {
     }
   }
 
+  public async getDecorationToolTip(_hit: HitDetail): Promise<HTMLElement | string> {
+    const toolTip = document.createElement("div");
+    const header = document.createElement("b");
+    header.textContent = this.params.toolTipInfo ?? "Fire";
+    const info = document.createElement("label");
+    info.textContent = `Particle Count: ${this.calculateNumParticle()}`;
+    const temperature = document.createElement("label");
+    let tempText = -273.15;
+    if (this.params.toolTipInfo?.includes("Candle"))
+      tempText = 1100;
+    if (this.params.toolTipInfo?.includes("Campfire"))
+      tempText = 800;
+    if (this.params.toolTipInfo?.includes("Inferno"))
+      tempText = 2000;
+    temperature.textContent = `Temperature: ~${tempText} C`;
+    toolTip.appendChild(header);
+    toolTip.appendChild(document.createElement("br"));
+    toolTip.appendChild(info);
+    toolTip.appendChild(document.createElement("br"));
+    toolTip.appendChild(temperature);
+    return toolTip;
+  }
+
+  /** If the [[decorate]] method created pickable graphics, return true if the supplied Id is from this Decorator. */
+  public testDecorationHit?(id: string): boolean {
+    const rtn = id === this._pickableId;
+    return rtn;
+  }
+
   public decorate(context: DecorateContext): void {
-    if (!FireDecorator._fireTexture || !FireDecorator._smokeTexture)
+    if (!FireEmitter._fireTexture || !FireEmitter._smokeTexture)
       return;
 
     // Update the particles.
@@ -191,7 +229,7 @@ export class FireDecorator implements Decorator {
     // Create particle graphics.
     const smokeBuilder = ParticleCollectionBuilder.create({
       viewport: context.viewport,
-      texture: FireDecorator._smokeTexture,
+      texture: FireEmitter._smokeTexture,
       origin: this.source,
       size: (this._params.sizeRange.high - this._params.sizeRange.low) / 2,
       pickableId: this._pickableId,
@@ -200,7 +238,7 @@ export class FireDecorator implements Decorator {
     // Create particle graphics.
     const fireBuilder = ParticleCollectionBuilder.create({
       viewport: context.viewport,
-      texture: FireDecorator._fireTexture,
+      texture: FireEmitter._fireTexture,
       origin: this.source,
       size: (this._params.sizeRange.high - this._params.sizeRange.low) / 2,
       pickableId: this._pickableId,
@@ -214,8 +252,8 @@ export class FireDecorator implements Decorator {
         fireBuilder.addParticle(particle);
 
     // Add graphics to context.
-    let graphic = fireBuilder.finish();
     const type = this._params.isOverlay ? GraphicType.WorldOverlay : GraphicType.WorldDecoration;
+    let graphic = fireBuilder.finish();
     if (graphic)
       context.addDecoration(type, graphic);
     graphic = smokeBuilder.finish();
@@ -225,10 +263,21 @@ export class FireDecorator implements Decorator {
 
   /** Emit a new fire particle with randomized properties. */
   private emitFire(randomizeHeight: boolean): MobileParticle {
-    return {
-      type: "Fire",
+    // weight for the middle 15% of effectRange
+    let xy: XAndY = {
       x: randomFloat(this._params.effectRange.low.x, this._params.effectRange.high.x),
       y: randomFloat(this._params.effectRange.low.y, this._params.effectRange.high.y),
+    };
+    const isCenterFlame = Math.random() > 0.75;
+    if (isCenterFlame) {
+      xy = {
+        x: xy.x * 0.25,
+        y: xy.y * 0.25,
+      };
+    }
+    return {
+      type: isCenterFlame ? "Center" : "Fire",
+      ...xy,
       z: randomizeHeight ? randomFloat(0, this._params.height) : 0,
       size: randomFloat(this._params.sizeRange.low, this._params.sizeRange.high),
       transparency: randomInteger(this._params.transparencyRange.low, this._params.transparencyRange.high),
@@ -243,13 +292,9 @@ export class FireDecorator implements Decorator {
   /** Emit a new smoke particle base on the fire particle it came from with randomized size. */
   private emitSmoke(parent: MobileParticle): MobileParticle {
     return {
+      ...parent,
       type: "Smoke",
-      x: parent.x,
-      y: parent.y,
-      z: parent.z,
       size: randomFloat(this._params.smokeSizeRange.low, this._params.smokeSizeRange.high),
-      transparency: parent.transparency,
-      velocity: parent.velocity,
     };
   }
 
@@ -303,7 +348,7 @@ export class FireDecorator implements Decorator {
       }
       // Re-emits particles that have expired.  The chance of survival is exponentially inverse to their distance from the source.
       // y(normalized change of survival) = a * b ^ x(distance) + c(-a)
-      const a = FireDecorator._rateOfDegeneration;
+      const a = FireEmitter._rateOfDegeneration;
       const b = Math.pow((1 + a) / a, 1 / this._params.height);
       const chanceToSurvive = (a * Math.pow(b, distance)) - a;
       const reset = Math.random();

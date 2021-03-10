@@ -1,17 +1,16 @@
-# Fire Decoration Sample
+# Particle Sample - Fire
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-###TODO: This sample demonstrates the API used to control view attributes.
+This samples show how to create a particle effect using fire as an example.
 
 ## Purpose
 
 The purpose of this sample is to demonstrate the following:
 
-* The visualizing fire in an iModel.
+* The visualizing (NOT simulating) fire in an iModel.
 * Working with particle in Decorators.
-* The placement and selection of arbitary 
 
 ## Description
 
-###TODO: 
+The API powering this sample is the [ParticleCollectionBuilder]().  
