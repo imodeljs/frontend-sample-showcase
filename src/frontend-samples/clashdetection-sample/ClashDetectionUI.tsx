@@ -6,7 +6,6 @@ import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import "./ClashDetection.scss";
-import { Point3d } from "@bentley/geometry-core";
 import { Id64String } from "@bentley/bentleyjs-core";
 import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
@@ -15,20 +14,16 @@ import { ViewSetup } from "api/viewSetup";
 import ClashDetectionApp from "./ClashDetectionApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { jsonData } from "./ClashDetectionJsonData";
+import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import GridWidget from "./ClashTable";
 
 export let applyZoom: boolean = true;
-
-export interface ClashMarkerPoint {
-  point: Point3d;
-  jsonData: any;
-}
 
 interface ClashDetectionUIState {
   imodel?: IModelConnection;
   viewDefinitionId?: Id64String;
   showDecorator: boolean;
-  points: ClashMarkerPoint[];
+  markersData: MarkerData[];
 }
 
 export default class ClashDetectionUI extends React.Component<{
@@ -40,7 +35,7 @@ export default class ClashDetectionUI extends React.Component<{
     super(props);
     this.state = {
       showDecorator: true,
-      points: [],
+      markersData: [],
     };
   }
 
@@ -61,13 +56,13 @@ export default class ClashDetectionUI extends React.Component<{
   public componentDidUpdate(_prevProps: {}, prevState: ClashDetectionUIState) {
     if (prevState.imodel !== this.state.imodel)
       if (this.state.showDecorator) {
-        ClashDetectionApp.setupDecorator(this.state.points);
+        ClashDetectionApp.setupDecorator(this.state.markersData);
         ClashDetectionApp.enableDecorations();
       }
 
-    if (prevState.points !== this.state.points) {
+    if (prevState.markersData !== this.state.markersData) {
       if (ClashDetectionApp.decoratorIsSetup())
-        ClashDetectionApp.setDecoratorPoints(this.state.points);
+        ClashDetectionApp.setDecoratorPoints(this.state.markersData);
     }
 
     if (prevState.showDecorator !== this.state.showDecorator) {
@@ -114,8 +109,8 @@ export default class ClashDetectionUI extends React.Component<{
   private onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
 
-      const points = await ClashDetectionApp.setMarkerPoints(imodel);
-      this.setState({ imodel, points });
+      const markersData = await ClashDetectionApp.getClashMarkersData(imodel);
+      this.setState({ imodel, markersData });
     });
   }
 
@@ -143,7 +138,7 @@ export default class ClashDetectionUI extends React.Component<{
   public render() {
     return (
       <>
-        <ControlPane instructions="Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to visualize clashes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to review clashes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <div className="app-content">
           <div className="top">
             <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={ClashDetectionUI.getIsoView.bind(ClashDetectionUI)} />

@@ -1,4 +1,4 @@
-# Clash Detection Data Sample
+# Clash Review Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
@@ -7,10 +7,10 @@ This sample demonstrates how Clash Detection data can be presented for review in
 
 ## Purpose
 
-- Plot clash locations using [place marker pins](./ClashMarkers.ts).
-- Populate [table](./ClashTable.tsx) of clashes.
-- [Visualize](./EmphasizeElements.tsx) clashing element pair using red, blue and gray-out.
-- Zoom to clash on [marker](./ClashMarkers.ts) click or [table](./ClashTable.tsx) selection.
+- Plot clash locations using place marker pins.
+- Populate table of clashes.
+- Visualize clashing element pair using red, blue and gray-out.
+- Zoom to clash on marker click or table selection.
 - Provide [code examples](./ClashDetectionApis.ts) for calling the Clash Detection APIs.
 
 ## Description

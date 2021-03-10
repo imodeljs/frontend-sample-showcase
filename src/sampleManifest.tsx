@@ -75,9 +75,9 @@ export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
+    getClashDetectionSpec(),
     getHyperModelingSpec(),
     getRealityDataSpec(),
-    getClashDetectionSpec(),
     getViewAttributesSpec(),
   ],
 }, {

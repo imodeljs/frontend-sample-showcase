@@ -16,6 +16,7 @@ import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import MarkerPinApp from "./MarkerPinApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
+import { MarkerData } from "./MarkerPinDecorator";
 
 interface ManualPinSelection {
   name: string;
@@ -27,7 +28,7 @@ interface MarkerPinsUIState {
   viewport?: ScreenViewport;
   showDecorator: boolean;
   manualPin: ManualPinSelection;
-  points: Point3d[];
+  markersData: MarkerData[];
   range: Range2d;
   height: number;
 }
@@ -42,7 +43,7 @@ export default class MarkerPinsUI extends React.Component<{
     this.state = {
       showDecorator: true,
       manualPin: MarkerPinsUI.getManualPinSelections()[0],
-      points: [],
+      markersData: [],
       range: Range2d.createNull(),
       height: 0,
     };
@@ -73,13 +74,13 @@ export default class MarkerPinsUI extends React.Component<{
   public componentDidUpdate(_prevProps: {}, prevState: MarkerPinsUIState) {
     if (prevState.imodel !== this.state.imodel)
       if (this.state.showDecorator) {
-        MarkerPinApp.setupDecorator(this.state.points);
+        MarkerPinApp.setupDecorator(this.state.markersData);
         MarkerPinApp.enableDecorations();
       }
 
-    if (prevState.points !== this.state.points) {
+    if (prevState.markersData !== this.state.markersData) {
       if (MarkerPinApp.decoratorIsSetup())
-        MarkerPinApp.setMarkerPoints(this.state.points);
+        MarkerPinApp.setMarkersData(this.state.markersData);
     }
 
     if (prevState.showDecorator !== this.state.showDecorator) {
@@ -94,11 +95,12 @@ export default class MarkerPinsUI extends React.Component<{
    * UI component.  It is also called once when the component initializes.
    */
   private _onPointsChanged = async (points: Point3d[]): Promise<void> => {
-
-    for (const point of points)
+    const markersData: MarkerData[] = [];
+    for (const point of points) {
       point.z = this.state.height;
-
-    this.setState({ points });
+      markersData.push({ point });
+    }
+    this.setState({ markersData });
   }
 
   /** Called when the user changes the showMarkers toggle. */

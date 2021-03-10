@@ -7,7 +7,7 @@ import "common/samples-common.scss";
 import { Point3d } from "@bentley/geometry-core";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { MarkerPinDecorator } from "./MarkerPinDecorator";
+import { MarkerPinDecorator, MarkerData } from "./MarkerPinDecorator";
 
 export default class MarkerPinApp {
   public static _sampleNamespace: I18NNamespace;
@@ -18,18 +18,18 @@ export default class MarkerPinApp {
     return (null != this._markerDecorator);
   }
 
-  public static setupDecorator(points: Point3d[]) {
+  public static setupDecorator(markersData: MarkerData[]) {
     // If we failed to load the image, there is no point in registering the decorator
     if (!MarkerPinApp._images.has("Google_Maps_pin.svg"))
       return;
 
     MarkerPinApp._markerDecorator = new MarkerPinDecorator();
-    this.setMarkerPoints(points);
+    this.setMarkersData(markersData);
   }
 
-  public static setMarkerPoints(points: Point3d[]) {
+  public static setMarkersData(markersData: MarkerData[]) {
     if (MarkerPinApp._markerDecorator)
-      MarkerPinApp._markerDecorator.setPoints(points, this._images.get("Google_Maps_pin.svg")!);
+      MarkerPinApp._markerDecorator.setMarkersData(markersData, this._images.get("Google_Maps_pin.svg")!);
   }
 
   public static addMarkerPoint(point: Point3d, pinImage: HTMLImageElement) {

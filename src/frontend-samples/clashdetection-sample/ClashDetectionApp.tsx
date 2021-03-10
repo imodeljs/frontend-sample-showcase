@@ -10,8 +10,8 @@ import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodelj
 import { Point3d, Range3d } from "@bentley/geometry-core";
 import { Id64String } from "@bentley/bentleyjs-core";
 import { IModelQuery } from "@bentley/imodelhub-client";
-import { ClashPinDecorator } from "./ClashMarkers";
-import { ClashMarkerPoint } from "./ClashDetectionUI";
+import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
+import { applyZoom } from "./ClashDetectionUI";
 import { jsonData } from "./ClashDetectionJsonData";
 
 interface ProjectContext {
@@ -21,7 +21,7 @@ interface ProjectContext {
 }
 
 export default class ClashDetectionApp {
-  public static _clashPinDecorator?: ClashPinDecorator;
+  public static _clashPinDecorator?: MarkerPinDecorator;
   public static _images: Map<string, HTMLImageElement>;
   public static projectContext: ProjectContext;
 
@@ -52,18 +52,18 @@ export default class ClashDetectionApp {
     return (null != this._clashPinDecorator);
   }
 
-  public static setupDecorator(points: ClashMarkerPoint[]) {
+  public static setupDecorator(points: MarkerData[]) {
     // If we failed to load the image, there is no point in registering the decorator
     if (!ClashDetectionApp._images.has("clash_pin.svg"))
       return;
 
-    this._clashPinDecorator = new ClashPinDecorator();
+    this._clashPinDecorator = new MarkerPinDecorator();
     this.setDecoratorPoints(points);
   }
 
-  public static setDecoratorPoints(points: ClashMarkerPoint[]) {
+  public static setDecoratorPoints(markersData: MarkerData[]) {
     if (this._clashPinDecorator)
-      this._clashPinDecorator.setPoints(points, this._images.get("clash_pin.svg")!);
+      this._clashPinDecorator.setMarkersData(markersData, this._images.get("clash_pin.svg")!, ClashDetectionApp.visualizeClashCallback);
   }
 
   public static enableDecorations() {
@@ -76,18 +76,19 @@ export default class ClashDetectionApp {
       IModelApp.viewManager.dropDecorator(this._clashPinDecorator);
   }
 
-  public static async setMarkerPoints(imodel: IModelConnection): Promise<ClashMarkerPoint[]> {
-    const points: ClashMarkerPoint[] = [];
+  public static async getClashMarkersData(imodel: IModelConnection): Promise<MarkerData[]> {
+    const markersData: MarkerData[] = [];
     let count = 0;
     for (const clash of jsonData.clashDetectionResult) {
       const point = await this.calcClashCenter(imodel, clash.elementAId, clash.elementBId);
-      const clashMarkerPoint: ClashMarkerPoint = { point, jsonData: clash };
-      points.push(clashMarkerPoint);
+      const tooltip = `${clash.elementALabel}<br>${clash.elementBLabel}`;
+      const clashMarkerData: MarkerData = { point, data: clash, tooltip };
+      markersData.push(clashMarkerData);
       count++;
       if (count > 60)
         break;
     }
-    return new Promise((resolve) => {resolve(points); });
+    return new Promise((resolve) => { resolve(markersData); });
   }
 
   private static async calcClashCenter(imodel: IModelConnection, elementAId: string, elementBId: string): Promise<Point3d> {
@@ -106,7 +107,11 @@ export default class ClashDetectionApp {
     return volume.center;
   }
 
-  public static visualizeClash(elementAId: any, elementBId: any, applyZoom: boolean) {
+  public static visualizeClashCallback = (clashData: any) => {
+    ClashDetectionApp.visualizeClash(clashData.elementAId, clashData.elementBId);
+  }
+
+  public static visualizeClash = (elementAId: string, elementBId: string) => {
     if (!IModelApp.viewManager.selectedView)
       return;
 

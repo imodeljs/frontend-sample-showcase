@@ -7,7 +7,6 @@ import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@ben
 import { PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import ClashDetectionApp from "./ClashDetectionApp";
-import { applyZoom } from "./ClashDetectionUI";
 
 export interface Props {
   data: any;
@@ -70,7 +69,7 @@ export default class ClashTable extends React.PureComponent<Props> {
     // Get the concatenated element ids from the row key  ie. "elementAId-elementBId"
     const elementIds = row.value.key.split("-");
 
-    ClashDetectionApp.visualizeClash(elementIds[0], elementIds[1], applyZoom);
+    ClashDetectionApp.visualizeClash(elementIds[0], elementIds[1]);
 
     return Promise.resolve(true);
   }

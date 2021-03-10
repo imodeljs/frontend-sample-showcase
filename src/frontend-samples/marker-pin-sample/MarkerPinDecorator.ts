@@ -25,16 +25,26 @@ import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
  *                      markers and marker clusters.  This sample creates exactly one MarkerPinDecorator.
  */
 
+export interface MarkerData {
+  point: Point3d;
+  tooltip?: string;   // override default marker tooltip
+  data?: any;
+}
+
 /** Shows a pin marking the location of a point. */
 class SamplePinMarker extends Marker {
   private _markerSet: SampleMarkerSet;
+  public data: any;
   private static _height = 35;
+  private _onMouseButtonCallback?: any;
 
   /** Create a new SamplePinMarker */
-  constructor(location: Point3d, title: string, image: HTMLImageElement, markerSet: SampleMarkerSet) {
+  constructor(markerData: MarkerData, title: string, image: HTMLImageElement, markerSet: SampleMarkerSet, onMouseButtonCallback?: any) {
     // Use the same height for all the markers, but preserve the aspect ratio from the image
-    super(location, new Point2d(image.width * (SamplePinMarker._height / image.height), SamplePinMarker._height));
+    super(markerData.point, new Point2d(image.width * (SamplePinMarker._height / image.height), SamplePinMarker._height));
     this.setImage(image);
+
+    this._onMouseButtonCallback = onMouseButtonCallback;
 
     // Keep a pointer back to the marker set
     this._markerSet = markerSet;
@@ -42,8 +52,11 @@ class SamplePinMarker extends Marker {
     // Add an offset so that the pin 'points' at the location, rather than floating in the middle of it
     this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
 
+    // The JSON data is stored on the marker
+    this.data = markerData.data;
+
     // The title will be shown as a tooltip when the user interacts with the marker
-    this.title = title;
+    this.title = markerData.tooltip ? markerData.tooltip : title;
 
     // The scale factor adjusts the size of the image so it appears larger when close to the camera eye point.
     // Make size 75% at back of frustum and 200% at front of frustum (if camera is on)
@@ -70,6 +83,11 @@ class SamplePinMarker extends Marker {
   public onMouseButton(ev: BeButtonEvent): boolean {
     if (BeButton.Data !== ev.button || !ev.isDown || !ev.viewport || !ev.viewport.view.isSpatialView())
       return true;
+
+    if (this._onMouseButtonCallback) {
+      this._onMouseButtonCallback(this.data);
+      return true;
+    }
 
     this.showPopupMenu({ x: ev.viewPoint.x, y: ev.viewPoint.y });
 
@@ -115,10 +133,15 @@ class SamplePinMarker extends Marker {
 /** Marker to show as a stand-in for a cluster of overlapping markers. */
 class SampleClusterMarker extends Marker {
   private static _radius = 13;
+  private _cluster: any;
+  private _onMouseButtonCallback?: any;
 
   /** Create a new cluster marker */
-  constructor(location: XYAndZ, size: XAndY, cluster: Cluster<SamplePinMarker>) {
+  constructor(location: XYAndZ, size: XAndY, cluster: Cluster<SamplePinMarker>, onMouseButtonCallback?: any) {
     super(location, size);
+
+    this._onMouseButtonCallback = onMouseButtonCallback;
+    this._cluster = cluster;
 
     /* The cluster will be drawn as a circle with the pin marker image above it.  Drawing the marker image
     *  identifies that the cluster represents markers from our marker set.
@@ -153,6 +176,17 @@ class SampleClusterMarker extends Marker {
     this.title = div;
   }
 
+  /** This method will be called when the user clicks on a marker */
+  public onMouseButton(ev: BeButtonEvent): boolean {
+    if (BeButton.Data !== ev.button || !ev.isDown || !ev.viewport || !ev.viewport.view.isSpatialView())
+      return true;
+
+    if (this._onMouseButtonCallback)
+      this._onMouseButtonCallback(this._cluster.markers[0].data);
+
+    return true; // Don't allow clicks to be sent to active tool
+  }
+
   /** Show the cluster as a white circle with a thick outline */
   public drawFunc(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
@@ -168,17 +202,19 @@ class SampleClusterMarker extends Marker {
 /** A MarkerSet to hold pin locations. This class supplies to `getClusterMarker` method to create SampleClusterMarker. */
 class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
   public minimumClusterSize = 5;
+  private _onMouseButtonCallback?: any;
 
   // This method is called from within the MarkerSet base class based on the proximity of the markers and the minimumClusterSize
-  protected getClusterMarker(cluster: Cluster<SamplePinMarker>): Marker { return SampleClusterMarker.makeFrom(cluster.markers[0], cluster); }
+  protected getClusterMarker(cluster: Cluster<SamplePinMarker>): Marker { return SampleClusterMarker.makeFrom(cluster.markers[0], cluster, this._onMouseButtonCallback); }
 
   /** Create a SamplePinMarker for each input point. */
-  public setPoints(points: Point3d[], image: HTMLImageElement): void {
+  public setMarkersData(markersData: MarkerData[], image: HTMLImageElement, onMouseButtonCallback?: any): void {
     this.markers.clear();
+    this._onMouseButtonCallback = onMouseButtonCallback;
 
     let index = 1;
-    for (const point of points) {
-      this.markers.add(new SamplePinMarker(point, `Marker ${index++}`, image, this));
+    for (const markerData of markersData) {
+      this.markers.add(new SamplePinMarker(markerData, `Marker ${index++}`, image, this, onMouseButtonCallback));
     }
   }
 
@@ -201,8 +237,8 @@ export class MarkerPinDecorator implements Decorator {
   private _manualMarkerSet = new SampleMarkerSet();
 
   /* Remove all existing markers from the "auto" markerset and create new ones for the given points. */
-  public setPoints(points: Point3d[], pinImage: HTMLImageElement): void {
-    this._autoMarkerSet.setPoints(points, pinImage);
+  public setMarkersData(markersData: MarkerData[], pinImage: HTMLImageElement, onMouseButtonCallback?: any): void {
+    this._autoMarkerSet.setMarkersData(markersData, pinImage, onMouseButtonCallback);
 
     // When the markers change we notify the viewmanager to remove the existing decorations
     const vp = IModelApp.viewManager.selectedView;
@@ -212,7 +248,8 @@ export class MarkerPinDecorator implements Decorator {
 
   /* Adds a single new marker to the "manual" markerset */
   public addPoint(point: Point3d, pinImage: HTMLImageElement): void {
-    this._manualMarkerSet.markers.add(new SamplePinMarker(point, "Manual", pinImage, this._manualMarkerSet));
+    const markerData: MarkerData = { point };
+    this._manualMarkerSet.markers.add(new SamplePinMarker(markerData, "Manual", pinImage, this._manualMarkerSet));
 
     // When the markers change we notify the viewmanager to remove the existing decorations
     const vp = IModelApp.viewManager.selectedView;
