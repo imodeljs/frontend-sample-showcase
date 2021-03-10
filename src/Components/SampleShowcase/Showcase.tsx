@@ -57,8 +57,12 @@ export const Showcase: FunctionComponent = () => {
   const editorClassName = dragState.dragging ? "editor-pane dragging" : "editor-pane";
 
   const onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
+    if (transpileResult && !window.confirm("Changes made to the code will not be saved!")) {
+      return;
+    }
     setScrollTo(wantScroll);
     setActiveSample(new ActiveSample(groupName, sampleName));
+    setTranspileResult(undefined);
   }
 
   const onSampleGallerySizeChange = (size: number) => {

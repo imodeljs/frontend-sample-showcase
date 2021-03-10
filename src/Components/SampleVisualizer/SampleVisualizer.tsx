@@ -61,11 +61,11 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
 
 
   if (!appReady) {
-    return (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
+    return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
   if (loading) {
-    return (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
+    return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
   return <>{sampleUi}</>;
