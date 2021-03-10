@@ -193,7 +193,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     return (
       <>
         <MessageRenderer />
-        <ControlPane instructions="Manage IoT Alerts" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
+        <ControlPane instructions="Use the picker to choose an element class and instance.  Then click the 'Create' button to trigger an alert." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );
