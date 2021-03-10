@@ -29,7 +29,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
   // Initialize imodeljs BaseApp
   useEffect(() => {
     if (!appReady) {
-
       SampleBaseApp.startup()
         .then(() => {
           setAppReady(true);
@@ -60,7 +59,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
     catch (error) {
       setSampleUi(<DisplayError error={error} />)
     }
-  }, [type]);
+  }, [type, iModelName]);
 
   // Refresh sample UI on transpile
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { SampleGallery } from 'Components/SampleGallery/SampleGallery';
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from 'common/IModelSelector/IModelSelector';
@@ -10,7 +10,6 @@ import { Spinner, SpinnerSize } from '@bentley/ui-core/lib/ui-core/loading/Spinn
 import { ErrorBoundary } from 'Components/ErrorBoundary/ErrorBoundary';
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
-
 
 const Editor = React.lazy(() => import(/* webpackMode: "lazy" */ "./../SampleEditor/SampleEditorContext"));
 const Visualizer = React.lazy(() => import(/* webpackMode: "lazy" */ "./../SampleVisualizer/SampleVisualizer"));
@@ -27,9 +26,7 @@ const calculateMinSize = (containerSize: number, sizeStr: string = "0") => {
 }
 
 export const Showcase: FunctionComponent = () => {
-
-  const params = new URLSearchParams(window.location.search);
-  const [activeSample, setActiveSample] = useState(new ActiveSample(params.get("group"), params.get("sample"), params.get("imodel")));
+  const [activeSample, setActiveSample] = useState(() => new ActiveSample());
   const [scrollTo, setScrollTo] = useState(true);
   const [showEditor, setShowEditor] = useState(true);
   const [showGallery, setShowGallery] = useState(true);
@@ -38,6 +35,7 @@ export const Showcase: FunctionComponent = () => {
 
   const showcaseRef = React.createRef<HTMLDivElement>();
   const galleryRef = React.createRef<SampleGallery>();
+
 
   useEffect(() => {
     if (scrollTo && galleryRef.current) {
@@ -76,7 +74,7 @@ export const Showcase: FunctionComponent = () => {
     }
   }
 
-  const getImodelSelector = () => {
+  const getImodelSelector = useCallback(() => {
     if (!activeSample.imodelList || !activeSample.imodelList.length)
       return undefined;
 
@@ -87,7 +85,7 @@ export const Showcase: FunctionComponent = () => {
           iModelName={activeSample.imodel}
           onIModelChange={(imodelName) => setActiveSample(new ActiveSample(activeSample.group, activeSample.name, imodelName))} />
       </div>);
-  }
+  }, [activeSample]);
 
   const spinner = (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
 
