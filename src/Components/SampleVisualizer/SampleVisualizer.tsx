@@ -68,7 +68,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
   useEffect(() => {
     if (transpileResult) {
       setLoading(true);
-      import( /* webpackIgnore: true */ transpileResult).then(module => {
+      import( /* webpackIgnore: true */ transpileResult).then((module) => {
         const component = module.default as React.ComponentClass<SampleProps>;
         setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
         setLoading(false);
