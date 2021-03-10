@@ -2,22 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "./SampleEditor.scss";
+import React from "react";
 import { Pane, setEditorState, SplitScreen, useActivityState, useEntryState, useFileState, useModuleState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import Drawer from "./Drawer/Drawer";
 import modules from "./Modules";
 import { EditorProps } from "./SampleEditorContext";
-
-export interface IRange {
-  readonly startLineNumber: number;
-  readonly startColumn: number;
-  readonly endLineNumber: number;
-  readonly endColumn: number;
-}
+import "./SampleEditor.scss";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
