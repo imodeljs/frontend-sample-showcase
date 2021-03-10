@@ -85,7 +85,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
   /** Deletes all Decorates. */
   private readonly dropAllEmitters = () => {
     this.setState({ selectedEmitter: undefined });
-    FireEmitter.disposeAll();
+    FireDecorationApp.disposeAllEmitters();
   }
 
   public getControls(): React.ReactNode {
