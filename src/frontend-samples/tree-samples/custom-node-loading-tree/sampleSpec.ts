@@ -12,8 +12,8 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     image: "custom-node-loading-tree-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CustomNodeLoadingTreeUI.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
       { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp") },
+      { name: "CustomNodeLoadingTreeUI.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
     ],
     type: "CustomNodeLoadingTreeUI.tsx",
   });

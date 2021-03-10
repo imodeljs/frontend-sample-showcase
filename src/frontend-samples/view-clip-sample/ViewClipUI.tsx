@@ -121,7 +121,7 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
 
   private _onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      this.setState({ imodel, showClipBlock: true });
+      this.setState({ imodel, showClipBlock: true, clipPlane: "None" });
     });
   }
 

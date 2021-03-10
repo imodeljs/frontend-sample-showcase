@@ -16,7 +16,6 @@ export function getViewCameraSpec(): SampleSpec {
       { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp") },
       { name: "CameraPathTool.ts", import: import("!!raw-loader!./CameraPathTool") },
       { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
-
     ],
     type: "CameraPathUI.tsx",
   });

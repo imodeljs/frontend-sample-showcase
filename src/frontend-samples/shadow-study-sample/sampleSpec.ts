@@ -12,9 +12,8 @@ export function getShadowStudySpec(): SampleSpec {
     image: "shadow-study-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ShadowStudyUI.tsx", import: import("!!raw-loader!./ShadowStudyUI"), entry: true },
       { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp") },
-
+      { name: "ShadowStudyUI.tsx", import: import("!!raw-loader!./ShadowStudyUI"), entry: true },
     ],
     type: "ShadowStudyUI.tsx",
   });

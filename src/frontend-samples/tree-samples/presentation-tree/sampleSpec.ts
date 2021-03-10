@@ -12,8 +12,8 @@ export function getPresentationTreeSpec(): SampleSpec {
     image: "presentation-tree-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "PresentationTreeUI.tsx", import: import("!!raw-loader!./PresentationTreeUI"), entry: true },
       { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp") },
+      { name: "PresentationTreeUI.tsx", import: import("!!raw-loader!./PresentationTreeUI"), entry: true },
     ],
     type: "PresentationTreeUI.tsx",
   });

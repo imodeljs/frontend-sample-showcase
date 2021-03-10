@@ -14,9 +14,8 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
     customModelList: [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
     readme: () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "ScreenSpaceEffectsUI.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsUI"), entry: true },
       { name: "ScreenSpaceEffectsApp.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApp") },
-
+      { name: "ScreenSpaceEffectsUI.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsUI"), entry: true },
       { name: "Effects.ts", import: import("!!raw-loader!./Effects") },
     ],
     type: "ScreenSpaceEffectsUI.tsx",

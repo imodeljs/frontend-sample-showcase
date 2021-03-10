@@ -2,22 +2,20 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
 
-export function getViewerOnly2dSpec(): SampleSpec {
+export function getHyperModelingSpec(): SampleSpec {
   return ({
-    name: "viewer-only-2d-sample",
-    label: "2d",
-    image: "viewer-only-2d-thumbnail.png",
+    name: "hypermodeling-sample",
+    label: "Hyper-modeling",
+    image: "hypermodeling-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewerOnly2dApp.tsx", import: import("!!raw-loader!./ViewerOnly2dApp") },
-      { name: "ViewerOnly2dUI.tsx", import: import("!!raw-loader!./ViewerOnly2dUI"), entry: true },
-      { name: "ViewCreator2d.tsx", import: import("!!raw-loader!./ViewCreator2d") },
+      { name: "HyperModelingUI.tsx", import: import("!!raw-loader!./HyperModelingUI"), entry: true },
+      { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp") },
     ],
-    customModelList: [SampleIModels.House, SampleIModels.MetroStation],
-    type: "ViewerOnly2dUI.tsx",
+    customModelList: [SampleIModels.House],
+    type: "HyperModelingUI.tsx"
   });
 }

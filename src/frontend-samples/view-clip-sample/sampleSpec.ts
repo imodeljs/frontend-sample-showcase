@@ -13,8 +13,8 @@ export function getViewClipSpec(): SampleSpec {
     image: "view-clip-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
       { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
+      { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
     ],
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     type: "ViewClipUI.tsx",

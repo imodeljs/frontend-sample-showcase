@@ -13,8 +13,8 @@ export function getCurveFractionSpec(): SampleSpec {
     customModelList: [],
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI"), entry: true },
       { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp") },
+      { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI"), entry: true },
       { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!common/Geometry/SampleCurveFactory") },
       { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!common/Geometry/InteractivePointMarker") },
     ],

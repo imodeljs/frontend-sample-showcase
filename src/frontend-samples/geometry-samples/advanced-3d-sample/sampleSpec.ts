@@ -13,9 +13,8 @@ export function getAdvanced3dSpec(): SampleSpec {
     customModelList: [],
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Advanced3dUI.tsx", import: import("!!raw-loader!./Advanced3dUI"), entry: true },
       { name: "Advanced3dApp.tsx", import: import("!!raw-loader!./Advanced3dApp") },
-
+      { name: "Advanced3dUI.tsx", import: import("!!raw-loader!./Advanced3dUI"), entry: true },
     ],
     type: "Advanced3dUI.tsx",
   });

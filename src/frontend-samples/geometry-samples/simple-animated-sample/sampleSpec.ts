@@ -13,8 +13,8 @@ export function getSimpleAnimatedSpec(): SampleSpec {
     customModelList: [],
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "SimpleAnimatedUI.tsx", import: import("!!raw-loader!./SimpleAnimatedUI"), entry: true },
       { name: "SimpleAnimatedApp.tsx", import: import("!!raw-loader!./SimpleAnimatedApp") },
+      { name: "SimpleAnimatedUI.tsx", import: import("!!raw-loader!./SimpleAnimatedUI"), entry: true },
       { name: "ConwaysGameOfLife.ts", import: import("!!raw-loader!./ConwaysGameOfLife") },
     ],
     type: "SimpleAnimatedUI.tsx",

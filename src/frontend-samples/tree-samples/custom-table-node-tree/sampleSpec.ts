@@ -13,8 +13,8 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     customModelList: [],
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },
       { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
+      { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
     type: "CustomTableNodeTreeUI.tsx",

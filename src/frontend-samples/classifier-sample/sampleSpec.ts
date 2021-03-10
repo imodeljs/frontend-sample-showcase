@@ -13,8 +13,8 @@ export function getClassifierSpec(): SampleSpec {
     image: "classifier-thumbnail.png",
     readme: () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ClassifierUI.tsx", import: import("!!raw-loader!./ClassifierUI"), entry: true },
       { name: "ClassifierApp.tsx", import: import("!!raw-loader!./ClassifierApp") },
+      { name: "ClassifierUI.tsx", import: import("!!raw-loader!./ClassifierUI"), entry: true },
       { name: "ClassifierProperties.tsx", import: import("!!raw-loader!./ClassifierProperties") },
     ],
     customModelList: [SampleIModels.MetroStation],
