@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
