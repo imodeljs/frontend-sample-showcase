@@ -16,41 +16,42 @@ import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinn
 const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 
 export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
+  const { files, readme } = props;
   const fileActions = useFileState()[1];
   const moduleActions = useModuleState()[1];
   const [activityState, activityActions] = useActivityState();
   const [entryState, entryActions] = useEntryState();
   const [showReadme, setShowReadme] = React.useState<boolean>(true)
   const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false)
-  const [readme, setReadme] = React.useState<string>("");
+  const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (props.files) {
-      const files = props.files() || [];
-      Promise.all(files.map(async (file) => ({ content: (await file.import).default, name: file.name })))
+    if (files) {
+      const editorFiles = files() || [];
+      Promise.all(editorFiles.map(async (file) => ({ content: (await file.import).default, name: file.name })))
         .then(fileActions.setFiles)
-        .then(() => entryActions.setEntry(files.find((file) => file.entry)?.name || null));
+        .then(() => entryActions.setEntry(editorFiles.find((file) => file.entry)?.name || null));
     }
     return () => {
       setEditorState(null, []);
     }
-  }, [props.files, fileActions, entryActions, activityActions])
+  }, [files, fileActions, entryActions, activityActions])
 
   React.useEffect(() => {
     moduleActions.setModules(modules);
   }, [moduleActions])
 
   React.useEffect(() => {
-    if (props.readme) {
+    if (readme) {
       setReadmeLoading(true);
-      props.readme().then((fileData) => {
-        setReadme(fileData.default);
+      readme().then((fileData) => {
+        setReadmeContent(fileData.default);
         setShowReadme(true);
         setReadmeLoading(false);
       })
     }
-  }, [props.readme, setReadme, setShowReadme]);
+  }, [readme, setReadmeContent, setShowReadme]);
 
   React.useEffect(() => {
     if (activityState.active) {
@@ -90,7 +91,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
 
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
-      <MarkdownViewer readme={readme} onFileClicked={activityActions.setActive} onSampleClicked={props.onSampleClicked} />
+      <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={props.onSampleClicked} />
   };
 
   return (
