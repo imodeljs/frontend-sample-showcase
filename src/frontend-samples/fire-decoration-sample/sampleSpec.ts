@@ -9,7 +9,7 @@ import FireDecorationUI from "./FireDecorationUI";
 export function getParticleFireSampleSpec(): SampleSpec {
   return ({
     name: "fire-sample",
-    label: "Particle Sample (Fire)",
+    label: "Particle Effect (Fire)",
     image: "view-attributes-thumbnail.png",
     customModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
