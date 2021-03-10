@@ -62,7 +62,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
     } catch (error) {
       setSampleUi(<DisplayError error={error} />)
     }
-  }, [type, iModelName]);
+  }, [type, iModelName, iModelSelector]);
 
   // Refresh sample UI on transpile
   useEffect(() => {
@@ -74,7 +74,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
         setLoading(false);
       })
     }
-  }, [transpileResult]);
+  }, [transpileResult, iModelName, iModelSelector]);
 
 
   if (!appReady) {
