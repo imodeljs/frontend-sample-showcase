@@ -6,7 +6,6 @@ import * as React from "react";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { PointSelector } from "common/PointSelector/PointSelector";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";

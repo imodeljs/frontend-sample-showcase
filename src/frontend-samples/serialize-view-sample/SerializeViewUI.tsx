@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
