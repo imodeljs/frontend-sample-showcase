@@ -1,7 +1,11 @@
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+import { MovePointTool } from "common/Geometry/InteractivePointMarker";
+import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
 
+const i18nNamespace = "sample-showcase-i18n-namespace";
 const context = (require as any).context('./../../frontend-samples', true, /\.tsx$/);
 
 type SampleVisualizerProps = {
@@ -25,27 +29,38 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
   // Initialize imodeljs BaseApp
   useEffect(() => {
     if (!appReady) {
+
       SampleBaseApp.startup()
         .then(() => {
           setAppReady(true);
+          MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
         })
         .catch(error => {
           console.error("SampleBaseApp.startup failure", error);
           setAppReady(true);
         });
     }
+    return () => {
+      IModelApp.i18n.unregisterNamespace(i18nNamespace);
+      IModelApp.tools.unRegister(MovePointTool.toolId);
+    }
   }, [appReady]);
 
   // Set sample UI 
   useEffect(() => {
     const key = context.keys().find((key: string) => key.includes(type));
-    if (key) {
-      const sampleUi = context(key).default as React.ComponentClass<SampleProps>;
-      setSampleUi(React.createElement(sampleUi, { iModelName, iModelSelector }));
-    } else {
-      setSampleUi(<div>Failed to resolve sample '{type}'</div>);
+    try {
+      if (key) {
+        const sampleUi = context(key).default as React.ComponentClass<SampleProps>;
+        setSampleUi(React.createElement(sampleUi, { iModelName, iModelSelector }));
+      } else {
+        setSampleUi(<div>Failed to resolve sample '{type}'</div>);
+      }
     }
-  }, [type])
+    catch (error) {
+      setSampleUi(<DisplayError error={error} />)
+    }
+  }, [type]);
 
   // Refresh sample UI on transpile
   useEffect(() => {
