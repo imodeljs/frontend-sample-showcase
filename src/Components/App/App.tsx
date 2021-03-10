@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { FunctionComponent } from "react";
-import { Showcase } from "Components/SampleShowcase/Showcase";
+import { SampleShowcase } from "Components/SampleShowcase/SampleShowcase";
 
 export const App: FunctionComponent = () => {
   return (
-    <Showcase />
+    <SampleShowcase />
   );
 }
 
