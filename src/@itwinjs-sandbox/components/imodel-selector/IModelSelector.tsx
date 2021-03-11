@@ -5,7 +5,7 @@
 import React, { FunctionComponent } from "react";
 import { Select } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleIModels } from "@itwinjs-sandbox/sample-spec/SampleSpec";
+import { SampleIModels } from "../sample-widget-control/SampleWidgetUiProvider";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {

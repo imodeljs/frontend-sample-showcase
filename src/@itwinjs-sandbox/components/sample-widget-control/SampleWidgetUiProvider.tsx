@@ -6,10 +6,21 @@
 import React, { ReactNode } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider } from "@bentley/ui-abstract";
 import { SampleWidgetContainer } from "./SampleWidgetContainer"
-import { SampleSpec, SampleIModels } from "../../sample-spec/SampleSpec";
 import { IModelSelector } from "../imodel-selector/IModelSelector";
 
+export enum SampleIModels {
+  CoffsHarborDemo = "CoffsHarborDemo",
+  MetroStation = "Metrostation Sample",
+  RetailBuilding = "Retail Building Sample",
+  BayTown = "Bay Town Process Plant",
+  House = "House Sample",
+  Stadium = "Stadium",
+  ExtonCampus = "Exton Campus",
+  Villa = "Villa",
+}
+
 export interface IModelSelectorOptions {
+  modelList?: SampleIModels[];
   iModelName: SampleIModels;
   onIModelChange: (iModelName: SampleIModels) => void;
 }
@@ -18,11 +29,11 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
   public readonly id: string = "SampleUiProvider";
   private _widget?: ReactNode;
   private _iModelSelectorOptions?: IModelSelectorOptions;
-  private _sampleSpec?: SampleSpec;
+  private _instructions: string;
 
-  constructor(sampleSpec?: SampleSpec, widget?: ReactNode, iModelSelectorOptions?: IModelSelectorOptions) {
+  constructor(instructions: string, widget?: ReactNode, iModelSelectorOptions?: IModelSelectorOptions) {
     this._widget = widget;
-    this._sampleSpec = sampleSpec;
+    this._instructions = instructions;
     this._iModelSelectorOptions = iModelSelectorOptions;
   }
 
@@ -36,9 +47,9 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
           isFloatingStateSupported: true,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => (<SampleWidgetContainer
-            instructions={this._sampleSpec?.instructions}
+            instructions={this._instructions}
             iModelSelector={this._iModelSelectorOptions &&
-              <IModelSelector iModelName={this._iModelSelectorOptions.iModelName} iModelNames={this._sampleSpec?.modelList} onIModelChange={this._iModelSelectorOptions.onIModelChange} />
+              <IModelSelector iModelName={this._iModelSelectorOptions.iModelName} iModelNames={this._iModelSelectorOptions?.modelList} onIModelChange={this._iModelSelectorOptions.onIModelChange} />
             }>
             {this._widget}
           </SampleWidgetContainer>),

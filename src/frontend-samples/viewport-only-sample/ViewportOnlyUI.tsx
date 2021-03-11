@@ -33,7 +33,7 @@ export default class ViewportOnly2dApp extends React.Component<{}, { iModelName?
           defaultUiConfig={default3DUiConfig}
           theme="dark"
           uiProviders={[new SampleWidgetUiProvider(
-            undefined,
+            "test",
             undefined,
             { iModelName: this.state.iModelName, onIModelChange: this._changeIModel }
           )]}

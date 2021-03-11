@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
 
 // import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
+import { SampleSpec } from "SampleSpec";
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 // import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
 // import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
@@ -67,7 +67,7 @@ import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sam
 
 export interface SampleSpecGroup {
   groupName: string;
-  samples: SampleMetadata[];
+  samples: SampleSpec[];
 }
 
 export const sampleManifest: SampleSpecGroup[] = [{

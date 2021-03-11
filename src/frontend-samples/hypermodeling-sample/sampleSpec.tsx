@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "@itwinjs-sandbox";
+import { SampleSpec } from "SampleSpec";
 import HyperModelingUI from "./HyperModelingUI";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
 
 export function getHyperModelingSpec(): SampleSpec {
   return ({
@@ -16,7 +16,7 @@ export function getHyperModelingSpec(): SampleSpec {
       { name: "HyperModelingUI.tsx", import: import("!!raw-loader!./HyperModelingUI"), entry: true },
       { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp") },
     ],
-    customModelList: [SampleIModels.House],
+    modelList: [SampleIModels.House],
     sampleClass: HyperModelingUI,
   });
 }
