@@ -210,6 +210,10 @@
     {
       "name": "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css",
       "import": "!!raw-loader!@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css"
+    },
+    {
+      "name": "@bentley/imodel-react-hooks",
+      "import": "@bentley/imodel-react-hooks"
     }
   ]
 }

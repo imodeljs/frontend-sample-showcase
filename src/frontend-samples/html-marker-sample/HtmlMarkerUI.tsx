@@ -22,9 +22,9 @@ import HtmlMarker from "./HtmlMarker";
 const i18nNamespaceKey = "react-marker-i18n-namespace" as string;
 
 export enum HtmlContentMode {
-  Image = "picture",
-  Video = "video",
-  Form = "form",
+  Image = "Image",
+  Video = "Video",
+  Form = "Form",
 }
 
 export default function HtmlMarkerUI(props: {
@@ -33,7 +33,7 @@ export default function HtmlMarkerUI(props: {
 }) {
   const [points, setPoints] = React.useState<Point3d[]>([]);
   const [htmlContentMode, setHtmlContentMode] = React.useState(
-    HtmlContentMode.Form
+    HtmlContentMode.Video
   );
 
   const addMarker = (pt: Point3d) => {
@@ -102,7 +102,7 @@ export default function HtmlMarkerUI(props: {
   return (
     <ToolsProvider i18nNamespace={sampleNamespace} addMarker={addMarker}>
       <ControlPane
-        instructions="Use the options below to control the marker pins.  Click a marker to open a menu of options."
+        instructions="Use the options below to add new markers, and change the type of content the markers display."
         controls={controls}
         iModelSelector={props.iModelSelector}
       ></ControlPane>
