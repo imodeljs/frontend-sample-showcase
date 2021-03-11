@@ -30,8 +30,8 @@ export function getHtmlMarkerSpec(): SampleSpec {
         import: import("!!raw-loader!./HtmlMarker.scss"),
       },
       {
-        name: "utils.ts",
-        import: import("!!raw-loader!./utils"),
+        name: "utils.tsx",
+        import: import("!!raw-loader!./utils.tsx"),
       },
     ],
     sampleClass: HtmlMarkerUI,
