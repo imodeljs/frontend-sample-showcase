@@ -5,12 +5,11 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
 import { ViewSetup } from "api/viewSetup";
-import { ViewCreator2d } from "./ViewCreator2d";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
 // The Props and State for this sample component
@@ -101,7 +100,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     const firstModel = drawings.length > 0 ? drawings[0] : sheets[0];
     this.setState({ drawings, sheets });
     const viewCreator = new ViewCreator2d(imodel);
-    const targetView = await viewCreator.getViewForModel(firstModel, ViewSetup.getAspectRatio());
+    const targetView = await viewCreator.createViewForModel(firstModel.id, firstModel.classFullName, ViewSetup.getAspectRatio());
 
     if (targetView) {
       viewState = targetView;

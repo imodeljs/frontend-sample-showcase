@@ -4,8 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, Viewport } from "@bentley/imodeljs-frontend";
-import { ViewCreator2d } from "frontend-samples/cross-probing-sample/ViewCreator2d";
+import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, ViewCreator2d, Viewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 
 /** This sample showcases how to implement cross-probing between 3D and 2D elements.
@@ -48,7 +47,8 @@ export default class CrossProbingApp {
       if (targetLink.length > 0) {
         const targetElement = targetLink[0].drawElementId;
         const targetModel = await ev.set.iModel.models.getProps(targetLink[0].drawModelId);
-        const targetViewState = await new ViewCreator2d(ev.set.iModel).getViewForModel(targetModel[0].id!, targetModel[0].classFullName, { bgColor: ColorDef.black });
+        const viewCreator = new ViewCreator2d(ev.set.iModel);
+        const targetViewState = await viewCreator.createViewForModel(targetModel[0].id!, targetModel[0].classFullName, { bgColor: ColorDef.black });
         const vp2d = CrossProbingApp._get2DViewport();
         vp2d.onChangeView.addOnce(async () => {
           // when view opens, zoom into target 2D element.
