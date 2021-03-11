@@ -11,6 +11,7 @@ export function getViewportOnlySpec(): SampleSpec {
     label: "3d",
     image: "viewport-only-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
+    iTwinViewerReady: true,
     files: [
       { name: "ViewportOnlyUI.tsx", import: import("!!raw-loader!./ViewportOnlyUI"), entry: true },
     ],

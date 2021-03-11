@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { AuthorizationClient, default3DUiConfig, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DUiConfig, defaultIModelList, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 
 export default class ViewportOnly2dApp extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
@@ -33,9 +33,9 @@ export default class ViewportOnly2dApp extends React.Component<{}, { iModelName?
           defaultUiConfig={default3DUiConfig}
           theme="dark"
           uiProviders={[new SampleWidgetUiProvider(
-            "test",
+            "Use the toolbar at the top-right to navigate the model.",
             undefined,
-            { iModelName: this.state.iModelName, onIModelChange: this._changeIModel }
+            { modelList: defaultIModelList, iModelName: this.state.iModelName, onIModelChange: this._changeIModel }
           )]}
         />
         }
