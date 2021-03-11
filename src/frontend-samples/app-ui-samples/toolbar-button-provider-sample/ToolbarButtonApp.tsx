@@ -10,13 +10,13 @@ import "common/samples-common.scss";
 import "common/AppUi/app-ui.scss";
 import { SampleAppUiComponent } from "common/AppUi/SampleAppUiComponent";
 import { AppUi } from "common/AppUi/AppUi";
-import SampleApp from "common/SampleApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 // The Props and State for this sample component
 /** A React component that renders the UI specific for this sample */
-export class ToolbarButtonSample extends React.Component<{ iModelSelector: React.ReactNode }> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
+export default class ToolbarButtonSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> {
+  // eslint-disable-next-line react/no-deprecated
+  public async componentWillMount() {
     // Initialize utility class for AppUi samples
     AppUi.initialize();
     // Register provider for to AppUi for toolbar items
@@ -24,10 +24,21 @@ export class ToolbarButtonSample extends React.Component<{ iModelSelector: React
       UiItemsManager.register(new ToolbarButtonProvider());
 
     // set up iModel and AppUi Frontstage
-    await AppUi.setIModelAndFrontstage(iModelName, "ViewportFrontstage");
-    return <ToolbarButtonSample iModelSelector={iModelSelector}></ToolbarButtonSample>;
+    await AppUi.setIModelAndFrontstage(this.props.iModelName, "ViewportFrontstage");
   }
-  public static teardown() {
+
+  public async componentDidUpdate() {
+    // Initialize utility class for AppUi samples
+    AppUi.initialize();
+    // Register provider for to AppUi for toolbar items
+    if (undefined === UiItemsManager.getUiItemsProvider("ToolbarButtonProvider"))
+      UiItemsManager.register(new ToolbarButtonProvider());
+
+    // set up iModel and AppUi Frontstage
+    await AppUi.setIModelAndFrontstage(this.props.iModelName, "ViewportFrontstage");
+  }
+
+  public componentWillUnmount() {
     if (undefined !== UiItemsManager.getUiItemsProvider("ToolbarButtonProvider"))
       UiItemsManager.unregister("ToolbarButtonProvider");
     AppUi.restoreDefaults();

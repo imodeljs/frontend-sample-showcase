@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { Button, ButtonType } from "@bentley/ui-core";
 import ImageExportApp from "./ImageExportApp";
 
@@ -23,7 +23,7 @@ export default class ImageExportyUI extends React.Component<{ iModelName: string
   public getControls() {
     return (
       <div>
-        <Button buttonType={ButtonType.Hollow} onClick={ImageExportApp.exportImage}>Save as png</Button>
+        <Button buttonType={ButtonType.Hollow} onClick={ImageExportApp.exportImage.bind(ImageExportApp)}>Save as png</Button>
       </div>
     );
   }
@@ -35,7 +35,7 @@ export default class ImageExportyUI extends React.Component<{ iModelName: string
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions="Export current viewport as image" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         { /* Viewport to display the iModel */}
-        <ReloadableViewport iModelName={this.props.iModelName} />
+        <SandboxViewport iModelName={this.props.iModelName} />
       </>
     );
   }

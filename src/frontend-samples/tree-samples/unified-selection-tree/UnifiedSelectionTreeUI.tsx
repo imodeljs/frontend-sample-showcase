@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { UnifiedSelectionTree } from "./UnifiedSelectionTreeApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class UnifiedSelectionTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
+export default class UnifiedSelectionTreeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, { iModel: IModelConnection }> {
 
   public onIModelReady = (imodel: IModelConnection) => {
     this.setState({
@@ -24,7 +24,7 @@ export class UnifiedSelectionTreeUI extends React.Component<{ iModelName: string
           <div className="sample-tree">
             {(this.state && this.state.iModel) ? <UnifiedSelectionTree imodel={this.state.iModel}></UnifiedSelectionTree> : <></>}
           </div>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></ReloadableViewport>
+          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady}></SandboxViewport>
         </div>
       </>
     );

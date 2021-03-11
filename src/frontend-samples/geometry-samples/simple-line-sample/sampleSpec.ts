@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import SimpleLineApp from "./SimpleLineApp";
+import SimpleLineUI from "./SimpleLineUI";
 
 export function getSimpleLineSpec(): SampleSpec {
   return ({
@@ -13,9 +13,9 @@ export function getSimpleLineSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp"), entry: true },
-      { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI") },
+      { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp") },
+      { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI"), entry: true },
     ],
-    setup: SimpleLineApp.setup.bind(SimpleLineApp),
+    sampleClass: SimpleLineUI,
   });
 }

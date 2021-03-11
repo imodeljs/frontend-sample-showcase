@@ -2,11 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import ReadSettingsUI from "./ReadSettingsUI";
-import SampleApp from "common/SampleApp";
 import { AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelQuery } from "@bentley/imodelhub-client";
@@ -19,7 +16,7 @@ interface ProjectContext {
 
 const namespace = "showcase";
 
-export default class ReadSettingsApp implements SampleApp {
+export default class ReadSettingsApp {
 
   public static projectContext: ProjectContext;
 
@@ -59,10 +56,5 @@ export default class ReadSettingsApp implements SampleApp {
   public static async saveSettings(settingName: string, settingValue: string) {
     const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
     return IModelApp.settings.saveSetting(requestContext, settingValue, namespace, settingName, true, projectId, imodelId);
-  }
-
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    ReadSettingsApp.projectContext = await ReadSettingsApp.getIModelInfo(iModelName);
-    return <ReadSettingsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
   }
 }

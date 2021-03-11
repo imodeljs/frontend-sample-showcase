@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import ViewAttributesApp from "./ViewAttributesApp";
+import ViewAttributesUI from "./ViewAttributesUI";
 
 export function getViewAttributesSpec(): SampleSpec {
   return ({
@@ -12,9 +12,9 @@ export function getViewAttributesSpec(): SampleSpec {
     image: "view-attributes-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp"), entry: true },
-      { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI") },
+      { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp") },
+      { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI"), entry: true },
     ],
-    setup: ViewAttributesApp.setup.bind(ViewAttributesApp),
+    sampleClass: ViewAttributesUI,
   });
 }

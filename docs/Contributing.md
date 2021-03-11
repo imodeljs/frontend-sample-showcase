@@ -5,7 +5,7 @@ To add sample code to the repo, there are a few steps required for it to functio
 ## SampleSpec
 
 Each sample is **required** to have a SampleSpec. The SampleSpec's serves three main purposes:
-1) Tell the showcase app how to setup and teardown the sample
+1) Tell the showcase app which React Component needs to be rendered for the sample
 2) Provide files to the code editor
 3) Provide the link to the screenshot for the navigation carousel.
 
@@ -21,11 +21,8 @@ interface SampleSpec {
   files: IInternalFile[];
   /** The list of models this sample can use, in the case that the sample cannot use all available models */
   customModelList?: string[];
-  /** The function that will setup and return the UI component of the sample. */
-  setup: (iModelName: string, iModelSelector?: React.ReactNode) => Promise<React.ReactNode>;
-  /** The function that will teardown anything that was required for the sample to function. */
-  teardown?: () => void;
-}
+  /** The class name for the sample */
+  sampleClass: typeof React.Component;
 ```
 
 Below are more in-depth explanations for some of the SampleSpec properties.
@@ -43,26 +40,7 @@ interface IInternalFile {
 }
 ```
 
-```setup```: This method will be passed the current iModelName and iModelSelector (if no model list or a model list with more than one model is provided). Any required setup for the sample UI should occur within this method and it should return the React UI element that will be displayed when the given sample is selected. Typically this is a static method provided by the [SampleApp](#SampleApp).
-
-```teardown```: (Optional). This method will be called when the sample is navigated away from. Any required cleanup should occur within this method. Typically this is a static method provided by the [SampleApp](#SampleApp).
-
-## SampleApp
-
-Each sample should have a default class that implements the SampleApp class. Implementing this class will ensure the sample will be able to run after a user has changed code within the code editor of the showcase. Imports in this file are sensitive as they need to be accessible to the editor as well as to the showcase app. Check the [Imports section](#imports) for more info.
-
-```ts
-abstract class SampleApp {
-  public static setup: (iModelName: string, iModelSelector: React.ReactNode) => Promise<React.ReactNode>;
-  public static teardown?: () => void;
-}
-```
-
-Below are more in-depth explanations for the SampleApp properties.
-
-```setup```: This method will be passed the current iModelName and iModelSelector (if no model list or a model list with more than one model is provided). Any required setup for the sample UI should occur within this method and it should return the React UI element that will be displayed when the given sample is selected. This method will typically be referenced by the [SampleSpec setup property](#SampleSpec).
-
-```teardown```: (Optional). This method will be called when the sample is navigated away from. Any required cleanup should occur within this method. This method will typically be referenced by the [SampleSpec teardown property](#SampleSpec).
+```sampleClass```: The sample showcase will create an instance of the provided class name as a React Component. All samples should extend React.Component in order to designate what should be rendered in the render() method. In addition, the sample class should be exported as a default class to ensure that it interacts properly with the showcase code editor. React allows for any necessary setup to exist within ComponentDidMount(), and any required cleanup for the sample to exist within ComponentWillUnmount(), which will be called automatically once the sample is mounted or unmounted, respectively. This class will be passed the current iModelName and iModelSelector (if no model list or a model list with more than one model is provided) as props.
 
 ## UI Component
 
@@ -73,13 +51,13 @@ The UI component is the component users will interact with in the sample. Typica
 Using iModel.js in your UI component is relatively easy. To render the viewport for your iModel, there is a ready made component you can import and add to your render method.
 
 ```ts
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport"; // That's not a typo, be sure to import the component as non-relative.
+import { SandboxViewport } from "Components/Viewport/SandboxViewport"; // That's not a typo, be sure to import the component as non-relative.
 export default class MySampleUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
 
   /** The sample's render method */
   public render() {
     return (
-      <ReloadableViewport iModelName={this.props.iModelName} />
+      <SandboxViewport iModelName={this.props.iModelName} />
     );
   }
 }
@@ -114,8 +92,7 @@ export function getMySampleAppSampleSpec(): SampleSpec {
       { name: "MyUiComponent.tsx", import: import("!!raw-loader!./MyUiComponent") },
       { name: "MyRequiredFile.tsx", import: import("!!raw-loader!./MyRequiredFile") },
     ],
-    setup: MySampleApp.setup,
-    teardown: MySampleApp.teardown,
+    sampleClass: MySampleApp
   });
 }
 ```

@@ -5,33 +5,16 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
 import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
-import * as React from "react";
 import { ExplodeTreeReference, TreeDataListener } from "./ExplodeTile";
-import ExplodeUI from "./ExplodeUI";
 
 export interface ExplodeScalingAttributes {
   min: number;
   max: number;
   step: number;
 }
-export default class ExplodeApp implements SampleApp {
+export default class ExplodeApp {
   public static cleanUpCallbacks: Array<() => void> = [];
-
-  /** This method is called by the showcase when loading the sample. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    ExplodeApp.cleanUpCallbacks = [];
-    return <ExplodeUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-  /** This method is called by the showcase before changing samples. */
-  public static async teardown() {
-    IModelApp.viewManager.forEachViewport((vp) => {
-      ExplodeApp.clearIsolate(vp);
-      ExplodeProvider.getOrCreate(vp).drop();
-    });
-    ExplodeApp.cleanUpCallbacks.forEach((func) => func());
-  }
 
   public static async queryElementsInByCategories(iModel: IModelConnection, categoryCodes: string[]): Promise<string[]> {
     const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
@@ -117,7 +100,7 @@ export default class ExplodeApp implements SampleApp {
 }
 
 /** This provider both hides the original graphics of the element and inserts the transformed graphics. */
-class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider {
+export class ExplodeProvider implements TiledGraphicsProvider, FeatureOverrideProvider {
   /** Returns a provider associated with a given viewport. If one does not exist, it will be created. */
   public static getOrCreate(vp: Viewport) {
     let provider = vp.findFeatureOverrideProviderOfType(ExplodeProvider);

@@ -24,6 +24,14 @@
   align-items: center;
 }
 
+.sample-options-3col-even {
+  display: grid;
+  row-gap: 8px;
+  column-gap: 8px;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
 .even-3col {
   grid-template-columns: 1fr 1fr 1fr;
 }

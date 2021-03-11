@@ -6,9 +6,9 @@ import * as React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
-import { StartupComponent } from "../Startup/Startup";
+import { SandboxIModelConnection } from "../SandboxIModelConnection/SandboxIModelConnection"
 
-export interface ReloadableViewportProps {
+export interface SandboxViewportProps {
   iModelName: string;
   iModelName2?: string;
   getCustomViewState?: (imodel: IModelConnection) => Promise<ViewState>;
@@ -16,7 +16,7 @@ export interface ReloadableViewportProps {
   isNavigationToolInvisible?: boolean;
 }
 
-export interface ReloadableViewportState {
+export interface SandboxViewportState {
   /** iModel whose contents should be displayed in the viewport */
   imodel?: IModelConnection;
   /** View state to use when the viewport is first loaded */
@@ -24,7 +24,7 @@ export interface ReloadableViewportState {
 }
 
 /** Renders viewport, toolbar, and associated elements */
-export class ReloadableViewport extends React.PureComponent<ReloadableViewportProps, ReloadableViewportState> {
+export class SandboxViewport extends React.PureComponent<SandboxViewportProps, SandboxViewportState> {
 
   constructor(props?: any) {
     super(props);
@@ -36,7 +36,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     let ui: React.ReactNode;
 
     if (!this.state.imodel || !this.state.viewState)
-      ui = <StartupComponent iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
+      ui = <SandboxIModelConnection iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} onIModelReady={this._onIModelReady} />;
     else
       ui = <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState} isNavigationToolInvisible={this.props.isNavigationToolInvisible} />;
 
@@ -47,7 +47,7 @@ export class ReloadableViewport extends React.PureComponent<ReloadableViewportPr
     );
   }
 
-  public componentDidUpdate(prevProps: ReloadableViewportProps, prevState: ReloadableViewportState) {
+  public componentDidUpdate(prevProps: SandboxViewportProps, prevState: SandboxViewportState) {
     if (this.state.imodel && prevProps.iModelName !== this.props.iModelName) {
       this.setState({ imodel: undefined, viewState: undefined });
       return;

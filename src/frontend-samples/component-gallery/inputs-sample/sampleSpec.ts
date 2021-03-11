@@ -17,6 +17,6 @@ export function getInputsSpec(): SampleSpec {
       { name: "Inputs.tsx", import: import("!!raw-loader!./Inputs"), entry: true },
       { name: "SampleImageCheckBox.tsx", import: import("!!raw-loader!./SampleImageCheckBox") },
     ],
-    setup: InputsList.setup.bind(InputsList),
+    sampleClass: InputsList,
   });
 }

@@ -15,21 +15,13 @@ import { useDisposable } from "@bentley/ui-core";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { isIDisposable } from "@bentley/bentleyjs-core";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
-import SampleApp from "common/SampleApp";
-import { CustomNodeLoadingTreeUI } from "./CustomNodeLoadingTreeUI";
-
-export default class CustomNodeLoadingTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CustomNodeLoadingTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></CustomNodeLoadingTreeUI>;
-  }
-}
 
 export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
 }
 
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
+const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
 /**
  * This component demonstrates how to use `ControlledTree` with custom nodes loading to load nodes from
  * multiple data providers. Default node loaders `TreeNodeLoader` and `PagedTreeNodeLoader` works with

@@ -8,8 +8,8 @@ import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
 import "./index.scss";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 import { SettingsResult, SettingsStatus } from "@bentley/product-settings-client";
 import ReadSettingsApp from "./ReadSettingsApp";
@@ -44,9 +44,13 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
       settingsInitialized: false,
       settingKey: settingsKeys[0],
     };
-    this.handleSettingsChange = this.handleSettingsChange.bind(this);
-    this.handleSettingsValueChange = this.handleSettingsValueChange.bind(this);
-    this.saveSettings = this.saveSettings.bind(this);
+    this._handleSettingsChange = this._handleSettingsChange.bind(this);
+    this._handleSettingsValueChange = this._handleSettingsValueChange.bind(this);
+    this._saveSettings = this._saveSettings.bind(this);
+  }
+
+  public async componentDidMount() {
+    ReadSettingsApp.projectContext = await ReadSettingsApp.getIModelInfo(this.props.iModelName);
   }
 
   private onIModelReady = (imodel: IModelConnection) => {
@@ -58,7 +62,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
         settingValue: this.parseSettingsValue(settingsKeys[0], response.setting),
         settingsInitialized: true,
       });
-    })
+    });
   }
 
   private parseSettingsValue(name: string, value: string) {
@@ -70,11 +74,11 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
       default:
         _value = value || "";
     }
-    return _value
+    return _value;
   }
 
   // Handler to read external settings when name in dropdown changes
-  private handleSettingsChange(event: ChangeEvent<HTMLSelectElement>) {
+  private _handleSettingsChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const settingKey = event.target.value;
     this.setState({ settingKey });
     ReadSettingsApp.readSettings(settingKey).then((response) => {
@@ -86,13 +90,13 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
   }
 
   // Handler to get settings value into state, when you modify textarea element in the dialog
-  private handleSettingsValueChange(event: any) {
+  private _handleSettingsValueChange = (event: any) => {
     const settingValue = event.target.value;
     this.setState({ settingValue });
   }
 
   // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden.
-  private saveSettings() {
+  private _saveSettings = () => {
     this.setState({ saveInProgress: true });
     ReadSettingsApp.saveSettings(this.state.settingKey!, this.state.settingValue!).then((response) => {
       this.setState({
@@ -123,14 +127,14 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
       <>
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <span>Settings Name:</span>
-          <Select value={this.state.settingKey} onChange={this.handleSettingsChange} style={{ width: "fit-content" }} options={settingsKeys} />
+          <Select value={this.state.settingKey} onChange={this._handleSettingsChange} style={{ width: "fit-content" }} options={settingsKeys} />
         </div>
-        <Textarea rows={10} key="test" className="uicore-full-width" value={this.state.settingValue} onChange={this.handleSettingsValueChange} />
+        <Textarea rows={10} key="test" className="uicore-full-width" value={this.state.settingValue} onChange={this._handleSettingsValueChange} />
         {this.showStatus()}
         <div style={{ height: "35px", display: "flex", alignItems: "center", justifyContent: "center" }}>
           {this.state.saveInProgress ?
             (<div ><Spinner size={SpinnerSize.Small} /> Saving...</div>) :
-            <Button onClick={this.saveSettings} disabled={!this.state.settingKey}>Save settings</Button>
+            <Button onClick={this._saveSettings} disabled={!this.state.settingKey}>Save settings</Button>
           }
         </div>
         <DisabledText>Note: save does not work in this read-only environment.</DisabledText><br />
@@ -144,7 +148,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
     return (
       <>
         <ControlPane instructions="Choose a Setting Name below to read that setting from the ProductSettingsService" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
   }

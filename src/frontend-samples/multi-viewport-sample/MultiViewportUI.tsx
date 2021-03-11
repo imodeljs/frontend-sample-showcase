@@ -5,8 +5,8 @@
 import { IModelConnection, SelectedViewportChangedArgs, Viewport } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import "./multi-view-sample.scss";
 import MultiViewportApp from "./MultiViewportApp";
@@ -27,6 +27,22 @@ export interface MultiViewportUIProps {
 export default class MultiViewportUI extends React.Component<MultiViewportUIProps, MultiViewportUIState> {
 
   public state: MultiViewportUIState = { isSynced: false, viewports: [] };
+
+  public componentDidMount() {
+    MultiViewportApp.selectedViewportChangedListeners.length = 0;
+    MultiViewportApp.teardownListener.length = 0;
+    MultiViewportApp.viewOpenedListeners.length = 0;
+  }
+
+  public componentWillUnmount() {
+    MultiViewportApp.disconnectViewports();
+    MultiViewportApp.selectedViewportChangedListeners.forEach((removeListener) => removeListener());
+    MultiViewportApp.selectedViewportChangedListeners.length = 0;
+    MultiViewportApp.viewOpenedListeners.forEach((removeListener) => removeListener());
+    MultiViewportApp.viewOpenedListeners.length = 0;
+    MultiViewportApp.teardownListener.forEach((removeView) => removeView());
+    MultiViewportApp.teardownListener.length = 0;
+  }
 
   // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
@@ -96,10 +112,10 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
         />
         { /* Viewports to display the iModel */}
         <div className={"mutli-view-viewport-top"}>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
         <div className={"mutli-view-viewport-bottom"}>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
       </>
     );

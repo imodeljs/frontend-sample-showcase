@@ -7,17 +7,8 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-components";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
 import { Ruleset } from "@bentley/presentation-common";
-import SampleApp from "common/SampleApp";
-import { UnifiedSelectionTreeUI } from "./UnifiedSelectionTreeUI";
 const PAGING_SIZE = 20;
-const RULESET_TREE_HIERARCHY: Ruleset = require("../TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
-
-export default class UnifiedSelectionTreeApp extends React.Component<{}> implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <UnifiedSelectionTreeUI iModelName={iModelName} iModelSelector={iModelSelector}></UnifiedSelectionTreeUI>;
-  }
-
-}
+const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json"); // eslint-disable-line @typescript-eslint/no-var-requires
 
 export interface UnifiedSelectionTreeProps {
   imodel: IModelConnection;

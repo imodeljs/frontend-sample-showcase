@@ -6,9 +6,9 @@ import * as React from "react";
 import "common/DataProvider/Trees.scss";
 import { TableNodeTree } from "./CustomTableNodeTreeApp";
 import "./TableNodeTree.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class TableNodeTreeUI extends React.Component<{}> {
+export default class TableNodeTreeUI extends React.Component<{}> {
 
   public render() {
     return (

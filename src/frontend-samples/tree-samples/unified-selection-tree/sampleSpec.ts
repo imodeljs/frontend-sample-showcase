@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import UnifiedSelectionTreeApp from "./UnifiedSelectionTreeApp";
+import UnifiedSelectionTreeUI from "./UnifiedSelectionTreeUI";
 
 export function getUnifiedSelectionTreeSpec(): SampleSpec {
   return ({
@@ -12,9 +12,9 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     image: "unified-selection-tree-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
+      { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp") },
       { name: "UnifiedSelectionTreeUI.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeUI"), entry: true },
     ],
-    setup: UnifiedSelectionTreeApp.setup.bind(UnifiedSelectionTreeApp),
+    sampleClass: UnifiedSelectionTreeUI,
   });
 }

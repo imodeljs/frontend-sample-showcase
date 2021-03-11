@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "../../Components/IModelSelector/IModelSelector";
-import ReadSettingsApp from "./ReadSettingsApp";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import ReadSettingsUI from "./ReadSettingsUI";
 
 export function getReadSettingsSpec(): SampleSpec {
   return ({
@@ -13,11 +13,11 @@ export function getReadSettingsSpec(): SampleSpec {
     image: "read-settings-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp"), entry: true },
-      { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI") },
+      { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp") },
+      { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI"), entry: true },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     customModelList: [SampleIModels.BayTown],
-    setup: ReadSettingsApp.setup,
+    sampleClass: ReadSettingsUI,
   });
 }
