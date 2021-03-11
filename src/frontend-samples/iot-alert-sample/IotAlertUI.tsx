@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Button, ButtonType, Select, UnderlinedButton } from "@bentley/ui-core";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import IotAlertApp, { BlinkingEffect } from "./IotAlertApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 import "./IotAlert.scss";
@@ -194,7 +194,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
       <>
         <MessageRenderer />
         <ControlPane instructions="Use the picker to choose an element class and instance.  Then click the 'Create' button to trigger an alert." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );
   }

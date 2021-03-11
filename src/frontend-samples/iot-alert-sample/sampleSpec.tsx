@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import IotAlertApp from "./IotAlertApp";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
+import IotAlertUI from "./IotAlertUI";
 
 export function getIotAlertSpec(): SampleSpec {
   return ({
@@ -17,7 +17,6 @@ export function getIotAlertSpec(): SampleSpec {
       { name: "IotAlertUI.tsx", import: import("!!raw-loader!./IotAlertUI") },
     ],
     customModelList: [SampleIModels.BayTown],
-    setup: IotAlertApp.setup.bind(IotAlertApp),
-    teardown: IotAlertApp.teardown.bind(IotAlertApp),
+    sampleClass: IotAlertUI,
   });
 }
