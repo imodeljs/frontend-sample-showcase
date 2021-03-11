@@ -5,7 +5,7 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { EmphasizeElements, FeatureOverrideType, IModelApp, OutputMessagePriority, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
+import { EmphasizeElements, FeatureOverrideType, IModelApp, OutputMessagePriority, ViewChangeOptions } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import IotAlertUI from "./IotAlertUI";
 import SampleApp from "common/SampleApp";
