@@ -19,7 +19,7 @@ The purpose of this sample is to demonstrate the following:
 [Markers](https://www.imodeljs.org/learning/frontend/markers/) are a common technique to draw a user's attention to a particular spatial location within a
 digital twin.  Markers are typically organized into [marker sets](https://www.imodeljs.org/reference/imodeljs-frontend/views/markerset/)
 and displayed by a [decorator](https://www.imodeljs.org/reference/imodeljs-frontend/views/decorator/).
-The [Marker Pin sample](../marker-pin-sample/readme.md) demonstrates this setup.
+The [Marker Pin sample](/?group=Viewer+Features&sample=marker-pin-sample&imodel=Metrostation+Sample) demonstrates this setup.
 However, [@bentley/imodel-react-hooks](https://github.com/imodeljs/viewer-components-react/tree/master/packages/imodel-react-hooks) is a
 simpler solution, it lacks a few features as a tradeoff to be much simpler, it doesn't require setting up a decorator or using a Marker set and fits into
 a React component instead of requiring subclassing the Marker class.

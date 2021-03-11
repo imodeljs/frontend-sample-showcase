@@ -22,6 +22,9 @@
 }
 
 .html-markers_form {
+  display: grid;
+  row-gap: 6px;
+
   > label {
     display: flex;
     justify-content: space-between;
