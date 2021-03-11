@@ -7,17 +7,11 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { EmphasizeElements, FeatureOverrideType, IModelApp, OutputMessagePriority, ViewChangeOptions } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
-import IotAlertUI from "./IotAlertUI";
-import SampleApp from "common/SampleApp";
 import { ReactMessage, UnderlinedButton } from "@bentley/ui-core";
 import { Id64String } from "@bentley/bentleyjs-core";
 import { MessageManager, ReactNotifyMessageDetails } from "@bentley/ui-framework";
 
-export default class IotAlertApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <IotAlertUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
+export default class IotAlertApp {
   public static showAlertNotification(selectedElement: string, elementNameIdMap: Map<string, string>) {
     MessageManager.outputMessage(new ReactNotifyMessageDetails(OutputMessagePriority.Warning, ``, IotAlertApp.reactMessage(selectedElement, elementNameIdMap)));
   }
@@ -40,17 +34,6 @@ export default class IotAlertApp implements SampleApp {
       return;
     }
     await vp.zoomToElements(zoomElementId, { ...viewChangeOpts });
-  }
-
-  public static teardown() {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
-      return;
-
-    const emph = EmphasizeElements.getOrCreate(vp);
-    emph.clearEmphasizedElements(vp);
-    emph.clearOverriddenElements(vp);
   }
 }
 
