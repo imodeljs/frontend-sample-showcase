@@ -2,15 +2,15 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
 import ClosestPointOnCurveUI from "./ClosestPointOnCurveUI";
 
-export function getClosestPointOnCurveSpec(): SampleSpec {
+export function getClosestPointOnCurveSpec(): SampleMetadata {
   return ({
     name: "closest-point-curve-sample",
     label: "Closest Point on Curve",
     image: "closest-point-curve-thumbnail.png",
-    customModelList: [],
+    modelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
       { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp") },

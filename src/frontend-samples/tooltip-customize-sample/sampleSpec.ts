@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
 import TooltipCustomizeUI from "./TooltipCustomizeUI";
 
-export function getTooltipCustomizeSpec(): SampleSpec {
+export function getTooltipCustomizeSpec(): SampleMetadata {
   return ({
     name: "tooltip-customize-sample",
     label: "Tooltip Customize",

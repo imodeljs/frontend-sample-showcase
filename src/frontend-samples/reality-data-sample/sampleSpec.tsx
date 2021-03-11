@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
 import RealityDataUI from "./RealityDataUI";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox";
 
-export function getRealityDataSpec(): SampleSpec {
+export function getRealityDataSpec(): SampleMetadata {
   return ({
     name: "reality-data-sample",
     label: "Reality Data",
@@ -16,7 +16,7 @@ export function getRealityDataSpec(): SampleSpec {
       { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
       { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },
     ],
-    customModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
+    modelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
     sampleClass: RealityDataUI,
   });
 }

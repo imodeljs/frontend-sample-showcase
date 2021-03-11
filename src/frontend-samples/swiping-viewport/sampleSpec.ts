@@ -2,17 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "@itwinjs-sandbox";
 import SwipingComparisonUI from "./SwipingComparisonUI";
 
-export function getSwipingComparisonSpec(): SampleSpec {
+export function getSwipingComparisonSpec(): SampleMetadata {
   return ({
     name: "swiping-viewport-sample",
     label: "Swiping Comparison",
     image: "swiping-viewport-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
-    customModelList: [SampleIModels.ExtonCampus],
+    modelList: [SampleIModels.ExtonCampus],
     files: [
       { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp") },
       { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI"), entry: true },

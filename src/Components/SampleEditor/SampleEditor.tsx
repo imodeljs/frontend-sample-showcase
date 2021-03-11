@@ -10,7 +10,8 @@ import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import Drawer from "./Drawer/Drawer";
 import modules from "./Modules";
-import { SampleSpecFile } from "Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
+import { SampleSpecGenerator } from "./SampleSpecGenerator";
 
 export interface IRange {
   readonly startLineNumber: number;
@@ -22,8 +23,7 @@ export interface IRange {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 export interface SampleEditorProps {
-  files?: SampleSpecFile[];
-  readme?: SampleSpecFile;
+  sampleMetadata?: SampleMetadata;
   style?: React.CSSProperties;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
@@ -40,27 +40,32 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
   const [readme, setReadme] = React.useState<string>("");
 
   React.useEffect(() => {
-    Promise.all((props.files || []).map(async (file) => ({ content: (await file.import).default, name: file.name })))
-      .then(fileActions.setFiles)
-      .then(() => entryActions.setEntry(props.files?.find((file) => file.entry)?.name || null));
+    Promise.all((props.sampleMetadata?.files || []).map(async (file) => ({ content: (await file.import).default, name: file.name })))
+      .then((files) => {
+        if (props.sampleMetadata!.iTwinViewerReady) {
+          files.push({ content: SampleSpecGenerator.generateSampleSpec(props.sampleMetadata!), name: "sampleSpec.ts" })
+        }
+        fileActions.setFiles(files);
+      })
+      .then(() => entryActions.setEntry(props.sampleMetadata?.files.find((file) => file.entry)?.name || null));
     return () => {
       setEditorState(null, []);
     }
-  }, [props.files, fileActions, entryActions, activityActions])
+  }, [props.sampleMetadata, fileActions, entryActions, activityActions])
 
   React.useEffect(() => {
     moduleActions.setModules(modules);
   }, [moduleActions])
 
   React.useEffect(() => {
-    if (props.readme) {
-      props.readme.import
+    if (props.sampleMetadata?.readme) {
+      props.sampleMetadata.readme.import
         .then((fileData) => {
           setReadme(fileData.default);
           setShowReadme(true);
         })
     }
-  }, [props.readme, setReadme, setShowReadme]);
+  }, [props.sampleMetadata, setReadme, setShowReadme]);
 
   React.useEffect(() => {
     if (activityState.active) {

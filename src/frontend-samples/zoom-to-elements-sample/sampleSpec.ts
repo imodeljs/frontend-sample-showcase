@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "@itwinjs-sandbox";
 import ZoomToElementsUI from "./ZoomToElementsUI";
 
-export function getZoomToElementsSpec(): SampleSpec {
+export function getZoomToElementsSpec(): SampleMetadata {
   return ({
     name: "zoom-to-elements-sample",
     label: "Zoom to Elements",
@@ -17,7 +17,7 @@ export function getZoomToElementsSpec(): SampleSpec {
       { name: "ZoomToElementsUI.tsx", import: import("!!raw-loader!./ZoomToElementsUI"), entry: true },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
-    customModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
+    modelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
     sampleClass: ZoomToElementsUI,
   });
 }

@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
 import CameraPathUI from "./CameraPathUI";
 
-export function getViewCameraSpec(): SampleSpec {
+export function getViewCameraSpec(): SampleMetadata {
   return ({
     name: "Camera Path Sample",
     label: "Camera Path",

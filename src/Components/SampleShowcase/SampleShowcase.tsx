@@ -8,7 +8,6 @@ import { SampleGallery } from "../SampleGallery/SampleGallery";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector } from "common/IModelSelector/IModelSelector";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
@@ -17,25 +16,30 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { Pane, SplitScreen } from "@bentley/monaco-editor";
 import { SampleEditor } from "Components/SampleEditor/SampleEditor";
+import { IModelSetup, SampleIModels, SampleSpec } from "@itwinjs-sandbox";
+import { defaultIModelList, IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
+import { SampleBaseApp } from "SampleBaseApp";
+import { Presentation } from "@bentley/presentation-frontend";
 // cSpell:ignore imodels
 
-export interface SampleSpecFile {
+export interface SampleFile {
   name: string;
   import: Promise<{ default: string }>;
   entry?: boolean;
 };
-export interface SampleSpec {
+
+export interface SampleMetadata extends SampleSpec {
   name: string;
   label: string;
   image: string;
-  readme?: SampleSpecFile;
-  files: SampleSpecFile[];
-  customModelList?: string[];
+  readme?: SampleFile;
+  files: SampleFile[];
+  iTwinViewerReady?: boolean;
   sampleClass: typeof React.Component;
 }
 
 interface ShowcaseState {
-  iModelName: string;
+  iModelName?: SampleIModels;
   activeSampleGroup: string;
   activeSampleName: string;
   sampleUI?: React.ReactNode;
@@ -79,7 +83,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   }
 
-  private getNamesFromURLParams(): { group: string, sample: string, imodel: string } {
+  private getNamesFromURLParams(): { group: string, sample: string, imodel?: SampleIModels } {
     const urlParams = new URLSearchParams(window.location.search);
     const urlGroupName = urlParams.get("group");
     const urlSampleName = urlParams.get("sample");
@@ -100,12 +104,16 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       sample = this._samples[0].samples[0].name;
     }
 
-    let imodel = iModelName;
+    let imodel: SampleIModels | undefined;
     const spec = this.getSampleByName(group, sample)!;
     const iModelList = this.getIModelList(spec);
 
+    if (iModelName && Object.values<string>(SampleIModels).includes(iModelName)) {
+      imodel = iModelName as SampleIModels;
+    }
+
     if (0 === iModelList.length) {
-      imodel = "";
+      imodel = undefined;
     } else if (!imodel || !iModelList.includes(imodel)) {
       imodel = iModelList[0];
     }
@@ -150,9 +158,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       this._wantScroll = true;
       this.setState({ iModelName: names.imodel, activeSampleGroup: names.group, activeSampleName: names.sample });
     };
-
-    SampleShowcase._sampleNamespace = IModelApp.i18n.registerNamespace("sample-showcase-i18n-namespace");
-    MovePointTool.register(SampleShowcase._sampleNamespace);
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: ShowcaseState) {
@@ -170,7 +175,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
   }
 
-  private getSampleByName(groupName: string, sampleName: string): SampleSpec | undefined {
+  private getSampleByName(groupName: string, sampleName: string): SampleMetadata | undefined {
     const group = sampleManifest.find((v) => v.groupName === groupName);
 
     if (!group)
@@ -179,12 +184,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return group.samples.find((v) => v.name === sampleName)!;
   }
 
-  private getIModelList(sampleSpec: SampleSpec): string[] {
-    const customModelList = sampleSpec.customModelList;
-    return customModelList ? customModelList : IModelSelector.defaultIModelList;
+  private getIModelList(sampleSpec: SampleSpec): SampleIModels[] {
+    const modelList = sampleSpec.modelList;
+    return modelList ? modelList : defaultIModelList;
   }
 
-  private getIModelSelector(iModelName: string, iModelList: string[]): React.ReactNode {
+  private getIModelSelector(iModelName?: SampleIModels, iModelList?: SampleIModels[]): React.ReactNode {
     if (iModelList && 1 < iModelList.length)
       return (
         <div className="model-selector">
@@ -198,7 +203,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     const newSampleSpec = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
     if (undefined === newSampleSpec) {
-      this.setState({ activeSampleGroup: "", activeSampleName: "", iModelName: "" });
+      this.setState({ activeSampleGroup: "", activeSampleName: "", iModelName: undefined });
       return;
     }
 
@@ -213,7 +218,25 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       }
 
       try {
-        sampleUI = sampleUI = React.createElement(newSampleSpec.sampleClass, props);
+        Presentation.terminate();
+        IModelApp.shutdown();
+      } catch (_) {
+        // No need to do anything
+      }
+
+      if (!newSampleSpec.iTwinViewerReady) {
+        await SampleBaseApp.startup();
+        SampleShowcase._sampleNamespace = IModelApp.i18n.registerNamespace("sample-showcase-i18n-namespace");
+        MovePointTool.register(SampleShowcase._sampleNamespace);
+        IModelSetup.clearIModel();
+      }
+
+      try {
+        if (newSampleSpec.iTwinViewerReady) {
+          sampleUI = <>{React.createElement(newSampleSpec.sampleClass, props)}</>
+        } else {
+          sampleUI = React.createElement(newSampleSpec.sampleClass, props);
+        }
       } catch (err) {
         sampleUI = <DisplayError error={err} />
       }
@@ -222,7 +245,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setState({ sampleUI });
   }
 
-  private _updateNames = (names: { group: string, sample: string, imodel?: string }) => {
+  private _updateNames = (names: { group: string, sample: string, imodel?: SampleIModels }) => {
     if (this._prevSampleClass) {
       if (!window.confirm("Changes made to the code will not be saved!")) {
         return;
@@ -244,7 +267,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     }
 
     this.updateURLParams(names.group, names.sample, iModelName);
-    this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName: iModelName ? iModelName : "" });
+    this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName });
   }
 
   private _onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
@@ -256,7 +279,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     this.setupNewSample();
   }
 
-  private _onIModelChange = (iModelName: string) => {
+  private _onIModelChange = (iModelName: SampleIModels) => {
     this._updateNames({ group: this.state.activeSampleGroup, sample: this.state.activeSampleName, imodel: iModelName })
   }
 
@@ -316,8 +339,6 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
-    const readme = activeSample ? activeSample.readme : undefined;
-    const files = activeSample ? activeSample.files : undefined;
 
     const { showEditor, showGallery } = this.state;
 
@@ -330,7 +351,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       <div className="showcase" ref={this._showcaseRef}>
         <SplitScreen split="vertical" onResizeStart={this._onDragStarted} onResizeEnd={this._onDragFinished} onChange={this.onChange}>
           <Pane className={editorClassName} snapSize={"400px"} disabled={!showEditor} size={showEditor ? "400px" : "0"} onChange={this._onEditorSizeChange}>
-            <SampleEditor style={{ minWidth: editorMinSize }} files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
+            <SampleEditor style={{ minWidth: editorMinSize }} sampleMetadata={activeSample} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
           </Pane>
           <Pane className="preview" minSize={"500px"}>
             {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}

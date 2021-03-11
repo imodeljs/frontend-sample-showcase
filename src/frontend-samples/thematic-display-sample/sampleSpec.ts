@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "@itwinjs-sandbox";
 import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
-export function getThematicDisplaySpec(): SampleSpec {
+export function getThematicDisplaySpec(): SampleMetadata {
   return ({
     name: "thematic-display-sample",
     label: "Thematic Display",
@@ -16,7 +16,7 @@ export function getThematicDisplaySpec(): SampleSpec {
       { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp") },
       { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI"), entry: true },
     ],
-    customModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
+    modelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
     sampleClass: ThematicDisplaySampleUI,
   });
 }

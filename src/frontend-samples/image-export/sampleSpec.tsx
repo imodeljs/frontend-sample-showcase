@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
 import ImageExportUI from "./ImageExportUI";
 
-export function getImageExportSpec(): SampleSpec {
+export function getImageExportSpec(): SampleMetadata {
   return ({
     name: "image-export-sample",
     label: "Image Export",

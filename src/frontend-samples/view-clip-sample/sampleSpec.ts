@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "@itwinjs-sandbox";
 import ViewClipUI from "./ViewClipUI";
 
-export function getViewClipSpec(): SampleSpec {
+export function getViewClipSpec(): SampleMetadata {
   return ({
     name: "view-clip-sample",
     label: "View Clipping",
@@ -17,6 +17,6 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
     ],
     sampleClass: ViewClipUI,
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
+    modelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
   });
 }

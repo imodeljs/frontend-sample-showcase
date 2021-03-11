@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleIModels } from "@itwinjs-sandbox";
 import VolumeQueryUI from "./VolumeQueryUI";
 
-export function getVolumeQuerySpec(): SampleSpec {
+export function getVolumeQuerySpec(): SampleMetadata {
   return ({
     name: "volume-query-sample",
     label: "Volume Query",
@@ -17,7 +17,7 @@ export function getVolumeQuerySpec(): SampleSpec {
       { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },
       { name: "ProgressBar.tsx", import: import("!!raw-loader!./ProgressBar") },
     ],
-    customModelList: [
+    modelList: [
       SampleIModels.RetailBuilding,
       SampleIModels.BayTown,
       SampleIModels.House,

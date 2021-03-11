@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox";
+import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
 import ToolbarButtonSample from "./ToolbarButtonApp";
 
-export function getToolbarButtonSample(): SampleSpec {
+export function getToolbarButtonSample(): SampleMetadata {
   return ({
     name: "toolbar-button-sample",
     label: "Add Toolbar Button (Dynamically)",
@@ -17,7 +17,7 @@ export function getToolbarButtonSample(): SampleSpec {
       { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp") },
       { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi"), entry: true },
     ],
-    customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
+    modelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     sampleClass: ToolbarButtonSample,
   });
 }

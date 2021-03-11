@@ -7,7 +7,7 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "./SampleGallery.scss";
 import { ExpandableBlock } from "@bentley/ui-core";
 import { SampleSpecGroup } from "../../sampleManifest";
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
 import { MyExpandableList } from "Components/MyExpandableList/ExpandableList";
 
 interface SampleGalleryProps {
@@ -90,7 +90,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     this.props.onChange(names.groupName, names.sampleName, false);
   }
 
-  private createElementsForSample(sample: SampleSpec, groupName: string) {
+  private createElementsForSample(sample: SampleMetadata, groupName: string) {
     const isChecked = this.props.selected === sample.name;
     const idString = this._idFromNames(sample.name, groupName);
     const image = sample.image;
@@ -137,7 +137,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
 
     return (
       <ExpandableBlock className="gallery-card-block" title={group.groupName} key={group.groupName} isExpanded={isExpanded} onClick={onClick}>
-        {group.samples.map((sample: SampleSpec) => this.createElementsForSample(sample, group.groupName))}
+        {group.samples.map((sample: SampleMetadata) => this.createElementsForSample(sample, group.groupName))}
       </ExpandableBlock>
     );
   }

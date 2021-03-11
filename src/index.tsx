@@ -8,11 +8,12 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import { App } from "./Components/App/App";
 import * as serviceWorker from "./serviceWorker";
-import { SampleBaseApp } from "./SampleBaseApp";
+import { FeatureToggleClient } from "FeatureToggleClient";
+import { AuthorizationClient } from "@itwinjs-sandbox";
 
 (async () => {
-  await SampleBaseApp.startup();
-
+  await FeatureToggleClient.initialize();
+  await AuthorizationClient.initializeOidc();
   ReactDOM.render(
     <App />,
     document.getElementById("root"),

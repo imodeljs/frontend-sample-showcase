@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
 import UnifiedSelectionTreeUI from "./UnifiedSelectionTreeUI";
 
-export function getUnifiedSelectionTreeSpec(): SampleSpec {
+export function getUnifiedSelectionTreeSpec(): SampleMetadata {
   return ({
     name: "unified-selection-tree-sample",
     label: "Unified Selection Tree",
