@@ -17,6 +17,7 @@
     "@bentley/imodeljs-markup": "2.12.1",
     "@bentley/imodeljs-quantity": "2.12.1",
     "@bentley/itwin-client": "2.12.1",
+    "@bentley/itwin-viewer-react": "^6.1.3",
     "@bentley/monaco-editor": "^5.1.5",
     "@bentley/orbitgt-core": "2.12.1",
     "@bentley/presentation-common": "2.12.1",
