@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
@@ -64,6 +60,7 @@ import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-s
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
+import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -85,6 +82,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getClassifierSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
+    getIotAlertSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
     getCrossProbingSpec(),
