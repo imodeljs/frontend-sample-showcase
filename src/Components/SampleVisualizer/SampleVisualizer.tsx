@@ -26,60 +26,59 @@ interface SampleProps {
   iModelSelector: React.ReactNode;
 }
 
+const iModelAppShutdown = async (): Promise<void> => {
+  IModelApp.i18n.unregisterNamespace(i18nNamespace);
+  IModelApp.tools.unRegister(MovePointTool.toolId);
+  Presentation.terminate();
+  return IModelApp.shutdown().catch();
+}
+
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
   const { iTwinViewerReady, sampleClass, transpileResult, iModelName, iModelSelector } = props;
   const [appReady, setAppReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
-  // Initialize imodeljs BaseApp
   useEffect(() => {
-    if (!appReady && !iTwinViewerReady) {
+    if (!iTwinViewerReady) {
       SampleBaseApp.startup()
         .then(() => {
-          setAppReady(true);
           MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
         })
-        .catch(() => {
-          setAppReady(true);
-        });
+        .catch()
+        .finally(() => setAppReady(true));
+    } else {
+      setAppReady(true)
     }
     return () => {
-      IModelApp.i18n.unregisterNamespace(i18nNamespace);
-      IModelApp.tools.unRegister(MovePointTool.toolId);
+      setAppReady(false);
+      iModelAppShutdown()
     }
-  }, [appReady, iTwinViewerReady]);
+  }, [iTwinViewerReady]);
 
   // Set sample UI
   useEffect(() => {
     try {
-      if (sampleClass) {
-        Promise.resolve(Presentation.terminate())
-          .then(async () => {
-            return IModelApp.shutdown()
-          })
-          .then(() => {
-            setAppReady(false)
-          })
-          .catch()
-          .then(() => {
-            setSampleUi(React.createElement(sampleClass, { iModelName, iModelSelector } as any))
-          });
+      if (sampleClass && (!iTwinViewerReady && appReady) || iTwinViewerReady) {
+        setSampleUi(React.createElement(sampleClass, { iModelName, iModelSelector } as any))
       }
     } catch (error) {
       setSampleUi(<DisplayError error={error} />)
     }
-  }, [sampleClass, iModelName, iModelSelector]);
+  }, [sampleClass, iModelName, iModelSelector, iTwinViewerReady, appReady]);
 
   // Refresh sample UI on transpile
   useEffect(() => {
     if (transpileResult) {
       setLoading(true);
-      import( /* webpackIgnore: true */ transpileResult).then((module) => {
-        const component = module.default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
-        setLoading(false);
-      })
+      iModelAppShutdown()
+        .then(() => {
+          import( /* webpackIgnore: true */ transpileResult).then((module) => {
+            const component = module.default as React.ComponentClass<SampleProps>;
+            setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
+            setLoading(false);
+          })
+        })
     }
   }, [transpileResult, iModelName, iModelSelector]);
 

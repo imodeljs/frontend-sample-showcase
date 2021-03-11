@@ -3,8 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "@itwinjs-sandbox";
-import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
+import { defaultIModel, defaultIModelList, SampleIModels } from "@itwinjs-sandbox";
 import React from "react";
 import { sampleManifest } from "sampleManifest";
 import { SampleSpec, SampleSpecFile } from "SampleSpec";
@@ -21,6 +20,7 @@ export class ActiveSample {
   public name: string;
   public sampleClass: typeof React.Component;
   public imodel: SampleIModels;
+  public iTwinViewerReady?: boolean;
   public getReadme?: () => SampleSpecFile;
   public getFiles?: () => SampleSpecFile[];
 
@@ -37,6 +37,7 @@ export class ActiveSample {
     this._spec = result.spec;
     this.sampleClass = result.spec.sampleClass;
     this.imodel = imodel && this.imodelList.includes(imodel as SampleIModels) ? imodel as SampleIModels : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
+    this.iTwinViewerReady = result.spec.iTwinViewerReady
     this.getFiles = () => result.spec.files;
     this.getReadme = result.spec.readme ? (() => result.spec.readme!) : undefined;
 
@@ -60,8 +61,6 @@ export class ActiveSample {
 
 const updateURLParams = (group: string, sample: string, imodel?: string) => {
   const params = new URLSearchParams({ group, sample });
-  // params.append("group", group);
-  // params.append("sample", sample);
 
   if (imodel) {
     params.append("imodel", imodel);

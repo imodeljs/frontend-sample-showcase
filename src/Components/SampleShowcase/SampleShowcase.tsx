@@ -105,6 +105,7 @@ export const SampleShowcase: FunctionComponent = () => {
             <React.Suspense fallback={spinner}>
               <ErrorBoundary>
                 <Visualizer
+                  iTwinViewerReady={activeSample.iTwinViewerReady}
                   iModelName={activeSample.imodel}
                   iModelSelector={getImodelSelector()}
                   transpileResult={transpileResult}
