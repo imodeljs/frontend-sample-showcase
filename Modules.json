@@ -250,6 +250,11 @@
       "typedef": true
     },
     {
+      "name": "@itwinjs-sandbox/constants",
+      "import": "./src/@itwinjs-sandbox/constants",
+      "typedef": true
+    },
+    {
       "name": "@itwinjs-sandbox",
       "import": "./src/@itwinjs-sandbox/index",
       "typedef": true
