@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { PropertyFormattingUI } from "./PropertyFormattingUI";
 import { SampleIModels } from "@itwinjs-sandbox";
 
-export function getPropertyFormattingSpec(): SampleMetadata {
+export function getPropertyFormattingSpec(): SampleSpec {
   return ({
     name: "property-formatting-sample",
     label: "Property Formatting",

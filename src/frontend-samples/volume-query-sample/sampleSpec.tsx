@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { SampleIModels } from "@itwinjs-sandbox";
 import VolumeQueryUI from "./VolumeQueryUI";
 
-export function getVolumeQuerySpec(): SampleMetadata {
+export function getVolumeQuerySpec(): SampleSpec {
   return ({
     name: "volume-query-sample",
     label: "Volume Query",

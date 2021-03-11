@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import MultiViewportUI from "./MultiViewportUI";
 
-export function getMultiViewportSpec(): SampleMetadata {
+export function getMultiViewportSpec(): SampleSpec {
   return ({
     name: "multi-viewport-sample",
     label: "Multiple Viewports",

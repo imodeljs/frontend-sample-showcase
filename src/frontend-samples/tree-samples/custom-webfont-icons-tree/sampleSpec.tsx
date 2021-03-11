@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import CustomWebfontIconsTreeUI from "./CustomWebfontIconsTreeUI";
 
-export function getCustomWebfontIconsTreeSpec(): SampleMetadata {
+export function getCustomWebfontIconsTreeSpec(): SampleSpec {
   return ({
     name: "custom-webfont-icons-tree-sample",
     label: "Custom Webfont Icons Tree",

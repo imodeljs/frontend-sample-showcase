@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import CustomCheckboxesTreeUI from "./CustomCheckboxesTreeUI";
 
-export function getCustomCheckboxesTreeSpec(): SampleMetadata {
+export function getCustomCheckboxesTreeSpec(): SampleSpec {
   return ({
     name: "custom-checkboxes-sample",
     label: "Custom Checkboxes Tree",

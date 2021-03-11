@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import BasicTreeUI from "./BasicTreeUI";
 
-export function getBasicTreeSpec(): SampleMetadata {
+export function getBasicTreeSpec(): SampleSpec {
   return ({
     name: "basic-tree-sample",
     label: "Basic Tree",

@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ClassifierUI from "./ClassifierUI";
 import { SampleIModels } from "@itwinjs-sandbox";
 
-export function getClassifierSpec(): SampleMetadata {
+export function getClassifierSpec(): SampleSpec {
   return ({
     name: "classifier-sample",
     label: "Classifiers",

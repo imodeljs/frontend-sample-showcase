@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import Advanced3dUI from "./Advanced3dUI";
 
-export function getAdvanced3dSpec(): SampleMetadata {
+export function getAdvanced3dSpec(): SampleSpec {
   return ({
     name: "advanced-3d-sample",
     label: "Advanced 3d",

@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import SimpleLineUI from "./SimpleLineUI";
 
-export function getSimpleLineSpec(): SampleMetadata {
+export function getSimpleLineSpec(): SampleSpec {
   return ({
     name: "simple-line-sample",
     label: "Simple Line",

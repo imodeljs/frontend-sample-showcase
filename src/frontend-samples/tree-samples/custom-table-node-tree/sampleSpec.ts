@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import TableNodeTreeUI from "./CustomTableNodeTreeUI";
 
-export function getCustomTableNodeTreeSpec(): SampleMetadata {
+export function getCustomTableNodeTreeSpec(): SampleSpec {
   return ({
     name: "custom-table-node-tree-sample",
     label: "Custom Table Node Tree",

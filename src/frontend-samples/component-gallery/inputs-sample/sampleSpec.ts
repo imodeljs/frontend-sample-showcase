@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import InputsList from "./Inputs";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getInputsSpec(): SampleMetadata {
+export function getInputsSpec(): SampleSpec {
   return ({
     name: "inputs-sample",
     label: "UI-Inputs",

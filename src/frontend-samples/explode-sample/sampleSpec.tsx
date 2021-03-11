@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleIModels } from "@itwinjs-sandbox";
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ExplodeUI from "./ExplodeUI";
 
-export function getExplodeSpec(): SampleMetadata {
+export function getExplodeSpec(): SampleSpec {
   return ({
     name: "explode-sample",
     label: "Exploded View",

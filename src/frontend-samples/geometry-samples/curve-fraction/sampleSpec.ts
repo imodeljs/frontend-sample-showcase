@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import CurveFractionUI from "./CurveFractionUI";
 
-export function getCurveFractionSpec(): SampleMetadata {
+export function getCurveFractionSpec(): SampleSpec {
   return ({
     name: "curve-fraction-sample",
     label: "Curve Fractions",

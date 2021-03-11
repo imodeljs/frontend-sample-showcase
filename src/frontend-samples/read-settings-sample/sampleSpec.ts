@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { SampleIModels } from "@itwinjs-sandbox";
 import ReadSettingsUI from "./ReadSettingsUI";
 
-export function getReadSettingsSpec(): SampleMetadata {
+export function getReadSettingsSpec(): SampleSpec {
   return ({
     name: "read-settings-sample",
     label: "Read Settings",

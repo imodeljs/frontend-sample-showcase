@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { SampleIModels } from "@itwinjs-sandbox";
 import ZoomToElementsUI from "./ZoomToElementsUI";
 
-export function getZoomToElementsSpec(): SampleMetadata {
+export function getZoomToElementsSpec(): SampleSpec {
   return ({
     name: "zoom-to-elements-sample",
     label: "Zoom to Elements",

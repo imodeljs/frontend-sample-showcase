@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import Transformations2dUI from "./2dTransformationsUI";
 
-export function get2dTransformationsSpec(): SampleMetadata {
+export function get2dTransformationsSpec(): SampleSpec {
   return ({
     name: "2d-transformations-sample",
     label: "2d Transformations",

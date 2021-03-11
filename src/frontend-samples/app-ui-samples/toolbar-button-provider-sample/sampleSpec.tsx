@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleIModels } from "@itwinjs-sandbox";
-import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ToolbarButtonSample from "./ToolbarButtonApp";
 
-export function getToolbarButtonSample(): SampleMetadata {
+export function getToolbarButtonSample(): SampleSpec {
   return ({
     name: "toolbar-button-sample",
     label: "Add Toolbar Button (Dynamically)",

@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import SimpleAnimatedUI from "./SimpleAnimatedUI";
 
-export function getSimpleAnimatedSpec(): SampleMetadata {
+export function getSimpleAnimatedSpec(): SampleSpec {
   return ({
     name: "simple-animated-sample",
     label: "Simple Animated",

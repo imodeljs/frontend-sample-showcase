@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { SampleIModels } from "@itwinjs-sandbox";
 import ViewerOnly2dUI from "./ViewerOnly2dUI";
 
-export function getViewerOnly2dSpec(): SampleMetadata {
+export function getViewerOnly2dSpec(): SampleSpec {
   return ({
     name: "viewer-only-2d-sample",
     label: "2d",

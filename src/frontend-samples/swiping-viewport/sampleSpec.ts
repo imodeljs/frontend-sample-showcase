@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { SampleIModels } from "@itwinjs-sandbox";
 import SwipingComparisonUI from "./SwipingComparisonUI";
 
-export function getSwipingComparisonSpec(): SampleMetadata {
+export function getSwipingComparisonSpec(): SampleSpec {
   return ({
     name: "swiping-viewport-sample",
     label: "Swiping Comparison",

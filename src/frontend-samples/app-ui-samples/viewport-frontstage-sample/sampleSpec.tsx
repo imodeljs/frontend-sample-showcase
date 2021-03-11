@@ -3,11 +3,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { SampleIModels } from "@itwinjs-sandbox";
 import ViewportFrontstageSample from "./ViewportFrontstageApp";
 
-export function getViewportFrontstageSample(): SampleMetadata {
+export function getViewportFrontstageSample(): SampleSpec {
   return ({
     name: "viewport-frontstage-sample",
     label: "Viewport Frontstage",

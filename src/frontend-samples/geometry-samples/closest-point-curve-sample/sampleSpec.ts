@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ClosestPointOnCurveUI from "./ClosestPointOnCurveUI";
 
-export function getClosestPointOnCurveSpec(): SampleMetadata {
+export function getClosestPointOnCurveSpec(): SampleSpec {
   return ({
     name: "closest-point-curve-sample",
     label: "Closest Point on Curve",

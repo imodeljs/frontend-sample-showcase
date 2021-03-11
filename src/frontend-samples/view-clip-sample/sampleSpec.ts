@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import { SampleIModels } from "@itwinjs-sandbox";
 import ViewClipUI from "./ViewClipUI";
 
-export function getViewClipSpec(): SampleMetadata {
+export function getViewClipSpec(): SampleSpec {
   return ({
     name: "view-clip-sample",
     label: "View Clipping",

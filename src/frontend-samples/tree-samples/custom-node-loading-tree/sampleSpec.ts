@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import CustomNodeLoadingTreeUI from "./CustomNodeLoadingTreeUI";
 
-export function getCustomNodeLoadingTreeSpec(): SampleMetadata {
+export function getCustomNodeLoadingTreeSpec(): SampleSpec {
   return ({
     name: "custom-node-loading-sample",
     label: "Custom Node Loading Tree",

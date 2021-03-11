@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ViewAttributesUI from "./ViewAttributesUI";
 
-export function getViewAttributesSpec(): SampleMetadata {
+export function getViewAttributesSpec(): SampleSpec {
   return ({
     name: "view-attributes-sample",
     label: "View Attributes",

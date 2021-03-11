@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ScreenSpaceEffectsUI from "./ScreenSpaceEffectsUI";
 import { SampleIModels } from "@itwinjs-sandbox";
 
-export function getScreenSpaceEffectsSpec(): SampleMetadata {
+export function getScreenSpaceEffectsSpec(): SampleSpec {
   return ({
     name: "screen-space-effects-sample",
     label: "Screen-space Effects",

@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import CustomEventHandlerTreeUI from "./CustomEventHandlerTreeUI";
 
-export function getCustomEventHandlerTreeSpec(): SampleMetadata {
+export function getCustomEventHandlerTreeSpec(): SampleSpec {
   return ({
     name: "custom-event-handler-tree-sample",
     label: "Custom Event Handler Tree",

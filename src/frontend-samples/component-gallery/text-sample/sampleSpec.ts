@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import TextList from "./Text";
 
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
-export function getTextSpec(): SampleMetadata {
+export function getTextSpec(): SampleSpec {
   return ({
     name: "text-sample",
     label: "UI-Text",

@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import MarkerPinUI from "./MarkerPinUI";
 
-export function getMarkerPinSpec(): SampleMetadata {
+export function getMarkerPinSpec(): SampleSpec {
   return ({
     name: "marker-pin-sample",
     label: "Marker Pins",

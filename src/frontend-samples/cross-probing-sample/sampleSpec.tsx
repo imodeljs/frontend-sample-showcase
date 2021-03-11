@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import CrossProbingUI from "./CrossProbingUI";
 import { SampleIModels } from "@itwinjs-sandbox";
 
-export function getCrossProbingSpec(): SampleMetadata {
+export function getCrossProbingSpec(): SampleSpec {
   return ({
     name: "cross-probing-sample",
     label: "Cross-Probing",

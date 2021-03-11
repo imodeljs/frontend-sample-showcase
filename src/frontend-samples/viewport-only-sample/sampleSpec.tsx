@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ViewportOnlyUI from "./ViewportOnlyUI";
 
-export function getViewportOnlySpec(): SampleMetadata {
+export function getViewportOnlySpec(): SampleSpec {
   return ({
     name: "viewport-only-sample",
     label: "3d",

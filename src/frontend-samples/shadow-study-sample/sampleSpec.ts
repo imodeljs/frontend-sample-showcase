@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import ShadowStudyUI from "./ShadowStudyUI";
 
-export function getShadowStudySpec(): SampleMetadata {
+export function getShadowStudySpec(): SampleSpec {
   return ({
     name: "shadow-study-sample",
     label: "Shadow Study",

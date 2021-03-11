@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleMetadata } from "../../../Components/SampleShowcase/SampleShowcase";
+import { SampleSpec } from "SampleSpec";
 import Simple3dUI from "./Simple3dUI";
 
-export function getSimple3dSpec(): SampleMetadata {
+export function getSimple3dSpec(): SampleSpec {
   return ({
     name: "simple-3d-sample",
     label: "Simple 3d",

@@ -250,11 +250,6 @@
       "typedef": true
     },
     {
-      "name": "@itwinjs-sandbox/sample-spec/SampleSpec",
-      "import": "./src/@itwinjs-sandbox/sample-spec/SampleSpec",
-      "typedef": true
-    },
-    {
       "name": "@itwinjs-sandbox",
       "import": "./src/@itwinjs-sandbox/index",
       "typedef": true
