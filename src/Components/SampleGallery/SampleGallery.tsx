@@ -14,7 +14,7 @@ interface SampleGalleryProps {
   samples: SampleSpecGroup[];
   group: string;
   selected: string;
-  minSize?: number;
+  style?: React.CSSProperties;
   onChange: ((group: string, sample: string, wantScroll: boolean) => void);
 }
 
@@ -144,7 +144,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
 
   public render() {
     const expandedIndex = this.props.samples.findIndex((entry) => this.props.group === entry.groupName);
-    const style = this.props.minSize ? { minWidth: `${this.props.minSize}px` } : undefined;
+    const style = this.props.style;
     return (
       <MyExpandableList style={style} className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
         {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
