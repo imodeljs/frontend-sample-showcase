@@ -33,6 +33,10 @@
       "import": "@bentley/geometry-core"
     },
     {
+      "name": "@bentley/hypermodeling-frontend",
+      "import": "@bentley/hypermodeling-frontend"
+    },
+    {
       "name": "@bentley/imodelhub-client",
       "import": "@bentley/imodelhub-client"
     },

@@ -5,6 +5,7 @@
 .showcase {
   height: 100vh;
   display: flex;
+  position: relative;
 
   .preview {
     height: 100%;
@@ -126,4 +127,14 @@
 
 .gallery-hide {
   max-height: 0;
+}
+
+@media (max-width: 1000px) {
+  .show-gallery-button {
+    display: none;
+  }
+
+  .show-code-button {
+    display: none;
+  }
 }

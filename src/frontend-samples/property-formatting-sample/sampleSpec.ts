@@ -14,8 +14,8 @@ export function getPropertyFormattingSpec(): SampleSpec {
     customModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "PropertyFormattingUI.tsx", import: import("!!raw-loader!./PropertyFormattingUI"), entry: true },
       { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp") },
+      { name: "PropertyFormattingUI.tsx", import: import("!!raw-loader!./PropertyFormattingUI"), entry: true },
       { name: "approach-1-UI.tsx", import: import("!!raw-loader!./approach-1-UI") },
       { name: "approach-2-UI.tsx", import: import("!!raw-loader!./approach-2-UI") },
       { name: "approach-3-UI.tsx", import: import("!!raw-loader!./approach-3-UI") },

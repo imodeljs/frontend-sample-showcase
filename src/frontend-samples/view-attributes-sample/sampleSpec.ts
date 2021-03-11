@@ -12,8 +12,8 @@ export function getViewAttributesSpec(): SampleSpec {
     image: "view-attributes-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI"), entry: true },
       { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp") },
+      { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI"), entry: true },
     ],
     sampleClass: ViewAttributesUI,
   });

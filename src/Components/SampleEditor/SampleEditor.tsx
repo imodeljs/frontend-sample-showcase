@@ -24,7 +24,7 @@ const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 export interface SampleEditorProps {
   files?: SampleSpecFile[];
   readme?: SampleSpecFile;
-  minSize?: number;
+  style?: React.CSSProperties;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
   onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
@@ -96,7 +96,7 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
 
   const drawerMinSize = showReadme ? "0" : "35px";
   const drawerSize = !showReadme ? displayDrawer ? "200px" : "35px" : "0";
-  const style = props.minSize ? { minWidth: `${props.minSize}px` } : undefined
+  const style = props.style
 
   return (
     <div className="sample-editor-container" style={style}>

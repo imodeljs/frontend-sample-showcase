@@ -61,12 +61,16 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
       viewState.setAllow3dManipulations(false);
       viewState.setStandardRotation(StandardViewId.Top);
     }
+    const flags = viewState.viewFlags.clone()
+    flags.renderMode = RenderMode.SmoothShade
     viewState.displayStyle.backgroundColor = ColorDef.white;
     if (grid)
-      viewState.viewFlags.grid = true;
+      flags.grid = true;
     else
-      viewState.viewFlags.grid = false;
-    viewState.viewFlags.renderMode = RenderMode.SmoothShade;
+      flags.grid = false;
+
+    viewState.displayStyle.viewFlags = flags;
+
     return viewState;
   }
 

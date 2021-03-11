@@ -13,8 +13,8 @@ export function getSimpleLineSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI"), entry: true },
       { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp") },
+      { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI"), entry: true },
     ],
     sampleClass: SimpleLineUI,
   });
