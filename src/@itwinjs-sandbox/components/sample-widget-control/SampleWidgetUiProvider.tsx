@@ -20,7 +20,7 @@ export enum SampleIModels {
 }
 
 export interface IModelSelectorOptions {
-  modelList?: SampleIModels[];
+  modelList: SampleIModels[];
   iModelName: SampleIModels;
   onIModelChange: (iModelName: SampleIModels) => void;
 }

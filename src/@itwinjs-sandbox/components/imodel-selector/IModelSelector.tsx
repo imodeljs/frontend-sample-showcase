@@ -9,17 +9,14 @@ import { SampleIModels } from "../sample-widget-control/SampleWidgetUiProvider";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {
-  iModelNames?: SampleIModels[];
-  iModelName?: SampleIModels;
+  iModelNames: SampleIModels[];
+  iModelName: SampleIModels;
   onIModelChange: (iModelName: SampleIModels) => void;
 }
 
-export const defaultIModelList = [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium, SampleIModels.ExtonCampus];
-export const defaultIModel = SampleIModels.MetroStation
-
 export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelNames, iModelName, onIModelChange }) => {
-  const iModelList = iModelNames || defaultIModelList;
-  const currentiModel = iModelName || defaultIModel;
+  const iModelList = iModelNames || [];
+  const currentiModel = iModelName;
 
   const _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
