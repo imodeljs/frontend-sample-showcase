@@ -14,8 +14,8 @@ interface SampleGalleryProps {
   samples: SampleSpecGroup[];
   group: string;
   selected: string;
+  style?: React.CSSProperties;
   onChange: ((group: string, sample: string, wantScroll: boolean) => void);
-  onCollapse: () => void;
 }
 
 interface ExpandedState {
@@ -30,7 +30,7 @@ interface SampleGalleryState {
 export class SampleGallery extends React.Component<SampleGalleryProps, SampleGalleryState> {
   private myItemRefs: { [key: string]: React.RefObject<HTMLLabelElement> } = {};
 
-  constructor(props?: any) {
+  constructor(props: SampleGalleryProps) {
     super(props);
 
     this.state = {
@@ -144,12 +144,11 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
 
   public render() {
     const expandedIndex = this.props.samples.findIndex((entry) => this.props.group === entry.groupName);
+    const style = this.props.style;
     return (
-      <>
-        <MyExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
-          {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
-        </MyExpandableList>
-      </>
+      <MyExpandableList style={style} className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
+        {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
+      </MyExpandableList>
     );
   }
 }
