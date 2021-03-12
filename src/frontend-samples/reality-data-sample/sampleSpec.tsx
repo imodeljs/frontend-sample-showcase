@@ -13,8 +13,8 @@ export function getRealityDataSpec(): SampleSpec {
     image: "reality-data-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },
       { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
+      { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },
     ],
     customModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
     sampleClass: RealityDataUI,

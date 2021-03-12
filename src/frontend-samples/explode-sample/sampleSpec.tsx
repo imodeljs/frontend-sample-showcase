@@ -14,8 +14,8 @@ export function getExplodeSpec(): SampleSpec {
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     customModelList: [SampleIModels.House],
     files: [
-      { name: "ExplodeUI.tsx", import: import("!!raw-loader!./ExplodeUI"), entry: true },
       { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp") },
+      { name: "ExplodeUI.tsx", import: import("!!raw-loader!./ExplodeUI"), entry: true },
       { name: "ExplodeTile.ts", import: import("!!raw-loader!./ExplodeTile") },
     ],
     sampleClass: ExplodeUI,

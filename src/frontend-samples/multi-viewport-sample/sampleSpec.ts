@@ -12,8 +12,8 @@ export function getMultiViewportSpec(): SampleSpec {
     image: "multi-viewport-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "MultiViewportUI.tsx", import: import("!!raw-loader!./MultiViewportUI"), entry: true },
       { name: "MultiViewportApp.tsx", import: import("!!raw-loader!./MultiViewportApp") },
+      { name: "MultiViewportUI.tsx", import: import("!!raw-loader!./MultiViewportUI"), entry: true },
       { name: "multi-view-sample.scss", import: import("!!raw-loader!./multi-view-sample.scss") },
     ],
     sampleClass: MultiViewportUI,

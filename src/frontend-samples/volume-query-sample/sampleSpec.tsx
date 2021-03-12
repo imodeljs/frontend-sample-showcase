@@ -13,8 +13,8 @@ export function getVolumeQuerySpec(): SampleSpec {
     image: "volume-query-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },
       { name: "VolumeQueryApp.tsx", import: import("!!raw-loader!./VolumeQueryApp") },
+      { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },
       { name: "ProgressBar.tsx", import: import("!!raw-loader!./ProgressBar") },
     ],
     customModelList: [

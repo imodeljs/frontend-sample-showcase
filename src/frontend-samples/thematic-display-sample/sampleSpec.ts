@@ -13,8 +13,8 @@ export function getThematicDisplaySpec(): SampleSpec {
     image: "thematic-display-thumbnail.png",
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI"), entry: true },
       { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp") },
+      { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI"), entry: true },
     ],
     customModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
     sampleClass: ThematicDisplaySampleUI,

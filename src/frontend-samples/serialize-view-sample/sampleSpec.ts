@@ -14,8 +14,8 @@ export function getSerializeViewSpec(): SampleSpec {
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "SerializeViewUI.tsx", import: import("!!raw-loader!./SerializeViewUI"), entry: true },
       { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp") },
+      { name: "SerializeViewUI.tsx", import: import("!!raw-loader!./SerializeViewUI"), entry: true },
       { name: "SampleViewStates.ts", import: import("!!raw-loader!./SampleViewStates") },
     ],
     sampleClass: SerializeViewUI,
