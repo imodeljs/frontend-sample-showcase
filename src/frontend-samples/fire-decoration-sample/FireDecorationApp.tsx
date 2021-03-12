@@ -8,13 +8,12 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Placement3d, RenderTexture } from "@bentley/imodeljs-common";
 import { Decorator, imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import SampleApp from "common/SampleApp";
 import "common/samples-common.scss";
 import { EmitterHighlighter, FireEmitter, FireParams } from "./FireDecorator";
 import { PlacementTool } from "./PlacementTool";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class FireDecorationApp implements SampleApp {
+export default class FireDecorationApp {
   private static _sampleNamespace: I18NNamespace;
   private static _highlighter?: EmitterHighlighter;
   private static _dropListeners: VoidFunction[] = [];
