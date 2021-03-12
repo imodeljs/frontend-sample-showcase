@@ -84,14 +84,16 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
         _tokenString: body._jwt,
       };
       this._devAccessToken = AccessToken.fromJson(tokenJson);
-    }
 
-    setTimeout(() => {
-      this.getDevAccessToken()
-        .catch((error) => {
-          throw new BentleyError(AuthStatus.Error, error);
-        });
-    }, (1000 * 60 * 55));
+      setTimeout(() => {
+        // Reset the token.
+        this._devAccessToken = undefined;
+        this.getDevAccessToken()
+          .catch((error) => {
+            throw new BentleyError(AuthStatus.Error, error);
+          });
+      }, (1000 * 60 * 55));
+    }
 
     return this._devAccessToken!;
   }
