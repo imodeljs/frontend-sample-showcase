@@ -25,7 +25,7 @@ export const SampleShowcase: FunctionComponent = () => {
   const [showEditor, setShowEditor] = useState(true);
   const [showGallery, setShowGallery] = useState(true);
   const [transpileResult, setTranspileResult] = useState<string>();
-  let dragging: boolean = false;
+  const [dragging, setDragging] = useState<boolean>(false);
   let sizes: string[] = ["400px", "1", "200px"];
 
   const showcaseRef = React.createRef<HTMLDivElement>();
@@ -86,7 +86,7 @@ export const SampleShowcase: FunctionComponent = () => {
 
   return (
     <div className="showcase" ref={showcaseRef}>
-      <SplitScreen split="vertical" onResizeStart={() => dragging = true} onResizeEnd={() => dragging = false} onChange={(newSizes) => sizes = newSizes}>
+      <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)} onChange={(newSizes) => sizes = newSizes}>
         <Pane className={editorClassName} snapSize={"400px"} disabled={!showEditor} size={showEditor ? "400px" : "0"} onChange={onEditorSizeChange}>
           <React.Suspense fallback={spinner}>
             <Editor

@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { FunctionComponent, ReactNode } from "react";
+import "./SampleWidgetContainer.scss";
 export interface SampleWidgetContainerProps {
   instructions?: string;
   iModelSelector?: ReactNode;
@@ -13,7 +14,7 @@ export const SampleWidgetContainer: FunctionComponent<SampleWidgetContainerProps
 
 
   return (
-    <div className="sample-ui">
+    <div className="sample-widget-ui">
       {instructions && <div className="control-pane-header">
         <div className="sample-instructions">
           <span>{instructions}</span>
