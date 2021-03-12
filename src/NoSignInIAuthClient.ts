@@ -74,7 +74,7 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
 
   public async getDevAccessToken(): Promise<AccessToken> {
     if (!this._devAccessToken) {
-      const response = await fetch("https://qa-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
+      const response = await fetch("https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
       const body = await response.json();
       const tokenJson = {
         ...await body,
@@ -84,14 +84,16 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
         _tokenString: body._jwt,
       };
       this._devAccessToken = AccessToken.fromJson(tokenJson);
-    }
 
-    setTimeout(() => {
-      this.getDevAccessToken()
-        .catch((error) => {
-          throw new BentleyError(AuthStatus.Error, error);
-        });
-    }, (1000 * 60 * 55));
+      setTimeout(() => {
+        // Reset the token.
+        this._devAccessToken = undefined;
+        this.getDevAccessToken()
+          .catch((error) => {
+            throw new BentleyError(AuthStatus.Error, error);
+          });
+      }, (1000 * 60 * 55));
+    }
 
     return this._devAccessToken!;
   }
