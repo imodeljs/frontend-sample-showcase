@@ -2,9 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { assert } from "@bentley/bentleyjs-core";
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { IModelHubClient, VersionQuery } from "@bentley/imodelhub-client";
+import { NoSignInIAuthClient } from "NoSignInIAuthClient";
 import ClashDetectionApp from "./ClashDetectionApp";
 
 // NOTE: The following samples for calling the Validation APIs will not succeed within the
@@ -16,7 +18,10 @@ export default class ClashDetectionApis {
   // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-tests
   public static async getProjectValidationTests(): Promise<any | undefined> {
     const { projectId, requestContext } = ClashDetectionApp.projectContext;
-    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
+    const accessToken = await ClashDetectionApis.getAccessToken();
+    if (accessToken === undefined)
+      return undefined;
+
     const url = `https://api.bentley.com/projects/${projectId}/validation/tests`;
     const options = {
       method: "GET",
@@ -42,7 +47,10 @@ export default class ClashDetectionApis {
   // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-runs
   public static async getProjectValidationRuns(): Promise<any | undefined> {
     const { projectId, requestContext } = ClashDetectionApp.projectContext;
-    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
+    const accessToken = await ClashDetectionApis.getAccessToken();
+    if (accessToken === undefined)
+      return undefined;
+
     const url = `https://api.bentley.com/projects/${projectId}/validation/runs`;
     const options = {
       method: "GET",
@@ -68,9 +76,13 @@ export default class ClashDetectionApis {
   // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-test
   // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result
   public static async getValidationUrlResponse(url: string) {
-    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
     if (url === undefined)
       return undefined;
+
+    const accessToken = await ClashDetectionApis.getAccessToken();
+    if (accessToken === undefined)
+      return undefined;
+
     const options = {
       method: "GET",
       headers: {
@@ -108,7 +120,10 @@ export default class ClashDetectionApis {
     if (testId === undefined)
       return undefined;
     const { imodelId, requestContext } = ClashDetectionApp.projectContext;
-    const accessToken = await IModelApp.authorizationClient!.getAccessToken();
+    const accessToken = await ClashDetectionApis.getAccessToken();
+    if (accessToken === undefined)
+      return undefined;
+
     const url = `https://dev-api.bentley.com/validation/runs/test/${testId}`;
     // Get the latest named version of the iModel
     const hubClient = new IModelHubClient();
@@ -135,29 +150,45 @@ export default class ClashDetectionApis {
       });
   }
 
+  private static async getAccessToken() {
+    try {
+      return await (IModelApp.authorizationClient as NoSignInIAuthClient).getDevAccessToken();
+    } catch(e) {
+      return undefined;
+    }
+  }
+
   // This sample test function demonstrates how the above functions can be called in a workflow
   private async test() {
     // Get list of tests for project
     const testsResponse = await ClashDetectionApis.getProjectValidationTests();
     if (testsResponse.validationTests !== undefined && testsResponse.validationTests.length !== 0) {
       // Run validation test
-      const runResponse = await ClashDetectionApis.runValidationTest(testsResponse.validationTests[0].id);
-      // Get validation run details
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const runDetails = await ClashDetectionApis.getValidationUrlResponse(runResponse.validationRunLink._links.run.href);
-      // Get validation test details
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const testDetails = await ClashDetectionApis.getValidationUrlResponse(testsResponse.validationTests[0]._links.test.href);
-    }
-    // Get list of validation runs for project
-    const runsResponse = await ClashDetectionApis.getProjectValidationRuns();
-    if (runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
-      // Get validation result
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const runResultDetails = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.result.href);
-      // Get validation run test
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const runTestDetails = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.test.href);
+      const testRunResponse = await ClashDetectionApis.runValidationTest(testsResponse.validationTests[0].id);
+      if (testRunResponse !== undefined && testRunResponse.validationRunLink !== undefined) {
+        // Get validation run status
+        const runResponse = await ClashDetectionApis.getValidationUrlResponse(testRunResponse.validationRunLink._links.run.href);
+        if (runResponse !== undefined && runResponse.validationRun !== undefined) {
+          // Get validation test
+          const testResponse = await ClashDetectionApis.getValidationUrlResponse(testsResponse.validationTests[0]._links.test.href);
+          if (testResponse !== undefined && testResponse.validationTest !== undefined) {
+            assert(testsResponse.validationTests[0].id === testResponse.validationTest, "Test ids mismatched");
+          }
+        }
+      }
+      // Get list of validation runs for project
+      const runsResponse = await ClashDetectionApis.getProjectValidationRuns();
+      if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
+        // Get validation result
+        const resultResponse = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.result.href);
+        if (resultResponse !== undefined && resultResponse.validationResult !== undefined) {
+          // Get validation run test
+          const testResponse = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.test.href);
+          if (testResponse !== undefined && testResponse.validationTest !== undefined) {
+            assert(testsResponse.validationTests[0].id === testResponse.validationTest, "Test ids mismatched");
+          }
+        }
+      }
     }
   }
 }

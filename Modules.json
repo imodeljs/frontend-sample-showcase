@@ -101,6 +101,11 @@
       "import": "@bentley/webgl-compatibility"
     },
     {
+      "name": "NoSignInIAuthClient",
+      "import": "./src/NoSignInIAuthClient",
+      "typedef": true
+    },
+    {
       "name": "api/viewSetup",
       "import": "./src/api/viewSetup",
       "typedef": true
@@ -163,6 +168,11 @@
     {
       "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "typedef": true
+    },
+    {
+      "name": "frontend-samples/marker-pin-sample/MarkerPinDecorator",
+      "import": "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator",
       "typedef": true
     },
     {

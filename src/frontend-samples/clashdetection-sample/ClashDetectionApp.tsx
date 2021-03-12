@@ -13,6 +13,7 @@ import { IModelQuery } from "@bentley/imodelhub-client";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { applyZoom } from "./ClashDetectionUI";
 import { jsonData } from "./ClashDetectionJsonData";
+import ClashDetectionApis from "./ClashDetectionApis";
 
 interface ProjectContext {
   projectId: string;
@@ -24,6 +25,7 @@ export default class ClashDetectionApp {
   public static _clashPinDecorator?: MarkerPinDecorator;
   public static _images: Map<string, HTMLImageElement>;
   public static projectContext: ProjectContext;
+  public static clashData: any;
 
   public static async getIModelInfo(iModelName: string): Promise<ProjectContext> {
     // In testdrive the projectName matches iModelName.  That's not true in general.
@@ -76,10 +78,27 @@ export default class ClashDetectionApp {
       IModelApp.viewManager.dropDecorator(this._clashPinDecorator);
   }
 
+  public static async getClashData(): Promise<any> {
+    if (ClashDetectionApp.clashData === undefined) {
+      const runsResponse = await ClashDetectionApis.getProjectValidationRuns();
+      if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
+        // Get validation result
+        const resultResponse = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.result.href);
+        if (resultResponse !== undefined && resultResponse.clashDetectionResult !== undefined)
+          ClashDetectionApp.clashData = resultResponse;
+      }
+      if (ClashDetectionApp.clashData === undefined)
+        ClashDetectionApp.clashData = jsonData;
+    }
+    return new Promise((resolve) => { resolve(ClashDetectionApp.clashData); });
+  }
+
   public static async getClashMarkersData(imodel: IModelConnection): Promise<MarkerData[]> {
     const markersData: MarkerData[] = [];
+    const clashData = await ClashDetectionApp.getClashData();
+
     let count = 0;
-    for (const clash of jsonData.clashDetectionResult) {
+    for (const clash of clashData.clashDetectionResult) {
       const point = await this.calcClashCenter(imodel, clash.elementAId, clash.elementBId);
       const tooltip = `${clash.elementALabel}<br>${clash.elementBLabel}`;
       const clashMarkerData: MarkerData = { point, data: clash, tooltip };

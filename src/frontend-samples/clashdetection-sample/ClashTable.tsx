@@ -32,29 +32,30 @@ export default class ClashTable extends React.PureComponent<Props> {
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 
-    // adding rows => cells => property record => value and description.
-    this.props.data.clashDetectionResult.forEach((rowData: any) => {
-      // Concatenate the element ids to set the row key  ie. "elementAId-elementBId"
-      const rowItemKey = `${rowData.elementAId}-${rowData.elementBId}`;
-      const rowItem: RowItem = {key: rowItemKey, cells: []};
-      columns.forEach((column: ColumnDescription, i: number) => {
-        let cellValue: string = "";
-        if (column.key === "elementACategoryIndex" || column.key === "elementBCategoryIndex") {
-          // Lookup the category name using the index
-          cellValue = this.props.data.categoryList[rowData[column.key]].displayName.toString();
-        } else if (column.key === "elementAModelIndex" || column.key === "elementBModelIndex") {
-          // Lookup the model name using the index
-          cellValue = this.props.data.modelList[rowData[column.key]].displayName.toString();
-        } else {
-          cellValue = rowData[column.key].toString();
-        }
-        const value: PropertyValue = {valueFormat: PropertyValueFormat.Primitive, value: cellValue};
-        const description: PropertyDescription = {displayLabel: columns[i].label, name: columns[i].key, typename: "string"};
-        rowItem.cells.push({key: columns[i].key, record: new PropertyRecord(value, description)});
+    if (this.props.data !== undefined && this.props.data.clashDetectionResult !== undefined) {
+      // adding rows => cells => property record => value and description.
+      this.props.data.clashDetectionResult.forEach((rowData: any) => {
+        // Concatenate the element ids to set the row key  ie. "elementAId-elementBId"
+        const rowItemKey = `${rowData.elementAId}-${rowData.elementBId}`;
+        const rowItem: RowItem = {key: rowItemKey, cells: []};
+        columns.forEach((column: ColumnDescription, i: number) => {
+          let cellValue: string = "";
+          if (column.key === "elementACategoryIndex" || column.key === "elementBCategoryIndex") {
+            // Lookup the category name using the index
+            cellValue = this.props.data.categoryList[rowData[column.key]].displayName.toString();
+          } else if (column.key === "elementAModelIndex" || column.key === "elementBModelIndex") {
+            // Lookup the model name using the index
+            cellValue = this.props.data.modelList[rowData[column.key]].displayName.toString();
+          } else {
+            cellValue = rowData[column.key].toString();
+          }
+          const value: PropertyValue = {valueFormat: PropertyValueFormat.Primitive, value: cellValue};
+          const description: PropertyDescription = {displayLabel: columns[i].label, name: columns[i].key, typename: "string"};
+          rowItem.cells.push({key: columns[i].key, record: new PropertyRecord(value, description)});
+        });
+        dataProvider.addRow(rowItem);
       });
-      dataProvider.addRow(rowItem);
-    });
-
+    }
     return dataProvider;
   }
 

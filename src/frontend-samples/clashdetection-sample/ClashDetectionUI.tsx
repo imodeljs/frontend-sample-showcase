@@ -13,7 +13,6 @@ import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import ClashDetectionApp from "./ClashDetectionApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { jsonData } from "./ClashDetectionJsonData";
 import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import GridWidget from "./ClashTable";
 
@@ -144,7 +143,7 @@ export default class ClashDetectionUI extends React.Component<{
             <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={ClashDetectionUI.getIsoView.bind(ClashDetectionUI)} />
           </div>
           <div className="bottom">
-            <GridWidget data={jsonData} />
+            <GridWidget data={ClashDetectionApp.clashData} />
           </div>
         </div>
       </>
