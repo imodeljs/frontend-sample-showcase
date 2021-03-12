@@ -143,7 +143,7 @@ export default class FireDecorationApp implements SampleApp {
     return data;
   }
 
-  /** Predefined parameters that will acts as a base when creating a FireEmitter Decorator. */
+  /** Predefined parameters that will act as a base when creating a FireEmitter Decorator. */
   public static predefinedParams = new Map<string, FireParams>(
     [
       [

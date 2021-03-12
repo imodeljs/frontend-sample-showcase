@@ -112,7 +112,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
         <Slider min={0} max={1} step={0.02} values={[this.state.particleNumScale]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.setState({ particleNumScale: values[0] })} />
         <label>Height</label>
         <Slider min={0} max={5} step={0.02} values={[this.state.height]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.setState({ height: values[0] })} />
-        <label>Source Size</label>
+        <label>Width</label>
         {/* The UI of this sample assumes effectRange is a square. */}
         <Slider min={0} max={6} step={0.2} values={[this.state.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => this.setState({ effectRange: this.createSquareRange2d(values[0]) })} />
         <label>Smoke</label>
