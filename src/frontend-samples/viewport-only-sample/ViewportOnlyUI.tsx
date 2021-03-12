@@ -6,7 +6,7 @@ import React from "react";
 import { AuthorizationClient, default3DUiConfig, defaultIModelList, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 
-export default class ViewportOnly2dApp extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
+export default class ViewportOnlyUI extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
 
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
