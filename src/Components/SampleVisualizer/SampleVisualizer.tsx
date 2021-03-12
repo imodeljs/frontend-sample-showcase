@@ -59,7 +59,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
   // Set sample UI
   useEffect(() => {
     try {
-      if (sampleClass && (!iTwinViewerReady && appReady) || iTwinViewerReady) {
+      if (sampleClass && ((!iTwinViewerReady && appReady) || iTwinViewerReady)) {
         setSampleUi(React.createElement(sampleClass, { iModelName, iModelSelector } as any))
       }
     } catch (error) {
