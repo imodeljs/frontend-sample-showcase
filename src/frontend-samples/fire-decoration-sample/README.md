@@ -26,5 +26,5 @@ The tooltip is created by assigning a [transient id](https://www.itwinjs.org/ref
 
 Notes:
 
-* This is in no way a smoke or fire simulation.  The fire presented only serves as a visual effect.d
+* This is in no way a smoke or fire simulation.  The fire presented only serves as a visual effect.
 * The APIs related to particles are in beta.  Please consulate the latest documentation before adapting for your own projects.
