@@ -74,7 +74,7 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
 
   public async getDevAccessToken(): Promise<AccessToken> {
     if (!this._devAccessToken) {
-      const response = await fetch("https://qa-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
+      const response = await fetch("https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
       const body = await response.json();
       const tokenJson = {
         ...await body,
