@@ -23,7 +23,7 @@ export interface SampleSpecFile {
   name: string;
   import: Promise<{ default: string }>;
   entry?: boolean;
-};
+}
 export interface SampleSpec {
   name: string;
   label: string;
@@ -262,7 +262,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   private _onGalleryButtonClick = () => {
     this.setState((prevState) => ({ showGallery: !prevState.showGallery }));
-  }
+  };
 
   private _onSampleTranspiled = async (blob: string) => {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
@@ -306,7 +306,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
   private onChange = (sizes: string[]) => {
     this._sizes = sizes;
-  }
+  };
 
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);
