@@ -39,12 +39,10 @@ interface ShowcaseState {
   dragging: boolean;
 }
 
-
 export interface SampleProps extends React.Attributes {
   iModelName?: string;
   iModelSelector?: React.ReactNode;
 }
-
 
 /** A React component that renders the UI for the showcase */
 export class SampleShowcase extends React.Component<{}, ShowcaseState> {
@@ -203,12 +201,12 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
       const props: SampleProps = {
         iModelName: this.state.iModelName,
         iModelSelector,
-      }
+      };
 
       try {
         sampleUI = sampleUI = React.createElement(newSampleSpec.sampleClass, props);
       } catch (err) {
-        sampleUI = <DisplayError error={err} />
+        sampleUI = <DisplayError error={err} />;
       }
     }
 
@@ -238,24 +236,24 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
 
     this.updateURLParams(names.group, names.sample, iModelName);
     this.setState({ activeSampleGroup: names.group, activeSampleName: names.sample, iModelName: iModelName ? iModelName : "" });
-  }
+  };
 
   private _onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
     this._wantScroll = wantScroll;
-    this._updateNames({ group: groupName, sample: sampleName })
-  }
+    this._updateNames({ group: groupName, sample: sampleName });
+  };
 
   private _onActiveSampleChange = () => {
     this.setupNewSample();
-  }
+  };
 
   private _onIModelChange = (iModelName: string) => {
-    this._updateNames({ group: this.state.activeSampleGroup, sample: this.state.activeSampleName, imodel: iModelName })
-  }
+    this._updateNames({ group: this.state.activeSampleGroup, sample: this.state.activeSampleName, imodel: iModelName });
+  };
 
   private _onEditorButtonClick = () => {
     this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
-  }
+  };
 
   private _onSampleTranspiled = async (blob: string) => {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName)!;
@@ -271,27 +269,27 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     const sampleIndex = group.samples.findIndex((sample) => sample.name === activeSample.name);
     group.samples.splice(sampleIndex, 1, activeSample);
     this._onActiveSampleChange();
-  }
+  };
 
   private _onEditorSizeChange = (size: number) => {
     if (size <= 200 && this.state.showEditor) {
       this.setState({ showEditor: false });
     }
-  }
+  };
 
   private _onSampleGallerySizeChange = (size: number) => {
     if (size <= 100 && this.state.showGallery) {
       this.setState({ showGallery: false });
     }
-  }
+  };
 
   private _onDragStarted = () => {
     this.setState({ dragging: true });
-  }
+  };
 
   private _onDragFinished = () => {
     this.setState({ dragging: false });
-  }
+  };
 
   public render() {
     const activeSample = this.getSampleByName(this.state.activeSampleGroup, this.state.activeSampleName);

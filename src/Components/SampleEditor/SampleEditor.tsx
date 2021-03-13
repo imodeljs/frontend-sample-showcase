@@ -21,6 +21,7 @@ export interface ConnectedSampleEditor {
   onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export function ConnectedSampleEditor(props: ConnectedSampleEditor) {
   return (
     <editorCommonActionContext.Consumer>
@@ -112,11 +113,11 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
 
     const showReadme = !this.state.showReadme;
     this.setState({ showReadme });
-  }
+  };
 
   private setActiveFile = (fileName: string) => {
     this.props.fileActivityActions.setCurrent(fileName);
-  }
+  };
 
   private _onNavItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement;
@@ -125,7 +126,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
     } else {
       this.setState({ active: undefined });
     }
-  }
+  };
 
   private _onSplitChange = (size: number) => {
     if (this.state.active && size < 200) {
@@ -134,7 +135,7 @@ export default class SampleEditor extends React.Component<SampleEditorProps, Sam
       document.dispatchEvent(event);
       this.setState({ active: undefined });
     }
-  }
+  };
 
   public render() {
     const urlEnableEditor = new URLSearchParams(window.location.search).get("editor");
@@ -221,7 +222,7 @@ class MyLink extends React.Component<MyLinkProps> {
       // NEEDSWORK: need to wait for the sample before selecting the file.  How?
       this.props.fileClicked(fileName);
     }
-  }
+  };
 
   public render() {
     const anchorProps = { ...this.props, onClick: this.onClick, target: "_blank" };

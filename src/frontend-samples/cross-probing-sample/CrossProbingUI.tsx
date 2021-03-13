@@ -26,13 +26,12 @@ export default class CrossProbingUI extends React.Component<{ iModelName: string
     await CrossProbingApp.loadElementMap(imodel);
     const viewState2d = await this.getFirst2DView(imodel);
     this.setState({ imodel, viewState2d });
-  }
+  };
 
   // Get first 2D view in iModel.
   private async getFirst2DView(imodel: IModelConnection): Promise<ViewState> {
     const viewCreator = new ViewCreator2d(imodel);
     const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
-    let viewState2d;
     if (models.length === 0)
       throw new Error("No 2D models found in iModel.");
 
@@ -41,7 +40,6 @@ export default class CrossProbingUI extends React.Component<{ iModelName: string
 
   /** The sample's render method */
   public render() {
-
     let drawingViewport;
     if (this.state.imodel && this.state.viewState2d)
       drawingViewport = (<div style={{ width: "100%", height: "50%", float: "right" }}>

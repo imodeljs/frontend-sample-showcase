@@ -53,7 +53,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
         </div>
       </div>
     );
-  }
+  };
 
   public getDrawingModelList(models: ModelProps[]) {
     const drawingViews: JSX.Element[] = [];
@@ -78,7 +78,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     if (this.state.imodel) {
       await ViewerOnly2dApp.changeViewportView(this.state.imodel, modelList[index]);
     }
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
@@ -112,11 +112,10 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     modelSelector2d.selectedIndex = 0;
 
     return viewState;
-  }
+  };
 
   /** The sample's render method */
   public render() {
-
 
     return (
       <>

@@ -15,7 +15,7 @@ export default class CustomWebfontIconsTreeUI extends React.Component<{ iModelNa
     this.setState({
       iModel: imodel,
     });
-  }
+  };
 
   public render() {
     return (

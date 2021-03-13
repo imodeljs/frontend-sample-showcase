@@ -86,7 +86,7 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     document.addEventListener("mouseup", this._mouseUpDraggable);
     this._oldPosition = e.clientX;
     this._elem = e.currentTarget;
-  }
+  };
 
   private _mouseMoveDraggable = (e: MouseEvent) => {
     e = e || window.event;
@@ -97,7 +97,7 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
     this._oldPosition = this.limitToBounds(e.clientX);
 
     this.setState({ left: newPosition });
-  }
+  };
 
   private onDraggedCallback(): void {
     const left = this.state.left - this.props.bounds.left;
@@ -109,7 +109,7 @@ export class DividerComponent extends React.Component<DividerComponentProps, {}>
   private _mouseUpDraggable = (_e: MouseEvent) => {
     document.removeEventListener("mousemove", this._mouseMoveDraggable);
     document.removeEventListener("mouseup", this._mouseUpDraggable);
-  }
+  };
 
   // There must be a better way to set panels on either side of the divider.
   public render() {

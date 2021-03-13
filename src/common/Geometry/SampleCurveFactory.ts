@@ -28,7 +28,7 @@ export class SampleCurveFactory {
         Point3d.create(lowerLeft.x + 0.50 * sideLength, lowerLeft.y + 0.50 * sideLength),
         Point3d.create(lowerLeft.x + 1.00 * sideLength, lowerLeft.y + 0.50 * sideLength),
         Point3d.create(lowerLeft.x + 1.00 * sideLength, lowerLeft.y + 0.00 * sideLength),
-      ]
+      ];
       if ("Line String" === curveType)
         return LineString3d.create(points);
       else if ("Rounded Line String" === curveType)

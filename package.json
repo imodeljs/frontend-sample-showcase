@@ -47,6 +47,7 @@
   "devDependencies": {
     "@babel/preset-react": "^7.10.1",
     "@bentley/build-tools": "^2.6.4",
+    "@bentley/eslint-plugin": "^2.6.4",
     "@bentley/certa": "^2.0.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -59,6 +60,7 @@
     "@types/react": "^16.9.42",
     "@types/react-dom": "^16.9.7",
     "@types/react-redux": "^7.0.1",
+    "@typescript-eslint/eslint-plugin": "4.11.1",
     "customize-cra": "^0.9.1",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jest": "^24.9.0",
@@ -91,40 +93,26 @@
   },
   "homepage": "./",
   "eslintConfig": {
-    "extends": "./node_modules/@bentley/build-tools/.eslintrc.js",
-    "ignorePatterns": [
-      "*.d.ts"
+    "plugins": [
+      "@bentley"
     ],
+    "extends": "plugin:@bentley/imodeljs-recommended",
     "rules": {
-      "deprecation/deprecation": "off"
-    },
-    "overrides": [
-      {
-        "files": [
-          "*.tsx"
-        ],
-        "rules": {
-          "@typescript-eslint/naming-convention": [
-            "warn",
-            {
-              "selector": "function",
-              "format": [
-                "camelCase",
-                "PascalCase"
-              ]
-            }
+      "@typescript-eslint/naming-convention": [
+        "warn",
+        {
+          "selector": "function",
+          "format": [
+            "camelCase",
+            "PascalCase"
           ]
         }
-      }
-    ],
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
+      ],
+      "@typescript-eslint/unbound-method": "off",
+      "deprecation/deprecation": "off"
     }
   },
   "browserslist": [
-    "electron 6.0.0",
     "last 4 chrome version",
     "last 4 firefox version",
     "last 4 safari version",

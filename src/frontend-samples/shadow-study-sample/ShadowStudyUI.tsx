@@ -56,7 +56,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
       dateLabel.textContent = this.convertMinToTime();
 
     ShadowStudyApp.updateSunTime(date.getTime());
-  }
+  };
 
   // Update the state date with the newly selected day of the year
   private _updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +97,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
       dateLabel.textContent = event.target.value;
 
     ShadowStudyApp.updateSunTime(newDate.getTime());
-  }
+  };
 
   // Formats the time from the state date into 24 hour time
   private convertMinToTime() {
@@ -128,7 +128,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     viewState.viewFlags.shadows = true;
 
     return viewState;
-  }
+  };
 
   public getControls() {
     return (

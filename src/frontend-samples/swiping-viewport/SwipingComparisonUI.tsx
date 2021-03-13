@@ -123,7 +123,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
     if (undefined === this._dividerLeft)
       this._dividerLeft = this.initPositionDivider(SwipingComparisonApp.getClientRect(viewport));
     this.setState({ viewport });
-  }
+  };
 
   // Should be called when the iModel is ready.
   private _onIModelReady = (iModel: IModelConnection) => {
@@ -134,7 +134,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
       SwipingComparisonApp.listenOnceForViewOpen(this._initViewport);
     else
       this._initViewport(vp);
-  }
+  };
 
   // Called by the viewport.  Tests if the camera has been moved, or the canvas has been resized.
   private readonly _onViewUpdate = (_vp: Viewport) => {
@@ -159,7 +159,7 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
     if (updateState)
       this.updateState();
-  }
+  };
 
   private readonly _onDividerMoved = (leftWidth: number, rightWidth: number) => {
     // leftWidth is relative to the canvas.  We need to track left based on the window
@@ -168,15 +168,15 @@ export default class SwipingComparisonUI extends React.Component<SwipingComparis
 
     this._dividerLeft = left + this.state.bounds!.left;
     this.updateState();
-  }
+  };
 
   private _onLockToggle = (isOn: boolean) => {
     this.setState({ isLocked: isOn });
-  }
+  };
   private _onComparisonType = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const type: ComparisonType = Number.parseInt(event.target.value, 10);
     this.setState({ comparison: type });
-  }
+  };
 
   public getControls(): React.ReactNode {
     const keys = Object.keys(ComparisonType).filter((key: any) => isNaN(key));

@@ -22,7 +22,7 @@ export class RadioCard extends React.Component<RadioCardProps, {}> {
 
   private _onCardSelected = (event: any) => {
     this.props.onChange(event.target.id);
-  }
+  };
 
   private createElementsForCard(entry: RadioCardEntry, index: number, entries: RadioCardEntry[]) {
     let divClass = "card card-body";
