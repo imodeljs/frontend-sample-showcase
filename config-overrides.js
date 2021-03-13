@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-const MonacoWebpackPlugin = require("@bentley/monaco-editor/monaco-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const {
   override,
@@ -23,7 +23,7 @@ module.exports = function (config, env) {
 
   // https://github.com/Microsoft/monaco-editor-webpack-plugin/issues/43
   config.resolve.alias = {
-    "monaco-editor": "monaco-editor-core/esm/vs/editor/editor.api.js"
+    "monaco-editor": "monaco-editor/esm/vs/editor/editor.api.js"
   }
 
   return Object.assign(config, override(

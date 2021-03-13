@@ -5,18 +5,30 @@
 .showcase {
   height: 100vh;
   display: flex;
+  position: relative;
 
-  > .SplitPane {
-    background-color: unset !important;
+  .preview {
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
 
-    .Pane {
-      overflow: hidden;
+  .gallery-pane {
+    transition: width .2s ease;
 
-      &.Pane1 {
-        background-color: #1e1e1e;
-      }
+    &.dragging {
+      transition: none;
     }
   }
+
+  .editor-pane {
+    transition: width .2s ease;
+
+    &.dragging {
+      transition: none;
+    }
+  }
+
 }
 
 .sample-content {
@@ -47,10 +59,12 @@
   padding-left: 1px;
   padding-right: 1px;
 }
+
 .show-panel:hover {
   padding-left: 1em;
   padding-right: 1em;
 }
+
 .show-panel:hover span {
   display: none;
 }
@@ -58,6 +72,7 @@
 .show-code-button {
   left: 0px;
 }
+
 .show-code-button:hover:before {
   content: "Explore Code";
 }
@@ -65,6 +80,7 @@
 .show-gallery-button {
   right: 0px;
 }
+
 .show-gallery-button:hover:before {
   content: "Explore Samples";
 }
@@ -80,6 +96,7 @@
   fill: var(--buic-foreground-body);
   padding: 10px 16px 10px 16px;
 }
+
 .minimize-button:hover {
   fill: white;
 }
@@ -110,4 +127,14 @@
 
 .gallery-hide {
   max-height: 0;
+}
+
+@media (max-width: 1000px) {
+  .show-gallery-button {
+    display: none;
+  }
+
+  .show-code-button {
+    display: none;
+  }
 }
