@@ -4,8 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { ViewCreator2d } from "./ViewCreator2d";
+import { IModelApp, IModelConnection, ViewCreator2d } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { ViewSetup } from "api/viewSetup";
 
@@ -31,9 +30,11 @@ export default class ViewerOnly2dApp {
 
     if (vp && vpAspect) {
       const viewCreator = new ViewCreator2d(imodel);
-      const targetView = await viewCreator.getViewForModel(newModel, vpAspect);
-      if (targetView) vp.changeView(targetView);
-      else alert("Invalid View Detected!");
+      const targetView = await viewCreator.createViewForModel(newModel.id!, newModel.classFullName, { vpAspect });
+      if (targetView)
+        vp.changeView(targetView);
+      else
+        alert("Invalid View Detected!");
     }
   }
 }

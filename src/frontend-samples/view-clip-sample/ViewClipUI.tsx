@@ -68,7 +68,7 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
   /* Handler for plane select */
   private _onPlaneSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ showClipBlock: false, clipPlane: event.target.value });
-  }
+  };
 
   /* Method for flipping (negating) the current clip plane. */
   private _handleFlipButton = () => {
@@ -93,12 +93,12 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
       }
     }
     return true;
-  }
+  };
 
   /* Turn on/off the clip range */
   private _onToggleRangeClip = async (showClipRange: boolean) => {
     this.setState({ showClipBlock: showClipRange, clipPlane: "None" });
-  }
+  };
 
   public getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
@@ -117,13 +117,13 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
     }
 
     return viewState;
-  }
+  };
 
   private _onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      this.setState({ imodel, showClipBlock: true });
+      this.setState({ imodel, showClipBlock: true, clipPlane: "None" });
     });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
@@ -132,7 +132,7 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
       [EditManipulator.RotationType.Left]: "X",
       [EditManipulator.RotationType.Front]: "Y",
       [EditManipulator.RotationType.Top]: "Z",
-    }
+    };
     return (
       <>
         <div className="sample-options-3col even-3col">

@@ -50,23 +50,23 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
       args.previous.vpDiv.classList.remove("active-viewport");
     if (args.current)
       args.current.vpDiv.classList.add("active-viewport");
-  }
+  };
 
   // Handles changes to the selected viewport and adds the current to the state.
   private _getSelectedViewport = (args: SelectedViewportChangedArgs) => {
     this.setState({ selectedViewport: args.current });
-  }
+  };
 
   // Handles opened View and adds them to the state.
   private _getViews = (viewport: Viewport) => {
     const viewports = this.state.viewports;
     this.setState({ viewports: [...viewports, viewport] });
-  }
+  };
 
   // Handles when the app teardown is called which signals when the views are all closed.
   private _viewsClosed = () => {
     this.setState({ viewports: [], isSynced: false, selectedViewport: undefined });
-  }
+  };
 
   // Adds listeners after the iModel is loaded.
   // Note: The [MultiViewportApp] handles removing theses listeners when they are irrelevant and insuring no duplicates listeners.
@@ -75,7 +75,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
     MultiViewportApp.listenForViewOpened(this._getViews);
     MultiViewportApp.listenForAppTeardown(this._viewsClosed);
-  }
+  };
 
   // Handle changes to the UI sync toggle.
   private _onSyncToggleChange = (isOn: boolean) => {
@@ -89,7 +89,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
       MultiViewportApp.disconnectViewports();
 
     this.setState({ isSynced: isOn });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {

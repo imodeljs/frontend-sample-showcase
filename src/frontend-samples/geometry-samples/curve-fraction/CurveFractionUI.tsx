@@ -128,7 +128,7 @@ export default class CurveFractionUI extends React.Component<{}, CurveFractionSt
         const ray = CurveFractionApp.fractionToPointAndDerivative(curveData.curve, this.state.fraction)!;
         curveData.curvePointMarker.worldLocation = ray.origin;
         curveData.derivativeAtPoint = ray.direction;
-      })
+      });
     }
     this.updateVisualization();
   }
@@ -170,7 +170,7 @@ export default class CurveFractionUI extends React.Component<{}, CurveFractionSt
         arrowEnd.clone(),
         onStem.plusScaled(perpendicular, 0.5),
         onStem.plusScaled(perpendicular, -0.5),
-      ]
+      ];
       const linestring = LineString3d.create(triangle);
       const loop = Loop.create(linestring.clone());
 

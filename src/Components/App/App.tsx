@@ -5,8 +5,7 @@
 import * as React from "react";
 import "./App.css";
 import { SampleShowcase } from "../SampleShowcase/SampleShowcase";
-import { modules } from "../SampleEditor/Modules";
-import { EditorEnvironmentContextProvider, Module } from "@bentley/monaco-editor/editor";
+import { EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
 
 export class App extends React.Component<{}, {}> {
 
@@ -18,7 +17,7 @@ export class App extends React.Component<{}, {}> {
 
   public render() {
     return (
-      <EditorEnvironmentContextProvider defaultModules={modules as Module[]}>
+      <EditorEnvironmentContextProvider>
         <SampleShowcase />
       </EditorEnvironmentContextProvider>
     );

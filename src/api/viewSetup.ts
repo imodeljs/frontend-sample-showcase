@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Id64, Id64String } from "@bentley/bentleyjs-core";
+import { Id64, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { BackgroundMapProps, ColorDef } from "@bentley/imodeljs-common";
 import {
   AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection,
@@ -78,8 +78,24 @@ export class ViewSetup {
       });
     }
 
+    const hiddenCategories = await ViewSetup.getHiddenCategories(imodel);
+    if (hiddenCategories)
+      viewState.categorySelector.dropCategories(hiddenCategories);
+
     return viewState;
-  }
+  };
+
+  private static getHiddenCategories = async (imodel: IModelConnection): Promise<Id64Array | undefined> => {
+    if (imodel.name !== "house bim upload")
+      return undefined;
+
+    // The callout graphics in the house model are ugly - don't display them.
+    const ids: Id64String[] = [];
+    for await (const row of imodel.query("SELECT ECInstanceId FROM bis.Category WHERE CodeValue='Callouts'"))
+      ids.push(row.id);
+
+    return ids;
+  };
 
   /*
   * groundBias can be stored in Product Settings Service. This method retrieves it.
@@ -108,5 +124,5 @@ export class ViewSetup {
     }
 
     return undefined;
-  }
+  };
 }

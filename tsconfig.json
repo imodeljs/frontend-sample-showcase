@@ -30,6 +30,7 @@
     "baseUrl": "src"
   },
   "include": [
-    "src"
+    "./src/**/*.ts",
+    "./src/**/*.tsx"
   ]
 }

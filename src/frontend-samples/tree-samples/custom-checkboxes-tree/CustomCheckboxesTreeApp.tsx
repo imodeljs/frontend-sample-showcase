@@ -11,7 +11,6 @@ import {
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 import { ImageCheckBox, NodeCheckboxRenderProps } from "@bentley/ui-core";
 
-
 /**
  * This component demonstrates how use `ControlledTree` with custom checkbox rendering.
  * It uses `NodesWithCheckboxProvider` to get fake data to show.

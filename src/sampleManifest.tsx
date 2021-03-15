@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
 import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
@@ -28,6 +24,7 @@ import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sampl
 import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
+import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
 import { getBadgeSpec } from "./frontend-samples/component-gallery/badge-sample/sampleSpec";
@@ -62,7 +59,9 @@ import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
+import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-sample/sampleSpec";
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
+import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
 
 export interface SampleSpecGroup {
@@ -74,6 +73,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
+    getHyperModelingSpec(),
     getRealityDataSpec(),
     getGlobalDisplaySpec(),
     getViewAttributesSpec(),
@@ -85,11 +85,13 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getClassifierSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
+    getIotAlertSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
     getCrossProbingSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
+    getParticleFireSampleSpec(),
     getPropertyFormattingSpec(),
     getReadSettingsSpec(),
     getSerializeViewSpec(),

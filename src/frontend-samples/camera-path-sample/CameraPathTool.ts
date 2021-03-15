@@ -5,7 +5,6 @@
 import { BeButtonEvent, BeWheelEvent, EventHandled, PrimitiveTool, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { Angle, Matrix3d, Transform, Vector3d } from "@bentley/geometry-core";
 
-
 export class CameraPathTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
   private _keyDown: boolean = false;

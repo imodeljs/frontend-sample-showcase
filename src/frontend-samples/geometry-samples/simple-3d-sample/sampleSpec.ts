@@ -13,8 +13,8 @@ export function getSimple3dSpec(): SampleSpec {
     customModelList: [],
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI"), entry: true },
       { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp") },
+      { name: "Simple3dUI.tsx", import: import("!!raw-loader!./Simple3dUI"), entry: true },
     ],
     sampleClass: Simple3dUI,
   });

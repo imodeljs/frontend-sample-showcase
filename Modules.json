@@ -33,6 +33,10 @@
       "import": "@bentley/geometry-core"
     },
     {
+      "name": "@bentley/hypermodeling-frontend",
+      "import": "@bentley/hypermodeling-frontend"
+    },
+    {
       "name": "@bentley/imodelhub-client",
       "import": "@bentley/imodelhub-client"
     },
@@ -149,11 +153,6 @@
     {
       "name": "common/ControlPane/ControlPane",
       "import": "./src/common/ControlPane/ControlPane",
-      "typedef": true
-    },
-    {
-      "name": "frontend-samples/cross-probing-sample/ViewCreator2d",
-      "import": "./src/frontend-samples/cross-probing-sample/ViewCreator2d",
       "typedef": true
     },
     {
