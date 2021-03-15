@@ -9,9 +9,6 @@ import { IModelHubClient, VersionQuery } from "@bentley/imodelhub-client";
 import { NoSignInIAuthClient } from "NoSignInIAuthClient";
 import ClashDetectionApp from "./ClashDetectionApp";
 
-// NOTE: The following samples for calling the Validation APIs will not succeed within the
-//       frontend sample showcase due to the incompatibility of the authorization token.
-
 export default class ClashDetectionApis {
 
   // Retrieves a list of Design Validation tests for the project specified by the project id.
@@ -101,6 +98,10 @@ export default class ClashDetectionApis {
   }
 
   // Run a validation test for the specified test id and return the run id and URL link to monitor progress.
+  //
+  // NOTE: This API will not succeed within the frontend sample showcase since the user token does not have
+  //       modify access to the project.
+  //
   //   Sample response:
   //   {
   //     "validationRunLink": {

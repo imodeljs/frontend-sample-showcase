@@ -1,4 +1,4 @@
-# Clash Detection Sample
+# Clash Review Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 

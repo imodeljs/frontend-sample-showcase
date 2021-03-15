@@ -9,7 +9,7 @@ import ClashDetectionUI from "./ClashDetectionUI";
 export function getClashDetectionSpec(): SampleSpec {
   return ({
     name: "clashdetection-sample",
-    label: "Clash Detection",
+    label: "Clash Review",
     image: "clashdetection.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
