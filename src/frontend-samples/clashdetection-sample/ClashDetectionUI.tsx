@@ -112,6 +112,10 @@ export default class ClashDetectionUI extends React.Component<{
 
       const markersData = await ClashDetectionApp.getClashMarkersData(imodel);
       this.setState({ imodel, markersData });
+      // Automatically visualize first clash
+      if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
+        ClashDetectionApp.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
+      }
     });
   }
 

@@ -145,7 +145,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSimpleAnimatedSpec(),
   ],
 }, {
-  groupName: "Platform API Samples", samples: [
+  groupName: "iTwin Platform APIs", samples: [
     getClashDetectionSpec(),
     getReadSettingsSpec(),
   ],

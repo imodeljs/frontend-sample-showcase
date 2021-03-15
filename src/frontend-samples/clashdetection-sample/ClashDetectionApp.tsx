@@ -112,19 +112,24 @@ export default class ClashDetectionApp {
   }
 
   private static async calcClashCenter(imodel: IModelConnection, elementAId: string, elementBId: string): Promise<Point3d> {
-    const elementIds: Id64String[] = [];
-    elementIds.push(elementAId);
-    elementIds.push(elementBId);
-    const volume = Range3d.createNull();
-    const elemProps = (await imodel.elements.getProps(elementIds)) as GeometricElement3dProps[];
-
-    if (elemProps.length !== 0) {
-      elemProps.forEach((prop: GeometricElement3dProps) => {
+    let rangeA: any;
+    const elemAProps = (await imodel.elements.getProps([elementAId])) as GeometricElement3dProps[];
+    if (elemAProps.length !== 0) {
+      elemAProps.forEach((prop: GeometricElement3dProps) => {
         const placement = Placement3d.fromJSON(prop.placement);
-        volume.extendRange(placement.calculateRange());
+        rangeA = placement.calculateRange();
       });
     }
-    return volume.center;
+    let rangeB: any;
+    const elemBProps = (await imodel.elements.getProps([elementBId])) as GeometricElement3dProps[];
+    if (elemBProps.length !== 0) {
+      elemBProps.forEach((prop: GeometricElement3dProps) => {
+        const placement = Placement3d.fromJSON(prop.placement);
+        rangeB = placement.calculateRange();
+      });
+    }
+
+    return rangeA.intersect(rangeB).center;
   }
 
   public static visualizeClashCallback = (clashData: any) => {
