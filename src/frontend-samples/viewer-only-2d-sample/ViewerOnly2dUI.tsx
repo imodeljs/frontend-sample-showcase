@@ -100,7 +100,7 @@ export default class ViewerOnly2dUI extends React.Component<ViewerOnly2dProps, V
     const firstModel = drawings.length > 0 ? drawings[0] : sheets[0];
     this.setState({ drawings, sheets });
     const viewCreator = new ViewCreator2d(imodel);
-    const targetView = await viewCreator.createViewForModel(firstModel.id, firstModel.classFullName, ViewSetup.getAspectRatio());
+    const targetView = await viewCreator.createViewForModel(firstModel.id!, firstModel.classFullName, { vpAspect: ViewSetup.getAspectRatio() });
 
     if (targetView) {
       viewState = targetView;

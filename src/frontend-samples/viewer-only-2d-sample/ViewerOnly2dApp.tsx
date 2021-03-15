@@ -30,7 +30,7 @@ export default class ViewerOnly2dApp {
 
     if (vp && vpAspect) {
       const viewCreator = new ViewCreator2d(imodel);
-      const targetView = await viewCreator.createViewForModel(newModel.id, newModel.classFullName, { vpAspect });
+      const targetView = await viewCreator.createViewForModel(newModel.id!, newModel.classFullName, { vpAspect });
       if (targetView)
         vp.changeView(targetView);
       else
