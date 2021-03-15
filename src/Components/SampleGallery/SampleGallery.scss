@@ -15,7 +15,7 @@
 }
 
 .gallery-close-button {
-  position:absolute;
+  position: absolute;
   top: 0;
   right: 0;
 }
@@ -34,7 +34,7 @@
   }
 }
 
-.gallery-card-radio-btn>span {
+.gallery-card-radio-btn > span {
   color: white;
   margin-left: 10px;
   text-overflow: ellipsis;
@@ -47,23 +47,39 @@
   position: relative;
   margin-left: 10px;
   margin-bottom: 5px;
-
+  cursor: pointer;
   word-wrap: break-word;
   background-clip: border-box;
-  border: 2px solid rgba(0,0,0,.125);
-  border-radius: .25rem;
+  border: 2px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+.gallery-card:hover.gallery-card-body::after {
+  opacity: 1;
 }
 
 .gallery-card-body {
   padding: 0px;
 }
 
+.gallery-card-body::after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.75);
+  transition: ease-in-out 0.05s;
+}
+
 .gallery-card-radio-btn {
-  padding: 0px;  
-  margin:0;
+  padding: 0px;
+  margin: 0;
   display: inline-block;
   width: 100%;
-  position:relative;
+  position: relative;
 }
 
 .gallery-card-radio-btn img {
@@ -79,7 +95,7 @@
 }
 
 .gallery-card-input-element:checked ~ .gallery-card {
-  border: 2px solid #A5D7F5;
+  border: 2px solid #a5d7f5;
 }
 
 .gallery-card-input-element:checked ~ .gallery-selection-icon {
@@ -90,11 +106,11 @@
   position: absolute;
   right: 5px;
   top: 28px;
-  color: #A5D7F5;
+  color: #a5d7f5;
   display: none;
   z-index: 1;
 }
 
 .gallery-card-input-element.d-none {
-  display: none!important;
+  display: none !important;
 }
