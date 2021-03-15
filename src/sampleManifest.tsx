@@ -63,6 +63,8 @@ import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-samp
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 
+import { getDragAndDropTreeSpec } from "./frontend-samples/tree-samples/drag-and-drop-tree/sampleSpec";
+
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
@@ -120,6 +122,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "UI Trees", samples: [
+    getDragAndDropTreeSpec(),
     getBasicTreeSpec(),
     getPresentationTreeSpec(),
     getCustomNodeLoadingTreeSpec(),
