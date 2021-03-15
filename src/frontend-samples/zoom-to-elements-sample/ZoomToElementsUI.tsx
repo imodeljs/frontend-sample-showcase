@@ -63,7 +63,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     this.setState({ elementsAreSelected: !selection.isEmpty });
-  }
+  };
 
   private _handleCaptureIdsButton = () => {
     const toAdd: string[] = [];
@@ -74,13 +74,13 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
     }
     this.setState((prevState) => ({ elementList: [...prevState.elementList, ...toAdd] }));
     this.state.imodel!.selectionSet.emptyAll();
-  }
+  };
 
   private _handleRemoveIdsButton = () => {
     const filteredList = this.state.elementList.filter((e) => this.state.selectedList.indexOf(e) < 0);
     this.setState({ elementList: filteredList, selectedList: [] });
     this.state.imodel!.selectionSet.emptyAll();
-  }
+  };
 
   private _handleSelectorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (this._ignoreSelectionChanged)
@@ -92,7 +92,7 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
     }
     this.setState({ selectedList });
     this.state.imodel!.selectionSet.replace(selectedList);
-  }
+  };
 
   /** Selector for list of elementIds */
   private _elementIdSelector = () => {
@@ -104,11 +104,11 @@ export default class ZoomToElementsUI extends React.Component<ZoomToProps, ZoomT
         options={Object.fromEntries(this.state.elementList.map((element) => [element, element]))}
       />
     );
-  }
+  };
 
   private onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
@@ -181,7 +181,7 @@ class ViewPicker extends React.PureComponent<ViewPickerProps> {
   private _handleViewPick = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (this.props.onViewPick)
       this.props.onViewPick(this.viewIdFromStringVal(event.target.value));
-  }
+  };
 
   public render() {
     const options = {
@@ -193,7 +193,7 @@ class ViewPicker extends React.PureComponent<ViewPickerProps> {
       [StandardViewId.Back]: "Back",
       [StandardViewId.Iso]: "Iso",
       [StandardViewId.RightIso]: "RightIso",
-    }
+    };
     return (
       <Select onChange={this._handleViewPick} disabled={this.props.disabled} options={options} />
     );

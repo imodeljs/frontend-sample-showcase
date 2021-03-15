@@ -52,6 +52,6 @@ export class Approach2UI extends React.Component<PropertyProps, Approach2State> 
           {!dataProvider && <span>Select an element to see its properties.</span>}
         </div>
       </>
-    )
+    );
   }
 }

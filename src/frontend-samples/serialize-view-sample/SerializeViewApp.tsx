@@ -25,7 +25,7 @@ export default class SerializeViewApp {
       /** Recreate the saved view from the properties json object */
       return ctor.createFromProps(props, viewport.iModel);
     }
-    return undefined
+    return undefined;
   }
 
   public static async loadViewState(viewport: Viewport, props: ViewStateProps) {

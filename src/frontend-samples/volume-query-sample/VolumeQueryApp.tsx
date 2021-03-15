@@ -58,7 +58,7 @@ export class VolumeQueryApp {
     vp.view.viewFlags.clipVolume = isClippingOn === undefined ? false : isClippingOn;
     vp.view.setViewClip(clip);
     VolumeQueryApp.addDecorators(vp);
-  }
+  };
 
   /* Method for adding decorators to the viewport */
   public static addDecorators(vp: ScreenViewport) {

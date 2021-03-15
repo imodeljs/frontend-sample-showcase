@@ -5,7 +5,6 @@
 import * as React from "react";
 import { ErrorIndicator, ErrorList } from "@bentley/monaco-editor";
 
-
 export interface DrawerProps {
   active?: boolean;
   onDrawerOpen: () => void;
@@ -19,7 +18,7 @@ export interface DrawState {
 export default class Drawer extends React.Component<DrawerProps, DrawState> {
   constructor(props: DrawerProps) {
     super(props);
-    this.state = {}
+    this.state = {};
   }
 
   public componentDidUpdate(prevProps: DrawerProps, prevState: DrawState) {
@@ -27,7 +26,7 @@ export default class Drawer extends React.Component<DrawerProps, DrawState> {
       if (this.state.active) {
         this.props.onDrawerOpen();
       } else {
-        this.props.onDrawerClosed()
+        this.props.onDrawerClosed();
       }
     }
     if (prevProps.active !== this.props.active) {
@@ -46,7 +45,7 @@ export default class Drawer extends React.Component<DrawerProps, DrawState> {
     } else {
       this.setState({ active: undefined });
     }
-  }
+  };
 
   public render() {
 

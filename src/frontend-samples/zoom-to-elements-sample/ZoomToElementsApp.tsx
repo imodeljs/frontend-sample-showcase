@@ -26,5 +26,5 @@ export default class ZoomToElementsApp {
 
     // Select the elements.  This is not necessary, but it makes them easier to see.
     state.imodel!.selectionSet.replace(state.elementList);
-  }
+  };
 }

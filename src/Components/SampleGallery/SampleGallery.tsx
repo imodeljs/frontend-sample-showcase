@@ -87,7 +87,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
   private _onCardSelected = (event: any) => {
     const names = this._namesFromId(event.target.id);
     this.props.onChange(names.groupName, names.sampleName, false);
-  }
+  };
 
   private createElementsForSample(sample: SampleSpec, groupName: string, index: number) {
     const isChecked = this.props.selected === sample.name;

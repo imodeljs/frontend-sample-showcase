@@ -78,7 +78,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       await ClassifierApp.turnOnAvailableRealityModel(_vp, imodel);
       this._handleApply();
     });
-  }
+  };
 
   // Handle Apply. Clear selection and update classifier.
   private _handleApply = () => {
@@ -88,7 +88,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       const classifier: SpatialClassificationProps.Classifier = this.getClassifierValues(this.state.classifier!);
       ClassifierApp.updateRealityDataClassifiers(vp, classifier);
     }
-  }
+  };
 
   /*
   * Get property values for the classifier.
@@ -118,7 +118,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     const keys = new KeySet(selection);
     this.setState({ keys });
-  }
+  };
 
   // Some reasonable defaults depending on what classifier is chosen.
   private _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -136,22 +136,22 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     }
 
     this.setState({ classifier: event.target.value, outsideDisplayKey: "Dimmed" });
-  }
+  };
 
   private _onMarginChange = (event: any) => {
     try {
       const expandDist = parseFloat(event.target.value);
       this.setState({ expandDist });
     } catch { }
-  }
+  };
 
   private _onOutsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setState({ outsideDisplayKey: event.target.value });
-  }
+  };
 
   private _onInsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setState({ insideDisplayKey: event.target.value });
-  }
+  };
 
   /** This callback will be executed by SandboxViewport to initialize the ViewState.
    * Set up camera looking at Rittenhouse Square.
@@ -170,7 +170,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     viewState.setExtents(new Vector3d(750, 393, 375));
 
     return viewState;
-  }
+  };
 
   private getControls() {
     const {

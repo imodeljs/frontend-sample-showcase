@@ -21,7 +21,6 @@ export interface PropertyProps {
 export class PropertyFormattingApp {
   private static selectionListener: SelectionChangesListener;
 
-
   public static addSelectionListener(listener: SelectionChangesListener) {
     this.selectionListener = listener;
     Presentation.selection.selectionChange.addListener(this.selectionListener);
@@ -65,13 +64,13 @@ export class PropertyFormattingApp {
         PropertyRecord.fromString("Value 1", "Property 1"),
         PropertyRecord.fromString("Value 2", "Property 2"),
         PropertyRecord.fromString("Value 3", "Property 3"),
-      ]
+      ];
 
       data.records[customCategoryName] = customRecords;
 
       return data;
     }
-  }
+  };
 
   /* Approach 2: Using PresentationTableDataProvider
 

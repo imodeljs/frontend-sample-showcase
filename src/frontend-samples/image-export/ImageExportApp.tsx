@@ -15,7 +15,7 @@ export default class ImageExportApp {
       const canvas = viewPort.readImageToCanvas();
       const imageUrl = canvas.toDataURL("image/png");
       const link = document.createElement("a");
-      link.setAttribute("download", "viewport.png")
+      link.setAttribute("download", "viewport.png");
       link.setAttribute("href", imageUrl);
       link.click();
     }

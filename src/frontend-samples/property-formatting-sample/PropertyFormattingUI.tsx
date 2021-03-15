@@ -46,7 +46,6 @@ export default class PropertyFormattingUI extends React.Component<PropertyFormat
     };
   }
 
-
   public componentWillUnmount() {
     PropertyFormattingApp.removeSelectionListener();
   }
@@ -54,13 +53,13 @@ export default class PropertyFormattingUI extends React.Component<PropertyFormat
   private onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
     PropertyFormattingApp.addSelectionListener(this._onSelectionChanged);
-  }
+  };
 
   private _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     const keys = new KeySet(selection);
     this.setState({ keys });
-  }
+  };
 
   private _onPropertyModeChange = ((event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ approach: event.target.value as Approach });

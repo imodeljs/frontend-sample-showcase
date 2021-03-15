@@ -11,7 +11,6 @@ import HeatmapDecorator from "./HeatmapDecorator";
 export default class HeatmapDecoratorApp {
   public static decorator?: HeatmapDecorator;
 
-
   public static setupDecorator(points: Point3d[], range: Range2d, spreadFactor: number, height: number) {
     HeatmapDecoratorApp.decorator = new HeatmapDecorator(points, range, spreadFactor, height);
   }

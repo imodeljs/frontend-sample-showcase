@@ -59,6 +59,6 @@ export class Approach1UI extends React.Component<PropertyProps, Approach1State> 
           {!dataProvider && <span>Select an element to see its properties.</span>}
         </div>
       </>
-    )
+    );
   }
 }

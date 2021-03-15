@@ -21,10 +21,16 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const moduleActions = useModuleState()[1];
   const [activityState, activityActions] = useActivityState();
   const [entryState, entryActions] = useEntryState();
+<<<<<<< HEAD
   const [showReadme, setShowReadme] = React.useState<boolean>(true)
   const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false)
   const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
+=======
+  const [showReadme, setShowReadme] = React.useState<boolean>(true);
+  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false);
+  const [readme, setReadme] = React.useState<string>("");
+>>>>>>> master
 
   React.useEffect(() => {
     if (files) {
@@ -35,14 +41,20 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     }
     return () => {
       setEditorState(null, []);
+<<<<<<< HEAD
     }
   }, [files, fileActions, entryActions, activityActions])
+=======
+    };
+  }, [props.files, fileActions, entryActions, activityActions]);
+>>>>>>> master
 
   React.useEffect(() => {
     moduleActions.setModules(modules);
-  }, [moduleActions])
+  }, [moduleActions]);
 
   React.useEffect(() => {
+<<<<<<< HEAD
     if (readme) {
       setReadmeLoading(true);
       readme().then((fileData) => {
@@ -50,6 +62,14 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
         setShowReadme(true);
         setReadmeLoading(false);
       })
+=======
+    if (props.readme) {
+      props.readme.import
+        .then((fileData) => {
+          setReadme(fileData.default);
+          setShowReadme(true);
+        });
+>>>>>>> master
     }
   }, [readme, setReadmeContent, setShowReadme]);
 
@@ -59,7 +79,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     } else {
       setShowReadme(true);
     }
-  }, [activityState.active])
+  }, [activityState.active]);
 
   const onShowReadme = () => {
     if (showReadme) {
@@ -67,32 +87,35 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     } else {
       activityActions.clearActive();
     }
-  }
+  };
 
   const _onDrawerOpened = () => {
-    setDisplayDrawer(true)
-  }
+    setDisplayDrawer(true);
+  };
 
   const _onDrawerClosed = () => {
-    setDisplayDrawer(false)
-  }
+    setDisplayDrawer(false);
+  };
 
   const _onChange = (size: number) => {
     if (size < 200) {
-      setDisplayDrawer(false)
+      setDisplayDrawer(false);
     } else {
-      setDisplayDrawer(true)
+      setDisplayDrawer(true);
     }
-  }
+  };
 
   const drawerMinSize = showReadme ? "0" : "35px";
   const drawerSize = !showReadme ? displayDrawer ? "200px" : "35px" : "0";
   const style = props.style;
+<<<<<<< HEAD
 
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
       <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={props.onSampleClicked} />
   };
+=======
+>>>>>>> master
 
   return (
     <div className="sample-editor-container" style={style}>
@@ -113,4 +136,9 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
       </SplitScreen>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+
+};
+>>>>>>> master
