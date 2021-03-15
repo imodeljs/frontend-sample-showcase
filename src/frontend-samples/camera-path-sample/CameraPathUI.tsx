@@ -70,7 +70,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
       }
     });
-  }
+  };
 
   // Create the react component for the  slider
   private _createCameraSlider(label: string) {
@@ -140,7 +140,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         }
       }, 40);
     });
-  }
+  };
 
   // Create the react components for the  Paths
   private _createRenderPath(label: string) {
@@ -170,7 +170,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         break;
     }
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, currentSpeed: speedOfMotion, speedLevel: currentSpeed } }));
-  }
+  };
 
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
@@ -211,7 +211,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         }
       });
     });
-  }
+  };
 
   // We will use this method to activate the CameraPathTool
   // The CameraPathTool will prevent the view tool and standard mouse events
@@ -268,16 +268,16 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     } else {
       this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY); }, 40));
     }
-  }
+  };
   public handleUnlockDirection = (keyDown: boolean) => {
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, keyDown } }));
-  }
+  };
 
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
     viewState.viewFlags.renderMode = RenderMode.SmoothShade;
     return viewState;
-  }
+  };
 
   /** The sample's render method */
   public render() {

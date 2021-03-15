@@ -79,7 +79,7 @@ export class ProgressBar extends React.Component<ProgressBarProps, ProgressBarSt
 
   private _onClick = () => {
     this.setState({ isCanceled: true });
-  }
+  };
 
   public render() {
     const progress = this.props.getProgress();

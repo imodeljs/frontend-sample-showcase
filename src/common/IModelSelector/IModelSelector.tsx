@@ -35,7 +35,7 @@ export class IModelSelector extends React.Component<IModelSelectorProps, {}> {
     const iModelName = this.props.iModelNames[index];
 
     this.props.onIModelChange(iModelName);
-  }
+  };
 
   public render() {
     const { iModelNames } = this.props;

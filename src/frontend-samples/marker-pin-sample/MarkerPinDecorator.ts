@@ -148,8 +148,8 @@ class SamplePinMarker extends Marker {
       // This approach doesn't work well with camera turned on
       vp.zoom(this.worldLocation, 1.0, { animateFrustumChange: true });
     }
-  }
-};
+  };
+}
 
 /** Marker to show as a stand-in for a cluster of overlapping markers. */
 class SampleClusterMarker extends Marker {
