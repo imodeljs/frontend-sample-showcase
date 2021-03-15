@@ -13,10 +13,15 @@ import GlobalDisplayApp from "./GlobalDisplayApp";
 
 interface GlobalDisplayUIState {
   viewport?: ScreenViewport;
+  /** Place name to which to travel. */
   destination: string;
+  /** True for 3d terrain, false for a flat map. */
   terrain: boolean;
+  /** Display map labels with the map imagery. */
   mapLabels: boolean;
+  /** Display 3d building meshes from Open Street Map Buildings. */
   buildings: boolean;
+  /** If buildings are displayed, also display their edges. */
   buildingEdges: boolean;
 }
 
@@ -36,7 +41,10 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
 
   private readonly onIModelReady = () => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
+      // The grid just gets in the way - turn it off.
       viewport.view.viewFlags.grid = false;
+
+      // We're not interested in seeing the contents of the iModel, only the global data.
       if (viewport.view.isSpatialView())
         viewport.view.modelSelector.models.clear();
 
