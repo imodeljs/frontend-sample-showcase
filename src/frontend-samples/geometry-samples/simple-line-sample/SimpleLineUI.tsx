@@ -82,7 +82,7 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
     points.forEach((point, i) => {
       const marker = new InteractivePointMarker(point, `Fraction = ${fractions[i]}`, ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)), () => { });
       this.state.decorator.addMarker(marker);
-    })
+    });
   }
 
 }

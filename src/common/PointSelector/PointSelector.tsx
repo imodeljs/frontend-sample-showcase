@@ -62,11 +62,11 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
     }
 
     this.setState({ pointGenerator });
-  }
+  };
 
   private _onChangePointCount = (values: readonly number[]) => {
     this.setState({ pointCount: values[0] });
-  }
+  };
 
   public componentDidMount() {
     this.notifyChange();

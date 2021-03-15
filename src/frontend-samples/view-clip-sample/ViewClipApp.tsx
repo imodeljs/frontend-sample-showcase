@@ -43,7 +43,7 @@ export default class ViewClipApp {
     ViewClipTool.enableClipVolume(vp);
     vp.view.setViewClip(clip);
     ViewClipApp.addDecorators(vp);
-  }
+  };
 
   /* Method for getting a normal vector. */
   public static getPlaneInwardNormal(orientation: EditManipulator.RotationType, viewport: Viewport): Vector3d | undefined {

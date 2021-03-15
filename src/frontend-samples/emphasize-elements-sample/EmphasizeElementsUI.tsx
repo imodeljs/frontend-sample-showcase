@@ -70,7 +70,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     this.setState({ selectionIsEmpty: selection.isEmpty });
-  }
+  };
 
   private _handleActionButton = (type: ActionType) => {
     switch (type) {
@@ -96,7 +96,7 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
         break;
       }
     }
-  }
+  };
 
   private _handleClearButton = (type: ActionType) => {
     switch (type) {
@@ -122,15 +122,15 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
         break;
       }
     }
-  }
+  };
 
   private _onToggleEmphasis = (wantEmphasis: boolean) => {
     this.setState({ wantEmphasis });
-  }
+  };
 
   private _onColorPick = (colorValue: ColorDef) => {
     this.setState({ colorValue });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {

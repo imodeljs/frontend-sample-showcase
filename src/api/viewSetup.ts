@@ -83,7 +83,7 @@ export class ViewSetup {
       viewState.categorySelector.dropCategories(hiddenCategories);
 
     return viewState;
-  }
+  };
 
   private static getHiddenCategories = async (imodel: IModelConnection): Promise<Id64Array | undefined> => {
     if (imodel.name !== "house bim upload")
@@ -95,7 +95,7 @@ export class ViewSetup {
       ids.push(row.id);
 
     return ids;
-  }
+  };
 
   /*
   * groundBias can be stored in Product Settings Service. This method retrieves it.
@@ -124,5 +124,5 @@ export class ViewSetup {
     }
 
     return undefined;
-  }
+  };
 }

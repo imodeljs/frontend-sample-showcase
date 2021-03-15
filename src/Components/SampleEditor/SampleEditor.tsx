@@ -35,8 +35,8 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
   const moduleActions = useModuleState()[1];
   const [activityState, activityActions] = useActivityState();
   const [entryState, entryActions] = useEntryState();
-  const [showReadme, setShowReadme] = React.useState<boolean>(true)
-  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false)
+  const [showReadme, setShowReadme] = React.useState<boolean>(true);
+  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false);
   const [readme, setReadme] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -45,12 +45,12 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
       .then(() => entryActions.setEntry(props.files?.find((file) => file.entry)?.name || null));
     return () => {
       setEditorState(null, []);
-    }
-  }, [props.files, fileActions, entryActions, activityActions])
+    };
+  }, [props.files, fileActions, entryActions, activityActions]);
 
   React.useEffect(() => {
     moduleActions.setModules(modules);
-  }, [moduleActions])
+  }, [moduleActions]);
 
   React.useEffect(() => {
     if (props.readme) {
@@ -58,7 +58,7 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
         .then((fileData) => {
           setReadme(fileData.default);
           setShowReadme(true);
-        })
+        });
     }
   }, [props.readme, setReadme, setShowReadme]);
 
@@ -68,7 +68,7 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
     } else {
       setShowReadme(true);
     }
-  }, [activityState.active])
+  }, [activityState.active]);
 
   const onShowReadme = () => {
     if (showReadme) {
@@ -76,27 +76,27 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
     } else {
       activityActions.clearActive();
     }
-  }
+  };
 
   const _onDrawerOpened = () => {
-    setDisplayDrawer(true)
-  }
+    setDisplayDrawer(true);
+  };
 
   const _onDrawerClosed = () => {
-    setDisplayDrawer(false)
-  }
+    setDisplayDrawer(false);
+  };
 
   const _onChange = (size: number) => {
     if (size < 200) {
-      setDisplayDrawer(false)
+      setDisplayDrawer(false);
     } else {
-      setDisplayDrawer(true)
+      setDisplayDrawer(true);
     }
-  }
+  };
 
   const drawerMinSize = showReadme ? "0" : "35px";
   const drawerSize = !showReadme ? displayDrawer ? "200px" : "35px" : "0";
-  const style = props.style
+  const style = props.style;
 
   return (
     <div className="sample-editor-container" style={style}>
@@ -120,4 +120,4 @@ export const SampleEditor: React.FunctionComponent<SampleEditorProps> = (props) 
     </div>
   );
 
-}
+};

@@ -49,7 +49,7 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
 
   private onToggle2dGraphics = (display2dGraphics: boolean) => {
     this.setState({ display2dGraphics });
-  }
+  };
 
   public componentDidUpdate(_prevProps: HyperModelingProps, prevState: HyperModelingState) {
     if (prevState.display2dGraphics !== this.state.display2dGraphics)
@@ -89,7 +89,7 @@ export default class HyperModelingUI extends React.Component<HyperModelingProps,
   private clearActiveMarker = () => {
     assert(undefined !== this.state.viewport);
     HyperModelingApp.clearActiveMarker(this.state.viewport);
-  }
+  };
 
   private getInstructions() {
     if (this.state.previous)
