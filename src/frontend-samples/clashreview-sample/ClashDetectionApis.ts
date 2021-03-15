@@ -7,14 +7,14 @@ import { IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { IModelHubClient, VersionQuery } from "@bentley/imodelhub-client";
 import { NoSignInIAuthClient } from "NoSignInIAuthClient";
-import ClashDetectionApp from "./ClashDetectionApp";
+import ClashReviewApp from "./ClashReviewApp";
 
 export default class ClashDetectionApis {
 
   // Retrieves a list of Design Validation tests for the project specified by the project id.
   // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-tests
   public static async getProjectValidationTests(): Promise<any | undefined> {
-    const { projectId, requestContext } = ClashDetectionApp.projectContext;
+    const { projectId, requestContext } = ClashReviewApp.projectContext;
     const accessToken = await ClashDetectionApis.getAccessToken();
     if (accessToken === undefined)
       return undefined;
@@ -28,7 +28,7 @@ export default class ClashDetectionApis {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Prefer: "return=representation",
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+        Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
     };
     return request(requestContext, url, options)
@@ -43,7 +43,7 @@ export default class ClashDetectionApis {
   // Retrieves a list of Design Validation runs for the project specified by the project id.
   // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-runs
   public static async getProjectValidationRuns(): Promise<any | undefined> {
-    const { projectId, requestContext } = ClashDetectionApp.projectContext;
+    const { projectId, requestContext } = ClashReviewApp.projectContext;
     const accessToken = await ClashDetectionApis.getAccessToken();
     if (accessToken === undefined)
       return undefined;
@@ -57,7 +57,7 @@ export default class ClashDetectionApis {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Prefer: "return=representation",
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+        Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
     };
     return request(requestContext, url, options)
@@ -86,10 +86,10 @@ export default class ClashDetectionApis {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+        Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
     };
-    return request(ClashDetectionApp.projectContext.requestContext, url, options)
+    return request(ClashReviewApp.projectContext.requestContext, url, options)
       .then((resp: Response): any | undefined => {
         return resp.body;
       }).catch((_reason: any) => {
@@ -120,7 +120,7 @@ export default class ClashDetectionApis {
   public static async runValidationTest(testId: string) {
     if (testId === undefined)
       return undefined;
-    const { imodelId, requestContext } = ClashDetectionApp.projectContext;
+    const { imodelId, requestContext } = ClashReviewApp.projectContext;
     const accessToken = await ClashDetectionApis.getAccessToken();
     if (accessToken === undefined)
       return undefined;
@@ -139,11 +139,11 @@ export default class ClashDetectionApis {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: accessToken.toTokenString( IncludePrefix.Yes ),
+        Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
       body: data,
     };
-    return request(ClashDetectionApp.projectContext.requestContext, url, options)
+    return request(ClashReviewApp.projectContext.requestContext, url, options)
       .then((resp: Response): any | undefined => {
         return resp.body;
       }).catch((_reason: any) => {
@@ -154,7 +154,7 @@ export default class ClashDetectionApis {
   private static async getAccessToken() {
     try {
       return await (IModelApp.authorizationClient as NoSignInIAuthClient).getDevAccessToken();
-    } catch(e) {
+    } catch (e) {
       return undefined;
     }
   }

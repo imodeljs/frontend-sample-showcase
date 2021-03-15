@@ -4,24 +4,24 @@
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "../../Components/SampleShowcase/SampleShowcase";
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
-import ClashDetectionUI from "./ClashDetectionUI";
+import ClashReviewUI from "./ClashReviewUI";
 
-export function getClashDetectionSpec(): SampleSpec {
+export function getClashReviewSpec(): SampleSpec {
   return ({
-    name: "clashdetection-sample",
+    name: "clashreview-sample",
     label: "Clash Review",
-    image: "clashdetection.png",
+    image: "clashreview.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "ClashDetectionApp.tsx", import: import("!!raw-loader!./ClashDetectionApp.tsx"), entry: true },
-      { name: "ClashDetectionUI.tsx", import: import("!!raw-loader!./ClashDetectionUI.tsx") },
+      { name: "ClashReviewApp.tsx", import: import("!!raw-loader!./ClashReviewApp.tsx"), entry: true },
+      { name: "ClashReviewUI.tsx", import: import("!!raw-loader!./ClashReviewUI.tsx") },
       { name: "ClashDetectionApis.ts", import: import("!!raw-loader!./ClashDetectionApis.ts") },
       { name: "ClashTable.tsx", import: import("!!raw-loader!./ClashTable.tsx") },
       { name: "MarkerPinDecorator.ts", import: import("!!raw-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts") },
       { name: "ClashDetectionJsonData.ts", import: import("!!raw-loader!./ClashDetectionJsonData.ts") },
-      { name: "ClashDetection.scss", import: import("!!raw-loader!./ClashDetection.scss") },
+      { name: "ClashReview.scss", import: import("!!raw-loader!./ClashReview.scss") },
     ],
     customModelList: [SampleIModels.BayTown],
-    sampleClass: ClashDetectionUI,
+    sampleClass: ClashReviewUI,
   });
 }
