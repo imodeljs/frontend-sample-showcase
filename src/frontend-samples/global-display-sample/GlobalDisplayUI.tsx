@@ -123,7 +123,7 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
         models: [],
       },
     }, imodel);
-  }
+  };
 
   public componentDidUpdate(_prevProps: GlobalDisplayUIProps, prevState: GlobalDisplayUIState) {
     const viewport = this.state.viewport;
