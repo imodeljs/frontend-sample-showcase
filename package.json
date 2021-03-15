@@ -16,7 +16,7 @@
     "@bentley/imodeljs-markup": "2.13.0",
     "@bentley/imodeljs-quantity": "2.13.0",
     "@bentley/itwin-client": "2.13.0",
-    "@bentley/monaco-editor": "^5.1.5",
+    "@bentley/monaco-editor": "^5.1.7",
     "@bentley/orbitgt-core": "2.13.0",
     "@bentley/presentation-common": "2.13.0",
     "@bentley/presentation-components": "2.13.0",
