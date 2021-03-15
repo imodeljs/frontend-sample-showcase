@@ -28,7 +28,6 @@ export default class ClashTable extends React.PureComponent<Props> {
     columns.push({key: "elementACategoryIndex", label: "Element A Category"});
     columns.push({key: "elementBCategoryIndex", label: "Element B Category"});
     columns.push({key: "clashType", label: "Clash Type"});
-    columns.push({key: "clearance", label: "Clearance"});
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 

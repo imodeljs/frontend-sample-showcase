@@ -1,6 +1,8 @@
-# Clash Review Sample
+# Clash Detection Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
+
+Clash Detection is a feature in iTwin Platform that analyzes and reports element pairs that are colliding or within a minimum tolerance. An API now provides direct access to this functionality to enable 3rd-party app integration.
 
 This sample demonstrates calling [Clash Detection APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result) to retrieve clash data and present it for review in a viewer app. 
 

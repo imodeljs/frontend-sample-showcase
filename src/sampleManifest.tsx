@@ -73,7 +73,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
-    getClashDetectionSpec(),
     getHyperModelingSpec(),
     getRealityDataSpec(),
     getViewAttributesSpec(),
@@ -93,7 +92,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMultiViewportSpec(),
     getParticleFireSampleSpec(),
     getPropertyFormattingSpec(),
-    getReadSettingsSpec(),
     getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
     getShadowStudySpec(),
@@ -145,6 +143,11 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSimple3dSpec(),
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
+  ],
+}, {
+  groupName: "Platform API Samples", samples: [
+    getClashDetectionSpec(),
+    getReadSettingsSpec(),
   ],
 
 },

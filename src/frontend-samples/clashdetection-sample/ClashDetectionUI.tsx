@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import "./ClashDetection.scss";
 import { Id64String } from "@bentley/bentleyjs-core";
 import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
+import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize, Toggle } from "@bentley/ui-core";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import ClashDetectionApp from "./ClashDetectionApp";
@@ -50,6 +50,8 @@ export default class ClashDetectionUI extends React.Component<{
   public componentWillUnmount() {
     ClashDetectionApp.disableDecorations();
     ClashDetectionApp._clashPinDecorator = undefined;
+    ClashDetectionApp.resetDisplay();
+    ClashDetectionApp.clashData = undefined;
   }
 
   public componentDidUpdate(_prevProps: {}, prevState: ClashDetectionUIState) {
@@ -143,7 +145,9 @@ export default class ClashDetectionUI extends React.Component<{
             <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={ClashDetectionUI.getIsoView.bind(ClashDetectionUI)} />
           </div>
           <div className="bottom">
-            <GridWidget data={ClashDetectionApp.clashData} />
+            {ClashDetectionApp.clashData === undefined ?
+              (<div ><Spinner size={SpinnerSize.Small} /> Calling API...</div>) :
+              (<GridWidget data={ClashDetectionApp.clashData} />)}
           </div>
         </div>
       </>

@@ -27,7 +27,8 @@ import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
 
 export interface MarkerData {
   point: Point3d;
-  tooltip?: string;   // override default marker tooltip
+  title?: string;         // override default marker tooltip title
+  description?: string;   // override default marker tooltip description
   data?: any;
 }
 
@@ -35,11 +36,13 @@ export interface MarkerData {
 class SamplePinMarker extends Marker {
   private _markerSet: SampleMarkerSet;
   public data: any;
+  public toolTipTitle: string;
+  public toolTipDescription: string;
   private static _height = 35;
   private _onMouseButtonCallback?: any;
 
   /** Create a new SamplePinMarker */
-  constructor(markerData: MarkerData, title: string, image: HTMLImageElement, markerSet: SampleMarkerSet, onMouseButtonCallback?: any) {
+  constructor(markerData: MarkerData, title: string, description: string, image: HTMLImageElement, markerSet: SampleMarkerSet, onMouseButtonCallback?: any) {
     // Use the same height for all the markers, but preserve the aspect ratio from the image
     super(markerData.point, new Point2d(image.width * (SamplePinMarker._height / image.height), SamplePinMarker._height));
     this.setImage(image);
@@ -55,8 +58,26 @@ class SamplePinMarker extends Marker {
     // The JSON data is stored on the marker
     this.data = markerData.data;
 
-    // The title will be shown as a tooltip when the user interacts with the marker
-    this.title = markerData.tooltip ? markerData.tooltip : title;
+    // The title/description will be shown as a tooltip when the user interacts with the marker
+    let tooltip = "";
+    if (markerData.title) {
+      this.toolTipTitle = markerData.title;
+      this.toolTipDescription = markerData.description? markerData.description : "";
+      tooltip = markerData.title;
+      if (markerData.description) {
+        tooltip += `<br>${markerData.description}`;
+      }
+    } else {
+      this.toolTipTitle = title;
+      this.toolTipDescription = description? description : "";
+      tooltip = title;
+      if (description) {
+        tooltip += `<br>${description}`;
+      }
+    }
+    const div = document.createElement("div");
+    div.innerHTML = tooltip;
+    this.title = div;
 
     // The scale factor adjusts the size of the image so it appears larger when close to the camera eye point.
     // Make size 75% at back of frustum and 200% at front of frustum (if camera is on)
@@ -143,29 +164,23 @@ class SampleClusterMarker extends Marker {
     this._onMouseButtonCallback = onMouseButtonCallback;
     this._cluster = cluster;
 
-    /* The cluster will be drawn as a circle with the pin marker image above it.  Drawing the marker image
-    *  identifies that the cluster represents markers from our marker set.
-    */
-
+    // The cluster will be drawn as a circle
     // Display the count of markers in this cluster
     this.label = cluster.markers.length.toLocaleString();
     this.labelColor = "black";
     this.labelFont = "bold 14px san-serif";
-
-    // Display the pin image offset above the circle
-    if (undefined !== cluster.markers[0].image) {
-      this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5) + SampleClusterMarker._radius);
-      this.setImage(cluster.markers[0].image);
-    }
 
     // Concatenate the tooltips from the markers to create the tooltip for the cluster
     const maxLen = 10;
     let title = "";
     cluster.markers.forEach((marker, index: number) => {
       if (index < maxLen) {
-        if (title !== "")
-          title += "<br>";
-        title += marker.title;
+        if (index === 0)
+          title += marker.toolTipTitle;
+        if (marker.toolTipDescription === undefined || marker.toolTipDescription.length === 0)
+          title += `<br>${marker.toolTipTitle}`;
+        else
+          title += `<br>${marker.toolTipDescription}`;
       }
     });
     if (cluster.markers.length > maxLen)
@@ -214,7 +229,7 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
 
     let index = 1;
     for (const markerData of markersData) {
-      this.markers.add(new SamplePinMarker(markerData, `Marker ${index++}`, image, this, onMouseButtonCallback));
+      this.markers.add(new SamplePinMarker(markerData, `Marker ${index++}`, ``, image, this, onMouseButtonCallback));
     }
   }
 
@@ -249,7 +264,7 @@ export class MarkerPinDecorator implements Decorator {
   /* Adds a single new marker to the "manual" markerset */
   public addPoint(point: Point3d, pinImage: HTMLImageElement): void {
     const markerData: MarkerData = { point };
-    this._manualMarkerSet.markers.add(new SamplePinMarker(markerData, "Manual", pinImage, this._manualMarkerSet));
+    this._manualMarkerSet.markers.add(new SamplePinMarker(markerData, "Manual", "", pinImage, this._manualMarkerSet));
 
     // When the markers change we notify the viewmanager to remove the existing decorations
     const vp = IModelApp.viewManager.selectedView;

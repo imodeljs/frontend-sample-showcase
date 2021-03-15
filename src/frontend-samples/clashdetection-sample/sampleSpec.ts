@@ -9,7 +9,7 @@ import ClashDetectionUI from "./ClashDetectionUI";
 export function getClashDetectionSpec(): SampleSpec {
   return ({
     name: "clashdetection-sample",
-    label: "Clash Review",
+    label: "Clash Detection",
     image: "clashdetection.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
@@ -18,7 +18,6 @@ export function getClashDetectionSpec(): SampleSpec {
       { name: "ClashDetectionApis.ts", import: import("!!raw-loader!./ClashDetectionApis.ts") },
       { name: "ClashTable.tsx", import: import("!!raw-loader!./ClashTable.tsx") },
       { name: "MarkerPinDecorator.ts", import: import("!!raw-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts") },
-      { name: "PopupMenu.tsx", import: import("!!raw-loader!frontend-samples/marker-pin-sample/PopupMenu.tsx") },
       { name: "ClashDetectionJsonData.ts", import: import("!!raw-loader!./ClashDetectionJsonData.ts") },
       { name: "ClashDetection.scss", import: import("!!raw-loader!./ClashDetection.scss") },
     ],

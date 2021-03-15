@@ -100,8 +100,9 @@ export default class ClashDetectionApp {
     let count = 0;
     for (const clash of clashData.clashDetectionResult) {
       const point = await this.calcClashCenter(imodel, clash.elementAId, clash.elementBId);
-      const tooltip = `${clash.elementALabel}<br>${clash.elementBLabel}`;
-      const clashMarkerData: MarkerData = { point, data: clash, tooltip };
+      const title = "Collision(s) found:";
+      const description = `Element A: ${clash.elementALabel}<br>Element B: ${clash.elementBLabel}`;
+      const clashMarkerData: MarkerData = { point, data: clash, title, description };
       markersData.push(clashMarkerData);
       count++;
       if (count > 60)
