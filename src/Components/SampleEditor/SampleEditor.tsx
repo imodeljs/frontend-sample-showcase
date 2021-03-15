@@ -87,7 +87,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
 
   const drawerMinSize = showReadme ? "0" : "35px";
   const drawerSize = !showReadme ? displayDrawer ? "200px" : "35px" : "0";
-  const style = props.minSize ? { minWidth: `${props.minSize}px` } : undefined
+  const style = props.style;
 
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :

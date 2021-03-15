@@ -11,19 +11,19 @@ import { SampleEditor } from "./SampleEditor";
 export interface EditorProps {
   files?: () => SampleSpecFile[];
   readme?: () => Promise<{ default: string }>;
-  minSize?: number;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
   onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
+  style?: React.CSSProperties;
 }
 
 export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
-  const { files, readme, minSize, onCloseClick, onTranspiled, onSampleClicked } = props;
+  const { files, readme, style, onCloseClick, onTranspiled, onSampleClicked } = props;
   return (
     <EditorEnvironmentContextProvider>
       <SampleEditor
         files={files}
-        minSize={minSize}
+        style={style}
         onCloseClick={onCloseClick}
         onSampleClicked={onSampleClicked}
         onTranspiled={onTranspiled}

@@ -63,7 +63,9 @@ import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
+import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-sample/sampleSpec";
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
+import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 
 
 export interface SampleSpecGroup {
@@ -86,11 +88,13 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getClassifierSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
+    getIotAlertSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
     getCrossProbingSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
+    getParticleFireSampleSpec(),
     getPropertyFormattingSpec(),
     getReadSettingsSpec(),
     getSerializeViewSpec(),

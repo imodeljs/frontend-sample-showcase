@@ -19,24 +19,13 @@ import "common/samples-common.scss";
 const Editor = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleEditor/SampleEditorContext"));
 const Visualizer = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleVisualizer/SampleVisualizer"));
 
-interface DragState {
-  dragging: boolean;
-  paneSizes: string[];
-}
-
-const calculateMinSize = (containerSize: number, sizeStr: string = "0") => {
-  const tokens = sizeStr.match(/([0-9]+)([px|%]*)/)!;
-  const value = parseInt(tokens[1], 10);
-  return +(containerSize * value / 100).toFixed(2);
-}
-
 export const SampleShowcase: FunctionComponent = () => {
   const [activeSample, setActiveSample] = useState(() => new ActiveSample());
   const [scrollTo, setScrollTo] = useState(true);
   const [showEditor, setShowEditor] = useState(true);
   const [showGallery, setShowGallery] = useState(true);
   const [transpileResult, setTranspileResult] = useState<string>();
-  const [dragState, setDragState] = useState<DragState>({ dragging: false, paneSizes: ["20%", "1", "20%"] });
+  const [dragging, setDragging] = useState(false);
 
   const showcaseRef = React.createRef<HTMLDivElement>();
   const galleryRef = React.createRef<SampleGallery>();
@@ -49,15 +38,11 @@ export const SampleShowcase: FunctionComponent = () => {
     }
   }, [scrollTo, galleryRef]);
 
-  const editorSize = !dragState.dragging && !showEditor ? "0%" : dragState.paneSizes[0];
-  const gallerySize = !dragState.dragging && !showGallery ? "0%" : dragState.paneSizes[2];
+  const editorSize = showEditor ? "400px" : "0";
+  const gallerySize = showGallery ? "200px" : "0";
 
-  const width = showcaseRef.current?.getBoundingClientRect().width;
-  const editorMinSize = !!width && !dragState.dragging ? calculateMinSize(width, dragState.paneSizes[0]) : undefined;
-  const galleryMinSize = !!width && !dragState.dragging ? calculateMinSize(width, dragState.paneSizes[2]) : undefined;
-
-  const galleryClassName = dragState.dragging ? "gallery-pane dragging" : "gallery-pane";
-  const editorClassName = dragState.dragging ? "editor-pane dragging" : "editor-pane";
+  const galleryClassName = dragging ? "gallery-pane dragging" : "gallery-pane";
+  const editorClassName = dragging ? "editor-pane dragging" : "editor-pane";
 
   const onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
     if (transpileResult && !window.confirm("Changes made to the code will not be saved!")) {
@@ -69,20 +54,18 @@ export const SampleShowcase: FunctionComponent = () => {
   };
 
   const onSampleGallerySizeChange = (size: number) => {
-    if (dragState.dragging) {
-      if (size < 200)
-        setShowGallery(false)
-      else
-        setShowGallery(true)
+    if (size < 200 && showGallery) {
+      setShowGallery(false);
+    } else if (size >= 200 && !showGallery) {
+      setShowGallery(true);
     }
   };
 
   const onEditorSizeChange = (size: number) => {
-    if (dragState.dragging) {
-      if (size < 200)
-        setShowEditor(false)
-      else
-        setShowEditor(true)
+    if (size < 400 && showEditor) {
+      setShowEditor(false);
+    } else if (size >= 400 && !showGallery) {
+      setShowEditor(true);
     }
   };
 
@@ -103,19 +86,19 @@ export const SampleShowcase: FunctionComponent = () => {
 
   return (
     <div className="showcase" ref={showcaseRef}>
-      <SplitScreen split="vertical" onResizeStart={() => setDragState({ ...dragState, dragging: true })} onResizeEnd={(sizes) => setDragState({ dragging: false, paneSizes: sizes })}>
-        <Pane className={editorClassName} snapSize={"200px"} defaultSize={dragState.paneSizes[0]} size={editorSize} onChange={onEditorSizeChange} disabled={!showEditor}>
+      <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(true)}>
+        <Pane className={editorClassName} snapSize="400px" size={editorSize} onChange={onEditorSizeChange} disabled={!showEditor}>
           <React.Suspense fallback={spinner}>
             <Editor
               files={activeSample.getFiles}
-              minSize={editorMinSize}
+              style={{ minWidth: "400px" }}
               onCloseClick={() => setShowEditor(!showEditor)}
               onSampleClicked={onGalleryCardClicked}
               onTranspiled={(blob) => setTranspileResult(blob)}
               readme={activeSample.getReadme} />
           </React.Suspense>
         </Pane>
-        <Pane className="preview" minSize={"500px"}>
+        <Pane className="preview" minSize="500px">
           {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-right"></span></Button>}
           {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-left"></span></Button>}
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
@@ -132,10 +115,10 @@ export const SampleShowcase: FunctionComponent = () => {
           {!showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-left"></span></Button>}
           {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-right"></span></Button>}
         </Pane>
-        <Pane className={galleryClassName} snapSize={"200px"} size={gallerySize} maxSize={"20%"} defaultSize={dragState.paneSizes[2]} onChange={onSampleGallerySizeChange} disabled={!showGallery}>
+        <Pane className={galleryClassName} snapSize="200px" size={gallerySize} maxSize="20%" onChange={onSampleGallerySizeChange} disabled={!showGallery}>
           <SampleGallery
             group={activeSample.group}
-            minSize={galleryMinSize}
+            style={{ minWidth: "200px" }}
             onChange={onGalleryCardClicked}
             ref={galleryRef}
             samples={sampleManifest}
