@@ -76,4 +76,4 @@ const updateURLParams = (group: string, sample: string, imodel?: string) => {
   if (window.self !== window.top) {
     window.parent.postMessage(`?${params.toString()}`, "*");
   }
-}
+};

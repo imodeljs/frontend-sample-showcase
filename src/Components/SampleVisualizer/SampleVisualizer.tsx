@@ -46,7 +46,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
     return () => {
       IModelApp.i18n.unregisterNamespace(i18nNamespace);
       IModelApp.tools.unRegister(MovePointTool.toolId);
-    }
+    };
   }, [appReady]);
 
   // Set sample UI
@@ -60,7 +60,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
         setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
       }
     } catch (error) {
-      setSampleUi(<DisplayError error={error} />)
+      setSampleUi(<DisplayError error={error} />);
     }
   }, [type, iModelName, iModelSelector]);
 
@@ -72,10 +72,9 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
         const component = module.default as React.ComponentClass<SampleProps>;
         setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
         setLoading(false);
-      })
+      });
     }
   }, [transpileResult, iModelName, iModelSelector]);
-
 
   if (!appReady) {
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
@@ -86,6 +85,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
   }
 
   return <>{sampleUi}</>;
-}
+};
 
 export default SampleVisualizer;

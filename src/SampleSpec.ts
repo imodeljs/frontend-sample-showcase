@@ -14,7 +14,7 @@ export interface SampleSpecFile {
   name: string;
   import: Promise<{ default: string }>;
   entry?: boolean;
-};
+}
 
 export interface SampleSpec {
   name: string;

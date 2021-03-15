@@ -21,8 +21,8 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const moduleActions = useModuleState()[1];
   const [activityState, activityActions] = useActivityState();
   const [entryState, entryActions] = useEntryState();
-  const [showReadme, setShowReadme] = React.useState<boolean>(true)
-  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false)
+  const [showReadme, setShowReadme] = React.useState<boolean>(true);
+  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false);
   const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
 
@@ -35,8 +35,8 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     }
     return () => {
       setEditorState(null, []);
-    }
-  }, [files, fileActions, entryActions, activityActions])
+    };
+  }, [files, fileActions, entryActions, activityActions]);
 
   React.useEffect(() => {
     moduleActions.setModules(modules);
@@ -49,7 +49,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
         setReadmeContent(fileData.default);
         setShowReadme(true);
         setReadmeLoading(false);
-      })
+      });
     }
   }, [readme, setReadmeContent, setShowReadme]);
 
@@ -91,7 +91,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
 
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
-      <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={props.onSampleClicked} />
+      <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={props.onSampleClicked} />;
   };
 
   return (
@@ -113,4 +113,4 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
       </SplitScreen>
     </div>
   );
-}
+};

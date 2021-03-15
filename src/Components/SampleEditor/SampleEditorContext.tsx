@@ -29,7 +29,7 @@ export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
         onTranspiled={onTranspiled}
         readme={readme} />
     </EditorEnvironmentContextProvider>
-  )
-}
+  );
+};
 
 export default SampleEditorContext;

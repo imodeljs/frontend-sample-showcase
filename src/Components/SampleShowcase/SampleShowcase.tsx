@@ -30,7 +30,6 @@ export const SampleShowcase: FunctionComponent = () => {
   const showcaseRef = React.createRef<HTMLDivElement>();
   const galleryRef = React.createRef<SampleGallery>();
 
-
   useEffect(() => {
     if (scrollTo && galleryRef.current) {
       galleryRef.current.scrollToActiveSample();
@@ -126,5 +125,5 @@ export const SampleShowcase: FunctionComponent = () => {
         </Pane>
       </SplitScreen>
     </div>
-  )
-}
+  );
+};

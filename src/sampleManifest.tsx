@@ -67,7 +67,6 @@ import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-samp
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 
-
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
