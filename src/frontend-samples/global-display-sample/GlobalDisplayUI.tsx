@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { BackgroundMapType } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
@@ -53,8 +53,14 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
   };
 
   private readonly travelToDestination = async () => {
-    if (this.state.viewport)
-      GlobalDisplayApp.travelTo(this.state.viewport, this.state.destination);
+    if (!this.state.viewport)
+      return;
+
+    const locationFound = await GlobalDisplayApp.travelTo(this.state.viewport, this.state.destination);
+    if (!locationFound) {
+      const message = `Sorry, "${this.state.destination}" isn't recognized as a location.`;
+      IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Warning, message));
+    }
   };
 
   // A view of Honolulu.
@@ -177,7 +183,7 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
   }
 
   public render() {
-    const instructions = `Type in the name of a location (e.g., "Mount Everest", "Sydney Opera House", your own address, etc), then click the button to travel there.`;
+    const instructions = `Type in the name of a location (e.g., "Mount Everest", "White House", your own address, etc), then click the button to travel there.`;
     return (
       <>
         <ControlPane instructions={instructions} iModelSelector={this.props.iModelSelector} controls={this.getControls()} />
