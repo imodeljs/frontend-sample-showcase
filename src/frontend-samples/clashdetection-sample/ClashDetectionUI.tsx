@@ -81,7 +81,7 @@ export default class ClashDetectionUI extends React.Component<{
     } else {
       this.setState({ showDecorator: false });
     }
-  }
+  };
 
   /** Called when the user changes the applyZoom toggle. */
   private _onChangeApplyZoom = (checked: boolean) => {
@@ -90,7 +90,7 @@ export default class ClashDetectionUI extends React.Component<{
     } else {
       applyZoom = false;
     }
-  }
+  };
 
   /** This callback will be executed by SandboxViewport to initialize the viewstate */
   public static async getIsoView(imodel: IModelConnection): Promise<ViewState> {
@@ -117,7 +117,7 @@ export default class ClashDetectionUI extends React.Component<{
         ClashDetectionApp.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
       }
     });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {

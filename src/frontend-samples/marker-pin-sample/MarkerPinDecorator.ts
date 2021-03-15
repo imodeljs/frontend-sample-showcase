@@ -134,7 +134,7 @@ class SamplePinMarker extends Marker {
   /** This method will be called when the user clicks on the entry in the popup menu */
   private _removeMarkerCallback = (_entry: PopupMenuEntry) => {
     this._markerSet.removeMarker(this);
-  }
+  };
 
   /** This method will be called when the user clicks on the entry in the popup menu */
   private _centerMarkerCallback = (_entry: PopupMenuEntry) => {
@@ -149,7 +149,7 @@ class SamplePinMarker extends Marker {
       vp.zoom(this.worldLocation, 1.0, { animateFrustumChange: true });
     }
   }
-}
+};
 
 /** Marker to show as a stand-in for a cluster of overlapping markers. */
 class SampleClusterMarker extends Marker {

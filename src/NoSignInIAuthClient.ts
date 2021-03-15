@@ -95,6 +95,6 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
       }, (1000 * 60 * 55));
     }
 
-    return this._devAccessToken!;
+    return this._devAccessToken;
   }
 }

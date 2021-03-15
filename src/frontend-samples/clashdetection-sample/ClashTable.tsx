@@ -56,7 +56,7 @@ export default class ClashTable extends React.PureComponent<Props> {
       });
     }
     return dataProvider;
-  }
+  };
 
   // bonus: zooming into and highlighting element when row is selected.
   private _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
@@ -72,7 +72,7 @@ export default class ClashTable extends React.PureComponent<Props> {
     ClashDetectionApp.visualizeClash(elementIds[0], elementIds[1]);
 
     return Promise.resolve(true);
-  }
+  };
 
   public render() {
     return (

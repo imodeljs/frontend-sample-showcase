@@ -7,8 +7,7 @@ import "common/samples-common.scss";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
 import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
-import { Point3d, Range3d } from "@bentley/geometry-core";
-import { Id64String } from "@bentley/bentleyjs-core";
+import { Point3d } from "@bentley/geometry-core";
 import { IModelQuery } from "@bentley/imodelhub-client";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { applyZoom } from "./ClashDetectionUI";
@@ -134,9 +133,9 @@ export default class ClashDetectionApp {
 
   public static visualizeClashCallback = (clashData: any) => {
     ClashDetectionApp.visualizeClash(clashData.elementAId, clashData.elementBId);
-  }
+  };
 
-  public static visualizeClash = (elementAId: string, elementBId: string) => {
+  public static visualizeClash(elementAId: string, elementBId: string) {
     if (!IModelApp.viewManager.selectedView)
       return;
 
