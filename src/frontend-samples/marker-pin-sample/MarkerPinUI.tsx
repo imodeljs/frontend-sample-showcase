@@ -101,7 +101,7 @@ export default class MarkerPinsUI extends React.Component<{
       markersData.push({ point });
     }
     this.setState({ markersData });
-  }
+  };
 
   /** Called when the user changes the showMarkers toggle. */
   private _onChangeShowMarkers = (checked: boolean) => {
@@ -110,7 +110,7 @@ export default class MarkerPinsUI extends React.Component<{
     } else {
       this.setState({ showDecorator: false });
     }
-  }
+  };
 
   /** A static array of pin images. */
   private static getManualPinSelections(): ManualPinSelection[] {
@@ -129,19 +129,19 @@ export default class MarkerPinsUI extends React.Component<{
   private _onManualPinChange = (name: string) => {
     const manualPin = MarkerPinsUI.getManualPinSelections().find((entry: ManualPinSelection) => entry.name === name)!;
     this.setState({ manualPin });
-  }
+  };
 
   /** This callback will be executed by the PlaceMarkerTool when it is time to create a new marker */
   private _manuallyAddMarker = (point: Point3d) => {
     MarkerPinApp.addMarkerPoint(point, MarkerPinApp._images.get(this.state.manualPin.image)!);
-  }
+  };
 
   /** This callback will be executed when the user clicks the UI button.  It will start the tool which
    * handles further user input.
    */
   private _onStartPlaceMarkerTool = () => {
     IModelApp.tools.run(PlaceMarkerTool.toolId, this._manuallyAddMarker);
-  }
+  };
 
   /** This callback will be executed by SandboxViewport to initialize the viewstate */
   public static async getTopView(imodel: IModelConnection): Promise<ViewState> {
@@ -171,7 +171,7 @@ export default class MarkerPinsUI extends React.Component<{
 
       this.setState({ imodel, viewport, range, height });
     });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {

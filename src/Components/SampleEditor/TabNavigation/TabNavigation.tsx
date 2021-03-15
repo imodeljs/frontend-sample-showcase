@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { Component } from "react";
 import { RunCodeButton, TabNavigation as TabNav, TabNavigationAction } from "@bentley/monaco-editor";
-import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient"
+import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient";
 
 export interface TabNavigationProps {
   showReadme: boolean;
@@ -21,7 +21,7 @@ export class TabNavigation extends Component<TabNavigationProps, TabNavigationSt
 
   constructor(props: TabNavigationProps) {
     super(props);
-    this.state = {}
+    this.state = {};
   }
 
   public componentDidUpdate(_prevProps: TabNavigationProps, prevState: TabNavigationState) {
@@ -32,15 +32,15 @@ export class TabNavigation extends Component<TabNavigationProps, TabNavigationSt
 
   private _onRunStarted = () => {
     this.setState({ error: undefined, result: undefined });
-  }
+  };
 
   private _onBundleError = (error: Error) => {
     this.setState({ error, result: undefined });
-  }
+  };
 
   private _onRunCompleted = (blob: string) => {
     this.setState({ error: undefined, result: blob });
-  }
+  };
 
   public render() {
     const executable = FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor);
@@ -51,6 +51,6 @@ export class TabNavigation extends Component<TabNavigationProps, TabNavigationSt
         </TabNavigationAction>
         {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={this._onRunStarted} onBundleError={this._onBundleError} onRunCompleted={this._onRunCompleted} buildOnRender={false} />}
       </TabNav>
-    )
+    );
   }
 }

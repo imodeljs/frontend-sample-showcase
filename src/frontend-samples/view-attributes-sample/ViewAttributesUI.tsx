@@ -79,7 +79,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
     ViewAttributesApp.setRenderMode(this.state.vp, renderMode);
     this.updateState();
-  }
+  };
 
   // Create the react components for the render mode row.
   private createRenderModePicker(label: string, info: string) {
@@ -99,7 +99,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       return;
 
     ViewAttributesApp.setSkyboxOnOff(this.state.vp, checked);
-  }
+  };
 
   // Create the react components for the skybox toggle row.
   private createSkyboxToggle(label: string, info: string) {
@@ -113,7 +113,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       return;
 
     ViewAttributesApp.setCameraOnOff(this.state.vp, checked);
-  }
+  };
 
   // Create the react components for the camera toggle row.
   private createCameraToggle(label: string, info: string) {
@@ -128,7 +128,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
     ViewAttributesApp.setViewFlag(this.state.vp, flag, checked);
     this.updateState();
-  }
+  };
 
   // Create the react components for a view flag row.
   private createViewFlagToggle(flag: ViewFlag, label: string, info: string) {
@@ -186,13 +186,13 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       ViewAttributesApp.setBackgroundTransparency(vp, 0.01);
       this.setState({ vp, attrValues });
     });
-  }
+  };
 
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
     viewState.viewFlags.renderMode = RenderMode.Wireframe;
     return viewState;
-  }
+  };
 
   /** The sample's render method */
   public render() {

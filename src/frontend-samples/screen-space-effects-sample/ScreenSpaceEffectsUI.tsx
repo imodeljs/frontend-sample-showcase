@@ -10,7 +10,7 @@ import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import { Slider, Toggle } from "@bentley/ui-core";
 import { cloneEffectsConfig, EffectsConfig, equalEffectsConfigs, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
-import ScreenSpaceEffectsApp from "./ScreenSpaceEffectsApp"
+import ScreenSpaceEffectsApp from "./ScreenSpaceEffectsApp";
 
 interface UIState {
   enableSaturation: boolean;
@@ -80,11 +80,11 @@ export default class ScreenSpaceEffectsUI extends React.Component<UIProps, UISta
         lensAngle,
       });
     });
-  }
+  };
 
   private readonly _onUpdateLensAngle = (values: readonly number[]) => {
     this.setState({ lensAngle: values[0] });
-  }
+  };
 
   public componentDidUpdate(_prevProp: UIProps, prevState: UIState) {
     const viewport = this.state.viewport;

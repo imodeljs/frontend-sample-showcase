@@ -34,7 +34,7 @@ export default class IotAlertApp {
       return;
     }
     await vp.zoomToElements(zoomElementId, { ...viewChangeOpts });
-  }
+  };
 }
 
 export class BlinkingEffect {
@@ -64,7 +64,7 @@ export class BlinkingEffect {
         clearInterval(timer);
       }
     }, 2000);
-  }
+  };
 
   public static stopBlinking(ids: Set<Id64String>) {
     BlinkingEffect._ids.clear();

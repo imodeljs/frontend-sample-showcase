@@ -17,7 +17,6 @@ export default class SwipingViewportApp {
   private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
 
-
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
     if (undefined !== SwipingViewportApp._viewport && undefined !== SwipingViewportApp._provider) {
