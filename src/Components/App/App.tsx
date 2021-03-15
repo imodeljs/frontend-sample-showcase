@@ -10,4 +10,4 @@ export const App: FunctionComponent = () => {
   return (
     <SampleShowcase />
   );
-}
+};
