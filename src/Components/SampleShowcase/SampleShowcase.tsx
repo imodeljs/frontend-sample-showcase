@@ -57,7 +57,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private _wantScroll = false;
   private _galleryRef = React.createRef<SampleGallery>();
   private _showcaseRef = React.createRef<HTMLDivElement>();
-  private _sizes: string[] = ["400px", "1", "200px"];
+  private _sizes: string[] = ["374px", "1", "150px"];
 
   constructor(props?: any) {
     super(props);
@@ -257,11 +257,21 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   };
 
   private _onEditorButtonClick = () => {
-    this.setState((prevState) => ({ showEditor: !prevState.showEditor }));
+    this.setState((prevState) => {
+      if (!prevState.showEditor) {
+        this._sizes[0] = "374px";
+      }
+      return { showEditor: !prevState.showEditor };
+    });
   };
 
   private _onGalleryButtonClick = () => {
-    this.setState((prevState) => ({ showGallery: !prevState.showGallery }));
+    this.setState((prevState) => {
+      if (!prevState.showGallery) {
+        this._sizes[2] = "200px";
+      }
+      return { showGallery: !prevState.showGallery };
+    });
   };
 
   private _onSampleTranspiled = async (blob: string) => {
@@ -281,9 +291,9 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   };
 
   private _onEditorSizeChange = (sizePx: number) => {
-    if (sizePx < 400 && this.state.showEditor) {
+    if (sizePx < 374 && this.state.showEditor) {
       this.setState({ showEditor: false });
-    } else if (sizePx >= 400 && !this.state.showEditor) {
+    } else if (sizePx >= 374 && !this.state.showEditor) {
       this.setState({ showEditor: true });
     }
   };
@@ -323,10 +333,10 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
     return (
       <div className="showcase" ref={this._showcaseRef}>
         <SplitScreen split="vertical" onResizeStart={this._onDragStarted} onResizeEnd={this._onDragFinished} onChange={this.onChange}>
-          <Pane className={editorClassName} snapSize={"400px"} disabled={!showEditor} size={showEditor ? "400px" : "0"} onChange={this._onEditorSizeChange}>
+          <Pane className={editorClassName} snapSize={"374px"} disabled={!showEditor} size={showEditor ? "374px" : "0"} onChange={this._onEditorSizeChange}>
             <SampleEditor style={{ minWidth: editorMinSize }} files={files} readme={readme} onTranspiled={this._onSampleTranspiled} onCloseClick={this._onEditorButtonClick} onSampleClicked={this._onGalleryCardClicked} />
           </Pane>
-          <Pane className="preview" minSize={"500px"}>
+          <Pane className="preview" minSize={"450px"}>
             {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
             {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={this._onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
             <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
@@ -337,7 +347,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
             {!showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={this._onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
             {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={this._onGalleryButtonClick}><span className="icon icon-chevron-right"></span></Button>}
           </Pane>
-          <Pane className={gallaryClassName} snapSize={"200px"} maxSize={"20%"} disabled={!showGallery} size={showGallery ? "200px" : "0"} onChange={this._onSampleGallerySizeChange}>
+          <Pane className={gallaryClassName} snapSize={"200px"} maxSize={"250px"} disabled={!showGallery} size={showGallery ? "200px" : "0"} onChange={this._onSampleGallerySizeChange}>
             <SampleGallery style={{ minWidth: galleryMinSize }} ref={this._galleryRef} samples={this._samples} group={this.state.activeSampleGroup} selected={this.state.activeSampleName} onChange={this._onGalleryCardClicked} />
           </Pane>
         </SplitScreen>

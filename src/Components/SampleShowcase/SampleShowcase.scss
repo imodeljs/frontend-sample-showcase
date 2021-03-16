@@ -129,8 +129,8 @@
   max-height: 0;
 }
 
-@media (max-width: 1000px) {
-  .show-gallery-button {
+@media (max-width: 768px) {
+  .editor-pane {
     display: none;
   }
 
