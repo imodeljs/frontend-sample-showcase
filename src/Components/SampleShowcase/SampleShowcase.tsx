@@ -268,7 +268,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
   private _onGalleryButtonClick = () => {
     this.setState((prevState) => {
       if (!prevState.showGallery) {
-        this._sizes[2] = "150px";
+        this._sizes[2] = "200px";
       }
       return { showGallery: !prevState.showGallery };
     });
