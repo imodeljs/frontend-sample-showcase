@@ -24,8 +24,6 @@ export default class ClashDetectionApis {
       method: "GET",
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         Prefer: "return=representation",
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString(IncludePrefix.Yes),
@@ -52,8 +50,6 @@ export default class ClashDetectionApis {
     const options = {
       method: "GET",
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Prefer: "return=representation",
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -83,8 +79,6 @@ export default class ClashDetectionApis {
     const options = {
       method: "GET",
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
@@ -136,8 +130,6 @@ export default class ClashDetectionApis {
     const options = {
       method: "POST",
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: "application/vnd.bentley.itwin-platform-technology-preview+json",
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
