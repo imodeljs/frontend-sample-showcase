@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { BackgroundMapType } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
