@@ -9,7 +9,7 @@ import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideTyp
 import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
 import { Point3d } from "@bentley/geometry-core";
 import { IModelQuery } from "@bentley/imodelhub-client";
-import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
+import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import { applyZoom } from "./ClashReviewUI";
 import { jsonData } from "./ClashDetectionJsonData";
 import ClashDetectionApis from "./ClashDetectionApis";
