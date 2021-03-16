@@ -18,6 +18,7 @@ export function getClashReviewSpec(): SampleSpec {
       { name: "ClashDetectionApis.ts", import: import("!!raw-loader!./ClashDetectionApis.ts") },
       { name: "ClashTable.tsx", import: import("!!raw-loader!./ClashTable.tsx") },
       { name: "MarkerPinDecorator.ts", import: import("!!raw-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts") },
+      { name: "PopupMenu.tsx", import: import("!!raw-loader!frontend-samples/marker-pin-sample/PopupMenu.tsx") },
       { name: "ClashDetectionJsonData.ts", import: import("!!raw-loader!./ClashDetectionJsonData.ts") },
       { name: "ClashReview.scss", import: import("!!raw-loader!./ClashReview.scss") },
     ],
