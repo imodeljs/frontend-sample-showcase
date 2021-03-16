@@ -13,8 +13,8 @@ export function getClashReviewSpec(): SampleSpec {
     image: "clashreview.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
     files: [
-      { name: "ClashReviewApp.tsx", import: import("!!raw-loader!./ClashReviewApp.tsx"), entry: true },
-      { name: "ClashReviewUI.tsx", import: import("!!raw-loader!./ClashReviewUI.tsx") },
+      { name: "ClashReviewApp.tsx", import: import("!!raw-loader!./ClashReviewApp.tsx") },
+      { name: "ClashReviewUI.tsx", import: import("!!raw-loader!./ClashReviewUI.tsx"), entry: true },
       { name: "ClashDetectionApis.ts", import: import("!!raw-loader!./ClashDetectionApis.ts") },
       { name: "ClashTable.tsx", import: import("!!raw-loader!./ClashTable.tsx") },
       { name: "MarkerPinDecorator.ts", import: import("!!raw-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts") },

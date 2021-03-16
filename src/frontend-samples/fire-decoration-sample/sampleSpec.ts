@@ -14,8 +14,8 @@ export function getParticleFireSampleSpec(): SampleSpec {
     customModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: { name: "README.md", import: import("!!raw-loader!./README.md") },
     files: [
-      { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp"), entry: true },
-      { name: "FireDecorationUI.tsx", import: import("!!raw-loader!./FireDecorationUI") },
+      { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp") },
+      { name: "FireDecorationUI.tsx", import: import("!!raw-loader!./FireDecorationUI"), entry: true },
       { name: "FireDecorator.ts", import: import("!!raw-loader!./FireDecorator") },
       { name: "PlacementTool.ts", import: import("!!raw-loader!./PlacementTool") },
     ],
