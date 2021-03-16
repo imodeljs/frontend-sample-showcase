@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { BackgroundMapType } from "@bentley/imodeljs-common";
-import { IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
@@ -64,9 +64,9 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
   };
 
   // A view of Honolulu.
-  private readonly getInitialView = async (imodel: IModelConnection ) => {
+  private readonly getInitialView = async (imodel: IModelConnection) => {
     const viewDefinitionProps = {
-      angles: {pitch: 36.514347, roll: -152.059851, yaw: -7.099313},
+      angles: { pitch: 36.514347, roll: -152.059851, yaw: -7.099313 },
       camera: {
         eye: [-244543.511666, -6035326.371241, -4314115.010887],
         focusDist: 3784.058586,
@@ -75,7 +75,7 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
       cameraOn: true,
       categorySelectorId: "0x825",
       classFullName: "BisCore:SpatialViewDefinition",
-      code: {scope: "0x28", spec: "0x1c", value: ""},
+      code: { scope: "0x28", spec: "0x1c", value: "" },
       description: "",
       displayStyleId: "0x824",
       extents: [3208.88177, 2815.57525, 3784.058586],
@@ -88,14 +88,14 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
 
     const displayStyleProps = {
       classFullName: "BisCore:DisplayStyle3d",
-      code: {scope: "0x28", spec: "0xa", value: ""},
+      code: { scope: "0x28", spec: "0xa", value: "" },
       id: "0x824",
       model: "0x28",
       jsonProperties: {
         styles: {
           backgroundMap: {
             applyTerrain: true,
-            terrainSettings: {heightOriginMode: 0},
+            terrainSettings: { heightOriginMode: 0 },
           },
           environment: {
             ground: {
@@ -125,13 +125,13 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
       categorySelectorProps: {
         categories: [],
         classFullName: "BisCore:CategorySelector",
-        code: {scope: "0x28", spec: "0x8", value: ""},
+        code: { scope: "0x28", spec: "0x8", value: "" },
         id: "0x825",
         model: "0x28",
       },
       modelSelectorProps: {
         classFullName: "BisCore:ModelSelector",
-        code: {scope: "0x28", spec: "0x11", value: ""},
+        code: { scope: "0x28", spec: "0x11", value: "" },
         id: "0x823",
         model: "0x28",
         models: [],
@@ -173,7 +173,7 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
         <span title={"Display building meshes from Open Street Map"}>Buildings</span>
         <Toggle isOn={this.state.buildings} onChange={(buildings) => this.setState({ buildings })} />
         <span title={"Display the edges of the building meshes"}>Building Edges</span>
-        <Toggle isOn={this.state.buildingEdges} onChange={(buildingEdges) => this.setState({ buildingEdges})} disabled={!this.state.buildings} />
+        <Toggle isOn={this.state.buildingEdges} onChange={(buildingEdges) => this.setState({ buildingEdges })} disabled={!this.state.buildings} />
         <span title={"Type a place name and press enter to travel there"}>Destination</span>
         <Input onChange={(e) => this.setState({ destination: e.currentTarget.value })} />
         <span />

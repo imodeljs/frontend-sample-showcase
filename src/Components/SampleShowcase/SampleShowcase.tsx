@@ -10,6 +10,7 @@ import "common/samples-common.scss";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from "common/IModelSelector/IModelSelector";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
+import { MessageRenderer } from "@bentley/ui-framework";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { IModelApp } from "@bentley/imodeljs-frontend";
@@ -332,6 +333,7 @@ export class SampleShowcase extends React.Component<{}, ShowcaseState> {
             <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
               <ErrorBoundary>
                 {this.state.sampleUI || null}
+                <MessageRenderer />
               </ErrorBoundary>
             </div>
             {!showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={this._onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
