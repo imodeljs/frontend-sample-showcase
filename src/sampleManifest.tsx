@@ -25,7 +25,7 @@ import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sam
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
-import { getClashReviewSpec } from "./frontend-samples/clashreview-sample/sampleSpec";
+import { getClashReviewSpec } from "./frontend-samples/clash-review-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
 import { getBadgeSpec } from "./frontend-samples/component-gallery/badge-sample/sampleSpec";
