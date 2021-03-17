@@ -11,6 +11,18 @@ import {
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
 export class ViewSetup {
+  /** Queries for and loads the default view for an iModel. */
+  public static getDefaultView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewId = await ViewSetup.getFirstViewDefinitionId(imodel);
+
+    // Load the view state using the viewSpec's ID
+    const viewState = await imodel.views.load(viewId);
+
+    // Making some improvements to the default views.
+    await ViewSetup.overrideView(imodel, viewState);
+
+    return viewState;
+  };
 
   /** Pick the first available spatial view definition in the imodel */
   private static async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
@@ -32,6 +44,7 @@ export class ViewSetup {
     throw new Error("No valid view definitions in imodel");
   }
 
+  /** Returns the aspect ration of the container the view will be created in. */
   public static getAspectRatio(): number | undefined {
     const viewDiv = document.getElementById("sample-container");
 
@@ -41,12 +54,8 @@ export class ViewSetup {
     return viewDiv.clientWidth / viewDiv.clientHeight;
   }
 
-  public static getDefaultView = async (imodel: IModelConnection): Promise<ViewState> => {
-    const viewId = await ViewSetup.getFirstViewDefinitionId(imodel);
-
-    // Load the view state using the viewSpec's ID
-    const viewState = await imodel.views.load(viewId);
-
+  /** Makes ascetic changes to the default view */
+  private static async overrideView(imodel: IModelConnection, viewState: ViewState) {
     const aspect = ViewSetup.getAspectRatio();
     if (undefined !== aspect) {
       const extents = viewState.getExtents();
@@ -83,10 +92,9 @@ export class ViewSetup {
     const hiddenCategories = await ViewSetup.getHiddenCategories(imodel);
     if (hiddenCategories)
       viewState.categorySelector.dropCategories(hiddenCategories);
+  }
 
-    return viewState;
-  };
-
+  /** Queries for categories that are unnecessary in the context of the of the sample showcase. */
   private static getHiddenCategories = async (imodel: IModelConnection): Promise<Id64Array | undefined> => {
     if (imodel.name !== "house bim upload")
       return undefined;
