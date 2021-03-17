@@ -96,13 +96,19 @@ export class ViewSetup {
 
   /** Queries for categories that are unnecessary in the context of the of the sample showcase. */
   private static getHiddenCategories = async (imodel: IModelConnection): Promise<Id64Array | undefined> => {
-    if (imodel.name !== "house bim upload")
-      return undefined;
-
-    // The callout graphics in the house model are ugly - don't display them.
     const ids: Id64String[] = [];
-    for await (const row of imodel.query("SELECT ECInstanceId FROM bis.Category WHERE CodeValue='Callouts'"))
-      ids.push(row.id);
+    const addIdsByCategory = async (...categoryCodes: string[]) => {
+      const selectInCategories = `SELECT ECInstanceId FROM bis.Category WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
+      for await (const row of imodel.query(selectInCategories))
+        ids.push(row.id);
+    }
+    if (imodel.name === "house bim upload")
+      // The callout graphics in the house model are ugly - don't display them.
+      await addIdsByCategory("Callouts");
+
+    if (imodel.name === "Metrostation2")
+      // There is lots of coincident geometry that causes z-fighting. Removes the more visible instances.
+      await addIdsByCategory("A-WALL-LINE", "A-FLOR-OTLN");
 
     return ids;
   };
