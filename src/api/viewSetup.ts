@@ -56,8 +56,10 @@ export class ViewSetup {
       viewState.setOrigin(origin);
     }
 
-    viewState.viewFlags.shadows = false;
-    viewState.viewFlags.grid = false;
+    const viewFlags = viewState.viewFlags.clone();
+    viewFlags.shadows = false;
+    viewFlags.grid = false;
+    viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
       const viewState3d = viewState;
