@@ -64,7 +64,7 @@ export const default2DUiConfig: ItwinViewerUi = {
       isolateElements: false,
       hideElements: false,
       emphasizeElements: false,
-    }
+    },
   },
   navigationTools: {
     hideDefaultHorizontalItems: false,
