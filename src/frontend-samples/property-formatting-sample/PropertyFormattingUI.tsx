@@ -2,9 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
+import * as React from "react";
 import "../../common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
@@ -38,7 +37,7 @@ interface PropertyFormattingState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
+export default class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
   constructor(props?: any) {
     super(props);
     this.state = {

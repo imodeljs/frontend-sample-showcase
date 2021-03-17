@@ -6,17 +6,17 @@
 import { SampleIModels } from "common/IModelSelector/IModelSelector";
 import { SampleSpec } from "SampleSpec";
 
-export function getViewClipSpec(): SampleSpec {
+export function getCrossProbingSpec(): SampleSpec {
   return ({
-    name: "view-clip-sample",
-    label: "View Clipping",
-    image: "view-clip-thumbnail.png",
+    name: "cross-probing-sample",
+    label: "Cross-Probing",
+    image: "cross-probing-thumbnail.png",
+    customModelList: [SampleIModels.BayTown],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
-      { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
+      { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI"), entry: true },
+      { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp") },
     ],
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
-    type: "ViewClipUI.tsx",
+    type: "CrossProbingUI.tsx",
   });
 }

@@ -3,8 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import BasicTreeUI from "./BasicTreeUI";
+import { SampleSpec } from "SampleSpec";
 
 export function getBasicTreeSpec(): SampleSpec {
   return ({
@@ -12,11 +11,11 @@ export function getBasicTreeSpec(): SampleSpec {
     label: "Basic Tree",
     image: "basic-tree-thumbnail.png",
     customModelList: [],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
+    readme: async () => import("!!raw-loader!./readme.md"),
+    files: () => [
       { name: "BasicTreeApp.tsx", import: import("!!raw-loader!./BasicTreeApp") },
       { name: "BasicTreeUI.tsx", import: import("!!raw-loader!./BasicTreeUI"), entry: true },
     ],
-    sampleClass: BasicTreeUI,
+    type: "BasicTreeUI.tsx",
   });
 }
