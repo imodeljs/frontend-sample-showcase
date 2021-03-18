@@ -101,6 +101,10 @@
       "import": "@bentley/webgl-compatibility"
     },
     {
+      "name": "@bentley/hypermodeling-frontend",
+      "import": "@bentley/hypermodeling-frontend"
+    },
+    {
       "name": "NoSignInIAuthClient",
       "import": "./src/NoSignInIAuthClient",
       "typedef": true
