@@ -13,8 +13,8 @@ export function getToolbarButtonSample(): SampleSpec {
     image: "toolbar-button-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi"), entry: true },
-      { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp") },
+      { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi") },
+      { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp"), entry: true },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "ToolbarButtonApp.tsx",

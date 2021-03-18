@@ -13,7 +13,7 @@ export function getViewportFrontstageSample(): SampleSpec {
     image: "viewport-frontstage-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!../../../Components/frontstages/ViewportFrontstage"), entry: true },
+      { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
     ],
     customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "ViewportFrontstageApp.tsx",
