@@ -12,6 +12,7 @@ export function getHyperModelingSpec(): SampleSpec {
     label: "Hyper-modeling",
     image: "hypermodeling-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
+    iTwinViewerReady: true,
     files: [
       { name: "HyperModelingUI.tsx", import: import("!!raw-loader!./HyperModelingUI"), entry: true },
       { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp") },

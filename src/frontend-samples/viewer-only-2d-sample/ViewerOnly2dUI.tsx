@@ -7,7 +7,7 @@ import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ControlsWidget } from "./ViewerOnly2dWidget";
 
-export default class ViewportOnly2dApp extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
+export default class ViewportOnly2dUI extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
 
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
