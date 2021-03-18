@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";

@@ -19,6 +19,7 @@ export function getPropertyFormattingSpec(): SampleSpec {
       { name: "approach-1-UI.tsx", import: import("!!raw-loader!./approach-1-UI") },
       { name: "approach-2-UI.tsx", import: import("!!raw-loader!./approach-2-UI") },
       { name: "approach-3-UI.tsx", import: import("!!raw-loader!./approach-3-UI") },
+      { name: "PropertyFormatting.scss", import: import("!!raw-loader!./PropertyFormatting.scss") },
     ],
     type: "PropertyFormattingUI.tsx",
   });
