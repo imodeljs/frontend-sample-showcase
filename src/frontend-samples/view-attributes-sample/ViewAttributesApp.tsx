@@ -46,6 +46,33 @@ export default class ViewAttributesApp {
     };
   }
 
+  public static setAttrValues(vp: Viewport, attrValues: AttrValues) {
+    const currAttrValues = this.getAttrValues(vp);
+
+    if (currAttrValues.renderMode !== attrValues.renderMode)
+      ViewAttributesApp.setRenderMode(vp, attrValues.renderMode);
+    if (currAttrValues.acs !== attrValues.acs)
+      ViewAttributesApp.setViewFlag(vp, ViewFlag.ACS, attrValues.acs);
+    if (currAttrValues.backgroundMap !== attrValues.backgroundMap)
+      ViewAttributesApp.setViewFlag(vp, ViewFlag.BackgroundMap, attrValues.backgroundMap);
+    if (attrValues.backgroundTransparency && currAttrValues.backgroundTransparency !== attrValues.backgroundTransparency)
+      ViewAttributesApp.setBackgroundTransparency(vp, attrValues.backgroundTransparency);
+    if (currAttrValues.cameraOn !== attrValues.cameraOn)
+      ViewAttributesApp.setCameraOnOff(vp, attrValues.cameraOn);
+    if (currAttrValues.grid !== attrValues.grid)
+      ViewAttributesApp.setViewFlag(vp, ViewFlag.Grid, attrValues.grid);
+    if (currAttrValues.hiddenEdges !== attrValues.hiddenEdges)
+      ViewAttributesApp.setViewFlag(vp, ViewFlag.HiddenEdges, attrValues.hiddenEdges);
+    if (currAttrValues.monochrome !== attrValues.monochrome)
+      ViewAttributesApp.setViewFlag(vp, ViewFlag.Monochrome, attrValues.monochrome);
+    if (currAttrValues.shadows !== attrValues.shadows)
+      ViewAttributesApp.setViewFlag(vp, ViewFlag.Shadows, attrValues.shadows);
+    if (currAttrValues.skybox !== attrValues.skybox)
+      ViewAttributesApp.setSkyboxOnOff(vp, attrValues.skybox);
+    if (currAttrValues.visibleEdges !== attrValues.visibleEdges)
+      ViewAttributesApp.setViewFlag(vp, ViewFlag.VisibleEdges, attrValues.visibleEdges);
+  }
+
   // Query flag values using the Viewport API.
   public static getViewFlag(vp: Viewport, flag: ViewFlag): boolean {
     switch (flag) {

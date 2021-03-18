@@ -11,9 +11,11 @@ export function getViewAttributesSpec(): SampleSpec {
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
     readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
+    iTwinViewerReady: true,
     files: [
       { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp") },
       { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI"), entry: true },
+      { name: "ViewAttributesWidget.tsx", import: import("!!raw-loader!./ViewAttributesWidget") },
     ],
     sampleClass: ViewAttributesUI,
   });
