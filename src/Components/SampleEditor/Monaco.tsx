@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React from "react";
-import MonacoEditor, { useModuleState } from "@bentley/monaco-editor"
+import MonacoEditor, { useModuleState } from "@bentley/monaco-editor";
 import modules from "./Modules";
 
 const MonacoMemo = () => {
