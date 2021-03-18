@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { PropertyCategory, PropertyGrid } from "@bentley/ui-components";
 import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@bentley/presentation-components";
 import { KeySet } from "@bentley/presentation-common";
