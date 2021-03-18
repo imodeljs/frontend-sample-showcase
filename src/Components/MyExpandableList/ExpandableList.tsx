@@ -13,8 +13,8 @@
 
 import "./ExpandableList.scss";
 import classnames from "classnames";
-import * as React from "react";
-import { CommonProps } from "@bentley/ui-core";
+import React from "react";
+import { CommonProps } from "@bentley/ui-core/lib/ui-core/utils/Props";
 
 /** Properties for [[ExpandableList]] component
  * @public

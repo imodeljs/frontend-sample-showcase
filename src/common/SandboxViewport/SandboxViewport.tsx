@@ -6,7 +6,7 @@ import * as React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { ViewSetup } from "../../api/viewSetup";
-import { SandboxIModelConnection } from "../SandboxIModelConnection/SandboxIModelConnection"
+import { SandboxIModelConnection } from "../SandboxIModelConnection/SandboxIModelConnection";
 
 export interface SandboxViewportProps {
   iModelName: string;
@@ -62,5 +62,5 @@ export class SandboxViewport extends React.PureComponent<SandboxViewportProps, S
   private _onIModelReady = async (imodel: IModelConnection) => {
     const viewState = (this.props.getCustomViewState) ? await this.props.getCustomViewState(imodel) : await ViewSetup.getDefaultView(imodel);
     this.setState({ imodel, viewState });
-  }
+  };
 }

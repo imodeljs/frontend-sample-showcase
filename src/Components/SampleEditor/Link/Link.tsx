@@ -2,7 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
+
+import React from "react";
 import { findSpecBySampleName } from "sampleManifest";
 
 export interface LinkProps {
@@ -50,7 +51,7 @@ export class Link extends React.Component<LinkProps> {
   };
 
   public render() {
-    const anchorProps = { ...this.props, onClick: this.onClick, target: "_blank" };
+    const anchorProps = { href: this.props.href, onClick: this.onClick, target: "_blank" };
     return (<a {...anchorProps}>{this.props.children}</a>);
   }
 }

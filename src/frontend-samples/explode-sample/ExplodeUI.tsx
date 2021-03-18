@@ -164,24 +164,24 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     this.populateObjects(iModel).then(() => {
       this.setState({ isPopulatingObjects: false });
     });
-  }
+  };
   /** Methods that support the UI control interactions. */
   private readonly onObjectChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const object = this._objects.find((o) => o.name === event.target.value);
     if (object)
       this.setState({ object });
-  }
+  };
   private readonly onZoomButton = () => {
     if (this.state.viewport)
       ExplodeApp.zoomToObject(this.state.viewport, this.state.object.name);
-  }
+  };
   private readonly onEmphasizeChanged = (checked: boolean) => {
     this.setState({ isolate: checked });
-  }
+  };
   private readonly onSliderChange = (values: readonly number[]) => {
     const value = values[0];
     this.setState({ explodeFactor: value });
-  }
+  };
   private readonly onAnimateButton = () => {
     const vp = this.state.viewport;
     if (!vp) return;
@@ -195,7 +195,7 @@ export default class ExplodeUI extends React.Component<SampleProps, ExplodeState
     const animator = this.createAnimator();
     this.setState({ isAnimated: true });
     ExplodeApp.setAnimator(vp, animator);
-  }
+  };
 
   /** A REACT method that is called when the props or state is updated (e.g. when "this.setState(...)" is called) */
   public componentDidUpdate(_prevProps: SampleProps, preState: ExplodeState) {

@@ -68,11 +68,11 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
   private _onStartSignin = async () => {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: true } }));
     await SampleBaseApp.oidcClient.signIn(new FrontendRequestContext());
-  }
+  };
 
   private _onUserStateChanged = () => {
     this.setState((prev) => ({ user: { ...prev.user, isLoading: false, isAuthorized: SampleBaseApp.oidcClient.isAuthorized } }));
-  }
+  };
 
   private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
     const requestContext: AuthorizedFrontendRequestContext = await AuthorizedFrontendRequestContext.create();

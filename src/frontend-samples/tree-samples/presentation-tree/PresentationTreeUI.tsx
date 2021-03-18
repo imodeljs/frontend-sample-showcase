@@ -18,7 +18,7 @@ export default class PresentationTreeUI extends React.Component<{ iModelName: st
     this.setState({
       iModel: imodel,
     });
-  }
+  };
 
   public render() {
     return (

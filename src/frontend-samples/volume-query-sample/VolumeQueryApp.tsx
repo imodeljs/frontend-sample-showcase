@@ -2,7 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import { EmphasizeElements, IModelApp, ScreenViewport, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@bentley/geometry-core";
 import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
@@ -58,7 +58,7 @@ export class VolumeQueryApp {
     vp.view.viewFlags.clipVolume = isClippingOn === undefined ? false : isClippingOn;
     vp.view.setViewClip(clip);
     VolumeQueryApp.addDecorators(vp);
-  }
+  };
 
   /* Method for adding decorators to the viewport */
   public static addDecorators(vp: ScreenViewport) {

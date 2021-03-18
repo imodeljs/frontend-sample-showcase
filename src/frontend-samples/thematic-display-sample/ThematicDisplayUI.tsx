@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Select, Slider, Toggle } from "@bentley/ui-core";
@@ -87,7 +87,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
       ThematicDisplayUI.init(vp);
       this.updateState();
     });
-  }
+  };
 
   /** This method should be called when the iModel is loaded to set default settings in the
    * viewport settings to enable thematic display.
@@ -168,7 +168,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
 
     ThematicDisplayApp.setThematicDisplayOnOff(vp, checked);
     this.updateState();
-  }
+  };
 
   // Handle changes to the thematic display toggle.
   private readonly _onChangeMapToggle = (checked: boolean) => {
@@ -179,7 +179,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
 
     ThematicDisplayApp.setBackgroundMap(vp, checked);
     this.updateState();
-  }
+  };
 
   // Handle changes to the display mode.
   private readonly _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -194,7 +194,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayMode(vp, displayMode);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   // Handle changes to the display mode.
   private readonly _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -209,7 +209,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayGradientColorScheme(vp, colorScheme);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   // Handle changes to the gradient mode.
   private readonly _onChangeGradientMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -224,7 +224,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayGradientMode(vp, gradientMode);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   // Handles updates to the thematic range slider
   private readonly _onUpdateRangeSlider = (values: readonly number[]) => {
@@ -239,7 +239,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayRange(vp, newRange);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {

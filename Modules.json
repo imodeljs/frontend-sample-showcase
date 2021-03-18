@@ -164,13 +164,13 @@
       "typedef": true
     },
     {
-      "name": "frontend-samples/cross-probing-sample/ViewCreator2d",
-      "import": "./src/frontend-samples/cross-probing-sample/ViewCreator2d",
+      "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "typedef": true
     },
     {
-      "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
-      "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "name": "frontend-samples/marker-pin-sample/MarkerPinDecorator",
+      "import": "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator",
       "typedef": true
     },
     {
@@ -214,6 +214,10 @@
     {
       "name": "common/samples-common.scss",
       "import": "!!raw-loader!common/samples-common.scss"
+    },
+    {
+      "name": "common/AppUi/app-ui.scss",
+      "import": "!!raw-loader!common/AppUi/app-ui.scss"
     },
     {
       "name": "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css",

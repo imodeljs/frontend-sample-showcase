@@ -19,13 +19,13 @@ export default class MarkdownViewer extends React.Component<MarkdownViewerProps>
       overrides: {
         a: { component: Link, props: { fileClicked: this.props.onFileClicked, sampleClicked: this.props.onSampleClicked } },
       },
-    }
+    };
 
     return (
       <div className="sample-editor-readme">
         <Markdown options={options}>{this.props.readme}</Markdown>
       </div>
-    )
+    );
   }
 }
 

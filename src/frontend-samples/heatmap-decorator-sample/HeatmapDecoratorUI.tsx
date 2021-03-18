@@ -6,7 +6,6 @@ import * as React from "react";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import { PointSelector } from "common/PointSelector/PointSelector";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
@@ -78,15 +77,15 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
 
   private _onPointsChanged = (points: Point3d[]) => {
     this.setState({ points });
-  }
+  };
 
   private _onChangeSpreadFactor = (values: readonly number[]) => {
     this.setState({ spreadFactor: values[0] });
-  }
+  };
 
   private _onChangeShowHeatmap = (checked: boolean) => {
     this.setState({ showDecorator: checked });
-  }
+  };
 
   /** This callback will be executed by SandboxViewport to initialize the viewstate */
   public static getTopView = async (imodel: IModelConnection): Promise<ViewState> => {
@@ -108,7 +107,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
     viewState.displayStyle.backgroundColor = ColorDef.white;
 
     return viewState;
-  }
+  };
 
   /** This callback will be executed by SandboxViewport once the iModel has been loaded */
   private onIModelReady = (imodel: IModelConnection) => {
@@ -123,7 +122,7 @@ export default class HeatmapDecoratorUI extends React.Component<HeatmapDecorator
 
       this.setState({ imodel, vp, range, height });
     });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {

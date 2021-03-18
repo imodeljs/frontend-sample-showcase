@@ -10,32 +10,31 @@ export interface ToolbarProps {
   allowRotate?: boolean;
 }
 
-
 /** Toolbar containing simple navigation tools */
 export const Toolbar: FunctionComponent<ToolbarProps> = ({ allowRotate }) => {
 
   const select = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
+    e.preventDefault();
     IModelApp.tools.run(SelectionTool.toolId);
   };
 
   const fitView = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
+    e.preventDefault();
     IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
   };
 
   const rotate = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
+    e.preventDefault();
     IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
   };
 
   const pan = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
+    e.preventDefault();
     IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
   };
 
   const zoom = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
+    e.preventDefault();
     IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
   };
 
