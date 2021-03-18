@@ -79,7 +79,7 @@ export const SampleShowcase: FunctionComponent = () => {
           iModelName={activeSample.imodel}
           onIModelChange={(imodelName) => setActiveSample(new ActiveSample(activeSample.group, activeSample.name, imodelName))} />
       </div>);
-  }, [activeSample]);
+  }, [activeSample.imodelList, activeSample.name, activeSample.group, activeSample.imodel]);
 
   const spinner = (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
 

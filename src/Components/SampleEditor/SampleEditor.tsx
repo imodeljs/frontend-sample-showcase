@@ -3,22 +3,20 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { Pane, setEditorState, SplitScreen, useActivityState, useEntryState, useFileState, useModuleState } from "@bentley/monaco-editor";
+import { Pane, setEditorState, SplitScreen, useActivityState, useEntryState, useFileState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import Drawer from "./Drawer/Drawer";
-import modules from "./Modules";
 import { EditorProps } from "./SampleEditorContext";
 import "./SampleEditor.scss";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+import MonacoEditor from "./Monaco";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 
 export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const { files, readme } = props;
   const fileActions = useFileState()[1];
-  const moduleActions = useModuleState()[1];
   const [activityState, activityActions] = useActivityState();
   const [entryState, entryActions] = useEntryState();
   const [showReadme, setShowReadme] = React.useState<boolean>(true);
@@ -37,10 +35,6 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
       setEditorState(null, []);
     };
   }, [files, fileActions, entryActions, activityActions]);
-
-  React.useEffect(() => {
-    moduleActions.setModules(modules);
-  }, [moduleActions]);
 
   React.useEffect(() => {
     if (readme) {
@@ -100,11 +94,8 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
         <Pane className="sample-editor">
           <TabNavigation onRunCompleted={props.onTranspiled} showReadme={showReadme} onShowReadme={onShowReadme} />
           <div style={{ height: "100%" }}>
-            {showReadme ? readmeViewer() :
-              <React.Suspense fallback={"Loading..."}>
-                <MonacoEditor />
-              </React.Suspense>
-            }
+            {showReadme && readmeViewer()}
+            <MonacoEditor />
           </div>
         </Pane>
         <Pane onChange={_onChange} snapSize={"200px"} minSize={drawerMinSize} maxSize={"50%"} size={drawerSize} disabled={showReadme || !displayDrawer} defaultSize={"0"}>

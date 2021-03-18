@@ -87,4 +87,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
   return <>{sampleUi}</>;
 };
 
-export default SampleVisualizer;
+export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
+  return prevProps.type === nextProps.type && prevProps.iModelName === nextProps.iModelName && prevProps.transpileResult === nextProps.transpileResult;
+});

@@ -19,6 +19,7 @@ export interface EditorProps {
 
 export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
   const { files, readme, style, onCloseClick, onTranspiled, onSampleClicked } = props;
+
   return (
     <EditorEnvironmentContextProvider>
       <SampleEditor
@@ -32,4 +33,6 @@ export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
   );
 };
 
-export default SampleEditorContext;
+export default React.memo(SampleEditorContext, (prevProps, nextProps) => {
+  return prevProps.files === nextProps.files && prevProps.readme === nextProps.readme;
+});
