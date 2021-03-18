@@ -370,7 +370,6 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
 
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
     assert(false, "Root tile has no content");
-    return undefined;
   }
 
   public async readContent(_data: TileRequest.ResponseData, _system: RenderSystem, _isCanceled: () => boolean): Promise<TileContent> {
@@ -475,7 +474,6 @@ class ElementTile extends Tile {
   /** Tile has no content and should never request any. */
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
     assert(false, "Tile has no content");
-    return undefined;
   }
 
   /** Tile has no content and should never have any to read. */
