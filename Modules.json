@@ -161,6 +161,11 @@
       "typedef": true
     },
     {
+      "name": "common/IModelSelector/IModelSelector",
+      "import": "./src/common/IModelSelector/IModelSelector",
+      "typedef": true
+    },
+    {
       "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "typedef": true
@@ -211,6 +216,10 @@
     {
       "name": "common/samples-common.scss",
       "import": "!!raw-loader!common/samples-common.scss"
+    },
+    {
+      "name": "common/AppUi/app-ui.scss",
+      "import": "!!raw-loader!common/AppUi/app-ui.scss"
     },
     {
       "name": "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css",
