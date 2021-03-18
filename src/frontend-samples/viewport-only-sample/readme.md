@@ -8,7 +8,6 @@ This is the simplest iModel.js frontend sample.  It displays a viewport and show
 
 The main purpose is to illustrate the structure we use for samples.  Specifically:
 
-* The file [ViewportOnlyApp](./ViewportOnlyApp.tsx) has the setup method which initializes the UI specific to this sample.  This file would typically also include the sample's key logic and API calls.
 * The file [ViewportOnlyUI](./ViewportOnlyUI.tsx) has the definition for the UI specific to this sample.
 
 ## Description
