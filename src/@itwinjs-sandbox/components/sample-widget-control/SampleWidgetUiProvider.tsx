@@ -27,6 +27,7 @@ export interface IModelSelectorOptions {
 
 export class SampleWidgetUiProvider implements UiItemsProvider {
   public readonly id: string = "SampleUiProvider";
+  private _initialized = false;
   private _widget?: ReactNode;
   private _iModelSelectorOptions?: IModelSelectorOptions;
   private _instructions: string;
@@ -39,7 +40,8 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
 
   public provideWidgets(stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection | undefined): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (stageId === "DefaultFrontstage" && location === StagePanelLocation.Bottom) {
+    if (stageId === "DefaultFrontstage" && location === StagePanelLocation.Bottom && !this._initialized) {
+      this._initialized = true;
       widgets.push(
         {
           id: "sampleControlsWidget",
@@ -47,6 +49,8 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
           isFloatingStateSupported: true,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => (<SampleWidgetContainer
+            frontstageId={"DefaultFrontstage"}
+            widgetId={"sampleControlsWidget"}
             instructions={this._instructions}
             iModelSelector={this._iModelSelectorOptions &&
               <IModelSelector iModelName={this._iModelSelectorOptions.iModelName} iModelNames={this._iModelSelectorOptions?.modelList} onIModelChange={this._iModelSelectorOptions.onIModelChange} />
