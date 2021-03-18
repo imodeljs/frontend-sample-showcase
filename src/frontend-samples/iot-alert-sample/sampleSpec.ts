@@ -13,8 +13,9 @@ export function getIotAlertSpec(): SampleSpec {
     image: "IoT-Alert-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "IotAlertApp.tsx", import: import("!!raw-loader!./IotAlertApp"), entry: true },
-      { name: "IotAlertUI.tsx", import: import("!!raw-loader!./IotAlertUI") },
+      { name: "IotAlertApp.tsx", import: import("!!raw-loader!./IotAlertApp") },
+      { name: "IotAlertUI.tsx", import: import("!!raw-loader!./IotAlertUI"), entry: true },
+      { name: "IotAlert.scss", import: import("!!raw-loader!./IotAlert.scss") },
     ],
     customModelList: [SampleIModels.BayTown],
     type: "IotAlertUI.tsx",
