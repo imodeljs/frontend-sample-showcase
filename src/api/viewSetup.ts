@@ -107,7 +107,7 @@ export class ViewSetup {
       await addIdsByCategory("Callouts");
 
     if (imodel.name === "Metrostation2")
-      // There is lots of coincident geometry. Removes the more visible instances.
+      // There is coincident geometry. Remove the more visible instances.
       await addIdsByCategory("A-WALL-LINE", "A-FLOR-OTLN");
 
     return ids;
