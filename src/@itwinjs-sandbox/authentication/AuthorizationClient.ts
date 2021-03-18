@@ -67,11 +67,9 @@ export class AuthorizationClient implements FrontendAuthorizationClient {
     const response = await fetch(userURL);
     const body = await response.json();
     const tokenJson = {
-      ...await body,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _userInfo: { id: "MockId" },
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _tokenString: body._jwt,
+      startsAt: body._startsAt,
+      expiresAt: body._expiresAt,
+      tokenString: body._jwt,
     };
     this._accessToken = AccessToken.fromJson(tokenJson);
 
