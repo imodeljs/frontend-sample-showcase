@@ -84,7 +84,7 @@ Since I would like this file to be editable, my SampleSpec should reflect it:
 
 ```ts
 import MySampleApp from "./MySampleApp";
-export function getMySampleAppSampleSpec(): SampleMetadata {
+export function getMySampleAppSampleSpec(): SampleSpec {
   return ({
     [...]
     files: [
