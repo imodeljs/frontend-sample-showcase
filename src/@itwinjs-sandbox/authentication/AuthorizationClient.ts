@@ -26,7 +26,7 @@ export class AuthorizationClient implements FrontendAuthorizationClient {
     await authClient.generateTokenString(userURL, new ClientRequestContext());
     await authClient.signInSilent(new ClientRequestContext());
 
-    this._oidcClient = authClient
+    this._oidcClient = authClient;
   }
 
   public async signInSilent(requestContext?: ClientRequestContext): Promise<void> {

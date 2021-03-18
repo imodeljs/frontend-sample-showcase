@@ -68,7 +68,7 @@ export class ViewSetup {
     }
 
     return viewState;
-  }
+  };
 
   /** Pick the first available spatial view definition in the imodel */
   public static async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
@@ -126,5 +126,5 @@ export class ViewSetup {
     }
 
     return undefined;
-  }
+  };
 }

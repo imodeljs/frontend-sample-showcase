@@ -34,8 +34,8 @@ export class ActiveSample {
     this.group = result.group;
     this.name = result.name;
     this._spec = result.spec;
-    this.imodel = imodel && this.imodelList.includes(imodel as SampleIModels) ? imodel as SampleIModels : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
-    this.iTwinViewerReady = result.spec.iTwinViewerReady
+    this.imodel = imodel && this.imodelList.includes(imodel ) ? imodel  : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
+    this.iTwinViewerReady = result.spec.iTwinViewerReady;
     this.getFiles = result.spec.files;
     this.getReadme = result.spec.readme;
     this.type = result.spec.type || "";
@@ -76,4 +76,4 @@ const updateURLParams = (group: string, sample: string, imodel?: string) => {
   if (window.self !== window.top) {
     window.parent.postMessage(`?${params.toString()}`, "*");
   }
-}
+};

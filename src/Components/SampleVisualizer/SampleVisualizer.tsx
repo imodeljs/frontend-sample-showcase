@@ -31,15 +31,15 @@ const iModelAppShutdown = async (): Promise<void> => {
   IModelApp.tools.unRegister(MovePointTool.toolId);
   Presentation.terminate();
   return IModelApp.shutdown().catch();
-}
+};
 
 const iModelAppStartup = async (): Promise<void> => {
   return SampleBaseApp.startup()
     .then(() => {
       MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
     })
-    .catch()
-}
+    .catch();
+};
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
   const { iTwinViewerReady, type, transpileResult, iModelName, iModelSelector } = props;
   const [appReady, setAppReady] = useState(false);
@@ -50,12 +50,12 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
       iModelAppStartup()
         .finally(() => setAppReady(true));
     } else {
-      setAppReady(true)
+      setAppReady(true);
     }
     return () => {
       setAppReady(false);
-      iModelAppShutdown()
-    }
+      iModelAppShutdown();
+    };
   }, [iTwinViewerReady, transpileResult]);
 
   // Set sample UI
@@ -79,15 +79,13 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
       import( /* webpackIgnore: true */ transpileResult).then((module) => {
         const component = module.default as React.ComponentClass<SampleProps>;
         setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
-      })
+      });
     }
   }, [transpileResult, iModelName, iModelSelector]);
-
 
   if (!appReady) {
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
   }
-
 
   return <>{sampleUi}</>;
 };

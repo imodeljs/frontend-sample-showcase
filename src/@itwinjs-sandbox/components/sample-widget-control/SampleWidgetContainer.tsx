@@ -12,7 +12,6 @@ export interface SampleWidgetContainerProps {
 
 export const SampleWidgetContainer: FunctionComponent<SampleWidgetContainerProps> = ({ instructions, iModelSelector, children }) => {
 
-
   return (
     <div className="sample-widget-ui">
       {instructions && <div className="control-pane-header">

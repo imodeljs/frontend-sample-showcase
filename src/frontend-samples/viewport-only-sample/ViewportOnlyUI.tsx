@@ -13,7 +13,7 @@ export default class ViewportOnlyUI extends React.Component<{}, { iModelName?: S
       .then((info) => {
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  }
+  };
 
   constructor(props: {}) {
     super(props);
