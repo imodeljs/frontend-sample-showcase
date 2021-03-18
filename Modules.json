@@ -161,6 +161,11 @@
       "typedef": true
     },
     {
+      "name": "common/IModelSelector/IModelSelector",
+      "import": "./src/common/IModelSelector/IModelSelector",
+      "typedef": true
+    },
+    {
       "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "typedef": true
