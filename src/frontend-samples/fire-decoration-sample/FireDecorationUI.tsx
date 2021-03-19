@@ -184,7 +184,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Use the ‘Place’ button to create a new fire particle emitter. After placing, use the controls to configure the new emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
+        <ControlPane instructions="Use the 'Place' button to create a new fire particle emitter. After placing, use the controls to configure the new emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
         { /* Viewport to display the iModel */}
         <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
