@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { Component } from "react";
 import { RunCodeButton, TabNavigation as TabNav } from "@bentley/monaco-editor";
-import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient"
+import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient";
 import classNames from "classnames";
 import "./TabNavigation.scss";
 
