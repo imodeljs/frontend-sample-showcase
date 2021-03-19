@@ -76,7 +76,7 @@ For example:
 A UI component (```MyUiComponent.tsx```) may look like this:
 
 ```ts
-import { MyRequiredValue } from "./MyRequiredFile";
+import { MyVisibleFile } from "./MyVisibleFile";
 [...]
 ```
 
@@ -90,7 +90,7 @@ export function getMySampleAppSampleSpec(): SampleSpec {
     files: [
       { name: "MySampleApp.tsx", import: import("!!raw-loader!./MySampleApp"), entry: true },
       { name: "MyUiComponent.tsx", import: import("!!raw-loader!./MyUiComponent") },
-      { name: "MyRequiredFile.tsx", import: import("!!raw-loader!./MyRequiredFile") },
+      { name: "MyVisibleFile.tsx", import: import("!!raw-loader!./MyVisibleFile") },
     ],
     sampleClass: MySampleApp
   });
@@ -103,10 +103,10 @@ This should be code that you may not want users to edit or code that may be unim
 
 For example:
 
-A UI component (```MyUiComponent.tsx```) may reference a file that is located at ```src/myRequiredFile.tsx```
+A UI component (```MyUiComponent.tsx```) may reference a file that is located at ```src/MyHiddenFile.tsx```
 
 ```ts
-import { MyRequiredValue } from "MyRequiredFile";
+import { MyHiddenFile } from "MyHiddenFile";
 [...]
 ```
 
@@ -114,8 +114,8 @@ Since I would like this file to not be editable or viewable, I need to add the f
 
 ```json
 {
-  "name": "MyRequiredFile",
-  "import": "./src/MyRequiredFile",
+  "name": "MyHiddenFile",
+  "import": "./src/MyHiddenFile",
   "typedef": true
 }
 ```
