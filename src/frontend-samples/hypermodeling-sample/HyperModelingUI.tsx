@@ -14,7 +14,7 @@ export default class ViewportOnly2dUI extends React.Component<{}, { iModelName?:
       .then((info) => {
         this.setState({ iModelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  }
+  };
 
   constructor(props: any) {
     super(props);
@@ -34,8 +34,7 @@ export default class ViewportOnly2dUI extends React.Component<{}, { iModelName?:
           defaultUiConfig={default3DUiConfig}
           theme="dark"
           uiProviders={[new SampleWidgetUiProvider(
-            // TODO: This needs to be changed back to the dynamic text.
-            "The picker below shows a list of 2D models in this iModel.",
+            "Click on a marker to toggle the section or return to the 3d view.",
             <HyperModelingWidget />,
             { modelList: [SampleIModels.House], iModelName: this.state.iModelName!, onIModelChange: this._changeIModel }
           )]}

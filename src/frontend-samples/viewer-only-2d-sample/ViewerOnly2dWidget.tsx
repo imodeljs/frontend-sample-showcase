@@ -31,9 +31,9 @@ export const ControlsWidget: React.FunctionComponent = () => {
           const sheetElements = getSheetModelList(sheets)
           setTwoDState({ sheets, drawings, sheetElements, drawingElements });
           setSelected(drawingElements[0]?.key as string || undefined)
-        })
+        });
     }
-  }, [iModelConnection])
+  }, [iModelConnection]);
 
   useEffect(() => {
     if (selected) {
@@ -51,7 +51,7 @@ export const ControlsWidget: React.FunctionComponent = () => {
       drawingViews.push(<option key={`${index}drawing`} value={`${index}drawing`}>{model.name}</option>);
     });
     return drawingViews;
-  }
+  };
 
   const getSheetModelList = (models: ModelProps[]) => {
     const sheetViews: JSX.Element[] = [];
@@ -59,12 +59,12 @@ export const ControlsWidget: React.FunctionComponent = () => {
       sheetViews.push(<option key={`${index}sheet`} value={`${index}sheet`}>{model.name}</option>);
     });
     return sheetViews;
-  }
+  };
 
   /** When a model is selected in above list, get its view and switch to it.  */
   const _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelected(event.target.selectedOptions[0].value)
-  }
+  };
 
   // Display drawing and sheet options in separate sections.
   return (
@@ -84,4 +84,4 @@ export const ControlsWidget: React.FunctionComponent = () => {
       </div>
     </>
   );
-}
+};
