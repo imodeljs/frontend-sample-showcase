@@ -14,7 +14,7 @@ export default class CustomNodeLoadingTreeUI extends React.Component<{ iModelNam
     this.setState({
       iModel: imodel,
     });
-  }
+  };
 
   public render() {
     return (

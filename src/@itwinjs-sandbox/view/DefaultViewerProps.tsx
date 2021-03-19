@@ -44,7 +44,7 @@ export const default3DUiConfig: ItwinViewerUi = {
   hidePropertyGrid: true,
   hideToolSettings: true,
   hideTreeView: true,
-}
+};
 
 export const default2DUiConfig: ItwinViewerUi = {
   contentManipulationTools: {
@@ -64,7 +64,7 @@ export const default2DUiConfig: ItwinViewerUi = {
       isolateElements: false,
       hideElements: false,
       emphasizeElements: false,
-    }
+    },
   },
   navigationTools: {
     hideDefaultHorizontalItems: false,
@@ -86,4 +86,4 @@ export const default2DUiConfig: ItwinViewerUi = {
   hidePropertyGrid: true,
   hideToolSettings: true,
   hideTreeView: true,
-}
+};

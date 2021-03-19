@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider } from "@bentley/ui-abstract";
-import { SampleWidgetContainer } from "./SampleWidgetContainer"
+import { SampleWidgetContainer } from "./SampleWidgetContainer";
 import { IModelSelector } from "../imodel-selector/IModelSelector";
 
 export enum SampleIModels {

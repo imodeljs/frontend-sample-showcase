@@ -43,11 +43,11 @@ export class IModelSetup {
   }
 
   private static updateiModelParam(imodel: string) {
-    const params = new URLSearchParams(window.location.search)
+    const params = new URLSearchParams(window.location.search);
 
     if (imodel) {
       if (params.has("imodel")) {
-        params.set("imodel", imodel)
+        params.set("imodel", imodel);
       } else {
         params.append("imodel", imodel);
       }

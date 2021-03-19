@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 
 export const trainPathCoordinates = [
   {
@@ -8,7 +12,7 @@ export const trainPathCoordinates = [
     cameraPoint: { x: 170.26778701343886, y: 25.121971529863675, z: -14.22864197744207 },
     viewDirection: { x: 399.20020853601386, y: 25.007146313765436, z: -14.22864197744207 },
   },
-]
+];
 
 export const flyoverCoordinates = [
   {
@@ -19,7 +23,7 @@ export const flyoverCoordinates = [
     cameraPoint: { x: 20.894914170166096, y: 774.8868504692675, z: 30.38659261093646 },
     viewDirection: { x: 1167.5123470671867, y: 14287.928900145913, z: -4000.9401851562648 },
   },
-]
+];
 
 export const commuterViewCoordinates = [
   {
@@ -98,4 +102,4 @@ export const commuterViewCoordinates = [
     cameraPoint: { x: 85.38644285797537, y: 10.941431381738537, z: -14.339903818093948 },
     viewDirection: { x: -5.77259891891228, y: 5.3213922301327345, z: -14.339903818093948 },
   },
-]
+];

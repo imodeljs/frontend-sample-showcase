@@ -2,10 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
-import "../../common/samples-common.scss";
+import * as React from "react";
+import "common/samples-common.scss";
 import { Table } from "@bentley/ui-components";
 import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
 import { PresentationTableDataProvider } from "@bentley/presentation-components";
@@ -53,6 +52,6 @@ export class Approach2UI extends React.Component<PropertyProps, Approach2State> 
           {!dataProvider && <span>Select an element to see its properties.</span>}
         </div>
       </>
-    )
+    );
   }
 }

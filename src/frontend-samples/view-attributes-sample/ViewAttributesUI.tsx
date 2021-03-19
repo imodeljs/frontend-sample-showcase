@@ -14,7 +14,7 @@ export default class ViewAttributesUI extends React.Component<{}, { iModelName?:
       .then((info) => {
         this.setState({ iModelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  }
+  };
 
   constructor(props: any) {
     super(props);

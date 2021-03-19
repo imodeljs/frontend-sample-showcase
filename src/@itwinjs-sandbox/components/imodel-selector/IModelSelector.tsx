@@ -23,7 +23,7 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
     const name = iModelList[index];
 
     onIModelChange(name);
-  }
+  };
 
   const value = iModelList.findIndex((v: string) => v === currentiModel);
 
@@ -38,4 +38,4 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
         options={Object.fromEntries(iModelList.map((name, index) => [index, name]))} />
     </div>
   );
-}
+};

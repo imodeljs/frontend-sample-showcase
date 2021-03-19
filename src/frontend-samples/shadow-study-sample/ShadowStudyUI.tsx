@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
@@ -56,7 +56,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
       dateLabel.textContent = this.convertMinToTime();
 
     ShadowStudyApp.updateSunTime(date.getTime());
-  }
+  };
 
   // Update the state date with the newly selected day of the year
   private _updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +97,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
       dateLabel.textContent = event.target.value;
 
     ShadowStudyApp.updateSunTime(newDate.getTime());
-  }
+  };
 
   // Formats the time from the state date into 24 hour time
   private convertMinToTime() {
@@ -128,7 +128,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     viewState.viewFlags.shadows = true;
 
     return viewState;
-  }
+  };
 
   public getControls() {
     return (

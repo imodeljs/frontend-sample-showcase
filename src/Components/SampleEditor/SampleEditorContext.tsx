@@ -10,11 +10,11 @@ import { SampleEditor } from "./SampleEditor";
 
 export interface EditorProps {
   files?: () => SampleSpecFile[];
-  readme?: () => SampleSpecFile;
-  style?: React.CSSProperties;
+  readme?: () => Promise<{ default: string }>;
   onCloseClick: () => void;
   onTranspiled: ((blobUrl: string) => void);
   onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
+  style?: React.CSSProperties;
 }
 
 export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
@@ -29,7 +29,9 @@ export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
         onTranspiled={onTranspiled}
         readme={readme} />
     </EditorEnvironmentContextProvider>
-  )
-}
+  );
+};
 
-export default SampleEditorContext;
+export default React.memo(SampleEditorContext, (prevProps, nextProps) => {
+  return prevProps.files === nextProps.files && prevProps.readme === nextProps.readme;
+});

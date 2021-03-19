@@ -12,10 +12,10 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
 
 const i18nNamespace = "sample-showcase-i18n-namespace";
-
+const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 interface SampleVisualizerProps {
   iTwinViewerReady?: boolean;
-  sampleClass: typeof React.Component;
+  type: string;
   iModelName: string;
   iModelSelector: React.ReactNode;
   transpileResult?: string;
@@ -31,67 +31,65 @@ const iModelAppShutdown = async (): Promise<void> => {
   IModelApp.tools.unRegister(MovePointTool.toolId);
   Presentation.terminate();
   return IModelApp.shutdown().catch();
-}
+};
 
+const iModelAppStartup = async (): Promise<void> => {
+  return SampleBaseApp.startup()
+    .then(() => {
+      MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
+    })
+    .catch();
+};
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
-  const { iTwinViewerReady, sampleClass, transpileResult, iModelName, iModelSelector } = props;
+  const { iTwinViewerReady, type, transpileResult, iModelName, iModelSelector } = props;
   const [appReady, setAppReady] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
   useEffect(() => {
     if (!iTwinViewerReady) {
-      SampleBaseApp.startup()
-        .then(() => {
-          MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
-        })
-        .catch()
+      iModelAppStartup()
         .finally(() => setAppReady(true));
     } else {
-      setAppReady(true)
+      setAppReady(true);
     }
     return () => {
       setAppReady(false);
-      iModelAppShutdown()
-    }
-  }, [iTwinViewerReady]);
+      iModelAppShutdown();
+    };
+  }, [iTwinViewerReady, transpileResult]);
 
   // Set sample UI
   useEffect(() => {
+    const key = context.keys().find((k: string) => k.includes(type));
     try {
-      if (sampleClass && ((!iTwinViewerReady && appReady) || iTwinViewerReady)) {
-        setSampleUi(React.createElement(sampleClass, { iModelName, iModelSelector } as any))
+      if (key) {
+        const component = context(key).default as React.ComponentClass<SampleProps>;
+        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
+      } else {
+        setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
       }
     } catch (error) {
-      setSampleUi(<DisplayError error={error} />)
+      setSampleUi(<DisplayError error={error} />);
     }
-  }, [sampleClass, iModelName, iModelSelector, iTwinViewerReady, appReady]);
+  }, [type, iModelName, iModelSelector]);
 
   // Refresh sample UI on transpile
   useEffect(() => {
     if (transpileResult) {
-      setLoading(true);
-      iModelAppShutdown()
-        .then(() => {
-          import( /* webpackIgnore: true */ transpileResult).then((module) => {
-            const component = module.default as React.ComponentClass<SampleProps>;
-            setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
-            setLoading(false);
-          })
-        })
+      import( /* webpackIgnore: true */ transpileResult).then((module) => {
+        const component = module.default as React.ComponentClass<SampleProps>;
+        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
+      });
     }
   }, [transpileResult, iModelName, iModelSelector]);
-
 
   if (!appReady) {
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
-  if (loading) {
-    return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
-  }
-
   return <>{sampleUi}</>;
-}
+};
 
-export default SampleVisualizer;
+export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
+  return prevProps.type === nextProps.type && prevProps.iModelName === nextProps.iModelName && prevProps.transpileResult === nextProps.transpileResult;
+});

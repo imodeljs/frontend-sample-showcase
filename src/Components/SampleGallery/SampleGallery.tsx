@@ -2,13 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import React from "react";
 import "./SampleGallery.scss";
-import { ExpandableBlock } from "@bentley/ui-core";
 import { SampleSpecGroup } from "../../sampleManifest";
 import { MyExpandableList } from "Components/MyExpandableList/ExpandableList";
 import { SampleSpec } from "SampleSpec";
+import { ExpandableBlock } from "@bentley/ui-core/lib/ui-core/expandable/ExpandableBlock";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];
@@ -88,9 +87,9 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
   private _onCardSelected = (event: any) => {
     const names = this._namesFromId(event.target.id);
     this.props.onChange(names.groupName, names.sampleName, false);
-  }
+  };
 
-  private createElementsForSample(sample: SampleSpec, groupName: string) {
+  private createElementsForSample(sample: SampleSpec, groupName: string, index: number) {
     const isChecked = this.props.selected === sample.name;
     const idString = this._idFromNames(sample.name, groupName);
     const image = sample.image;
@@ -99,7 +98,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     const image2x = `${imageBase}@2x.${imageExt} 2x`;
 
     return (
-      <label ref={this.myItemRefs[idString]} className="gallery-card-radio-btn">
+      <label key={`${index}#${idString}`} ref={this.myItemRefs[idString]} className="gallery-card-radio-btn">
         <span>{sample.label}</span>
         <input type="radio" name="gallery-card-radio" className="gallery-card-input-element d-none" id={idString} checked={isChecked} onChange={this._onCardSelected} />
         <div className="icon icon-status-success gallery-selection-icon"></div>
@@ -137,7 +136,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
 
     return (
       <ExpandableBlock className="gallery-card-block" title={group.groupName} key={group.groupName} isExpanded={isExpanded} onClick={onClick}>
-        {group.samples.map((sample: SampleSpec) => this.createElementsForSample(sample, group.groupName))}
+        {group.samples.map((sample: SampleSpec, index: number) => this.createElementsForSample(sample, group.groupName, index))}
       </ExpandableBlock>
     );
   }

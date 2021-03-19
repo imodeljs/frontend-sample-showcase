@@ -14,7 +14,7 @@ export default class UnifiedSelectionTreeUI extends React.Component<{ iModelName
     this.setState({
       iModel: imodel,
     });
-  }
+  };
 
   public render() {
     return (

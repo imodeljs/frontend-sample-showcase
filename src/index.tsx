@@ -5,11 +5,12 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import { App } from "./Components/App/App";
 import * as serviceWorker from "./serviceWorker";
 import { FeatureToggleClient } from "FeatureToggleClient";
 import { AuthorizationClient } from "@itwinjs-sandbox";
+import "./index.scss";
+import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
 (async () => {
   await FeatureToggleClient.initialize();

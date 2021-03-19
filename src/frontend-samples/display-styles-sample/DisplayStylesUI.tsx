@@ -34,19 +34,19 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
   private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.value, 10);
     this.setState({ activePresetIndex: index });
-  }
+  };
 
   // Called by the control and updates wether to also apply the Custom display style.
   private readonly _onToggle = (isOn: boolean) => {
     this.setState({ merge: isOn });
-  }
+  };
 
   // Will be triggered once when the iModel is loaded.
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       this.setState({ viewport });
     });
-  }
+  };
 
   /** A render method called when the state or props are changed. */
   public componentDidUpdate(_prevProp: DisplayStylesUIProps, prevState: DisplayStylesUIState) {

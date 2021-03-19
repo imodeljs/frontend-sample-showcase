@@ -4,14 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import HeatmapDecorator from "./HeatmapDecorator";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class HeatmapDecoratorApp {
   public static decorator?: HeatmapDecorator;
-
 
   public static setupDecorator(points: Point3d[], range: Range2d, spreadFactor: number, height: number) {
     HeatmapDecoratorApp.decorator = new HeatmapDecorator(points, range, spreadFactor, height);

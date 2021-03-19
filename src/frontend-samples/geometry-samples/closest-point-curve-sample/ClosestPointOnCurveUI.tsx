@@ -136,7 +136,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
     this.state.decorator.setFill(false);
     this.state.decorator.setLineThickness(2);
     this.state.decorator.setLinePixels(LinePixels.Code2);
-    this.state.decorator.addLine(LineSegment3d.create(this.state.spacePoint, this.state.closePoint))
+    this.state.decorator.addLine(LineSegment3d.create(this.state.spacePoint, this.state.closePoint));
   }
 
   public componentWillUnmount() {

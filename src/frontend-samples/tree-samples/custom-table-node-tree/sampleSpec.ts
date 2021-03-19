@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import TableNodeTreeUI from "./CustomTableNodeTreeUI";
 
 export function getCustomTableNodeTreeSpec(): SampleSpec {
   return ({
@@ -12,12 +11,12 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     label: "Custom Table Node Tree",
     image: "custom-table-node-tree-thumbnail.png",
     modelList: [],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
+    readme: async () => import("!!raw-loader!./readme.md"),
+    files: () => [
       { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
       { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },
       { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
-    sampleClass: TableNodeTreeUI,
+    type: "CustomTableNodeTreeUI.tsx",
   });
 }
