@@ -27,9 +27,9 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
     this._iModelSelectorOptions = iModelSelectorOptions;
   }
 
-  public provideWidgets(stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection | undefined): ReadonlyArray<AbstractWidgetProps> {
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection | undefined): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (stageId === "DefaultFrontstage" && location === StagePanelLocation.Bottom) {
+    if (location === StagePanelLocation.Bottom) {
       widgets.push(
         {
           id: "sampleControlsWidget",
