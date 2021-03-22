@@ -7,19 +7,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./Components/App/App";
 import * as serviceWorker from "./serviceWorker";
-import { FeatureToggleClient } from "FeatureToggleClient";
-import { AuthorizationClient } from "@itwinjs-sandbox";
 import "./index.scss";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
-(async () => {
-  await FeatureToggleClient.initialize();
-  await AuthorizationClient.initializeOidc();
-  ReactDOM.render(
-    <App />,
-    document.getElementById("root"),
-  );
-})();
+ReactDOM.render(
+  <App />,
+  document.getElementById("root"),
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
