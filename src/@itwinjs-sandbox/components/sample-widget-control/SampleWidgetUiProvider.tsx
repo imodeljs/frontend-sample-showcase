@@ -39,7 +39,7 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
           getWidgetContent: () => (<SampleWidgetContainer
             instructions={this._instructions}
             iModelSelector={this._iModelSelectorOptions &&
-              <IModelSelector iModelName={this._iModelSelectorOptions.iModelName} iModelNames={this._iModelSelectorOptions?.modelList} onIModelChange={this._iModelSelectorOptions.onIModelChange} />
+              <IModelSelector iModelName={this._iModelSelectorOptions.iModelName} iModelNames={this._iModelSelectorOptions.modelList} onIModelChange={this._iModelSelectorOptions.onIModelChange} />
             }>
             {this._widget}
           </SampleWidgetContainer>),

@@ -33,7 +33,7 @@ export default class ViewportOnlyUI extends React.Component<{}, ViewportOnlyUISt
     return new SampleWidgetUiProvider(
       "Use the toolbar at the top-right to navigate the model.",
       undefined,
-      { modelList: defaultIModelList, iModelName: iModelName, onIModelChange: this._changeIModel }
+      { modelList: defaultIModelList, iModelName, onIModelChange: this._changeIModel }
     )
   }
 

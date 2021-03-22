@@ -2,19 +2,20 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default2DUiConfig, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
+import { AuthorizationClient, default2DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ControlsWidget } from "./ViewerOnly2dWidget";
+import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 
-export default class ViewportOnly2dUI extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
+interface ViewportOnly2dUIState {
+  iModelName?: SampleIModels,
+  contextId?: string,
+  iModelId?: string,
+  viewState?: ViewState,
+}
 
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
+export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2dUIState> {
 
   constructor(props: any) {
     super(props);
@@ -22,23 +23,44 @@ export default class ViewportOnly2dUI extends React.Component<{}, { iModelName?:
     this._changeIModel();
   }
 
+  private _changeIModel = (iModelName?: SampleIModels) => {
+    IModelSetup.getIModelInfo(iModelName)
+      .then((info) => {
+        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
+      });
+  };
+
+  private _getSampleUi = (iModelName: SampleIModels) => {
+    return new SampleWidgetUiProvider(
+      "The picker below shows a list of 2D models in this iModel.",
+      <ControlsWidget />,
+      { modelList: [SampleIModels.House, SampleIModels.MetroStation], iModelName, onIModelChange: this._changeIModel }
+    )
+  }
+
+  private _oniModelReady = (iModelConnection: IModelConnection) => {
+    ViewSetup.getDefaultView(iModelConnection)
+      .then((viewState) => {
+        this.setState({ viewState })
+      })
+  }
+
   /** The sample's render method */
   public render() {
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.contextId && this.state.iModelId && <Viewer
-          contextId={this.state.contextId}
-          iModelId={this.state.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          defaultUiConfig={default2DUiConfig}
-          theme="dark"
-          uiProviders={[new SampleWidgetUiProvider(
-            "The picker below shows a list of 2D models in this iModel.",
-            <ControlsWidget />,
-            { modelList: [SampleIModels.House, SampleIModels.MetroStation], iModelName: this.state.iModelName!, onIModelChange: this._changeIModel }
-          )]}
-        />
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            viewportOptions={{ viewState: this.state.viewState }}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            defaultUiConfig={default2DSandboxUi}
+            theme="dark"
+            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            onIModelConnected={this._oniModelReady}
+          />
         }
       </>
     );
