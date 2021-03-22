@@ -10,10 +10,12 @@ export function getViewAttributesSpec(): SampleSpec {
     name: "view-attributes-sample",
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp") },
       { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI"), entry: true },
+      { name: "ViewAttributesWidget.tsx", import: import("!!raw-loader!./ViewAttributesWidget") },
     ],
     type: "ViewAttributesUI.tsx",
   });

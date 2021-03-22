@@ -11,10 +11,12 @@ export function getRealityDataSpec(): SampleSpec {
     name: "reality-data-sample",
     label: "Reality Data",
     image: "reality-data-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
       { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },
+      { name: "RealityDataWidget.tsx", import: import("!!raw-loader!./RealityDataWidget") },
     ],
     modelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
     type: "RealityDataUI.tsx",

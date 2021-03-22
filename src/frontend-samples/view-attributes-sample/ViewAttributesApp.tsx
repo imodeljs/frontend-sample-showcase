@@ -46,6 +46,30 @@ export default class ViewAttributesApp {
     };
   }
 
+  public static setAttrValues(vp: Viewport, attrValues: AttrValues) {
+    const currAttrValues = this.getAttrValues(vp);
+
+    if (currAttrValues.renderMode !== attrValues.renderMode)
+      ViewAttributesApp.setRenderMode(vp, attrValues.renderMode);
+    if (attrValues.backgroundTransparency && currAttrValues.backgroundTransparency !== attrValues.backgroundTransparency)
+      ViewAttributesApp.setBackgroundTransparency(vp, attrValues.backgroundTransparency);
+    if (currAttrValues.cameraOn !== attrValues.cameraOn)
+      ViewAttributesApp.setCameraOnOff(vp, attrValues.cameraOn);
+    if (currAttrValues.skybox !== attrValues.skybox)
+      ViewAttributesApp.setSkyboxOnOff(vp, attrValues.skybox);
+
+    // Update viewflags
+    vp.viewFlags.acsTriad = attrValues.acs;
+    vp.viewFlags.backgroundMap = attrValues.backgroundMap;
+    vp.viewFlags.grid = attrValues.grid;
+    vp.viewFlags.hiddenEdges = attrValues.hiddenEdges;
+    vp.viewFlags.monochrome = attrValues.monochrome;
+    vp.viewFlags.shadows = attrValues.shadows;
+    vp.viewFlags.visibleEdges = attrValues.visibleEdges;
+
+    vp.synchWithView();
+  }
+
   // Query flag values using the Viewport API.
   public static getViewFlag(vp: Viewport, flag: ViewFlag): boolean {
     switch (flag) {
@@ -61,33 +85,30 @@ export default class ViewAttributesApp {
 
   // Modify flag values using the Viewport API.
   public static setViewFlag(vp: Viewport, flag: ViewFlag, on: boolean) {
-    const viewFlags = vp.viewFlags.clone();
-
     switch (flag) {
       case ViewFlag.ACS:
-        viewFlags.acsTriad = on;
+        vp.viewFlags.acsTriad = on;
         break;
       case ViewFlag.BackgroundMap:
-        viewFlags.backgroundMap = on;
+        vp.viewFlags.backgroundMap = on;
         break;
       case ViewFlag.Grid:
-        viewFlags.grid = on;
+        vp.viewFlags.grid = on;
         break;
       case ViewFlag.HiddenEdges:
-        viewFlags.hiddenEdges = on;
+        vp.viewFlags.hiddenEdges = on;
         break;
       case ViewFlag.Monochrome:
-        viewFlags.monochrome = on;
+        vp.viewFlags.monochrome = on;
         break;
       case ViewFlag.Shadows:
-        viewFlags.shadows = on;
+        vp.viewFlags.shadows = on;
         break;
       case ViewFlag.VisibleEdges:
-        viewFlags.visibleEdges = on;
+        vp.viewFlags.visibleEdges = on;
         break;
     }
-
-    vp.viewFlags = viewFlags;
+    vp.synchWithView();
   }
 
   // Query camera setting using the Viewport API.

@@ -6,13 +6,16 @@
 import "common/samples-common.scss";
 import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
 import {
-  ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport,
+  ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport, Viewport,
 } from "@bentley/imodeljs-frontend";
 
 export default class RealityDataApp {
 
   public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
     const style = viewPort.displayStyle.clone();
+
+    // Turn off the background
+    style.viewFlags.backgroundMap = false;
 
     if (showReality) {
       // Get first available reality model and attach it to displayStyle
