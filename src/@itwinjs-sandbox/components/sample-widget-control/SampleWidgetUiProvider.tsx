@@ -7,17 +7,7 @@ import React, { ReactNode } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider } from "@bentley/ui-abstract";
 import { SampleWidgetContainer } from "./SampleWidgetContainer";
 import { IModelSelector } from "../imodel-selector/IModelSelector";
-
-export enum SampleIModels {
-  CoffsHarborDemo = "CoffsHarborDemo",
-  MetroStation = "Metrostation Sample",
-  RetailBuilding = "Retail Building Sample",
-  BayTown = "Bay Town Process Plant",
-  House = "House Sample",
-  Stadium = "Stadium",
-  ExtonCampus = "Exton Campus",
-  Villa = "Villa",
-}
+import { SampleIModels } from "../../SampleIModels";
 
 export interface IModelSelectorOptions {
   modelList: SampleIModels[];
