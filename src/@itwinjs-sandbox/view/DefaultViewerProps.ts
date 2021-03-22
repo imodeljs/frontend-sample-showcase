@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { ItwinViewerUi } from "@bentley/itwin-viewer-react";
 
-export const default3DUiConfig: ItwinViewerUi = {
+export const default3DSandboxUi: ItwinViewerUi = {
   contentManipulationTools: {
     cornerItem: {
       hideDefault: true,
@@ -46,7 +46,7 @@ export const default3DUiConfig: ItwinViewerUi = {
   hideTreeView: true,
 };
 
-export const default2DUiConfig: ItwinViewerUi = {
+export const default2DSandboxUi: ItwinViewerUi = {
   contentManipulationTools: {
     cornerItem: {
       hideDefault: true,
