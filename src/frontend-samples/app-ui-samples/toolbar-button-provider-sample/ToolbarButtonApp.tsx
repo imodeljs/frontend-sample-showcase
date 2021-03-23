@@ -23,6 +23,7 @@ export default class ToolbarButtonSample extends React.Component<{}, ToolbarButt
   constructor(props: {}) {
     super(props);
     this.state = {};
+    IModelSetup.setIModelList(defaultIModelList);
     this._changeIModel();
   }
 
@@ -37,7 +38,7 @@ export default class ToolbarButtonSample extends React.Component<{}, ToolbarButt
     return new SampleWidgetUiProvider(
       "Press the Lightbulb button tool at the top of the screen.",
       undefined,
-      { modelList: defaultIModelList, iModelName, onIModelChange: this._changeIModel }
+      { iModelName, onIModelChange: this._changeIModel }
     )
   }
 

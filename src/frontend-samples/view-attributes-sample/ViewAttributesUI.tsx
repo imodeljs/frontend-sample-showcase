@@ -34,7 +34,7 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
     return new SampleWidgetUiProvider(
       "Use the toggle below for displaying the reality data in the model.",
       <ViewAttributesWidget />,
-      { modelList: defaultIModelList, iModelName, onIModelChange: this._changeIModel }
+      { iModelName, onIModelChange: this._changeIModel }
     )
   }
 

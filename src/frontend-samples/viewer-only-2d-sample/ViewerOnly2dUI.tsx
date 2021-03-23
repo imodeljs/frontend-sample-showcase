@@ -20,6 +20,7 @@ export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2d
   constructor(props: any) {
     super(props);
     this.state = {};
+    IModelSetup.setIModelList([SampleIModels.House, SampleIModels.MetroStation])
     this._changeIModel();
   }
 
@@ -34,7 +35,7 @@ export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2d
     return new SampleWidgetUiProvider(
       "The picker below shows a list of 2D models in this iModel.",
       <ControlsWidget />,
-      { modelList: [SampleIModels.House, SampleIModels.MetroStation], iModelName, onIModelChange: this._changeIModel }
+      { iModelName, onIModelChange: this._changeIModel }
     )
   }
 

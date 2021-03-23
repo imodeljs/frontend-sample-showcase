@@ -20,6 +20,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
   constructor(props: any) {
     super(props);
     this.state = {};
+    IModelSetup.setIModelList([SampleIModels.ExtonCampus, SampleIModels.MetroStation])
     this._changeIModel();
   }
 
@@ -34,7 +35,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
     return new SampleWidgetUiProvider(
       "Use the toggle below for displaying the reality data in the model.",
       <RealityDataWidget />,
-      { modelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation], iModelName, onIModelChange: this._changeIModel }
+      { iModelName, onIModelChange: this._changeIModel }
     )
   }
 

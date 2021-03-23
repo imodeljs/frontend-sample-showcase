@@ -20,6 +20,7 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
   constructor(props: any) {
     super(props);
     this.state = {};
+    IModelSetup.setIModelList([SampleIModels.House])
     this._changeIModel();
   }
 

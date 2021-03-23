@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { AuthorizationClient, default3DSandboxUi, defaultIModelList, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 
@@ -33,7 +33,7 @@ export default class ViewportOnlyUI extends React.Component<{}, ViewportOnlyUISt
     return new SampleWidgetUiProvider(
       "Use the toolbar at the top-right to navigate the model.",
       undefined,
-      { modelList: defaultIModelList, iModelName, onIModelChange: this._changeIModel }
+      { iModelName, onIModelChange: this._changeIModel }
     )
   }
 

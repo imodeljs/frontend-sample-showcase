@@ -15,6 +15,7 @@ export function getHyperModelingSpec(): SampleSpec {
     files: () => [
       { name: "HyperModelingUI.tsx", import: import("!!raw-loader!./HyperModelingUI"), entry: true },
       { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp") },
+      { name: "HyperModelingWidget.tsx", import: import("!!raw-loader!./HyperModelingWidget") },
     ],
     modelList: [SampleIModels.House],
     type: "HyperModelingUI.tsx",
