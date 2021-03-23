@@ -8,8 +8,8 @@ import { SampleSpec } from "SampleSpec";
 
 export function getReadSettingsSpec(): SampleSpec {
   return ({
-    name: "read-settings-sample-2",
-    label: "Read Settings 2",
+    name: "read-settings-sample",
+    label: "Read Settings",
     image: "read-settings-thumbnail.png",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
