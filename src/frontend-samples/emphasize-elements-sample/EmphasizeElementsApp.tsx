@@ -2,33 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import "common/samples-common.scss";
 import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
-
-import EmphasizeElementsUI from "./EmphasizeElementsUI";
-import SampleApp from "common/SampleApp";
-
-export default class EmphasizeElementsApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <EmphasizeElementsUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
-  public static teardown() {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
-      return;
-
-    const emph = EmphasizeElements.getOrCreate(vp);
-    emph.clearEmphasizedElements(vp);
-    emph.clearHiddenElements(vp);
-    emph.clearIsolatedElements(vp);
-    emph.clearOverriddenElements(vp);
-  }
-}
 
 abstract class EmphasizeActionBase {
   protected abstract execute(emph: EmphasizeElements, vp: ScreenViewport): boolean;

@@ -33,6 +33,10 @@
       "import": "@bentley/geometry-core"
     },
     {
+      "name": "@bentley/hypermodeling-frontend",
+      "import": "@bentley/hypermodeling-frontend"
+    },
+    {
       "name": "@bentley/imodelhub-client",
       "import": "@bentley/imodelhub-client"
     },
@@ -97,6 +101,15 @@
       "import": "@bentley/webgl-compatibility"
     },
     {
+      "name": "@bentley/hypermodeling-frontend",
+      "import": "@bentley/hypermodeling-frontend"
+    },
+    {
+      "name": "NoSignInIAuthClient",
+      "import": "./src/NoSignInIAuthClient",
+      "typedef": true
+    },
+    {
       "name": "api/viewSetup",
       "import": "./src/api/viewSetup",
       "typedef": true
@@ -107,8 +120,8 @@
       "typedef": true
     },
     {
-      "name": "common/CommonComponentTools/ComponentContainer",
-      "import": "./src/common/CommonComponentTools/ComponentContainer",
+      "name": "common/UIComponents/UIComponentContainer",
+      "import": "./src/common/UIComponents/UIComponentContainer",
       "typedef": true
     },
     {
@@ -127,18 +140,18 @@
       "typedef": true
     },
     {
-      "name": "Components/Viewport/ViewportAndNavigation",
-      "import": "./src/Components/Viewport/ViewportAndNavigation",
+      "name": "common/SandboxViewport/ViewportAndNavigation",
+      "import": "./src/common/SandboxViewport/ViewportAndNavigation",
       "typedef": true
     },
     {
-      "name": "Components/Viewport/ReloadableViewport",
-      "import": "./src/Components/Viewport/ReloadableViewport",
+      "name": "common/SandboxViewport/SandboxViewport",
+      "import": "./src/common/SandboxViewport/SandboxViewport",
       "typedef": true
     },
     {
-      "name": "Components/GenericReloadableComponent/GenericReloadableComponent",
-      "import": "./src/Components/GenericReloadableComponent/GenericReloadableComponent",
+      "name": "common/SandboxIModelConnection/SandboxIModelConnection",
+      "import": "./src/common/SandboxIModelConnection/SandboxIModelConnection",
       "typedef": true
     },
     {
@@ -147,23 +160,23 @@
       "typedef": true
     },
     {
-      "name": "Components/ControlPane/ControlPane",
-      "import": "./src/Components/ControlPane/ControlPane",
+      "name": "common/ControlPane/ControlPane",
+      "import": "./src/common/ControlPane/ControlPane",
       "typedef": true
     },
     {
-      "name": "common/SampleApp",
-      "import": "./src/common/SampleApp",
-      "typedef": true
-    },
-    {
-      "name": "frontend-samples/cross-probing-sample/ViewCreator2d",
-      "import": "./src/frontend-samples/cross-probing-sample/ViewCreator2d",
+      "name": "common/IModelSelector/IModelSelector",
+      "import": "./src/common/IModelSelector/IModelSelector",
       "typedef": true
     },
     {
       "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "typedef": true
+    },
+    {
+      "name": "frontend-samples/marker-pin-sample/MarkerPinDecorator",
+      "import": "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator",
       "typedef": true
     },
     {
@@ -177,27 +190,27 @@
       "typedef": true
     },
     {
-      "name": "common/CommonComponentTools/index.scss",
-      "import": "!!raw-loader!common/CommonComponentTools/index.scss"
+      "name": "common/UIComponents/index.scss",
+      "import": "!!raw-loader!common/UIComponents/index.scss"
     },
     {
-      "name": "common/GeometryCommon/BlankViewport",
-      "import": "./src/common/GeometryCommon/BlankViewport",
+      "name": "common/Geometry/BlankViewport",
+      "import": "./src/common/Geometry/BlankViewport",
       "typedef": true
     },
     {
-      "name": "common/GeometryCommon/GeometryDecorator",
-      "import": "./src/common/GeometryCommon/GeometryDecorator",
+      "name": "common/Geometry/GeometryDecorator",
+      "import": "./src/common/Geometry/GeometryDecorator",
       "typedef": true
     },
     {
-      "name": "common/GeometryCommon/InteractivePointMarker",
-      "import": "./src/common/GeometryCommon/InteractivePointMarker",
+      "name": "common/Geometry/InteractivePointMarker",
+      "import": "./src/common/Geometry/InteractivePointMarker",
       "typedef": true
     },
     {
-      "name": "common/GeometryCommon/SampleCurveFactory",
-      "import": "./src/common/GeometryCommon/SampleCurveFactory",
+      "name": "common/Geometry/SampleCurveFactory",
+      "import": "./src/common/Geometry/SampleCurveFactory",
       "typedef": true
     },
     {
@@ -207,6 +220,10 @@
     {
       "name": "common/samples-common.scss",
       "import": "!!raw-loader!common/samples-common.scss"
+    },
+    {
+      "name": "common/AppUi/app-ui.scss",
+      "import": "!!raw-loader!common/AppUi/app-ui.scss"
     },
     {
       "name": "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css",

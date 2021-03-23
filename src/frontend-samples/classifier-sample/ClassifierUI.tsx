@@ -5,8 +5,8 @@
 import "common/samples-common.scss";
 import "./Classifier.scss";
 import { ViewSetup } from "api/viewSetup";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ClassifierProperties } from "./ClassifierProperties";
 import * as React from "react";
 import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@bentley/geometry-core";
@@ -30,7 +30,7 @@ interface ClassifierState {
   keys: KeySet;
 }
 
-export default class ClassifierUI extends React.Component<{ iModelName: string, iModelName2: string, iModelSelector: React.ReactNode }, ClassifierState> {
+export default class ClassifierUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, ClassifierState> {
   private _outsideDisplayEntries: { [key: string]: string } = {};
   private _insideDisplayEntries: { [key: string]: string } = {};
 
@@ -59,8 +59,12 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     this._outsideDisplayEntries[SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]] = "Dimmed";
   }
 
+  public componentWillUnmount() {
+    ClassifierApp.removeSelectionListener();
+  }
+
   /**
-   * This callback will be executed by ReloadableViewport once the iModel has been loaded.
+   * This callback will be executed by SandboxViewport once the iModel has been loaded.
    * The reality model will default to on.
    */
   private _onIModelReady = async (imodel: IModelConnection) => {
@@ -74,7 +78,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       await ClassifierApp.turnOnAvailableRealityModel(_vp, imodel);
       this._handleApply();
     });
-  }
+  };
 
   // Handle Apply. Clear selection and update classifier.
   private _handleApply = () => {
@@ -84,7 +88,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       const classifier: SpatialClassificationProps.Classifier = this.getClassifierValues(this.state.classifier!);
       ClassifierApp.updateRealityDataClassifiers(vp, classifier);
     }
-  }
+  };
 
   /*
   * Get property values for the classifier.
@@ -114,7 +118,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     const keys = new KeySet(selection);
     this.setState({ keys });
-  }
+  };
 
   // Some reasonable defaults depending on what classifier is chosen.
   private _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -132,24 +136,24 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     }
 
     this.setState({ classifier: event.target.value, outsideDisplayKey: "Dimmed" });
-  }
+  };
 
   private _onMarginChange = (event: any) => {
     try {
       const expandDist = parseFloat(event.target.value);
       this.setState({ expandDist });
     } catch { }
-  }
+  };
 
   private _onOutsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setState({ outsideDisplayKey: event.target.value });
-  }
+  };
 
   private _onInsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setState({ insideDisplayKey: event.target.value });
-  }
+  };
 
-  /** This callback will be executed by ReloadableViewport to initialize the ViewState.
+  /** This callback will be executed by SandboxViewport to initialize the ViewState.
    * Set up camera looking at Rittenhouse Square.
    */
   public static getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
@@ -166,7 +170,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
     viewState.setExtents(new Vector3d(750, 393, 375));
 
     return viewState;
-  }
+  };
 
   private getControls() {
     const {
@@ -223,7 +227,7 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions="Use controls below to create a classifier." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         { /* Viewport to display the iModel */}
-        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} iModelName2={this.props.iModelName2} getCustomViewState={ClassifierUI.getClassifierView} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} iModelName2={"Philadelphia"} getCustomViewState={ClassifierUI.getClassifierView} />
       </>
     );
   }

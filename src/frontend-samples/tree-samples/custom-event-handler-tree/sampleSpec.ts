@@ -3,8 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomEventHandlerTreeApp from "./CustomEventHandlerTreeApp";
+import { SampleSpec } from "SampleSpec";
 
 export function getCustomEventHandlerTreeSpec(): SampleSpec {
   return ({
@@ -12,11 +11,11 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     label: "Custom Event Handler Tree",
     image: "custom-event-handler-tree-thumbnail.png",
     customModelList: [],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
-      { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp"), entry: true },
+    readme: async () => import("!!raw-loader!./readme.md"),
+    files: () => [
+      { name: "CustomEventHandlerTreeApp.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeApp") },
       { name: "CustomEventHandlerTreeUI.tsx", import: import("!!raw-loader!./CustomEventHandlerTreeUI"), entry: true },
     ],
-    setup: CustomEventHandlerTreeApp.setup.bind(CustomEventHandlerTreeApp),
+    type: "CustomEventHandlerTreeUI.tsx",
   });
 }

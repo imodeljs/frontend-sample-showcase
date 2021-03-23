@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import DisplayStylesApp from "./DisplayStylesApp";
-import { DisplayStyle } from "./Styles";
+import { DisplayStyle, displayStyles } from "./Styles";
 import { Select, Toggle } from "@bentley/ui-core";
 
 interface DisplayStylesUIState {
@@ -24,7 +24,7 @@ interface DisplayStylesUIProps {
 }
 
 const CUSTOM_STYLE_INDEX = 0;
-const DEFAULT_STYLE_INDEX = 14;
+const DEFAULT_STYLE_INDEX = 4;
 
 export default class DisplayStylesUI extends React.Component<DisplayStylesUIProps, DisplayStylesUIState> {
 
@@ -34,19 +34,19 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
   private readonly _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.value, 10);
     this.setState({ activePresetIndex: index });
-  }
+  };
 
   // Called by the control and updates wether to also apply the Custom display style.
   private readonly _onToggle = (isOn: boolean) => {
     this.setState({ merge: isOn });
-  }
+  };
 
   // Will be triggered once when the iModel is loaded.
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       this.setState({ viewport });
     });
-  }
+  };
 
   /** A render method called when the state or props are changed. */
   public componentDidUpdate(_prevProp: DisplayStylesUIProps, prevState: DisplayStylesUIState) {
@@ -59,10 +59,10 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
       updateDisplayStyle = true;
 
     if (updateDisplayStyle && undefined !== this.state.viewport) {
-      const style = this.props.displayStyles[this.state.activePresetIndex];
+      const style = displayStyles[this.state.activePresetIndex];
       DisplayStylesApp.applyDisplayStyle(this.state.viewport, style);
       if (this.state.merge && CUSTOM_STYLE_INDEX !== this.state.activePresetIndex) {
-        const custom = this.props.displayStyles[CUSTOM_STYLE_INDEX];
+        const custom = displayStyles[CUSTOM_STYLE_INDEX];
         DisplayStylesApp.applyDisplayStyle(this.state.viewport, custom);
       }
     }
@@ -70,7 +70,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
 
   private getControls(): React.ReactNode {
     const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after the selected style is applied.";
-    const options = Object.assign({}, this.props.displayStyles.map((style) => style.name));
+    const options = Object.assign({}, displayStyles.map((style) => style.name));
     return (
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Select Style:</span>
@@ -92,7 +92,7 @@ export default class DisplayStylesUI extends React.Component<DisplayStylesUIProp
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
         <ControlPane instructions={instruction} iModelSelector={this.props.iModelSelector} controls={this.getControls()}></ControlPane>
         { /* Viewport to display the iModel */}
-        <ReloadableViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
+        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
       </>
     );
   }

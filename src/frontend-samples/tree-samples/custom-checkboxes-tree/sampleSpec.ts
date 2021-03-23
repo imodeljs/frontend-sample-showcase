@@ -3,8 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleSpec } from "../../../Components/SampleShowcase/SampleShowcase";
-import CustomCheckboxesTreeApp from "./CustomCheckboxesTreeApp";
+import { SampleSpec } from "SampleSpec";
 
 export function getCustomCheckboxesTreeSpec(): SampleSpec {
   return ({
@@ -12,11 +11,11 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     label: "Custom Checkboxes Tree",
     image: "custom-checkboxes-tree-thumbnail.png",
     customModelList: [],
-    readme: { name: "readme.md", import: import("!!raw-loader!./readme.md") },
-    files: [
-      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp"), entry: true },
+    readme: async () => import("!!raw-loader!./readme.md"),
+    files: () => [
+      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp") },
       { name: "CustomCheckboxesTreeUI.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeUI"), entry: true },
     ],
-    setup: CustomCheckboxesTreeApp.setup.bind(CustomCheckboxesTreeApp),
+    type: "CustomCheckboxesTreeUI.tsx",
   });
 }

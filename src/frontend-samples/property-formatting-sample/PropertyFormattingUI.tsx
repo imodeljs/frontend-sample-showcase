@@ -2,15 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
-import "../../common/samples-common.scss";
+import * as React from "react";
+import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { KeySet } from "@bentley/presentation-common";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import "./PropertyFormatting.scss";
 import { PropertyFormattingApp } from "./PropertyFormattingApp";
 import { Approach1UI } from "./approach-1-UI";
@@ -38,7 +37,7 @@ interface PropertyFormattingState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
+export default class PropertyFormattingUI extends React.Component<PropertyFormattingProps, PropertyFormattingState> {
   constructor(props?: any) {
     super(props);
     this.state = {
@@ -47,16 +46,20 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
     };
   }
 
+  public componentWillUnmount() {
+    PropertyFormattingApp.removeSelectionListener();
+  }
+
   private onIModelReady = (imodel: IModelConnection) => {
     this.setState({ imodel });
     PropertyFormattingApp.addSelectionListener(this._onSelectionChanged);
-  }
+  };
 
   private _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     const keys = new KeySet(selection);
     this.setState({ keys });
-  }
+  };
 
   private _onPropertyModeChange = ((event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ approach: event.target.value as Approach });
@@ -95,7 +98,7 @@ export class PropertyFormattingUI extends React.Component<PropertyFormattingProp
     return (
       <>
         <ControlPane instructions="Select an element in the view and choose an approach to display its properties." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>
     );
   }

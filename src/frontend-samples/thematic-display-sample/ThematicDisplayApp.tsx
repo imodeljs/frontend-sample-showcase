@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import { Range1dProps, Vector3d } from "@bentley/geometry-core";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import {
   BackgroundMapSettings,
   GlobeMode,
@@ -16,29 +16,13 @@ import {
   ThematicGradientMode,
 } from "@bentley/imodeljs-common";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import SampleApp from "common/SampleApp";
-import * as React from "react";
-import ThematicDisplaySampleUI from "./ThematicDisplayUI";
 
 // cSpell:ignore imodels
 
-/** Handles the setup and teardown of the thematic display sample */
-export default class ThematicDisplayApp implements SampleApp {
+export default class ThematicDisplayApp {
   public static originalProps?: ThematicDisplayProps;
   public static originalFlag: boolean = false;
   public static viewport?: Viewport;
-
-  /** Called by the showcase before the sample is started. */
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode): Promise<React.ReactNode> {
-    return <ThematicDisplaySampleUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
-
-  /** Called by the showcase before swapping to another sample. */
-  public static teardown(): void {
-    if (undefined === this.viewport) return;
-    this.setThematicDisplayProps(this.viewport, this.originalProps);
-    this.setThematicDisplayOnOff(this.viewport, this.originalFlag);
-  }
 
   /** Render changes to viewport using Viewport API. */
   public static syncViewport(vp: Viewport): void {
@@ -85,7 +69,7 @@ export default class ThematicDisplayApp implements SampleApp {
       globeMode: GlobeMode.Plane, // If the user zooms out enough, the curve of the earth can effect the thematic display.
       useDepthBuffer: true,
       transparency: 0.75,
-      terrainSettings: TerrainSettings.fromJSON({heightOriginMode: TerrainHeightOriginMode.Geoid}),
+      terrainSettings: TerrainSettings.fromJSON({ heightOriginMode: TerrainHeightOriginMode.Geoid }),
     });
     vp.synchWithView();
     const vf = vp.viewFlags.clone();

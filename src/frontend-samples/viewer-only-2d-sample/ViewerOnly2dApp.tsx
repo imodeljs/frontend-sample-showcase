@@ -2,20 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import "common/samples-common.scss";
-import ViewerOnly2dUI from "./ViewerOnly2dUI";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
-import { ViewCreator2d } from "./ViewCreator2d";
+import { IModelApp, IModelConnection, ViewCreator2d } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
-import SampleApp from "common/SampleApp";
 import { ViewSetup } from "api/viewSetup";
 
-export default class ViewerOnly2dApp implements SampleApp {
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <ViewerOnly2dUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
+export default class ViewerOnly2dApp {
 
   public static async get2DModels(imodel: IModelConnection): Promise<{ drawings: ModelProps[], sheets: ModelProps[] }> {
     const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
@@ -37,9 +30,11 @@ export default class ViewerOnly2dApp implements SampleApp {
 
     if (vp && vpAspect) {
       const viewCreator = new ViewCreator2d(imodel);
-      const targetView = await viewCreator.getViewForModel(newModel, vpAspect);
-      if (targetView) vp.changeView(targetView);
-      else alert("Invalid View Detected!");
+      const targetView = await viewCreator.createViewForModel(newModel.id!, newModel.classFullName, { vpAspect });
+      if (targetView)
+        vp.changeView(targetView);
+      else
+        alert("Invalid View Detected!");
     }
   }
 }

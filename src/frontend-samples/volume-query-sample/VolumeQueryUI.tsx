@@ -3,14 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import "common/samples-common.scss";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { ViewSetup } from "api/viewSetup";
 import { ProgressBar } from "./ProgressBar";
 
@@ -78,7 +78,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
       this.setState({ isClipVolumeOn: false });
     }
     return true;
-  }
+  };
 
   /* Turning Clip Volume feature on and off */
   private _onToggleClipping = (isToggleOn: boolean) => {
@@ -92,7 +92,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
       if (isToggleOn && !this.state.isVolumeBoxOn)
         this.setState({ isVolumeBoxOn: true });
     }
-  }
+  };
 
   /* Coloring elements that are inside, outside the box or overlapping */
   private _onClickApplyColorOverrides = async () => {
@@ -108,7 +108,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
       const progressBar = this._progressBarReference.current!;
       await progressBar.processElements(this.state.classifiedElementsColors, spatialElements, vp);
     }
-  }
+  };
 
   private _onClickClearColorOverrides = () => {
     const vp = IModelApp.viewManager.selectedView;
@@ -124,14 +124,14 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
         progress: { isLoading: false, percentage: 0 },
       });
     }
-  }
+  };
 
   /* Changing colors of elements that are going to be overridden */
   private _onColorPick = (colorValue: ColorDef, position: SectionOfColoring) => {
     const previousColors = this.state.classifiedElementsColors;
     previousColors[position] = colorValue;
     this.setState({ classifiedElementsColors: previousColors });
-  }
+  };
 
   /* Selecting which elements are going to be showed in the element list */
   private async _onSelectionListElements(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -151,7 +151,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
       // tslint:disable-next-line no-floating-promises
       this._onClickApplyColorOverrides();
     });
-  }
+  };
 
   /* Clear elements to show list */
   private _emptyElementsToShow() {
@@ -177,19 +177,19 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
     }
 
     return viewState;
-  }
+  };
 
   public getProgress = () => {
     return this.state.progress;
-  }
+  };
 
   public setProgress = (progress: { isLoading: boolean, percentage: number }) => {
     this.setState({ progress });
-  }
+  };
 
   public setColoredElements = (coloredElements: Record<ElementPosition, SpatialElement[]>) => {
     this.setState({ coloredElements });
-  }
+  };
 
   /* Setting elements that are going to be showed */
   public async setElementsToShow() {
@@ -282,7 +282,7 @@ export default class VolumeQueryUI extends React.Component<VolumeQueryUIProps, V
       <>
         { /* Viewport to display the iModel */}
         <ControlPane instructions='Choose elements using "Volume Box" and apply coloring. You can see overridden elements in "List Colored Elements" section.' controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this._getIsoView} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this._getIsoView} />
       </>
     );
   }

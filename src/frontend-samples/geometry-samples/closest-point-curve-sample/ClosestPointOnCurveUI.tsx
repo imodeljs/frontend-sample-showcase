@@ -3,16 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { BlankViewport } from "common/GeometryCommon/BlankViewport";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { BlankViewport } from "common/Geometry/BlankViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { Input, NumericInput, Select } from "@bentley/ui-core";
 import ClosestPointOnCurveApp from "./ClosestPointOnCurveApp";
 import { CurvePrimitive, LineSegment3d, Point3d } from "@bentley/geometry-core";
 import { ColorByName, ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { InteractivePointMarker } from "common/GeometryCommon/InteractivePointMarker";
+import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "common/GeometryCommon/GeometryDecorator";
-import { SampleCurveFactory } from "common/GeometryCommon/SampleCurveFactory";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
 
 interface ClosestPointOnCurveState {
   spacePoint: Point3d;
@@ -136,7 +136,7 @@ export default class ClosestPointOnCurveUI extends React.Component<{}, ClosestPo
     this.state.decorator.setFill(false);
     this.state.decorator.setLineThickness(2);
     this.state.decorator.setLinePixels(LinePixels.Code2);
-    this.state.decorator.addLine(LineSegment3d.create(this.state.spacePoint, this.state.closePoint))
+    this.state.decorator.addLine(LineSegment3d.create(this.state.spacePoint, this.state.closePoint));
   }
 
   public componentWillUnmount() {

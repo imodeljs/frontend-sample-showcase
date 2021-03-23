@@ -5,9 +5,9 @@
 import * as React from "react";
 
 import { BasicTree } from "./BasicTreeApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
-export class BasicTreeUI extends React.Component<{}> {
+export default class BasicTreeUI extends React.Component<{}> {
 
   public render() {
     return (

@@ -2,10 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
 
+import { SampleSpec } from "SampleSpec";
+import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
+import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
 import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
@@ -26,6 +28,8 @@ import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sampl
 import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
+import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
+import { getClashReviewSpec } from "./frontend-samples/clash-review-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
 import { getBadgeSpec } from "./frontend-samples/component-gallery/badge-sample/sampleSpec";
@@ -60,6 +64,9 @@ import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
+import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-sample/sampleSpec";
+import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
+import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -70,6 +77,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
+    getHyperModelingSpec(),
     getRealityDataSpec(),
     getViewAttributesSpec(),
   ],
@@ -79,13 +87,17 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getClassifierSpec(),
     getEmphasizeElementsSpec(),
+    getExplodeSpec(),
+    getIotAlertSpec(),
     getHeatmapDecoratorSpec(),
     getImageExportSpec(),
     getCrossProbingSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
+    getParticleFireSampleSpec(),
     getPropertyFormattingSpec(),
-    getReadSettingsSpec(),
+    getSerializeViewSpec(),
+    getScreenSpaceEffectsSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
@@ -136,6 +148,12 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
   ],
+}, {
+  groupName: "iTwin Platform APIs", samples: [
+    getClashReviewSpec(),
+    getReadSettingsSpec(),
+  ],
+
 },
 ];
 

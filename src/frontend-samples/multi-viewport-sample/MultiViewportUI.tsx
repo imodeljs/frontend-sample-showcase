@@ -5,8 +5,8 @@
 import { IModelConnection, SelectedViewportChangedArgs, Viewport } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import "common/samples-common.scss";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import "./multi-view-sample.scss";
 import MultiViewportApp from "./MultiViewportApp";
@@ -28,29 +28,45 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   public state: MultiViewportUIState = { isSynced: false, viewports: [] };
 
+  public componentDidMount() {
+    MultiViewportApp.selectedViewportChangedListeners.length = 0;
+    MultiViewportApp.teardownListener.length = 0;
+    MultiViewportApp.viewOpenedListeners.length = 0;
+  }
+
+  public componentWillUnmount() {
+    MultiViewportApp.disconnectViewports();
+    MultiViewportApp.selectedViewportChangedListeners.forEach((removeListener) => removeListener());
+    MultiViewportApp.selectedViewportChangedListeners.length = 0;
+    MultiViewportApp.viewOpenedListeners.forEach((removeListener) => removeListener());
+    MultiViewportApp.viewOpenedListeners.length = 0;
+    MultiViewportApp.teardownListener.forEach((removeView) => removeView());
+    MultiViewportApp.teardownListener.length = 0;
+  }
+
   // Handler to show active viewport in the UI by adding styling to it.
   private _setViewportStyling = (args: SelectedViewportChangedArgs) => {
     if (args.previous)
       args.previous.vpDiv.classList.remove("active-viewport");
     if (args.current)
       args.current.vpDiv.classList.add("active-viewport");
-  }
+  };
 
   // Handles changes to the selected viewport and adds the current to the state.
   private _getSelectedViewport = (args: SelectedViewportChangedArgs) => {
     this.setState({ selectedViewport: args.current });
-  }
+  };
 
   // Handles opened View and adds them to the state.
   private _getViews = (viewport: Viewport) => {
     const viewports = this.state.viewports;
     this.setState({ viewports: [...viewports, viewport] });
-  }
+  };
 
   // Handles when the app teardown is called which signals when the views are all closed.
   private _viewsClosed = () => {
     this.setState({ viewports: [], isSynced: false, selectedViewport: undefined });
-  }
+  };
 
   // Adds listeners after the iModel is loaded.
   // Note: The [MultiViewportApp] handles removing theses listeners when they are irrelevant and insuring no duplicates listeners.
@@ -59,7 +75,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
     MultiViewportApp.listenForViewOpened(this._getViews);
     MultiViewportApp.listenForAppTeardown(this._viewsClosed);
-  }
+  };
 
   // Handle changes to the UI sync toggle.
   private _onSyncToggleChange = (isOn: boolean) => {
@@ -73,7 +89,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
       MultiViewportApp.disconnectViewports();
 
     this.setState({ isSynced: isOn });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
@@ -96,10 +112,10 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
         />
         { /* Viewports to display the iModel */}
         <div className={"mutli-view-viewport-top"}>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
         <div className={"mutli-view-viewport-bottom"}>
-          <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
         </div>
       </>
     );

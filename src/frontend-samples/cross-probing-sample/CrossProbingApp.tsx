@@ -2,13 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import "common/samples-common.scss";
-import SampleApp from "common/SampleApp";
-import CrossProbingUI from "./CrossProbingUI";
-import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, Viewport } from "@bentley/imodeljs-frontend";
-import { ViewCreator2d } from "frontend-samples/cross-probing-sample/ViewCreator2d";
+import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, ViewCreator2d, Viewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 
 /** This sample showcases how to implement cross-probing between 3D and 2D elements.
@@ -18,7 +14,7 @@ import { ColorDef } from "@bentley/imodeljs-common";
  * The target element is then zoomed into.
  */
 
-export default class CrossProbingApp implements SampleApp {
+export default class CrossProbingApp {
 
   // keep track of last element selected (to avoid double clicks).
   private static lastElementSelected: string | undefined;
@@ -51,7 +47,8 @@ export default class CrossProbingApp implements SampleApp {
       if (targetLink.length > 0) {
         const targetElement = targetLink[0].drawElementId;
         const targetModel = await ev.set.iModel.models.getProps(targetLink[0].drawModelId);
-        const targetViewState = await new ViewCreator2d(ev.set.iModel).getViewForModel(targetModel[0].id!, targetModel[0].classFullName, { bgColor: ColorDef.black });
+        const viewCreator = new ViewCreator2d(ev.set.iModel);
+        const targetViewState = await viewCreator.createViewForModel(targetModel[0].id!, targetModel[0].classFullName, { bgColor: ColorDef.black });
         const vp2d = CrossProbingApp._get2DViewport();
         vp2d.onChangeView.addOnce(async () => {
           // when view opens, zoom into target 2D element.
@@ -75,13 +72,13 @@ export default class CrossProbingApp implements SampleApp {
     }
 
     return sourceElementId;
-  }
+  };
 
   // helper function to get 3D viewport.
   private static _get3DViewport(): Viewport {
     let vp3d;
     IModelApp.viewManager.forEachViewport((vp) => (vp.view.is3d()) ? vp3d = vp : null);
-    if (!vp3d) throw new Error("No viewport with 3D model found!")
+    if (!vp3d) throw new Error("No viewport with 3D model found!");
     return vp3d;
   }
 
@@ -89,7 +86,7 @@ export default class CrossProbingApp implements SampleApp {
   private static _get2DViewport(): Viewport {
     let vp2d;
     IModelApp.viewManager.forEachViewport((vp) => (vp.view.is2d()) ? vp2d = vp : null);
-    if (!vp2d) throw new Error("No viewport with 2D model found!")
+    if (!vp2d) throw new Error("No viewport with 2D model found!");
     return vp2d;
   }
 
@@ -112,9 +109,6 @@ export default class CrossProbingApp implements SampleApp {
       rows.push(row);
 
     return rows;
-  }
+  };
 
-  public static async setup(iModelName: string, iModelSelector: React.ReactNode) {
-    return <CrossProbingUI iModelName={iModelName} iModelSelector={iModelSelector} />;
-  }
 }

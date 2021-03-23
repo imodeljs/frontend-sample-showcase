@@ -2,16 +2,16 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import { ViewSetup } from "api/viewSetup";
 import ViewClipApp from "./ViewClipApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 interface ViewClipUIProps {
   iModelName: string;
@@ -25,7 +25,7 @@ interface ViewClipUIState {
 }
 
 /** A React component that renders the UI specific for this sample */
-export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
+export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
   /** Creates an Sample instance */
   constructor(props?: any) {
     super(props);
@@ -68,7 +68,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
   /* Handler for plane select */
   private _onPlaneSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ showClipBlock: false, clipPlane: event.target.value });
-  }
+  };
 
   /* Method for flipping (negating) the current clip plane. */
   private _handleFlipButton = () => {
@@ -93,12 +93,12 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
       }
     }
     return true;
-  }
+  };
 
   /* Turn on/off the clip range */
   private _onToggleRangeClip = async (showClipRange: boolean) => {
     this.setState({ showClipBlock: showClipRange, clipPlane: "None" });
-  }
+  };
 
   public getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
@@ -117,13 +117,13 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     }
 
     return viewState;
-  }
+  };
 
   private _onIModelReady = (imodel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      this.setState({ imodel, showClipBlock: true });
+      this.setState({ imodel, showClipBlock: true, clipPlane: "None" });
     });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
@@ -132,7 +132,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
       [EditManipulator.RotationType.Left]: "X",
       [EditManipulator.RotationType.Front]: "Y",
       [EditManipulator.RotationType.Top]: "Z",
-    }
+    };
     return (
       <>
         <div className="sample-options-3col even-3col">
@@ -152,7 +152,7 @@ export class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState
     return (
       <>
         <ControlPane instructions="Use the options below to control the view clip." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
       </>
     );
   }

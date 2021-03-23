@@ -3,24 +3,22 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import "common/CommonComponentTools/index.scss";
-import { ComponentContainer, ComponentExampleProps } from "common/CommonComponentTools/ComponentContainer";
+import "common/UIComponents/index.scss";
+import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
-import SampleApp from "common/SampleApp";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
-export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): ComponentExampleProps => {
+export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
   return { title, description, content };
 };
 
-export default class InputsList extends React.Component<{}> implements SampleApp {
+export default class InputsList extends React.Component<{}> {
 
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
-  public static getInputsData(): ComponentExampleProps[] {
+  public static getInputsData(): UIComponentExampleProps[] {
     return [
       createComponentExample("Basic Input", "Input with placeholder", <Input placeholder="Basic Input" />),
       createComponentExample("Disabled Input", "Input with disabled prop", <Input placeholder="Disabled Input" disabled />),
@@ -47,17 +45,13 @@ export default class InputsList extends React.Component<{}> implements SampleApp
     ];
   }
 
-  public static async setup(_iModelName: string) {
-    return <InputsList></InputsList>;
-  }
-
   // Combines the control pane and the component container to create the final display
   // For more implementation details about the layout of the component container, code and documentation is available in ../CommonComponentTools/ComponentContainer.tsx
   public render() {
     return (
       <>
         <ControlPane instructions="Different styles of inputs that can be used in iModel.js applications."></ControlPane>
-        <ComponentContainer data={InputsList.getInputsData()}></ComponentContainer>
+        <UIComponentContainer data={InputsList.getInputsData()}></UIComponentContainer>
       </>
     );
   }

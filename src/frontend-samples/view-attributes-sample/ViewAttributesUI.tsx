@@ -2,16 +2,16 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Select, Toggle } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
 import { ViewSetup } from "api/viewSetup";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 
 // cSpell:ignore imodels
 /** The React state for this UI component */
@@ -79,7 +79,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
     ViewAttributesApp.setRenderMode(this.state.vp, renderMode);
     this.updateState();
-  }
+  };
 
   // Create the react components for the render mode row.
   private createRenderModePicker(label: string, info: string) {
@@ -99,7 +99,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       return;
 
     ViewAttributesApp.setSkyboxOnOff(this.state.vp, checked);
-  }
+  };
 
   // Create the react components for the skybox toggle row.
   private createSkyboxToggle(label: string, info: string) {
@@ -113,7 +113,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       return;
 
     ViewAttributesApp.setCameraOnOff(this.state.vp, checked);
-  }
+  };
 
   // Create the react components for the camera toggle row.
   private createCameraToggle(label: string, info: string) {
@@ -128,7 +128,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
 
     ViewAttributesApp.setViewFlag(this.state.vp, flag, checked);
     this.updateState();
-  }
+  };
 
   // Create the react components for a view flag row.
   private createViewFlagToggle(flag: ViewFlag, label: string, info: string) {
@@ -186,13 +186,13 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
       ViewAttributesApp.setBackgroundTransparency(vp, 0.01);
       this.setState({ vp, attrValues });
     });
-  }
+  };
 
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
     viewState.viewFlags.renderMode = RenderMode.Wireframe;
     return viewState;
-  }
+  };
 
   /** The sample's render method */
   public render() {
@@ -200,7 +200,7 @@ export default class ViewAttributesUI extends React.Component<{ iModelName: stri
     return (
       <>
         <ControlPane instructions="Use the controls below to change the view attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} />
       </>
     );
   }

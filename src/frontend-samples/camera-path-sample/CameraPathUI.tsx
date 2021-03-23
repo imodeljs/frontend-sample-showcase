@@ -3,15 +3,15 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { Select } from "@bentley/ui-core";
 import { RenderMode } from "@bentley/imodeljs-common";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
+
 import CameraPathApp, { CameraPath } from "./CameraPathApp";
 import { ViewSetup } from "api/viewSetup";
-import { ControlPane } from "Components/ControlPane/ControlPane";
+import { ControlPane } from "common/ControlPane/ControlPane";
 import { CameraPathTool } from "./CameraPathTool";
 
 // cSpell:ignore imodels
@@ -39,6 +39,16 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     this._handleCameraPlay = this._handleCameraPlay.bind(this);
   }
 
+  public componentDidMount() {
+    const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
+    CameraPathTool.register(sampleNamespace);
+  }
+
+  public componentWillUnmount() {
+    IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
+    IModelApp.tools.unRegister(CameraPathTool.toolId);
+  }
+
   // This common function is used to create the react components for each row of the UI.
   private _createJSXElementForAttribute(label: string, element: JSX.Element) {
     return (
@@ -59,7 +69,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
       }
     });
-  }
+  };
 
   // Create the react component for the  slider
   private _createCameraSlider(label: string) {
@@ -129,7 +139,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         }
       }, 40);
     });
-  }
+  };
 
   // Create the react components for the  Paths
   private _createRenderPath(label: string) {
@@ -159,7 +169,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         break;
     }
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, currentSpeed: speedOfMotion, speedLevel: currentSpeed } }));
-  }
+  };
 
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
@@ -200,7 +210,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         }
       });
     });
-  }
+  };
 
   // We will use this method to activate the CameraPathTool
   // The CameraPathTool will prevent the view tool and standard mouse events
@@ -257,23 +267,23 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     } else {
       this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY); }, 40));
     }
-  }
+  };
   public handleUnlockDirection = (keyDown: boolean) => {
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, keyDown } }));
-  }
+  };
 
   public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
     viewState.viewFlags.renderMode = RenderMode.SmoothShade;
     return viewState;
-  }
+  };
 
   /** The sample's render method */
   public render() {
     return (
       <>
         <ControlPane instructions="Use the mouse wheel to scroll the camera along the predefined path. Click in the view to look around." controls={this.getControls()} ></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isNavigationToolInvisible={true} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={this.getInitialView} isNavigationToolInvisible={true} />
       </>
     );
   }

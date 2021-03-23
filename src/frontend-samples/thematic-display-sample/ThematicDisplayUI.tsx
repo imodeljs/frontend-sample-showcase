@@ -2,14 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Select, Slider, Toggle } from "@bentley/ui-core";
-import { ControlPane } from "Components/ControlPane/ControlPane";
-import { SampleIModels } from "Components/IModelSelector/IModelSelector";
-import { ReloadableViewport } from "Components/Viewport/ReloadableViewport";
+import { ControlPane } from "common/ControlPane/ControlPane";
+import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import ThematicDisplayApp from "./ThematicDisplayApp";
 
@@ -34,10 +34,10 @@ interface ThematicDisplaySampleUIProps {
 
 function mapOptions(o: {}): {} {
   const keys = Object.keys(o).filter((key: any) => isNaN(key));
-  return Object.assign({}, keys);
+  return keys.map((label, index) => {
+    return { label, value: index, disabled: false };
+  });
 }
-const _defaultAzimuth = 315.0;
-const _defaultElevation = 45.0;
 
 /** A React component that renders the UI specific for this sample */
 export default class ThematicDisplayUI extends React.Component<ThematicDisplaySampleUIProps, SampleState> {
@@ -75,13 +75,19 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     };
   }
 
+  public componentWillUnmount(): void {
+    if (undefined === ThematicDisplayApp.viewport) return;
+    ThematicDisplayApp.setThematicDisplayProps(ThematicDisplayApp.viewport, ThematicDisplayApp.originalProps);
+    ThematicDisplayApp.setThematicDisplayOnOff(ThematicDisplayApp.viewport, ThematicDisplayApp.originalFlag);
+  }
+
   /** This method is called when the iModel is loaded by the react component */
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
       ThematicDisplayUI.init(vp);
       this.updateState();
     });
-  }
+  };
 
   /** This method should be called when the iModel is loaded to set default settings in the
    * viewport settings to enable thematic display.
@@ -162,7 +168,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
 
     ThematicDisplayApp.setThematicDisplayOnOff(vp, checked);
     this.updateState();
-  }
+  };
 
   // Handle changes to the thematic display toggle.
   private readonly _onChangeMapToggle = (checked: boolean) => {
@@ -173,7 +179,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
 
     ThematicDisplayApp.setBackgroundMap(vp, checked);
     this.updateState();
-  }
+  };
 
   // Handle changes to the display mode.
   private readonly _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -188,7 +194,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayMode(vp, displayMode);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   // Handle changes to the display mode.
   private readonly _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -203,7 +209,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayGradientColorScheme(vp, colorScheme);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   // Handle changes to the gradient mode.
   private readonly _onChangeGradientMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -218,7 +224,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayGradientMode(vp, gradientMode);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   // Handles updates to the thematic range slider
   private readonly _onUpdateRangeSlider = (values: readonly number[]) => {
@@ -233,18 +239,18 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     ThematicDisplayApp.setThematicDisplayRange(vp, newRange);
     ThematicDisplayApp.syncViewport(vp);
     this.updateState();
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   public getControls() {
 
     const colorSchemeOptions = mapOptions(ThematicGradientColorScheme);
-    delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom options are not supported for this sample.
+    delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom colors are not supported for this sample.
 
     const gradientModeOptions = mapOptions(ThematicGradientMode);
     if (this.state.displayMode !== ThematicDisplayMode.Height) {
-      delete (gradientModeOptions as any)[ThematicGradientMode.IsoLines];
-      delete (gradientModeOptions as any)[ThematicGradientMode.SteppedWithDelimiter];
+      (gradientModeOptions as any)[ThematicGradientMode.IsoLines].disabled = true;
+      (gradientModeOptions as any)[ThematicGradientMode.SteppedWithDelimiter].disabled = true;
     }
 
     const displayModeOptions = mapOptions(ThematicDisplayMode);
@@ -286,11 +292,11 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
             </span> : <span style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ display: "flex", flexDirection: "row" }}>
                 <label style={{ marginRight: 7 }}>Azimuth</label>
-                <Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={(values) => { this.setState({azimuth: values[0]}); }} />
+                <Slider min={0} max={360} step={1} values={[this.state.azimuth]} onUpdate={(values) => { this.setState({ azimuth: values[0] }); }} />
               </span>
               <span style={{ display: "flex", flexDirection: "row" }}>
                 <label style={{ marginRight: 7 }}>Elevation</label>
-                <Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={(values) => { this.setState({elevation: values[0]}); }} />
+                <Slider min={0} max={90} step={1} values={[this.state.elevation]} onUpdate={(values) => { this.setState({ elevation: values[0] }); }} />
               </span>
             </span>}
         </div>
@@ -318,7 +324,7 @@ export default class ThematicDisplayUI extends React.Component<ThematicDisplaySa
     return (
       <>
         <ControlPane instructions="Use the controls below to change the thematic display attributes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <ReloadableViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
+        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>
     );
   }
