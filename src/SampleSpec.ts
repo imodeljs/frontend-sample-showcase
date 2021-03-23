@@ -1,4 +1,4 @@
-import { SampleIModels } from "@itwinjs-sandbox";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import React from "react";
 
 export interface SampleProps {

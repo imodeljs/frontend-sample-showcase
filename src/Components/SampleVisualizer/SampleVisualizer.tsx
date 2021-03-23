@@ -6,6 +6,7 @@
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+import { AuthorizationClient, IModelSetup } from "@itwinjs-sandbox";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -40,23 +41,28 @@ const iModelAppStartup = async (): Promise<void> => {
     })
     .catch();
 };
+
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
   const { iTwinViewerReady, type, transpileResult, iModelName, iModelSelector } = props;
   const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
   useEffect(() => {
-    if (!iTwinViewerReady) {
-      iModelAppStartup()
-        .finally(() => setAppReady(true));
-    } else {
-      setAppReady(true);
-    }
+    AuthorizationClient.initializeOidc()
+      .then(() => {
+        if (!iTwinViewerReady) {
+          iModelAppStartup()
+            .finally(() => setAppReady(true));
+        } else {
+          setAppReady(true);
+        }
+      });
     return () => {
       setAppReady(false);
       iModelAppShutdown();
+      IModelSetup.resetIModelList();
     };
-  }, [iTwinViewerReady, transpileResult]);
+  }, [iTwinViewerReady, transpileResult, type]);
 
   // Set sample UI
   useEffect(() => {
