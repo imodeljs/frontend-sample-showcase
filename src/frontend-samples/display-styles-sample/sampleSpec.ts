@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { SampleIModels } from "@itwinjs-sandbox";
 import { SampleSpec } from "SampleSpec";
 
 export function getDisplayStylesSpec(): SampleSpec {
@@ -17,6 +18,7 @@ export function getDisplayStylesSpec(): SampleSpec {
       { name: "Styles.ts", import: import("!!raw-loader!./DisplayStylesWidget.tsx") },
       { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
     ],
+    modelList: [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium],
     iTwinViewerReady: true,
     type: "DisplayStylesUI.tsx",
   });

@@ -5,9 +5,17 @@
 import "common/samples-common.scss";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { AuthorizationClient, default3DUiConfig, defaultIModelList, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import ImageExportApp from "./ImageExportApp";
 import { Button, ButtonType } from "@bentley/ui-core";
+import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+
+interface ViewAttributesUIState {
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
+}
 
 /** Create the widget to save the image */
 const ImageExportWidget: React.FunctionComponent = () => {
@@ -20,7 +28,13 @@ const ImageExportWidget: React.FunctionComponent = () => {
   );
 };
 
-export default class ImageExportUI extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
+export default class ImageExportUI extends React.Component<{}, ViewAttributesUIState> {
+
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+    this._changeIModel();
+  }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
@@ -29,29 +43,38 @@ export default class ImageExportUI extends React.Component<{}, { iModelName?: Sa
       });
   };
 
-  constructor(props: any) {
-    super(props);
-    this.state = {};
-    this._changeIModel();
-  }
+  private _getSampleUi = (iModelName: SampleIModels) => {
+    return new SampleWidgetUiProvider(
+      "Export current viewport as image",
+      <ImageExportWidget />,
+      { iModelName, onIModelChange: this._changeIModel }
+    );
+  };
+
+  private _oniModelReady = (iModelConnection: IModelConnection) => {
+    ViewSetup.getDefaultView(iModelConnection)
+      .then((viewState) => {
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {
+
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.contextId && this.state.iModelId && <Viewer
-          contextId={this.state.contextId}
-          iModelId={this.state.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          defaultUiConfig={default3DUiConfig}
-          theme="dark"
-          uiProviders={[new SampleWidgetUiProvider(
-            "Export current viewport as image",
-            <ImageExportWidget />,
-            { modelList: defaultIModelList, iModelName: this.state.iModelName!, onIModelChange: this._changeIModel }
-          )]}
-        />
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            viewportOptions={{ viewState: this.state.viewState }}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            defaultUiConfig={default3DSandboxUi}
+            theme="dark"
+            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            onIModelConnected={this._oniModelReady}
+          />
         }
       </>
     );
