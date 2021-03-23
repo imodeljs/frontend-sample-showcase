@@ -23,7 +23,6 @@ export default class ToolbarButtonSample extends React.Component<{}, ToolbarButt
   constructor(props: {}) {
     super(props);
     this.state = {};
-    IModelSetup.setIModelList(defaultIModelList);
     this._changeIModel();
   }
 
