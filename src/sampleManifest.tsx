@@ -67,6 +67,7 @@ import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simpl
 import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-sample/sampleSpec";
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
+import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -95,6 +96,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getParticleFireSampleSpec(),
+    getParticleSnowSampleSpec(),
     getPropertyFormattingSpec(),
     getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
