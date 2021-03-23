@@ -8,25 +8,25 @@ import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
-export interface CameraPoint {
-  point: Point3d;
+export interface CameraPathPoint {
+  eyePoint: Point3d;
   targetPoint: Point3d;
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class CameraPathApp {
 
-  public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport, keyDown: boolean) {
+  public static async animateCameraPath(cameraPoint: CameraPathPoint, viewport: Viewport, keyDown: boolean) {
     if (!keyDown)
-      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     else
-      (viewport.view as ViewState3d).setEyePoint(cameraPoint.point);
+      (viewport.view as ViewState3d).setEyePoint(cameraPoint.eyePoint);
     viewport.synchWithView();
     await CameraPathApp.delay();
   }
 
-  public static setViewFromPathPoint(cameraPoint: CameraPoint, viewport: Viewport) {
-    (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+  public static setViewFromPathPoint(cameraPoint: CameraPathPoint, viewport: Viewport) {
+    (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     viewport.synchWithView();
   }
 
@@ -70,7 +70,7 @@ export class CameraPath {
     });
     const line: LineString3d = LineString3d.create();
     currentPathCoordinates.forEach((item) => {
-      line.addPoint(new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z));
+      line.addPoint(new Point3d(item.eyePoint.x, item.eyePoint.y, item.eyePoint.z));
     });
     const path = CurveChainWithDistanceIndex.createCapture(Path.create(line));
     if (path !== undefined) {
@@ -94,14 +94,14 @@ export class CameraPath {
     return globalFractionOfPathTravelled;
   }
 
-  public getPointAndTargetPoint(fraction: number) {   // return CameraPoint
+  public getPathPoint(fraction: number) {   // return CameraPoint
     if (!this._path)
       throw new Error("Path was not loaded");
 
-    const point = this._path.fractionToPoint(fraction);
-    const targetPoint = this._getTargetPoint(point);
+    const eyePoint = this._path.fractionToPoint(fraction);
+    const targetPoint = this._getTargetPoint(eyePoint);
 
-    return { point, targetPoint };
+    return { eyePoint, targetPoint };
   }
 
   private _getTargetPoint(point: Point3d) {

@@ -65,8 +65,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       initialPositionStarted = false;
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: sliderNumber, isInitialPositionStarted: initialPositionStarted } }), () => {
       if (this.state.vp) {
-        const nextPointAndTargetPointFromPathFraction = this.state.cameraPath.getPointAndTargetPoint(this.state.attrValues.sliderValue);
-        CameraPathApp.setViewFromPathPoint(nextPointAndTargetPointFromPathFraction, this.state.vp);
+        const nextPathPoint = this.state.cameraPath.getPathPoint(this.state.attrValues.sliderValue);
+        CameraPathApp.setViewFromPathPoint(nextPathPoint, this.state.vp);
       }
     });
   };
@@ -118,8 +118,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         break;
       }
       const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, this.state.attrValues.currentSpeed / 30);
-      const nextPointAndTargetPointFromPathFraction = this.state.cameraPath.getPointAndTargetPoint(nextPathFraction);
-      await CameraPathApp.animateCameraPath(nextPointAndTargetPointFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
+      const nextPathPoint = this.state.cameraPath.getPathPoint(nextPathFraction);
+      await CameraPathApp.animateCameraPath(nextPathPoint, this.state.vp, this.state.attrValues.keyDown);
       this._updateTimeline(nextPathFraction);
     }
     if (pathCompleted) {
@@ -133,8 +133,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isMouseWheelAnimationActive: false, isInitialPositionStarted: false }, cameraPath }), () => {
       setTimeout(() => {
         if (this.state.vp) {
-          const nextPointAndTargetPointFromPathFraction = this.state.cameraPath.getPointAndTargetPoint(0);
-          CameraPathApp.setViewFromPathPoint(nextPointAndTargetPointFromPathFraction, this.state.vp);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(0);
+          CameraPathApp.setViewFromPathPoint(nextPathPoint, this.state.vp);
           this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: 0 } }));
         }
       }, 40);
@@ -206,8 +206,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         if (this.state.vp) {
           CameraPathApp.prepareView(this.state.vp);
           this.toolActivation();
-          const nextPointAndTargetPointFromPathFraction = this.state.cameraPath.getPointAndTargetPoint(0);
-          CameraPathApp.setViewFromPathPoint(nextPointAndTargetPointFromPathFraction, this.state.vp);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(0);
+          CameraPathApp.setViewFromPathPoint(nextPathPoint, this.state.vp);
         }
       });
     });
@@ -236,8 +236,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
             break;
           }
           const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, stepLength);
-          const nextPointAndTargetPointFromPathFraction = this.state.cameraPath.getPointAndTargetPoint(nextPathFraction);
-          await CameraPathApp.animateCameraPath(nextPointAndTargetPointFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(nextPathFraction);
+          await CameraPathApp.animateCameraPath(nextPathPoint, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
         }
       } else if (eventDeltaY < 0) {
@@ -248,8 +248,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
           const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, - stepLength);
-          const nextPointAndTargetPointFromPathFraction = this.state.cameraPath.getPointAndTargetPoint(nextPathFraction);
-          await CameraPathApp.animateCameraPath(nextPointAndTargetPointFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(nextPathFraction);
+          await CameraPathApp.animateCameraPath(nextPathPoint, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
         }
       }
