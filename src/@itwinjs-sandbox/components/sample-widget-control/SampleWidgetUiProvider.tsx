@@ -8,9 +8,9 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { SampleWidgetContainer } from "./SampleWidgetContainer";
 import { IModelSelector } from "../imodel-selector/IModelSelector";
 import { SampleIModels } from "../../SampleIModels";
+import { IModelSetup } from "@itwinjs-sandbox/imodel/IModelSetup";
 
 export interface IModelSelectorOptions {
-  modelList: SampleIModels[];
   iModelName: SampleIModels;
   onIModelChange: (iModelName: SampleIModels) => void;
 }
@@ -39,7 +39,7 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
           getWidgetContent: () => (<SampleWidgetContainer
             instructions={this._instructions}
             iModelSelector={this._iModelSelectorOptions &&
-              <IModelSelector iModelName={this._iModelSelectorOptions.iModelName} iModelNames={this._iModelSelectorOptions.modelList} onIModelChange={this._iModelSelectorOptions.onIModelChange} />
+              <IModelSelector iModelName={this._iModelSelectorOptions.iModelName} iModelNames={IModelSetup.getIModelList()} onIModelChange={this._iModelSelectorOptions.onIModelChange} />
             }>
             {this._widget}
           </SampleWidgetContainer>),

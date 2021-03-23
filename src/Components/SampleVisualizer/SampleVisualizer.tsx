@@ -6,7 +6,7 @@
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
-import { AuthorizationClient } from "@itwinjs-sandbox";
+import { AuthorizationClient, IModelSetup } from "@itwinjs-sandbox";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -48,19 +48,21 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
   useEffect(() => {
-    AuthorizationClient.initializeOidc().then(() => {
-      if (!iTwinViewerReady) {
-        iModelAppStartup()
-          .finally(() => setAppReady(true));
-      } else {
-        setAppReady(true);
-      }
-    });
+    AuthorizationClient.initializeOidc()
+      .then(() => {
+        if (!iTwinViewerReady) {
+          iModelAppStartup()
+            .finally(() => setAppReady(true));
+        } else {
+          setAppReady(true);
+        }
+      });
     return () => {
       setAppReady(false);
       iModelAppShutdown();
+      IModelSetup.resetIModelList();
     };
-  }, [iTwinViewerReady, transpileResult]);
+  }, [iTwinViewerReady, transpileResult, type]);
 
   // Set sample UI
   useEffect(() => {
