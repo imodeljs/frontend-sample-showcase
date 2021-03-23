@@ -5,18 +5,17 @@
 
 import React from "react";
 import "common/samples-common.scss";
-import { AuthorizedFrontendRequestContext, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import "./index.scss";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { SampleIModels, IModelSetup, SampleWidgetUiProvider, ViewSetup, AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
-import ReadSettingsApp from "./ReadSettingsApp";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { ReadSettingsWidget } from "./ReadSettingsWidget";
 
 interface ReadSettingsState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
 }
 
 export default class ReadSettingsUI extends React.Component<{}, ReadSettingsState> {
@@ -39,15 +38,15 @@ export default class ReadSettingsUI extends React.Component<{}, ReadSettingsStat
     return new SampleWidgetUiProvider(
       "Choose a Setting Name below to read that setting from the ProductSettingsService",
       <ReadSettingsWidget />
-    )
-  }
+    );
+  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {

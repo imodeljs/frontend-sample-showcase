@@ -16,7 +16,7 @@ export default class ReadSettingsApp {
   // Read settings from ProductSettingsService
   public static async readSettings(imodelId: string, projectId: string, settingName: string) {
     if (!ReadSettingsApp._requestContext) {
-      ReadSettingsApp._requestContext = await AuthorizedFrontendRequestContext.create()
+      ReadSettingsApp._requestContext = await AuthorizedFrontendRequestContext.create();
     }
     return IModelApp.settings.getSetting(ReadSettingsApp._requestContext, namespace, settingName, true, projectId, imodelId);
   }
@@ -25,7 +25,7 @@ export default class ReadSettingsApp {
   // However saveSetting method will work in your project with signed-in user, who has required permissions in the project.
   public static async saveSettings(imodelId: string, projectId: string, settingName: string, settingValue: string) {
     if (!ReadSettingsApp._requestContext) {
-      ReadSettingsApp._requestContext = await AuthorizedFrontendRequestContext.create()
+      ReadSettingsApp._requestContext = await AuthorizedFrontendRequestContext.create();
     }
     return IModelApp.settings.saveSetting(ReadSettingsApp._requestContext, settingValue, namespace, settingName, true, projectId, imodelId);
   }

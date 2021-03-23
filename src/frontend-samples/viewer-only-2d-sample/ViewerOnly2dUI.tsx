@@ -9,10 +9,10 @@ import { ControlsWidget } from "./ViewerOnly2dWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 
 interface ViewportOnly2dUIState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
 }
 
 export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2dUIState> {
@@ -20,7 +20,7 @@ export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2d
   constructor(props: any) {
     super(props);
     this.state = {};
-    IModelSetup.setIModelList([SampleIModels.House, SampleIModels.MetroStation])
+    IModelSetup.setIModelList([SampleIModels.House, SampleIModels.MetroStation]);
     this._changeIModel();
   }
 
@@ -36,15 +36,15 @@ export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2d
       "The picker below shows a list of 2D models in this iModel.",
       <ControlsWidget />,
       { iModelName, onIModelChange: this._changeIModel }
-    )
-  }
+    );
+  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {

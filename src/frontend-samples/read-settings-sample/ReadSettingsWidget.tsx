@@ -22,7 +22,7 @@ export const ReadSettingsWidget: React.FunctionComponent = () => {
         setSettingsInitialized(true);
       });
     }
-  }, [iModelConnection])
+  }, [iModelConnection]);
 
   const parseSettingsValue = (name: string, value: string) => {
     let _value;
@@ -34,7 +34,7 @@ export const ReadSettingsWidget: React.FunctionComponent = () => {
         _value = value || "";
     }
     return _value;
-  }
+  };
 
   // Handler to read external settings when name in dropdown changes
   const _handleSettingsChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -43,7 +43,7 @@ export const ReadSettingsWidget: React.FunctionComponent = () => {
       setSettingKey(settingKeyValue);
       ReadSettingsApp.readSettings(iModelConnection.iModelId!, iModelConnection.contextId!, settingKeyValue).then((response) => {
         setSettingResult(response);
-        setSettingValue(parseSettingsValue(settingKeyValue, response.setting))
+        setSettingValue(parseSettingsValue(settingKeyValue, response.setting));
       });
     }
   };
@@ -58,7 +58,7 @@ export const ReadSettingsWidget: React.FunctionComponent = () => {
   const _saveSettings = () => {
     if (iModelConnection) {
       setSaveInProgress(true);
-      ReadSettingsApp.saveSettings(iModelConnection.iModelId!, iModelConnection.contextId!, settingKey!, settingValue!).then((response) => {
+      ReadSettingsApp.saveSettings(iModelConnection.iModelId!, iModelConnection.contextId!, settingKey, settingValue!).then((response) => {
         setSettingResult(response);
         setSaveInProgress(false);
       });
@@ -78,7 +78,7 @@ export const ReadSettingsWidget: React.FunctionComponent = () => {
         </SmallText>
       </div>
     );
-  }
+  };
 
   // Display drawing and sheet options in separate sections.
   return !settingsInitialized ? (<div style={{ width: "395px" }}><Spinner size={SpinnerSize.Small} /> loading...</div>) : (
@@ -100,7 +100,4 @@ export const ReadSettingsWidget: React.FunctionComponent = () => {
     </>
   );
 };
-
-
-
 

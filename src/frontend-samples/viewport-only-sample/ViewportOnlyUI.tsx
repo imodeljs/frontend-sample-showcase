@@ -8,10 +8,10 @@ import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 
 interface ViewportOnlyUIState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
 }
 
 export default class ViewportOnlyUI extends React.Component<{}, ViewportOnlyUIState> {
@@ -34,15 +34,15 @@ export default class ViewportOnlyUI extends React.Component<{}, ViewportOnlyUISt
       "Use the toolbar at the top-right to navigate the model.",
       undefined,
       { iModelName, onIModelChange: this._changeIModel }
-    )
-  }
+    );
+  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {

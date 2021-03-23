@@ -27,10 +27,10 @@ export const ControlsWidget: React.FunctionComponent = () => {
       ViewerOnly2dApp.get2DModels(iModelConnection)
         .then((result) => {
           const { sheets, drawings } = result;
-          const drawingElements = getDrawingModelList(drawings)
-          const sheetElements = getSheetModelList(sheets)
+          const drawingElements = getDrawingModelList(drawings);
+          const sheetElements = getSheetModelList(sheets);
           setTwoDState({ sheets, drawings, sheetElements, drawingElements });
-          setSelected(drawingElements[0]?.key as string || undefined)
+          setSelected(drawingElements[0]?.key as string || undefined);
         });
     }
   }, [iModelConnection]);
@@ -43,7 +43,7 @@ export const ControlsWidget: React.FunctionComponent = () => {
         ViewerOnly2dApp.changeViewportView(iModelConnection, modelList[index]);
       }
     }
-  }, [iModelConnection, selected, twoDState.drawings, twoDState.sheets])
+  }, [iModelConnection, selected, twoDState.drawings, twoDState.sheets]);
 
   const getDrawingModelList = (models: ModelProps[]) => {
     const drawingViews: JSX.Element[] = [];
@@ -63,7 +63,7 @@ export const ControlsWidget: React.FunctionComponent = () => {
 
   /** When a model is selected in above list, get its view and switch to it.  */
   const _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelected(event.target.selectedOptions[0].value)
+    setSelected(event.target.selectedOptions[0].value);
   };
 
   // Display drawing and sheet options in separate sections.

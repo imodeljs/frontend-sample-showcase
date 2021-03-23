@@ -9,10 +9,10 @@ import { HyperModelingWidget } from "./HyperModelingWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 
 interface HyperModelingUIState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
 }
 
 export default class HyperModelingUI extends React.Component<{}, HyperModelingUIState> {
@@ -20,7 +20,7 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
   constructor(props: any) {
     super(props);
     this.state = {};
-    IModelSetup.setIModelList([SampleIModels.House])
+    IModelSetup.setIModelList([SampleIModels.House]);
     this._changeIModel();
   }
 
@@ -35,15 +35,15 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
     return new SampleWidgetUiProvider(
       "Click on a marker to toggle the section or return to the 3d view.",
       <HyperModelingWidget />
-    )
-  }
+    );
+  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {

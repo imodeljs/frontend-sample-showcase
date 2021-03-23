@@ -6,7 +6,7 @@
 import "common/samples-common.scss";
 import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
 import {
-  ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport, Viewport,
+  ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport,
 } from "@bentley/imodeljs-frontend";
 
 export default class RealityDataApp {

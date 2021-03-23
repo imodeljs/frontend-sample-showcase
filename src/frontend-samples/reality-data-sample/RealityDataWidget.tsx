@@ -23,7 +23,7 @@ export const RealityDataWidget: React.FunctionComponent = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   // When just the transparency bar is changed, only call update transparency
   useEffect(() => {
@@ -33,7 +33,7 @@ export const RealityDataWidget: React.FunctionComponent = () => {
         RealityDataApp.setRealityDataTransparency(vp, realityDataTransparencyState);
       }
     }
-  }, [iModelConnection, realityDataTransparencyState])
+  }, [iModelConnection, realityDataTransparencyState]);
 
   // When the button is toggled, display the realityModel and set its transparency to where the slider is currently at.
   useEffect(() => {
@@ -46,7 +46,7 @@ export const RealityDataWidget: React.FunctionComponent = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [iModelConnection, showRealityDataState])
+  }, [iModelConnection, showRealityDataState]);
 
   // Create the react components for the toggle
   const createToggle = (label: string, info: string) => {
@@ -57,7 +57,7 @@ export const RealityDataWidget: React.FunctionComponent = () => {
         {element}
       </>
     );
-  }
+  };
 
   // Create the react component for the transparency slider
   const createTransparencySlider = (label: string, info: string) => {
@@ -68,16 +68,16 @@ export const RealityDataWidget: React.FunctionComponent = () => {
         {element}
       </>
     );
-  }
+  };
 
   // Handle changes to the toggle.
   const _onChangeToggle = async (checked: boolean) => {
     setShowRealityDataState(checked);
-  }
+  };
 
   const _onChangeSlider = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRealityDataTransparencyState(Math.abs((Number(event.target.value) / 100) - 1));
-  }
+  };
 
   // Display drawing and sheet options in separate sections.
   return (
@@ -88,4 +88,4 @@ export const RealityDataWidget: React.FunctionComponent = () => {
       </div>
     </>
   );
-}
+};

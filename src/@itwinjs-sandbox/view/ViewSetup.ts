@@ -4,8 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { BackgroundMapProps, ColorDef } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { Point3d, Vector3d } from "@bentley/geometry-core";
+import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
 export type ViewType = "3D" | "2D";

@@ -2,17 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, defaultIModelList, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ViewAttributesWidget } from "./ViewAttributesWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 
 interface ViewAttributesUIState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
 }
 
 export default class ViewAttributesUI extends React.Component<{}, ViewAttributesUIState> {
@@ -35,15 +35,15 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
       "Use the toggle below for displaying the reality data in the model.",
       <ViewAttributesWidget />,
       { iModelName, onIModelChange: this._changeIModel }
-    )
-  }
+    );
+  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {
