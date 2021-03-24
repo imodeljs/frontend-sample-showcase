@@ -37,10 +37,6 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
     };
   }
 
-  /** A React method that is called when the sample is mounted (startup) */
-  public componentDidMount() {
-  }
-
   /** A React method that is called just before the sample is unmounted (dispose) */
   public componentWillUnmount() {
     SnowDecorationApp.dispose();
@@ -66,6 +62,21 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
   /** Configures active snow decorators (should only ever be one in this sample). */
   private configureEffect(params: Partial<SnowParams>) {
     SnowDecorationApp.getSnowDecorators().forEach((decorator) => {
+      // if there is an update to the, a texture may need to be updated too.
+      if (params.windVelocity !== undefined) {
+        const prevWind = decorator.getParams().windVelocity;
+        // test if the wind has changed
+        if (params.windVelocity !== prevWind) {
+          // test if the texture has changed
+          const url = SnowDecorationApp.testForTextureUpdate(this.state.propsName, params.windVelocity, prevWind);
+          if (url) {
+            // Set new texture
+            SnowDecorationApp.allocateTextureFromUrl(url).then((texture) => {
+              decorator.changeTexture(texture);
+            });
+          }
+        }
+      }
       decorator.configure(params);
     });
   }

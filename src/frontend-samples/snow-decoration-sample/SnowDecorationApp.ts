@@ -10,12 +10,11 @@ import "common/samples-common.scss";
 import { SnowDecorator, SnowParams } from "./SnowDecorator";
 
 // WILL BE REMOVED BEFORE PR IS OPEN
-const optionRainParticle: 1 | 2 = 1;
 const optionSnowSkyBox: 1 | 2 = 2;
 
 /** Props that describe a particular effect using the snow decorator. */
 export interface SnowProps {
-  textureUrl: string;
+  textureUrl: string | ((wind: number) => string);
   skyStyle: SkyBoxProps;
   params: SnowParams;
 }
@@ -62,7 +61,8 @@ export default class SnowDecorationApp {
 
     // Create a new decorator.
     const dimensions = SnowDecorationApp.calculateDimensions(viewport);
-    const texture = await SnowDecorationApp.allocateTextureFromUrl(props.textureUrl);
+    const textureUrl = SnowDecorationApp.getUrlString(props.textureUrl, props.params.windVelocity);
+    const texture = await SnowDecorationApp.allocateTextureFromUrl(textureUrl);
     // The decorator takes ownership of the texture.
     const snow = new SnowDecorator(dimensions, props.params, texture);
 
@@ -103,6 +103,26 @@ export default class SnowDecorationApp {
     };
   }
 
+  /** Test if the texture for the decorator has changed due to wind strength. */
+  public static testForTextureUpdate(propsName: string, currentWind: number, prevWind: number): string | false {
+    const props = SnowDecorationApp.predefinedProps.get(propsName)!;
+    if (typeof props.textureUrl === "string")
+      return false;
+    else {
+      const current = props.textureUrl(currentWind);
+      const previous = props.textureUrl(prevWind);
+      return (current !== previous) ? current : false;
+    }
+  }
+
+  /** Returns the url string from the predefined props. */
+  public static getUrlString(url: string | ((wind: number) => string), wind: number): string {
+    if (typeof url === "string")
+      return url;
+    else
+      return url(wind);
+  }
+
   /** Predefined props that will act as a base when creating a Snow Decorator. */
   public static predefinedProps = new Map<string, SnowProps>(
     [
@@ -132,17 +152,49 @@ export default class SnowDecorationApp {
         },
       ],
       [
-        "Rain",
+        "Rain (Dynamic)",
         {
           params: {
             particleDensity: 0.0026,
-            sizeRange: Range1d.createXX(5, 8),
+            sizeRange: Range1d.createXX(10, 15),
             transparencyRange: Range1d.createXX(0, 70),
             velocityRange: new Range2d(-30, 700, 30, 1000),
             accelerationRange: new Range2d(-1, -1, 1, 10),
             windVelocity: 0,
           },
-          textureUrl: optionRainParticle === 1 ? "./particle_rain.png" : "./particle_rain2.png",
+          textureUrl: (wind: number) => {
+            const low = 100, high = 400;
+            let url = "./particle_rain(0).png";
+            if (wind > low)
+              url = "./particle_rain(-22.5).png";
+            if (wind > high)
+              url = "./particle_rain(-45).png";
+            if (wind < -low)
+              url = "./particle_rain(22.5).png";
+            if (wind < -high)
+              url = "./particle_rain(45).png";
+            return url;
+          },
+          skyStyle: {
+            groundColor: 0x00697D62,
+            nadirColor: 0x0053604F,
+            skyColor: 0x009E7853,
+            zenithColor: 0x00775839,
+          },
+        },
+      ],
+      [
+        "Rain (Static)",
+        {
+          params: {
+            particleDensity: 0.0026,
+            sizeRange: Range1d.createXX(5, 9),
+            transparencyRange: Range1d.createXX(0, 70),
+            velocityRange: new Range2d(-30, 700, 30, 1000),
+            accelerationRange: new Range2d(-1, -1, 1, 10),
+            windVelocity: 0,
+          },
+          textureUrl: "./particle_rain2.png",
           skyStyle: {
             groundColor: 0x00697D62,
             nadirColor: 0x0053604F,

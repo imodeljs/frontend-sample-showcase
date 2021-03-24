@@ -76,6 +76,12 @@ export class SnowDecorator implements Decorator {
       this._particles.push(this.emit(true));
   }
 
+  /** Replaces the textures used by the decorator. */
+  public changeTexture(texture: RenderTexture | undefined) {
+    this.dispose();
+    this._texture = texture;
+  }
+
   /** Invoked when this decorator is to be destroyed. */
   public dispose() {
     this._texture = dispose(this._texture);
@@ -111,6 +117,11 @@ export class SnowDecorator implements Decorator {
   /** Removes, and re-emits all particles. */
   public resetParticles() {
     this._particles.length = 0;
+  }
+
+  /** Returns a copy of the params.  Do not attempt to change directly.  To change, use the configure method. */
+  public getParams(): SnowParams {
+    return this._cloneParams(this._params);
   }
 
   /** Creates a deep copy of the params to prevent them being updated when this decorator is configured. */
