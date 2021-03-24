@@ -9,7 +9,7 @@ import { ControlsWidget } from "./ViewerOnly2dWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
 import { ModelProps } from "@bentley/imodeljs-common";
-export interface TwoDState {
+interface ModelLists {
   sheets: ModelProps[];
   drawings: ModelProps[];
 }
@@ -19,7 +19,7 @@ interface ViewportOnly2dUIState {
   contextId?: string;
   iModelId?: string;
   viewState?: ViewState;
-  modelLists: TwoDState;
+  modelLists: ModelLists;
 }
 
 export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2dUIState> {
