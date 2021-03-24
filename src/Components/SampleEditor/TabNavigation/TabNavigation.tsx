@@ -12,15 +12,9 @@ export interface TabNavigationProps {
   onShowReadme: () => void;
 }
 
-export interface TabNavigationState {
-  error?: Error;
-  result?: string;
-}
-
 // await FeatureToggleClient.initialize();
 
 export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadme, onRunCompleted, onShowReadme }) => {
-  const [tabNavState, setTabNavState] = useState<TabNavigationState>({});
   const [executable, setExecutable] = useState<boolean>();
 
   useEffect(() => {
@@ -30,30 +24,16 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
       });
   }, []);
 
-  useEffect(() => {
-    if (!tabNavState.error && tabNavState.result) {
-      onRunCompleted(tabNavState.result);
-    }
-  });
-
-  const _onRunStarted = useCallback(() => {
-    setTabNavState({ error: undefined, result: undefined });
-  }, [setTabNavState]);
-
-  const _onBundleError = useCallback((error: Error) => {
-    setTabNavState({ error, result: undefined });
-  }, [setTabNavState]);
-
   const _onRunCompleted = useCallback((blob: string) => {
-    setTabNavState({ error: undefined, result: blob });
-  }, [setTabNavState]);
+    onRunCompleted(blob);
+  }, [onRunCompleted]);
 
   return (
     <TabNav showClose={false}>
       <TabNavigationAction onClick={onShowReadme}>
         <div className="icon icon-info" style={showReadme ? { display: "inline-block", color: "white" } : { display: "inline-block" }}></div>
       </TabNavigationAction>
-      {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={_onRunStarted} onBundleError={_onBundleError} onRunCompleted={_onRunCompleted} buildOnRender={false} />}
+      {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={() => { }} onBundleError={() => { }} onRunCompleted={_onRunCompleted} buildOnRender={false} />}
     </TabNav>
   );
 

@@ -42,8 +42,7 @@ const iModelAppStartup = async (): Promise<void> => {
     .catch();
 };
 
-export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = (props) => {
-  const { iTwinViewerReady, type, transpileResult, iModelName, iModelSelector } = props;
+export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
   const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
