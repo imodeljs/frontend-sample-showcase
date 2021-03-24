@@ -8,25 +8,25 @@ import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
-export interface CameraPoint {
-  point: Point3d;
-  direction: Vector3d;
+export interface CameraPathPoint {
+  eyePoint: Point3d;
+  targetPoint: Point3d;
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class CameraPathApp {
 
-  public static async animateCameraPath(cameraPoint: CameraPoint, viewport: Viewport, keyDown: boolean) {
+  public static async animateCameraPath(cameraPoint: CameraPathPoint, viewport: Viewport, keyDown: boolean) {
     if (!keyDown)
-      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     else
-      (viewport.view as ViewState3d).setEyePoint(cameraPoint.point);
+      (viewport.view as ViewState3d).setEyePoint(cameraPoint.eyePoint);
     viewport.synchWithView();
     await CameraPathApp.delay();
   }
 
-  public static setViewFromPointAndDirection(cameraPoint: CameraPoint, viewport: Viewport) {
-    (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.point, cameraPoint.direction.cloneAsPoint3d(), new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+  public static setViewFromPathPoint(cameraPoint: CameraPathPoint, viewport: Viewport) {
+    (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     viewport.synchWithView();
   }
 
@@ -35,19 +35,25 @@ export default class CameraPathApp {
     return new Promise((resolve) => setTimeout(resolve, Math.pow(10, -4)));
   }
 
+  // Turn the viewport camera on
+  public static async prepareView( vp: Viewport) {
+    vp.turnCameraOn();
+    vp.synchWithView();
+  }
+
 }
 
 // A CameraPath consists of a CurveChain representing the camera location and an array
-// of direction vectors representing the camera direction at each point.
+// of TargetPoints representing the camera TargetPoint at each point.
 export class CameraPath {
   private _path: CurveChainWithDistanceIndex | undefined;
-  private _directions: Vector3d[] = [];
+  private _targetPoints: Point3d[] = [];
 
   // Build a camera path by reading the raw data
   public static createByLoadingFromJson(pathName: string) {  // return the cameraPath object
     const cameraPath = new CameraPath();
     let currentPathCoordinates: typeof trainPathCoordinates = [];
-    const directions: Vector3d[] = [];
+    const targetPoints: Point3d[] = [];
     switch (pathName) {
       case "TrainPath":
         currentPathCoordinates = trainPathCoordinates;
@@ -60,16 +66,16 @@ export class CameraPath {
     }
 
     currentPathCoordinates.forEach((item) => {
-      directions.push(new Vector3d(item.viewDirection.x, item.viewDirection.y, item.viewDirection.z));
+      targetPoints.push(new Point3d(item.targetPoint.x, item.targetPoint.y, item.targetPoint.z));
     });
     const line: LineString3d = LineString3d.create();
     currentPathCoordinates.forEach((item) => {
-      line.addPoint(new Point3d(item.cameraPoint.x, item.cameraPoint.y, item.cameraPoint.z));
+      line.addPoint(new Point3d(item.eyePoint.x, item.eyePoint.y, item.eyePoint.z));
     });
     const path = CurveChainWithDistanceIndex.createCapture(Path.create(line));
     if (path !== undefined) {
       cameraPath._path = path;
-      cameraPath._directions = directions;
+      cameraPath._targetPoints = targetPoints;
     }
     return cameraPath;
   }
@@ -88,17 +94,17 @@ export class CameraPath {
     return globalFractionOfPathTravelled;
   }
 
-  public getPointAndDirection(fraction: number) {   // return CameraPoint
+  public getPathPoint(fraction: number) {   // return CameraPoint
     if (!this._path)
       throw new Error("Path was not loaded");
 
-    const point = this._path.fractionToPoint(fraction);
-    const direction = this._getDirection(point);
+    const eyePoint = this._path.fractionToPoint(fraction);
+    const targetPoint = this._getTargetPoint(eyePoint);
 
-    return { point, direction };
+    return { eyePoint, targetPoint };
   }
 
-  private _getDirection(point: Point3d) {
+  private _getTargetPoint(point: Point3d) {
     if (!this._path)
       throw new Error("Path was not loaded");
 
@@ -111,14 +117,14 @@ export class CameraPath {
     const numPoints = lineString.packedPoints.length;
     const { segmentIndex, segmentFraction } = this._getSegmentIndexAndLocalFraction(detail, numPoints);
 
-    // If we are standing on the last point, just return the last direction
+    // If we are standing on the last point, just return the last point
     if (numPoints - 1 === segmentIndex)
-      return new Vector3d(this._directions[segmentIndex].x, this._directions[segmentIndex].y, this._directions[segmentIndex].z);
+      return new Point3d(this._targetPoints[segmentIndex].x, this._targetPoints[segmentIndex].y, this._targetPoints[segmentIndex].z);
 
-    // We are in between two points of the path, interpolate between the two directions
-    const prevDirection = this._directions[segmentIndex];
-    const nextDirection = this._directions[segmentIndex + 1];
-    return prevDirection.interpolate(segmentFraction, nextDirection);
+    // We are in between two points of the path, interpolate between the two points
+    const prevTargetPoint = this._targetPoints[segmentIndex];
+    const nextTargetPoint= this._targetPoints[segmentIndex + 1];
+    return prevTargetPoint.interpolate(segmentFraction, nextTargetPoint);
   }
 
   private _getSegmentIndexAndLocalFraction(detail: CurveLocationDetail, numPoints: number) {
