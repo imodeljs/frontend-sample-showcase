@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
 import RealityDataApp from "./RealityDataApp";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
@@ -16,8 +16,8 @@ export interface RealityDataWidgetProps {
 
 export const RealityDataWidget: React.FunctionComponent<RealityDataWidgetProps> = ({ showRealityData, realityDataTransparency }) => {
   const iModelConnection = useActiveIModelConnection();
-  const [showRealityDataState, setShowRealityDataState] = React.useState<boolean>(true);
-  const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<number>(0);
+  const [showRealityDataState, setShowRealityDataState] = React.useState<boolean>(showRealityData);
+  const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<number>(realityDataTransparency);
 
   // When just the transparency bar is changed, only call update transparency
   useEffect(() => {
@@ -27,7 +27,7 @@ export const RealityDataWidget: React.FunctionComponent<RealityDataWidgetProps> 
         RealityDataApp.setRealityDataTransparency(vp, realityDataTransparencyState);
       }
     }
-  }, [iModelConnection, realityDataTransparencyState, realityDataTransparency]);
+  }, [iModelConnection, realityDataTransparencyState]);
 
   // When the button is toggled, display the realityModel and set its transparency to where the slider is currently at.
   useEffect(() => {
@@ -40,7 +40,7 @@ export const RealityDataWidget: React.FunctionComponent<RealityDataWidgetProps> 
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [iModelConnection, showRealityDataState, showRealityData]);
+  }, [iModelConnection, showRealityDataState]);
 
   // Create the react components for the toggle
   const createToggle = (label: string, info: string) => {

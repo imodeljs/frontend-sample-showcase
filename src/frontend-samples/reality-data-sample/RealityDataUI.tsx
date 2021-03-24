@@ -47,7 +47,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
 
   private _oniModelReady = async (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      await RealityDataApp.toggleRealityModel(true, _vp, _vp.iModel);
+      await RealityDataApp.toggleRealityModel(this.state.showRealityData, _vp, _vp.iModel);
       await RealityDataApp.setRealityDataTransparency(_vp, this.state.realityDataTransparency);
     });
 
