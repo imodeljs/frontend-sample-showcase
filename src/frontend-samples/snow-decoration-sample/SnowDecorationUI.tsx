@@ -19,6 +19,7 @@ interface ParticleSampleState {
   wind: number;
   particleDensity: number;
 }
+/** The React props for this UI component */
 interface ParticleSampleProps {
   iModelName: string;
   iModelSelector: React.ReactNode;
@@ -77,6 +78,7 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
           }
         }
       }
+      // Configure the decorator
       decorator.configure(params);
     });
   }

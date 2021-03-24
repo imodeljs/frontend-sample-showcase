@@ -9,9 +9,6 @@ import { imageElementFromUrl, IModelApp, Viewport } from "@bentley/imodeljs-fron
 import "common/samples-common.scss";
 import { SnowDecorator, SnowParams } from "./SnowDecorator";
 
-// WILL BE REMOVED BEFORE PR IS OPEN
-const optionSnowSkyBox: 1 | 2 = 2;
-
 /** Props that describe a particular effect using the snow decorator. */
 export interface SnowProps {
   textureUrl: string | ((wind: number) => string);
@@ -139,13 +136,8 @@ export default class SnowDecorationApp {
           },
           textureUrl: "./particle_snow.png",
           skyStyle: {
-            ...(optionSnowSkyBox === 1 ? {
-              groundColor: 0x00697D62,
-              nadirColor: 0x0053604F,
-            } : {
-              groundColor: 0x00ACACAC,
-              nadirColor: 0x00E3E3E3,
-            }),
+            groundColor: 0x00697D62,
+            nadirColor: 0x0053604F,
             skyColor: 0x00C6BC89,
             zenithColor: 0x009D775F,
           },
