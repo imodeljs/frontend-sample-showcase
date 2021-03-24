@@ -7,12 +7,7 @@ import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ControlsWidget } from "./ViewerOnly2dWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import ViewerOnly2dApp from "./ViewerOnly2dApp";
-import { ModelProps } from "@bentley/imodeljs-common";
-interface ModelLists {
-  sheets: ModelProps[];
-  drawings: ModelProps[];
-}
+import ViewerOnly2dApp, { ModelLists } from "./ViewerOnly2dApp";
 
 interface ViewportOnly2dUIState {
   iModelName?: SampleIModels;

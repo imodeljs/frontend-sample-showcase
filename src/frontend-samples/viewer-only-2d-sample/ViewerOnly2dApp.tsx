@@ -7,9 +7,14 @@ import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ViewCreator2d } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
 
+export interface ModelLists {
+  sheets: ModelProps[];
+  drawings: ModelProps[];
+}
+
 export default class ViewerOnly2dApp {
 
-  public static async get2DModels(imodel: IModelConnection): Promise<{ drawings: ModelProps[], sheets: ModelProps[] }> {
+  public static async get2DModels(imodel: IModelConnection): Promise<ModelLists> {
     const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
     const drawingViews: ModelProps[] = [];
     const sheetViews: ModelProps[] = [];
