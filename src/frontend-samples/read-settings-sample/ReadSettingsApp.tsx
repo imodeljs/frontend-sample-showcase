@@ -5,56 +5,31 @@
 
 import "common/samples-common.scss";
 import { AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
-import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
-import { IModelQuery } from "@bentley/imodelhub-client";
-
-interface ProjectContext {
-  projectId: string;
-  imodelId: string;
-  requestContext: AuthorizedFrontendRequestContext;
-}
+import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 
 const namespace = "showcase";
 
 export default class ReadSettingsApp {
 
-  public static projectContext: ProjectContext;
+  private static _requestContext: AuthorizedClientRequestContext;
 
-  // This method serves to query projectId of project where iModel is stored in this example,
-  // however in real application you might have it upfront already
-  public static async getIModelInfo(iModelName: string): Promise<ProjectContext> {
-    // In testdrive the projectName matches iModelName.  That's not true in general.
-    const projectName = iModelName;
-    const connectClient = new ContextRegistryClient();
-    let project: Project;
-
-    const context = await AuthorizedFrontendRequestContext.create();
-
-    try {
-      project = await connectClient.getProject(context, { $filter: `Name+eq+'${iModelName}'` });
-    } catch (e) {
-      throw new Error(`Project with name "${projectName}" does not exist`);
+  private static async getRequestContext() {
+    if (!ReadSettingsApp._requestContext) {
+      ReadSettingsApp._requestContext = await AuthorizedFrontendRequestContext.create();
     }
-
-    const imodelQuery = new IModelQuery();
-    imodelQuery.byName(iModelName);
-    const imodels = await IModelApp.iModelClient.iModels.get(context, project.wsgId, imodelQuery);
-    if (imodels.length === 0)
-      throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
-
-    return { projectId: project.wsgId, imodelId: imodels[0].wsgId, requestContext: context };
+    return ReadSettingsApp._requestContext;
   }
 
   // Read settings from ProductSettingsService
-  public static async readSettings(settingName: string) {
-    const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
-    return IModelApp.settings.getSetting(requestContext, namespace, settingName, true, projectId, imodelId);
+  public static async readSettings(imodelId: string, projectId: string, settingName: string) {
+    const context = await this.getRequestContext();
+    return IModelApp.settings.getSetting(context, namespace, settingName, true, projectId, imodelId);
   }
 
   // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden.
   // However saveSetting method will work in your project with signed-in user, who has required permissions in the project.
-  public static async saveSettings(settingName: string, settingValue: string) {
-    const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
-    return IModelApp.settings.saveSetting(requestContext, settingValue, namespace, settingName, true, projectId, imodelId);
+  public static async saveSettings(imodelId: string, projectId: string, settingName: string, settingValue: string) {
+    const context = await this.getRequestContext();
+    return IModelApp.settings.saveSetting(context, settingValue, namespace, settingName, true, projectId, imodelId);
   }
 }

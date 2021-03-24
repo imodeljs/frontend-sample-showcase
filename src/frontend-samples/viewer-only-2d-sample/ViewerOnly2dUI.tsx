@@ -2,25 +2,32 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default2DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default2DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ControlsWidget } from "./ViewerOnly2dWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import ViewerOnly2dApp, { ModelLists } from "./ViewerOnly2dApp";
 
 interface ViewportOnly2dUIState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
+  modelLists: ModelLists;
 }
 
 export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2dUIState> {
 
   constructor(props: any) {
     super(props);
-    this.state = {};
-    IModelSetup.setIModelList([SampleIModels.House, SampleIModels.MetroStation])
+    this.state = {
+      modelLists: {
+        sheets: [],
+        drawings: [],
+      },
+    };
+    IModelSetup.setIModelList([SampleIModels.House, SampleIModels.MetroStation]);
     this._changeIModel();
   }
 
@@ -34,17 +41,18 @@ export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2d
   private _getSampleUi = (iModelName: SampleIModels) => {
     return new SampleWidgetUiProvider(
       "The picker below shows a list of 2D models in this iModel.",
-      <ControlsWidget />,
+      <ControlsWidget drawings={this.state.modelLists.drawings} sheets={this.state.modelLists.sheets} />,
       { iModelName, onIModelChange: this._changeIModel }
-    )
-  }
+    );
+  };
 
-  private _oniModelReady = (iModelConnection: IModelConnection) => {
-    ViewSetup.getDefaultView(iModelConnection)
-      .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+  private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const result = await ViewerOnly2dApp.get2DModels(iModelConnection);
+    const { sheets, drawings } = result;
+    this.setState({ modelLists: { sheets, drawings } });
+    const viewState = await ViewerOnly2dApp.createDefaultViewFor2dModel(iModelConnection, drawings[0]);
+    this.setState({ viewState });
+  };
 
   /** The sample's render method */
   public render() {

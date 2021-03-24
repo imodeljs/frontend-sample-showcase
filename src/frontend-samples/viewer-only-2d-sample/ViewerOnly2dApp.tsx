@@ -6,11 +6,15 @@
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ViewCreator2d } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
-import { ViewSetup } from "api/viewSetup";
+
+export interface ModelLists {
+  sheets: ModelProps[];
+  drawings: ModelProps[];
+}
 
 export default class ViewerOnly2dApp {
 
-  public static async get2DModels(imodel: IModelConnection): Promise<{ drawings: ModelProps[], sheets: ModelProps[] }> {
+  public static async get2DModels(imodel: IModelConnection): Promise<ModelLists> {
     const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
     const drawingViews: ModelProps[] = [];
     const sheetViews: ModelProps[] = [];
@@ -25,16 +29,16 @@ export default class ViewerOnly2dApp {
 
   /** When a model is selected in above list, get its view and switch to it.  */
   public static async changeViewportView(imodel: IModelConnection, newModel: ModelProps) {
-    const vp = IModelApp.viewManager.selectedView;
-    const vpAspect = ViewSetup.getAspectRatio();
+    const vp = IModelApp.viewManager.selectedView!;
+    const targetView = await ViewerOnly2dApp.createDefaultViewFor2dModel(imodel, newModel);
+    if (vp && targetView)
+      vp.changeView(targetView);
+    else
+      alert("Invalid View Detected!");
+  }
 
-    if (vp && vpAspect) {
-      const viewCreator = new ViewCreator2d(imodel);
-      const targetView = await viewCreator.createViewForModel(newModel.id!, newModel.classFullName, { vpAspect });
-      if (targetView)
-        vp.changeView(targetView);
-      else
-        alert("Invalid View Detected!");
-    }
+  public static async createDefaultViewFor2dModel(imodel: IModelConnection, newModel: ModelProps) {
+    const viewCreator = new ViewCreator2d(imodel);
+    return viewCreator.createViewForModel(newModel.id!, newModel.classFullName);
   }
 }

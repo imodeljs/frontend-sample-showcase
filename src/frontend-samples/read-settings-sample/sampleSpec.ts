@@ -11,10 +11,12 @@ export function getReadSettingsSpec(): SampleSpec {
     name: "read-settings-sample",
     label: "Read Settings",
     image: "read-settings-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp") },
       { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI"), entry: true },
+      { name: "ReadSettingsWidget.tsx", import: import("!!raw-loader!./ReadSettingsWidget") },
       { name: "index.scss", import: import("!!raw-loader!./index.scss") },
     ],
     modelList: [SampleIModels.BayTown],

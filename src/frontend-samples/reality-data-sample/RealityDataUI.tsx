@@ -9,10 +9,10 @@ import { RealityDataWidget } from "./RealityDataWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 
 interface RealityDataUIState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
 }
 
 export default class RealityDataUI extends React.Component<{}, RealityDataUIState> {
@@ -20,7 +20,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
   constructor(props: any) {
     super(props);
     this.state = {};
-    IModelSetup.setIModelList([SampleIModels.ExtonCampus, SampleIModels.MetroStation])
+    IModelSetup.setIModelList([SampleIModels.ExtonCampus, SampleIModels.MetroStation]);
     this._changeIModel();
   }
 
@@ -36,15 +36,15 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
       "Use the toggle below for displaying the reality data in the model.",
       <RealityDataWidget />,
       { iModelName, onIModelChange: this._changeIModel }
-    )
-  }
+    );
+  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {

@@ -17,24 +17,24 @@ export interface TabNavigationState {
   result?: string;
 }
 
-//await FeatureToggleClient.initialize();
+// await FeatureToggleClient.initialize();
 
 export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadme, onRunCompleted, onShowReadme }) => {
-  const [tabNavState, setTabNavState] = useState<TabNavigationState>({})
+  const [tabNavState, setTabNavState] = useState<TabNavigationState>({});
   const [executable, setExecutable] = useState<boolean>();
 
   useEffect(() => {
     FeatureToggleClient.initialize()
       .then(() => {
         setExecutable(FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor));
-      })
-  }, [])
+      });
+  }, []);
 
   useEffect(() => {
     if (!tabNavState.error && tabNavState.result) {
       onRunCompleted(tabNavState.result);
     }
-  })
+  });
 
   const _onRunStarted = useCallback(() => {
     setTabNavState({ error: undefined, result: undefined });
@@ -57,4 +57,4 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
     </TabNav>
   );
 
-}
+};

@@ -6,15 +6,15 @@ import * as React from "react";
 import { ToolbarButtonProvider } from "./ToolbarButtonUi";
 import "common/samples-common.scss";
 import "common/AppUi/app-ui.scss";
-import { AuthorizationClient, default3DAppUi, defaultIModelList, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DAppUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { Viewer } from "@bentley/itwin-viewer-react";
 
 interface ToolbarButtonSampleState {
-  iModelName?: SampleIModels,
-  contextId?: string,
-  iModelId?: string,
-  viewState?: ViewState,
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
 }
 
 export default class ToolbarButtonSample extends React.Component<{}, ToolbarButtonSampleState> {
@@ -38,15 +38,15 @@ export default class ToolbarButtonSample extends React.Component<{}, ToolbarButt
       "Press the Lightbulb button tool at the top of the screen.",
       undefined,
       { iModelName, onIModelChange: this._changeIModel }
-    )
-  }
+    );
+  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
-      })
-  }
+        this.setState({ viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {
