@@ -14,8 +14,8 @@ export function getParticleSnowSampleSpec(): SampleSpec {
     customModelList: [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "SnowDecorationApp.tsx", import: import("!!raw-loader!./SnowDecorationApp") },
-      { name: "SnowDecorationUI.tsx", import: import("!!raw-loader!./SnowDecorationUI"), entry: true },
+      { name: "SnowDecorationApp.tsx", import: import("!!raw-loader!./SnowDecorationApp"), entry: true },
+      { name: "SnowDecorationUI.tsx", import: import("!!raw-loader!./SnowDecorationUI") },
       { name: "SnowDecorator.ts", import: import("!!raw-loader!./SnowDecorator") },
     ],
     type: "SnowDecorationUI.tsx",
