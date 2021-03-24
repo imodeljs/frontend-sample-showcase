@@ -1,25 +1,51 @@
 import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import ViewerOnly2dApp from "./ViewerOnly2dApp";
-import { TwoDState } from "./ViewerOnly2dUI";
+import { ModelProps } from "@bentley/imodeljs-common";
 
 export interface ControlsWidgetProps {
-  twoDState: TwoDState;
+  sheets: ModelProps[];
+  drawings: ModelProps[];
 }
 
-export const ControlsWidget: React.FunctionComponent<ControlsWidgetProps> = ({ twoDState }) => {
+export const ControlsWidget: React.FunctionComponent<ControlsWidgetProps> = ({ sheets, drawings }) => {
   const iModelConnection = useActiveIModelConnection();
   const [selected, setSelected] = React.useState<string | undefined>(undefined);
+  const [drawingElements, setDrawingElements] = React.useState<JSX.Element[]>([]);
+  const [sheetElements, setSheetElements] = React.useState<JSX.Element[]>([]);
 
   useEffect(() => {
     if (selected) {
       const index = Number.parseInt(selected, 10);
-      const modelList = selected.includes("sheet") ? twoDState.sheets : twoDState.drawings;
+      const modelList = selected.includes("sheet") ? sheets : drawings;
       if (iModelConnection) {
         ViewerOnly2dApp.changeViewportView(iModelConnection, modelList[index]);
       }
     }
-  }, [iModelConnection, selected, twoDState.drawings, twoDState.sheets]);
+  }, [iModelConnection, selected, drawings, sheets]);
+
+  useEffect(() => {
+    const drawingEl = _getDrawingModelList(drawings);
+    setDrawingElements(drawingEl);
+    const sheetsEl = _getSheetModelList(sheets);
+    setSheetElements(sheetsEl);
+  }, [sheets, drawings]);
+
+  const _getDrawingModelList = (models: ModelProps[]) => {
+    const drawingViews: JSX.Element[] = [];
+    models.forEach((model: ModelProps, index) => {
+      drawingViews.push(<option key={`${index}drawing`} value={`${index}drawing`}>{model.name}</option>);
+    });
+    return drawingViews;
+  };
+
+  const _getSheetModelList = (models: ModelProps[]) => {
+    const sheetViews: JSX.Element[] = [];
+    models.forEach((model: ModelProps, index) => {
+      sheetViews.push(<option key={`${index}sheet`} value={`${index}sheet`}>{model.name}</option>);
+    });
+    return sheetViews;
+  };
 
   /** When a model is selected in above list, get its view and switch to it.  */
   const _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -33,11 +59,11 @@ export const ControlsWidget: React.FunctionComponent<ControlsWidgetProps> = ({ t
         <span>Select Drawing or Sheet:</span>
         <div className="select-up">
           <select className="uicore-inputs-select 2d-model-selector" onChange={_handleSelection} value={selected}>
-            {twoDState.drawingElements.length > 0 && (
-              <optgroup label="Drawings">{twoDState.drawingElements}</optgroup>
+            {drawingElements.length > 0 && (
+              <optgroup label="Drawings">{drawingElements}</optgroup>
             )}
-            {twoDState.sheetElements.length > 0 && (
-              <optgroup label="Sheets">{twoDState.sheetElements}</optgroup>
+            {sheetElements.length > 0 && (
+              <optgroup label="Sheets">{sheetElements}</optgroup>
             )}
           </select>
         </div>
