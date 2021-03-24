@@ -6,6 +6,7 @@
 import "common/samples-common.scss";
 import { IModelApp, IModelConnection, ViewCreator2d } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
+import { ViewSetup } from "@itwinjs-sandbox";
 
 export interface ModelLists {
   sheets: ModelProps[];
@@ -39,6 +40,7 @@ export default class ViewerOnly2dApp {
 
   public static async createDefaultViewFor2dModel(imodel: IModelConnection, newModel: ModelProps) {
     const viewCreator = new ViewCreator2d(imodel);
-    return viewCreator.createViewForModel(newModel.id!, newModel.classFullName);
+    const vpAspect = ViewSetup.getAspectRatio();
+    return viewCreator.createViewForModel(newModel.id!, newModel.classFullName, { vpAspect });
   }
 }
