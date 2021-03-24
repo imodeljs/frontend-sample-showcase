@@ -6,20 +6,26 @@ import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, Sa
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { RealityDataWidget } from "./RealityDataWidget";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
+import RealityDataApp from "./RealityDataApp";
 
 interface RealityDataUIState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
   viewState?: ViewState;
+  showRealityData: boolean;
+  realityDataTransparency: number;
 }
 
 export default class RealityDataUI extends React.Component<{}, RealityDataUIState> {
 
   constructor(props: any) {
     super(props);
-    this.state = {};
+    this.state = {
+      showRealityData: true,
+      realityDataTransparency: 0,
+    };
     IModelSetup.setIModelList([SampleIModels.ExtonCampus, SampleIModels.MetroStation]);
     this._changeIModel();
   }
@@ -34,12 +40,17 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
   private _getSampleUi = (iModelName: SampleIModels) => {
     return new SampleWidgetUiProvider(
       "Use the toggle below for displaying the reality data in the model.",
-      <RealityDataWidget />,
+      <RealityDataWidget showRealityData={this.state.showRealityData} realityDataTransparency={this.state.realityDataTransparency} />,
       { iModelName, onIModelChange: this._changeIModel }
     );
   };
 
-  private _oniModelReady = (iModelConnection: IModelConnection) => {
+  private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
+      await RealityDataApp.toggleRealityModel(true, _vp, _vp.iModel);
+      await RealityDataApp.setRealityDataTransparency(_vp, this.state.realityDataTransparency);
+    });
+
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
         this.setState({ viewState });

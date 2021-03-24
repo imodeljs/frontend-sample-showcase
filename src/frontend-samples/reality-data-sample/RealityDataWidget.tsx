@@ -9,21 +9,15 @@ import { Toggle } from "@bentley/ui-core";
 import RealityDataApp from "./RealityDataApp";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 
-export const RealityDataWidget: React.FunctionComponent = () => {
+export interface RealityDataWidgetProps {
+  showRealityData: boolean;
+  realityDataTransparency: number;
+}
+
+export const RealityDataWidget: React.FunctionComponent<RealityDataWidgetProps> = ({ showRealityData, realityDataTransparency }) => {
   const iModelConnection = useActiveIModelConnection();
   const [showRealityDataState, setShowRealityDataState] = React.useState<boolean>(true);
   const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<number>(0);
-
-  // Only runs once because of the empty array passed as dependency [], similar to componentDidMount
-  useEffect(() => {
-    if (iModelConnection) {
-      IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-        await RealityDataApp.toggleRealityModel(true, _vp, _vp.iModel);
-        await RealityDataApp.setRealityDataTransparency(_vp, realityDataTransparencyState);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // When just the transparency bar is changed, only call update transparency
   useEffect(() => {
@@ -33,7 +27,7 @@ export const RealityDataWidget: React.FunctionComponent = () => {
         RealityDataApp.setRealityDataTransparency(vp, realityDataTransparencyState);
       }
     }
-  }, [iModelConnection, realityDataTransparencyState]);
+  }, [iModelConnection, realityDataTransparencyState, realityDataTransparency]);
 
   // When the button is toggled, display the realityModel and set its transparency to where the slider is currently at.
   useEffect(() => {
@@ -46,7 +40,7 @@ export const RealityDataWidget: React.FunctionComponent = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [iModelConnection, showRealityDataState]);
+  }, [iModelConnection, showRealityDataState, showRealityData]);
 
   // Create the react components for the toggle
   const createToggle = (label: string, info: string) => {
