@@ -1,8 +1,8 @@
-# Particle Effect - Snow
+# Particle Effect - Snow & Rain
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample shows how to create a particle effect using snow as an example.
+This sample shows how to create particle effects using snow and rain as examples.
 
 ## Purpose
 

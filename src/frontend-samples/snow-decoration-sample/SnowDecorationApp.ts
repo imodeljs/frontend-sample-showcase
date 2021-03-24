@@ -136,8 +136,8 @@ export default class SnowDecorationApp {
           },
           textureUrl: "./particle_snow.png",
           skyStyle: {
-            groundColor: 0x00697D62,
-            nadirColor: 0x0053604F,
+            groundColor: 0x00ACACAC,
+            nadirColor: 0x00E3E3E3,
             skyColor: 0x00C6BC89,
             zenithColor: 0x009D775F,
           },
