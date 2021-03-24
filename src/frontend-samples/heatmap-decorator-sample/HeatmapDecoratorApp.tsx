@@ -16,8 +16,9 @@ export default class HeatmapDecoratorApp {
   }
 
   public static enableDecorations() {
-    if (HeatmapDecoratorApp.decorator)
+    if (HeatmapDecoratorApp.decorator) {
       IModelApp.viewManager.addDecorator(HeatmapDecoratorApp.decorator);
+    }
   }
 
   public static disableDecorations() {
