@@ -20,11 +20,16 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
   private _widget?: ReactNode;
   private _iModelSelectorOptions?: IModelSelectorOptions;
   private _instructions: string;
+  private _additionalWidgets: AbstractWidgetProps[] = [];
 
   constructor(instructions: string, widget?: ReactNode, iModelSelectorOptions?: IModelSelectorOptions) {
     this._widget = widget;
     this._instructions = instructions;
     this._iModelSelectorOptions = iModelSelectorOptions;
+  }
+
+  public addWidget(widget: AbstractWidgetProps) {
+    this._additionalWidgets.push(widget);
   }
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection | undefined): ReadonlyArray<AbstractWidgetProps> {
@@ -43,7 +48,8 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
             }>
             {this._widget}
           </SampleWidgetContainer>),
-        }
+        },
+        ...this._additionalWidgets
       );
     }
     return widgets;
