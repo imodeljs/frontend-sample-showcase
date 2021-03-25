@@ -7,13 +7,32 @@ import { ContextRegistryClient, Project } from "@bentley/context-registry-client
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
 import { AuthorizationClient } from "../authentication/AuthorizationClient";
 import { defaultIModel, SampleIModels } from "@itwinjs-sandbox";
+import { defaultIModelList } from "@itwinjs-sandbox/constants";
 
 export class IModelSetup {
+
+  private static _sampleIModels: SampleIModels[] = defaultIModelList;
+
+  public static getIModelList() {
+    return IModelSetup._sampleIModels;
+  }
+
+  public static setIModelList(value: SampleIModels[]) {
+    IModelSetup._sampleIModels = value;
+  }
+
+  public static resetIModelList() {
+    IModelSetup._sampleIModels = defaultIModelList;
+  }
 
   public static async getIModelInfo(iModelName?: SampleIModels) {
     const requestContext: AuthorizedFrontendRequestContext = new AuthorizedFrontendRequestContext(await AuthorizationClient.oidcClient.getAccessToken());
 
-    const projectName = iModelName || this.getiModelParam() || defaultIModel;
+    let projectName = iModelName || this.getiModelParam() || defaultIModel;
+
+    if (IModelSetup._sampleIModels.length && !IModelSetup._sampleIModels.includes(projectName as SampleIModels)) {
+      projectName = IModelSetup._sampleIModels[0];
+    }
 
     const connectClient = new ContextRegistryClient();
     let project: Project;
@@ -43,11 +62,11 @@ export class IModelSetup {
   }
 
   private static updateiModelParam(imodel: string) {
-    const params = new URLSearchParams(window.location.search)
+    const params = new URLSearchParams(window.location.search);
 
     if (imodel) {
       if (params.has("imodel")) {
-        params.set("imodel", imodel)
+        params.set("imodel", imodel);
       } else {
         params.append("imodel", imodel);
       }

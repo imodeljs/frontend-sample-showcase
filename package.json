@@ -49,8 +49,9 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.10.1",
-    "@bentley/build-tools": "^2.6.4",
-    "@bentley/certa": "^2.0.0",
+    "@bentley/build-tools": "^2.13.0",
+    "@bentley/certa": "^2.13.0",
+    "@bentley/eslint-plugin": "^2.13.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -62,17 +63,18 @@
     "@types/react": "^16.9.42",
     "@types/react-dom": "^16.9.7",
     "@types/react-redux": "^7.0.1",
+    "@typescript-eslint/eslint-plugin": "4.11.1",
     "customize-cra": "^0.9.1",
+    "eslint": "^6.8.0",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jest": "^24.9.0",
     "mocha": "^5.2.0",
-    "node-sass": "^4.0.0",
     "null-loader": "^4.0.0",
     "raw-loader": "^4.0.1",
     "react-app-rewired": "^2.1.6",
     "rimraf": "^2.7.1",
+    "sass": "^1.29.0",
     "ts-jest": "^24.3.0",
-    "eslint": "^6.8.0",
     "typemoq": "^2.1.0",
     "webpack": "4.42.0",
     "webpack-cli": "^3.3.11",
@@ -94,40 +96,26 @@
   },
   "homepage": "./",
   "eslintConfig": {
-    "extends": "./node_modules/@bentley/build-tools/.eslintrc.js",
-    "ignorePatterns": [
-      "*.d.ts"
+    "plugins": [
+      "@bentley"
     ],
+    "extends": "plugin:@bentley/imodeljs-recommended",
     "rules": {
-      "deprecation/deprecation": "off"
-    },
-    "overrides": [
-      {
-        "files": [
-          "*.tsx"
-        ],
-        "rules": {
-          "@typescript-eslint/naming-convention": [
-            "warn",
-            {
-              "selector": "function",
-              "format": [
-                "camelCase",
-                "PascalCase"
-              ]
-            }
+      "@typescript-eslint/naming-convention": [
+        "warn",
+        {
+          "selector": "function",
+          "format": [
+            "camelCase",
+            "PascalCase"
           ]
         }
-      }
-    ],
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
+      ],
+      "@typescript-eslint/unbound-method": "off",
+      "deprecation/deprecation": "off"
     }
   },
   "browserslist": [
-    "electron 6.0.0",
     "last 4 chrome version",
     "last 4 firefox version",
     "last 4 safari version",

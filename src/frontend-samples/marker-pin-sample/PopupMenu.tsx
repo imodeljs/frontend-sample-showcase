@@ -49,7 +49,7 @@ export class PopupMenu extends React.Component<PopupMenuProps, PopupMenuState> {
   // When the event is triggered, change the state of the component
   private _handlePopupMenuEvent = (state: PopupMenuState) => {
     this.setState(state);
-  }
+  };
 
   // Helper method to get the offset position of an element on the browser
   private getOffset(element: HTMLElement) {
@@ -64,7 +64,7 @@ export class PopupMenu extends React.Component<PopupMenuProps, PopupMenuState> {
   public render(): React.ReactNode {
     const { entries, menuX, menuY, menuVisible } = this.state;
     const onClose = this._hideContextMenu;
-    const offset = this.props.canvas ? this.getOffset(this.props.canvas) : undefined
+    const offset = this.props.canvas ? this.getOffset(this.props.canvas) : undefined;
 
     if (menuVisible) {
       const items = this.getMenuItems(entries);
@@ -119,10 +119,10 @@ export class PopupMenu extends React.Component<PopupMenuProps, PopupMenuState> {
 
   private _hideContextMenu = () => {
     this.setState({ menuVisible: false, entries: undefined });
-  }
+  };
 
   private _itemPicked = (entry: PopupMenuEntry): void => {
     this._hideContextMenu();
     entry.onPicked(entry);
-  }
+  };
 }

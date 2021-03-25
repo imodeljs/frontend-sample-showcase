@@ -2,9 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 
-import "../../common/samples-common.scss";
+import "common/samples-common.scss";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 import { Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
 import { OverlySimplePropertyRecord } from "./approach-3-UI";
@@ -21,7 +20,6 @@ export interface PropertyProps {
    suitable to present to end users. */
 export class PropertyFormattingApp {
   private static selectionListener: SelectionChangesListener;
-
 
   public static addSelectionListener(listener: SelectionChangesListener) {
     this.selectionListener = listener;
@@ -66,13 +64,13 @@ export class PropertyFormattingApp {
         PropertyRecord.fromString("Value 1", "Property 1"),
         PropertyRecord.fromString("Value 2", "Property 2"),
         PropertyRecord.fromString("Value 3", "Property 3"),
-      ]
+      ];
 
       data.records[customCategoryName] = customRecords;
 
       return data;
     }
-  }
+  };
 
   /* Approach 2: Using PresentationTableDataProvider
 

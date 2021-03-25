@@ -420,7 +420,7 @@ class ElementTile extends Tile {
     assert(pixelSize > 0);
 
     // Round down to the nearest power of ten.
-    const toleranceLog10 = Math.floor(Math.log10(pixelSize));
+    const toleranceLog = Math.floor(Math.log10(pixelSize));
 
     // Find (or create) a child tile of desired tolerance. Also find a child tile that can be substituted for the desired tile if that tile's content is not yet loaded.
     // NB: Children are sorted in descending order by log10(tolerance)
@@ -430,25 +430,25 @@ class ElementTile extends Tile {
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
       const tol = child.toleranceLog10;
-      if (tol > toleranceLog10) {
+      if (tol > toleranceLog) {
         assert(undefined === exactMatch);
         if (child.hasGraphics)
           closestMatch = child;
-      } else if (tol === toleranceLog10) {
+      } else if (tol === toleranceLog) {
         exactMatch = child;
-      } else if (tol < toleranceLog10) {
+      } else if (tol < toleranceLog) {
         if (!exactMatch)
-          children.splice(i++, 0, exactMatch = new ExplodedGraphicsTile(this, toleranceLog10));
+          children.splice(i++, 0, exactMatch = new ExplodedGraphicsTile(this, toleranceLog));
 
-        if (child.hasGraphics && (!closestMatch || closestMatch.toleranceLog10 > toleranceLog10))
+        if (child.hasGraphics && (!closestMatch || closestMatch.toleranceLog10 > toleranceLog))
           closestMatch = child;
       }
     }
 
     // If the exact tile wanted is not created, create it.
     if (!exactMatch) {
-      assert(children.length === 0 || children[children.length - 1].toleranceLog10 > toleranceLog10);
-      children.push(exactMatch = new ExplodedGraphicsTile(this, toleranceLog10));
+      assert(children.length === 0 || children[children.length - 1].toleranceLog10 > toleranceLog);
+      children.push(exactMatch = new ExplodedGraphicsTile(this, toleranceLog));
     }
 
     if (!exactMatch.isReady) {

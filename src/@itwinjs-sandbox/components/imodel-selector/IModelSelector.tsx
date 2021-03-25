@@ -5,7 +5,7 @@
 import React, { FunctionComponent } from "react";
 import { Select } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleIModels } from "../sample-widget-control/SampleWidgetUiProvider";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {
@@ -23,7 +23,7 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
     const name = iModelList[index];
 
     onIModelChange(name);
-  }
+  };
 
   const value = iModelList.findIndex((v: string) => v === currentiModel);
 
@@ -38,4 +38,4 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
         options={Object.fromEntries(iModelList.map((name, index) => [index, name]))} />
     </div>
   );
-}
+};

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { ItwinViewerUi } from "@bentley/itwin-viewer-react";
 
-export const default3DUiConfig: ItwinViewerUi = {
+export const default3DSandboxUi: ItwinViewerUi = {
   contentManipulationTools: {
     cornerItem: {
       hideDefault: true,
@@ -44,9 +44,51 @@ export const default3DUiConfig: ItwinViewerUi = {
   hidePropertyGrid: true,
   hideToolSettings: true,
   hideTreeView: true,
-}
+};
 
-export const default2DUiConfig: ItwinViewerUi = {
+export const default3DAppUi: ItwinViewerUi = {
+  contentManipulationTools: {
+    cornerItem: {
+      hideDefault: true,
+    },
+    hideDefaultHorizontalItems: false,
+    hideDefaultVerticalItems: false,
+    verticalItems: {
+      sectionTools: true,
+      measureTools: true,
+      selectTool: true,
+    },
+    horizontalItems: {
+      clearSelection: true,
+      clearHideIsolateEmphasizeElements: true,
+      isolateElements: true,
+      hideElements: true,
+      emphasizeElements: true,
+    },
+  },
+  navigationTools: {
+    hideDefaultHorizontalItems: false,
+    hideDefaultVerticalItems: false,
+    verticalItems: {
+      walkView: true,
+      cameraView: true,
+    },
+    horizontalItems: {
+      rotateView: true,
+      panView: true,
+      fitView: true,
+      windowArea: true,
+      undoView: true,
+      redoView: true,
+    },
+  },
+  hideDefaultStatusBar: false,
+  hidePropertyGrid: true,
+  hideToolSettings: false,
+  hideTreeView: true,
+};
+
+export const default2DSandboxUi: ItwinViewerUi = {
   contentManipulationTools: {
     cornerItem: {
       hideDefault: true,
@@ -86,4 +128,4 @@ export const default2DUiConfig: ItwinViewerUi = {
   hidePropertyGrid: true,
   hideToolSettings: true,
   hideTreeView: true,
-}
+};

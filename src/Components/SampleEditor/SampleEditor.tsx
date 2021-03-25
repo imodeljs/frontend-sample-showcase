@@ -3,26 +3,24 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { Pane, setEditorState, SplitScreen, useActivityState, useEntryState, useFileState, useModuleState } from "@bentley/monaco-editor";
+import { Pane, setEditorState, SplitScreen, useActivityState, useEntryState, useFileState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import Drawer from "./Drawer/Drawer";
-import modules from "./Modules";
 import { EditorProps } from "./SampleEditorContext";
 import "./SampleEditor.scss";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+import MonacoEditor from "./Monaco";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const MonacoEditor = React.lazy(async () => import("@bentley/monaco-editor"));
 
 export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const { files, readme } = props;
   const fileActions = useFileState()[1];
-  const moduleActions = useModuleState()[1];
   const [activityState, activityActions] = useActivityState();
   const [entryState, entryActions] = useEntryState();
-  const [showReadme, setShowReadme] = React.useState<boolean>(true)
-  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false)
+  const [showReadme, setShowReadme] = React.useState<boolean>(true);
+  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false);
   const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
 
@@ -35,21 +33,17 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     }
     return () => {
       setEditorState(null, []);
-    }
-  }, [files, fileActions, entryActions, activityActions])
-
-  React.useEffect(() => {
-    moduleActions.setModules(modules);
-  }, [moduleActions])
+    };
+  }, [files, fileActions, entryActions, activityActions]);
 
   React.useEffect(() => {
     if (readme) {
       setReadmeLoading(true);
-      readme().import.then((fileData) => {
+      readme().then((fileData) => {
         setReadmeContent(fileData.default);
         setShowReadme(true);
         setReadmeLoading(false);
-      })
+      });
     }
   }, [readme, setReadmeContent, setShowReadme]);
 
@@ -59,7 +53,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     } else {
       setShowReadme(true);
     }
-  }, [activityState.active])
+  }, [activityState.active]);
 
   const onShowReadme = () => {
     if (showReadme) {
@@ -67,23 +61,23 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     } else {
       activityActions.clearActive();
     }
-  }
+  };
 
   const _onDrawerOpened = () => {
-    setDisplayDrawer(true)
-  }
+    setDisplayDrawer(true);
+  };
 
   const _onDrawerClosed = () => {
-    setDisplayDrawer(false)
-  }
+    setDisplayDrawer(false);
+  };
 
   const _onChange = (size: number) => {
     if (size < 200) {
-      setDisplayDrawer(false)
+      setDisplayDrawer(false);
     } else {
-      setDisplayDrawer(true)
+      setDisplayDrawer(true);
     }
-  }
+  };
 
   const drawerMinSize = showReadme ? "0" : "35px";
   const drawerSize = !showReadme ? displayDrawer ? "200px" : "35px" : "0";
@@ -91,7 +85,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
 
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
-      <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={props.onSampleClicked} />
+      <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={props.onSampleClicked} />;
   };
 
   return (
@@ -100,17 +94,14 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
         <Pane className="sample-editor">
           <TabNavigation onRunCompleted={props.onTranspiled} showReadme={showReadme} onShowReadme={onShowReadme} />
           <div style={{ height: "100%" }}>
-            {showReadme ? readmeViewer() :
-              <React.Suspense fallback={"Loading..."}>
-                <MonacoEditor />
-              </React.Suspense>
-            }
+            {showReadme && readmeViewer()}
+            <MonacoEditor />
           </div>
         </Pane>
         <Pane onChange={_onChange} snapSize={"200px"} minSize={drawerMinSize} maxSize={"50%"} size={drawerSize} disabled={showReadme || !displayDrawer} defaultSize={"0"}>
           <Drawer active={displayDrawer} onDrawerClosed={_onDrawerClosed} onDrawerOpen={_onDrawerOpened} />
         </Pane>
       </SplitScreen>
-    </div>
+    </div >
   );
-}
+};

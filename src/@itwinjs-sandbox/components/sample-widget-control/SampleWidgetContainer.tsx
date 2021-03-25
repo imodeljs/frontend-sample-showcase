@@ -58,7 +58,6 @@ export const SampleWidgetContainer: FunctionComponent<SampleWidgetContainerProps
     moveWidget(sv);
   }, [moveWidget])
 
-
   return (
     <div ref={ref} className="sample-widget-ui">
       {instructions && <div className="control-pane-header">

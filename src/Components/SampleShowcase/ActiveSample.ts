@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { defaultIModel, defaultIModelList, SampleIModels } from "@itwinjs-sandbox";
-import React from "react";
 import { sampleManifest } from "sampleManifest";
 import { SampleSpec, SampleSpecFile } from "SampleSpec";
 
@@ -18,28 +17,28 @@ export class ActiveSample {
   private _spec: SampleSpec;
   public group: string;
   public name: string;
-  public sampleClass: typeof React.Component;
   public imodel: SampleIModels;
   public iTwinViewerReady?: boolean;
-  public getReadme?: () => SampleSpecFile;
+  public getReadme?: () => Promise<{ default: string }>;
   public getFiles?: () => SampleSpecFile[];
+  public type: string;
 
-  constructor(group?: string | null, name?: string | null, imodel?: string | null) {
+  constructor(group?: string | null, name?: string | null, imodel?: SampleIModels | null) {
     if (!group || !name) {
       const params = new URLSearchParams(window.location.search);
       group = params.get("group");
       name = params.get("sample");
-      imodel = params.get("imodel");
+      imodel = params.get("imodel") as SampleIModels;
     }
     const result = this.resolveSpec(group, name);
     this.group = result.group;
     this.name = result.name;
     this._spec = result.spec;
-    this.sampleClass = result.spec.sampleClass;
-    this.imodel = imodel && this.imodelList.includes(imodel as SampleIModels) ? imodel as SampleIModels : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
-    this.iTwinViewerReady = result.spec.iTwinViewerReady
-    this.getFiles = () => result.spec.files;
-    this.getReadme = result.spec.readme ? (() => result.spec.readme!) : undefined;
+    this.imodel = imodel && this.imodelList.includes(imodel ) ? imodel  : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
+    this.iTwinViewerReady = result.spec.iTwinViewerReady;
+    this.getFiles = result.spec.files;
+    this.getReadme = result.spec.readme;
+    this.type = result.spec.type || "";
 
     updateURLParams(this.group, this.name, this.imodel);
   }
@@ -77,4 +76,4 @@ const updateURLParams = (group: string, sample: string, imodel?: string) => {
   if (window.self !== window.top) {
     window.parent.postMessage(`?${params.toString()}`, "*");
   }
-}
+};

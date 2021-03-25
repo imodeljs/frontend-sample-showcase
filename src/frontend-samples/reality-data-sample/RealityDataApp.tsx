@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import "common/samples-common.scss";
 import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
 import {
@@ -13,6 +13,9 @@ export default class RealityDataApp {
 
   public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
     const style = viewPort.displayStyle.clone();
+
+    // Turn off the background
+    style.viewFlags.backgroundMap = false;
 
     if (showReality) {
       // Get first available reality model and attach it to displayStyle

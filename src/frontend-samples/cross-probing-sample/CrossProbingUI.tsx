@@ -6,9 +6,8 @@ import * as React from "react";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "common/SandboxViewport/ViewportAndNavigation";
-import { ViewCreator2d } from "frontend-samples/cross-probing-sample/ViewCreator2d";
 import { ColorDef } from "@bentley/imodeljs-common";
 import CrossProbingApp from "./CrossProbingApp";
 
@@ -27,23 +26,20 @@ export default class CrossProbingUI extends React.Component<{ iModelName: string
     await CrossProbingApp.loadElementMap(imodel);
     const viewState2d = await this.getFirst2DView(imodel);
     this.setState({ imodel, viewState2d });
-  }
+  };
 
   // Get first 2D view in iModel.
   private async getFirst2DView(imodel: IModelConnection): Promise<ViewState> {
     const viewCreator = new ViewCreator2d(imodel);
     const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
-    let viewState2d;
-    if (models.length > 0)
-      viewState2d = await viewCreator.getViewForModel(models[0].id!, models[0].classFullName, { bgColor: ColorDef.black });
-    else
+    if (models.length === 0)
       throw new Error("No 2D models found in iModel.");
-    return viewState2d;
+
+    return viewCreator.createViewForModel(models[0].id!, models[0].classFullName, { bgColor: ColorDef.black });
   }
 
   /** The sample's render method */
   public render() {
-
     let drawingViewport;
     if (this.state.imodel && this.state.viewState2d)
       drawingViewport = (<div style={{ width: "100%", height: "50%", float: "right" }}>

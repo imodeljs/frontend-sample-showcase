@@ -2,12 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import "common/samples-common.scss";
 import { ProxyToolAdmin } from "api/showcasetooladmin";
 import { ElemProperty, TooltipCustomizeSettings } from "./TooltipCustomizeUI";
 import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
-
 
 // SampleToolAdmin would typically extend ToolAdmin
 //  See Notes on use of ProxyToolAdmin at the bottom of this file.

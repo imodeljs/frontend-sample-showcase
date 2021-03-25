@@ -2,40 +2,58 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Id64, Id64String } from "@bentley/bentleyjs-core";
+import { Id64, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { BackgroundMapProps, ColorDef } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { Point3d, Vector3d } from "@bentley/geometry-core";
+import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
 export type ViewType = "3D" | "2D";
 export class ViewSetup {
-
-  public static getViewState(imodel: IModelConnection, viewType: ViewType = "3D"): SpatialViewState {
-    const ext = imodel.projectExtents;
-    const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
-    if (viewType === "3D") {
-      viewState.setAllow3dManipulations(true);
-      viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
-    } else {
-      viewState.setAllow3dManipulations(false);
-      viewState.setStandardRotation(StandardViewId.Top);
-    }
-    viewState.displayStyle.backgroundColor = ColorDef.white;
-    if (!imodel.iModelId) {
-      viewState.viewFlags.grid = true;
-    } else {
-      viewState.viewFlags.grid = false;
-    }
-    return viewState;
-  }
-
+  /** Queries for and loads the default view for an iModel. */
   public static getDefaultView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewId = await ViewSetup.getFirstViewDefinitionId(imodel);
 
     // Load the view state using the viewSpec's ID
     const viewState = await imodel.views.load(viewId);
 
+    // Making some improvements to the default views.
+    await ViewSetup.overrideView(imodel, viewState);
+
+    return viewState;
+  };
+
+  /** Pick the first available spatial view definition in the imodel */
+  private static async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
+    // Return default view definition (if any)
+    const defaultViewId = await imodel.views.queryDefaultViewId();
+    if (Id64.isValid(defaultViewId))
+      return defaultViewId;
+
+    // Return first spatial view definition (if any)
+    const spatialViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: SpatialViewState.classFullName });
+    if (spatialViews.length > 0)
+      return spatialViews[0].id;
+
+    // Return first drawing view definition (if any)
+    const drawingViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: DrawingViewState.classFullName });
+    if (drawingViews.length > 0)
+      return drawingViews[0].id;
+
+    throw new Error("No valid view definitions in imodel");
+  }
+
+  /** Returns the aspect ration of the container the view will be created in. */
+  public static getAspectRatio(): number | undefined {
+    const viewDiv = document.getElementById("sample-container");
+
+    if (null === viewDiv)
+      return undefined;
+
+    return viewDiv.clientWidth / viewDiv.clientHeight;
+  }
+
+  /** Makes ascetic changes to the default view */
+  public static async overrideView(imodel: IModelConnection, viewState: ViewState) {
     const aspect = ViewSetup.getAspectRatio();
     if (undefined !== aspect) {
       const extents = viewState.getExtents();
@@ -45,8 +63,10 @@ export class ViewSetup {
       viewState.setOrigin(origin);
     }
 
-    viewState.viewFlags.shadows = false;
-    viewState.viewFlags.grid = false;
+    const viewFlags = viewState.viewFlags.clone();
+    viewFlags.shadows = false;
+    viewFlags.grid = false;
+    viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
       const viewState3d = viewState;
@@ -67,37 +87,29 @@ export class ViewSetup {
       });
     }
 
-    return viewState;
+    const hiddenCategories = await ViewSetup.getHiddenCategories(imodel);
+    if (hiddenCategories)
+      viewState.categorySelector.dropCategories(hiddenCategories);
   }
 
-  /** Pick the first available spatial view definition in the imodel */
-  public static async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
-    // Return default view definition (if any)
-    const defaultViewId = await imodel.views.queryDefaultViewId();
-    if (Id64.isValid(defaultViewId))
-      return defaultViewId;
+  /** Queries for categories that are unnecessary in the context of the of the sample showcase. */
+  private static getHiddenCategories = async (imodel: IModelConnection): Promise<Id64Array | undefined> => {
+    const ids: Id64String[] = [];
+    const addIdsByCategory = async (...categoryCodes: string[]) => {
+      const selectInCategories = `SELECT ECInstanceId FROM bis.Category WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
+      for await (const row of imodel.query(selectInCategories))
+        ids.push(row.id);
+    };
+    if (imodel.name === "house bim upload")
+      // The callout graphics in the house model are ugly - don't display them.
+      await addIdsByCategory("Callouts");
 
-    // Return first spatial view definition (if any)
-    const spatialViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: SpatialViewState.classFullName });
-    if (spatialViews.length > 0)
-      return spatialViews[0].id;
+    if (imodel.name === "Metrostation2")
+      // There is coincident geometry. Remove the more visible instances.
+      await addIdsByCategory("A-WALL-LINE", "A-FLOR-OTLN");
 
-    // Return first drawing view definition (if any)
-    const drawingViews: IModelConnection.ViewSpec[] = await imodel.views.getViewList({ from: DrawingViewState.classFullName });
-    if (drawingViews.length > 0)
-      return drawingViews[0].id;
-
-    throw new Error("No valid view definitions in imodel");
-  }
-
-  public static getAspectRatio(): number | undefined {
-    const viewDiv = document.getElementById("sample-container");
-
-    if (null === viewDiv)
-      return undefined;
-
-    return viewDiv.clientWidth / viewDiv.clientHeight;
-  }
+    return ids;
+  };
 
   /*
   * groundBias can be stored in Product Settings Service. This method retrieves it.
@@ -126,5 +138,5 @@ export class ViewSetup {
     }
 
     return undefined;
-  }
+  };
 }

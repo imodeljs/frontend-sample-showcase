@@ -6,6 +6,8 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
+import { IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
+import { ActiveSample } from "./ActiveSample";
 import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
 import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core/lib/ui-core/button/Button";
@@ -13,8 +15,6 @@ import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinn
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
-import { IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
-import { ActiveSample } from "./ActiveSample";
 
 const Editor = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleEditor/SampleEditorContext"));
 const Visualizer = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleVisualizer/SampleVisualizer"));
@@ -30,7 +30,6 @@ export const SampleShowcase: FunctionComponent = () => {
 
   const showcaseRef = React.createRef<HTMLDivElement>();
   const galleryRef = React.createRef<SampleGallery>();
-
 
   useEffect(() => {
     if (scrollTo && galleryRef.current) {
@@ -53,21 +52,21 @@ export const SampleShowcase: FunctionComponent = () => {
     setTranspileResult(undefined);
   };
 
-  const onSampleGallerySizeChange = (sizePx: number) => {
-    if (sizePx < 200 && showGallery) {
+  const onSampleGallerySizeChange = (size: number) => {
+    if (size < 200 && showGallery) {
       setShowGallery(false);
-    } else if (sizePx >= 200 && showEditor) {
+    } else if (size >= 200 && !showGallery) {
       setShowGallery(true);
     }
   };
 
-  const onEditorSizeChange = (sizePx: number) => {
-    if (sizePx < 400 && showEditor) {
+  const onEditorSizeChange = (size: number) => {
+    if (size < 400 && showEditor) {
       setShowEditor(false);
-    } else if (sizePx >= 400 && showEditor) {
+    } else if (size >= 400 && !showGallery) {
       setShowEditor(true);
     }
-  }
+  };
 
   const getImodelSelector = useCallback(() => {
     if (!activeSample.imodelList || !activeSample.imodelList.length)
@@ -80,14 +79,14 @@ export const SampleShowcase: FunctionComponent = () => {
           iModelName={activeSample.imodel}
           onIModelChange={(imodelName) => setActiveSample(new ActiveSample(activeSample.group, activeSample.name, imodelName))} />
       </div>);
-  }, [activeSample]);
+  }, [activeSample.imodelList, activeSample.name, activeSample.group, activeSample.imodel]);
 
   const spinner = (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
 
   return (
     <div className="showcase" ref={showcaseRef}>
       <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)} onChange={(newSizes) => sizes = newSizes}>
-        <Pane className={editorClassName} snapSize={"400px"} disabled={!showEditor} size={showEditor ? "400px" : "0"} onChange={onEditorSizeChange}>
+        <Pane className={editorClassName} snapSize="400px" disabled={!showEditor} size={showEditor ? "400px" : "0"} onChange={onEditorSizeChange}>
           <React.Suspense fallback={spinner}>
             <Editor
               files={activeSample.getFiles}
@@ -98,25 +97,25 @@ export const SampleShowcase: FunctionComponent = () => {
               readme={activeSample.getReadme} />
           </React.Suspense>
         </Pane>
-        <Pane className="preview" minSize={"500px"}>
+        <Pane className="preview" minSize="500px">
           {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-right"></span></Button>}
           {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-left"></span></Button>}
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
             <React.Suspense fallback={spinner}>
-              <ErrorBoundary>
+              <ErrorBoundary key={transpileResult}>
                 <Visualizer
-                  iTwinViewerReady={activeSample.iTwinViewerReady}
                   iModelName={activeSample.imodel}
                   iModelSelector={getImodelSelector()}
                   transpileResult={transpileResult}
-                  sampleClass={activeSample.sampleClass} />
+                  iTwinViewerReady={activeSample.iTwinViewerReady}
+                  type={activeSample.type} />
               </ErrorBoundary>
             </React.Suspense>
           </div>
           {!showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-left"></span></Button>}
           {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-right"></span></Button>}
         </Pane>
-        <Pane className={galleryClassName} snapSize={"200px"} maxSize={"20%"} disabled={!showGallery} size={showGallery ? "200px" : "0"} onChange={onSampleGallerySizeChange}>
+        <Pane className={galleryClassName} snapSize="200px" maxSize="20%" disabled={!showGallery} size={showGallery ? "200px" : "0"} onChange={onSampleGallerySizeChange}>
           <SampleGallery
             group={activeSample.group}
             style={{ minWidth: galleryMinSize }}
@@ -127,5 +126,5 @@ export const SampleShowcase: FunctionComponent = () => {
         </Pane>
       </SplitScreen>
     </div>
-  )
-}
+  );
+};
