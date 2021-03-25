@@ -4,17 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import ViewerOnly2dApp from "./ViewerOnly2dApp";
 import { ModelProps } from "@bentley/imodeljs-common";
 
 export interface ControlsWidgetProps {
   sheets: ModelProps[];
   drawings: ModelProps[];
+  onSelectionChange: (modelProps: ModelProps) => void;
 }
 
-export const ControlsWidget: React.FunctionComponent<ControlsWidgetProps> = ({ sheets, drawings }) => {
-  const iModelConnection = useActiveIModelConnection();
+export const ControlsWidget: React.FunctionComponent<ControlsWidgetProps> = ({ sheets, drawings, onSelectionChange }) => {
   const [selected, setSelected] = React.useState<string | undefined>(undefined);
   const [drawingElements, setDrawingElements] = React.useState<JSX.Element[]>([]);
   const [sheetElements, setSheetElements] = React.useState<JSX.Element[]>([]);
@@ -23,11 +21,9 @@ export const ControlsWidget: React.FunctionComponent<ControlsWidgetProps> = ({ s
     if (selected) {
       const index = Number.parseInt(selected, 10);
       const modelList = selected.includes("sheet") ? sheets : drawings;
-      if (iModelConnection) {
-        ViewerOnly2dApp.changeViewportView(iModelConnection, modelList[index]);
-      }
+      onSelectionChange(modelList[index]);
     }
-  }, [iModelConnection, selected, drawings, sheets]);
+  }, [selected, drawings, sheets, onSelectionChange]);
 
   useEffect(() => {
     const drawingEl = _getDrawingModelList(drawings);

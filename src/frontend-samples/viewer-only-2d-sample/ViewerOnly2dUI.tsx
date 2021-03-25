@@ -8,11 +8,13 @@ import { Viewer } from "@bentley/itwin-viewer-react";
 import { ControlsWidget } from "./ViewerOnly2dWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import ViewerOnly2dApp, { ModelLists } from "./ViewerOnly2dApp";
+import { ModelProps } from "@bentley/imodeljs-common";
 
 interface ViewportOnly2dUIState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
+  iModelConnection?: IModelConnection;
   viewState?: ViewState;
   modelLists: ModelLists;
 }
@@ -41,15 +43,21 @@ export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2d
   private _getSampleUi = (iModelName: SampleIModels) => {
     return new SampleWidgetUiProvider(
       "The picker below shows a list of 2D models in this iModel.",
-      <ControlsWidget drawings={this.state.modelLists.drawings} sheets={this.state.modelLists.sheets} />,
+      <ControlsWidget drawings={this.state.modelLists.drawings} sheets={this.state.modelLists.sheets} onSelectionChange={this._onSelectionChange} />,
       { iModelName, onIModelChange: this._changeIModel }
     );
+  };
+
+  private _onSelectionChange = (modelProps: ModelProps) => {
+    if (this.state.iModelConnection) {
+      ViewerOnly2dApp.changeViewportView(this.state.iModelConnection, modelProps);
+    }
   };
 
   private _oniModelReady = async (iModelConnection: IModelConnection) => {
     const result = await ViewerOnly2dApp.get2DModels(iModelConnection);
     const { sheets, drawings } = result;
-    this.setState({ modelLists: { sheets, drawings } });
+    this.setState({ iModelConnection, modelLists: { sheets, drawings } });
     const viewState = await ViewerOnly2dApp.createDefaultViewFor2dModel(iModelConnection, drawings[0]);
     this.setState({ viewState });
   };
