@@ -4,43 +4,28 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Toggle } from "@bentley/ui-core";
-import RealityDataApp from "./RealityDataApp";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
 
 export interface RealityDataWidgetProps {
   showRealityData: boolean;
   realityDataTransparency: number;
+  onToggleRealityData: (showRealityData: boolean, realityDataTransparency: number) => void;
+  onChangeRealityDataTransparency: (realityDataTransparency: number) => void;
 }
 
-export const RealityDataWidget: React.FunctionComponent<RealityDataWidgetProps> = ({ showRealityData, realityDataTransparency }) => {
-  const iModelConnection = useActiveIModelConnection();
+export const RealityDataWidget: React.FunctionComponent<RealityDataWidgetProps> = ({ showRealityData, realityDataTransparency, onToggleRealityData, onChangeRealityDataTransparency }) => {
   const [showRealityDataState, setShowRealityDataState] = React.useState<boolean>(showRealityData);
   const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<number>(realityDataTransparency);
 
   // When just the transparency bar is changed, only call update transparency
   useEffect(() => {
-    if (iModelConnection) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (vp) {
-        RealityDataApp.setRealityDataTransparency(vp, realityDataTransparencyState);
-      }
-    }
-  }, [iModelConnection, realityDataTransparencyState]);
+    onChangeRealityDataTransparency(realityDataTransparencyState);
+  }, [onChangeRealityDataTransparency, realityDataTransparencyState]);
 
   // When the button is toggled, display the realityModel and set its transparency to where the slider is currently at.
   useEffect(() => {
-    if (iModelConnection) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (vp) {
-        RealityDataApp.toggleRealityModel(showRealityDataState, vp, iModelConnection).then(() => {
-          RealityDataApp.setRealityDataTransparency(vp, realityDataTransparencyState);
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [iModelConnection, showRealityDataState]);
+    onToggleRealityData(showRealityDataState, realityDataTransparencyState);
+  }, [onToggleRealityData, realityDataTransparencyState, showRealityDataState]);
 
   // Create the react components for the toggle
   const createToggle = (label: string, info: string) => {

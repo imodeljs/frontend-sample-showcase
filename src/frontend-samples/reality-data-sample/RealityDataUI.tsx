@@ -14,6 +14,7 @@ interface RealityDataUIState {
   contextId?: string;
   iModelId?: string;
   viewState?: ViewState;
+  iModelConnection?: IModelConnection;
   showRealityData: boolean;
   realityDataTransparency: number;
 }
@@ -37,10 +38,34 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
       });
   };
 
+  private _onToggleRealityData = async (showRealityData: boolean, realityDataTransparency: number) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        await RealityDataApp.toggleRealityModel(showRealityData, vp, this.state.iModelConnection);
+        await RealityDataApp.setRealityDataTransparency(vp, realityDataTransparency);
+      }
+    }
+  };
+
+  private _onChangeRealityDataTransparency = async (realityDataTransparency: number) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        await RealityDataApp.setRealityDataTransparency(vp, realityDataTransparency);
+      }
+    }
+  };
+
   private _getSampleUi = (iModelName: SampleIModels) => {
     return new SampleWidgetUiProvider(
       "Use the toggle below for displaying the reality data in the model.",
-      <RealityDataWidget showRealityData={this.state.showRealityData} realityDataTransparency={this.state.realityDataTransparency} />,
+      <RealityDataWidget
+        showRealityData={this.state.showRealityData}
+        realityDataTransparency={this.state.realityDataTransparency}
+        onToggleRealityData={this._onToggleRealityData}
+        onChangeRealityDataTransparency={this._onChangeRealityDataTransparency}
+      />,
       { iModelName, onIModelChange: this._changeIModel }
     );
   };
@@ -53,7 +78,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
 
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState });
+        this.setState({ iModelConnection, viewState });
       });
   };
 
