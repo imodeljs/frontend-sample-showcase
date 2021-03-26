@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp, IModelConnection, Viewport } from "@bentley/imodeljs-frontend";
-import { Button, Select, Slider } from "@bentley/ui-core";
+import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import "common/samples-common.scss";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
@@ -18,6 +18,7 @@ interface ParticleSampleState {
   propsName: string;
   wind: number;
   particleDensity: number;
+  pauseEffect: boolean;
 }
 /** The React props for this UI component */
 interface ParticleSampleProps {
@@ -35,6 +36,7 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
       propsName: SnowDecorationApp.predefinedProps.keys().next().value,
       wind: 0,
       particleDensity: 0,
+      pauseEffect: false,
     };
   }
 
@@ -49,6 +51,8 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
       <div className={"sample-options-2col"}>
         <label>Select Effect</label>
         <Select options={[...SnowDecorationApp.predefinedProps.keys()]} value={this.state.propsName} onChange={(event) => this.setState({ propsName: event.target.value })} />
+        <label>Pause Effect</label>
+        <Toggle isOn={this.state.pauseEffect} onChange={(isChecked) => this.setState({ pauseEffect: isChecked })} />
         <label>Particle Density</label>
         <Slider min={0} max={0.01135} step={0.0001} values={[this.state.particleDensity]} onUpdate={(values) => this.setState({ particleDensity: values[0] })} />
         <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -61,7 +65,7 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
   }
 
   /** Configures active snow decorators (should only ever be one in this sample). */
-  private configureEffect(params: Partial<SnowParams>) {
+  private configureEffect(params: Partial<SnowParams> & { pauseEffect?: boolean }) {
     SnowDecorationApp.getSnowDecorators().forEach((decorator) => {
       // if there is an update to the, a texture may need to be updated too.
       if (params.windVelocity !== undefined) {
@@ -78,6 +82,9 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
           }
         }
       }
+      // Update if it is paused.
+      if (params.pauseEffect !== undefined)
+        decorator.pause = params.pauseEffect;
       // Configure the decorator
       decorator.configure(params);
     });
@@ -98,12 +105,18 @@ export default class SnowDecorationUI extends React.Component<ParticleSampleProp
     if (prevState.viewport !== this.state.viewport || prevState.propsName !== this.state.propsName) {
       const props = SnowDecorationApp.predefinedProps.get(this.state.propsName)!;
       SnowDecorationApp.createSnowDecorator(this.state.viewport, props);
-      this.setState({ wind: props.params.windVelocity, particleDensity: props.params.particleDensity });
+      this.setState({
+        wind: props.params.windVelocity,
+        particleDensity: props.params.particleDensity,
+        pauseEffect: false, // this is false by default in the decorator
+      });
     }
     if (prevState.particleDensity !== this.state.particleDensity)
       this.configureEffect({ particleDensity: this.state.particleDensity });
     if (prevState.wind !== this.state.wind)
       this.configureEffect({ windVelocity: this.state.wind });
+    if (prevState.pauseEffect !== this.state.pauseEffect)
+      this.configureEffect({ pauseEffect: this.state.pauseEffect });
   }
 
   /** The sample's render method */

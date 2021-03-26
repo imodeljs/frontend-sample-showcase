@@ -57,6 +57,8 @@ export class SnowDecorator implements Decorator {
   /** The last time `updateParticles()` was invoked, in milliseconds. */
   private _lastUpdateTime: number;
   private readonly _params: SnowParams;
+  /** Stops the particles from moving. */
+  public pause: boolean = false;
 
   /** Calculates an integer particle count based on the params particle density. */
   public getNumParticles(): number {
@@ -172,6 +174,10 @@ export class SnowDecorator implements Decorator {
       // Destroy extra particles.
       this._particles.length = numParticles;
     }
+
+    // If the decorator is paused, don't updated.
+    if (this.pause)
+      return;
 
     const acceleration = new Vector2d();
     const velocity = new Vector2d();
