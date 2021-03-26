@@ -26,7 +26,7 @@ export default class DisplayStylesUI extends React.Component<{}, ViewAttributesU
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
       .then((info) => {
-        this.setState({ iModelName, contextId: info.projectId, iModelId: info.imodelId });
+        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
   };
 

@@ -39,7 +39,7 @@ export default class ImageExportUI extends React.Component<{}, ViewAttributesUIS
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
       .then((info) => {
-        this.setState({ iModelName, contextId: info.projectId, iModelId: info.imodelId });
+        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
   };
 

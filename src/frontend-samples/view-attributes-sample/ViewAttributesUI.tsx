@@ -127,7 +127,7 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
 
   private _getSampleUi = (iModelName: SampleIModels) => {
     return new SampleWidgetUiProvider(
-      "Use the toggle below for displaying the reality data in the model.",
+      "Use the controls below to change the view attributes.",
       <ViewAttributesWidget
         attrValues={this.state.initAttributeValues}
         onChangeAttribute={this._onChangeAttribute}
