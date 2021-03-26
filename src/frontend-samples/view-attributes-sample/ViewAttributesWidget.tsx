@@ -4,10 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Select, Toggle } from "@bentley/ui-core";
 import { AttrValues, ViewFlag } from "./ViewAttributesApp";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { RenderMode } from "@bentley/imodeljs-common";
 
 export interface ViewAttributesProps {
