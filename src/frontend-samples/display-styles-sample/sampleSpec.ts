@@ -15,7 +15,7 @@ export function getDisplayStylesSpec(): SampleSpec {
     files: () => [
       { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp") },
       { name: "DisplayStylesUI.tsx", import: import("!!raw-loader!./DisplayStylesUI"), entry: true },
-      { name: "Styles.ts", import: import("!!raw-loader!./DisplayStylesWidget.tsx") },
+      { name: "DisplayStylesWidget.tsx", import: import("!!raw-loader!./DisplayStylesWidget.tsx") },
       { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
     ],
     modelList: [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium],
