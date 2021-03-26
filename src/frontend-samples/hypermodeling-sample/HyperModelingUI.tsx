@@ -6,20 +6,35 @@ import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, Sa
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { HyperModelingWidget } from "./HyperModelingWidget";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
+import HyperModelingApp from "./HyperModelingApp";
+import { SectionMarker } from "@bentley/hypermodeling-frontend";
+import { assert, Id64String } from "@bentley/bentleyjs-core";
 
+interface Previous {
+  /** The 3d view. */
+  view: ViewState;
+  /** The Id of the previously-active section marker. */
+  markerId: Id64String;
+}
 interface HyperModelingUIState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
   viewState?: ViewState;
+  iModelConnection?: IModelConnection;
+  activeMarker?: SectionMarker;
+  previous?: Previous;
+  graphics2DState: boolean;
 }
 
 export default class HyperModelingUI extends React.Component<{}, HyperModelingUIState> {
 
   constructor(props: any) {
     super(props);
-    this.state = {};
+    this.state = {
+      graphics2DState: true,
+    };
     IModelSetup.setIModelList([SampleIModels.House]);
     this._changeIModel();
   }
@@ -31,18 +46,63 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
       });
   };
 
-  private _getSampleUi = () => {
-    return new SampleWidgetUiProvider(
-      "Click on a marker to toggle the section or return to the 3d view.",
-      <HyperModelingWidget />
-    );
+  private _onToggle2DGraphics = (toogle: boolean) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        HyperModelingApp.toggle2dGraphics(toogle);
+      }
+    }
+  };
+
+  private _onClickReturnTo3D = async () => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (vp && this.state.previous) {
+      await HyperModelingApp.switchTo3d(vp, this.state.previous.view, this.state.previous.markerId);
+      this.setState({ previous: undefined });
+    }
+  };
+
+  private _onClickSelectNewMarker = () => {
+    const vp = IModelApp.viewManager.selectedView;
+    assert(undefined !== vp);
+    HyperModelingApp.clearActiveMarker(vp);
+  };
+
+  private _onClickSwitchTo2d = async (which: "sheet" | "drawing") => {
+    const viewport = IModelApp.viewManager.selectedView;
+    const marker = this.state.activeMarker;
+    assert(undefined !== viewport && undefined !== marker);
+
+    const view = viewport.view;
+    if (await HyperModelingApp.switchTo2d(viewport, marker, which))
+      this.setState({ previous: { view, markerId: marker.state.id } });
   };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (viewport: ScreenViewport) => {
+      await HyperModelingApp.enableHyperModeling(viewport);
+      HyperModelingApp.markerHandler.onActiveMarkerChanged.addListener((activeMarker) => this.setState({ activeMarker }));
+      await HyperModelingApp.activateMarkerByName(viewport, "Section-Left");
+    });
+
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState });
+        this.setState({ iModelConnection, viewState });
       });
+  };
+
+  private _getSampleUi = () => {
+    return new SampleWidgetUiProvider(
+      "Click on a marker to toggle the section or return to the 3d view.",
+      <HyperModelingWidget
+        toggle2dGraphics={this.state.graphics2DState}
+        onToggle2dGraphics={this._onToggle2DGraphics}
+        onClickReturnTo3D={this._onClickReturnTo3D}
+        onClickSelectNewMarker={this._onClickSelectNewMarker}
+        onClickSwitchTo2d={this._onClickSwitchTo2d}
+      />
+    );
   };
 
   /** The sample's render method */
