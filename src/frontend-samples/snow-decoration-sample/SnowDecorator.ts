@@ -194,7 +194,7 @@ export class SnowDecorator implements Decorator {
 
       // A scaling factor based on size to create an illusion of distance.
       let distanceScaling = (particle.size! as number / this._params.sizeRange.high) - 1;
-      distanceScaling = Range1d.createXX(0.40, 1).fractionToPoint(distanceScaling);
+      distanceScaling = Range1d.createXX(0.60, 1).fractionToPoint(distanceScaling);
       // Apply velocity.
       particle.velocity.clone(velocity);
       velocity.scale(elapsedSeconds, velocity);

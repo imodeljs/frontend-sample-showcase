@@ -130,7 +130,7 @@ export default class SnowDecorationApp {
             particleDensity: 0.0010,
             sizeRange: Range1d.createXX(3, 22),
             transparencyRange: Range1d.createXX(0, 50),
-            velocityRange: new Range2d(-30, 50, 30, 130),
+            velocityRange: new Range2d(-30, 100, 30, 200),
             accelerationRange: new Range2d(-1, -0.25, 1, 0.25),
             windVelocity: 0,
           },
