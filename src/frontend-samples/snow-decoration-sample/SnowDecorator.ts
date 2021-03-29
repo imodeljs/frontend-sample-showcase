@@ -12,7 +12,7 @@ function randomInteger(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/** Generate random floating-point number in [min, max]. */
+/** Generate random floating-point number in [min, max). */
 function randomFloat(min: number, max: number): number {
   return Math.random() * (max - min) + min;
 }
