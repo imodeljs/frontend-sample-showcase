@@ -2,72 +2,93 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
-import * as React from "react";
-import "common/samples-common.scss";
-import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import React from "react";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { ViewClipWidget } from "./ViewClipWidget";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
-import { ViewSetup } from "api/viewSetup";
 import ViewClipApp from "./ViewClipApp";
-import { ControlPane } from "common/ControlPane/ControlPane";
 
-interface ViewClipUIProps {
-  iModelName: string;
-  iModelSelector: React.ReactNode;
-}
-
-interface ViewClipUIState {
-  imodel?: IModelConnection;
+interface RealityDataUIState {
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
+  iModelConnection?: IModelConnection;
   showClipBlock: boolean;
   clipPlane: string;
 }
 
-/** A React component that renders the UI specific for this sample */
-export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewClipUIState> {
-  /** Creates an Sample instance */
-  constructor(props?: any) {
+export default class RealityDataUI extends React.Component<{}, RealityDataUIState> {
+
+  constructor(props: any) {
     super(props);
     this.state = {
       showClipBlock: false,
       clipPlane: "None",
     };
+    IModelSetup.setIModelList([SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House]);
+    this._changeIModel();
   }
 
-  public componentDidUpdate(_prevProps: ViewClipUIProps, prevState: ViewClipUIState) {
-    if (!this.state.imodel)
-      return;
+  private _changeIModel = (iModelName?: SampleIModels) => {
+    IModelSetup.getIModelInfo(iModelName)
+      .then((info) => {
+        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
+      });
+  };
 
+  /** The inital viewstate function */
+  private getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+
+    if (viewState.is3d()) {
+      const displayStyle = viewState.getDisplayStyle3d();
+      displayStyle.changeBackgroundMapProps({ transparency: 1.0 });
+
+      // Rotate the view to make the view clip look better.
+      viewState.setStandardRotation(StandardViewId.RightIso);
+
+      const range = viewState.computeFitRange();
+      const aspect = ViewSetup.getAspectRatio();
+
+      viewState.lookAtVolume(range, aspect);
+    }
+
+    return viewState;
+  };
+
+  /** The updatemethod for when the user changes a button */
+  private _handleClipPlaneUpdate = (showClipBlock: boolean, clipPlane: string) => {
     const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp) {
+    if (undefined === vp || undefined === this.state.iModelConnection) {
       return;
     }
 
-    if (prevState.showClipBlock !== this.state.showClipBlock ||
-      prevState.clipPlane !== this.state.clipPlane ||
-      prevState.imodel?.name !== this.state.imodel.name) {
-
-      if (this.state.clipPlane === "None" && !this.state.showClipBlock) {
-        ViewClipApp.clearClips(vp);
-        return;
-      }
-
-      if (this.state.showClipBlock) {
-        // Clear any other clips before adding the clip range
-        ViewClipApp.clearClips(vp);
-        if (!vp.view.getViewClip())
-          ViewClipApp.addExtentsClipRange(vp);
-        return;
-      }
-
-      ViewClipApp.setClipPlane(vp, this.state.clipPlane, this.state.imodel);
+    if (clipPlane === "None" && !showClipBlock) {
+      ViewClipApp.clearClips(vp);
+      return;
     }
-  }
 
-  /* Handler for plane select */
-  private _onPlaneSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    this.setState({ showClipBlock: false, clipPlane: event.target.value });
+    if (showClipBlock) {
+      // Clear any other clips before adding the clip range
+      ViewClipApp.clearClips(vp);
+      if (!vp.view.getViewClip())
+        ViewClipApp.addExtentsClipRange(vp);
+      return;
+    }
+
+    ViewClipApp.setClipPlane(vp, clipPlane, this.state.iModelConnection);
+  };
+
+  private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
+      this._handleClipPlaneUpdate(this.state.showClipBlock, this.state.clipPlane)
+    });
+
+    const viewState = await this.getIsoView(iModelConnection);
+    this.setState({ iModelConnection, viewState });
   };
 
   /* Method for flipping (negating) the current clip plane. */
@@ -95,64 +116,35 @@ export default class ViewClipUI extends React.Component<ViewClipUIProps, ViewCli
     return true;
   };
 
-  /* Turn on/off the clip range */
-  private _onToggleRangeClip = async (showClipRange: boolean) => {
-    this.setState({ showClipBlock: showClipRange, clipPlane: "None" });
-  };
-
-  public getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
-    const viewState = await ViewSetup.getDefaultView(imodel);
-
-    if (viewState.is3d()) {
-      const displayStyle = viewState.getDisplayStyle3d();
-      displayStyle.changeBackgroundMapProps({ transparency: 1.0 });
-
-      // Rotate the view to make the view clip look better.
-      viewState.setStandardRotation(StandardViewId.RightIso);
-
-      const range = viewState.computeFitRange();
-      const aspect = ViewSetup.getAspectRatio();
-
-      viewState.lookAtVolume(range, aspect);
-    }
-
-    return viewState;
-  };
-
-  private _onIModelReady = (imodel: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => {
-      this.setState({ imodel, showClipBlock: true, clipPlane: "None" });
-    });
-  };
-
-  /** Components for rendering the sample's instructions and controls */
-  public getControls() {
-    const options = {
-      None: "None",
-      [EditManipulator.RotationType.Left]: "X",
-      [EditManipulator.RotationType.Front]: "Y",
-      [EditManipulator.RotationType.Top]: "Z",
-    };
-    return (
-      <>
-        <div className="sample-options-3col even-3col">
-          <span>Clip Range</span>
-          <Toggle isOn={this.state.showClipBlock} onChange={this._onToggleRangeClip} />
-          <span />
-          <span>Clip Plane</span>
-          <Select onChange={this._onPlaneSelectChange} value={this.state.clipPlane} options={options} />
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleFlipButton()} disabled={this.state.clipPlane === "None"}>Flip</Button>
-        </div>
-      </>
+  private _getSampleUi = (iModelName: SampleIModels) => {
+    return new SampleWidgetUiProvider(
+      "Use the options below to control the view clip.",
+      <ViewClipWidget
+        showClipBlock={this.state.showClipBlock}
+        clipPlane={this.state.clipPlane}
+        handleFlipButton={this._handleFlipButton}
+        handleClipPlaneUpdate={this._handleClipPlaneUpdate} />,
+      { iModelName, onIModelChange: this._changeIModel }
     );
-  }
+  };
 
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ControlPane instructions="Use the options below to control the view clip." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} getCustomViewState={this.getIsoView} />
+        { /* Viewport to display the iModel */}
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            viewportOptions={{ viewState: this.state.viewState }}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            defaultUiConfig={default3DSandboxUi}
+            theme="dark"
+            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            onIModelConnected={this._oniModelReady}
+          />
+        }
       </>
     );
   }
