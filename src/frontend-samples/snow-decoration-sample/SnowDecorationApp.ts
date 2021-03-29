@@ -130,7 +130,7 @@ export default class SnowDecorationApp {
             particleDensity: 0.0010,
             sizeRange: Range1d.createXX(3, 22),
             transparencyRange: Range1d.createXX(0, 50),
-            velocityRange: new Range2d(-30, 100, 30, 200),
+            velocityRange: new Range2d(-30, 50, 30, 120),
             accelerationRange: new Range2d(-1, -0.25, 1, 0.25),
             windVelocity: 0,
           },
@@ -144,13 +144,13 @@ export default class SnowDecorationApp {
         },
       ],
       [
-        "Rain (Dynamic)",
+        "Rain (Raindrop)",
         {
           params: {
             particleDensity: 0.0026,
             sizeRange: Range1d.createXX(10, 15),
             transparencyRange: Range1d.createXX(0, 70),
-            velocityRange: new Range2d(-30, 700, 30, 1000),
+            velocityRange: new Range2d(-30, 300, 30, 450),
             accelerationRange: new Range2d(-1, -1, 1, 10),
             windVelocity: 0,
           },
@@ -168,28 +168,28 @@ export default class SnowDecorationApp {
             return url;
           },
           skyStyle: {
-            groundColor: 0x0047613E, // 627D69 3E6147
-            nadirColor: 0x0053604F, // 4F6053
-            skyColor: 0x00775839, // 5E789E
-            zenithColor: 0x0061462C, // 395877 2C4661
+            groundColor: 0x0047613E,
+            nadirColor: 0x0053604F,
+            skyColor: 0x00775839,
+            zenithColor: 0x0061462C,
           },
         },
       ],
       [
-        "Rain (Static)",
+        "Rain (Circular)",
         {
           params: {
             particleDensity: 0.0026,
             sizeRange: Range1d.createXX(5, 9),
             transparencyRange: Range1d.createXX(0, 70),
-            velocityRange: new Range2d(-30, 700, 30, 1000),
+            velocityRange: new Range2d(-30, 300, 30, 450),
             accelerationRange: new Range2d(-1, -1, 1, 10),
             windVelocity: 0,
           },
           textureUrl: "./particle_rain2.png",
           skyStyle: {
-            groundColor: 0x0047613E, // 627D69 3E6147
-            nadirColor: 0x0053604F, // 4F6053
+            groundColor: 0x0047613E,
+            nadirColor: 0x0053604F,
             skyColor: 0x00775839,
             zenithColor: 0x0061462C,
           },
