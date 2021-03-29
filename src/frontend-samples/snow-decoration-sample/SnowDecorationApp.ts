@@ -168,10 +168,10 @@ export default class SnowDecorationApp {
             return url;
           },
           skyStyle: {
-            groundColor: 0x00697D62,
-            nadirColor: 0x0053604F,
-            skyColor: 0x009E7853,
-            zenithColor: 0x00775839,
+            groundColor: 0x0047613E, // 627D69 3E6147
+            nadirColor: 0x0053604F, // 4F6053
+            skyColor: 0x00775839, // 5E789E
+            zenithColor: 0x0061462C, // 395877 2C4661
           },
         },
       ],
@@ -188,10 +188,10 @@ export default class SnowDecorationApp {
           },
           textureUrl: "./particle_rain2.png",
           skyStyle: {
-            groundColor: 0x00697D62,
-            nadirColor: 0x0053604F,
-            skyColor: 0x009E7853,
-            zenithColor: 0x00775839,
+            groundColor: 0x0047613E, // 627D69 3E6147
+            nadirColor: 0x0053604F, // 4F6053
+            skyColor: 0x00775839,
+            zenithColor: 0x0061462C,
           },
         },
       ],
