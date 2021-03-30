@@ -10,6 +10,7 @@ import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley
 import HyperModelingApp from "./HyperModelingApp";
 import { SectionMarker } from "@bentley/hypermodeling-frontend";
 import { assert, Id64String } from "@bentley/bentleyjs-core";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 interface Previous {
   /** The 3d view. */
@@ -17,10 +18,12 @@ interface Previous {
   /** The Id of the previously-active section marker. */
   markerId: Id64String;
 }
+
 interface HyperModelingUIState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
+  iModelViewportControlOptions?: IModelViewportControlOptions;
   viewState?: ViewState;
   iModelConnection?: IModelConnection;
   activeMarker?: SectionMarker;
@@ -82,13 +85,17 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce(async (viewport: ScreenViewport) => {
       await HyperModelingApp.enableHyperModeling(viewport);
-      HyperModelingApp.markerHandler.onActiveMarkerChanged.addListener((activeMarker) => this.setState({ activeMarker }));
+      HyperModelingApp.markerHandler.onActiveMarkerChanged.addListener((activeMarker) => {
+        console.log("parent: updating active marker state");
+        console.log(this.state.activeMarker);
+        this.setState({ activeMarker });
+      });
       await HyperModelingApp.activateMarkerByName(viewport, "Section-Left");
     });
 
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ iModelConnection, viewState });
+        this.setState({ iModelConnection, iModelViewportControlOptions: { viewState } });
       });
   };
 
@@ -97,7 +104,8 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
       "Click on a marker to toggle the section or return to the 3d view.",
       <HyperModelingWidget
         toggle2dGraphics={this.state.graphics2DState}
-        onToggle2dGraphics={this._onToggle2DGraphics}
+        activeMarker={this.state.activeMarker}
+        onToggle2dGraphicsFunc={this._onToggle2DGraphics}
         onClickReturnTo3D={this._onClickReturnTo3D}
         onClickSelectNewMarker={this._onClickSelectNewMarker}
         onClickSwitchTo2d={this._onClickSwitchTo2d}
@@ -114,7 +122,7 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
           <Viewer
             contextId={this.state.contextId}
             iModelId={this.state.iModelId}
-            viewportOptions={{ viewState: this.state.viewState }}
+            viewportOptions={this.state.iModelViewportControlOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
