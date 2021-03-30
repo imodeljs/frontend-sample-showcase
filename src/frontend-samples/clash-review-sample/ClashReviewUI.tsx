@@ -2,64 +2,65 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
+import React from "react";
 import "common/samples-common.scss";
-import "./ClashReview.scss";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { Button, ButtonSize, ButtonType, Spinner, SpinnerSize, Toggle } from "@bentley/ui-core";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
-import { ViewSetup } from "api/viewSetup";
+import { imageElementFromUrl, IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import ClashReviewApp from "./ClashReviewApp";
-import { ControlPane } from "common/ControlPane/ControlPane";
+import { ClashReviewWidget } from "./ClashReviewWidget";
+import { ClashReviewTable } from "./ClashReviewTableWidget";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import GridWidget from "./ClashTable";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
-export let applyZoom: boolean = true;
-
-interface ClashReviewUIState {
-  imodel?: IModelConnection;
-  viewDefinitionId?: Id64String;
-  showDecorator: boolean;
+interface ClashReviewState {
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewportOptions?: IModelViewportControlOptions;
+  clashData?: any;
   markersData: MarkerData[];
+  showDecorator: boolean;
+  applyZoom: boolean;
 }
 
-export default class ClashReviewUI extends React.Component<{
-  iModelName: string; iModelSelector: React.ReactNode;
-}, ClashReviewUIState> {
+export default class ClashReviewUI extends React.Component<{}, ClashReviewState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
-  /** Creates a Sample instance */
-  constructor(props?: any) {
+  constructor(props: {}) {
     super(props);
     this.state = {
-      showDecorator: true,
       markersData: [],
+      showDecorator: true,
+      applyZoom: true,
     };
+    IModelSetup.setIModelList([SampleIModels.BayTown]);
+    this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to review clashes.",
+      <ClashReviewWidget applyZoom={this.state.applyZoom} showDecorator={this.state.showDecorator} setApplyZoom={(applyZoom) => this.setState({ applyZoom })} setShowDecorator={(showDecorator) => this.setState({ showDecorator })} />
+    );
+    this._sampleWidgetUiProvider.addWidget("ClashReviewTableWidget", "Clash Review Table", <ClashReviewTable />);
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   public async componentDidMount() {
-
     ClashReviewApp._images = new Map();
     ClashReviewApp._images.set("clash_pin.svg", await imageElementFromUrl(".\\clash_pin.svg"));
-    ClashReviewApp.projectContext = await ClashReviewApp.getIModelInfo(this.props.iModelName);
-
-    return <ClashReviewUI iModelName={this.props.iModelName} iModelSelector={this.props.iModelSelector} />;
   }
 
   public componentWillUnmount() {
     ClashReviewApp.disableDecorations();
-    ClashReviewApp._clashPinDecorator = undefined;
     ClashReviewApp.resetDisplay();
-    ClashReviewApp.clashData = undefined;
   }
 
-  public componentDidUpdate(_prevProps: {}, prevState: ClashReviewUIState) {
-    if (prevState.imodel !== this.state.imodel)
-      if (this.state.showDecorator) {
-        ClashReviewApp.setupDecorator(this.state.markersData);
-        ClashReviewApp.enableDecorations();
-      }
+  public componentDidUpdate(_prevProps: {}, prevState: ClashReviewState) {
+    if (this.state.clashData && prevState.clashData !== this.state.clashData) {
+      this._sampleWidgetUiProvider.updateWidget("ClashReviewTableWidget", { clashData: this.state.clashData });
+    }
 
     if (prevState.markersData !== this.state.markersData) {
       if (ClashReviewApp.decoratorIsSetup())
@@ -67,93 +68,77 @@ export default class ClashReviewUI extends React.Component<{
     }
 
     if (prevState.showDecorator !== this.state.showDecorator) {
+      this._sampleWidgetUiProvider.updateControls({ showDecorator: this.state.showDecorator });
       if (this.state.showDecorator)
         ClashReviewApp.enableDecorations();
       else
         ClashReviewApp.disableDecorations();
     }
+
+    if (prevState.applyZoom !== this.state.applyZoom) {
+      this._sampleWidgetUiProvider.updateControls({ applyZoom: this.state.applyZoom });
+      if (this.state.applyZoom) {
+        ClashReviewApp.enableZoom();
+      } else {
+        ClashReviewApp.disableZoom();
+      }
+    }
   }
 
-  /** Called when the user changes the showMarkers toggle. */
-  private _onChangeShowMarkers = (checked: boolean) => {
-    if (checked) {
-      this.setState({ showDecorator: true });
-    } else {
-      this.setState({ showDecorator: false });
-    }
-  };
+  private _changeIModel(iModelName?: SampleIModels) {
+    IModelSetup.getIModelInfo(iModelName)
+      .then(async (info) => {
+        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
+      });
+  }
 
-  /** Called when the user changes the applyZoom toggle. */
-  private _onChangeApplyZoom = (checked: boolean) => {
-    if (checked) {
-      applyZoom = true;
-    } else {
-      applyZoom = false;
-    }
-  };
-
-  /** This callback will be executed by SandboxViewport to initialize the viewstate */
-  public static async getIsoView(imodel: IModelConnection): Promise<ViewState> {
-    const viewState = await ViewSetup.getDefaultView(imodel);
-
+  /** This callback will be executed by iTwin Viewer to initialize the viewstate */
+  private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
     viewState.setStandardRotation(StandardViewId.Iso);
 
     const range = viewState.computeFitRange();
     const aspect = viewState.getAspectRatio();
 
     viewState.lookAtVolume(range, aspect);
+    this.setState({ viewportOptions: { viewState } });
 
-    return viewState;
-  }
+    if (this.state.contextId) {
+      const clashData = await ClashReviewApp.getClashData(this.state.contextId);
+      const markersData = await ClashReviewApp.getClashMarkersData(iModelConnection, clashData);
 
-  /** This callback will be executed by SandboxViewport once the iModel has been loaded */
-  private onIModelReady = (imodel: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
+      this.setState({ clashData, markersData });
 
-      const markersData = await ClashReviewApp.getClashMarkersData(imodel);
-      this.setState({ imodel, markersData });
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ClashReviewApp.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
       }
-    });
-  };
+    }
 
-  /** Components for rendering the sample's instructions and controls */
-  public getControls() {
-    return (
-      <>
-        <div className="sample-options-2col">
-          <span>Show Markers</span>
-          <Toggle isOn={this.state.showDecorator} onChange={this._onChangeShowMarkers} />
-        </div>
-        <div className="sample-options-2col">
-          <span>Apply Zoom</span>
-          <Toggle isOn={applyZoom} onChange={this._onChangeApplyZoom} />
-        </div>
-        <div className="sample-options-2col">
-          <span>Display</span>
-          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} className="show-control-pane-button" onClick={ClashReviewApp.resetDisplay.bind(this)}>Reset</Button>
-        </div>
-      </>
-    );
-  }
+    if (this.state.showDecorator) {
+      ClashReviewApp.setupDecorator(this.state.markersData);
+      ClashReviewApp.enableDecorations();
+    }
+  };
 
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ControlPane instructions="Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to review clashes." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <div className="app-content">
-          <div className="top">
-            <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} getCustomViewState={ClashReviewUI.getIsoView.bind(ClashReviewUI)} />
-          </div>
-          <div className="bottom">
-            {ClashReviewApp.clashData === undefined ?
-              (<div ><Spinner size={SpinnerSize.Small} /> Calling API...</div>) :
-              (<GridWidget data={ClashReviewApp.clashData} />)}
-          </div>
-        </div>
+        { /* Viewport to display the iModel */}
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            productId="2686"
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            viewportOptions={this.state.viewportOptions}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            defaultUiConfig={default3DSandboxUi}
+            theme="dark"
+            uiProviders={this._uiProviders}
+            onIModelConnected={this._oniModelReady}
+          />
+        }
       </>
     );
   }

@@ -4,49 +4,25 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
 import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
 import { Point3d } from "@bentley/geometry-core";
-import { IModelQuery } from "@bentley/imodelhub-client";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
-import { applyZoom } from "./ClashReviewUI";
-import { jsonData } from "./ClashDetectionJsonData";
 import ClashDetectionApis from "./ClashDetectionApis";
-
-interface ProjectContext {
-  projectId: string;
-  imodelId: string;
-  requestContext: AuthorizedFrontendRequestContext;
-}
+import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 
 export default class ClashReviewApp {
+  private static _requestContext: AuthorizedClientRequestContext;
   public static _clashPinDecorator?: MarkerPinDecorator;
   public static _images: Map<string, HTMLImageElement>;
-  public static projectContext: ProjectContext;
-  public static clashData: any;
+  private static _clashData: { [id: string]: any } = {};
+  private static _applyZoom: boolean = true;
 
-  public static async getIModelInfo(iModelName: string): Promise<ProjectContext> {
-    // In testdrive the projectName matches iModelName.  That's not true in general.
-    const projectName = iModelName;
-    const connectClient = new ContextRegistryClient();
-    let project: Project;
-
-    const context = await AuthorizedFrontendRequestContext.create();
-
-    try {
-      project = await connectClient.getProject(context, { $filter: `Name+eq+'${iModelName}'` });
-    } catch (e) {
-      throw new Error(`Project with name "${projectName}" does not exist`);
+  private static async getRequestContext() {
+    if (!ClashReviewApp._requestContext) {
+      ClashReviewApp._requestContext = await AuthorizedFrontendRequestContext.create();
     }
-
-    const imodelQuery = new IModelQuery();
-    imodelQuery.byName(iModelName);
-    const imodels = await IModelApp.iModelClient.iModels.get(context, project.wsgId, imodelQuery);
-    if (imodels.length === 0)
-      throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
-
-    return { projectId: project.wsgId, imodelId: imodels[0].wsgId, requestContext: context };
+    return ClashReviewApp._requestContext;
   }
 
   public static decoratorIsSetup() {
@@ -77,61 +53,69 @@ export default class ClashReviewApp {
       IModelApp.viewManager.dropDecorator(this._clashPinDecorator);
   }
 
-  public static async getClashData(): Promise<any> {
-    if (ClashReviewApp.clashData === undefined) {
-      const runsResponse = await ClashDetectionApis.getProjectValidationRuns();
+  public static enableZoom() {
+    this._applyZoom = true;
+  }
+
+  public static disableZoom() {
+    this._applyZoom = false;
+  }
+
+  public static async getClashData(projectId: string): Promise<any> {
+    const context = await ClashReviewApp.getRequestContext();
+    if (ClashReviewApp._clashData[projectId] === undefined) {
+      const runsResponse = await ClashDetectionApis.getProjectValidationRuns(context, projectId);
       if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
         // Get validation result
-        const resultResponse = await ClashDetectionApis.getValidationUrlResponse(runsResponse.validationRuns[0]._links.result.href);
+        const resultResponse = await ClashDetectionApis.getValidationUrlResponse(context, runsResponse.validationRuns[0]._links.result.href);
         if (resultResponse !== undefined && resultResponse.clashDetectionResult !== undefined)
-          ClashReviewApp.clashData = resultResponse;
+          ClashReviewApp._clashData[projectId] = resultResponse;
       }
-      if (ClashReviewApp.clashData === undefined)
-        ClashReviewApp.clashData = jsonData;
     }
-    return new Promise((resolve) => { resolve(ClashReviewApp.clashData); });
+    return ClashReviewApp._clashData[projectId];
   }
 
-  public static async getClashMarkersData(imodel: IModelConnection): Promise<MarkerData[]> {
+  public static async getClashMarkersData(imodel: IModelConnection, clashData: any): Promise<MarkerData[]> {
     // Limit the number of clashes in this demo
     const maxClashes = 70;
-
     const markersData: MarkerData[] = [];
-    const clashData = await ClashReviewApp.getClashData();
+    const limitedClashData = clashData.clashDetectionResult.slice(0, maxClashes);
 
-    let count = 0;
-    for (const clash of clashData.clashDetectionResult) {
-      const point = await this.calcClashCenter(imodel, clash.elementAId, clash.elementBId);
+    const elementAs: string[] = limitedClashData.map((clash: any) => clash.elementAId);
+    const elementBs: string[] = limitedClashData.map((clash: any) => clash.elementBId);
+
+    const points = await this.calcClashCenter(imodel, elementAs, elementBs);
+
+    for (let index = 0; index < points.length; index++) {
       const title = "Collision(s) found:";
-      const description = `Element A: ${clash.elementALabel}<br>Element B: ${clash.elementBLabel}`;
-      const clashMarkerData: MarkerData = { point, data: clash, title, description };
+      const description = `Element A: ${limitedClashData[index].elementALabel}<br>Element B: ${limitedClashData[index].elementBLabel}`;
+      const clashMarkerData: MarkerData = { point: points[index], data: limitedClashData[index], title, description };
       markersData.push(clashMarkerData);
-      count++;
-      if (maxClashes < count)
-        break;
     }
-    return new Promise((resolve) => { resolve(markersData); });
+    return markersData;
   }
 
-  private static async calcClashCenter(imodel: IModelConnection, elementAId: string, elementBId: string): Promise<Point3d> {
-    let rangeA: any;
-    const elemAProps = (await imodel.elements.getProps([elementAId])) as GeometricElement3dProps[];
-    if (elemAProps.length !== 0) {
-      elemAProps.forEach((prop: GeometricElement3dProps) => {
-        const placement = Placement3d.fromJSON(prop.placement);
-        rangeA = placement.calculateRange();
-      });
-    }
-    let rangeB: any;
-    const elemBProps = (await imodel.elements.getProps([elementBId])) as GeometricElement3dProps[];
-    if (elemBProps.length !== 0) {
-      elemBProps.forEach((prop: GeometricElement3dProps) => {
-        const placement = Placement3d.fromJSON(prop.placement);
-        rangeB = placement.calculateRange();
-      });
+  private static async calcClashCenter(imodel: IModelConnection, elementAIds: string[], elementBIds: string[]): Promise<Point3d[]> {
+    const allElementIds = [...elementAIds, ...elementBIds];
+
+    const elemProps = (await imodel.elements.getProps(allElementIds)) as GeometricElement3dProps[];
+    const intersections: Point3d[] = [];
+    if (elemProps.length !== 0) {
+
+      for (let index = 0; index < elementAIds.length; index++) {
+        const elemA = elemProps.find((prop) => prop.id === elementAIds[index]);
+        const elemB = elemProps.find((prop) => prop.id === elementBIds[index]);
+        if (elemA && elemB) {
+          const placementA = Placement3d.fromJSON(elemA.placement);
+          const rangeA = placementA.calculateRange();
+          const placementB = Placement3d.fromJSON(elemB.placement);
+          const rangeB = placementB.calculateRange();
+          intersections.push(rangeA.intersect(rangeB).center);
+        }
+      }
     }
 
-    return rangeA.intersect(rangeB).center;
+    return intersections;
   }
 
   public static visualizeClashCallback = (clashData: any) => {
@@ -151,7 +135,7 @@ export default class ClashReviewApp {
     emph.wantEmphasis = true;
     emph.emphasizeElements([elementAId, elementBId], vp, undefined, false);
 
-    if (applyZoom) {
+    if (this._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
       viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);

@@ -20,6 +20,7 @@ interface ViewAttributesUIState {
 }
 
 export default class ViewAttributesUI extends React.Component<{}, ViewAttributesUIState> {
+  private _sampleWidgetUiProvider = new SampleWidgetUiProvider("Use the toggle below for displaying the reality data in the model.", <ViewAttributesWidget />, this._changeIModel);
 
   constructor(props: any) {
     super(props);
@@ -41,9 +42,10 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
     this._changeIModel();
   }
 
-  private _changeIModel = (iModelName?: SampleIModels) => {
+  private _changeIModel(iModelName?: SampleIModels) {
     IModelSetup.getIModelInfo(iModelName)
       .then((info) => {
+        this._sampleWidgetUiProvider.updateSelector(info.imodelName);
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
   };
@@ -155,7 +157,7 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={[this._sampleWidgetUiProvider]}
             onIModelConnected={this._oniModelReady}
           />
         }

@@ -8,6 +8,7 @@ import { Viewer } from "@bentley/itwin-viewer-react";
 import { RealityDataWidget } from "./RealityDataWidget";
 import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
 import RealityDataApp from "./RealityDataApp";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 interface RealityDataUIState {
   iModelName?: SampleIModels;
@@ -17,9 +18,11 @@ interface RealityDataUIState {
   iModelConnection?: IModelConnection;
   showRealityData: boolean;
   realityDataTransparency: number;
+  viewportOptions?: IModelViewportControlOptions;
 }
 
 export default class RealityDataUI extends React.Component<{}, RealityDataUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
 
   constructor(props: any) {
     super(props);
@@ -27,6 +30,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
       showRealityData: true,
       realityDataTransparency: 0,
     };
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider("Use the toggle below for displaying the reality data in the model.", <RealityDataWidget />, this._changeIModel);
     IModelSetup.setIModelList([SampleIModels.ExtonCampus, SampleIModels.MetroStation]);
     this._changeIModel();
   }
@@ -34,6 +38,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
       .then((info) => {
+        this._sampleWidgetUiProvider.updateSelector(info.imodelName);
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
   };
@@ -78,7 +83,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
 
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ iModelConnection, viewState });
+        this.setState({ iModelConnection, viewportOptions: { viewState } });
       });
   };
 
@@ -91,11 +96,11 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
           <Viewer
             contextId={this.state.contextId}
             iModelId={this.state.iModelId}
-            viewportOptions={{ viewState: this.state.viewState }}
+            viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={[this._sampleWidgetUiProvider]}
             onIModelConnected={this._oniModelReady}
           />
         }

@@ -1,22 +1,17 @@
-/*---------------------------------------------------------------------------------------------
-* Copyright (c) 2019 Bentley Systems, Incorporated. All rights reserved.
-* Licensed under the MIT License. See LICENSE.md in the project root for license terms.
-*--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
+import React from "react";
+import { Spinner, SpinnerSize } from "@bentley/ui-core";
 import { PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat } from "@bentley/ui-abstract";
+import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import ClashReviewApp from "./ClashReviewApp";
 
-export interface Props {
-  data: any;
+export interface ClashReviewTableProps {
+  clashData?: any;
 }
 
-/** Table component for the viewer app */
-export default class ClashTable extends React.PureComponent<Props> {
+export const ClashReviewTable: React.FunctionComponent<ClashReviewTableProps> = ({ clashData }) => {
 
-  // creating a simple table data provider.
-  private _getDataProvider = (): SimpleTableDataProvider => {
+  const _getDataProvider = (): SimpleTableDataProvider => {
 
     // Limit the number of clashes in this demo
     const maxClashes = 70;
@@ -34,10 +29,10 @@ export default class ClashTable extends React.PureComponent<Props> {
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 
-    if (this.props.data !== undefined && this.props.data.clashDetectionResult !== undefined) {
+    if (clashData !== undefined && clashData.clashDetectionResult !== undefined) {
       // adding rows => cells => property record => value and description.
       let clashIndex: number = 0;
-      this.props.data.clashDetectionResult.some((rowData: any) => {
+      clashData.clashDetectionResult.some((rowData: any) => {
         // Concatenate the element ids to set the row key  ie. "elementAId-elementBId"
         const rowItemKey = `${rowData.elementAId}-${rowData.elementBId}`;
         const rowItem: RowItem = { key: rowItemKey, cells: [] };
@@ -45,10 +40,10 @@ export default class ClashTable extends React.PureComponent<Props> {
           let cellValue: string = "";
           if (column.key === "elementACategoryIndex" || column.key === "elementBCategoryIndex") {
             // Lookup the category name using the index
-            cellValue = this.props.data.categoryList[rowData[column.key]].displayName.toString();
+            cellValue = clashData.categoryList[rowData[column.key]].displayName.toString();
           } else if (column.key === "elementAModelIndex" || column.key === "elementBModelIndex") {
             // Lookup the model name using the index
-            cellValue = this.props.data.modelList[rowData[column.key]].displayName.toString();
+            cellValue = clashData.modelList[rowData[column.key]].displayName.toString();
           } else {
             cellValue = rowData[column.key].toString();
           }
@@ -65,26 +60,26 @@ export default class ClashTable extends React.PureComponent<Props> {
   };
 
   // bonus: zooming into and highlighting element when row is selected.
-  private _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
+  const _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
 
     if (!IModelApp.viewManager.selectedView)
-      return Promise.resolve(true);
+      return true;
 
     const row = await rowIterator.next();
 
     // Get the concatenated element ids from the row key  ie. "elementAId-elementBId"
     const elementIds = row.value.key.split("-");
-
     ClashReviewApp.visualizeClash(elementIds[0], elementIds[1]);
-
-    return Promise.resolve(true);
+    return true;
   };
 
-  public render() {
-    return (
-      <div style={{ height: "100%" }}>
-        <Table dataProvider={this._getDataProvider()} onRowsSelected={this._onRowsSelected} />
-      </div>
-    );
-  }
-}
+  return (
+    <>
+      {!clashData ? <div ><Spinner size={SpinnerSize.Small} /> Calling API...</div> :
+        <div style={{ height: "100%" }}>
+          <Table dataProvider={_getDataProvider()} onRowsSelected={_onRowsSelected} />
+        </div>
+      }
+    </>
+  );
+};

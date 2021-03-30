@@ -6,6 +6,7 @@ import React from "react";
 import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ViewportOnlyUIState {
   iModelName?: SampleIModels;
@@ -15,26 +16,23 @@ interface ViewportOnlyUIState {
 }
 
 export default class ViewportOnlyUI extends React.Component<{}, ViewportOnlyUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiItemProviders: UiItemsProvider[];
 
   constructor(props: {}) {
     super(props);
     this.state = {};
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider("Use the toolbar at the top-right to navigate the model.", this._changeIModel);
+    this._uiItemProviders = [this._sampleWidgetUiProvider];
     this._changeIModel();
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
       .then((info) => {
+        this._sampleWidgetUiProvider.updateSelector(info.imodelName);
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  };
-
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the toolbar at the top-right to navigate the model.",
-      undefined,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
   };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
@@ -57,7 +55,7 @@ export default class ViewportOnlyUI extends React.Component<{}, ViewportOnlyUISt
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={this._uiItemProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

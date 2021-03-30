@@ -19,6 +19,7 @@ interface ToolbarButtonSampleState {
 
 export default class ToolbarButtonSample extends React.Component<{}, ToolbarButtonSampleState> {
   private _toolbarUiProvider = new ToolbarButtonProvider();
+  private _sampleWidgetProvider: SampleWidgetUiProvider = new SampleWidgetUiProvider("Press the Lightbulb button tool at the top of the screen.", this._changeIModel);
 
   constructor(props: {}) {
     super(props);
@@ -26,19 +27,12 @@ export default class ToolbarButtonSample extends React.Component<{}, ToolbarButt
     this._changeIModel();
   }
 
-  private _changeIModel = (iModelName?: SampleIModels) => {
+  private _changeIModel(iModelName?: SampleIModels) {
     IModelSetup.getIModelInfo(iModelName)
       .then((info) => {
+        this._sampleWidgetProvider.updateSelector(info.imodelName);
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  };
-
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Press the Lightbulb button tool at the top of the screen.",
-      undefined,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
   };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
@@ -61,7 +55,7 @@ export default class ToolbarButtonSample extends React.Component<{}, ToolbarButt
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DAppUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName), this._toolbarUiProvider]}
+            uiProviders={[this._sampleWidgetProvider, this._toolbarUiProvider]}
             onIModelConnected={this._oniModelReady}
           />
         }
