@@ -14,10 +14,18 @@ import {
   EmphasizeAction, HideAction, IsolateAction, OverrideAction,
 } from "./EmphasizeElementsApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { EmphasizeElements, IModelApp } from "@bentley/imodeljs-frontend";
+import { EmphasizeElements, IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { EmphasizeElementsWidget } from "./EmphasizeElementsWidget";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { Viewer } from "@bentley/itwin-viewer-react";
 
 /** React state of the Sample component */
-interface EmphasizeElementsState {
+interface EmphasizeElementsUIState {
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewState?: ViewState;
+  iModelConnection?: IModelConnection;
   selectionIsEmpty: boolean;
   emphasizeIsActive: boolean;
   hideIsActive: boolean;
@@ -35,7 +43,7 @@ enum ActionType {
 }
 
 /** A React component that renders the UI specific for this sample */
-export default class EmphasizeElementsUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, EmphasizeElementsState> {
+export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeElementsUIState> {
 
   /** Creates an Sample instance */
   constructor(props?: any) {
@@ -49,10 +57,19 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
       wantEmphasis: true,
       colorValue: ColorDef.red,
     };
+    IModelSetup.setIModelList([SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
+    this._changeIModel();
 
     // subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
   }
+
+  private _changeIModel = (iModelName?: SampleIModels) => {
+    IModelSetup.getIModelInfo(iModelName)
+      .then((info) => {
+        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
+      });
+  };
 
   public componentWillUnmount() {
     const vp = IModelApp.viewManager.selectedView;
@@ -124,46 +141,48 @@ export default class EmphasizeElementsUI extends React.Component<{ iModelName: s
     }
   };
 
-  private _onToggleEmphasis = (wantEmphasis: boolean) => {
-    this.setState({ wantEmphasis });
-  };
-
-  private _onColorPick = (colorValue: ColorDef) => {
-    this.setState({ colorValue });
-  };
-
-  /** Components for rendering the sample's instructions and controls */
-  private getControls() {
-    return (
-      <>
-        <div className="sample-options-4col">
-          <span>Emphasize</span>
-          <Toggle isOn={this.state.wantEmphasis} showCheckmark={true} onChange={this._onToggleEmphasis} disabled={this.state.selectionIsEmpty} />
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Emphasize)} disabled={this.state.selectionIsEmpty}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Emphasize)} disabled={!this.state.emphasizeIsActive}>Clear</Button>
-          <span>Hide</span>
-          <span />
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Hide)} disabled={this.state.selectionIsEmpty}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Hide)} disabled={!this.state.hideIsActive}>Clear</Button>
-          <span>Isolate</span>
-          <span />
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Isolate)} disabled={this.state.selectionIsEmpty}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Isolate)} disabled={!this.state.isolateIsActive}>Clear</Button>
-          <span>Override</span>
-          <ColorPickerButton initialColor={this.state.colorValue} onColorPick={this._onColorPick} disabled={this.state.selectionIsEmpty} />
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleActionButton(ActionType.Override)} disabled={this.state.selectionIsEmpty}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => this._handleClearButton(ActionType.Override)} disabled={!this.state.overrideIsActive}>Clear</Button>
-        </div>
-      </>
+  private _getSampleUi = (iModelName: SampleIModels) => {
+    return new SampleWidgetUiProvider(
+      "Use the toggle below for displaying the reality data in the model.",
+      <EmphasizeElementsWidget
+        selectionIsEmpty={this.state.selectionIsEmpty}
+        emphasizeIsActive={this.state.emphasizeIsActive}
+        hideIsActive={this.state.hideIsActive}
+        isolateIsActive={this.state.isolateIsActive}
+        overrideIsActive={this.state.overrideIsActive}
+        wantEmphasis={this.state.wantEmphasis}
+        colorValue={this.state.colorValue}
+        handleActionButton={this._handleActionButton}
+        handleClearButton={this._handleClearButton}
+      />,
+      { iModelName, onIModelChange: this._changeIModel }
     );
-  }
+  };
+
+  private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    ViewSetup.getDefaultView(iModelConnection)
+      .then((viewState) => {
+        this.setState({ iModelConnection, viewState });
+      });
+  };
 
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ControlPane instructions="Select one or more elements.  Click one of the Apply buttons." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <SandboxViewport iModelName={this.props.iModelName} />
+        { /* Viewport to display the iModel */}
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            viewportOptions={{ viewState: this.state.viewState }}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            defaultUiConfig={default3DSandboxUi}
+            theme="dark"
+            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            onIModelConnected={this._oniModelReady}
+          />
+        }
       </>
     );
   }
