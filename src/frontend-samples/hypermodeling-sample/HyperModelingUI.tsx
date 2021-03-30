@@ -34,7 +34,7 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
   private _getSampleUi = () => {
     return new SampleWidgetUiProvider(
       "Click on a marker to toggle the section or return to the 3d view.",
-      <HyperModelingWidget />
+      // <HyperModelingWidget />
     );
   };
 

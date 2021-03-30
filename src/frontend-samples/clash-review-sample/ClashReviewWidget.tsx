@@ -1,26 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ClashReviewApp from "./ClashReviewApp";
 
-export const ClashReviewWidget: React.FunctionComponent = () => {
-  const [showDecorator, setShowDecorator] = useState<boolean>(true);
-  const [applyZoom, setApplyZoom] = useState<boolean>(true);
+export interface ClashReviewWidgetProps {
+  applyZoom: boolean;
+  showDecorator: boolean;
+  setShowDecorator: (value: boolean) => void;
+  setApplyZoom: (value: boolean) => void;
+}
 
-  useEffect(() => {
-    if (showDecorator) {
-      ClashReviewApp.enableDecorations();
-    } else {
-      ClashReviewApp.disableDecorations();
-    }
-  }, [showDecorator]);
-
-  useEffect(() => {
-    if (applyZoom) {
-      ClashReviewApp.enableZoom();
-    } else {
-      ClashReviewApp.disableZoom();
-    }
-  }, [applyZoom]);
+export const ClashReviewWidget: React.FunctionComponent<ClashReviewWidgetProps> = ({ applyZoom, showDecorator, setShowDecorator, setApplyZoom }) => {
 
   /** Called when the user changes the showMarkers toggle. */
   const _onChangeShowMarkers = (checked: boolean) => {

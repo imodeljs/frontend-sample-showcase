@@ -1,6 +1,6 @@
 import React from "react";
 import { Spinner, SpinnerSize } from "@bentley/ui-core";
-import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat } from "@bentley/ui-abstract";
+import { PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat } from "@bentley/ui-abstract";
 import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import ClashReviewApp from "./ClashReviewApp";
@@ -9,7 +9,7 @@ export interface ClashReviewTableProps {
   clashData?: any;
 }
 
-const ClashReviewTable: React.FunctionComponent<ClashReviewTableProps> = ({ clashData }) => {
+export const ClashReviewTable: React.FunctionComponent<ClashReviewTableProps> = ({ clashData }) => {
 
   const _getDataProvider = (): SimpleTableDataProvider => {
 
@@ -83,10 +83,3 @@ const ClashReviewTable: React.FunctionComponent<ClashReviewTableProps> = ({ clas
     </>
   );
 };
-
-export const getClashReviewTableWidget = (props: ClashReviewTableProps): AbstractWidgetProps => ({
-  id: "ClashReviewTableWidget",
-  label: "Clash Review Table",
-  // eslint-disable-next-line react/display-name
-  getWidgetContent: () => <ClashReviewTable {...props} />,
-});
