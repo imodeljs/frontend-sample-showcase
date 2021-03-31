@@ -9,6 +9,7 @@ import { ViewAttributesWidget } from "./ViewAttributesWidget";
 import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
 import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
 import { RenderMode } from "@bentley/imodeljs-common";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ViewAttributesUIState {
   iModelName?: SampleIModels;
@@ -20,7 +21,8 @@ interface ViewAttributesUIState {
 }
 
 export default class ViewAttributesUI extends React.Component<{}, ViewAttributesUIState> {
-  private _sampleWidgetUiProvider = new SampleWidgetUiProvider("Use the toggle below for displaying the reality data in the model.", <ViewAttributesWidget />, this._changeIModel);
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
@@ -40,6 +42,19 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
       },
     };
     this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the controls below to change the view attributes.",
+      <ViewAttributesWidget
+        attrValues={this.state.initAttributeValues}
+        onChangeAttribute={this._onChangeAttribute}
+        onChangeRenderMode={this._onChangeRenderMode}
+        onChangeSkyboxToggle={this._onChangeSkyboxToggle}
+        onChangeCameraToggle={this._onChangeCameraToggle}
+        onChangeViewFlagToggle={this._onChangeViewFlagToggle}
+        onTransparencySliderChange={this._onTransparencySliderChange}
+      />
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _changeIModel(iModelName?: SampleIModels) {
@@ -127,22 +142,6 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
     }
   };
 
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the controls below to change the view attributes.",
-      <ViewAttributesWidget
-        attrValues={this.state.initAttributeValues}
-        onChangeAttribute={this._onChangeAttribute}
-        onChangeRenderMode={this._onChangeRenderMode}
-        onChangeSkyboxToggle={this._onChangeSkyboxToggle}
-        onChangeCameraToggle={this._onChangeCameraToggle}
-        onChangeViewFlagToggle={this._onChangeViewFlagToggle}
-        onTransparencySliderChange={this._onTransparencySliderChange}
-      />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
-  };
-
   /** The sample's render method */
   public render() {
 
@@ -157,7 +156,7 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._sampleWidgetUiProvider]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

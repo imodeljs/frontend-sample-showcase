@@ -7,6 +7,7 @@ import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { DisplayStylesWidget } from "./DisplayStylesWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ViewAttributesUIState {
   iModelName?: SampleIModels;
@@ -15,12 +16,19 @@ interface ViewAttributesUIState {
   viewState?: ViewState;
 }
 export default class DisplayStylesUI extends React.Component<{}, ViewAttributesUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
     this.state = {};
-    this._changeIModel();
     IModelSetup.setIModelList([SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium]);
+    this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the drop down below to change the display style. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.",
+      <DisplayStylesWidget />,
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
@@ -28,14 +36,6 @@ export default class DisplayStylesUI extends React.Component<{}, ViewAttributesU
       .then((info) => {
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  };
-
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the drop down below to change the display style. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.",
-      <DisplayStylesWidget />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
   };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
@@ -59,7 +59,7 @@ export default class DisplayStylesUI extends React.Component<{}, ViewAttributesU
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

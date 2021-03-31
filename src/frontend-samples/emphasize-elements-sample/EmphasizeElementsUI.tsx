@@ -4,20 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { ColorPickerButton } from "@bentley/ui-components";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
-
 import { ColorDef } from "@bentley/imodeljs-common";
 import {
   ClearEmphasizeAction, ClearHideAction, ClearIsolateAction, ClearOverrideAction,
   EmphasizeAction, HideAction, IsolateAction, OverrideAction,
 } from "./EmphasizeElementsApp";
-import { ControlPane } from "common/ControlPane/ControlPane";
 import { EmphasizeElements, IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { EmphasizeElementsWidget } from "./EmphasizeElementsWidget";
 import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 /** React state of the Sample component */
 interface EmphasizeElementsUIState {
@@ -44,6 +40,8 @@ enum ActionType {
 
 /** A React component that renders the UI specific for this sample */
 export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeElementsUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   /** Creates an Sample instance */
   constructor(props?: any) {
@@ -59,6 +57,21 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
     };
     IModelSetup.setIModelList([SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
     this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the toggle below for displaying the reality data in the model.",
+      <EmphasizeElementsWidget
+        selectionIsEmpty={this.state.selectionIsEmpty}
+        emphasizeIsActive={this.state.emphasizeIsActive}
+        hideIsActive={this.state.hideIsActive}
+        isolateIsActive={this.state.isolateIsActive}
+        overrideIsActive={this.state.overrideIsActive}
+        wantEmphasis={this.state.wantEmphasis}
+        colorValue={this.state.colorValue}
+        handleActionButton={this._handleActionButton}
+        handleClearButton={this._handleClearButton}
+      />
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
 
     // subscribe for unified selection changes
     Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
@@ -141,24 +154,6 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
     }
   };
 
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the toggle below for displaying the reality data in the model.",
-      <EmphasizeElementsWidget
-        selectionIsEmpty={this.state.selectionIsEmpty}
-        emphasizeIsActive={this.state.emphasizeIsActive}
-        hideIsActive={this.state.hideIsActive}
-        isolateIsActive={this.state.isolateIsActive}
-        overrideIsActive={this.state.overrideIsActive}
-        wantEmphasis={this.state.wantEmphasis}
-        colorValue={this.state.colorValue}
-        handleActionButton={this._handleActionButton}
-        handleClearButton={this._handleClearButton}
-      />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
-  };
-
   private _oniModelReady = async (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
@@ -179,7 +174,7 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

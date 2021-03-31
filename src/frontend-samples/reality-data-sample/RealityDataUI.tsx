@@ -9,6 +9,7 @@ import { RealityDataWidget } from "./RealityDataWidget";
 import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
 import RealityDataApp from "./RealityDataApp";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface RealityDataUIState {
   iModelName?: SampleIModels;
@@ -23,6 +24,7 @@ interface RealityDataUIState {
 
 export default class RealityDataUI extends React.Component<{}, RealityDataUIState> {
   private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
@@ -30,9 +32,17 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
       showRealityData: true,
       realityDataTransparency: 0,
     };
-    this._sampleWidgetUiProvider = new SampleWidgetUiProvider("Use the toggle below for displaying the reality data in the model.", <RealityDataWidget />, this._changeIModel);
     IModelSetup.setIModelList([SampleIModels.ExtonCampus, SampleIModels.MetroStation]);
     this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the toggle below for displaying the reality data in the model.",
+      <RealityDataWidget
+        showRealityData={this.state.showRealityData}
+        realityDataTransparency={this.state.realityDataTransparency}
+        onToggleRealityData={this._onToggleRealityData}
+        onChangeRealityDataTransparency={this._onChangeRealityDataTransparency} />
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
@@ -60,19 +70,6 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
         await RealityDataApp.setRealityDataTransparency(vp, realityDataTransparency);
       }
     }
-  };
-
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the toggle below for displaying the reality data in the model.",
-      <RealityDataWidget
-        showRealityData={this.state.showRealityData}
-        realityDataTransparency={this.state.realityDataTransparency}
-        onToggleRealityData={this._onToggleRealityData}
-        onChangeRealityDataTransparency={this._onChangeRealityDataTransparency}
-      />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
   };
 
   private _oniModelReady = async (iModelConnection: IModelConnection) => {

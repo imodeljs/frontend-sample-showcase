@@ -7,6 +7,7 @@ import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ScreenSpaceEffectsWidget } from "./ScreenSpaceEffectsWidget";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ScreenSpaceEffectsUIState {
   iModelName?: SampleIModels;
@@ -16,12 +17,19 @@ interface ScreenSpaceEffectsUIState {
 }
 
 export default class ScreenSpaceEffectsUI extends React.Component<{}, ScreenSpaceEffectsUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
     this.state = {};
     IModelSetup.setIModelList([SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House]);
     this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the toggles below to select which effects are applied to the viewport.",
+      <ScreenSpaceEffectsWidget />
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
@@ -31,18 +39,10 @@ export default class ScreenSpaceEffectsUI extends React.Component<{}, ScreenSpac
       });
   };
 
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the toggles below to select which effects are applied to the viewport.",
-      <ScreenSpaceEffectsWidget />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
-  };
-
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState })
+        this.setState({ viewState });
       });
   };
 
@@ -59,7 +59,7 @@ export default class ScreenSpaceEffectsUI extends React.Component<{}, ScreenSpac
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

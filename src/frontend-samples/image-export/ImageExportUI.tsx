@@ -9,6 +9,7 @@ import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, Sa
 import ImageExportApp from "./ImageExportApp";
 import { Button, ButtonType } from "@bentley/ui-core";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ViewAttributesUIState {
   iModelName?: SampleIModels;
@@ -29,11 +30,18 @@ const ImageExportWidget: React.FunctionComponent = () => {
 };
 
 export default class ImageExportUI extends React.Component<{}, ViewAttributesUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
     this.state = {};
     this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Export current viewport as image",
+      <ImageExportWidget />
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
@@ -41,14 +49,6 @@ export default class ImageExportUI extends React.Component<{}, ViewAttributesUIS
       .then((info) => {
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  };
-
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Export current viewport as image",
-      <ImageExportWidget />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
   };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
@@ -72,7 +72,7 @@ export default class ImageExportUI extends React.Component<{}, ViewAttributesUIS
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

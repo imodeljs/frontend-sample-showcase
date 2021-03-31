@@ -9,6 +9,7 @@ import { IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewState 
 import { ViewClipWidget } from "./ViewClipWidget";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
 import ViewClipApp from "./ViewClipApp";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface RealityDataUIState {
   iModelName?: SampleIModels;
@@ -21,6 +22,8 @@ interface RealityDataUIState {
 }
 
 export default class RealityDataUI extends React.Component<{}, RealityDataUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
@@ -30,6 +33,15 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
     };
     IModelSetup.setIModelList([SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House]);
     this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the options below to control the view clip.",
+      <ViewClipWidget
+        showClipBlock={this.state.showClipBlock}
+        clipPlane={this.state.clipPlane}
+        handleFlipButton={this._handleFlipButton}
+        handleClipPlaneUpdate={this._handleClipPlaneUpdate} />
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
@@ -84,7 +96,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
 
   private _oniModelReady = async (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      this._handleClipPlaneUpdate(this.state.showClipBlock, this.state.clipPlane)
+      this._handleClipPlaneUpdate(this.state.showClipBlock, this.state.clipPlane);
     });
 
     const viewState = await this.getIsoView(iModelConnection);
@@ -116,18 +128,6 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
     return true;
   };
 
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the options below to control the view clip.",
-      <ViewClipWidget
-        showClipBlock={this.state.showClipBlock}
-        clipPlane={this.state.clipPlane}
-        handleFlipButton={this._handleFlipButton}
-        handleClipPlaneUpdate={this._handleClipPlaneUpdate} />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
-  };
-
   /** The sample's render method */
   public render() {
     return (
@@ -141,7 +141,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

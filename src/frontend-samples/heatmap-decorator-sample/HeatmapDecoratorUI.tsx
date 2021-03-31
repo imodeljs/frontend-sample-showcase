@@ -8,6 +8,7 @@ import { Viewer } from "@bentley/itwin-viewer-react";
 import { HeatmapDecoratorWidget } from "./HeatmapDecoratorWidget";
 import { IModelConnection, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface HeatmapDecoratorUIState {
   iModelName?: SampleIModels;
@@ -17,11 +18,18 @@ interface HeatmapDecoratorUIState {
 }
 
 export default class HeatmapDecoratorUI extends React.Component<{}, HeatmapDecoratorUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
     this.state = {};
     this._changeIModel();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the options below to control the heatmap visualization.",
+      <HeatmapDecoratorWidget />
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
@@ -29,14 +37,6 @@ export default class HeatmapDecoratorUI extends React.Component<{}, HeatmapDecor
       .then((info) => {
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
-  };
-
-  private _getSampleUi = (iModelName: SampleIModels) => {
-    return new SampleWidgetUiProvider(
-      "Use the options below to control the heatmap visualization.",
-      <HeatmapDecoratorWidget />,
-      { iModelName, onIModelChange: this._changeIModel }
-    );
   };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
@@ -73,7 +73,7 @@ export default class HeatmapDecoratorUI extends React.Component<{}, HeatmapDecor
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi(this.state.iModelName)]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }
