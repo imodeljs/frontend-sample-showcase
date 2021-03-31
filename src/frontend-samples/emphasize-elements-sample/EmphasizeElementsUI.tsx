@@ -74,7 +74,7 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
     this._uiProviders = [this._sampleWidgetUiProvider];
 
     // subscribe for unified selection changes
-    Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
+    //Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
