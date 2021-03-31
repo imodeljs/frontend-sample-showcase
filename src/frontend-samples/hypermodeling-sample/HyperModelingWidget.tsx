@@ -20,24 +20,29 @@ interface Previous {
 export interface HyperModelingProps {
   toggle2dGraphics: boolean;
   activeMarker?: SectionMarker;
+  previous: boolean;
   onToggle2dGraphicsFunc: (toggle: boolean) => void;
   onClickReturnTo3D: () => void;
   onClickSelectNewMarker: () => void;
   onClickSwitchTo2d: (which: "sheet" | "drawing") => void;
 }
 
-export const HyperModelingWidget: React.FunctionComponent<HyperModelingProps> = ({ toggle2dGraphics, activeMarker, onToggle2dGraphicsFunc, onClickReturnTo3D, onClickSelectNewMarker, onClickSwitchTo2d }) => {
+export const HyperModelingWidget: React.FunctionComponent<HyperModelingProps> = ({ toggle2dGraphics, activeMarker, previous, onToggle2dGraphicsFunc, onClickReturnTo3D, onClickSelectNewMarker, onClickSwitchTo2d }) => {
   /** Whether to display 2d section graphics and sheet annotations in the 3d view. */
   const [toggle2dGraphicsState, setToggle2dGraphics] = React.useState<boolean>(toggle2dGraphics);
   /** The selected section marker. */
   const [activeMarkerState, setActiveMarkerState] = React.useState<SectionMarker>();
-  const [previousState, setPreviousState] = React.useState<Previous>();
+  const [previousState, setPreviousState] = React.useState<boolean>(previous);
 
   useEffect(() => {
     if (undefined !== activeMarker) {
       setActiveMarkerState(activeMarker);
     }
   }, [activeMarker]);
+
+  useEffect(() => {
+    setPreviousState(previous);
+  }, [previous]);
 
   const onToggle2dGraphics = (toggle: boolean) => {
     onToggle2dGraphicsFunc(toggle);

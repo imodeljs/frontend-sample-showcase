@@ -25,7 +25,7 @@ interface HyperModelingUIState {
   contextId?: string;
   iModelId?: string;
   iModelViewportControlOptions?: IModelViewportControlOptions;
-  viewState?: ViewState;
+  viewport?: ScreenViewport;
   iModelConnection?: IModelConnection;
   activeMarker?: SectionMarker;
   previous?: Previous;
@@ -60,6 +60,7 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
       <HyperModelingWidget
         toggle2dGraphics={this.state.graphics2DState}
         activeMarker={this.state.activeMarker}
+        previous={!!this.state.previous}
         onToggle2dGraphicsFunc={this._onToggle2DGraphics}
         onClickReturnTo3D={this._onClickReturnTo3D}
         onClickSelectNewMarker={this._onClickSelectNewMarker}
@@ -67,6 +68,18 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
       />
     );
   };
+
+  public componentDidUpdate(_prevProps: {}, prevState: HyperModelingUIState) {
+    if (prevState.activeMarker !== this.state.activeMarker
+      || prevState.previous !== this.state.previous) {
+      this._sampleWidgetUiProvider.updateControls({ activeMarker: this.state.activeMarker, previous: this.state.previous });
+    }
+  }
+
+  public async componentWillUnmount() {
+    if (this.state.viewport)
+      await HyperModelingApp.disableHyperModeling(this.state.viewport);
+  }
 
   private _onToggle2DGraphics = (toogle: boolean) => {
     if (this.state.iModelConnection) {
@@ -78,21 +91,19 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
   };
 
   private _onClickReturnTo3D = async () => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp && this.state.previous) {
-      await HyperModelingApp.switchTo3d(vp, this.state.previous.view, this.state.previous.markerId);
+    if (this.state.viewport && this.state.previous) {
+      await HyperModelingApp.switchTo3d(this.state.viewport, this.state.previous.view, this.state.previous.markerId);
       this.setState({ previous: undefined });
     }
   };
 
   private _onClickSelectNewMarker = () => {
-    const vp = IModelApp.viewManager.selectedView;
-    assert(undefined !== vp);
-    HyperModelingApp.clearActiveMarker(vp);
+    assert(undefined !== this.state.viewport);
+    HyperModelingApp.clearActiveMarker(this.state.viewport);
   };
 
   private _onClickSwitchTo2d = async (which: "sheet" | "drawing") => {
-    const viewport = IModelApp.viewManager.selectedView;
+    const viewport = this.state.viewport;
     const marker = this.state.activeMarker;
     assert(undefined !== viewport && undefined !== marker);
 
@@ -103,6 +114,7 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce(async (viewport: ScreenViewport) => {
+      this.setState({ viewport });
       await HyperModelingApp.enableHyperModeling(viewport);
       HyperModelingApp.markerHandler.onActiveMarkerChanged.addListener((activeMarker) => {
         this.setState({ activeMarker });
