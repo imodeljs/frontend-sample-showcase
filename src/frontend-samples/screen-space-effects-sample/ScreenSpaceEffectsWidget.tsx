@@ -4,104 +4,42 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
-import ScreenSpaceEffectsApp from "./ScreenSpaceEffectsApp";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { cloneEffectsConfig, EffectsConfig, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
-import { Angle } from "@bentley/geometry-core";
+import { cloneEffectsConfig, EffectsConfig } from "./Effects";
 
-export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
-  const iModelConnection = useActiveIModelConnection();
-  const [saturationState, setSaturationState] = React.useState<boolean>(true);
-  const [vignetteState, setVignetteState] = React.useState<boolean>(true);
-  const [lensDistortionState, setLensDistortionState] = React.useState<boolean>(true);
-  const [effectsConfigState, setEffectsConfigState] = React.useState<EffectsConfig>(getCurrentEffectsConfig());
-  const [lensAngleState, setLensAngleState] = React.useState<number>(90);
+export interface ScreenSpaceEffectsWidgetProps {
+  saturation: boolean;
+  vignette: boolean;
+  lensDistortion: boolean;
+  effectsConfig: EffectsConfig;
+  lensAngle: number;
+  handleLensAngleChange: (angle: number) => void;
+  handleDistortionSaturationVignette: (lensDistortion: boolean, saturation: boolean, vignette: boolean) => void;
+  handleEffectsConfig: (effectsConfig: EffectsConfig) => void;
+}
 
-  // Only runs once because of the empty array passed as dependency [], similar to componentDidMount
-  useEffect(() => {
-    if (iModelConnection) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (!vp)
-        return;
-
-      // Need to remove the screenSpaceEffects if there are any already loaded
-      vp.removeScreenSpaceEffects();
-      ScreenSpaceEffectsApp.registerEffects();
-
-      IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
-        // The lens distortion effect requires the camera to be enabled. Turn it on if it's not already.
-        let lensAngle = lensAngleState;
-        if (!viewport.view.isCameraEnabled())
-          viewport.turnCameraOn(Angle.createDegrees(lensAngle));
-        else
-          lensAngle = viewport.view.camera.getLensAngle().degrees;
-
-        // The grid is distracting and not useful in read-only apps.
-        viewport.viewFlags.grid = false;
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+export const ScreenSpaceEffectsWidget: React.FunctionComponent<ScreenSpaceEffectsWidgetProps> = ({ saturation, vignette, lensDistortion, effectsConfig, lensAngle, handleLensAngleChange, handleDistortionSaturationVignette, handleEffectsConfig }) => {
+  const [saturationState, setSaturationState] = React.useState<boolean>(saturation);
+  const [vignetteState, setVignetteState] = React.useState<boolean>(vignette);
+  const [lensDistortionState, setLensDistortionState] = React.useState<boolean>(lensDistortion);
+  const [effectsConfigState, setEffectsConfigState] = React.useState<EffectsConfig>(effectsConfig);
+  const [lensAngleState, setLensAngleState] = React.useState<number>(lensAngle);
 
   // Handle Lens angle change
   useEffect(() => {
-    const viewport = IModelApp.viewManager.selectedView;
-    if (!viewport)
-      return;
+    handleLensAngleChange(lensAngleState);
+  }, [handleLensAngleChange, lensAngleState]);
 
-    viewport.turnCameraOn(Angle.createDegrees(lensAngleState));
-
-    // ###TODO turnCameraOn is supposed to do this, but currently doesn't. Remove once that is fixed.
-    viewport.invalidateRenderPlan();
-
-    viewport.requestRedraw();
-
-    // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
-    IModelApp.requestNextAnimation();
-  }, [lensAngleState]);
-
-  // Screen-space effects are applied in the order in which they are added to the viewport.
-  // Lens distortion shifts pixels, so we want to apply that first, then saturate, and finally vignette.
+  // Handle distortion, saturation and vignette
   useEffect(() => {
-    const viewport = IModelApp.viewManager.selectedView;
-    if (!viewport)
-      return;
-
-    // Screen-space effects are applied in the order in which they are added to the viewport.
-    // Lens distortion shifts pixels, so we want to apply that first, then saturate, and finally vignette.
-    viewport.removeScreenSpaceEffects();
-    if (lensDistortionState)
-      viewport.addScreenSpaceEffect("Lens Distortion");
-
-    if (saturationState)
-      viewport.addScreenSpaceEffect("Saturation");
-
-    if (vignetteState)
-      viewport.addScreenSpaceEffect("Vignette");
-
-    viewport.requestRedraw();
-
-    // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
-    IModelApp.requestNextAnimation();
-
-  }, [lensDistortionState, saturationState, vignetteState]);
+    handleDistortionSaturationVignette(lensDistortionState, saturationState, vignetteState);
+  }, [handleDistortionSaturationVignette, lensDistortionState, saturationState, vignetteState]);
 
   // Handle EffectsConfigState change
   useEffect(() => {
-    const viewport = IModelApp.viewManager.selectedView;
-    if (!viewport)
-      return;
+    handleEffectsConfig(effectsConfigState);
 
-    updateEffectsConfig(effectsConfigState);
-
-    viewport.requestRedraw();
-
-    // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
-    IModelApp.requestNextAnimation();
-
-  }, [effectsConfigState]);
+  }, [effectsConfigState, handleEffectsConfig]);
 
   const _onUpdateLensAngle = (values: readonly number[]) => {
     setLensAngleState(values[0]);
@@ -117,10 +55,10 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
     update: (newConfig: EffectsConfig, newValue: number) => void) => {
 
     const updateValue = (values: readonly number[]) => {
-      const effectsConfig = cloneEffectsConfig(effectsConfigState);
-      update(effectsConfig, values[0]);
-      setEffectsConfigState(effectsConfig);
-      return { effectsConfig };
+      const config = cloneEffectsConfig(effectsConfigState);
+      update(config, values[0]);
+      setEffectsConfigState(config);
+      return { config };
     };
 
     let state = false;
@@ -155,7 +93,7 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
     <>
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span>Saturation</span>
-        <Toggle isOn={saturationState} onChange={(saturation) => setSaturationState(saturation)} />
+        <Toggle isOn={saturationState} onChange={(sat) => setSaturationState(sat)} />
         {createSlider("Multiplier", effectsConfigState.saturation.multiplier, 0, 4, 0.2, "saturation", (config, val) => config.saturation.multiplier = val)}
         <span>Vignette</span>
         <Toggle isOn={vignetteState} onChange={(enableVignette) => setVignetteState(enableVignette)} />
@@ -163,7 +101,7 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
         {createSlider("Smoothness", effectsConfigState.vignette.smoothness, 0, 1, 0.05, "vignette", (config, val) => config.vignette.smoothness = val)}
         {createSlider("Roundness", effectsConfigState.vignette.roundness, 0, 1, 0.05, "vignette", (config, val) => config.vignette.roundness = val)}
         <span>Lens Distortion</span>
-        <Toggle isOn={lensDistortionState} onChange={(lensDistortion) => setLensDistortionState(lensDistortion)} />
+        <Toggle isOn={lensDistortionState} onChange={(lensDist) => setLensDistortionState(lensDist)} />
         <span>Lens Angle</span>
         <Slider showMinMax={true} min={lensAngleMin} max={lensAngleMax} step={5} values={[lensAngleValue]} disabled={!lensDistortionState} onUpdate={_onUpdateLensAngle} />
         {createSlider("Strength", effectsConfigState.lensDistortion.strength, 0, 1, 0.05, "lensDistortion", (config, val) => config.lensDistortion.strength = val)}
