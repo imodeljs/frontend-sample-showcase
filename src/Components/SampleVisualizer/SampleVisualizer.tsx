@@ -28,40 +28,55 @@ interface SampleProps {
 }
 
 const iModelAppShutdown = async (): Promise<void> => {
-  IModelApp.i18n.unregisterNamespace(i18nNamespace);
-  IModelApp.tools.unRegister(MovePointTool.toolId);
-  Presentation.terminate();
-  return IModelApp.shutdown().catch();
+  if (IModelApp.i18n && IModelApp.i18n.getNamespace(i18nNamespace)) {
+    IModelApp.i18n.unregisterNamespace(i18nNamespace);
+  }
+  if (IModelApp.tools && IModelApp.tools.find(MovePointTool.toolId)) {
+    IModelApp.tools.unRegister(MovePointTool.toolId);
+  }
+  try {
+    Presentation.terminate();
+  } catch (err) {
+    // Do nothing, its possible that we never started.
+  }
+  try {
+    await IModelApp.shutdown();
+  } catch (err) {
+    // Do nothing, its possible that we never started.
+  }
 };
 
 const iModelAppStartup = async (): Promise<void> => {
-  return SampleBaseApp.startup()
-    .then(() => {
-      MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
-    })
-    .catch();
+  await SampleBaseApp.startup();
+  MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
 };
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
   const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
+  const [shuttingDown, setShuttingDown] = useState<boolean>(false);
 
   useEffect(() => {
-    AuthorizationClient.initializeOidc()
-      .then(() => {
-        if (!iTwinViewerReady) {
-          iModelAppStartup()
-            .finally(() => setAppReady(true));
-        } else {
-          setAppReady(true);
-        }
-      });
-    return () => {
-      setAppReady(false);
-      iModelAppShutdown();
-      IModelSetup.resetIModelList();
-    };
-  }, [iTwinViewerReady, transpileResult, type]);
+    if (!shuttingDown) {
+      AuthorizationClient.initializeOidc()
+        .then(() => {
+          if (!iTwinViewerReady) {
+            iModelAppStartup()
+              .finally(() => setAppReady(true));
+          } else {
+            setAppReady(true);
+          }
+        });
+      return () => {
+        setShuttingDown(true);
+        setAppReady(false);
+        IModelSetup.resetIModelList();
+        iModelAppShutdown()
+          .then(() => setShuttingDown(false));
+      };
+    }
+    return;
+  }, [iTwinViewerReady, transpileResult, type, shuttingDown]);
 
   // Set sample UI
   useEffect(() => {
