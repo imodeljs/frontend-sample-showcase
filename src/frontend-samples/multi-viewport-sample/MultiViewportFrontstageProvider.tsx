@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { ViewState } from "@bentley/imodeljs-frontend";
-import { BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@bentley/ui-framework";
+import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@bentley/ui-framework";
 import React from "react";
 
 export class MultiViewportFrontstage extends FrontstageProvider {
@@ -22,7 +22,6 @@ export class MultiViewportFrontstage extends FrontstageProvider {
 
     this._contentLayoutDef = new ContentLayoutDef({
       id: "TwoHalvesHorizontal",
-      priority: 60,
       horizontalSplit: { percentage: 0.50, top: 0, bottom: 1 },
     });
 

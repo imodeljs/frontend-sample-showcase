@@ -15,6 +15,7 @@ export function getViewClipSpec(): SampleSpec {
     files: () => [
       { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
       { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
+      { name: "ViewClipWidget.tsx", import: import("!!raw-loader!./ViewClipWidget") },
     ],
     iTwinViewerReady: true,
     modelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],

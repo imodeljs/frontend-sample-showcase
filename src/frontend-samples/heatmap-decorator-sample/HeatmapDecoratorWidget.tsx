@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Slider, Toggle } from "@bentley/ui-core";
 import HeatmapDecoratorApp from "./HeatmapDecoratorApp";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
@@ -89,17 +89,6 @@ export const HeatmapDecoratorWidget: React.FunctionComponent = () => {
     </>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
 
 // /*---------------------------------------------------------------------------------------------
 // * Copyright (c) Bentley Systems, Incorporated. All rights reserved.

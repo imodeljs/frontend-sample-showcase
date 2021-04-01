@@ -122,7 +122,7 @@ export default class ClashDetectionApis {
     if (namedVersions.length === 0 || namedVersions[0].id === undefined)
       return undefined;
     // Set the iModel id and named version id to pass in the body of the request
-    const data = { iModelId: iModelId, namedVersionId: namedVersions[0].id };
+    const data = { iModelId, namedVersionId: namedVersions[0].id };
     const options = {
       method: "POST",
       headers: {

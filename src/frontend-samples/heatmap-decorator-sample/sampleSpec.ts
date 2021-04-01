@@ -14,7 +14,7 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
     files: () => [
       { name: "HeatmapDecoratorApp.tsx", import: import("!!raw-loader!./HeatmapDecoratorApp") },
       { name: "HeatmapDecoratorUI.tsx", import: import("!!raw-loader!./HeatmapDecoratorUI"), entry: true },
-      { name: "HeatmapDecoratorWidget.ts", import: import("!!raw-loader!./HeatmapDecoratorWidget") },
+      { name: "HeatmapDecoratorWidget.tsx", import: import("!!raw-loader!./HeatmapDecoratorWidget") },
       { name: "HeatmapDecorator.ts", import: import("!!raw-loader!./HeatmapDecorator") },
     ],
     iTwinViewerReady: true,

@@ -43,22 +43,7 @@ export const SerializeViewWidget: React.FunctionComponent<SerializeViewWidgetPro
   );
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-///////////////////////////////////////
+/// ////////////////////////////////////
 /*---------------------------------------------------------------------------------------------
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.

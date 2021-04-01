@@ -17,6 +17,8 @@ export function getClashReviewSpec(): SampleSpec {
       { name: "frontend-samples/clash-review-sample/ClashReviewApp.tsx", import: import("!!raw-loader!./ClashReviewApp.tsx") },
       { name: "frontend-samples/clash-review-sample/ClashReviewUI.tsx", import: import("!!raw-loader!./ClashReviewUI.tsx"), entry: true },
       { name: "frontend-samples/clash-review-sample/ClashDetectionApis.ts", import: import("!!raw-loader!./ClashDetectionApis.ts") },
+      { name: "frontend-samples/clash-review-sample/ClashReviewWidget.tsx", import: import("!!raw-loader!./ClashReviewWidget.tsx") },
+      { name: "frontend-samples/clash-review-sample/ClashReviewTableWidget.tsx", import: import("!!raw-loader!./ClashReviewTableWidget.tsx") },
       { name: "frontend-samples/marker-pin-sample/MarkerPinDecorator.ts", import: import("!!raw-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts") },
       { name: "frontend-samples/marker-pin-sample/PopupMenu.tsx", import: import("!!raw-loader!frontend-samples/marker-pin-sample/PopupMenu.tsx") },
       { name: "frontend-samples/clash-review-sample/ClashDetectionJsonData.ts", import: import("!!raw-loader!./ClashDetectionJsonData.ts") },

@@ -17,7 +17,6 @@ export function getMultiViewportSpec(): SampleSpec {
       { name: "MultiViewportUI.tsx", import: import("!!raw-loader!./MultiViewportUI"), entry: true },
       { name: "MultiViewportFrontstageProvider.tsx", import: import("!!raw-loader!./MultiViewportFrontstageProvider") },
       { name: "MultiViewportWidget.tsx", import: import("!!raw-loader!./MultiViewportWidget") },
-      { name: "MultiViewportUI.tsx", import: import("!!raw-loader!./MultiViewportUI") },
       { name: "multi-view-sample.scss", import: import("!!raw-loader!./multi-view-sample.scss") },
     ],
     type: "MultiViewportUI.tsx",
