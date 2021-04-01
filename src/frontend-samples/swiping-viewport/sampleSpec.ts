@@ -12,7 +12,7 @@ export function getSwipingComparisonSpec(): SampleSpec {
     label: "Swiping Comparison",
     image: "swiping-viewport-thumbnail.png",
     readme: async () => import("!!raw-loader!./README.md"),
-    modelList: [SampleIModels.ExtonCampus],
+    iModelList: [SampleIModels.ExtonCampus],
     files: () => [
       { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp") },
       { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI"), entry: true },

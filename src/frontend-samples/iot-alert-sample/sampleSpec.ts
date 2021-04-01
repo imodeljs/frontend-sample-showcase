@@ -17,7 +17,7 @@ export function getIotAlertSpec(): SampleSpec {
       { name: "IotAlertUI.tsx", import: import("!!raw-loader!./IotAlertUI"), entry: true },
       { name: "IotAlert.scss", import: import("!!raw-loader!./IotAlert.scss") },
     ],
-    modelList: [SampleIModels.BayTown],
+    iModelList: [SampleIModels.BayTown],
     type: "IotAlertUI.tsx",
   });
 }

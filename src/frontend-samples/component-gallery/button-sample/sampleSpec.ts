@@ -12,7 +12,7 @@ export function getButtonSpec(): SampleSpec {
     label: "UI-Buttons",
     image: "ui-button-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
-    modelList: [],
+    iModelList: [],
     files: () => [
       { name: "Button.tsx", import: import("!!raw-loader!./Button"), entry: true },
     ],

@@ -11,7 +11,7 @@ export function getCrossProbingSpec(): SampleSpec {
     name: "cross-probing-sample",
     label: "Cross-Probing",
     image: "cross-probing-thumbnail.png",
-    modelList: [SampleIModels.BayTown],
+    iModelList: [SampleIModels.BayTown],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI"), entry: true },

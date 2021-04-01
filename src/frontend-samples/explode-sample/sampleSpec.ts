@@ -12,7 +12,7 @@ export function getExplodeSpec(): SampleSpec {
     label: "Exploded View",
     image: "exploded-view-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
-    modelList: [SampleIModels.House],
+    iModelList: [SampleIModels.House],
     files: () => [
       { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp") },
       { name: "ExplodeUI.tsx", import: import("!!raw-loader!./ExplodeUI"), entry: true },

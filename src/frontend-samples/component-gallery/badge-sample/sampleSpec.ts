@@ -12,7 +12,7 @@ export function getBadgeSpec(): SampleSpec {
     label: "UI-Badges",
     image: "ui-badge-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
-    modelList: [],
+    iModelList: [],
     files: () => [
       { name: "Badge.tsx", import: import("!!raw-loader!./Badge"), entry: true },
     ],
