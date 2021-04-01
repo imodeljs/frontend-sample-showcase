@@ -3,44 +3,103 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
-import { ControlPane } from "common/ControlPane/ControlPane";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import SerializeViewApp from "./SerializeViewApp";
-import { Button, ButtonType, Icon, Select, SelectOption, SmallText, Textarea } from "@bentley/ui-core";
+import { SelectOption, SmallText } from "@bentley/ui-core";
 import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";
 import { ViewStateProps } from "@bentley/imodeljs-common";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
+import { UiItemsProvider } from "@bentley/ui-abstract";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { SerializeViewWidget } from "./SerializeViewWidget";
+import { JsonViewerWidget } from "./JsonViewerWidget";
 
-interface SerializeViewUIProps {
-  iModelName: string;
-  iModelSelector: React.ReactNode;
-}
-
-interface SerializeViewUIState {
-  viewport?: Viewport;
+interface SerializeViewState {
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewport?: ScreenViewport;
   views: ViewStateWithName[];
+  options: SelectOption[];
   currentViewIndex: number;
-  jsonMenuVisible: boolean;
+  jsonViewerTitle: string;
   jsonMenuValue: string;
   jsonError: string | undefined;
   loadStateError: string | undefined;
 }
 
-export default class SerializeViewUI extends React.Component<SerializeViewUIProps, SerializeViewUIState> {
-
-  public state: SerializeViewUIState = {
-    views: [],
-    currentViewIndex: 0,
-    loadStateError: "",
-    jsonMenuVisible: false,
-    jsonMenuValue: "",
-    jsonError: "",
-  };
+export default class SerializeViewUI extends React.Component<{}, SerializeViewState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   /** Dictionary of imodelId's to array of viewstates */
-  public allSavedViews: IModelViews[] = [...sampleViewStates];
+  private allSavedViews: IModelViews[] = [...sampleViewStates];
+
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      views: [],
+      options: [],
+      currentViewIndex: 0,
+      loadStateError: "",
+      jsonViewerTitle: "",
+      jsonMenuValue: "",
+      jsonError: "",
+    };
+    IModelSetup.setIModelList([SampleIModels.MetroStation, SampleIModels.RetailBuilding]);
+    this._changeIModel();
+    this._sampleWidgetUiProvider = this._getSampleUi();
+    this._sampleWidgetUiProvider.addWidget(
+      "JsonViewerWidget",
+      "Json Viewer",
+      this._getJsonWidget());
+    this._uiProviders = [this._sampleWidgetUiProvider];
+  }
+
+  private _changeIModel(iModelName?: SampleIModels) {
+    IModelSetup.getIModelInfo(iModelName)
+      .then(async (info) => {
+        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
+      });
+  }
+
+  private _getSampleUi = () => {
+    return new SampleWidgetUiProvider(
+      "Choose a view from the list to \"Load\" it into the viewport. Or manipulate the view and select \"Save\" to serialize it.",
+      <SerializeViewWidget
+        loadStateError={this.state.loadStateError}
+        disabled={!!this.state.views.length}
+        currentViewIndex={this.state.currentViewIndex}
+        options={this.state.options}
+        handleSelection={this._handleSelection}
+        onSaveStateClick={this._onSaveStateClick}
+        onLoadStateClick={this._onLoadStateClick}
+      />
+    );
+  };
+
+  private _getJsonWidget = () => {
+    return <JsonViewerWidget
+      title={this.state.jsonViewerTitle}
+      json={this.state.jsonMenuValue}
+      jsonError={this.state.jsonError}
+      handleJsonTextChange={this._handleJsonTextChange}
+      onSaveJsonViewClick={this._onSaveJsonViewClick}
+    />;
+  };
+
+  public componentDidUpdate(_prevProps: {}, prevState: SerializeViewState) {
+    if (prevState.options !== this.state.options) {
+      this._sampleWidgetUiProvider.updateControls({ options: this.state.options });
+    }
+
+    /** Update the title and json Menu value if a view has been selected */
+    if (prevState.jsonMenuValue !== this.state.jsonMenuValue) {
+      this._sampleWidgetUiProvider.updateWidget("JsonViewerWidget", { json: this.state.jsonMenuValue, title: this.state.jsonViewerTitle });
+    }
+  }
 
   private readonly _onSaveStateClick = () => {
     const currentimodelid = this.state.viewport?.iModel?.iModelId;
@@ -75,22 +134,12 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
     }
   };
 
-  /** Show the JSON Popup window */
-  private readonly _onShowJsonViewerClick = () => {
-    this.setState({ jsonMenuVisible: true });
-  };
-
-  /** Hide the JSON popup window */
-  private _onHideJsonViewerClick = () => {
-    this.setState({ jsonMenuVisible: false });
-  };
-
   /** Will be triggered once when the iModel is loaded. */
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       /** Grab the IModel with views that match the imodel loaded. */
       const iModelWithViews = this.allSavedViews.filter((iModelViews) => {
-        return iModelViews.iModelName === this.props.iModelName;
+        return iModelViews.iModelName === this.state.iModelName;
       });
 
       /** Grab the views of the iModel just loaded and load the first view state in the SampleViewStates.ts */
@@ -110,12 +159,13 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         currentViewIndex: defaultViewIndex,
         viewport,
         views,
+        options: this.getOptions(views),
         jsonMenuValue: menuValue,
       });
     });
   };
 
-  /** When a model is selected in above list, get its view and switch to it.  */
+  /** When a model is selected in list, get its view and switch to it.  */
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
     this.setState((prevState) => ({
@@ -147,82 +197,30 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
   };
 
   /** Gets the options for the dropdown menu to select views */
-  private getOptions(): SelectOption[] {
-    return this.state.views.map((viewStateWithName: ViewStateWithName, index: number) => {
+  private getOptions(views: ViewStateWithName[]): SelectOption[] {
+    return views.map((viewStateWithName: ViewStateWithName, index: number) => {
       return { label: viewStateWithName.name, value: index };
     });
   }
 
-  /** Helper method for showing an error */
-  private showError(stateProp: string | undefined) {
-    if (!stateProp) {
-      return (<div></div>);
-    }
-
-    return (
-      <div style={{ overflowWrap: "break-word" }}>
-        <SmallText style={{ color: "var(--foreground-alert)" }}>
-          ${stateProp}
-        </SmallText>
-      </div>
-    );
-  }
-
-  /** This Json window that pops up when the user presses 'show json' */
-  private getJsonViewer(): React.ReactNode {
-    return (
-      <div className="sample-control-ui">
-        <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-          <div className="item">
-            <Button buttonType={ButtonType.Hollow} onClick={this._onHideJsonViewerClick} style={{ border: "0" }}><Icon iconSpec="icon-close" /></Button>
-          </div>
-          <div className="item" style={{ marginRight: "auto" }}>
-            {undefined !== this.state.viewport && undefined !== this.state.views[this.state.currentViewIndex] ?
-              this.state.views[this.state.currentViewIndex].name
-              : ""}
-          </div>
-        </div>
-        <div className="item">
-          <Textarea spellCheck={"false"} onChange={this._handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem" }} value={this.state.jsonMenuValue} />
-        </div>
-        {this.showError(this.state.jsonError)}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Button onClick={this._onSaveJsonViewClick}>Save View</Button>
-        </div>
-      </div>
-    );
-  }
-
-  /** The controls for the sample in the bottom right hand corner */
-  private getControls(): React.ReactNode {
-    return (
-      <>
-        <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
-          <span>Select View:</span>
-          <Select options={this.getOptions()} onChange={this._handleSelection} style={{ width: "fit-content" }} disabled={0 === this.state.views.length} value={this.state.currentViewIndex} />
-        </div>
-        <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
-          <Button onClick={this._onSaveStateClick}>Save State</Button>
-          <Button onClick={this._onLoadStateClick}>Load State</Button>
-        </div>
-        {this.showError(this.state.loadStateError)}
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={this._onShowJsonViewerClick} disabled={0 === this.state.views.length}>Show Json</Button>
-        </div>
-      </>
-    );
-  }
-
   /** The sample's render method */
   public render() {
-    const instruction = "Choose a view from the list to \"Load\" it into the viewport. Or manipulate the view and select \"Save\" to serialize it.";
     return (
       <>
-        {this.state.jsonMenuVisible ? this.getJsonViewer() : ""}
-        { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions={instruction} iModelSelector={this.props.iModelSelector} controls={this.getControls()} />
         { /* Viewport to display the iModel */}
-        <SandboxViewport onIModelReady={this._onIModelReady} iModelName={this.props.iModelName} />
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            productId="2686"
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            //viewportOptions={this.state.viewportOptions}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            defaultUiConfig={default3DSandboxUi}
+            theme="dark"
+            uiProviders={this._uiProviders}
+            onIModelConnected={this._onIModelReady}
+          />
+        }
       </>
     );
   }

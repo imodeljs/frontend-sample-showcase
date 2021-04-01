@@ -17,6 +17,7 @@ export function getSerializeViewSpec(): SampleSpec {
       { name: "SerializeViewUI.tsx", import: import("!!raw-loader!./SerializeViewUI"), entry: true },
       { name: "SampleViewStates.ts", import: import("!!raw-loader!./SampleViewStates") },
     ],
+    iTwinViewerReady: true,
     type: "SerializeViewUI.tsx",
   };
 }

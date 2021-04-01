@@ -97,7 +97,7 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._sampleWidgetUiProvider]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }
