@@ -23,6 +23,7 @@ export interface EmphasizeElementsProps {
   overrideIsActive: boolean;
   wantEmphasis: boolean;
   colorValue: ColorDef;
+  onColorPick: (colorValue: ColorDef) => void;
   handleActionButton: (type: ActionType) => void;
   handleClearButton: (type: ActionType) => void;
 }
@@ -41,6 +42,7 @@ export const EmphasizeElementsWidget: React.FunctionComponent<EmphasizeElementsP
 
   const _onColorPick = (colorValue: ColorDef) => {
     setColorValueState(colorValue);
+    emphasizeElementsProps.onColorPick(colorValue);
   };
 
   // Display drawing and sheet options in separate sections.

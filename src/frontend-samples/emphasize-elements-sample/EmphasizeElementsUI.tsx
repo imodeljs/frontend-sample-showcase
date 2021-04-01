@@ -14,13 +14,14 @@ import { EmphasizeElementsWidget } from "./EmphasizeElementsWidget";
 import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { UiItemsProvider } from "@bentley/ui-abstract";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 /** React state of the Sample component */
 interface EmphasizeElementsUIState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
-  viewState?: ViewState;
+  viewportOptions?: IModelViewportControlOptions;
   iModelConnection?: IModelConnection;
   selectionIsEmpty: boolean;
   emphasizeIsActive: boolean;
@@ -67,14 +68,12 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
         overrideIsActive={this.state.overrideIsActive}
         wantEmphasis={this.state.wantEmphasis}
         colorValue={this.state.colorValue}
+        onColorPick={this._onColorPick}
         handleActionButton={this._handleActionButton}
         handleClearButton={this._handleClearButton}
       />
     );
     this._uiProviders = [this._sampleWidgetUiProvider];
-
-    // subscribe for unified selection changes
-    //Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
   }
 
   private _changeIModel = (iModelName?: SampleIModels) => {
@@ -83,6 +82,21 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
         this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
       });
   };
+
+  public componentDidUpdate(_prevProps: {}, prevState: EmphasizeElementsUIState) {
+    if (prevState.selectionIsEmpty !== this.state.selectionIsEmpty)
+      this._sampleWidgetUiProvider.updateControls({ selectionIsEmpty: this.state.selectionIsEmpty });
+    if (prevState.emphasizeIsActive !== this.state.emphasizeIsActive)
+      this._sampleWidgetUiProvider.updateControls({ emphasizeIsActive: this.state.emphasizeIsActive });
+    if (prevState.hideIsActive !== this.state.hideIsActive)
+      this._sampleWidgetUiProvider.updateControls({ hideIsActive: this.state.hideIsActive });
+    if (prevState.isolateIsActive !== this.state.isolateIsActive)
+      this._sampleWidgetUiProvider.updateControls({ isolateIsActive: this.state.isolateIsActive });
+    if (prevState.overrideIsActive !== this.state.overrideIsActive)
+      this._sampleWidgetUiProvider.updateControls({ overrideIsActive: this.state.overrideIsActive });
+    if (prevState.wantEmphasis !== this.state.wantEmphasis)
+      this._sampleWidgetUiProvider.updateControls({ wantEmphasis: this.state.wantEmphasis });
+  }
 
   public componentWillUnmount() {
     const vp = IModelApp.viewManager.selectedView;
@@ -100,6 +114,10 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
   private _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     this.setState({ selectionIsEmpty: selection.isEmpty });
+  };
+
+  private _onColorPick = (colorValue: ColorDef) => {
+    this.setState({ colorValue });
   };
 
   private _handleActionButton = (type: ActionType) => {
@@ -155,9 +173,10 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
   };
 
   private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    Presentation.selection.selectionChange.addListener(this._onSelectionChanged);
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ iModelConnection, viewState });
+        this.setState({ viewportOptions: { viewState } });
       });
   };
 
@@ -170,7 +189,7 @@ export default class EmphasizeElementsUI extends React.Component<{}, EmphasizeEl
           <Viewer
             contextId={this.state.contextId}
             iModelId={this.state.iModelId}
-            viewportOptions={{ viewState: this.state.viewState }}
+            viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
