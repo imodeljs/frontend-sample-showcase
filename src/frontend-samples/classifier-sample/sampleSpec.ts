@@ -18,7 +18,7 @@ export function getClassifierSpec(): SampleSpec {
       { name: "ClassifierProperties.tsx", import: import("!!raw-loader!./ClassifierProperties") },
       { name: "Classifier.scss", import: import("!!raw-loader!./Classifier.scss") },
     ],
-    modelList: [SampleIModels.MetroStation],
+    iModelList: [SampleIModels.MetroStation],
     type: "ClassifierUI.tsx",
   });
 }

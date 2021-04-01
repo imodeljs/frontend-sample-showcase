@@ -10,7 +10,7 @@ export function getSimpleAnimatedSpec(): SampleSpec {
     name: "simple-animated-sample",
     label: "Simple Animated",
     image: "simple-animated-thumbnail.png",
-    modelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "SimpleAnimatedApp.tsx", import: import("!!raw-loader!./SimpleAnimatedApp") },

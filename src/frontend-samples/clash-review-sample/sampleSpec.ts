@@ -23,7 +23,7 @@ export function getClashReviewSpec(): SampleSpec {
       { name: "frontend-samples/marker-pin-sample/PopupMenu.tsx", import: import("!!raw-loader!frontend-samples/marker-pin-sample/PopupMenu.tsx") },
       { name: "frontend-samples/clash-review-sample/ClashDetectionJsonData.ts", import: import("!!raw-loader!./ClashDetectionJsonData.ts") },
     ],
-    modelList: [SampleIModels.BayTown],
+    iModelList: [SampleIModels.BayTown],
     type: "ClashReviewUI.tsx",
   });
 }

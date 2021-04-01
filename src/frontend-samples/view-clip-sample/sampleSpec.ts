@@ -18,7 +18,7 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipWidget.tsx", import: import("!!raw-loader!./ViewClipWidget") },
     ],
     iTwinViewerReady: true,
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
+    iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     type: "ViewClipUI.tsx",
   });
 }

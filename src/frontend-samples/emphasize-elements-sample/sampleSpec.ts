@@ -18,7 +18,7 @@ export function getEmphasizeElementsSpec(): SampleSpec {
       { name: "EmphasizeElementsWidget.tsx", import: import("!!raw-loader!./EmphasizeElementsWidget") },
     ],
     iTwinViewerReady: true,
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
+    iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "EmphasizeElementsUI.tsx",
   });
 }

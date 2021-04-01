@@ -23,7 +23,7 @@ export interface SampleSpec {
   image: string;
   readme?: () => Promise<{ default: string }>;
   files?: () => SampleSpecFile[];
-  modelList?: SampleIModels[];
+  iModelList?: SampleIModels[];
   iTwinViewerReady?: boolean;
   type?: string;
 }

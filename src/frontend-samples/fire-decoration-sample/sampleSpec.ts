@@ -11,7 +11,7 @@ export function getParticleFireSampleSpec(): SampleSpec {
     name: "fire-sample",
     label: "Particle Effect (Fire)",
     image: "fire-decorator-thumbnail.png",
-    modelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
+    iModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp") },
