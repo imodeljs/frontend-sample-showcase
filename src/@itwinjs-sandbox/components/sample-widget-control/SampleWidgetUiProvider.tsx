@@ -8,9 +8,7 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { SampleWidgetContainer } from "./SampleWidgetContainer";
 import { IModelSelector } from "../imodel-selector/IModelSelector";
 import { SampleIModels } from "../../SampleIModels";
-import { IModelSetup } from "@itwinjs-sandbox/imodel/IModelSetup";
-
-type ChangeIModelFunction = (iModelName: SampleIModels) => void;
+import { IModelSetup, onIModelResultEvent } from "@itwinjs-sandbox/imodel/IModelSetup";
 
 export class SampleWidgetUiProvider implements UiItemsProvider {
   public readonly id: string = "SampleUiProvider";
@@ -18,18 +16,30 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
   private _widgets: { id: string, label: string, widget: ReactElement<WidgetWrapperProps> }[] = [];
   private _updater: { [id: string]: (props: any) => void } = {};
 
-  constructor(instructions: string, controls?: ReactNode, onIModelChange?: ChangeIModelFunction)
-  constructor(instructions: string, onIModelChange?: ChangeIModelFunction)
+  /** Create a SampleWidgetProvider to share sample instructions, controls, and an iModel selector
+   * @param instructions - The instructions for the current sample
+   * @param controls - A React Node to be used for controlling the current sample
+   * @param onIModelChange - A callback in the case that the current iModel changes via the iModelSelector
+   * @param iModels - A list of iModels the selector will be populated with (defaults to ALL)
+  */
+  constructor(instructions: string, controls?: ReactNode, onIModelChange?: onIModelResultEvent, iModels?: SampleIModels[])
+  /** Create a SampleWidgetProvider to share sample instructions, controls, and an iModel selector
+   * @param instructions - The instructions for the current sample
+   * @param onIModelChange - A callback in the case that the current iModel changes via the iModelSelector
+   * @param iModels - A list of iModels the selector will be populated with (defaults to ALL)
+  */
+  constructor(instructions: string, onIModelChange?: onIModelResultEvent, iModels?: SampleIModels[])
 
-  constructor(instructions: string, arg1?: (ReactNode | ChangeIModelFunction), arg2?: ChangeIModelFunction) {
-    let controlsWidget, onIModelChange;
-    if (!arg2 && typeof arg1 === "function") {
-      onIModelChange = arg1 as ChangeIModelFunction;
-    } else {
-      controlsWidget = arg1;
-      onIModelChange = arg2;
+  constructor(instructions: string, arg1?: (ReactNode | onIModelResultEvent), arg2?: (onIModelResultEvent | SampleIModels[]), arg3?: SampleIModels[]) {
+    const controlsWidget = typeof arg1 !== "function" ? arg1 : undefined;
+    const onIModelChange = typeof arg1 === "function" ? arg1 as onIModelResultEvent : typeof arg2 === "function" ? arg2 : undefined;
+    const imodels = Array.isArray(arg2) ? arg2 : arg3;
+
+    if (onIModelChange) {
+      IModelSetup.onIModelChanged.addListener(onIModelChange);
+      IModelSetup.setIModelList(imodels);
     }
-    this.addWidget(SampleWidgetUiProvider.controlsWidgetId, "Sample Controls", <SampleControlsWidget instructions={instructions} onIModelChange={onIModelChange}>{controlsWidget}</SampleControlsWidget>);
+    this.addWidget(SampleWidgetUiProvider.controlsWidgetId, "Sample Controls", <SampleControlsWidget instructions={instructions}>{controlsWidget}</SampleControlsWidget>);
   }
 
   public addWidget(id: string, label: string, widget: ReactNode) {
@@ -60,10 +70,6 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
     }
   }
 
-  public updateSelector(iModelName: SampleIModels) {
-    this.updateWidget(SampleWidgetUiProvider.controlsWidgetId, { iModelName });
-  }
-
   public updateControls(props: any) {
     const index = this._widgets.findIndex((widget) => widget.id === SampleWidgetUiProvider.controlsWidgetId);
     let children = (this._widgets[index].widget.props.widget as ReactElement).props.children;
@@ -89,14 +95,25 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
 
 interface SampleControlsWidgetProps {
   instructions: string;
-  iModelName?: SampleIModels;
-  onIModelChange?: ChangeIModelFunction;
 }
 
 const SampleControlsWidget: FunctionComponent<SampleControlsWidgetProps> = (props) => {
+  const [imodelName, setiModelName] = useState<SampleIModels | undefined>(IModelSetup.currentIModel?.imodelName);
+
+  useEffect(() => {
+    if (IModelSetup.currentIModel?.imodelName !== imodelName) {
+      IModelSetup.changeIModel(imodelName);
+    }
+  }, [imodelName]);
+
+  useEffect(() => {
+    const unsub = IModelSetup.onIModelChanged.addListener((result) => setiModelName(result.imodelName));
+    return unsub;
+  }, []);
+
   return (<SampleWidgetContainer
     instructions={props.instructions}
-    iModelSelector={props.iModelName && props.onIModelChange && <IModelSelector iModelName={props.iModelName} iModelNames={IModelSetup.getIModelList()} onIModelChange={props.onIModelChange} />}>
+    iModelSelector={imodelName && <IModelSelector iModelName={imodelName} iModelNames={IModelSetup.getIModelList()} onIModelChange={setiModelName} />}>
     {props.children}
   </SampleWidgetContainer>);
 };

@@ -2,41 +2,33 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { HyperModelingWidget } from "./HyperModelingWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface HyperModelingUIState {
-  iModelName?: SampleIModels;
+  imodelName?: SampleIModels;
   contextId?: string;
-  iModelId?: string;
+  imodelId?: string;
   viewState?: ViewState;
 }
 
 export default class HyperModelingUI extends React.Component<{}, HyperModelingUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiItemProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
     this.state = {};
-    IModelSetup.setIModelList([SampleIModels.House]);
-    this._changeIModel();
-  }
-
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
-
-  private _getSampleUi = () => {
-    return new SampleWidgetUiProvider(
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Click on a marker to toggle the section or return to the 3d view.",
-      // <HyperModelingWidget />
+      this.setState.bind(this),
+      [SampleIModels.House]
     );
-  };
+    this._uiItemProviders = [this._sampleWidgetUiProvider];
+  }
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
@@ -50,15 +42,15 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
           <Viewer
             contextId={this.state.contextId}
-            iModelId={this.state.iModelId}
+            iModelId={this.state.imodelId}
             viewportOptions={{ viewState: this.state.viewState }}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._getSampleUi()]}
+            uiProviders={this._uiItemProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

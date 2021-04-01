@@ -3,29 +3,39 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import "common/samples-common.scss";
-import { ControlPane } from "common/ControlPane/ControlPane";
 import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewportAndNavigation } from "common/SandboxViewport/ViewportAndNavigation";
 import { ColorDef } from "@bentley/imodeljs-common";
 import CrossProbingApp from "./CrossProbingApp";
+import { AuthorizationClient, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { UiItemsProvider } from "@bentley/ui-abstract";
+import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
+import { CrossProbingFrontstage } from "./CrossProbingFrontstage";
 
 interface CrossProbingUIState {
-  imodel?: IModelConnection;
-  viewState2d?: ViewState;
+  imodelName?: SampleIModels;
+  contextId?: string;
+  imodelId?: string;
+  frontstages?: ViewerFrontstage[];
 }
 
-export default class CrossProbingUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, CrossProbingUIState> {
+export default class CrossProbingUI extends React.Component<{}, CrossProbingUIState> {
+  private _uiItemsProviders: UiItemsProvider[];
 
-  public state: CrossProbingUIState = {};
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+    this._uiItemsProviders = [
+      new SampleWidgetUiProvider("Click on an element in either of the views to zoom to corresponding element in the other view.", this.setState.bind(this), [SampleIModels.BayTown]),
+    ];
+  }
 
   // When iModel is ready, initialize element selection listener and assign initial 2D view.
   private _onIModelReady = async (imodel: IModelConnection) => {
     CrossProbingApp.addElementSelectionListener(imodel);
     await CrossProbingApp.loadElementMap(imodel);
-    const viewState2d = await this.getFirst2DView(imodel);
-    this.setState({ imodel, viewState2d });
+    const [viewState2d, viewState3d] = await Promise.all([this.getFirst2DView(imodel), ViewSetup.getDefaultView(imodel)]);
+    this.setState({ frontstages: [{ provider: new CrossProbingFrontstage(viewState3d, viewState2d), default: true }] });
   };
 
   // Get first 2D view in iModel.
@@ -40,22 +50,21 @@ export default class CrossProbingUI extends React.Component<{ iModelName: string
 
   /** The sample's render method */
   public render() {
-    let drawingViewport;
-    if (this.state.imodel && this.state.viewState2d)
-      drawingViewport = (<div style={{ width: "100%", height: "50%", float: "right" }}>
-        <ViewportAndNavigation imodel={this.state.imodel} viewState={this.state.viewState2d} />
-      </div>);
 
     return (
       <>
-        { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Click on an element in either of the views to zoom to corresponding element in the other view." iModelSelector={this.props.iModelSelector}></ControlPane>
-        { /* Viewport to display the 3D model */}
-        <div style={{ width: "100%", height: "50%", float: "left" }}>
-          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-        </div>
-        { /* Second viewport to display the 2D Model */}
-        {drawingViewport}
+        { /* Viewports to display the iModel */}
+        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
+          <Viewer
+            contextId={this.state.contextId}
+            iModelId={this.state.imodelId}
+            frontstages={this.state.frontstages}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            theme="dark"
+            uiProviders={this._uiItemsProviders}
+            onIModelConnected={this._onIModelReady}
+          />
+        }
       </>
     );
   }

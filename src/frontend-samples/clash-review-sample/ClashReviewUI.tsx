@@ -16,9 +16,9 @@ import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorato
 import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ClashReviewState {
-  iModelName?: SampleIModels;
+  imodelName?: SampleIModels;
   contextId?: string;
-  iModelId?: string;
+  imodelId?: string;
   viewportOptions?: IModelViewportControlOptions;
   clashData?: any;
   markersData: MarkerData[];
@@ -37,11 +37,12 @@ export default class ClashReviewUI extends React.Component<{}, ClashReviewState>
       showDecorator: true,
       applyZoom: true,
     };
-    IModelSetup.setIModelList([SampleIModels.BayTown]);
-    this._changeIModel();
+    IModelSetup.setIModelList();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to review clashes.",
-      <ClashReviewWidget applyZoom={this.state.applyZoom} showDecorator={this.state.showDecorator} setApplyZoom={(applyZoom) => this.setState({ applyZoom })} setShowDecorator={(showDecorator) => this.setState({ showDecorator })} />
+      <ClashReviewWidget applyZoom={this.state.applyZoom} showDecorator={this.state.showDecorator} setApplyZoom={(applyZoom) => this.setState({ applyZoom })} setShowDecorator={(showDecorator) => this.setState({ showDecorator })} />,
+      this.setState.bind(this),
+      [SampleIModels.BayTown]
     );
     this._sampleWidgetUiProvider.addWidget("ClashReviewTableWidget", "Clash Review Table", <ClashReviewTable />);
     this._uiProviders = [this._sampleWidgetUiProvider];
@@ -85,13 +86,6 @@ export default class ClashReviewUI extends React.Component<{}, ClashReviewState>
     }
   }
 
-  private _changeIModel(iModelName?: SampleIModels) {
-    IModelSetup.getIModelInfo(iModelName)
-      .then(async (info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  }
-
   /** This callback will be executed by iTwin Viewer to initialize the viewstate */
   private _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
@@ -126,11 +120,11 @@ export default class ClashReviewUI extends React.Component<{}, ClashReviewState>
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
           <Viewer
             productId="2686"
             contextId={this.state.contextId}
-            iModelId={this.state.iModelId}
+            iModelId={this.state.imodelId}
             viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}

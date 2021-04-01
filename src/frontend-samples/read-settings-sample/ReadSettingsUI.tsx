@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import "./index.scss";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { ReadSettingsWidget } from "./ReadSettingsWidget";
 import ReadSettingsApp from "./ReadSettingsApp";
 import { SettingsResult } from "@bentley/product-settings-client";
@@ -18,9 +18,9 @@ import { UiItemsProvider } from "@bentley/ui-abstract";
 export const settingsKeys = ["Json_Data", "Arbitrary_Text", "CSV_Data"];
 
 interface ReadSettingsState {
-  iModelName?: SampleIModels;
+  imodelName?: SampleIModels;
   contextId?: string;
-  iModelId?: string;
+  imodelId?: string;
   viewportOptions?: IModelViewportControlOptions;
   settingKey?: string;
   settingResult?: SettingsResult;
@@ -33,9 +33,12 @@ export default class ReadSettingsUI extends React.Component<{}, ReadSettingsStat
   constructor(props: {}) {
     super(props);
     this.state = {};
-    IModelSetup.setIModelList([SampleIModels.BayTown]);
-    this._changeIModel();
-    this._sampleWidgetUiProvider = new SampleWidgetUiProvider("Choose a Setting Name below to read that setting from the ProductSettingsService", <ReadSettingsWidget saveSettings={this._saveSettings} onSettingsChange={this._onSettingsChange} />);
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Choose a Setting Name below to read that setting from the ProductSettingsService",
+      <ReadSettingsWidget saveSettings={this._saveSettings} onSettingsChange={this._onSettingsChange} />,
+      this.setState.bind(this),
+      [SampleIModels.BayTown],
+    );
     this._uiItemsProviders = [this._sampleWidgetUiProvider];
   }
 
@@ -43,27 +46,20 @@ export default class ReadSettingsUI extends React.Component<{}, ReadSettingsStat
     this._sampleWidgetUiProvider.updateControls({ settingsKey: this.state.settingKey, settingsResult: this.state.settingResult });
   }
 
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then(async (info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
-
   private _readSettings = async (settingKey: string) => {
-    const response = await ReadSettingsApp.readSettings(this.state.iModelId!, this.state.contextId!, settingKey);
+    const response = await ReadSettingsApp.readSettings(this.state.imodelId!, this.state.contextId!, settingKey);
     this.setState({ settingResult: response });
   };
 
   private _saveSettings = async (settingsValue: string) => {
-    if (this.state.iModelId && this.state.contextId && this.state.settingKey) {
-      const response = await ReadSettingsApp.saveSettings(this.state.iModelId, this.state.contextId, this.state.settingKey, settingsValue);
+    if (this.state.imodelId && this.state.contextId && this.state.settingKey) {
+      const response = await ReadSettingsApp.saveSettings(this.state.imodelId, this.state.contextId, this.state.settingKey, settingsValue);
       this.setState({ settingResult: response });
     }
   };
 
   private _onSettingsChange = async (settingKey: string) => {
-    if (this.state.iModelId && this.state.contextId) {
+    if (this.state.imodelId && this.state.contextId) {
       this.setState({ settingKey });
       await this._readSettings(settingKey);
     }
@@ -81,11 +77,11 @@ export default class ReadSettingsUI extends React.Component<{}, ReadSettingsStat
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
           <Viewer
             productId="2686"
             contextId={this.state.contextId}
-            iModelId={this.state.iModelId}
+            iModelId={this.state.imodelId}
             viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}

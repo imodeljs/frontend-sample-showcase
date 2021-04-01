@@ -8,21 +8,41 @@ import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
 import { AuthorizationClient } from "../authentication/AuthorizationClient";
 import { defaultIModel, SampleIModels } from "@itwinjs-sandbox";
 import { defaultIModelList } from "@itwinjs-sandbox/constants";
+import { BeEvent } from "@bentley/bentleyjs-core";
+
+export interface IModelResult {
+  imodelName: SampleIModels;
+  contextId: string;
+  imodelId: string;
+}
+
+export type onIModelResultEvent = (result: IModelResult) => void;
 
 export class IModelSetup {
 
   private static _sampleIModels: SampleIModels[] = defaultIModelList;
+  public static onIModelChanged: BeEvent<onIModelResultEvent> = new BeEvent<onIModelResultEvent>();
+  public static currentIModel?: IModelResult;
 
   public static getIModelList() {
     return IModelSetup._sampleIModels;
   }
 
-  public static setIModelList(value: SampleIModels[]) {
+  public static setIModelList(value: SampleIModels[] = defaultIModelList) {
     IModelSetup._sampleIModels = value;
+    IModelSetup.changeIModel();
   }
 
   public static resetIModelList() {
+    IModelSetup.currentIModel = undefined;
     IModelSetup._sampleIModels = defaultIModelList;
+    IModelSetup.onIModelChanged.clear();
+  }
+
+  public static async changeIModel(iModelName?: SampleIModels) {
+    const result = await this.getIModelInfo(iModelName);
+    IModelSetup.currentIModel = result;
+    IModelSetup.onIModelChanged.raiseEvent(result);
   }
 
   public static async getIModelInfo(iModelName?: SampleIModels) {
@@ -52,7 +72,8 @@ export class IModelSetup {
       throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
 
     this.updateiModelParam(projectName);
-    return { imodelName: projectName as SampleIModels, projectId: project.wsgId, imodelId: imodels[0].wsgId };
+    const result = { imodelName: projectName as SampleIModels, contextId: project.wsgId, imodelId: imodels[0].wsgId };
+    return result;
   }
 
   private static getiModelParam() {

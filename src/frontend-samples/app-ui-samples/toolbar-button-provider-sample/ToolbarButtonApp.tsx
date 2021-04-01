@@ -6,40 +6,34 @@ import * as React from "react";
 import { ToolbarButtonProvider } from "./ToolbarButtonUi";
 import "common/samples-common.scss";
 import "common/AppUi/app-ui.scss";
-import { AuthorizationClient, default3DAppUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { AuthorizationClient, default3DAppUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { Viewer } from "@bentley/itwin-viewer-react";
+import { UiItemsProvider } from "@bentley/ui-abstract";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 interface ToolbarButtonSampleState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
-  viewState?: ViewState;
+  viewportOptions?: IModelViewportControlOptions;
 }
 
 export default class ToolbarButtonSample extends React.Component<{}, ToolbarButtonSampleState> {
   private _toolbarUiProvider = new ToolbarButtonProvider();
-  private _sampleWidgetProvider: SampleWidgetUiProvider = new SampleWidgetUiProvider("Press the Lightbulb button tool at the top of the screen.", this._changeIModel);
+  private _sampleWidgetProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: {}) {
     super(props);
     this.state = {};
-    this._changeIModel();
+    this._sampleWidgetProvider = new SampleWidgetUiProvider("Press the Lightbulb button tool at the top of the screen.", this.setState.bind(this));
+    this._uiProviders = [this._sampleWidgetProvider, this._toolbarUiProvider];
   }
 
-  private _changeIModel(iModelName?: SampleIModels) {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this._sampleWidgetProvider.updateSelector(info.imodelName);
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
-
-  private _oniModelReady = (iModelConnection: IModelConnection) => {
-    ViewSetup.getDefaultView(iModelConnection)
-      .then((viewState) => {
-        this.setState({ viewState });
-      });
+  private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    this.setState({ viewportOptions: { viewState } });
   };
 
   /** The sample's render method */
@@ -51,11 +45,11 @@ export default class ToolbarButtonSample extends React.Component<{}, ToolbarButt
           <Viewer
             contextId={this.state.contextId}
             iModelId={this.state.iModelId}
-            viewportOptions={{ viewState: this.state.viewState }}
+            viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DAppUi}
             theme="dark"
-            uiProviders={[this._sampleWidgetProvider, this._toolbarUiProvider]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }
