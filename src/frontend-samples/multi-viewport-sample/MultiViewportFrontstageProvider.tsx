@@ -62,7 +62,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
               <Widget
                 key={MultiViewportFrontstage.DEFAULT_MANIPULATION_WIDGET_KEY}
                 isFreeform={true}
-                element={<BasicToolWidget />}
+                element={<div />}
               />,
             ]}
           />

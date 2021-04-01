@@ -16,9 +16,9 @@ import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorato
 import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ClashReviewState {
-  imodelName?: SampleIModels;
+  iModelName?: SampleIModels;
   contextId?: string;
-  imodelId?: string;
+  iModelId?: string;
   viewportOptions?: IModelViewportControlOptions;
   clashData?: any;
   markersData: MarkerData[];
@@ -120,11 +120,11 @@ export default class ClashReviewUI extends React.Component<{}, ClashReviewState>
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
           <Viewer
             productId="2686"
             contextId={this.state.contextId}
-            iModelId={this.state.imodelId}
+            iModelId={this.state.iModelId}
             viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}

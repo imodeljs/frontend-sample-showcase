@@ -13,9 +13,9 @@ import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
 import { CrossProbingFrontstage } from "./CrossProbingFrontstage";
 
 interface CrossProbingUIState {
-  imodelName?: SampleIModels;
+  iModelName?: SampleIModels;
   contextId?: string;
-  imodelId?: string;
+  iModelId?: string;
   frontstages?: ViewerFrontstage[];
 }
 
@@ -54,10 +54,10 @@ export default class CrossProbingUI extends React.Component<{}, CrossProbingUISt
     return (
       <>
         { /* Viewports to display the iModel */}
-        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
           <Viewer
             contextId={this.state.contextId}
-            iModelId={this.state.imodelId}
+            iModelId={this.state.iModelId}
             frontstages={this.state.frontstages}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             theme="dark"

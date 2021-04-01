@@ -13,9 +13,9 @@ import { UiItemsProvider } from "@bentley/ui-abstract";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 interface ViewportOnly2dUIState {
-  imodelName?: SampleIModels;
+  iModelName?: SampleIModels;
   contextId?: string;
-  imodelId?: string;
+  iModelId?: string;
   iModelConnection?: IModelConnection;
   viewportOptions?: IModelViewportControlOptions;
   modelLists: ModelLists;
@@ -65,10 +65,10 @@ export default class ViewportOnly2dUI extends React.Component<{}, ViewportOnly2d
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
           <Viewer
             contextId={this.state.contextId}
-            iModelId={this.state.imodelId}
+            iModelId={this.state.iModelId}
             viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default2DSandboxUi}

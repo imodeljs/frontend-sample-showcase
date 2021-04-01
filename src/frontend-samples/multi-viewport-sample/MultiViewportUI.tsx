@@ -16,9 +16,9 @@ import { MultiViewportWidget } from "./MultiViewportWidget";
 
 /** The React state for this UI component */
 export interface MultiViewportUIState {
-  imodelName?: SampleIModels;
+  iModelName?: SampleIModels;
   contextId?: string;
-  imodelId?: string;
+  iModelId?: string;
   frontstages?: ViewerFrontstage[];
   isSynced: boolean;
   viewports: Viewport[];
@@ -37,6 +37,7 @@ export default class MultiViewportUI extends React.Component<{}, MultiViewportUI
       "Use the toolbar at the top-right to navigate the model.  Toggle to sync the viewports.",
       <MultiViewportWidget isSynced={this.state.isSynced} onToggleSyncChange={this._onSyncToggleChange} />,
       this.setState.bind(this),
+      [SampleIModels.MetroStation]
     );
     this._uiItemProviders = [this._sampleWidgetUiProvider];
   }
@@ -116,10 +117,10 @@ export default class MultiViewportUI extends React.Component<{}, MultiViewportUI
     return (
       <>
         { /* Viewports to display the iModel */}
-        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
           <Viewer
             contextId={this.state.contextId}
-            iModelId={this.state.imodelId}
+            iModelId={this.state.iModelId}
             frontstages={this.state.frontstages}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             theme="dark"

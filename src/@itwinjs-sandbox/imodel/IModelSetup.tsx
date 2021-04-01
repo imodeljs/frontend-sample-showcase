@@ -11,9 +11,9 @@ import { defaultIModelList } from "@itwinjs-sandbox/constants";
 import { BeEvent } from "@bentley/bentleyjs-core";
 
 export interface IModelResult {
-  imodelName: SampleIModels;
+  iModelName: SampleIModels;
   contextId: string;
-  imodelId: string;
+  iModelId: string;
 }
 
 export type onIModelResultEvent = (result: IModelResult) => void;
@@ -72,7 +72,7 @@ export class IModelSetup {
       throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
 
     this.updateiModelParam(projectName);
-    const result = { imodelName: projectName as SampleIModels, contextId: project.wsgId, imodelId: imodels[0].wsgId };
+    const result = { iModelName: projectName as SampleIModels, contextId: project.wsgId, iModelId: imodels[0].wsgId };
     return result;
   }
 

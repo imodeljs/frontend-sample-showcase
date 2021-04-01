@@ -4,12 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { assert, Id64String } from "@bentley/bentleyjs-core";
-import { IModelApp, ViewState } from "@bentley/imodeljs-frontend";
+import { Id64String } from "@bentley/bentleyjs-core";
+import { ViewState } from "@bentley/imodeljs-frontend";
 import { SectionMarker } from "@bentley/hypermodeling-frontend";
 import { Button, Toggle } from "@bentley/ui-core";
-import HyperModelingApp from "./HyperModelingApp";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
 
 /** The 3d context that was active before switching to a 2d view. */
 interface Previous {
@@ -19,70 +17,44 @@ interface Previous {
   markerId: Id64String;
 }
 
-export const HyperModelingWidget: React.FunctionComponent = () => {
-  const iModelConnection = useActiveIModelConnection();
+export interface HyperModelingProps {
+  toggle2dGraphics: boolean;
+  activeMarker?: SectionMarker;
+  previous: boolean;
+  onToggle2dGraphicsFunc: (toggle: boolean) => void;
+  onClickReturnTo3D: () => void;
+  onClickSelectNewMarker: () => void;
+  onClickSwitchTo2d: (which: "sheet" | "drawing") => void;
+}
+
+export const HyperModelingWidget: React.FunctionComponent<HyperModelingProps> = ({ toggle2dGraphics, activeMarker, previous, onToggle2dGraphicsFunc, onClickReturnTo3D, onClickSelectNewMarker, onClickSwitchTo2d }) => {
   /** Whether to display 2d section graphics and sheet annotations in the 3d view. */
-  const [display2dGraphicsState, setDisplay2dGraphicsState] = React.useState<boolean>(true);
+  const [toggle2dGraphicsState, setToggle2dGraphics] = React.useState<boolean>(toggle2dGraphics);
   /** The selected section marker. */
   const [activeMarkerState, setActiveMarkerState] = React.useState<SectionMarker>();
-  const [previousState, setPreviousState] = React.useState<Previous>();
+  const [previousState, setPreviousState] = React.useState<boolean>(previous);
 
   useEffect(() => {
-    if (iModelConnection) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (vp) {
-        HyperModelingApp.enableHyperModeling(vp).then(() => {
-          HyperModelingApp.markerHandler.onActiveMarkerChanged.addListener((activeMarker) => setActiveMarkerState(activeMarker));
-          HyperModelingApp.activateMarkerByName(vp, "Section-Left");
-        });
-      }
+    if (undefined !== activeMarker) {
+      setActiveMarkerState(activeMarker);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activeMarker]);
 
   useEffect(() => {
-    if (iModelConnection) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (vp) {
-        HyperModelingApp.toggle2dGraphics(display2dGraphicsState);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [display2dGraphicsState]);
+    setPreviousState(previous);
+  }, [previous]);
 
   const onToggle2dGraphics = (toggle: boolean) => {
-    setDisplay2dGraphicsState(toggle);
-  };
-
-  const returnTo3d = async () => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp && previousState) {
-      await HyperModelingApp.switchTo3d(vp, previousState.view, previousState.markerId);
-      setPreviousState(undefined);
-    }
+    onToggle2dGraphicsFunc(toggle);
+    setToggle2dGraphics(toggle);
   };
 
   const switchToDrawingView = async () => {
-    return switchTo2d("drawing");
+    return onClickSwitchTo2d("drawing");
   };
 
   const switchToSheetView = async () => {
-    return switchTo2d("sheet");
-  };
-
-  const switchTo2d = async (which: "sheet" | "drawing") => {
-    const vp = IModelApp.viewManager.selectedView;
-    assert(undefined !== vp && undefined !== activeMarkerState);
-
-    const view = vp.view;
-    if (await HyperModelingApp.switchTo2d(vp, activeMarkerState, which))
-      setPreviousState({ view, markerId: activeMarkerState.state.id });
-  };
-
-  const clearActiveMarker = () => {
-    const vp = IModelApp.viewManager.selectedView;
-    assert(undefined !== vp);
-    HyperModelingApp.clearActiveMarker(vp);
+    return onClickSwitchTo2d("sheet");
   };
 
   return (
@@ -90,17 +62,17 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
       {(previousState) && (
         <div className="sample-options-3col-even">
           <span />
-          <Button onClick={returnTo3d}>Return to 3d view</Button>
+          <Button onClick={onClickReturnTo3D}>Return to 3d view</Button>
         </div>
       )}
       {(!previousState) && (
         <div className="sample-options-3col-even">
           <span>Display 2d graphics</span>
-          <Toggle isOn={display2dGraphicsState} onChange={onToggle2dGraphics} disabled={!activeMarkerState} />
+          <Toggle isOn={toggle2dGraphicsState} onChange={onToggle2dGraphics} disabled={!activeMarkerState} />
           <span />
           <Button onClick={switchToDrawingView} disabled={!activeMarkerState}>View section drawing</Button>
           <Button onClick={switchToSheetView} disabled={!activeMarkerState?.state.viewAttachment}>View on sheet</Button>
-          <Button onClick={clearActiveMarker} disabled={!activeMarkerState}>Select new marker</Button>
+          <Button onClick={onClickSelectNewMarker} disabled={!activeMarkerState}>Select new marker</Button>
         </div>
       )}
     </>

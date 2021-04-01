@@ -10,9 +10,9 @@ import { UiItemsProvider } from "@bentley/ui-abstract";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 interface ViewportOnlyUIState {
-  imodelName?: SampleIModels;
+  iModelName?: SampleIModels;
   contextId?: string;
-  imodelId?: string;
+  iModelId?: string;
   viewportOptions?: IModelViewportControlOptions;
 }
 
@@ -35,10 +35,10 @@ export default class ViewportOnlyUI extends React.Component<{}, ViewportOnlyUISt
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
           <Viewer
             contextId={this.state.contextId}
-            iModelId={this.state.imodelId}
+            iModelId={this.state.iModelId}
             viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}

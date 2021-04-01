@@ -6,29 +6,132 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiP
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ViewAttributesWidget } from "./ViewAttributesWidget";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
+import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
+import { RenderMode } from "@bentley/imodeljs-common";
+import { UiItemsProvider } from "@bentley/ui-abstract";
 
 interface ViewAttributesUIState {
-  imodelName?: SampleIModels;
+  iModelName?: SampleIModels;
   contextId?: string;
-  imodelId?: string;
+  iModelId?: string;
   viewState?: ViewState;
+  iModelConnection?: IModelConnection;
+  initAttributeValues: AttrValues;
 }
 
 export default class ViewAttributesUI extends React.Component<{}, ViewAttributesUIState> {
   private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   constructor(props: any) {
     super(props);
-    this.state = {};
-    this._sampleWidgetUiProvider = new SampleWidgetUiProvider("Use the toggle below for displaying the reality data in the model.", <ViewAttributesWidget />, this.setState.bind(this));
+    this.state = {
+      initAttributeValues: {
+        renderMode: RenderMode.SmoothShade,
+        acs: false,
+        backgroundMap: true,
+        backgroundTransparency: 0.01,
+        cameraOn: true,
+        grid: false,
+        hiddenEdges: false,
+        monochrome: false,
+        shadows: false,
+        skybox: true,
+        visibleEdges: false,
+      },
+    };
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the controls below to change the view attributes.",
+      <ViewAttributesWidget
+        attrValues={this.state.initAttributeValues}
+        onChangeAttribute={this._onChangeAttribute}
+        onChangeRenderMode={this._onChangeRenderMode}
+        onChangeSkyboxToggle={this._onChangeSkyboxToggle}
+        onChangeCameraToggle={this._onChangeCameraToggle}
+        onChangeViewFlagToggle={this._onChangeViewFlagToggle}
+        onTransparencySliderChange={this._onTransparencySliderChange}
+      />,
+      this.setState.bind(this),
+    );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
+      ViewAttributesApp.setAttrValues(_vp, this.state.initAttributeValues);
+    });
+
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState });
+        this.setState({ iModelConnection, viewState });
       });
+  };
+
+  private _onChangeAttribute = (attrValues: AttrValues) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        ViewAttributesApp.setAttrValues(vp, attrValues);
+      }
+    }
+  };
+
+  private _onChangeRenderMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        let renderMode: RenderMode;
+        switch (event.target.value) {
+          case "HiddenLine": { renderMode = RenderMode.HiddenLine; break; }
+          case "SmoothShade": { renderMode = RenderMode.SmoothShade; break; }
+          case "SolidFill": { renderMode = RenderMode.SolidFill; break; }
+          default:
+          case "Wireframe": { renderMode = RenderMode.Wireframe; break; }
+        }
+        ViewAttributesApp.setRenderMode(vp, renderMode);
+      }
+    }
+  };
+
+  // Handle changes to the skybox toggle.
+  private _onChangeSkyboxToggle = (checked: boolean) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        ViewAttributesApp.setSkyboxOnOff(vp, checked);
+      }
+    }
+  };
+
+  // Handle changes to the camera toggle.
+  private _onChangeCameraToggle = (checked: boolean) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        ViewAttributesApp.setCameraOnOff(vp, checked);
+      }
+    }
+  };
+
+  // Handle changes to a view flag toggle.
+  private _onChangeViewFlagToggle = (flag: ViewFlag, checked: boolean) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        ViewAttributesApp.setViewFlag(vp, flag, checked);
+      }
+    }
+  };
+
+  // Handle changes to a view flag toggle.
+  private _onTransparencySliderChange = (min: number, max: number, num: number) => {
+    if (this.state.iModelConnection) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp) {
+        ViewAttributesApp.setBackgroundTransparency(vp, Math.abs((num / (max + 1)) - min));
+      }
+    }
   };
 
   /** The sample's render method */
@@ -37,15 +140,15 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
     return (
       <>
         { /* Viewport to display the iModel */}
-        {this.state.imodelName && this.state.contextId && this.state.imodelId &&
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
           <Viewer
             contextId={this.state.contextId}
-            iModelId={this.state.imodelId}
+            iModelId={this.state.iModelId}
             viewportOptions={{ viewState: this.state.viewState }}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
-            uiProviders={[this._sampleWidgetUiProvider]}
+            uiProviders={this._uiProviders}
             onIModelConnected={this._oniModelReady}
           />
         }

@@ -15,6 +15,7 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
   public static readonly controlsWidgetId: string = "sampleControlsWidget";
   private _widgets: { id: string, label: string, widget: ReactElement<WidgetWrapperProps> }[] = [];
   private _updater: { [id: string]: (props: any) => void } = {};
+  private _queue: { [id: string]: any } = {};
 
   /** Create a SampleWidgetProvider to share sample instructions, controls, and an iModel selector
    * @param instructions - The instructions for the current sample
@@ -49,7 +50,7 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
       this._widgets.push({
         id,
         label,
-        widget: <WidgetWrapper setUpdater={(fn) => this._updater[id] = fn} widget={widget} props={props} />,
+        widget: <WidgetWrapper id={id} setUpdater={(fn) => this._updater[id] = fn} widget={widget} props={props} onRender={this._onRender} />,
       });
     }
   }
@@ -57,6 +58,8 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
   public updateWidget(id: string, props: any) {
     if (this._updater[id]) {
       this._updater[id](props);
+    } else {
+      this._queue[id] = props;
     }
     const widgetIndex = this._widgets.findIndex((widget) => widget.id === id);
     if (widgetIndex >= 0) {
@@ -65,7 +68,7 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
       const updatedWidget = React.isValidElement(widget) ? React.cloneElement(widget, updatedProps) : widget;
       this._widgets[widgetIndex] = {
         ...this._widgets[widgetIndex],
-        widget: <WidgetWrapper setUpdater={(fn) => this._updater[id] = fn} widget={updatedWidget} props={updatedProps} />,
+        widget: <WidgetWrapper id={id} setUpdater={(fn) => this._updater[id] = fn} widget={updatedWidget} props={updatedProps} onRender={this._onRender} />,
       };
     }
   }
@@ -76,6 +79,13 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
     children = React.cloneElement(children, { ...children.props, ...props });
     this.updateWidget(SampleWidgetUiProvider.controlsWidgetId, { children });
   }
+
+  private _onRender = (id: string) => {
+    if (this._queue[id]) {
+      this._updater[id](this._queue[id]);
+      delete this._queue[id];
+    }
+  };
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection | undefined): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
@@ -98,33 +108,35 @@ interface SampleControlsWidgetProps {
 }
 
 const SampleControlsWidget: FunctionComponent<SampleControlsWidgetProps> = (props) => {
-  const [imodelName, setiModelName] = useState<SampleIModels | undefined>(IModelSetup.currentIModel?.imodelName);
+  const [iModelName, setiModelName] = useState<SampleIModels | undefined>(IModelSetup.currentIModel?.iModelName);
 
   useEffect(() => {
-    if (IModelSetup.currentIModel?.imodelName !== imodelName) {
-      IModelSetup.changeIModel(imodelName);
+    if (IModelSetup.currentIModel?.iModelName !== iModelName) {
+      IModelSetup.changeIModel(iModelName);
     }
-  }, [imodelName]);
+  }, [iModelName]);
 
   useEffect(() => {
-    const unsub = IModelSetup.onIModelChanged.addListener((result) => setiModelName(result.imodelName));
+    const unsub = IModelSetup.onIModelChanged.addListener((result) => setiModelName(result.iModelName));
     return unsub;
   }, []);
 
   return (<SampleWidgetContainer
     instructions={props.instructions}
-    iModelSelector={imodelName && <IModelSelector iModelName={imodelName} iModelNames={IModelSetup.getIModelList()} onIModelChange={setiModelName} />}>
+    iModelSelector={iModelName && <IModelSelector iModelName={iModelName} iModelNames={IModelSetup.getIModelList()} onIModelChange={setiModelName} />}>
     {props.children}
   </SampleWidgetContainer>);
 };
 
 interface WidgetWrapperProps {
-  setUpdater: (fn: (props: any) => void) => void;
+  id: string;
   widget: ReactNode;
   props?: any;
+  setUpdater: (fn: (props: any) => void) => void;
+  onRender: (id: string) => void;
 }
 
-const WidgetWrapper: FunctionComponent<WidgetWrapperProps> = ({ widget, setUpdater, props: incomingProps }) => {
+const WidgetWrapper: FunctionComponent<WidgetWrapperProps> = ({ id, widget, setUpdater, props: incomingProps, onRender }) => {
   const [props, setProps] = useState(incomingProps);
   useEffect(() => {
     setUpdater((newProps) => {
@@ -135,6 +147,10 @@ const WidgetWrapper: FunctionComponent<WidgetWrapperProps> = ({ widget, setUpdat
   useEffect(() => {
     setProps(incomingProps);
   }, [incomingProps]);
+
+  useEffect(() => {
+    onRender(id);
+  }, [id, onRender]);
 
   return <>{React.isValidElement(widget) ? React.cloneElement(widget, props) : widget}</>;
 };
