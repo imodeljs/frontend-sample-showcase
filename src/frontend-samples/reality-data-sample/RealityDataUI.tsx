@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { RealityDataWidget } from "./RealityDataWidget";
-import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import RealityDataApp from "./RealityDataApp";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { UiItemsProvider } from "@bentley/ui-abstract";
@@ -15,11 +15,10 @@ interface RealityDataUIState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
-  viewState?: ViewState;
+  viewportOptions?: IModelViewportControlOptions;
   iModelConnection?: IModelConnection;
   showRealityData: boolean;
   realityDataTransparency: number;
-  viewportOptions?: IModelViewportControlOptions;
 }
 
 export default class RealityDataUI extends React.Component<{}, RealityDataUIState> {
@@ -32,26 +31,18 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
       showRealityData: true,
       realityDataTransparency: 0,
     };
-    IModelSetup.setIModelList([SampleIModels.ExtonCampus, SampleIModels.MetroStation]);
-    this._changeIModel();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the toggle below for displaying the reality data in the model.",
       <RealityDataWidget
         showRealityData={this.state.showRealityData}
         realityDataTransparency={this.state.realityDataTransparency}
         onToggleRealityData={this._onToggleRealityData}
-        onChangeRealityDataTransparency={this._onChangeRealityDataTransparency} />
+        onChangeRealityDataTransparency={this._onChangeRealityDataTransparency} />,
+      this.setState.bind(this),
+      [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
     );
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
-
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this._sampleWidgetUiProvider.updateSelector(info.imodelName);
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
 
   private _onToggleRealityData = async (showRealityData: boolean, realityDataTransparency: number) => {
     if (this.state.iModelConnection) {

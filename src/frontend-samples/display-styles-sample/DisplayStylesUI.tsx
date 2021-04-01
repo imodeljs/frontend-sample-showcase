@@ -22,21 +22,15 @@ export default class DisplayStylesUI extends React.Component<{}, ViewAttributesU
   constructor(props: any) {
     super(props);
     this.state = {};
-    IModelSetup.setIModelList([SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium]);
-    this._changeIModel();
+    IModelSetup.setIModelList();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the drop down below to change the display style. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.",
       <DisplayStylesWidget />,
+      this.setState.bind(this),
+      [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium]
     );
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
-
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)

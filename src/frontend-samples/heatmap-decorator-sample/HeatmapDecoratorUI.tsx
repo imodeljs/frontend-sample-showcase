@@ -36,7 +36,7 @@ export default class HeatmapDecoratorUI extends React.Component<{}, HeatmapDecor
   private _changeIModel = (iModelName?: SampleIModels) => {
     IModelSetup.getIModelInfo(iModelName)
       .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
+        this.setState({ iModelName: info.iModelName, contextId: info.contextId, iModelId: info.iModelId });
       });
   };
 

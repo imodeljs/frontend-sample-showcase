@@ -77,7 +77,7 @@ export const SampleShowcase: FunctionComponent = () => {
         <IModelSelector
           iModelNames={activeSample.imodelList}
           iModelName={activeSample.imodel}
-          onIModelChange={(imodelName) => setActiveSample(new ActiveSample(activeSample.group, activeSample.name, imodelName))} />
+          onIModelChange={(iModelName) => setActiveSample(new ActiveSample(activeSample.group, activeSample.name, iModelName))} />
       </div>);
   }, [activeSample.imodelList, activeSample.name, activeSample.group, activeSample.imodel]);
 

@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
@@ -39,25 +39,25 @@ export default class ScreenSpaceEffectsUI extends React.Component<{}, ScreenSpac
       effectsConfig: getCurrentEffectsConfig(),
       lensAngle: 90,
     };
-    IModelSetup.setIModelList([SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House]);
-    this._changeIModel();
-    this._sampleWidgetUiProvider = this._getSampleUi();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the toggles below to select which effects are applied to the viewport.",
+      this._getScreenSpaceEffectsWidget(),
+      this.setState.bind(this),
+      [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House]
+    );
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
-  private _getSampleUi = () => {
-    return new SampleWidgetUiProvider(
-      "Use the toggles below to select which effects are applied to the viewport.",
-      <ScreenSpaceEffectsWidget
-        saturation={this.state.saturation}
-        vignette={this.state.vignette}
-        lensDistortion={this.state.lensDistortion}
-        effectsConfig={this.state.effectsConfig}
-        lensAngle={this.state.lensAngle}
-        handleLensAngleChange={this._handleLensAngleChange}
-        handleDistortionSaturationVignette={this._handleDistortionSaturationVignette}
-        handleEffectsConfig={this._handleEffectsConfig} />
-    );
+  private _getScreenSpaceEffectsWidget = () => {
+    return <ScreenSpaceEffectsWidget
+      saturation={this.state.saturation}
+      vignette={this.state.vignette}
+      lensDistortion={this.state.lensDistortion}
+      effectsConfig={this.state.effectsConfig}
+      lensAngle={this.state.lensAngle}
+      handleLensAngleChange={this._handleLensAngleChange}
+      handleDistortionSaturationVignette={this._handleDistortionSaturationVignette}
+      handleEffectsConfig={this._handleEffectsConfig} />
   };
 
   private _handleLensAngleChange = (angle: number) => {
@@ -110,13 +110,6 @@ export default class ScreenSpaceEffectsUI extends React.Component<{}, ScreenSpac
 
     // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
     IModelApp.requestNextAnimation();
-  };
-
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
   };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {

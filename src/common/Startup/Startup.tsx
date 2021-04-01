@@ -74,7 +74,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     this.setState((prev) => ({ user: { ...prev.user, isLoading: false, isAuthorized: SampleBaseApp.oidcClient.isAuthorized } }));
   };
 
-  private async getIModelInfo(): Promise<{ projectId: string, imodelId: string }> {
+  private async getIModelInfo(): Promise<{ projectId: string, iModelId: string }> {
     const requestContext: AuthorizedFrontendRequestContext = await AuthorizedFrontendRequestContext.create();
 
     // In testdrive the projectName matches iModelName.  That's not true in general.
@@ -99,7 +99,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
     if (imodels.length === 0)
       throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
-    return { projectId: project.wsgId, imodelId: imodels[0].wsgId };
+    return { projectId: project.wsgId, iModelId: imodels[0].wsgId };
   }
 
   private async openIModel() {
@@ -107,7 +107,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     try {
       // attempt to open the imodel
       const info = await this.getIModelInfo();
-      imodel = await RemoteBriefcaseConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+      imodel = await RemoteBriefcaseConnection.open(info.projectId, info.iModelId, OpenMode.Readonly);
     } catch (e) {
       alert(e.message);
     }

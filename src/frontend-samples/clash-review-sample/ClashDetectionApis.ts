@@ -108,7 +108,7 @@ export default class ClashDetectionApis {
   //   const response = ClashDetectionApis.getValidationUrlResponse(body._links.run.href);
   // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/run-validation-test
   // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-run
-  public static async runValidationTest(requestContext: AuthorizedClientRequestContext, imodelId: string, testId: string) {
+  public static async runValidationTest(requestContext: AuthorizedClientRequestContext, iModelId: string, testId: string) {
     if (testId === undefined)
       return undefined;
     const accessToken = await ClashDetectionApis.getAccessToken();
@@ -118,11 +118,11 @@ export default class ClashDetectionApis {
     const url = `https://dev-api.bentley.com/validation/runs/test/${testId}`;
     // Get the latest named version of the iModel
     const hubClient = new IModelHubClient();
-    const namedVersions = await hubClient.versions.get(requestContext, imodelId, new VersionQuery().top(1));
+    const namedVersions = await hubClient.versions.get(requestContext, iModelId, new VersionQuery().top(1));
     if (namedVersions.length === 0 || namedVersions[0].id === undefined)
       return undefined;
     // Set the iModel id and named version id to pass in the body of the request
-    const data = { iModelId: imodelId, namedVersionId: namedVersions[0].id };
+    const data = { iModelId: iModelId, namedVersionId: namedVersions[0].id };
     const options = {
       method: "POST",
       headers: {
@@ -148,12 +148,12 @@ export default class ClashDetectionApis {
   }
 
   // This sample test function demonstrates how the above functions can be called in a workflow
-  private async test(requestContext: AuthorizedClientRequestContext, projectId: string, imodelId: string) {
+  private async test(requestContext: AuthorizedClientRequestContext, projectId: string, iModelId: string) {
     // Get list of tests for project
     const testsResponse = await ClashDetectionApis.getProjectValidationTests(requestContext, projectId);
     if (testsResponse.validationTests !== undefined && testsResponse.validationTests.length !== 0) {
       // Run validation test
-      const testRunResponse = await ClashDetectionApis.runValidationTest(requestContext, imodelId, testsResponse.validationTests[0].id);
+      const testRunResponse = await ClashDetectionApis.runValidationTest(requestContext, iModelId, testsResponse.validationTests[0].id);
       if (testRunResponse !== undefined && testRunResponse.validationRunLink !== undefined) {
         // Get validation run status
         const runResponse = await ClashDetectionApis.getValidationUrlResponse(requestContext, testRunResponse.validationRunLink._links.run.href);

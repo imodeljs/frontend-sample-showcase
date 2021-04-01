@@ -37,11 +37,12 @@ export default class ClashReviewUI extends React.Component<{}, ClashReviewState>
       showDecorator: true,
       applyZoom: true,
     };
-    IModelSetup.setIModelList([SampleIModels.BayTown]);
-    this._changeIModel();
+    IModelSetup.setIModelList();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to review clashes.",
-      <ClashReviewWidget applyZoom={this.state.applyZoom} showDecorator={this.state.showDecorator} setApplyZoom={(applyZoom) => this.setState({ applyZoom })} setShowDecorator={(showDecorator) => this.setState({ showDecorator })} />
+      <ClashReviewWidget applyZoom={this.state.applyZoom} showDecorator={this.state.showDecorator} setApplyZoom={(applyZoom) => this.setState({ applyZoom })} setShowDecorator={(showDecorator) => this.setState({ showDecorator })} />,
+      this.setState.bind(this),
+      [SampleIModels.BayTown]
     );
     this._sampleWidgetUiProvider.addWidget("ClashReviewTableWidget", "Clash Review Table", <ClashReviewTable />);
     this._uiProviders = [this._sampleWidgetUiProvider];
@@ -83,13 +84,6 @@ export default class ClashReviewUI extends React.Component<{}, ClashReviewState>
         ClashReviewApp.disableZoom();
       }
     }
-  }
-
-  private _changeIModel(iModelName?: SampleIModels) {
-    IModelSetup.getIModelInfo(iModelName)
-      .then(async (info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
   }
 
   /** This callback will be executed by iTwin Viewer to initialize the viewstate */

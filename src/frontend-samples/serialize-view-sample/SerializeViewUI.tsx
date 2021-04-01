@@ -34,7 +34,7 @@ export default class SerializeViewUI extends React.Component<{}, SerializeViewSt
   private _sampleWidgetUiProvider: SampleWidgetUiProvider;
   private _uiProviders: UiItemsProvider[];
 
-  /** Dictionary of imodelId's to array of viewstates */
+  /** Dictionary of iModelId's to array of viewstates */
   private allSavedViews: IModelViews[] = [...sampleViewStates];
 
   constructor(props: {}) {
@@ -61,7 +61,7 @@ export default class SerializeViewUI extends React.Component<{}, SerializeViewSt
   private _changeIModel(iModelName?: SampleIModels) {
     IModelSetup.getIModelInfo(iModelName)
       .then(async (info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
+        this.setState({ iModelName: info.iModelName, contextId: info.contextId, iModelId: info.iModelId });
       });
   }
 

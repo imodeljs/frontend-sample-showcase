@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ViewAttributesWidget } from "./ViewAttributesWidget";
@@ -41,7 +41,6 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
         visibleEdges: false,
       },
     };
-    this._changeIModel();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the controls below to change the view attributes.",
       <ViewAttributesWidget
@@ -52,18 +51,11 @@ export default class ViewAttributesUI extends React.Component<{}, ViewAttributes
         onChangeCameraToggle={this._onChangeCameraToggle}
         onChangeViewFlagToggle={this._onChangeViewFlagToggle}
         onTransparencySliderChange={this._onTransparencySliderChange}
-      />
+      />,
+      this.setState.bind(this),
     );
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
-
-  private _changeIModel(iModelName?: SampleIModels) {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this._sampleWidgetUiProvider.updateSelector(info.imodelName);
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {

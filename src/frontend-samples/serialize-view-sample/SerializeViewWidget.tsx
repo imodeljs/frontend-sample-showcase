@@ -100,7 +100,7 @@ export const SerializeViewWidget: React.FunctionComponent<SerializeViewWidgetPro
 //     jsonError: "",
 //   };
 
-//   /** Dictionary of imodelId's to array of viewstates */
+//   /** Dictionary of iModelId's to array of viewstates */
 //   public allSavedViews: IModelViews[] = [...sampleViewStates];
 
 //   private readonly _onSaveStateClick = () => {

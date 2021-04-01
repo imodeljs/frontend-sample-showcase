@@ -3,30 +3,48 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { IModelConnection, SelectedViewportChangedArgs, Viewport } from "@bentley/imodeljs-frontend";
-import { Toggle } from "@bentley/ui-core";
 import "common/samples-common.scss";
-import { ControlPane } from "common/ControlPane/ControlPane";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import "./multi-view-sample.scss";
 import MultiViewportApp from "./MultiViewportApp";
+import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
+import { UiItemsProvider } from "@bentley/ui-abstract";
+import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";
+import { ViewSetup } from "api/viewSetup";
+import { MultiViewportWidget } from "./MultiViewportWidget";
 
 /** The React state for this UI component */
 export interface MultiViewportUIState {
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  frontstages?: ViewerFrontstage[];
   isSynced: boolean;
   viewports: Viewport[];
   selectedViewport?: Viewport;
 }
-/** The React props for this UI component */
-export interface MultiViewportUIProps {
-  iModelName: string;
-  iModelSelector: React.ReactNode;
-}
 
 /** A React component that renders the UI specific for this sample */
-export default class MultiViewportUI extends React.Component<MultiViewportUIProps, MultiViewportUIState> {
+export default class MultiViewportUI extends React.Component<{}, MultiViewportUIState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiItemProviders: UiItemsProvider[];
 
-  public state: MultiViewportUIState = { isSynced: false, viewports: [] };
+  constructor(props: any) {
+    super(props);
+    this.state = { isSynced: false, viewports: [] };
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Use the toolbar at the top-right to navigate the model.  Toggle to sync the viewports.",
+      <MultiViewportWidget isSynced={this.state.isSynced} onToggleSyncChange={this._onSyncToggleChange} />,
+      this.setState.bind(this),
+      [SampleIModels.MetroStation]
+    );
+    this._uiItemProviders = [this._sampleWidgetUiProvider];
+  }
+
+  public componentDidUpdate() {
+    this._sampleWidgetUiProvider.updateControls({ disabled: this.state.viewports.length !== 2, isSynced: this.state.isSynced });
+  }
 
   public componentDidMount() {
     MultiViewportApp.selectedViewportChangedListeners.length = 0;
@@ -70,11 +88,14 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   // Adds listeners after the iModel is loaded.
   // Note: The [MultiViewportApp] handles removing theses listeners when they are irrelevant and insuring no duplicates listeners.
-  private _onIModelReady = (_iModel: IModelConnection) => {
+  private _onIModelReady = async (iModel: IModelConnection) => {
     MultiViewportApp.listenForSelectedViewportChange(this._setViewportStyling);
     MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
     MultiViewportApp.listenForViewOpened(this._getViews);
     MultiViewportApp.listenForAppTeardown(this._viewsClosed);
+
+    const viewState = await ViewSetup.getDefaultView(iModel);
+    this.setState({ frontstages: [{ provider: new MultiViewportFrontstage(viewState), default: true }] });
   };
 
   // Handle changes to the UI sync toggle.
@@ -91,32 +112,22 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
     this.setState({ isSynced: isOn });
   };
 
-  /** Components for rendering the sample's instructions and controls */
-  public getControls() {
-    return (<>
-      <div className="sample-options-2col">
-        <span>Sync Viewports</span>
-        <Toggle disabled={this.state.viewports.length !== 2} isOn={this.state.isSynced} onChange={this._onSyncToggleChange} />
-      </div>
-    </>);
-  }
-
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ControlPane
-          controls={this.getControls()}
-          iModelSelector={this.props.iModelSelector}
-          instructions={"Use the toolbar at the top-right to navigate the model.  Toggle to sync the viewports."}
-        />
         { /* Viewports to display the iModel */}
-        <div className={"mutli-view-viewport-top"}>
-          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-        </div>
-        <div className={"mutli-view-viewport-bottom"}>
-          <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
-        </div>
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            frontstages={this.state.frontstages}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            theme="dark"
+            uiProviders={this._uiItemProviders}
+            onIModelConnected={this._onIModelReady}
+          />
+        }
       </>
     );
   }

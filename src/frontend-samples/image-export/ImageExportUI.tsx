@@ -5,17 +5,18 @@
 import "common/samples-common.scss";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import ImageExportApp from "./ImageExportApp";
 import { Button, ButtonType } from "@bentley/ui-core";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { UiItemsProvider } from "@bentley/ui-abstract";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 interface ViewAttributesUIState {
   iModelName?: SampleIModels;
   contextId?: string;
   iModelId?: string;
-  viewState?: ViewState;
+  viewportOptions?: IModelViewportControlOptions;
 }
 
 /** Create the widget to save the image */
@@ -36,25 +37,18 @@ export default class ImageExportUI extends React.Component<{}, ViewAttributesUIS
   constructor(props: any) {
     super(props);
     this.state = {};
-    this._changeIModel();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Export current viewport as image",
-      <ImageExportWidget />
+      <ImageExportWidget />,
+      this.setState.bind(this),
     );
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
 
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
-
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     ViewSetup.getDefaultView(iModelConnection)
       .then((viewState) => {
-        this.setState({ viewState });
+        this.setState({ viewportOptions: { viewState } });
       });
   };
 
@@ -68,7 +62,7 @@ export default class ImageExportUI extends React.Component<{}, ViewAttributesUIS
           <Viewer
             contextId={this.state.contextId}
             iModelId={this.state.iModelId}
-            viewportOptions={{ viewState: this.state.viewState }}
+            viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"

@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { HyperModelingWidget } from "./HyperModelingWidget";
@@ -41,18 +41,9 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
     this.state = {
       graphics2DState: true,
     };
-    IModelSetup.setIModelList([SampleIModels.House]);
-    this._changeIModel();
     this._sampleWidgetUiProvider = this._getSampleUi();
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
-
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
 
   private _getSampleUi = () => {
     return new SampleWidgetUiProvider(
@@ -65,7 +56,9 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
         onClickReturnTo3D={this._onClickReturnTo3D}
         onClickSelectNewMarker={this._onClickSelectNewMarker}
         onClickSwitchTo2d={this._onClickSwitchTo2d}
-      />
+      />,
+      this.setState.bind(this),
+      [SampleIModels.House]
     );
   };
 

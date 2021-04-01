@@ -31,25 +31,18 @@ export default class RealityDataUI extends React.Component<{}, RealityDataUIStat
       showClipBlock: false,
       clipPlane: "None",
     };
-    IModelSetup.setIModelList([SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House]);
-    this._changeIModel();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the options below to control the view clip.",
       <ViewClipWidget
         showClipBlock={this.state.showClipBlock}
         clipPlane={this.state.clipPlane}
         handleFlipButton={this._handleFlipButton}
-        handleClipPlaneUpdate={this._handleClipPlaneUpdate} />
+        handleClipPlaneUpdate={this._handleClipPlaneUpdate} />,
+      this.setState.bind(this),
+      [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House]
     );
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
-
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
-  };
 
   /** The inital viewstate function */
   private getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
