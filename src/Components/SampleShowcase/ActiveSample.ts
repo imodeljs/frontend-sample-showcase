@@ -3,7 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { defaultIModel, defaultIModelList, SampleIModels } from "@itwinjs-sandbox";
+import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { sampleManifest } from "sampleManifest";
 import { SampleSpec, SampleSpecFile } from "SampleSpec";
 
