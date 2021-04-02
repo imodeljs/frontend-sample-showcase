@@ -10,14 +10,16 @@ import HeatmapDecorator from "./HeatmapDecorator";
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class HeatmapDecoratorApp {
   public static decorator?: HeatmapDecorator;
+  public static addedDecorator = false;
 
   public static setupDecorator(points: Point3d[], range: Range2d, spreadFactor: number, height: number) {
     HeatmapDecoratorApp.decorator = new HeatmapDecorator(points, range, spreadFactor, height);
   }
 
   public static enableDecorations() {
-    if (HeatmapDecoratorApp.decorator) {
+    if (!HeatmapDecoratorApp.addedDecorator && HeatmapDecoratorApp.decorator) {
       IModelApp.viewManager.addDecorator(HeatmapDecoratorApp.decorator);
+      HeatmapDecoratorApp.addedDecorator = true;
     }
   }
 
@@ -26,5 +28,6 @@ export default class HeatmapDecoratorApp {
       return;
 
     IModelApp.viewManager.dropDecorator(HeatmapDecoratorApp.decorator);
+    HeatmapDecoratorApp.addedDecorator = false;
   }
 }
