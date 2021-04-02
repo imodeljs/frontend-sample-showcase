@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthStatus, BeEvent, BentleyError, ClientRequestContext } from "@bentley/bentleyjs-core";
-import { AccessToken } from "@bentley/itwin-client";
+import { AccessToken, AccessTokenProps } from "@bentley/itwin-client";
 import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
 
 export class NoSignInIAuthClient implements FrontendAuthorizationClient {
@@ -47,12 +47,12 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
 
     const response = await fetch(userURL);
     const body = await response.json();
-    const tokenJson = {
+    const tokenJson: AccessTokenProps = {
       ...await body,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      _userInfo: { id: "MockId" },
+      userInfo: { id: "MockId" },
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      _tokenString: body._jwt,
+      tokenString: body._jwt,
     };
     this._accessToken = AccessToken.fromJson(tokenJson);
 
