@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { HyperModelingWidget } from "./HyperModelingWidget";
@@ -41,6 +41,7 @@ export default class HyperModelingUI extends React.Component<{}, HyperModelingUI
     this.state = {
       graphics2DState: true,
     };
+    IModelSetup.setIModelList();
     this._sampleWidgetUiProvider = this._getSampleUi();
     this._uiProviders = [this._sampleWidgetUiProvider];
   }
