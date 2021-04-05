@@ -49,9 +49,7 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
     const body = await response.json();
     const tokenJson: AccessTokenProps = {
       ...await body,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       userInfo: { id: "MockId" },
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       tokenString: body._jwt,
     };
     this._accessToken = AccessToken.fromJson(tokenJson);
@@ -76,12 +74,10 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
     if (!this._devAccessToken) {
       const response = await fetch("https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
       const body = await response.json();
-      const tokenJson = {
+      const tokenJson: AccessTokenProps = {
         ...await body,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _userInfo: { id: "MockId" },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _tokenString: body._jwt,
+        userInfo: { id: "MockId" },
+        tokenString: body._jwt,
       };
       this._devAccessToken = AccessToken.fromJson(tokenJson);
 
