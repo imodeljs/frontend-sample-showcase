@@ -9,9 +9,7 @@ import "common/samples-common.scss";
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApp {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();
-  public static selectedViewportChangedListeners: Array<() => void> = [];
-  public static viewOpenedListeners: Array<() => void> = [];
-  public static teardownListener: Array<() => void> = [];
+  public static dropListener: Array<() => void> = [];
 
   /** Connects the views of the two provided viewports, overriding the second parameter's view with the first's view. */
   public static connectViewports(vp1: Viewport, vp2: Viewport) {
@@ -22,11 +20,17 @@ export default class MultiViewportApp {
     MultiViewportApp.twoWaySync.disconnect();
   }
 
+  /** Drops all active listeners. */
+  public static dispose() {
+    MultiViewportApp.dropListener.forEach((removeListener) => removeListener());
+    MultiViewportApp.dropListener.length = 0;
+  }
+
   /** Adds a listener to IModalApp for when the selected Viewport changes.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForSelectedViewportChange(onChange: (args: SelectedViewportChangedArgs) => void) {
     if (false === IModelApp.viewManager.onSelectedViewportChanged.has(onChange)) {
       const removeListener = IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
-      MultiViewportApp.selectedViewportChangedListeners.push(removeListener);
+      MultiViewportApp.dropListener.push(removeListener);
     }
   }
 
@@ -34,17 +38,15 @@ export default class MultiViewportApp {
   public static listenForViewOpened(onOpen: (args: ScreenViewport) => void) {
     if (false === IModelApp.viewManager.onViewOpen.has(onOpen)) {
       const removeListener = IModelApp.viewManager.onViewOpen.addListener(onOpen);
-      MultiViewportApp.viewOpenedListeners.push(removeListener);
+      MultiViewportApp.dropListener.push(removeListener);
     }
   }
 
-  /** Adds a adds a callback for when the app teardown is called. See description in readme for typical implementation */
-  public static listenForAppTeardown(listener: () => void) {
-    MultiViewportApp.teardownListener.push(listener);
-  }
-
-  /** Signal viewport to sync with an updated [ViewState] using the Viewport API. */
-  public static syncViewportWithView(vp: Viewport) {
-    vp.synchWithView();
+  /** Adds a listener to IModalApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
+  public static listenForViewClosed(onOpen: (args: ScreenViewport) => void) {
+    if (false === IModelApp.viewManager.onViewOpen.has(onOpen)) {
+      const removeListener = IModelApp.viewManager.onViewClose.addListener(onOpen);
+      MultiViewportApp.dropListener.push(removeListener);
+    }
   }
 }
