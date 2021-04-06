@@ -6,7 +6,6 @@
 import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
 import { PointProps, SizeProps } from "@bentley/ui-core";
 import { FrontstageManager, useUiSettingsContext } from "@bentley/ui-framework";
-import { Widget } from "@bentley/ui-ninezone";
 import React, { CSSProperties, FunctionComponent, ReactNode, useCallback, useEffect, useRef } from "react";
 import "./SampleWidgetContainer.scss";
 
