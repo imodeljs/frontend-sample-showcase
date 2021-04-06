@@ -40,7 +40,7 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
       IModelSetup.onIModelChanged.addListener(onIModelChange);
       IModelSetup.setIModelList(imodels);
     }
-    this.addWidget(SampleWidgetUiProvider.controlsWidgetId, "Sample Controls", <SampleControlsWidget instructions={instructions}>{controlsWidget}</SampleControlsWidget>);
+    this.addWidget(SampleWidgetUiProvider.controlsWidgetId, "Sample Controls", <SampleControlsWidget instructions={instructions} id={SampleWidgetUiProvider.controlsWidgetId} frontstageId={"defaultFrontstage"}>{controlsWidget}</SampleControlsWidget>);
   }
 
   public addWidget(id: string, label: string, widget: ReactNode) {
@@ -105,6 +105,8 @@ export class SampleWidgetUiProvider implements UiItemsProvider {
 
 interface SampleControlsWidgetProps {
   instructions: string;
+  id: string;
+  frontstageId: string;
 }
 
 const SampleControlsWidget: FunctionComponent<SampleControlsWidgetProps> = (props) => {
@@ -122,6 +124,8 @@ const SampleControlsWidget: FunctionComponent<SampleControlsWidgetProps> = (prop
   }, []);
 
   return (<SampleWidgetContainer
+    widgetId={props.id}
+    frontstageId={props.frontstageId}
     instructions={props.instructions}
     iModelSelector={iModelName && <IModelSelector iModelName={iModelName} iModelNames={IModelSetup.getIModelList()} onIModelChange={setiModelName} />}>
     {props.children}
