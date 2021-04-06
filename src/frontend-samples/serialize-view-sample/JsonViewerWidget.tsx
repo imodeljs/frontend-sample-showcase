@@ -1,15 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, SmallText, Textarea } from "@bentley/ui-core";
 
 export interface JsonViewerWidgetProps {
   title: string;
   json: string;
-  jsonError?: string;
-  handleJsonTextChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  setJson: (json: string) => void;
   onSaveJsonViewClick: () => void;
 }
 
-export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = ({ title, jsonError, json, handleJsonTextChange, onSaveJsonViewClick }) => {
+export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = ({ title, json, setJson, onSaveJsonViewClick }) => {
+
+  const [titleState, setTitleState] = React.useState<string>(title);
+  const [jsonValueState, setJsonValueState] = React.useState<string>(json);
+  const [jsonErrorState, setJsonErrorState] = React.useState<string>("");
+
+  useEffect(() => {
+    setTitleState(title);
+  }, [title]);
+
+  useEffect(() => {
+    setJsonValueState(json);
+  }, [json]);
+
+  /** Method called on every user interaction in the json viewer text box */
+  const _handleJsonTextChange = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    try {
+      JSON.parse(event.target.value);
+      setJsonValueState(event.target.value);
+      setJsonErrorState("");
+      setJson(event.target.value);
+    } catch (error) {
+      setJsonValueState(event.target.value);
+      setJsonErrorState(error.toString());
+    }
+  };
 
   /** Helper method for showing an error */
   const showError = (stateProp: string | undefined) => {
@@ -28,44 +52,16 @@ export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = 
 
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-        <div className="item" style={{ marginRight: "auto" }}>
-          {title}
-        </div>
-      </div>
+      <span className="sample-widget-ui">
+        {titleState}
+      </span>
       <div className="item">
-        <Textarea spellCheck={"false"} onChange={handleJsonTextChange} style={{ overflow: "scroll", height: "13rem" }} value={json} />
+        <Textarea spellCheck={"false"} onChange={_handleJsonTextChange} style={{ overflow: "scroll", height: "12rem" }} value={jsonValueState} />
       </div>
-      {showError(jsonError)}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Button onClick={onSaveJsonViewClick}>Save View</Button>
+      <div className="item" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Button onClick={onSaveJsonViewClick} disabled={jsonErrorState !== ""}>Save View</Button>
       </div>
+      {showError(jsonErrorState)}
     </>
   );
 };
-
-/// /////////////////////
-/** This Json window that pops up when the user presses 'show json' */
-// private getJsonViewer(): React.ReactNode {
-//   return (
-//     <div className="sample-control-ui">
-//       <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-//         <div className="item">
-//           <Button buttonType={ButtonType.Hollow} onClick={this._onHideJsonViewerClick} style={{ border: "0" }}><Icon iconSpec="icon-close" /></Button>
-//         </div>
-//         <div className="item" style={{ marginRight: "auto" }}>
-//           {undefined !== this.state.viewport && undefined !== this.state.views[this.state.currentViewIndex] ?
-//             this.state.views[this.state.currentViewIndex].name
-//             : ""}
-//         </div>
-//       </div>
-//       <div className="item">
-//         <Textarea spellCheck={"false"} onChange={this._handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem" }} value={this.state.jsonMenuValue} />
-//       </div>
-//       {this.showError(this.state.jsonError)}
-//       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-//         <Button onClick={this._onSaveJsonViewClick}>Save View</Button>
-//       </div>
-//     </div>
-//   );
-// }

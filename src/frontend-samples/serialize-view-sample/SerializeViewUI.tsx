@@ -26,7 +26,6 @@ interface SerializeViewState {
   currentViewIndex: number;
   jsonViewerTitle: string;
   jsonMenuValue: string;
-  jsonError: string | undefined;
   loadStateError: string | undefined;
 }
 
@@ -46,9 +45,7 @@ export default class SerializeViewUI extends React.Component<{}, SerializeViewSt
       loadStateError: "",
       jsonViewerTitle: "",
       jsonMenuValue: "",
-      jsonError: "",
     };
-    IModelSetup.setIModelList([SampleIModels.MetroStation, SampleIModels.RetailBuilding]);
     this._changeIModel();
     this._sampleWidgetUiProvider = this._getSampleUi();
     this._sampleWidgetUiProvider.addWidget(
@@ -76,7 +73,9 @@ export default class SerializeViewUI extends React.Component<{}, SerializeViewSt
         handleSelection={this._handleSelection}
         onSaveStateClick={this._onSaveStateClick}
         onLoadStateClick={this._onLoadStateClick}
-      />
+      />,
+      this.setState.bind(this),
+      [SampleIModels.MetroStation, SampleIModels.RetailBuilding]
     );
   };
 
@@ -84,15 +83,15 @@ export default class SerializeViewUI extends React.Component<{}, SerializeViewSt
     return <JsonViewerWidget
       title={this.state.jsonViewerTitle}
       json={this.state.jsonMenuValue}
-      jsonError={this.state.jsonError}
-      handleJsonTextChange={this._handleJsonTextChange}
+      setJson={this._setJson}
       onSaveJsonViewClick={this._onSaveJsonViewClick}
     />;
   };
 
   public componentDidUpdate(_prevProps: {}, prevState: SerializeViewState) {
-    if (prevState.options !== this.state.options) {
-      this._sampleWidgetUiProvider.updateControls({ options: this.state.options });
+
+    if (prevState.views.length !== this.state.views.length) {
+      this._sampleWidgetUiProvider.updateControls({ options: this.getOptions(this.state.views), currentViewIndex: this.state.currentViewIndex });
     }
 
     /** Update the title and json Menu value if a view has been selected */
@@ -154,34 +153,32 @@ export default class SerializeViewUI extends React.Component<{}, SerializeViewSt
         JSON.stringify(views[defaultViewIndex].view, null, 2)
         : "No View Selected";
 
+      const title = undefined !== views[defaultViewIndex] ? views[defaultViewIndex].name : "";
+
       /** Set the views for the imodel in the stae */
       this.setState({
         currentViewIndex: defaultViewIndex,
         viewport,
         views,
         options: this.getOptions(views),
+        jsonViewerTitle: title,
         jsonMenuValue: menuValue,
       });
     });
   };
 
   /** When a model is selected in list, get its view and switch to it.  */
-  private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
+  private _handleSelection = async (num: number) => {
     this.setState((prevState) => ({
-      currentViewIndex: index,
-      jsonMenuValue: JSON.stringify(prevState.views[index].view, null, 2),
+      currentViewIndex: num,
+      jsonViewerTitle: prevState.views[num].name,
+      jsonMenuValue: JSON.stringify(prevState.views[num].view, null, 2),
     }));
   };
 
   /** Method called on every user interaction in the json viewer text box */
-  private _handleJsonTextChange = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    try {
-      JSON.parse(event.target.value);
-      this.setState({ jsonMenuValue: event.target.value, jsonError: "" });
-    } catch (error) {
-      this.setState({ jsonMenuValue: event.target.value, jsonError: error.toString() });
-    }
+  private _setJson = async (json: string) => {
+    this.setState({ jsonMenuValue: json });
   };
 
   /** Called when user selects 'Save View' */
