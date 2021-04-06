@@ -4,18 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { ViewState } from "@bentley/imodeljs-frontend";
 import { SectionMarker } from "@bentley/hypermodeling-frontend";
 import { Button, Toggle } from "@bentley/ui-core";
-
-/** The 3d context that was active before switching to a 2d view. */
-interface Previous {
-  /** The 3d view. */
-  view: ViewState;
-  /** The Id of the previously-active section marker. */
-  markerId: Id64String;
-}
 
 export interface HyperModelingProps {
   toggle2dGraphics: boolean;

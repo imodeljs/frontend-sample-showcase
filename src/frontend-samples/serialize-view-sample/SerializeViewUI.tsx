@@ -7,7 +7,7 @@ import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-f
 import "common/samples-common.scss";
 import * as React from "react";
 import SerializeViewApp from "./SerializeViewApp";
-import { SelectOption, SmallText } from "@bentley/ui-core";
+import { SelectOption } from "@bentley/ui-core";
 import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";
 import { ViewStateProps } from "@bentley/imodeljs-common";
 import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
@@ -213,7 +213,7 @@ export default class SerializeViewUI extends React.Component<{}, SerializeViewSt
             productId="2686"
             contextId={this.state.contextId}
             iModelId={this.state.iModelId}
-            //viewportOptions={this.state.viewportOptions}
+            // viewportOptions={this.state.viewportOptions}
             authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"

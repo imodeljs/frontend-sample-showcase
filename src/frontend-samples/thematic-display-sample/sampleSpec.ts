@@ -16,7 +16,7 @@ export function getThematicDisplaySpec(): SampleSpec {
       { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp") },
       { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI"), entry: true },
     ],
-    modelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
+    iModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
     type: "ThematicDisplayUI.tsx",
   });
 }

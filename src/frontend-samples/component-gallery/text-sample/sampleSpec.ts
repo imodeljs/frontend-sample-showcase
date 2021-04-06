@@ -11,7 +11,7 @@ export function getTextSpec(): SampleSpec {
     name: "text-sample",
     label: "UI-Text",
     image: "ui-text-thumbnail.png",
-    modelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "Text.tsx", import: import("!!raw-loader!./Text"), entry: true },

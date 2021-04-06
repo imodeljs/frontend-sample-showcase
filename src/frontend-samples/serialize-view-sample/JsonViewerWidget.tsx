@@ -44,30 +44,28 @@ export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = 
   );
 };
 
-
-
-////////////////////////
+/// /////////////////////
 /** This Json window that pops up when the user presses 'show json' */
-  // private getJsonViewer(): React.ReactNode {
-  //   return (
-  //     <div className="sample-control-ui">
-  //       <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-  //         <div className="item">
-  //           <Button buttonType={ButtonType.Hollow} onClick={this._onHideJsonViewerClick} style={{ border: "0" }}><Icon iconSpec="icon-close" /></Button>
-  //         </div>
-  //         <div className="item" style={{ marginRight: "auto" }}>
-  //           {undefined !== this.state.viewport && undefined !== this.state.views[this.state.currentViewIndex] ?
-  //             this.state.views[this.state.currentViewIndex].name
-  //             : ""}
-  //         </div>
-  //       </div>
-  //       <div className="item">
-  //         <Textarea spellCheck={"false"} onChange={this._handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem" }} value={this.state.jsonMenuValue} />
-  //       </div>
-  //       {this.showError(this.state.jsonError)}
-  //       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-  //         <Button onClick={this._onSaveJsonViewClick}>Save View</Button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+// private getJsonViewer(): React.ReactNode {
+//   return (
+//     <div className="sample-control-ui">
+//       <div style={{ display: "flex", flexDirection: "row-reverse" }}>
+//         <div className="item">
+//           <Button buttonType={ButtonType.Hollow} onClick={this._onHideJsonViewerClick} style={{ border: "0" }}><Icon iconSpec="icon-close" /></Button>
+//         </div>
+//         <div className="item" style={{ marginRight: "auto" }}>
+//           {undefined !== this.state.viewport && undefined !== this.state.views[this.state.currentViewIndex] ?
+//             this.state.views[this.state.currentViewIndex].name
+//             : ""}
+//         </div>
+//       </div>
+//       <div className="item">
+//         <Textarea spellCheck={"false"} onChange={this._handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem" }} value={this.state.jsonMenuValue} />
+//       </div>
+//       {this.showError(this.state.jsonError)}
+//       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+//         <Button onClick={this._onSaveJsonViewClick}>Save View</Button>
+//       </div>
+//     </div>
+//   );
+// }

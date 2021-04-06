@@ -3,7 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { defaultIModel, defaultIModelList, SampleIModels } from "@itwinjs-sandbox";
+import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { sampleManifest } from "sampleManifest";
 import { SampleSpec, SampleSpecFile } from "SampleSpec";
 
@@ -34,7 +35,7 @@ export class ActiveSample {
     this.group = result.group;
     this.name = result.name;
     this._spec = result.spec;
-    this.imodel = imodel && this.imodelList.includes(imodel ) ? imodel  : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
+    this.imodel = imodel && this.imodelList.includes(imodel) ? imodel : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
     this.iTwinViewerReady = result.spec.iTwinViewerReady;
     this.getFiles = result.spec.files;
     this.getReadme = result.spec.readme;
@@ -44,7 +45,7 @@ export class ActiveSample {
   }
 
   public get imodelList() {
-    return this._spec.modelList || defaultIModelList;
+    return this._spec.iModelList || defaultIModelList;
   }
 
   private resolveSpec(group?: string | null, name?: string | null): SpecResolveResult {

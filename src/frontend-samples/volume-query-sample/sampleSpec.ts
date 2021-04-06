@@ -17,7 +17,7 @@ export function getVolumeQuerySpec(): SampleSpec {
       { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },
       { name: "ProgressBar.tsx", import: import("!!raw-loader!./ProgressBar") },
     ],
-    modelList: [
+    iModelList: [
       SampleIModels.RetailBuilding,
       SampleIModels.BayTown,
       SampleIModels.House,

@@ -9,7 +9,7 @@ import {
   ClearEmphasizeAction, ClearHideAction, ClearIsolateAction, ClearOverrideAction,
   EmphasizeAction, HideAction, IsolateAction, OverrideAction,
 } from "./EmphasizeElementsApp";
-import { EmphasizeElements, IModelApp, IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { EmphasizeElements, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { EmphasizeElementsWidget } from "./EmphasizeElementsWidget";
 import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";

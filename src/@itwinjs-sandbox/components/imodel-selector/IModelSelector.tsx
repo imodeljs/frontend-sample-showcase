@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { Select } from "@bentley/ui-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { Select } from "@bentley/ui-core/lib/ui-core/select/Select";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {

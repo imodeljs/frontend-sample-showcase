@@ -11,7 +11,7 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
     name: "screen-space-effects-sample",
     label: "Screen-space Effects",
     image: "screen-space-effects-thumbnail.png",
-    modelList: [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
+    iModelList: [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ScreenSpaceEffectsApp.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApp") },

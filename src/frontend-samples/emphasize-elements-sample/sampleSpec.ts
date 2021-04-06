@@ -15,9 +15,10 @@ export function getEmphasizeElementsSpec(): SampleSpec {
     files: () => [
       { name: "EmphasizeElementsApp.tsx", import: import("!!raw-loader!./EmphasizeElementsApp") },
       { name: "EmphasizeElementsUI.tsx", import: import("!!raw-loader!./EmphasizeElementsUI"), entry: true },
+      { name: "EmphasizeElementsWidget.tsx", import: import("!!raw-loader!./EmphasizeElementsWidget") },
     ],
     iTwinViewerReady: true,
-    modelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
+    iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "EmphasizeElementsUI.tsx",
   });
 }
