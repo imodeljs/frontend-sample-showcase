@@ -5,7 +5,7 @@
 import { ClientRequestContext, Config, Id64String } from "@bentley/bentleyjs-core";
 import { /* BrowserAuthorizationCallbackHandler */ BrowserAuthorizationClient /* BrowserAuthorizationClientConfiguration */ } from "@bentley/frontend-authorization-client";
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
-import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection, TileAdmin } from "@bentley/imodeljs-frontend";
+import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection } from "@bentley/imodeljs-frontend";
 import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
 import { MarkupApp } from "@bentley/imodeljs-markup";
 import { PresentationRpcInterface } from "@bentley/presentation-common";
@@ -28,7 +28,7 @@ export class SampleBaseApp {
   public static async startup(options?: IModelAppOptions) {
 
     const opts: IModelAppOptions = Object.assign({
-      tileAdmin: TileAdmin.create({ useProjectExtents: false }),
+      tileAdmin: { useProjectExtents: false },
       notifications: new ShowcaseNotificationManager(),
       toolAdmin: ShowcaseToolAdmin.initialize(),
     }, options);

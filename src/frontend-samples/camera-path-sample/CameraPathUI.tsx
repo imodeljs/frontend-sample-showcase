@@ -65,8 +65,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       initialPositionStarted = false;
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: sliderNumber, isInitialPositionStarted: initialPositionStarted } }), () => {
       if (this.state.vp) {
-        const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(this.state.attrValues.sliderValue);
-        CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
+        const nextPathPoint = this.state.cameraPath.getPathPoint(this.state.attrValues.sliderValue);
+        CameraPathApp.setViewFromPathPoint(nextPathPoint, this.state.vp);
       }
     });
   };
@@ -118,8 +118,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         break;
       }
       const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, this.state.attrValues.currentSpeed / 30);
-      const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
-      await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
+      const nextPathPoint = this.state.cameraPath.getPathPoint(nextPathFraction);
+      await CameraPathApp.animateCameraPath(nextPathPoint, this.state.vp, this.state.attrValues.keyDown);
       this._updateTimeline(nextPathFraction);
     }
     if (pathCompleted) {
@@ -130,11 +130,11 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   // Handle the Path Change
   private _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const cameraPath = CameraPath.createByLoadingFromJson(event.target.value);
-    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isMouseWheelAnimationActive: false, isInitialPositionStarted: false, isUnlockDirectionOn: false }, cameraPath }), () => {
+    this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true, isMouseWheelAnimationActive: false, isInitialPositionStarted: false }, cameraPath }), () => {
       setTimeout(() => {
         if (this.state.vp) {
-          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(0);
-          CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(0);
+          CameraPathApp.setViewFromPathPoint(nextPathPoint, this.state.vp);
           this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, sliderValue: 0 } }));
         }
       }, 40);
@@ -173,7 +173,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
 
   // Create the react component for the camera speed dropdown
   private _createSpeedDropDown(label: string) {
-    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this._onChangeRenderSpeed(event.target.value)} />;
+    const element = <Select style={{ width: "150px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={this.state.attrValues.speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => this._onChangeRenderSpeed(event.target.value)} />;
     return this._createJSXElementForAttribute(label, element);
   }
 
@@ -188,7 +188,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
         </div>
         <div className="sample-options-3col" style={{ maxWidth: "310px" }}>
           {this._createSpeedDropDown("Animate")}
-          <button style={{ width: "35px", marginLeft: "4px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => this._handleCameraPlay()} >{this.state.attrValues.isInitialPositionStarted ? this.state.attrValues.isPause ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
+          <button style={{ width: "35px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => this._handleCameraPlay()} >{this.state.attrValues.isInitialPositionStarted ? this.state.attrValues.isPause ? <img src="Play_32.png" style={{ height: "25px" }}></img> : <img src="MediaControlsPause.ico" style={{ height: "25px" }} /> : <img src="Play_32.png" style={{ height: "25px" }}></img>}</button>
         </div>
       </div >
     );
@@ -204,9 +204,10 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       this._onChangeRenderSpeed(this.state.attrValues.speedLevel);
       this.setState({ vp }, () => {
         if (this.state.vp) {
+          CameraPathApp.prepareView(this.state.vp);
           this.toolActivation();
-          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(0);
-          CameraPathApp.setViewFromPointAndDirection(nextPointAndDirectionFromPathFraction, this.state.vp);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(0);
+          CameraPathApp.setViewFromPathPoint(nextPathPoint, this.state.vp);
         }
       });
     });
@@ -215,7 +216,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
   // We will use this method to activate the CameraPathTool
   // The CameraPathTool will prevent the view tool and standard mouse events
   private toolActivation() {
-    IModelApp.tools.run(CameraPathTool.toolId, this.handleScrollAnimation, this.handleUnlockDirection);
+    IModelApp.tools.run(CameraPathTool.toolId, this.handleScrollAnimation, this.handleUnlockLookAround);
   }
 
   private _handleScrollPath(eventDeltaY: number) {
@@ -235,8 +236,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
             break;
           }
           const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, stepLength);
-          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
-          await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(nextPathFraction);
+          await CameraPathApp.animateCameraPath(nextPathPoint, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
         }
       } else if (eventDeltaY < 0) {
@@ -247,8 +248,8 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
           if (!this.state.attrValues.isMouseWheelAnimationActive)
             break;
           const nextPathFraction = this.state.cameraPath.advanceAlongPath(this.state.attrValues.sliderValue, - stepLength);
-          const nextPointAndDirectionFromPathFraction = this.state.cameraPath.getPointAndDirection(nextPathFraction);
-          await CameraPathApp.animateCameraPath(nextPointAndDirectionFromPathFraction, this.state.vp, this.state.attrValues.keyDown);
+          const nextPathPoint = this.state.cameraPath.getPathPoint(nextPathFraction);
+          await CameraPathApp.animateCameraPath(nextPathPoint, this.state.vp, this.state.attrValues.keyDown);
           this._updateTimeline(nextPathFraction);
         }
       }
@@ -268,7 +269,7 @@ export default class CameraPathUI extends React.Component<{ iModelName: string, 
       this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, isPause: true } }), () => setTimeout(() => { this._handleScrollPath(eventDeltaY); }, 40));
     }
   };
-  public handleUnlockDirection = (keyDown: boolean) => {
+  public handleUnlockLookAround = (keyDown: boolean) => {
     this.setState((previousState) => ({ attrValues: { ...previousState.attrValues, keyDown } }));
   };
 

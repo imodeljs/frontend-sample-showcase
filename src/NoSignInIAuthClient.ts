@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthStatus, BeEvent, BentleyError, ClientRequestContext } from "@bentley/bentleyjs-core";
-import { AccessToken } from "@bentley/itwin-client";
+import { AccessToken, AccessTokenProps } from "@bentley/itwin-client";
 import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
 
 export class NoSignInIAuthClient implements FrontendAuthorizationClient {
@@ -47,12 +47,10 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
 
     const response = await fetch(userURL);
     const body = await response.json();
-    const tokenJson = {
+    const tokenJson: AccessTokenProps = {
       ...await body,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _userInfo: { id: "MockId" },
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _tokenString: body._jwt,
+      userInfo: { id: "MockId" },
+      tokenString: body._jwt,
     };
     this._accessToken = AccessToken.fromJson(tokenJson);
 
@@ -76,12 +74,10 @@ export class NoSignInIAuthClient implements FrontendAuthorizationClient {
     if (!this._devAccessToken) {
       const response = await fetch("https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
       const body = await response.json();
-      const tokenJson = {
+      const tokenJson: AccessTokenProps = {
         ...await body,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _userInfo: { id: "MockId" },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _tokenString: body._jwt,
+        userInfo: { id: "MockId" },
+        tokenString: body._jwt,
       };
       this._devAccessToken = AccessToken.fromJson(tokenJson);
 
