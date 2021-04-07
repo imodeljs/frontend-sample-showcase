@@ -10,6 +10,7 @@ import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import { Button, Input, Toggle } from "@bentley/ui-core";
 import GlobalDisplayApp from "./GlobalDisplayApp";
+import { SpecialKey } from "@bentley/ui-abstract";
 
 interface GlobalDisplayUIState {
   viewport?: ScreenViewport;
@@ -60,6 +61,12 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
     if (!locationFound) {
       const message = `Sorry, "${this.state.destination}" isn't recognized as a location.`;
       IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Warning, message));
+    }
+  };
+
+  private onKeyPress = (e: KeyboardEvent) => {
+    if (e.key === SpecialKey.Enter || e.key === SpecialKey.Return) {
+      this.travelToDestination();
     }
   };
 
@@ -175,7 +182,7 @@ export default class GlobalDisplayUI extends React.Component<GlobalDisplayUIProp
         <span title={"Display the edges of the building meshes"}>Building Edges</span>
         <Toggle isOn={this.state.buildingEdges} onChange={(buildingEdges) => this.setState({ buildingEdges })} disabled={!this.state.buildings} />
         <span title={"Type a place name and press enter to travel there"}>Destination</span>
-        <Input onChange={(e) => this.setState({ destination: e.currentTarget.value })} />
+        <Input onChange={(e) => this.setState({ destination: e.currentTarget.value })} nativeKeyHandler={this.onKeyPress} />
         <span />
         <Button disabled={0 === this.state.destination.length} onClick={this.travelToDestination} title={"Travel to the specified destination"}>Travel</Button>
       </div>
