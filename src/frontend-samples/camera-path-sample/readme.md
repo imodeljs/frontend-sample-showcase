@@ -8,9 +8,9 @@ This sample demonstrates animation using the viewport camera APIs which is can b
 
 The purpose of this sample is to demonstrate the following
 
-* Animate the camera using predefined coordinates of location and direction in different paths.
+* Animate the camera using predefined coordinates of location and targetPoint in different paths.
 
-* Implementing a PrimitiveTool to change the direction of the camera.
+* Implementing a PrimitiveTool to change the targetPoint of the camera.
 
 ## Description
 

@@ -138,7 +138,7 @@ export class FireEmitter implements Decorator {
     const id = FireDecorationApp.getNextTransientId(viewport.iModel);
     const fireDecorator = new this(id, source, params);
 
-    if (FireDecorationApp.length === 0) {
+    if (FireDecorationApp.getAllEmitters().length === 0) {
       // Due to the constructions of the showcase, we know when the viewport will be closed.  Under different circumstances, the methods below are example events to ensure the timely dispose of textures owned by the decorator.
       // When the iModel is closed, dispose of any decorations.
       FireEmitter._removeOnClose = viewport.iModel.onClose.addOnce(() => FireDecorationApp.disposeAllEmitters());

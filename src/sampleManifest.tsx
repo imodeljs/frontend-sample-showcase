@@ -1,5 +1,9 @@
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 
+import { SampleSpec } from "SampleSpec";
 import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
@@ -25,6 +29,7 @@ import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sam
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
+import { getClashReviewSpec } from "./frontend-samples/clash-review-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
 import { getBadgeSpec } from "./frontend-samples/component-gallery/badge-sample/sampleSpec";
@@ -63,6 +68,7 @@ import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-samp
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
+import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -92,8 +98,8 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getParticleFireSampleSpec(),
+    getParticleSnowSampleSpec(),
     getPropertyFormattingSpec(),
-    getReadSettingsSpec(),
     getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
     getShadowStudySpec(),
@@ -145,6 +151,11 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSimple3dSpec(),
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
+  ],
+}, {
+  groupName: "iTwin Platform APIs", samples: [
+    getClashReviewSpec(),
+    getReadSettingsSpec(),
   ],
 
 },

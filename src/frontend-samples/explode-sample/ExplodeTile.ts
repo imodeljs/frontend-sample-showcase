@@ -6,7 +6,7 @@
 import { assert, BeEvent, BeTimePoint, ByteStream, compareStrings, Id64, partitionArray } from "@bentley/bentleyjs-core";
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
 import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
+import { GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
 import ExplodeApp from "./ExplodeApp";
 
 /** Data describing an element for the exploded effect. */
@@ -368,9 +368,11 @@ class RootTile extends Tile implements FeatureAppearanceProvider {
     resolve(elements);
   }
 
+  /** Tile has no content, so should not require a channel. */
+  public get channel(): TileRequestChannel { throw new Error("This tile never has content so this property should never be invoked"); }
+
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
     assert(false, "Root tile has no content");
-    return undefined;
   }
 
   public async readContent(_data: TileRequest.ResponseData, _system: RenderSystem, _isCanceled: () => boolean): Promise<TileContent> {
@@ -472,10 +474,12 @@ class ElementTile extends Tile {
     return maxRange;
   }
 
+  /** Tile has no content, so should not require a channel. */
+  public get channel(): TileRequestChannel { throw new Error("This tile never has content so this property should never be invoked"); }
+
   /** Tile has no content and should never request any. */
   public async requestContent(_isCanceled: () => boolean): Promise<TileRequest.Response> {
     assert(false, "Tile has no content");
-    return undefined;
   }
 
   /** Tile has no content and should never have any to read. */
@@ -517,6 +521,7 @@ export class ExplodedGraphicsTile extends Tile {
   public get rootTile(): RootTile { return this.parent.parent as RootTile; }
   public get centerOfMass(): Point3d { return this.parent.centerOfMass; }
   public get formatVersion(): number { return this.parent.formatVersion; }
+  public get channel(): TileRequestChannel { return IModelApp.tileAdmin.channels.elementGraphicsRpc; }
 
   private _prevExplodeFactor: number = -1;
   private _explodeTransform = Transform.createIdentity();
@@ -620,9 +625,5 @@ export class ExplodedGraphicsTile extends Tile {
     const rangeGfx = this.getRangeGraphic(args.context);
     if (undefined !== rangeGfx)
       args.graphics.add(rangeGfx);
-  }
-
-  public onActiveRequestCanceled(): void {
-    IModelApp.tileAdmin.cancelElementGraphicsRequest(this);
   }
 }

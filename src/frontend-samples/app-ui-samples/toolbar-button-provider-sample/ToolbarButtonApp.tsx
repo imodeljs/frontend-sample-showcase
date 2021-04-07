@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { UiItemsManager } from "@bentley/ui-abstract";
 import { ToolbarButtonProvider } from "./ToolbarButtonUi";
 import "common/samples-common.scss";
