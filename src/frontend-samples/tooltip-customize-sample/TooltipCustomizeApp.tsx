@@ -4,14 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { ProxyToolAdmin } from "api/showcasetooladmin";
 import { ElemProperty, TooltipCustomizeSettings } from "./TooltipCustomizeUI";
-import { HitDetail, imageElementFromUrl } from "@bentley/imodeljs-frontend";
+import { HitDetail, imageElementFromUrl, ToolAdmin } from "@bentley/imodeljs-frontend";
 
-// SampleToolAdmin would typically extend ToolAdmin
-//  See Notes on use of ProxyToolAdmin at the bottom of this file.
-//  Do this: "class YourToolAdmin extends ToolAdmin"
-export class SampleToolAdmin extends ProxyToolAdmin {
+/** To create the tooltip, a class needs to override ToolAdmin and getToolTip() */
+export class ShowcaseToolAdmin extends ToolAdmin {
   public settings: TooltipCustomizeSettings = {
     showImage: true,
     showCustomText: false,
@@ -21,7 +18,24 @@ export class SampleToolAdmin extends ProxyToolAdmin {
     elemProperty: ElemProperty.Origin,
   };
 
+  private static _singleton: ShowcaseToolAdmin;
+
+  public static initialize(): ShowcaseToolAdmin {
+    ShowcaseToolAdmin._singleton = new ShowcaseToolAdmin();
+    return ShowcaseToolAdmin._singleton;
+  }
+
+  public static get(): ShowcaseToolAdmin {
+    return ShowcaseToolAdmin._singleton;
+  }
+
+  private constructor() {
+    super();
+  }
+
   public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {
+    if (null === ShowcaseToolAdmin._singleton)
+      return "";
 
     if (!this.settings.showImage && !this.settings.showCustomText && !this.settings.showElementProperty && !this.settings.showDefaultToolTip)
       return "";

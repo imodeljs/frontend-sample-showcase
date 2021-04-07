@@ -10,7 +10,6 @@ import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface 
 import { MarkupApp } from "@bentley/imodeljs-markup";
 import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
-import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 import { NoSignInIAuthClient } from "./NoSignInIAuthClient";
 import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
@@ -30,7 +29,6 @@ export class SampleBaseApp {
     const opts: IModelAppOptions = Object.assign({
       tileAdmin: TileAdmin.create({ useProjectExtents: false }),
       notifications: new ShowcaseNotificationManager(),
-      toolAdmin: ShowcaseToolAdmin.initialize(),
     }, options);
 
     await IModelApp.startup(opts);

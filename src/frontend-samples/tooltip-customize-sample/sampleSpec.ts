@@ -15,6 +15,7 @@ export function getTooltipCustomizeSpec(): SampleSpec {
       { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp") },
       { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI"), entry: true },
     ],
+    iTwinViewerReady: true,
     type: "TooltipCustomizeUI.tsx",
   });
 }

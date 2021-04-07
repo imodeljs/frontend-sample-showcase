@@ -4,11 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import "common/samples-common.scss";
-import { Input, Select, Toggle } from "@bentley/ui-core";
-import { ShowcaseToolAdmin } from "api/showcasetooladmin";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
-import { SampleToolAdmin } from "./TooltipCustomizeApp";
-import { ControlPane } from "common/ControlPane/ControlPane";
+import { ShowcaseToolAdmin } from "./TooltipCustomizeApp";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { UiItemsProvider } from "@bentley/ui-abstract";
+import { TooltipCustomizeWidget } from "./TooltipCustomizeWidget";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 export enum ElemProperty {
   Origin = "Origin",
@@ -25,117 +27,86 @@ export interface TooltipCustomizeSettings {
   elemProperty: ElemProperty;
 }
 
+interface TooltipCustomizeState {
+  iModelName?: SampleIModels;
+  contextId?: string;
+  iModelId?: string;
+  viewportOptions?: IModelViewportControlOptions;
+  toolAdmin: ShowcaseToolAdmin;
+  settings: TooltipCustomizeSettings;
+}
+
 /** A React component that renders the UI specific for this sample */
-export default class TooltipCustomizeUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, TooltipCustomizeSettings> {
+export default class TooltipCustomizeUI extends React.Component<{}, TooltipCustomizeState> {
+  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
+  private _uiProviders: UiItemsProvider[];
 
   /** Creates a Sample instance */
-  constructor(props?: any) {
+  constructor(props: {}) {
 
     super(props);
-    // ToolAdmin is typically initialized at application start.
-    // See Notes at bottom of this file.
-
-    ShowcaseToolAdmin.get().setProxyToolAdmin(new SampleToolAdmin());
-    // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of TooltipCustomizeApp.tsx.
-    const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-    this.state = { ...toolAdmin.settings };
-  }
-
-  public componentDidUpdate(_prevProps: {}, prevState: TooltipCustomizeSettings) {
-    // Use "IModelApp.toolAdmin as YourToolAdmin" see Notes at bottom of TooltipCustomizeApp.tsx.
-    const toolAdmin = ShowcaseToolAdmin.get().getProxyToolAdmin() as SampleToolAdmin;
-    if (prevState !== this.state)
-      toolAdmin.settings = this.state;
-  }
-
-  public componentWillUnmount() {
-    ShowcaseToolAdmin.get().clearProxyToolAdmin();
-  }
-
-  private _onChangeShowImage = (checked: boolean) => {
-    this.setState({ showImage: checked });
-  };
-
-  private _onChangeShowCustomText = (checked: boolean) => {
-    this.setState({ showCustomText: checked });
-  };
-
-  private _onChangeShowElementProperty = (checked: boolean) => {
-    this.setState({ showElementProperty: checked });
-  };
-
-  private _onChangeShowDefaultToolTip = (checked: boolean) => {
-    this.setState({ showDefaultToolTip: checked });
-  };
-
-  private _onChangeCustomText = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value: string = event.target.value;
-    this.setState({ customText: value });
-  };
-
-  private _onChangeElementProperty = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value as ElemProperty;
-    this.setState({ elemProperty: value });
-  };
-
-  /** Components for rendering the sample's instructions and controls */
-  private getControls() {
-    const options = {
-      [ElemProperty.Origin]: "Origin",
-      [ElemProperty.LastModified]: "Last Modified",
-      [ElemProperty.CodeValue]: "Code value",
+    const toolAdmin = ShowcaseToolAdmin.initialize();
+    this.state = {
+      settings: {
+        ...toolAdmin.settings,
+      },
+      toolAdmin,
     };
-    return (
-      <>
-        <div className="sample-options-3col">
-          <Toggle isOn={this.state.showImage} onChange={this._onChangeShowImage} />
-          <span>Show Image</span>
-          <span></span>
-          <Toggle isOn={this.state.showCustomText} onChange={this._onChangeShowCustomText} />
-          <span>Show Custom Text</span>
-          <Input type="text" value={this.state.customText} onChange={this._onChangeCustomText} disabled={!this.state.showCustomText} />
-          <Toggle isOn={this.state.showElementProperty} onChange={this._onChangeShowElementProperty} />
-          <span>Show Element Property</span>
-          <Select onChange={this._onChangeElementProperty} value={this.state.elemProperty} disabled={!this.state.showElementProperty} options={options} />
-          <Toggle isOn={this.state.showDefaultToolTip} onChange={this._onChangeShowDefaultToolTip} />
-          <span>Show Default ToolTip</span>
-          <span></span>
-        </div>
-      </>
+
+    IModelSetup.setIModelList();
+    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
+      "Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.",
+      this._getTooltipCustomizeWidget(),
+      this.setState.bind(this),
     );
+    this._uiProviders = [this._sampleWidgetUiProvider];
   }
+
+  private _setSettings = (settings: TooltipCustomizeSettings) => {
+    this.setState({ settings });
+  };
+
+  private _getTooltipCustomizeWidget = () => {
+    return <TooltipCustomizeWidget
+      settings={this.state.settings}
+      setSettings={this._setSettings}
+    />;
+  };
+
+  public componentDidUpdate(_prevProps: {}, prevState: TooltipCustomizeState) {
+    const toolAdmin = this.state.toolAdmin;
+    if (prevState.settings !== this.state.settings)
+      toolAdmin.settings = this.state.settings;
+  }
+
+  private _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    this.setState({ viewportOptions: { viewState } });
+  };
 
   /** The sample's render method */
   public render() {
     return (
       <>
-        <ControlPane instructions="Hover the mouse pointer over an element to see the tooltip.  Use these options to control it." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <SandboxViewport iModelName={this.props.iModelName} />
+        { /* Viewport to display the iModel */}
+        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
+          <Viewer
+            productId="2686"
+            contextId={this.state.contextId}
+            iModelId={this.state.iModelId}
+            viewportOptions={this.state.viewportOptions}
+            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+
+            /** Pass the toolAdmin override directly into the viewer */
+            toolAdmin={this.state.toolAdmin}
+
+            defaultUiConfig={default3DSandboxUi}
+            theme="dark"
+            uiProviders={this._uiProviders}
+            onIModelConnected={this._oniModelReady}
+          />
+        }
       </>
     );
   }
 }
-
-/* Notes on use of ProxyToolAdmin:
-*   When the user hovers over an element the tooltip's content is generated by the app's ToolAdmin.
-*   ToolAdmins are registered at application start by setting the IModelAppOptions.toolAdmin property
-*   and passing to the method iModelApp.startup.
-*
-*   This code cannot use that standard method because it runs as part of a suite of samples.  Instead,
-*   the suite registers a ToolAdmin and allows this sample code to supply a proxy object to do the
-*   tooltip generation.
-*
-*   You do NOT need to create a proxy tool admin for your own app.  To do tooltip customization
-*   please follow the instructions in-line above which are summarized here:
-*
-*     1. Your app's tool admin should extend ToolAdmin and not ProxyToolAdmin.
-*           class YourToolAdmin extends ToolAdmin
-*     2. Your app should pass your tool admin to the startup call as follows:
-*           IModelApp.startup({toolAdmin: new YourToolAdmin});
-*     3. Your tool admin should override the method getToolTip as above.
-*           public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {
-*             // custom logic here
-*           }
-*     4. You can access your tool admin through the IModelApp global as follows:
-*           IModelApp.toolAdmin as YourToolAdmin
-*/
