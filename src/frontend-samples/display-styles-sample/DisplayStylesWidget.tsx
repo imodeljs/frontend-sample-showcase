@@ -9,6 +9,7 @@ import DisplayStylesApp from "./DisplayStylesApp";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { displayStyles } from "./Styles";
 import { Select, Toggle } from "@bentley/ui-core";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider } from "@bentley/ui-abstract";
 
 const CUSTOM_STYLE_INDEX = 0;
 const DEFAULT_STYLE_INDEX = 4;
@@ -78,3 +79,23 @@ export const DisplayStylesWidget: React.FunctionComponent = () => {
     </>
   );
 };
+
+export class DisplayStylesWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ViewerOnly2dWidgetProvider";
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Bottom) {
+      widgets.push(
+        {
+          id: "DisplayStylesWidget",
+          label: "Display Styles Selector",
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <DisplayStylesWidget />,
+        }
+      );
+    }
+    return widgets;
+  }
+
+}

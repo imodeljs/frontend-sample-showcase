@@ -5,7 +5,7 @@
 import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { DisplayStylesWidget } from "./DisplayStylesWidget";
+import { DisplayStylesWidgetProvider } from "./DisplayStylesWidget";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { UiItemsProvider } from "@bentley/ui-abstract";
 
@@ -25,11 +25,11 @@ export default class DisplayStylesUI extends React.Component<{}, ViewAttributesU
     IModelSetup.setIModelList();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the drop down below to change the display style. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.",
-      <DisplayStylesWidget />,
+      undefined,
       this.setState.bind(this),
       [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium]
     );
-    this._uiProviders = [this._sampleWidgetUiProvider];
+    this._uiProviders = [this._sampleWidgetUiProvider, new DisplayStylesWidgetProvider()];
   }
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
