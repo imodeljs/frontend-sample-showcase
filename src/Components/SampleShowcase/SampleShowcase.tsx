@@ -70,7 +70,7 @@ export const SampleShowcase: FunctionComponent = () => {
   };
 
   const getImodelSelector = useCallback(() => {
-    if (!activeSample.imodelList || !activeSample.imodelList.length)
+    if (!activeSample.imodelList || !activeSample.imodelList.length || 1 >= activeSample.imodelList.length)
       return undefined;
 
     return (
