@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { Component } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { RunCodeButton, TabNavigation as TabNav } from "@bentley/monaco-editor";
 import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient";
 import classNames from "classnames";
@@ -23,8 +23,8 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
     FeatureToggleClient.initialize()
       .then(() => {
         setExecutable(FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor));
-      })
-  }, [])
+      });
+  }, []);
 
   const _onRunCompleted = useCallback((blob: string) => {
     onRunCompleted(blob);
@@ -32,11 +32,13 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
 
   return (
     <TabNav showClose={false}>
-      <TabNavigationAction onClick={onShowReadme}>
-        <div className={classNames("icon icon-info readme-button", { "readme-button-active": this.props.showReadme })}></div>
-      </TabNavigationAction>
-      {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={() => { }} onBundleError={() => { }} onRunCompleted={_onRunCompleted} buildOnRender={false} />}
+      <div className="action-item " onClick={onShowReadme}>
+        <div className={classNames("icon icon-info readme-button", { "readme-button-active": showReadme })}></div>
+      </div>
+      <div className="action-item run-code-button">
+        {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={() => { }} onBundleError={() => { }} onRunCompleted={_onRunCompleted} buildOnRender={false} />}
+      </div>
     </TabNav>
   );
 
-}
+};
