@@ -2,7 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getGlobalDisplaySpec(): SampleSpec {
@@ -10,13 +11,15 @@ export function getGlobalDisplaySpec(): SampleSpec {
     name: "global-display-sample",
     label: "Global Data",
     image: "global-display-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "GlobalDisplayUI.tsx", import: import("!!raw-loader!./GlobalDisplayUI"), entry: true },
-      { name: "GlobalDisplayApp.tsx", import: import("!!raw-loader!./GlobalDisplayApp") },
+      { name: "GlobalDisplayApi.ts", import: import("!!raw-loader!./GlobalDisplayApi") },
+      { name: "GlobalDisplayApp.tsx", import: import("!!raw-loader!./GlobalDisplayApp"), entry: true },
+      { name: "GlobalDisplayWidget.tsx", import: import("!!raw-loader!./GlobalDisplayWidget") },
     ],
-    customModelList: [SampleIModels.MetroStation],
-    type: "GlobalDisplayUI.tsx",
+    iModelList: [SampleIModels.MetroStation],
+    type: "GlobalDisplayApp.tsx",
   });
 }
 
