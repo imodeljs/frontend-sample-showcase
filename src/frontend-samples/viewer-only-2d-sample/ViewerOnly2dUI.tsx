@@ -25,7 +25,7 @@ const ViewportOnly2dUI: FunctionComponent = () => {
   return (
     <>
       { /* Viewport to display the iModel */}
-      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+      {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
           contextId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
