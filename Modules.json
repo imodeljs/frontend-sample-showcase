@@ -239,33 +239,35 @@
     },
     {
       "name": "@itwinjs-sandbox/view/DefaultViewerProps",
-      "import": "./src/@itwinjs-sandbox/view/DefaultViewerProps",
-      "typedef": true
+      "import": "./src/@itwinjs-sandbox/view/DefaultViewerProps"
+    },
+    {
+      "name": "@itwinjs-sandbox/components/imodel-selector/IModelSelector",
+      "import": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector"
+    },
+    {
+      "name": "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
+      "import": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider"
+    },
+    {
+      "name": "@itwinjs-sandbox/hooks/useSampleIModelConnection",
+      "import": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection"
+    },
+    {
+      "name": "@itwinjs-sandbox/hooks/useSampleWidget",
+      "import": "./src/@itwinjs-sandbox/hooks/useSampleWidget"
     },
     {
       "name": "@itwinjs-sandbox/view/ViewSetup",
-      "import": "./src/@itwinjs-sandbox/view/ViewSetup",
-      "typedef": true
-    },
-    {
-      "name": "@itwinjs-sandbox/imodel/IModelSetup",
-      "import": "./src/@itwinjs-sandbox/imodel/IModelSetup",
-      "typedef": true
-    },
-    {
-      "name": "@itwinjs-sandbox/components/sample-widget-control/SampleWidgetUiProvider",
-      "import": "./src/@itwinjs-sandbox/components/sample-widget-control/SampleWidgetUiProvider",
-      "typedef": true
-    },
-    {
-      "name": "@itwinjs-sandbox/components/sample-widget-control/SampleWidgetContainer",
-      "import": "./src/@itwinjs-sandbox/components/sample-widget-control/SampleWidgetContainer",
-      "typedef": true
+      "import": "./src/@itwinjs-sandbox/view/ViewSetup"
     },
     {
       "name": "@itwinjs-sandbox/constants",
-      "import": "./src/@itwinjs-sandbox/constants",
-      "typedef": true
+      "import": "./src/@itwinjs-sandbox/constants"
+    },
+    {
+      "name": "@itwinjs-sandbox/SampleIModels",
+      "import": "./src/@itwinjs-sandbox/SampleIModels"
     },
     {
       "name": "@itwinjs-sandbox",

@@ -10,7 +10,7 @@ import { Select } from "@bentley/ui-core/lib/ui-core/select/Select";
 // The Props and State for this sample component
 interface IModelSelectorProps {
   iModelNames: SampleIModels[];
-  iModelName: SampleIModels;
+  iModelName?: SampleIModels;
   onIModelChange: (iModelName: SampleIModels) => void;
 }
 
@@ -29,7 +29,6 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
 
   return (
     <div>
-      <hr></hr>
       <span>Select iModel: </span>
       <Select
         className="imodel-list"
