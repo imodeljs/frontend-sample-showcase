@@ -2,9 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
-import { RunCodeButton, TabNavigation as TabNav, TabNavigationAction } from "@bentley/monaco-editor";
+import React, { Component } from "react";
+import { RunCodeButton, TabNavigation as TabNav } from "@bentley/monaco-editor";
 import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient";
+import classNames from "classnames";
+import "./TabNavigation.scss";
 
 export interface TabNavigationProps {
   showReadme: boolean;
@@ -31,7 +33,7 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
   return (
     <TabNav showClose={false}>
       <TabNavigationAction onClick={onShowReadme}>
-        <div className="icon icon-info" style={showReadme ? { display: "inline-block", color: "white" } : { display: "inline-block" }}></div>
+        <div className={classNames("icon icon-info readme-button", { "readme-button-active": this.props.showReadme })}></div>
       </TabNavigationAction>
       {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={() => { }} onBundleError={() => { }} onRunCompleted={_onRunCompleted} buildOnRender={false} />}
     </TabNav>

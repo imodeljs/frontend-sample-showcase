@@ -109,6 +109,15 @@
       "import": "@bentley/frontend-application-insights-client"
     },
     {
+      "name": "@bentley/hypermodeling-frontend",
+      "import": "@bentley/hypermodeling-frontend"
+    },
+    {
+      "name": "NoSignInIAuthClient",
+      "import": "./src/NoSignInIAuthClient",
+      "typedef": true
+    },
+    {
       "name": "api/viewSetup",
       "import": "./src/api/viewSetup",
       "typedef": true
