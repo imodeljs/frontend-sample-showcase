@@ -5,7 +5,7 @@
 import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
 import React from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { HeatmapDecoratorWidget } from "./HeatmapDecoratorWidget";
+import { HeatmapDecoratorWidget, HeatmapDecoratorWidgetProvider } from "./HeatmapDecoratorWidget";
 import { IModelApp, IModelConnection, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { UiItemsProvider } from "@bentley/ui-abstract";
@@ -18,11 +18,6 @@ interface HeatmapDecoratorUIState {
   contextId?: string;
   iModelId?: string;
   viewportOptions?: IModelViewportControlOptions;
-  showDecorator: boolean;
-  spreadFactor: number;
-  points: Point3d[];
-  range: Range2d;
-  height: number;
 }
 
 export default class HeatmapDecoratorUI extends React.Component<{}, HeatmapDecoratorUIState> {
@@ -31,80 +26,19 @@ export default class HeatmapDecoratorUI extends React.Component<{}, HeatmapDecor
 
   constructor(props: any) {
     super(props);
-    this.state = {
-      showDecorator: true,
-      spreadFactor: 10,
-      points: [],
-      range: Range2d.createNull(),
-      height: 0,
-    };
+    this.state = {};
     IModelSetup.setIModelList();
     this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
       "Use the options below to control the heatmap visualization.",
-      this._getHeatmapDecoratorWidget(),
+      undefined,
       this.setState.bind(this),
     );
-    this._uiProviders = [this._sampleWidgetUiProvider];
+    this._uiProviders = [this._sampleWidgetUiProvider, new HeatmapDecoratorWidgetProvider()];
   }
-
-  private _getHeatmapDecoratorWidget = () => {
-    return <HeatmapDecoratorWidget
-      showDecorator={this.state.showDecorator}
-      range={this.state.range}
-      spreadFactor={this.state.spreadFactor}
-      points={this.state.points}
-      setSpreadFactor={this._setSpreadFactor}
-      setPoints={this._setPoints}
-      onToggleShowDecorator={this._onToggleShowDecorator}
-    />;
-  };
-
-  public componentWillUnmount() {
-    HeatmapDecoratorApp.disableDecorations();
-    HeatmapDecoratorApp.decorator = undefined;
-  }
-
-  public componentDidUpdate(_prevProps: {}, prevState: HeatmapDecoratorUIState) {
-    if (prevState.range !== this.state.range
-      || prevState.height !== this.state.height) {
-      this._sampleWidgetUiProvider.updateControls({ range: this.state.range, height: this.state.height });
-    }
-  }
-
-  private _setSpreadFactor = (spreadFactor: number) => {
-    if (HeatmapDecoratorApp.decorator)
-      HeatmapDecoratorApp.decorator.setSpreadFactor(spreadFactor);
-  };
-
-  private _setPoints = (points: Point3d[]) => {
-    if (HeatmapDecoratorApp.decorator)
-      HeatmapDecoratorApp.decorator.setPoints(points);
-  };
-
-  private _onToggleShowDecorator = (showDecorator: boolean) => {
-    if (showDecorator)
-      HeatmapDecoratorApp.enableDecorations();
-    else
-      HeatmapDecoratorApp.disableDecorations();
-  };
 
   private _oniModelReady = (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
-
-      // Grab range of the contents of the view. We'll use this to size the heatmap.
-      const range3d = vp.view.computeFitRange();
-      const range = Range2d.createFrom(range3d);
-
-      // We'll draw the heatmap as an overlay in the center of the view's Z extents.
-      const height = range3d.high.interpolate(0.5, range3d.low).z;
-
-      HeatmapDecoratorApp.disableDecorations();
-      HeatmapDecoratorApp.setupDecorator(this.state.points, range, this.state.spreadFactor, height);
-      if (this.state.showDecorator) {
-        HeatmapDecoratorApp.enableDecorations();
-      }
-
-      this.setState({ range, height });
+      HeatmapDecoratorApp.initalizeApp(vp);
     });
 
     ViewSetup.getDefaultView(iModelConnection)
