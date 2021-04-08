@@ -5,26 +5,73 @@
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
 import { Select, Toggle } from "@bentley/ui-core";
-import { AttrValues, ViewFlag } from "./ViewAttributesApp";
+import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
 import { RenderMode } from "@bentley/imodeljs-common";
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider } from "@bentley/ui-abstract";
 
-export interface ViewAttributesProps {
-  attrValues: AttrValues;
-  onChangeAttribute: (attrValues: AttrValues) => void;
-  onChangeRenderMode: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  onChangeSkyboxToggle: (checked: boolean) => void;
-  onChangeCameraToggle: (checked: boolean) => void;
-  onChangeViewFlagToggle: (flag: ViewFlag, checked: boolean) => void;
-  onTransparencySliderChange: (min: number, max: number, num: number) => void;
-}
-
-export const ViewAttributesWidget: React.FunctionComponent<ViewAttributesProps> = (viewAttributesProps) => {
-  const [attrValuesState] = React.useState<AttrValues>(viewAttributesProps.attrValues);
+export const ViewAttributesWidget: React.FunctionComponent = () => {
+  const [attrValuesState] = React.useState<AttrValues>(ViewAttributesApp.settings);
 
   useEffect(() => {
-    viewAttributesProps.onChangeAttribute(attrValuesState);
+    _onChangeAttribute(attrValuesState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attrValuesState]);
+
+  const _onChangeAttribute = (attrValues: AttrValues) => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (vp) {
+      ViewAttributesApp.setAttrValues(vp, attrValues);
+    }
+  };
+
+  const _onChangeRenderMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (vp) {
+      let renderMode: RenderMode;
+      switch (event.target.value) {
+        case "HiddenLine": { renderMode = RenderMode.HiddenLine; break; }
+        case "SmoothShade": { renderMode = RenderMode.SmoothShade; break; }
+        case "SolidFill": { renderMode = RenderMode.SolidFill; break; }
+        default:
+        case "Wireframe": { renderMode = RenderMode.Wireframe; break; }
+      }
+      ViewAttributesApp.setRenderMode(vp, renderMode);
+    }
+  };
+
+  // Handle changes to the skybox toggle.
+  const _onChangeSkyboxToggle = (checked: boolean) => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (vp) {
+      ViewAttributesApp.setSkyboxOnOff(vp, checked);
+    }
+  };
+
+  // Handle changes to the camera toggle.
+  const _onChangeCameraToggle = (checked: boolean) => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (vp) {
+      ViewAttributesApp.setCameraOnOff(vp, checked);
+    }
+  };
+
+  // Handle changes to a view flag toggle.
+  const _onChangeViewFlagToggle = (flag: ViewFlag, checked: boolean) => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (vp) {
+      ViewAttributesApp.setViewFlag(vp, flag, checked);
+    }
+
+  };
+
+  // Handle changes to a view flag toggle.
+  const _onTransparencySliderChange = (min: number, max: number, num: number) => {
+    const vp = IModelApp.viewManager.selectedView;
+    if (vp) {
+      ViewAttributesApp.setBackgroundTransparency(vp, Math.abs((num / (max + 1)) - min));
+    }
+  };
 
   // This common function is used to create the react components for each row of the UI.
   const createJSXElementForAttribute = (label: string, info: string, element: JSX.Element) => {
@@ -53,19 +100,19 @@ export const ViewAttributesWidget: React.FunctionComponent<ViewAttributesProps> 
       case RenderMode.Wireframe: { renderMode = "Wireframe"; break; }
     }
 
-    const element = <Select style={{ width: "fit-content" }} value={renderMode} onChange={viewAttributesProps.onChangeRenderMode} options={options} />;
+    const element = <Select style={{ width: "fit-content" }} value={renderMode} onChange={_onChangeRenderMode} options={options} />;
     return createJSXElementForAttribute(label, info, element);
   };
 
   // Create the react components for the skybox toggle row.
   const createSkyboxToggle = (label: string, info: string) => {
-    const element = <Toggle isOn={attrValuesState.skybox} onChange={viewAttributesProps.onChangeSkyboxToggle} />;
+    const element = <Toggle isOn={attrValuesState.skybox} onChange={_onChangeSkyboxToggle} />;
     return createJSXElementForAttribute(label, info, element);
   };
 
   // Create the react components for the camera toggle row.
   const createCameraToggle = (label: string, info: string) => {
-    const element = <Toggle isOn={attrValuesState.cameraOn} onChange={viewAttributesProps.onChangeCameraToggle} />;
+    const element = <Toggle isOn={attrValuesState.cameraOn} onChange={_onChangeCameraToggle} />;
     return createJSXElementForAttribute(label, info, element);
   };
 
@@ -83,7 +130,7 @@ export const ViewAttributesWidget: React.FunctionComponent<ViewAttributesProps> 
       case ViewFlag.VisibleEdges: flagValue = attrValuesState.visibleEdges; break;
     }
 
-    const element = <Toggle isOn={flagValue} onChange={(checked: boolean) => viewAttributesProps.onChangeViewFlagToggle(flag, checked)} />;
+    const element = <Toggle isOn={flagValue} onChange={(checked: boolean) => _onChangeViewFlagToggle(flag, checked)} />;
     return createJSXElementForAttribute(label, info, element);
   };
 
@@ -95,7 +142,7 @@ export const ViewAttributesWidget: React.FunctionComponent<ViewAttributesProps> 
 
     const element = <input type={"range"} min={0} max={99} defaultValue={defVal}
       onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-        viewAttributesProps.onTransparencySliderChange(0, 99, Number(event.target.value))}
+        _onTransparencySliderChange(0, 99, Number(event.target.value))}
     />;
     return createJSXElementForAttribute(label, info, element);
   };
@@ -119,3 +166,22 @@ export const ViewAttributesWidget: React.FunctionComponent<ViewAttributesProps> 
     </>
   );
 };
+
+export class ViewAttributesWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ViewAttributesWidgetProvider";
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Bottom) {
+      widgets.push(
+        {
+          id: "ViewAttributesWidget",
+          label: "View Attributes Controls",
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <ViewAttributesWidget />,
+        }
+      );
+    }
+    return widgets;
+  }
+}

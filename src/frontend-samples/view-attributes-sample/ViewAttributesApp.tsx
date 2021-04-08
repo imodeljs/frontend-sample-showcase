@@ -30,6 +30,20 @@ export interface AttrValues {
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class ViewAttributesApp {
 
+  public static settings: AttrValues = {
+    renderMode: RenderMode.SmoothShade,
+    acs: false,
+    backgroundMap: true,
+    backgroundTransparency: 0.01,
+    cameraOn: true,
+    grid: false,
+    hiddenEdges: false,
+    monochrome: false,
+    shadows: false,
+    skybox: true,
+    visibleEdges: false,
+  };
+
   public static getAttrValues(vp: Viewport): AttrValues {
     return {
       renderMode: ViewAttributesApp.getRenderModel(vp),
