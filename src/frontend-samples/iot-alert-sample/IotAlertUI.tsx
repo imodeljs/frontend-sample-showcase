@@ -10,7 +10,7 @@ import { ControlPane } from "common/ControlPane/ControlPane";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 import "./IotAlert.scss";
-import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
+import { MessageManager } from "@bentley/ui-framework";
 import { Id64String } from "@bentley/bentleyjs-core";
 
 /** React state of the Sample component */
@@ -192,7 +192,6 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
   public render() {
     return (
       <>
-        <MessageRenderer />
         <ControlPane instructions="Use the picker to choose an element class and instance.  Then click the 'Create' button to trigger an alert." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>

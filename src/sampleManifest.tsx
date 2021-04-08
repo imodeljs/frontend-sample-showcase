@@ -67,6 +67,7 @@ import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simpl
 import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-sample/sampleSpec";
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
+import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
 import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
 
 export interface SampleSpecGroup {
@@ -75,31 +76,33 @@ export interface SampleSpecGroup {
 }
 
 export const sampleManifest: SampleSpecGroup[] = [{
+  // Please ensure that the samples stay organized alphabetically.
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
-    getHyperModelingSpec(),
+    getGlobalDisplaySpec(),
     getRealityDataSpec(),
     getViewAttributesSpec(),
   ],
 }, {
   groupName: "Viewer Features", samples: [
     getViewCameraSpec(),
-    getDisplayStylesSpec(),
     getClassifierSpec(),
+    getCrossProbingSpec(),
+    getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
-    getIotAlertSpec(),
     getHeatmapDecoratorSpec(),
+    getHyperModelingSpec(),
     getImageExportSpec(),
-    getCrossProbingSpec(),
+    getIotAlertSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getParticleFireSampleSpec(),
     getParticleSnowSampleSpec(),
     getPropertyFormattingSpec(),
-    getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
+    getSerializeViewSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
