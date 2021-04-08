@@ -2,41 +2,44 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
-import "common/samples-common.scss";
-import { ControlPane } from "common/ControlPane/ControlPane";
-import { Button, ButtonType } from "@bentley/ui-core";
-import ImageExportApp from "./ImageExportApp";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useState } from "react";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { ImageExportWidgetProvider } from "./ImageExportWidget";
 
-export default class ImageExportyUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
+const uiProviders = [new ImageExportWidgetProvider()];
 
-  constructor(props: any) {
-    super(props);
-    this.exportImageHandler = this.exportImageHandler.bind(this);
-  }
+const ImageExportUI: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.House, SampleIModels.MetroStation]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  private exportImageHandler() {
-    ImageExportApp.exportImage();
-  }
-
-  public getControls() {
-    return (
-      <div>
-        <Button buttonType={ButtonType.Hollow} onClick={ImageExportApp.exportImage.bind(ImageExportApp)}>Save as png</Button>
-      </div>
-    );
-  }
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
   /** The sample's render method */
-  public render() {
-    return (
-      <>
-        { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Export current viewport as image" controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        { /* Viewport to display the iModel */}
-        <SandboxViewport iModelName={this.props.iModelName} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
+      }
+    </>
+  );
+
+};
+
+export default ImageExportUI;
+

@@ -11,7 +11,7 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 
 export const ViewAttributesWidget: React.FunctionComponent = () => {
-  const [attrValuesState] = React.useState<AttrValues>(ViewAttributesApp.settings);
+  const [attrValuesState, setAttrValuesState] = React.useState<AttrValues>(ViewAttributesApp.settings);
 
   useEffect(() => {
     _onChangeAttribute(attrValuesState);
@@ -37,6 +37,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
         case "Wireframe": { renderMode = RenderMode.Wireframe; break; }
       }
       ViewAttributesApp.setRenderMode(vp, renderMode);
+      setAttrValuesState({ ...attrValuesState, renderMode });
     }
   };
 
