@@ -8,5 +8,5 @@ export { useSampleIModelConnection } from "./hooks/useSampleIModelConnection";
 export { useSampleWidget } from "./hooks/useSampleWidget";
 export { default3DSandboxUi, default2DSandboxUi, default3DAppUi } from "./view/DefaultViewerProps";
 export { ViewSetup } from "./view/ViewSetup";
-export * from "./SampleIModels";
-export * from "./constants";
+export { SampleIModels } from "./SampleIModels";
+export { defaultIModel, defaultIModelList } from "./constants";
