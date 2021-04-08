@@ -16,6 +16,7 @@ export function getToolbarButtonSample(): SampleSpec {
       { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi") },
       { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp"), entry: true },
     ],
+    iTwinViewerReady: true,
     iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "ToolbarButtonApp.tsx",
   });
