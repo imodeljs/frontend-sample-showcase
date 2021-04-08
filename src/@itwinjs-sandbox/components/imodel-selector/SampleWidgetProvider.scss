@@ -7,13 +7,9 @@
   color: #fff;
 }
 
-.control-pane-header {
+.sample-widget-header {
   display: flex;
   flex-direction: row;
-
-  .control-pane-minimize {
-    padding: 0;
-  }
 
   .sample-instructions {
     display: flex;
@@ -23,12 +19,6 @@
   .sample-instructions>span {
     flex-grow: 1;
     min-width: 100px;
-    width: 100px;
-  }
-
-  .control-pane-close-button {
-    float: right;
-    padding-top: 4px;
   }
 }
 

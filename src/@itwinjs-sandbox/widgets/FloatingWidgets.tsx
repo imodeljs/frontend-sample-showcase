@@ -13,13 +13,15 @@ const containerStyle: CSSProperties = {
   display: "block",
   position: "absolute",
   visibility: "hidden",
+  maxWidth: "400px",
   zIndex: -1,
 };
 
 const setStyleAttribute = (element: HTMLElement, attrs: { [key: string]: any }) => {
   if (attrs !== undefined) {
     Object.keys(attrs).forEach((key: string) => {
-      element.style.setProperty(key, attrs[key]);
+      const normalizedKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+      element.style.setProperty(normalizedKey, attrs[key]);
     });
   }
 };

@@ -51,18 +51,18 @@ export class SampleWidgetProvider implements UiItemsProvider {
     if (location === StagePanelLocation.Right) {
       widgets.push({
         id: SampleWidgetProvider.sampleIModelSelectorWidgetId,
-        label: "iModel Selector",
+        label: "Sample Information",
         defaultState: WidgetState.Floating,
         // eslint-disable-next-line react/display-name
         getWidgetContent: () => (
           <div className="sample-widget-ui">
-            <div className="control-pane-header">
+            <div className="sample-widget-header">
               <div className="sample-instructions">
                 <span>{this._instructions}</span>
               </div>
             </div>
-            {this._iModels.length && <hr></hr>}
-            {this._iModels.length && <SampleIModelSelectorWidget iModels={this._iModels} onSampleiModelInfoChange={this._onSampleiModelInfoChange} />}
+            {this._iModels.length > 1 && <hr></hr>}
+            {this._iModels.length > 1 && <SampleIModelSelectorWidget iModels={this._iModels} onSampleiModelInfoChange={this._onSampleiModelInfoChange} />}
           </div>
         ),
       });
