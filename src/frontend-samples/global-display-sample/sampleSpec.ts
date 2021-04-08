@@ -17,6 +17,7 @@ export function getGlobalDisplaySpec(): SampleSpec {
       { name: "GlobalDisplayApi.ts", import: import("!!raw-loader!./GlobalDisplayApi") },
       { name: "GlobalDisplayApp.tsx", import: import("!!raw-loader!./GlobalDisplayApp"), entry: true },
       { name: "GlobalDisplayWidget.tsx", import: import("!!raw-loader!./GlobalDisplayWidget") },
+      { name: "GlobalDisplay.scss", import: import("!!raw-loader!./GlobalDisplay.scss") },
     ],
     iModelList: [SampleIModels.MetroStation],
     type: "GlobalDisplayApp.tsx",
