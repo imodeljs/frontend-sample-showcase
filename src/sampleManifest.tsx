@@ -76,32 +76,33 @@ export interface SampleSpecGroup {
 }
 
 export const sampleManifest: SampleSpecGroup[] = [{
+  // Please ensure that the samples stay organized alphabetically.
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
-    getHyperModelingSpec(),
-    getRealityDataSpec(),
     getGlobalDisplaySpec(),
+    getRealityDataSpec(),
     getViewAttributesSpec(),
   ],
 }, {
   groupName: "Viewer Features", samples: [
     getViewCameraSpec(),
-    getDisplayStylesSpec(),
     getClassifierSpec(),
+    getCrossProbingSpec(),
+    getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
-    getIotAlertSpec(),
     getHeatmapDecoratorSpec(),
+    getHyperModelingSpec(),
     getImageExportSpec(),
-    getCrossProbingSpec(),
+    getIotAlertSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getParticleFireSampleSpec(),
     getParticleSnowSampleSpec(),
     getPropertyFormattingSpec(),
-    getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
+    getSerializeViewSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
