@@ -71,7 +71,7 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
 
   // Display drawing and sheet options in separate sections.
   return (
-    <div style={{ color: "white", padding: "8px" }}>
+    <div className="sample-options">
       <span>Select Drawing or Sheet:</span>
       <div className="select-up">
         <select className="uicore-inputs-select 2d-model-selector" onChange={_handleSelection} value={selected}>

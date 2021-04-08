@@ -149,7 +149,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
 
   // Display drawing and sheet options in separate sections.
   return (
-    <>
+    <div className="sample-options">
       <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
         {createRenderModePicker("Render Mode", "Controls the render mode.")}
         {createViewFlagToggle(ViewFlag.ACS, "ACS", "Turn on to see a visualization of the active coordinate system.")}
@@ -163,7 +163,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
         {createViewFlagToggle(ViewFlag.VisibleEdges, "Visible Edges", "Turn off to disable visible edges.  Only applies to smooth shade render mode.")}
         {createViewFlagToggle(ViewFlag.HiddenEdges, "Hidden Edges", "Turn on to see hidden edges.  Does not apply to wireframe.  For smooth shade render mode, does not apply when visible edges are off.")}
       </div>
-    </>
+    </div>
   );
 };
 
