@@ -2,44 +2,37 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React from "react";
-import { AuthorizationClient, default3DUiConfig, defaultIModelList, IModelSetup, SampleIModels, SampleWidgetUiProvider } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
-export default class ViewportOnlyUI extends React.Component<{}, { iModelName?: SampleIModels, contextId?: string, iModelId?: string }> {
+const ViewportOnlyUI: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the toolbar at the top-right to navigate the model.");
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  private _changeIModel = (iModelName?: SampleIModels) => {
-    IModelSetup.getIModelInfo(iModelName)
-      .then((info) => {
-        this.setState({ iModelName: info.imodelName, contextId: info.projectId, iModelId: info.imodelId });
-      });
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
   };
 
-  constructor(props: {}) {
-    super(props);
-    this.state = {};
-    this._changeIModel();
-  }
-
-  /** The sample's render method */
-  public render() {
-    return (
-      <>
-        { /* Viewport to display the iModel */}
-        {this.state.iModelName && this.state.contextId && this.state.iModelId && <Viewer
-          contextId={this.state.contextId}
-          iModelId={this.state.iModelId}
+  return (
+    <>
+      { /* Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          defaultUiConfig={default3DUiConfig}
+          viewportOptions={viewportOptions}
+          defaultUiConfig={default3DSandboxUi}
           theme="dark"
-          uiProviders={[new SampleWidgetUiProvider(
-            "Use the toolbar at the top-right to navigate the model.",
-            undefined,
-            { modelList: defaultIModelList, iModelName: this.state.iModelName, onIModelChange: this._changeIModel }
-          )]}
+          onIModelConnected={_oniModelReady}
         />
-        }
-      </>
-    );
-  }
-}
+      }
+    </>
+  );
+};
+
+export default ViewportOnlyUI;
