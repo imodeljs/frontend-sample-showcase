@@ -2,68 +2,56 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, SampleWidgetUiProvider, ViewSetup } from "@itwinjs-sandbox";
-import React from "react";
+import { AuthorizationClient, default3DSandboxUi, IModelSetup, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { ViewAttributesWidgetProvider } from "./ViewAttributesWidget";
-import { IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import ViewAttributesApp from "./ViewAttributesApp";
-import { UiItemsProvider } from "@bentley/ui-abstract";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
-interface ViewAttributesUIState {
-  iModelName?: SampleIModels;
-  contextId?: string;
-  iModelId?: string;
-  viewState?: ViewState;
-  iModelConnection?: IModelConnection;
-}
+const ViewAttributesUI: FunctionComponent = () => {
+  const [iModelContext, setiModelContext] = useState<{ iModelName: string, contextId: string, iModelId: string }>();
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-export default class ViewAttributesUI extends React.Component<{}, ViewAttributesUIState> {
-  private _sampleWidgetUiProvider: SampleWidgetUiProvider;
-  private _uiProviders: UiItemsProvider[];
+  useEffect(() => {
+    IModelSetup.setIModelList([SampleIModels.MetroStation]);
+    _changeIModel();
+  }, []);
 
-  constructor(props: any) {
-    super(props);
-    this.state = {};
-    this._sampleWidgetUiProvider = new SampleWidgetUiProvider(
-      "Use the controls below to change the view attributes.",
-      undefined,
-      this.setState.bind(this),
-    );
-    this._uiProviders = [this._sampleWidgetUiProvider, new ViewAttributesWidgetProvider()];
-  }
+  const _changeIModel = async (iModelName?: string) => {
+    const info = await IModelSetup.getIModelInfo(iModelName as SampleIModels);
+    setiModelContext({ iModelName: info.iModelName, contextId: info.contextId, iModelId: info.iModelId });
+  };
 
-  private _oniModelReady = (iModelConnection: IModelConnection) => {
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
       ViewAttributesApp.setAttrValues(_vp, ViewAttributesApp.settings);
     });
 
-    ViewSetup.getDefaultView(iModelConnection)
-      .then((viewState) => {
-        this.setState({ iModelConnection, viewState });
-      });
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
   };
 
   /** The sample's render method */
-  public render() {
+  return (
+    <>
+      { /** START Viewer */}
+      {iModelContext && <Viewer
+        contextId={iModelContext.contextId}
+        iModelId={iModelContext.iModelId}
+        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        viewportOptions={viewportOptions}
+        onIModelConnected={_oniModelReady}
+        defaultUiConfig={default3DSandboxUi}
+        theme="dark"
+        uiProviders={[new ViewAttributesWidgetProvider()]}
+      />
+      }
+      { /** End Viewer */}
+    </>
+  );
 
-    return (
-      <>
-        { /* Viewport to display the iModel */}
-        {this.state.iModelName && this.state.contextId && this.state.iModelId &&
-          <Viewer
-            contextId={this.state.contextId}
-            iModelId={this.state.iModelId}
-            viewportOptions={{ viewState: this.state.viewState }}
-            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-            defaultUiConfig={default3DSandboxUi}
-            theme="dark"
-            uiProviders={this._uiProviders}
-            onIModelConnected={this._oniModelReady}
-          />
-        }
-      </>
-    );
-  }
+};
 
-}
+export default ViewAttributesUI;
