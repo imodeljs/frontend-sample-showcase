@@ -13,10 +13,11 @@ export function getViewAttributesSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp") },
-      { name: "ViewAttributesUI.tsx", import: import("!!raw-loader!./ViewAttributesUI"), entry: true },
+      { name: "ViewAttributesApi.tsx", import: import("!!raw-loader!./ViewAttributesApi") },
+      { name: "ViewAttributesApp.tsx", import: import("!!raw-loader!./ViewAttributesApp"), entry: true },
       { name: "ViewAttributesWidget.tsx", import: import("!!raw-loader!./ViewAttributesWidget") },
+      { name: "ViewAttributes.scss", import: import("!!raw-loader!./ViewAttributes.scss") },
     ],
-    type: "ViewAttributesUI.tsx",
+    type: "ViewAttributesApp.tsx",
   });
 }

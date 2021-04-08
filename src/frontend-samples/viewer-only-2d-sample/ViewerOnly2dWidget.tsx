@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { ModelProps } from "@bentley/imodeljs-common";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import ViewerOnly2dApp from "./ViewerOnly2dApp";
+import { ViewerOnly2dApi } from "./ViewerOnly2dApi";
+import "./ViewerOnly2d.scss";
 
 interface TwoDState {
   drawingElements: JSX.Element[];
@@ -25,15 +26,15 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (iModelConnection) {
-      ViewerOnly2dApp.get2DModels(iModelConnection)
+      ViewerOnly2dApi.get2DModels(iModelConnection)
         .then(async ({ sheets, drawings }) => {
           const drawingElements = getDrawingModelList(drawings);
           const sheetElements = getSheetModelList(sheets);
           setTwoDState({ sheets, drawings, sheetElements, drawingElements });
-          return ViewerOnly2dApp.getInitial2DModel(iModelConnection, drawings, sheets);
+          return ViewerOnly2dApi.getInitial2DModel(iModelConnection, drawings, sheets);
         })
         .then((initial) => {
-          ViewerOnly2dApp.changeViewportView(iModelConnection, initial);
+          ViewerOnly2dApi.changeViewportView(iModelConnection, initial);
         });
     }
   }, [iModelConnection]);
@@ -43,7 +44,7 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
       const index = Number.parseInt(selected, 10);
       const modelList = selected.includes("sheet") ? twoDState.sheets : twoDState.drawings;
       if (iModelConnection) {
-        ViewerOnly2dApp.changeViewportView(iModelConnection, modelList[index]);
+        ViewerOnly2dApi.changeViewportView(iModelConnection, modelList[index]);
       }
     }
   }, [iModelConnection, selected, twoDState.drawings, twoDState.sheets]);
@@ -74,7 +75,7 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
     <div className="sample-options">
       <span>Select Drawing or Sheet:</span>
       <div className="select-up">
-        <select className="uicore-inputs-select 2d-model-selector" onChange={_handleSelection} value={selected}>
+        <select className="uicore-inputs-select" onChange={_handleSelection} value={selected}>
           {twoDState.drawingElements.length > 0 && (
             <optgroup label="Drawings">{twoDState.drawingElements}</optgroup>
           )}
@@ -92,7 +93,7 @@ export class ViewerOnly2dWidgetProvider implements UiItemsProvider {
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (location === StagePanelLocation.Bottom) {
+    if (location === StagePanelLocation.Right) {
       widgets.push(
         {
           id: "ViewerOnly2dWidget",

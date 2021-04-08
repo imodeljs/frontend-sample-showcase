@@ -2,55 +2,43 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { ViewerOnly2dApi } from "./ViewerOnly2dApi";
+import { ViewerOnly2dWidgetProvider } from "./ViewerOnly2dWidget";
 
-import "common/samples-common.scss";
-import { IModelApp, IModelConnection, ViewCreator2d } from "@bentley/imodeljs-frontend";
-import { ModelProps } from "@bentley/imodeljs-common";
-import { ViewSetup } from "api/viewSetup";
+const uiProviders = [new ViewerOnly2dWidgetProvider()];
 
-export interface ModelLists {
-  drawings: ModelProps[];
-  sheets: ModelProps[];
-}
-export default class ViewerOnly2dApp {
+const ViewportOnly2dApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("The 2D View Selector Widget shows a list of 2D models in this iModel.", [SampleIModels.House, SampleIModels.MetroStation]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  public static async getInitial2DModel(imodel: IModelConnection, drawings?: ModelProps[], sheets?: ModelProps[]) {
-    if (!drawings || !sheets) {
-      const result = await ViewerOnly2dApp.get2DModels(imodel);
-      drawings = result.drawings;
-      sheets = result.sheets;
-    }
-    const selected = drawings[0] ? drawings[0] : sheets[0];
-    return selected;
-  }
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const result = await ViewerOnly2dApi.getInitial2DModel(iModelConnection);
+    const viewState = await ViewerOnly2dApi.createDefaultViewFor2dModel(iModelConnection, result);
+    setViewportOptions({ viewState });
+  };
 
-  public static async get2DModels(imodel: IModelConnection): Promise<ModelLists> {
-    const models = await imodel.models.queryProps({ from: "BisCore.GeometricModel2d" });
-    const drawingViews: ModelProps[] = [];
-    const sheetViews: ModelProps[] = [];
-    models.forEach((model: ModelProps) => {
-      if (ViewCreator2d.isSheetModelClass(model.classFullName))
-        sheetViews.push(model);
-      else if (ViewCreator2d.isDrawingModelClass(model.classFullName))
-        drawingViews.push(model);
-    });
-    return { drawings: drawingViews, sheets: sheetViews };
-  }
+  return (
+    <>
+      { /* Viewport to display the iModel */}
+      {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          defaultUiConfig={default2DSandboxUi}
+          onIModelConnected={_oniModelReady}
+          uiProviders={uiProviders}
+          theme="dark"
+        />
+      }
+    </>
+  );
+};
 
-  /** When a model is selected in above list, get its view and switch to it.  */
-  public static async changeViewportView(imodel: IModelConnection, newModel: ModelProps) {
-    const vp = IModelApp.viewManager.selectedView!;
-    const targetView = await ViewerOnly2dApp.createDefaultViewFor2dModel(imodel, newModel);
-    if (vp && targetView)
-      vp.changeView(targetView);
-    else
-      alert("Invalid View Detected!");
-  }
-
-  public static async createDefaultViewFor2dModel(imodel: IModelConnection, newModel: ModelProps) {
-    const viewCreator = new ViewCreator2d(imodel);
-    const vpAspect = ViewSetup.getAspectRatio();
-    return viewCreator.createViewForModel(newModel.id!, newModel.classFullName, { vpAspect });
-  }
-
-}
+export default ViewportOnly2dApp;

@@ -6,7 +6,7 @@ import "common/samples-common.scss";
 import React from "react";
 import { Button, ButtonType } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import ImageExportApp from "./ImageExportApp";
+import { ImageExportApi } from "./ImageExportApi";
 import "./ImageExport.scss";
 
 export const ImageExportWidget: React.FunctionComponent = () => {
@@ -14,8 +14,8 @@ export const ImageExportWidget: React.FunctionComponent = () => {
   // Display drawing and sheet options in separate sections.
   return (
     <>
-      <div className="image-export-content">
-        <Button buttonType={ButtonType.Hollow} onClick={ImageExportApp.exportImage.bind(ImageExportApp)}>Save as png</Button>
+      <div className="sample-options">
+        <Button buttonType={ButtonType.Hollow} onClick={ImageExportApi.exportImage.bind(ImageExportApi)}>Save as png</Button>
       </div>
     </>
   );
@@ -26,7 +26,7 @@ export class ImageExportWidgetProvider implements UiItemsProvider {
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (location === StagePanelLocation.Bottom) {
+    if (location === StagePanelLocation.Right) {
       widgets.push(
         {
           id: "ImageExportWidget",

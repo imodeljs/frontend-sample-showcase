@@ -5,13 +5,14 @@
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
 import { Select, Toggle } from "@bentley/ui-core";
-import ViewAttributesApp, { AttrValues, ViewFlag } from "./ViewAttributesApp";
+import { AttrValues, ViewAttributesApi, ViewFlag } from "./ViewAttributesApi";
 import { RenderMode } from "@bentley/imodeljs-common";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import "./ViewAttributes.scss";
 
 export const ViewAttributesWidget: React.FunctionComponent = () => {
-  const [attrValuesState, setAttrValuesState] = React.useState<AttrValues>(ViewAttributesApp.settings);
+  const [attrValuesState, setAttrValuesState] = React.useState<AttrValues>(ViewAttributesApi.settings);
 
   useEffect(() => {
     _onChangeAttribute(attrValuesState);
@@ -21,7 +22,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
   const _onChangeAttribute = (attrValues: AttrValues) => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp) {
-      ViewAttributesApp.setAttrValues(vp, attrValues);
+      ViewAttributesApi.setAttrValues(vp, attrValues);
     }
   };
 
@@ -36,7 +37,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
         default:
         case "Wireframe": { renderMode = RenderMode.Wireframe; break; }
       }
-      ViewAttributesApp.setRenderMode(vp, renderMode);
+      ViewAttributesApi.setRenderMode(vp, renderMode);
       setAttrValuesState({ ...attrValuesState, renderMode });
     }
   };
@@ -45,7 +46,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
   const _onChangeSkyboxToggle = (checked: boolean) => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp) {
-      ViewAttributesApp.setSkyboxOnOff(vp, checked);
+      ViewAttributesApi.setSkyboxOnOff(vp, checked);
     }
   };
 
@@ -53,7 +54,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
   const _onChangeCameraToggle = (checked: boolean) => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp) {
-      ViewAttributesApp.setCameraOnOff(vp, checked);
+      ViewAttributesApi.setCameraOnOff(vp, checked);
     }
   };
 
@@ -61,7 +62,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
   const _onChangeViewFlagToggle = (flag: ViewFlag, checked: boolean) => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp) {
-      ViewAttributesApp.setViewFlag(vp, flag, checked);
+      ViewAttributesApi.setViewFlag(vp, flag, checked);
     }
 
   };
@@ -70,7 +71,7 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
   const _onTransparencySliderChange = (min: number, max: number, num: number) => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp) {
-      ViewAttributesApp.setBackgroundTransparency(vp, Math.abs((num / (max + 1)) - min));
+      ViewAttributesApi.setBackgroundTransparency(vp, Math.abs((num / (max + 1)) - min));
     }
   };
 
@@ -173,7 +174,7 @@ export class ViewAttributesWidgetProvider implements UiItemsProvider {
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (location === StagePanelLocation.Bottom) {
+    if (location === StagePanelLocation.Right) {
       widgets.push(
         {
           id: "ViewAttributesWidget",

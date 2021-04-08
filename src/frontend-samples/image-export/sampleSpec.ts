@@ -12,10 +12,12 @@ export function getImageExportSpec(): SampleSpec {
     image: "image-export-thumbnail.png",
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "ImageExportApp.tsx", import: import("!!raw-loader!./ImageExportApp") },
-      { name: "ImageExportUI.tsx", import: import("!!raw-loader!./ImageExportUI"), entry: true },
+      { name: "ImageExportApi.tsx", import: import("!!raw-loader!./ImageExportApi") },
+      { name: "ImageExportApp.tsx", import: import("!!raw-loader!./ImageExportApp"), entry: true },
+      { name: "ImageExportWidget.tsx", import: import("!!raw-loader!./ImageExportWidget") },
+      { name: "ImageExport.scss", import: import("!!raw-loader!./ImageExport.scss") },
     ],
     iTwinViewerReady: true,
-    type: "ImageExportUI.tsx",
+    type: "ImageExportApp.tsx",
   });
 }

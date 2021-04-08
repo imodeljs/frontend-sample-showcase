@@ -13,7 +13,7 @@ export function getToolbarButtonSample(): SampleSpec {
     image: "toolbar-button-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ToolbarButtonUi.tsx", import: import("!!raw-loader!./ToolbarButtonUi") },
+      { name: "ToolbarButtonProvider.tsx", import: import("!!raw-loader!./ToolbarButtonProvider") },
       { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp"), entry: true },
     ],
     iTwinViewerReady: true,
