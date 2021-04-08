@@ -28,7 +28,7 @@ export class FloatingWidgetsManager {
 
   public static onFrontstageReadyListener = async (ev: FrontstageReadyEventArgs) => {
     const uiSettings = UiFramework.getUiSettings();
-    const widgets = ev.frontstageDef.bottomPanel?.widgetDefs.filter((widget) => widget.state === WidgetState.Floating).reverse() || [];
+    const widgets = ev.frontstageDef.rightPanel?.widgetDefs.filter((widget) => widget.state === WidgetState.Floating).reverse() || [];
 
     await uiSettings.deleteSetting("uifw-frontstageSettings", `frontstageState[${ev.frontstageDef.id}]`);
     ev.frontstageDef.restoreLayout();
