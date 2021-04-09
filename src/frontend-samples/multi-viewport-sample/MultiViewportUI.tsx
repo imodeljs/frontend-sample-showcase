@@ -31,7 +31,7 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
   // Adds listeners after the iModel is loaded.
   // Note: The MultiViewportApp handles removing theses listeners when they are irrelevant and insuring no duplicates listeners.
   public componentDidMount() {
-    MultiViewportApp.dropListener.length = 0;
+    MultiViewportApp.listenerCallbacks.length = 0;
     MultiViewportApp.listenForSelectedViewportChange(this._setViewportStyling);
     MultiViewportApp.listenForSelectedViewportChange(this._getSelectedViewport);
     MultiViewportApp.listenForViewOpened(this._viewsOpened);

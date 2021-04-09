@@ -9,7 +9,7 @@ import "common/samples-common.scss";
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApp {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();
-  public static dropListener: Array<() => void> = [];
+  public static listenerCallbacks: Array<() => void> = [];
 
   /** Connects the views of the two provided viewports, overriding the second parameter's view with the first's view. */
   public static connectViewports(vp1: Viewport, vp2: Viewport) {
@@ -22,15 +22,15 @@ export default class MultiViewportApp {
 
   /** Drops all active listeners. */
   public static dispose() {
-    MultiViewportApp.dropListener.forEach((removeListener) => removeListener());
-    MultiViewportApp.dropListener.length = 0;
+    MultiViewportApp.listenerCallbacks.forEach((removeListener) => removeListener());
+    MultiViewportApp.listenerCallbacks.length = 0;
   }
 
   /** Adds a listener to IModelApp for when the selected Viewport changes.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForSelectedViewportChange(onChange: (args: SelectedViewportChangedArgs) => void) {
     if (false === IModelApp.viewManager.onSelectedViewportChanged.has(onChange)) {
       const removeListener = IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
-      MultiViewportApp.dropListener.push(removeListener);
+      MultiViewportApp.listenerCallbacks.push(removeListener);
     }
   }
 
@@ -38,7 +38,7 @@ export default class MultiViewportApp {
   public static listenForViewOpened(onOpen: (args: ScreenViewport) => void) {
     if (false === IModelApp.viewManager.onViewOpen.has(onOpen)) {
       const removeListener = IModelApp.viewManager.onViewOpen.addListener(onOpen);
-      MultiViewportApp.dropListener.push(removeListener);
+      MultiViewportApp.listenerCallbacks.push(removeListener);
     }
   }
 
@@ -46,7 +46,7 @@ export default class MultiViewportApp {
   public static listenForViewClosed(onOpen: (args: ScreenViewport) => void) {
     if (false === IModelApp.viewManager.onViewOpen.has(onOpen)) {
       const removeListener = IModelApp.viewManager.onViewClose.addListener(onOpen);
-      MultiViewportApp.dropListener.push(removeListener);
+      MultiViewportApp.listenerCallbacks.push(removeListener);
     }
   }
 }
