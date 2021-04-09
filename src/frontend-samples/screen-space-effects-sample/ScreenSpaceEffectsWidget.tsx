@@ -50,13 +50,6 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
 
     viewport.turnCameraOn(Angle.createDegrees(lensAngleState));
 
-    // ###TODO turnCameraOn is supposed to do this, but currently doesn't. Remove once that is fixed.
-    viewport.invalidateRenderPlan();
-
-    viewport.requestRedraw();
-
-    // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
-    IModelApp.requestNextAnimation();
   }, [viewport, lensAngleState]);
 
   // Handle distortion, saturation and vignette
@@ -76,10 +69,6 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
     if (vignetteState)
       viewport.addScreenSpaceEffect("Vignette");
 
-    viewport.requestRedraw();
-
-    // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
-    IModelApp.requestNextAnimation();
   }, [viewport, lensDistortionState, saturationState, vignetteState]);
 
   // Handle EffectsConfigState change
@@ -90,9 +79,6 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
     updateEffectsConfig(effectsConfigState);
 
     viewport.requestRedraw();
-
-    // ###TODO requestRedraw is supposed to do this, but currently doesn't. Remove once that is fixed.
-    IModelApp.requestNextAnimation();
 
   }, [viewport, effectsConfigState]);
 
