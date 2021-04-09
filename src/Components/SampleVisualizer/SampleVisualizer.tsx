@@ -60,10 +60,9 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
 
   useEffect(() => {
     if (!shuttingDown) {
-      let unsub: () => void;
+      FrontstageManager.onFrontstageReadyEvent.addOnce(FloatingWidgetsManager.onFrontstageReadyListener);
       AuthorizationClient.initializeOidc()
         .then(() => {
-          unsub = FrontstageManager.onFrontstageReadyEvent.addListener(FloatingWidgetsManager.onFrontstageReadyListener);
           if (!iTwinViewerReady) {
             iModelAppStartup()
               .finally(() => setAppReady(true));
@@ -72,7 +71,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
           }
         });
       return () => {
-        unsub && unsub();
         setShuttingDown(true);
         setAppReady(false);
         iModelAppShutdown()
