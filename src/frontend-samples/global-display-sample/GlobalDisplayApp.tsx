@@ -6,7 +6,7 @@ import React, { FunctionComponent, useState } from "react";
 import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
 
@@ -31,6 +31,7 @@ const GlobalDisplayApp: FunctionComponent = () => {
 
   return (
     <>
+      <MessageRenderer />
       { /* Viewport to display the iModel */}
       {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer

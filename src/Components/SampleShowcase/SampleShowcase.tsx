@@ -7,7 +7,6 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from "reac
 import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
-import { MessageRenderer } from "@bentley/ui-framework";
 import { ActiveSample } from "./ActiveSample";
 import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
 import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
@@ -104,7 +103,6 @@ export const SampleShowcase: FunctionComponent = () => {
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
             <React.Suspense fallback={spinner}>
               <ErrorBoundary key={transpileResult}>
-                <MessageRenderer />
                 <Visualizer
                   iModelName={activeSample.imodel}
                   iModelSelector={getImodelSelector()}
