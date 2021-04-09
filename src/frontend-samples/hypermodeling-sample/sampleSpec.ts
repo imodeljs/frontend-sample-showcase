@@ -10,12 +10,15 @@ export function getHyperModelingSpec(): SampleSpec {
     name: "hypermodeling-sample",
     label: "Hyper-modeling",
     image: "hypermodeling-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "HyperModelingUI.tsx", import: import("!!raw-loader!./HyperModelingUI"), entry: true },
-      { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp") },
+      { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp"), entry: true },
+      { name: "HyperModelingApi.tsx", import: import("!!raw-loader!./HyperModelingApi") },
+      { name: "HyperModelingWidget.tsx", import: import("!!raw-loader!./HyperModelingWidget") },
+      { name: "HyperModeling.scss", import: import("!!raw-loader!./HyperModeling.scss") },
     ],
     iModelList: [SampleIModels.House],
-    type: "HyperModelingUI.tsx",
+    type: "HyperModelingApp.tsx",
   });
 }
