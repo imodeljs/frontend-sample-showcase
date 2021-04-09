@@ -46,6 +46,6 @@ const GlobalDisplayApp: FunctionComponent = () => {
       }
     </>
   );
-}
+};
 
 export default GlobalDisplayApp;
