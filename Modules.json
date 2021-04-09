@@ -239,35 +239,43 @@
     },
     {
       "name": "@itwinjs-sandbox/view/DefaultViewerProps",
-      "import": "./src/@itwinjs-sandbox/view/DefaultViewerProps"
+      "import": "./src/@itwinjs-sandbox/view/DefaultViewerProps",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox/components/imodel-selector/IModelSelector",
-      "import": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector"
+      "import": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
-      "import": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider"
+      "import": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox/hooks/useSampleIModelConnection",
-      "import": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection"
+      "import": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox/hooks/useSampleWidget",
-      "import": "./src/@itwinjs-sandbox/hooks/useSampleWidget"
+      "import": "./src/@itwinjs-sandbox/hooks/useSampleWidget",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox/view/ViewSetup",
-      "import": "./src/@itwinjs-sandbox/view/ViewSetup"
+      "import": "./src/@itwinjs-sandbox/view/ViewSetup",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox/constants",
-      "import": "./src/@itwinjs-sandbox/constants"
+      "import": "./src/@itwinjs-sandbox/constants",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox/SampleIModels",
-      "import": "./src/@itwinjs-sandbox/SampleIModels"
+      "import": "./src/@itwinjs-sandbox/SampleIModels",
+      "typedef": true
     },
     {
       "name": "@itwinjs-sandbox",
