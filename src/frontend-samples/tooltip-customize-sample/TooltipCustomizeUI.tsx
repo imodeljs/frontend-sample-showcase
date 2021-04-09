@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { Input, Select, Toggle } from "@bentley/ui-core";
 import { ShowcaseToolAdmin } from "api/showcasetooladmin";
@@ -55,29 +54,29 @@ export default class TooltipCustomizeUI extends React.Component<{ iModelName: st
 
   private _onChangeShowImage = (checked: boolean) => {
     this.setState({ showImage: checked });
-  }
+  };
 
   private _onChangeShowCustomText = (checked: boolean) => {
     this.setState({ showCustomText: checked });
-  }
+  };
 
   private _onChangeShowElementProperty = (checked: boolean) => {
     this.setState({ showElementProperty: checked });
-  }
+  };
 
   private _onChangeShowDefaultToolTip = (checked: boolean) => {
     this.setState({ showDefaultToolTip: checked });
-  }
+  };
 
   private _onChangeCustomText = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = event.target.value;
     this.setState({ customText: value });
-  }
+  };
 
   private _onChangeElementProperty = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as ElemProperty;
     this.setState({ elemProperty: value });
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {

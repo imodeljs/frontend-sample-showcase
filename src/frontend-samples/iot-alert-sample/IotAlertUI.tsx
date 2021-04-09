@@ -10,7 +10,7 @@ import { ControlPane } from "common/ControlPane/ControlPane";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 
 import "./IotAlert.scss";
-import { MessageManager, MessageRenderer } from "@bentley/ui-framework";
+import { MessageManager } from "@bentley/ui-framework";
 import { Id64String } from "@bentley/bentleyjs-core";
 
 /** React state of the Sample component */
@@ -63,14 +63,14 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
       elementNames.push(element.userLabel);
     }
     return elementNames;
-  }
+  };
 
   private _clearAll = () => {
     MessageManager.clearMessages();
     this.setState({ blinkingElements: [], wantEmphasis: false });
     const ids = this.createBlinkingElementIdSet([], this.state.elementNameIdMap);
     BlinkingEffect.stopBlinking(ids);
-  }
+  };
 
   private _onCreateAlert = () => {
     const tempSet = this.state.blinkingElements;
@@ -79,7 +79,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     IotAlertApp.showAlertNotification(this.state.selectedElement, this.state.elementNameIdMap);
     const ids = this.createBlinkingElementIdSet(this.state.blinkingElements, this.state.elementNameIdMap);
     BlinkingEffect.doBlink(ids);
-  }
+  };
 
   private async fetchElements(imodel: IModelConnection, className: string) {
     const query = `SELECT EcInstanceId, userLabel FROM ${className}`;
@@ -102,7 +102,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     const elementNames = this._getElementsFromClass(this._classList[0], classElementsMap);
     const nameIdMap = this._populateNameIdMap(classElementsMap);
     this.setState({ selectedElement: elementNames[0], elements: elementNames, elementNameIdMap: nameIdMap, elementsMap: classElementsMap, isImodelReady: true });
-  }
+  };
 
   private _populateNameIdMap(elementsMap: Map<string, []>) {
     const nameIdMap = new Map();
@@ -123,12 +123,12 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
     const elementNames = this._getElementsFromClass(className, this.state.elementsMap);
     this.setState({ elements: elementNames });
     this.setState({ selectedElement: elementNames[0] });
-  }
+  };
 
   private _onElementChange = (e: any) => {
     const pickedElement = e.target.value;
     this.setState({ selectedElement: pickedElement });
-  }
+  };
 
   private _removeTag = (i: any) => {
     const newTags = this.state.blinkingElements;
@@ -140,7 +140,7 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
       this.setState({ wantEmphasis: false });
       MessageManager.clearMessages();
     }
-  }
+  };
 
   /** Components for rendering the sample's instructions and controls */
   private getControls() {
@@ -192,7 +192,6 @@ export default class IotAlertUI extends React.Component<{ iModelName: string, iM
   public render() {
     return (
       <>
-        <MessageRenderer />
         <ControlPane instructions="Use the picker to choose an element class and instance.  Then click the 'Create' button to trigger an alert." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
         <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this._onIModelReady} />
       </>

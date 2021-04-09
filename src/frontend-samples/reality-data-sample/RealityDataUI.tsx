@@ -68,7 +68,7 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
   // Handle changes to the toggle.
   private _onChangeToggle = async (checked: boolean) => {
     this.setState({ showRealityData: checked });
-  }
+  };
 
   /**
    * This callback will be executed by SandboxViewport once the iModel has been loaded.
@@ -81,7 +81,7 @@ export default class RealityDataUI extends React.Component<{ iModelName: string,
       this.setState({ imodel, showRealityData: true });
       await RealityDataApp.toggleRealityModel(true, _vp, imodel);
     });
-  }
+  };
 
   private getControls(): React.ReactNode {
     return (

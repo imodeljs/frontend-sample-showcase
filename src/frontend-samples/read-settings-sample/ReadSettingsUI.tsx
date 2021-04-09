@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import React, { ChangeEvent } from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
@@ -63,7 +63,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
         settingsInitialized: true,
       });
     });
-  }
+  };
 
   private parseSettingsValue(name: string, value: string) {
     let _value;
@@ -87,13 +87,13 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
         settingValue: this.parseSettingsValue(settingKey, response.setting),
       });
     });
-  }
+  };
 
   // Handler to get settings value into state, when you modify textarea element in the dialog
   private _handleSettingsValueChange = (event: any) => {
     const settingValue = event.target.value;
     this.setState({ settingValue });
-  }
+  };
 
   // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden.
   private _saveSettings = () => {
@@ -104,7 +104,7 @@ export default class ReadSettingsUI extends React.Component<ReadSettingsProps, R
         saveInProgress: false,
       });
     });
-  }
+  };
 
   // Helper method to show status get/write operations with external setting in the dialog
   private showStatus() {

@@ -1,5 +1,9 @@
-import { SampleSpec } from "Components/SampleShowcase/SampleShowcase";
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 
+import { SampleSpec } from "SampleSpec";
 import { getSerializeViewSpec } from "./frontend-samples/serialize-view-sample/sampleSpec";
 import { getViewportOnlySpec } from "./frontend-samples/viewport-only-sample/sampleSpec";
 import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sampleSpec";
@@ -25,6 +29,7 @@ import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sam
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
+import { getClashReviewSpec } from "./frontend-samples/clash-review-sample/sampleSpec";
 
 import { getButtonSpec } from "./frontend-samples/component-gallery/button-sample/sampleSpec";
 import { getBadgeSpec } from "./frontend-samples/component-gallery/badge-sample/sampleSpec";
@@ -62,6 +67,8 @@ import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simpl
 import { getParticleFireSampleSpec } from "frontend-samples/fire-decoration-sample/sampleSpec";
 import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
+import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
+import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
 
 import { getDragAndDropTreeSpec } from "./frontend-samples/tree-samples/drag-and-drop-tree/sampleSpec";
 
@@ -71,31 +78,33 @@ export interface SampleSpecGroup {
 }
 
 export const sampleManifest: SampleSpecGroup[] = [{
+  // Please ensure that the samples stay organized alphabetically.
   groupName: "Viewer", samples: [
     getViewportOnlySpec(),
     getViewerOnly2dSpec(),
-    getHyperModelingSpec(),
+    getGlobalDisplaySpec(),
     getRealityDataSpec(),
     getViewAttributesSpec(),
   ],
 }, {
   groupName: "Viewer Features", samples: [
     getViewCameraSpec(),
-    getDisplayStylesSpec(),
     getClassifierSpec(),
+    getCrossProbingSpec(),
+    getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
-    getIotAlertSpec(),
     getHeatmapDecoratorSpec(),
+    getHyperModelingSpec(),
     getImageExportSpec(),
-    getCrossProbingSpec(),
+    getIotAlertSpec(),
     getMarkerPinSpec(),
     getMultiViewportSpec(),
     getParticleFireSampleSpec(),
+    getParticleSnowSampleSpec(),
     getPropertyFormattingSpec(),
-    getReadSettingsSpec(),
-    getSerializeViewSpec(),
     getScreenSpaceEffectsSpec(),
+    getSerializeViewSpec(),
     getShadowStudySpec(),
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
@@ -146,6 +155,11 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSimple3dSpec(),
     getAdvanced3dSpec(),
     getSimpleAnimatedSpec(),
+  ],
+}, {
+  groupName: "iTwin Platform APIs", samples: [
+    getClashReviewSpec(),
+    getReadSettingsSpec(),
   ],
 
 },

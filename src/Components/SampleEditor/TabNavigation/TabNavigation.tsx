@@ -3,8 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { Component } from "react";
-import { RunCodeButton, TabNavigation as TabNav, TabNavigationAction } from "@bentley/monaco-editor";
-import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient"
+import { RunCodeButton, TabNavigation as TabNav } from "@bentley/monaco-editor";
+import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient";
+import classNames from "classnames";
+import "./TabNavigation.scss";
 
 export interface TabNavigationProps {
   showReadme: boolean;
@@ -21,7 +23,7 @@ export class TabNavigation extends Component<TabNavigationProps, TabNavigationSt
 
   constructor(props: TabNavigationProps) {
     super(props);
-    this.state = {}
+    this.state = {};
   }
 
   public componentDidUpdate(_prevProps: TabNavigationProps, prevState: TabNavigationState) {
@@ -32,25 +34,27 @@ export class TabNavigation extends Component<TabNavigationProps, TabNavigationSt
 
   private _onRunStarted = () => {
     this.setState({ error: undefined, result: undefined });
-  }
+  };
 
   private _onBundleError = (error: Error) => {
     this.setState({ error, result: undefined });
-  }
+  };
 
   private _onRunCompleted = (blob: string) => {
     this.setState({ error: undefined, result: blob });
-  }
+  };
 
   public render() {
     const executable = FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor);
     return (
       <TabNav showClose={false}>
-        <TabNavigationAction onClick={this.props.onShowReadme}>
-          <div className="icon icon-info" style={this.props.showReadme ? { display: "inline-block", color: "white" } : { display: "inline-block" }}></div>
-        </TabNavigationAction>
-        {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={this._onRunStarted} onBundleError={this._onBundleError} onRunCompleted={this._onRunCompleted} buildOnRender={false} />}
+        <div className="action-item " onClick={this.props.onShowReadme}>
+          <div className={classNames("icon icon-info readme-button", { "readme-button-active": this.props.showReadme })}></div>
+        </div>
+        <div className="action-item run-code-button">
+          {executable && <RunCodeButton onRunStarted={this._onRunStarted} onBundleError={this._onBundleError} onRunCompleted={this._onRunCompleted} buildOnRender={false} />}
+        </div>
       </TabNav>
-    )
+    );
   }
 }

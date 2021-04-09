@@ -74,19 +74,19 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
       const selectedEmitter = await FireDecorationApp.createFireDecorator(point, params, viewport);
       this.setState({ selectedEmitter });
     });
-  }
+  };
 
   /** Deletes the selected fire decorator emitter. */
   private readonly dropSelected = () => {
     this.state.selectedEmitter?.dispose();
     this.setState({ selectedEmitter: undefined });
-  }
+  };
 
   /** Deletes all decorators. */
   private readonly dropAllEmitters = () => {
     this.setState({ selectedEmitter: undefined });
     FireDecorationApp.disposeAllEmitters();
-  }
+  };
 
   public getControls(): React.ReactNode {
     const noEmitterSelected = this.state.selectedEmitter === undefined;
@@ -166,12 +166,12 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
       });
     }
     this.setState({ isLoading: false });
-  }
+  };
 
   /** An overridden React method that is called when there's an update to the react component (e.g. this.setState). */
-  public componentDidUpdate(_prevProps: any, preState: ParticleSampleState) {
+  public componentDidUpdate(_prevProps: any, prevState: ParticleSampleState) {
     FireDecorationApp.highlightEmitter(this.state.selectedEmitter);
-    if (this.state.selectedEmitter !== preState.selectedEmitter) {
+    if (this.state.selectedEmitter !== prevState.selectedEmitter) {
       const currentParams: FireProps = this.state.selectedEmitter?.params ?? this._defaultProps;
       this.setState({ ...currentParams });
     } else {
@@ -184,7 +184,7 @@ export default class FireDecorationUI extends React.Component<ParticleSampleProp
     return (
       <>
         { /* Display the instructions and iModelSelector for the sample on a control pane */}
-        <ControlPane instructions="Use the ‘Place’ button to create a new fire particle emitter. After placing, use the controls to configure the new emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
+        <ControlPane instructions="Use the 'Place' button to create a new fire particle emitter. After placing, use the controls to configure the new emitter." controls={this.getControls()} iModelSelector={this.props.iModelSelector} />
         { /* Viewport to display the iModel */}
         <SandboxViewport iModelName={this.props.iModelName} onIModelReady={this.onIModelReady} />
       </>

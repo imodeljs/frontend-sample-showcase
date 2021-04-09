@@ -38,7 +38,7 @@ export class StartupComponentContentControl extends ContentControl {
     UiFramework.setIModelConnection(imodel);
     UiFramework.setDefaultViewState(viewState);
     await AppUi.activateFrontstage();
-  }
+  };
 }
 
 ConfigurableUiManager.registerControl(StartupComponentContentControl.id, StartupComponentContentControl);

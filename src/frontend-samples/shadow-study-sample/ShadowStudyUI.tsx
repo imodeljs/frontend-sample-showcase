@@ -2,12 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
-import { ViewSetup } from "api/viewSetup";
 import ShadowStudyApp from "./ShadowStudyApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { Input } from "@bentley/ui-core";
@@ -56,7 +54,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
       dateLabel.textContent = this.convertMinToTime();
 
     ShadowStudyApp.updateSunTime(date.getTime());
-  }
+  };
 
   // Update the state date with the newly selected day of the year
   private _updateDate = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +95,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
       dateLabel.textContent = event.target.value;
 
     ShadowStudyApp.updateSunTime(newDate.getTime());
-  }
+  };
 
   // Formats the time from the state date into 24 hour time
   private convertMinToTime() {
@@ -109,25 +107,6 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
       minString = String(minute);
     const hour = this.state.date.getHours();
     return `${String(hour)}:${minString}`;
-  }
-
-  // Initialize the data view when a new iModel is loaded
-  // It is possible a time is already selected, at which point we should initialize it to this time as opposed to the current time
-  public getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
-    const viewState = await ViewSetup.getDefaultView(imodel);
-    if (viewState.is3d()) {
-      const viewStyle = viewState.getDisplayStyle3d();
-      if (!this.state)
-        viewStyle.setSunTime(new Date().getTime());
-      else
-        viewStyle.setSunTime(this.state.date.getTime());
-      viewState.displayStyle = viewStyle;
-    }
-
-    // We always want shadows
-    viewState.viewFlags.shadows = true;
-
-    return viewState;
   }
 
   public getControls() {
@@ -153,7 +132,7 @@ export default class ShadowStudyUI extends React.Component<{ iModelName: string,
     return (
       <>
         <ControlPane instructions="Select a date and time." controls={this.getControls()} iModelSelector={this.props.iModelSelector}></ControlPane>
-        <SandboxViewport getCustomViewState={this.getInitialView} iModelName={this.props.iModelName} />
+        <SandboxViewport getCustomViewState={ShadowStudyApp.getInitialView} iModelName={this.props.iModelName} />
       </>
     );
   }

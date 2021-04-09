@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import "common/samples-common.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
@@ -37,7 +37,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
     jsonMenuVisible: false,
     jsonMenuValue: "",
     jsonError: "",
-  }
+  };
 
   /** Dictionary of imodelId's to array of viewstates */
   public allSavedViews: IModelViews[] = [...sampleViewStates];
@@ -55,7 +55,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         { views: [...prevState.views, { name: `Saved View: ${prevState.views.length + 1}`, view: viewStateProps }], currentViewIndex: prevState.views.length }
       ));
     }
-  }
+  };
 
   /** Loads the view selected */
   private readonly _onLoadStateClick = () => {
@@ -73,17 +73,17 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
           this.setState({ loadStateError: "Error changing view: invalid view state." });
         });
     }
-  }
+  };
 
   /** Show the JSON Popup window */
   private readonly _onShowJsonViewerClick = () => {
     this.setState({ jsonMenuVisible: true });
-  }
+  };
 
   /** Hide the JSON popup window */
   private _onHideJsonViewerClick = () => {
     this.setState({ jsonMenuVisible: false });
-  }
+  };
 
   /** Will be triggered once when the iModel is loaded. */
   private readonly _onIModelReady = (_iModel: IModelConnection) => {
@@ -113,7 +113,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         jsonMenuValue: menuValue,
       });
     });
-  }
+  };
 
   /** When a model is selected in above list, get its view and switch to it.  */
   private _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -122,17 +122,17 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
       currentViewIndex: index,
       jsonMenuValue: JSON.stringify(prevState.views[index].view, null, 2),
     }));
-  }
+  };
 
   /** Method called on every user interaction in the json viewer text box */
   private _handleJsonTextChange = async (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {
-      JSON.parse(event.target.value)
+      JSON.parse(event.target.value);
       this.setState({ jsonMenuValue: event.target.value, jsonError: "" });
     } catch (error) {
       this.setState({ jsonMenuValue: event.target.value, jsonError: error.toString() });
     }
-  }
+  };
 
   /** Called when user selects 'Save View' */
   private _onSaveJsonViewClick = async () => {
@@ -144,12 +144,12 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
         this.setState({ views });
       }
     }
-  }
+  };
 
   /** Gets the options for the dropdown menu to select views */
   private getOptions(): SelectOption[] {
     return this.state.views.map((viewStateWithName: ViewStateWithName, index: number) => {
-      return { label: viewStateWithName.name, value: index }
+      return { label: viewStateWithName.name, value: index };
     });
   }
 
@@ -190,7 +190,7 @@ export default class SerializeViewUI extends React.Component<SerializeViewUIProp
           <Button onClick={this._onSaveJsonViewClick}>Save View</Button>
         </div>
       </div>
-    )
+    );
   }
 
   /** The controls for the sample in the bottom right hand corner */

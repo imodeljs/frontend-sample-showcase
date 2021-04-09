@@ -54,5 +54,5 @@ export class SandboxIModelConnection extends React.PureComponent<SandboxIModelCo
 
   private _onIModelReady = async (imodel: IModelConnection) => {
     this.setState({ imodel });
-  }
+  };
 }

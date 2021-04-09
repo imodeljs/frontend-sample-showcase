@@ -36,8 +36,8 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     this.state.decorator.clearGeometry();
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
     this.state.decorator.setColor(this.state.color);
-    this.state.decorator.addGeometry(polyface)
-    this.state.decorator.drawBase()
+    this.state.decorator.addGeometry(polyface);
+    this.state.decorator.drawBase();
   }
 
   public componentDidUpdate() {
@@ -45,7 +45,7 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
     this.state.decorator.setColor(this.state.color);
     this.state.decorator.addGeometry(polyface);
-    this.state.decorator.drawBase()
+    this.state.decorator.drawBase();
   }
 
   public componentWillUnmount() {

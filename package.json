@@ -3,34 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@bentley/bentleyjs-core": "2.12.1",
-    "@bentley/context-registry-client": "2.12.1",
-    "@bentley/frontend-authorization-client": "2.12.1",
-    "@bentley/geometry-core": "2.12.1",
-    "@bentley/hypermodeling-frontend": "2.12.1",
+    "@bentley/bentleyjs-core": "2.14.0",
+    "@bentley/context-registry-client": "2.14.0",
+    "@bentley/frontend-authorization-client": "2.14.0",
+    "@bentley/geometry-core": "2.14.0",
+    "@bentley/hypermodeling-frontend": "2.14.0",
     "@bentley/icons-generic-webfont": "^1.0.15",
-    "@bentley/imodelhub-client": "2.12.1",
-    "@bentley/imodeljs-common": "2.12.1",
-    "@bentley/imodeljs-frontend": "2.12.1",
-    "@bentley/imodeljs-i18n": "2.12.1",
-    "@bentley/imodeljs-markup": "2.12.1",
-    "@bentley/imodeljs-quantity": "2.12.1",
-    "@bentley/itwin-client": "2.12.1",
-    "@bentley/monaco-editor": "^5.1.5",
-    "@bentley/orbitgt-core": "2.12.1",
-    "@bentley/presentation-common": "2.12.1",
-    "@bentley/presentation-components": "2.12.1",
-    "@bentley/presentation-frontend": "2.12.1",
-    "@bentley/product-settings-client": "2.12.1",
-    "@bentley/rbac-client": "^2.12.1",
-    "@bentley/react-scripts": "^3.4.6",
-    "@bentley/telemetry-client": "2.12.1",
-    "@bentley/ui-abstract": "2.12.1",
-    "@bentley/ui-components": "2.12.1",
-    "@bentley/ui-core": "2.12.1",
-    "@bentley/ui-framework": "2.12.1",
-    "@bentley/ui-ninezone": "2.12.1",
-    "@bentley/webgl-compatibility": "2.12.1",
+    "@bentley/imodelhub-client": "2.14.0",
+    "@bentley/imodeljs-common": "2.14.0",
+    "@bentley/imodeljs-frontend": "2.14.0",
+    "@bentley/imodeljs-i18n": "2.14.0",
+    "@bentley/imodeljs-markup": "2.14.0",
+    "@bentley/imodeljs-quantity": "2.14.0",
+    "@bentley/itwin-client": "2.14.0",
+    "@bentley/monaco-editor": "^5.1.7",
+    "@bentley/orbitgt-core": "2.14.0",
+    "@bentley/presentation-common": "2.14.0",
+    "@bentley/presentation-components": "2.14.0",
+    "@bentley/presentation-frontend": "2.14.0",
+    "@bentley/product-settings-client": "2.14.0",
+    "@bentley/rbac-client": "^2.14.0",
+    "@bentley/react-scripts": "^3.4.9",
+    "@bentley/telemetry-client": "2.14.0",
+    "@bentley/ui-abstract": "2.14.0",
+    "@bentley/ui-components": "2.14.0",
+    "@bentley/ui-core": "2.14.0",
+    "@bentley/ui-framework": "2.14.0",
+    "@bentley/ui-ninezone": "2.14.0",
+    "@bentley/webgl-compatibility": "2.14.0",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -50,8 +50,9 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.10.1",
-    "@bentley/build-tools": "^2.6.4",
-    "@bentley/certa": "^2.0.0",
+    "@bentley/build-tools": "^2.14.0",
+    "@bentley/certa": "^2.14.0",
+    "@bentley/eslint-plugin": "^2.14.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -63,16 +64,17 @@
     "@types/react": "^16.9.42",
     "@types/react-dom": "^16.9.7",
     "@types/react-redux": "^7.0.1",
+    "@typescript-eslint/eslint-plugin": "4.11.1",
     "customize-cra": "^0.9.1",
     "eslint": "^6.8.0",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jest": "^24.9.0",
     "mocha": "^5.2.0",
-    "node-sass": "^4.0.0",
     "null-loader": "^4.0.0",
     "raw-loader": "^4.0.1",
     "react-app-rewired": "^2.1.6",
     "rimraf": "^2.7.1",
+    "sass": "^1.29.0",
     "ts-jest": "^24.3.0",
     "typemoq": "^2.1.0",
     "webpack": "4.42.0",
@@ -95,40 +97,26 @@
   },
   "homepage": "./",
   "eslintConfig": {
-    "extends": "./node_modules/@bentley/build-tools/.eslintrc.js",
-    "ignorePatterns": [
-      "*.d.ts"
+    "plugins": [
+      "@bentley"
     ],
+    "extends": "plugin:@bentley/imodeljs-recommended",
     "rules": {
-      "deprecation/deprecation": "off"
-    },
-    "overrides": [
-      {
-        "files": [
-          "*.tsx"
-        ],
-        "rules": {
-          "@typescript-eslint/naming-convention": [
-            "warn",
-            {
-              "selector": "function",
-              "format": [
-                "camelCase",
-                "PascalCase"
-              ]
-            }
+      "@typescript-eslint/naming-convention": [
+        "warn",
+        {
+          "selector": "function",
+          "format": [
+            "camelCase",
+            "PascalCase"
           ]
         }
-      }
-    ],
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
+      ],
+      "@typescript-eslint/unbound-method": "off",
+      "deprecation/deprecation": "off"
     }
   },
   "browserslist": [
-    "electron 6.0.0",
     "last 4 chrome version",
     "last 4 firefox version",
     "last 4 safari version",
