@@ -26,7 +26,7 @@ export default class MultiViewportApp {
     MultiViewportApp.dropListener.length = 0;
   }
 
-  /** Adds a listener to IModalApp for when the selected Viewport changes.  The app will ensure the listener is removed when no longer relevant. */
+  /** Adds a listener to IModelApp for when the selected Viewport changes.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForSelectedViewportChange(onChange: (args: SelectedViewportChangedArgs) => void) {
     if (false === IModelApp.viewManager.onSelectedViewportChanged.has(onChange)) {
       const removeListener = IModelApp.viewManager.onSelectedViewportChanged.addListener(onChange);
@@ -34,7 +34,7 @@ export default class MultiViewportApp {
     }
   }
 
-  /** Adds a listener to IModalApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
+  /** Adds a listener to IModelApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForViewOpened(onOpen: (args: ScreenViewport) => void) {
     if (false === IModelApp.viewManager.onViewOpen.has(onOpen)) {
       const removeListener = IModelApp.viewManager.onViewOpen.addListener(onOpen);
@@ -42,7 +42,7 @@ export default class MultiViewportApp {
     }
   }
 
-  /** Adds a listener to IModalApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
+  /** Adds a listener to IModelApp for when a View is opened.  The app will ensure the listener is removed when no longer relevant. */
   public static listenForViewClosed(onOpen: (args: ScreenViewport) => void) {
     if (false === IModelApp.viewManager.onViewOpen.has(onOpen)) {
       const removeListener = IModelApp.viewManager.onViewClose.addListener(onOpen);
