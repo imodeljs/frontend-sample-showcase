@@ -39,7 +39,6 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
   }
 
   public componentWillUnmount() {
-    MultiViewportApp.disconnectViewports();
     MultiViewportApp.dispose();
   }
 
@@ -65,9 +64,9 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
 
   // Handles when the app teardown is called which signals when the views are all closed.
   private _viewsClosed = (viewport: Viewport) => {
+    this.setState((prevState) => ({ isSynced: false, viewsCount: prevState.viewsCount - 1 }));
     if (viewport.viewportId === this.state.selectedViewportId)
       this.setState({ selectedViewportId: undefined });
-    this.setState((prevState) => ({ isSynced: false, viewsCount: prevState.viewsCount - 1 }));
   };
 
   // Handle changes to the UI sync toggle.
@@ -85,9 +84,9 @@ export default class MultiViewportUI extends React.Component<MultiViewportUIProp
       // By passing the selected viewport as the first argument, this will be the view
       //  used to override the second argument's view.
       MultiViewportApp.connectViewports(selectedViewport, unselectedViewport);
-    } else
+    } else {
       MultiViewportApp.disconnectViewports();
-
+    }
     this.setState({ isSynced: isOn });
   };
 
