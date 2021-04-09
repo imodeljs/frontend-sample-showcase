@@ -10,7 +10,7 @@ import { Range3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, SpatialClassificationProps } from "@bentley/imodeljs-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApp";
+import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApp";
 import ThematicDisplayApp from "../frontend-samples/thematic-display-sample/ThematicDisplayApp";
 import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApp";
