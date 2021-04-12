@@ -8,7 +8,7 @@ export function getDragAndDropTreeSpec(): SampleSpec {
   return ({
     name: "drag-and-drop",
     label: "Drag and Drop",
-    image: "",
+    image: "drag-and-drop-tree-thumbnail.png",
     customModelList: [],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
