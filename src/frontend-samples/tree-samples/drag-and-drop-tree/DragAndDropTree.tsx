@@ -170,7 +170,13 @@ interface NodeInsertMarkerProps {
 }
 
 const NodeInsertMarker: React.FC<NodeInsertMarkerProps> = (props) => {
-  return <div style={{ height: 2, background: "rgb(var(--buic-background-3-rgb))", position: "relative", top: props.topOffset }} />;
+  const style: React.CSSProperties = {
+    height: 2,
+    background: "rgb(var(--buic-background-5-rgb))",
+    position: "relative",
+    top: props.topOffset,
+  };
+  return <div style={style} />;
 };
 
 function areNodesRelated(model: TreeModel, ancestorNodeId: string, descendantNodeId: string): boolean {
