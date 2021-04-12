@@ -10,6 +10,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { Button } from "@bentley/ui-core";
 import { SampleDataProvider } from "common/DataProvider/SampleDataProvider";
 
+/** Entry point of this sample */
 export default class DragAndDropSample extends React.Component {
   public render(): React.ReactNode {
     return <App />;
@@ -18,7 +19,11 @@ export default class DragAndDropSample extends React.Component {
 
 const App: React.FC = () => {
   const [treeDataProvider, setTreeDataProvider] = React.useState(new SampleDataProvider());
+
+  // Resets downstream state by changing to a new instance of SampleDataProvider
   const handleReset = () => { setTreeDataProvider(new SampleDataProvider()); };
+
+  // See documentation on DndProvider backends: https://react-dnd.github.io/react-dnd/docs/overview
   return (
     <>
       <ControlPane
