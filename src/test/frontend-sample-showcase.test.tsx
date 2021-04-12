@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { expect } from "chai";
-import RealityDataApp from "frontend-samples/reality-data-sample/RealityDataApi";
+import RealityDataApi from "frontend-samples/reality-data-sample/RealityDataApi";
 import * as TypeMoq from "typemoq";
 import { Range3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, SpatialClassificationProps } from "@bentley/imodeljs-common";
@@ -169,7 +169,7 @@ describe("Reality Data", () => {
       models = 0;
 
       // Toggle off all reality models
-      RealityDataApp.toggleRealityModel(false, vp, imodelMock.object);
+      RealityDataApi.toggleRealityModel(false, vp, imodelMock.object);
       style = vp.displayStyle.clone();
       style.forEachRealityModel(
         () => models++,

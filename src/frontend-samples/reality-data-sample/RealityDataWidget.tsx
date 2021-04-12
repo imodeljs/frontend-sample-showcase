@@ -6,7 +6,7 @@ import "common/samples-common.scss";
 import React, { useEffect } from "react";
 import { Toggle } from "@bentley/ui-core";
 import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
-import RealityDataApp from "./RealityDataApi";
+import RealityDataApi from "./RealityDataApi";
 import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, WidgetState } from "@bentley/ui-framework";
 import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
 import "./RealityData.scss";
@@ -19,8 +19,8 @@ const RealityDataWidget: React.FunctionComponent = () => {
   // Initalize the widget
   useEffect(() => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      await RealityDataApp.toggleRealityModel(showRealityDataState, _vp, _vp.iModel);
-      await RealityDataApp.setRealityDataTransparency(_vp, realityDataTransparencyState);
+      await RealityDataApi.toggleRealityModel(showRealityDataState, _vp, _vp.iModel);
+      await RealityDataApi.setRealityDataTransparency(_vp, realityDataTransparencyState);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -29,7 +29,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
   useEffect(() => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp) {
-      RealityDataApp.setRealityDataTransparency(vp, realityDataTransparencyState);
+      RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState);
     }
   }, [realityDataTransparencyState]);
 
@@ -38,8 +38,8 @@ const RealityDataWidget: React.FunctionComponent = () => {
     if (iModelConnection) {
       const vp = IModelApp.viewManager.selectedView;
       if (vp) {
-        RealityDataApp.toggleRealityModel(showRealityDataState, vp, iModelConnection).then(() => {
-          RealityDataApp.setRealityDataTransparency(vp, realityDataTransparencyState);
+        RealityDataApi.toggleRealityModel(showRealityDataState, vp, iModelConnection).then(() => {
+          RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState);
         });
       }
     }

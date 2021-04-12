@@ -9,7 +9,7 @@ import {
   ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport,
 } from "@bentley/imodeljs-frontend";
 
-export default class RealityDataApp {
+export default class RealityDataApi {
 
   public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
     const style = viewPort.displayStyle.clone();
