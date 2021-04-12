@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "SampleSpec";
-import App from ".";
 
 export function getDragAndDropTreeSpec(): SampleSpec {
   return ({

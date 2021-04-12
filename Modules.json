@@ -235,10 +235,6 @@
       "typedef": true
     },
     {
-      "name": "common/DataProvider/Trees.scss",
-      "import": "!!raw-loader!common/DataProvider/Trees.scss"
-    },
-    {
       "name": "common/samples-common.scss",
       "import": "!!raw-loader!common/samples-common.scss"
     },

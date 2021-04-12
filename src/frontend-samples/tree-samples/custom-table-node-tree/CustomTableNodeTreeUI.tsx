@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/DataProvider/Trees.scss";
 import { TableNodeTree } from "./CustomTableNodeTreeApp";
 import "./TableNodeTree.scss";
 import { ControlPane } from "common/ControlPane/ControlPane";
