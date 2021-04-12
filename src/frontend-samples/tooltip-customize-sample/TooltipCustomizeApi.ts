@@ -35,7 +35,8 @@ export class ShowcaseToolAdmin extends ToolAdmin {
   private static _singleton: ShowcaseToolAdmin;
 
   public static initialize(): ShowcaseToolAdmin {
-    ShowcaseToolAdmin._singleton = new ShowcaseToolAdmin();
+    if(!ShowcaseToolAdmin._singleton)
+      ShowcaseToolAdmin._singleton = new ShowcaseToolAdmin();
     return ShowcaseToolAdmin._singleton;
   }
 

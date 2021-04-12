@@ -18,18 +18,6 @@ const TooltipCustomizeApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Hover the mouse pointer over an element to see the tooltip.  Use these options to control it.");
   const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
-  const [toolAdminState, setToolAdminState] = React.useState<ShowcaseToolAdmin>();
-
-  useEffect(() => {
-    let toolAdmin = ShowcaseToolAdmin.get();
-
-    if (!toolAdmin) {
-      toolAdmin = ShowcaseToolAdmin.initialize();
-      setToolAdminState(toolAdmin);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     setViewportOptions({ viewState });
@@ -47,7 +35,7 @@ const TooltipCustomizeApp: React.FunctionComponent = () => {
           viewportOptions={viewportOptions}
 
           /** Pass the toolAdmin override directly into the viewer */
-          toolAdmin={toolAdminState}
+          toolAdmin={ShowcaseToolAdmin.initialize()}
 
           onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}
