@@ -5,7 +5,7 @@
 import * as React from "react";
 import { DragObjectWithType, DropTargetMonitor, useDrag, useDrop } from "react-dnd";
 import {
-  ControlledTree, ITreeDataProvider, MutableTreeModel, SelectionMode, TreeModel, TreeModelNode, TreeModelSource,
+  ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource,
   TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModelSource,
   useTreeNodeLoader, useVisibleTreeNodes,
 } from "@bentley/ui-components";
@@ -74,6 +74,7 @@ interface NodeDragObject extends DragObjectWithType {
 
 const DragAndDropNode: React.FC<TreeNodeRendererProps> = (props) => {
   const { treeModelSource, treeNodeLoader, isDragging, setDragging } = React.useContext(dragDropContext)!;
+
   // Make node draggable
   const [, dragSourceRef] = useDrag({
     item: { type: "tree-node", id: props.node.id },
@@ -195,7 +196,7 @@ function getDropLocation(treeModel: TreeModel, hoveredNode: TreeModelNode, dropA
     case DropArea.Above:
       return {
         parentId: hoveredNode.parentId,
-        index: (treeModel as MutableTreeModel).getChildOffset(hoveredNode.parentId, hoveredNode.id)!,
+        index: treeModel.getChildOffset(hoveredNode.parentId, hoveredNode.id)!,
       };
 
     case DropArea.Inside:
@@ -208,7 +209,7 @@ function getDropLocation(treeModel: TreeModel, hoveredNode: TreeModelNode, dropA
 
       return {
         parentId: hoveredNode.parentId,
-        index: (treeModel as MutableTreeModel).getChildOffset(hoveredNode.parentId, hoveredNode.id)! + 1,
+        index: treeModel.getChildOffset(hoveredNode.parentId, hoveredNode.id)! + 1,
       };
   }
 }
