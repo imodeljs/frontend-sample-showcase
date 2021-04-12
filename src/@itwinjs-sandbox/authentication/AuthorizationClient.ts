@@ -24,15 +24,15 @@ export class AuthorizationClient implements FrontendAuthorizationClient {
   }
 
   public static async initializeOidc(): Promise<void> {
-    if (!this._initialized) {
+    if (!AuthorizationClient._initialized) {
       const authClient = new AuthorizationClient();
       const userURL = Config.App.get("imjs_sample_showcase_user", "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser");
       await authClient.generateTokenString(userURL, new ClientRequestContext());
       await authClient.signInSilent(new ClientRequestContext());
 
-      this._oidcClient = authClient;
+      AuthorizationClient._oidcClient = authClient;
     }
-    this._initialized = true;
+    AuthorizationClient._initialized = true;
   }
 
   public async signInSilent(requestContext?: ClientRequestContext): Promise<void> {

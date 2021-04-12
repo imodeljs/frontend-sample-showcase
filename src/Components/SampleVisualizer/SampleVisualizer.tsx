@@ -63,25 +63,31 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
   useEffect(() => {
+    abortController.abort();
+    abortController = new AbortController();
     const initialize = async (signal: AbortSignal) => {
-      if (signal.aborted) {
-        Promise.reject(new DOMException("Aborted", "Abort"));
-      }
-      if (!iTwinViewerReady) {
-        await iModelAppStartup(signal);
-      } else {
+      try {
+        if (signal.aborted) {
+          throw new DOMException("Aborted", "Abort");
+        }
+
+        await iModelAppShutdown();
+
+        if (signal.aborted) {
+          throw new DOMException("Aborted", "Abort");
+        }
+
         await AuthorizationClient.initializeOidc();
-      }
-    };
-    initialize(abortController.signal)
-      .then(() => {
+
+        if (!iTwinViewerReady) {
+          await iModelAppStartup(signal);
+        }
         FrontstageManager.onFrontstageReadyEvent.addOnce(FloatingWidgetsManager.onFrontstageReadyListener);
         setAppReady(true);
-      })
-      .catch(() => {
-        abortController = new AbortController();
-        iModelAppShutdown();
-      });
+      } catch (err) {
+      }
+    };
+    initialize(abortController.signal);
   }, [iTwinViewerReady, transpileResult, type]);
 
   // Set sample UI

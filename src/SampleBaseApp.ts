@@ -12,14 +12,21 @@ import { PresentationRpcInterface } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
-import { NoSignInIAuthClient } from "./NoSignInIAuthClient";
 import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
+import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 
 // Boiler plate code
 export interface SampleContext {
   imodel: IModelConnection;
   viewDefinitionId: Id64String;
 }
+
+const promiseWrapper = async (signal: AbortSignal, promise: () => Promise<void>) => {
+  if (signal.aborted) {
+    Promise.reject(new DOMException("Aborted", "Abort"));
+  }
+  await promise();
+};
 
 export class SampleBaseApp {
   private static _appStateManager: StateManager | undefined;
@@ -33,16 +40,9 @@ export class SampleBaseApp {
       toolAdmin: ShowcaseToolAdmin.initialize(),
     }, options);
 
-    if (signal.aborted) {
-      Promise.reject(new DOMException("Aborted", "Abort"));
-    }
-    await IModelApp.startup(opts);
+    await promiseWrapper(signal, async () => IModelApp.startup(opts));
 
-    if (signal.aborted) {
-      Promise.reject(new DOMException("Aborted", "Abort"));
-    }
-    // initialize OIDC
-    await SampleBaseApp.initializeOidc();
+    IModelApp.authorizationClient = AuthorizationClient.oidcClient;
 
     // use new state manager that allows dynamic additions from extensions and snippets
     if (!this._appStateManager) {
@@ -56,22 +56,19 @@ export class SampleBaseApp {
     const initPromises = new Array<Promise<any>>();
 
     // initialize RPC communication
-    initPromises.push(SampleBaseApp.initializeRpc());
+    initPromises.push(promiseWrapper(signal, async () => SampleBaseApp.initializeRpc()));
 
     // initialize UiFramework
-    initPromises.push(UiFramework.initialize(undefined));
+    initPromises.push(promiseWrapper(signal, async () => UiFramework.initialize(undefined)));
 
     // initialize Presentation
-    initPromises.push(Presentation.initialize({
+    initPromises.push(promiseWrapper(signal, async () => Presentation.initialize({
       activeLocale: IModelApp.i18n.languageList()[0],
-    }));
+    })));
 
     // initialize Markup
-    initPromises.push(MarkupApp.initialize());
+    initPromises.push(promiseWrapper(signal, async () => MarkupApp.initialize()));
 
-    if (signal.aborted) {
-      Promise.reject(new DOMException("Aborted", "Abort"));
-    }
     // the app is ready when all initialization promises are fulfilled
     await Promise.all(initPromises);
 
@@ -87,29 +84,5 @@ export class SampleBaseApp {
     const rpcParams = { info: { title: "general-purpose-imodeljs-backend", version: "v2.0" }, uriPrefix: orchestratorUrl };
 
     BentleyCloudRpcManager.initializeClient(rpcParams, rpcInterfaces);
-  }
-
-  private static async initializeOidc() {
-    // Gather configuration out of the environment
-    /*  Uncomment this block to enable signin.
-    const clientId = Config.App.get("imjs_frontend_sample_client_id", "imodeljs-spa-samples-2686");
-    const redirectUri = Config.App.get("imjs_frontend_sample_redirect_uri", "http://localhost:3000/signin-callback.html");
-    const scope = Config.App.get("imjs_frontend_sample_scope", "openid email profile organization imodelhub context-registry-service:read-only product-settings-service general-purpose-imodeljs-backend imodeljs-router");
-    const responseType = "code";
-    const oidcConfig: BrowserAuthorizationClientConfiguration = { clientId, redirectUri, scope, responseType };
-    await BrowserAuthorizationCallbackHandler.handleSigninCallback(oidcConfig.redirectUri);
-    // Setup the IModelApp authorization client
-    IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig); ..
-    */
-
-    // Comment this block to disable no-signin.
-    const authClient = new NoSignInIAuthClient();
-    const userURL = Config.App.get("imjs_sample_showcase_user", "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser");
-    await authClient.generateTokenString(userURL, new ClientRequestContext());
-    IModelApp.authorizationClient = authClient;
-
-    try {
-      await SampleBaseApp.oidcClient.signInSilent(new ClientRequestContext());
-    } catch (err) { }
   }
 }
