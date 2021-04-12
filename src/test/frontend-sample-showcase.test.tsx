@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { expect } from "chai";
-import RealityDataApp from "frontend-samples/reality-data-sample/RealityDataApp";
+import RealityDataApp from "frontend-samples/reality-data-sample/RealityDataApi";
 import * as TypeMoq from "typemoq";
 import { Range3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, SpatialClassificationProps } from "@bentley/imodeljs-common";
