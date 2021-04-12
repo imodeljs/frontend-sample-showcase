@@ -4,13 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
-import mergeRefs from "react-merge-refs";
 import {
-  ControlledTree, ITreeDataProvider, MutableTreeModel, SelectionMode, TreeModel, TreeModelNode, TreeModelSource, TreeNodeLoader,
-  TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModelSource,
+  ControlledTree, ITreeDataProvider, MutableTreeModel, SelectionMode, TreeModel, TreeModelNode, TreeModelSource,
+  TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModelSource,
   useTreeNodeLoader, useVisibleTreeNodes,
 } from "@bentley/ui-components";
 import { SimpleTreeNode } from "./SimpleTreeNode";
+
+import * as mergeRefsExports from "react-merge-refs";
+const mergeRefs = mergeRefsExports.default;
 
 export interface DragAndDropTreeProps {
   dataProvider: ITreeDataProvider;
@@ -180,59 +182,34 @@ function areNodesRelated(model: TreeModel, ancestorNodeId: string, descendantNod
   return node.parentId === ancestorNodeId ? true : areNodesRelated(model, ancestorNodeId, node.parentId);
 }
 
-function moveNode(
+async function moveNode(
   modelSource: TreeModelSource,
   nodeLoader: TreeNodeLoader<ITreeDataProvider>,
   sourceNodeId: string,
   targetParentId: string | undefined,
   targetIndex: number,
-): void {
-  if (targetParentId === undefined) {
-    updateModel();
+): Promise<void> {
+  await loadChildren(nodeLoader, targetParentId);
+  modelSource.modifyModel((model) => {
+    model.moveNode(sourceNodeId, targetParentId, targetIndex);
+    if (targetParentId !== undefined) {
+      model.getNode(targetParentId)!.isExpanded = true;
+    }
+  });
+}
+
+async function loadChildren(
+  nodeLoader: TreeNodeLoader<ITreeDataProvider>,
+  parentId: string | undefined,
+): Promise<void> {
+  if (parentId === undefined) {
     return;
   }
 
-  const parentNode = modelSource.getModel().getNode(targetParentId)!;
-  if (parentNode.numChildren === undefined) {
-    nodeLoader.loadNode(parentNode, 0).subscribe(() => updateModel());
-  } else {
-    updateModel();
+  const parentNode = nodeLoader.modelSource.getModel().getNode(parentId)!;
+  if (parentNode.numChildren !== undefined) {
+    return;
   }
 
-  function updateModel() {
-    modelSource.modifyModel((model) => {
-      const nodeInput = model.getNode(sourceNodeId)!;
-      const inputNodeOffset = model.getChildOffset(nodeInput.parentId, sourceNodeId)!;
-      const children = model.getChildren(nodeInput.parentId)!;
-      children.remove(inputNodeOffset);
-      if (nodeInput.parentId === undefined) {
-        (model.getRootNode().numChildren as number) -= 1;
-      } else {
-        (model.getNode(nodeInput.parentId)!.numChildren as number) -= 1;
-      }
-
-      if (nodeInput.parentId === targetParentId && targetIndex > inputNodeOffset) {
-        targetIndex -= 1;
-      }
-
-      model.insertChild(targetParentId, nodeInput, targetIndex);
-
-      if (targetParentId === undefined) {
-        updateDepths(sourceNodeId, -1);
-      } else {
-        const updatedParentNode = model.getNode(targetParentId)!;
-        updateDepths(sourceNodeId, updatedParentNode.depth);
-        updatedParentNode.isExpanded = true;
-      }
-
-      function updateDepths(parentMovedNodeId: string, parentDepth: number) {
-        const movedNode = model.getNode(parentMovedNodeId)!;
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        (movedNode.depth as number) = parentDepth + 1;
-        for (const [nodeId] of model.getChildren(parentMovedNodeId)?.iterateValues() ?? []) {
-          updateDepths(nodeId, movedNode.depth);
-        }
-      }
-    });
-  }
+  return new Promise((resolve) => { nodeLoader.loadNode(parentNode, 0).subscribe(() => resolve()); });
 }

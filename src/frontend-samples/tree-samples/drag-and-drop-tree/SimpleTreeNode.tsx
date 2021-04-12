@@ -2,12 +2,13 @@ import * as React from "react";
 import { PropertyValueRendererManager, TreeActions, TreeModelNode } from "@bentley/ui-components";
 import { TreeNode } from "@bentley/ui-core";
 
-interface SimpleTreeNodeProps {
+export interface SimpleTreeNodeProps {
   style: React.CSSProperties;
   node: TreeModelNode;
   treeActions: TreeActions;
   isHoverDisabled: boolean;
 }
+
 export const SimpleTreeNode: React.FC<SimpleTreeNodeProps> = (props) => {
   function handleExpansionToggle() {
     if (props.node.isExpanded) {
