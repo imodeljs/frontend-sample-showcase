@@ -51,7 +51,7 @@ const iModelAppShutdown = async (): Promise<void> => {
 const iModelAppStartup = async (signal: AbortSignal): Promise<void> => {
   await SampleBaseApp.startup(signal);
   if (signal.aborted) {
-    Promise.reject(new DOMException("Aborted", "Abort"));
+    throw new DOMException("Aborted", "Abort");
   }
   MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
 };
@@ -67,10 +67,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     abortController = new AbortController();
     const initialize = async (signal: AbortSignal) => {
       try {
-        if (signal.aborted) {
-          throw new DOMException("Aborted", "Abort");
-        }
-
         await iModelAppShutdown();
 
         if (signal.aborted) {

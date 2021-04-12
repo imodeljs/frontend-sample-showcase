@@ -23,7 +23,7 @@ export interface SampleContext {
 
 const promiseWrapper = async (signal: AbortSignal, promise: () => Promise<void>) => {
   if (signal.aborted) {
-    Promise.reject(new DOMException("Aborted", "Abort"));
+    throw new DOMException("Aborted", "Abort");
   }
   await promise();
 };
