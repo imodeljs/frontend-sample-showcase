@@ -25,7 +25,7 @@ export class SampleBaseApp {
   private static _appStateManager: StateManager | undefined;
 
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
-  public static async startup(options?: IModelAppOptions) {
+  public static async startup(signal: AbortSignal, options?: IModelAppOptions) {
 
     const opts: IModelAppOptions = Object.assign({
       tileAdmin: { useProjectExtents: false },
@@ -33,8 +33,14 @@ export class SampleBaseApp {
       toolAdmin: ShowcaseToolAdmin.initialize(),
     }, options);
 
+    if (signal.aborted) {
+      Promise.reject(new DOMException("Aborted", "Abort"));
+    }
     await IModelApp.startup(opts);
 
+    if (signal.aborted) {
+      Promise.reject(new DOMException("Aborted", "Abort"));
+    }
     // initialize OIDC
     await SampleBaseApp.initializeOidc();
 
@@ -63,6 +69,9 @@ export class SampleBaseApp {
     // initialize Markup
     initPromises.push(MarkupApp.initialize());
 
+    if (signal.aborted) {
+      Promise.reject(new DOMException("Aborted", "Abort"));
+    }
     // the app is ready when all initialization promises are fulfilled
     await Promise.all(initPromises);
 

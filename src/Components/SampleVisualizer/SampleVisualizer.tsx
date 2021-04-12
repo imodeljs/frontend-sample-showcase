@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useRef, useState } from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
@@ -48,37 +48,41 @@ const iModelAppShutdown = async (): Promise<void> => {
   }
 };
 
-const iModelAppStartup = async (): Promise<void> => {
-  await SampleBaseApp.startup();
+const iModelAppStartup = async (signal: AbortSignal): Promise<void> => {
+  await SampleBaseApp.startup(signal);
+  if (signal.aborted) {
+    Promise.reject(new DOMException("Aborted", "Abort"));
+  }
   MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
 };
+
+let abortController = new AbortController();
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
   const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
-  const [shuttingDown, setShuttingDown] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!shuttingDown) {
-      FrontstageManager.onFrontstageReadyEvent.addOnce(FloatingWidgetsManager.onFrontstageReadyListener);
-      AuthorizationClient.initializeOidc()
-        .then(() => {
-          if (!iTwinViewerReady) {
-            iModelAppStartup()
-              .finally(() => setAppReady(true));
-          } else {
-            setAppReady(true);
-          }
-        });
-      return () => {
-        setShuttingDown(true);
-        setAppReady(false);
-        iModelAppShutdown()
-          .then(() => setShuttingDown(false));
-      };
-    }
-    return;
-  }, [iTwinViewerReady, transpileResult, type, shuttingDown]);
+    const initialize = async (signal: AbortSignal) => {
+      if (signal.aborted) {
+        Promise.reject(new DOMException("Aborted", "Abort"));
+      }
+      if (!iTwinViewerReady) {
+        await iModelAppStartup(signal);
+      } else {
+        await AuthorizationClient.initializeOidc();
+      }
+    };
+    initialize(abortController.signal)
+      .then(() => {
+        FrontstageManager.onFrontstageReadyEvent.addOnce(FloatingWidgetsManager.onFrontstageReadyListener);
+        setAppReady(true);
+      })
+      .catch(() => {
+        abortController = new AbortController();
+        iModelAppShutdown();
+      });
+  }, [iTwinViewerReady, transpileResult, type]);
 
   // Set sample UI
   useEffect(() => {

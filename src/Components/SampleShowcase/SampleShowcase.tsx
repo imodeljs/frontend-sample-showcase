@@ -102,7 +102,7 @@ export const SampleShowcase: FunctionComponent = () => {
           {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-left"></span></Button>}
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
             <React.Suspense fallback={spinner}>
-              <ErrorBoundary key={transpileResult}>
+              <ErrorBoundary key={transpileResult + activeSample.type}>
                 <Visualizer
                   iModelName={activeSample.imodel}
                   iModelSelector={getImodelSelector()}
