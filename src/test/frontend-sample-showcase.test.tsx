@@ -13,7 +13,7 @@ import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApp";
 import ThematicDisplayApp from "../frontend-samples/thematic-display-sample/ThematicDisplayApp";
-import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApp";
+import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApi";
 import { TestUtilities } from "./utils/testUtilities";
 import ClassifierApp from "frontend-samples/classifier-sample/ClassifierApp";
 
