@@ -10,11 +10,14 @@ export function getShadowStudySpec(): SampleSpec {
     name: "shadow-study-sample",
     label: "Shadow Study",
     image: "shadow-study-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp") },
-      { name: "ShadowStudyUI.tsx", import: import("!!raw-loader!./ShadowStudyUI"), entry: true },
+      { name: "ShadowStudyApi.ts", import: import("!!raw-loader!./ShadowStudyApi") },
+      { name: "ShadowStudyApp.tsx", import: import("!!raw-loader!./ShadowStudyApp"), entry: true },
+      { name: "ShadowStudyWidget.tsx", import: import("!!raw-loader!./ShadowStudyWidget") },
+      { name: "ShadowStudy.scss", import: import("!!raw-loader!./ShadowStudy.scss") },
     ],
-    type: "ShadowStudyUI.tsx",
+    type: "ShadowStudyApp.tsx",
   });
 }
