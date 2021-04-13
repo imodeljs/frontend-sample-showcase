@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { DragAndDropTree } from "./DragAndDropTree";
+import { DragAndDropTree } from "./DragAndDropTreeApp";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";

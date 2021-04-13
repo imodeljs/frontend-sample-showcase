@@ -12,8 +12,8 @@ export function getDragAndDropTreeSpec(): SampleSpec {
     customModelList: [],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "index.tsx", import: import("!!raw-loader!./index"), entry: true },
-      { name: "DragAndDropTree.tsx", import: import("!!raw-loader!./DragAndDropTree") },
+      { name: "DragAndDropTreeApp.tsx", import: import("!!raw-loader!./DragAndDropTreeApp") },
+      { name: "DragAndDropTreeUI.tsx", import: import("!!raw-loader!./DragAndDropTreeUI"), entry: true },
       { name: "BasicTreeNode.tsx", import: import("!!raw-loader!./BasicTreeNode") },
     ],
     type: "index.tsx",
