@@ -16,6 +16,6 @@ export function getDragAndDropTreeSpec(): SampleSpec {
       { name: "DragAndDropTreeUI.tsx", import: import("!!raw-loader!./DragAndDropTreeUI"), entry: true },
       { name: "BasicTreeNode.tsx", import: import("!!raw-loader!./BasicTreeNode") },
     ],
-    type: "index.tsx",
+    type: "DragAndDropTreeUI.tsx",
   });
 }
