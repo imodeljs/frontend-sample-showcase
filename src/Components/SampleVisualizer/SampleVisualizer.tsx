@@ -48,37 +48,46 @@ const iModelAppShutdown = async (): Promise<void> => {
   }
 };
 
-const iModelAppStartup = async (): Promise<void> => {
-  await SampleBaseApp.startup();
+const iModelAppStartup = async (signal: AbortSignal): Promise<void> => {
+  await SampleBaseApp.startup(signal);
+  if (signal.aborted) {
+    throw new DOMException("Aborted", "Abort");
+  }
   MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
 };
+
+let abortController = new AbortController();
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
   const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
-  const [shuttingDown, setShuttingDown] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!shuttingDown) {
-      AuthorizationClient.initializeOidc()
-        .then(() => {
-          FrontstageManager.onFrontstageReadyEvent.addOnce(FloatingWidgetsManager.onFrontstageReadyListener);
-          if (!iTwinViewerReady) {
-            iModelAppStartup()
-              .finally(() => setAppReady(true));
-          } else {
-            setAppReady(true);
+    const debounce = setTimeout(() => {
+      abortController.abort();
+      abortController = new AbortController();
+      const initialize = async (signal: AbortSignal) => {
+        try {
+          await iModelAppShutdown();
+
+          if (signal.aborted) {
+            throw new DOMException("Aborted", "Abort");
           }
-        });
-      return () => {
-        setShuttingDown(true);
-        setAppReady(false);
-        iModelAppShutdown()
-          .then(() => setShuttingDown(false));
+
+          await AuthorizationClient.initializeOidc();
+
+          if (!iTwinViewerReady) {
+            await iModelAppStartup(signal);
+          }
+          FrontstageManager.onFrontstageReadyEvent.addOnce(FloatingWidgetsManager.onFrontstageReadyListener);
+          setAppReady(true);
+        } catch (err) {
+        }
       };
-    }
-    return;
-  }, [iTwinViewerReady, transpileResult, type, shuttingDown]);
+      initialize(abortController.signal);
+    }, 1000);
+    return () => clearTimeout(debounce);
+  }, [iTwinViewerReady, transpileResult, type]);
 
   // Set sample UI
   useEffect(() => {

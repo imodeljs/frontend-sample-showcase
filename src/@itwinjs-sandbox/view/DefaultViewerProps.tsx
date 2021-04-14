@@ -84,7 +84,7 @@ export const default3DAppUi: ItwinViewerUi = {
   },
   hideDefaultStatusBar: false,
   hidePropertyGrid: true,
-  hideToolSettings: false,
+  hideToolSettings: true,
   hideTreeView: true,
 };
 

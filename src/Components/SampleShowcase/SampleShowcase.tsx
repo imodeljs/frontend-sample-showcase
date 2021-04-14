@@ -7,7 +7,6 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from "reac
 import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
 import { IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
-import { MessageRenderer } from "@bentley/ui-framework";
 import { ActiveSample } from "./ActiveSample";
 import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
 import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
@@ -103,8 +102,7 @@ export const SampleShowcase: FunctionComponent = () => {
           {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-left"></span></Button>}
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
             <React.Suspense fallback={spinner}>
-              <ErrorBoundary key={transpileResult}>
-                <MessageRenderer />
+              <ErrorBoundary key={transpileResult + activeSample.type}>
                 <Visualizer
                   iModelName={activeSample.imodel}
                   iModelSelector={getImodelSelector()}
