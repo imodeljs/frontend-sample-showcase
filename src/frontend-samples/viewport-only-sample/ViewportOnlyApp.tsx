@@ -26,7 +26,7 @@ const ViewportOnlyApp: FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
           viewportOptions={viewportOptions}
-          // defaultUiConfig={default3DSandboxUi}
+          defaultUiConfig={default3DSandboxUi}
           theme="dark"
           onIModelConnected={_oniModelReady}
         />
