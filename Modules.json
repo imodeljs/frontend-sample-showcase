@@ -101,6 +101,14 @@
       "import": "@bentley/webgl-compatibility"
     },
     {
+      "name": "@bentley/itwin-viewer-react",
+      "import": "@bentley/itwin-viewer-react"
+    },
+    {
+      "name": "@bentley/frontend-application-insights-client",
+      "import": "@bentley/frontend-application-insights-client"
+    },
+    {
       "name": "@bentley/hypermodeling-frontend",
       "import": "@bentley/hypermodeling-frontend"
     },
@@ -165,11 +173,6 @@
       "typedef": true
     },
     {
-      "name": "common/IModelSelector/IModelSelector",
-      "import": "./src/common/IModelSelector/IModelSelector",
-      "typedef": true
-    },
-    {
       "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
       "typedef": true
@@ -228,6 +231,56 @@
     {
       "name": "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css",
       "import": "!!raw-loader!@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css"
+    },
+    {
+      "name": "@itwinjs-sandbox/authentication/AuthorizationClient",
+      "import": "./src/@itwinjs-sandbox/authentication/AuthorizationClient",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/view/DefaultViewerProps",
+      "import": "./src/@itwinjs-sandbox/view/DefaultViewerProps",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/components/imodel-selector/IModelSelector",
+      "import": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
+      "import": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/hooks/useSampleIModelConnection",
+      "import": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/hooks/useSampleWidget",
+      "import": "./src/@itwinjs-sandbox/hooks/useSampleWidget",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/view/ViewSetup",
+      "import": "./src/@itwinjs-sandbox/view/ViewSetup",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/constants",
+      "import": "./src/@itwinjs-sandbox/constants",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/SampleIModels",
+      "import": "./src/@itwinjs-sandbox/SampleIModels",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox",
+      "import": "./src/@itwinjs-sandbox/index",
+      "typedef": true
     }
   ]
 }

@@ -12,7 +12,7 @@ export function getCheckListBoxSpec(): SampleSpec {
     label: "UI-CheckListBoxes",
     image: "ui-checklistbox-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
-    customModelList: [],
+    iModelList: [],
     files: () => [
       { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },
     ],

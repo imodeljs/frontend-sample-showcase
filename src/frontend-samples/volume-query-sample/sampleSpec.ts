@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getVolumeQuerySpec(): SampleSpec {
@@ -17,7 +17,7 @@ export function getVolumeQuerySpec(): SampleSpec {
       { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },
       { name: "ProgressBar.tsx", import: import("!!raw-loader!./ProgressBar") },
     ],
-    customModelList: [
+    iModelList: [
       SampleIModels.RetailBuilding,
       SampleIModels.BayTown,
       SampleIModels.House,

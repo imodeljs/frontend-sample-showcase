@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getSwipingComparisonSpec(): SampleSpec {
@@ -12,7 +12,7 @@ export function getSwipingComparisonSpec(): SampleSpec {
     label: "Swiping Comparison",
     image: "swiping-viewport-thumbnail.png",
     readme: async () => import("!!raw-loader!./README.md"),
-    customModelList: [SampleIModels.ExtonCampus],
+    iModelList: [SampleIModels.ExtonCampus],
     files: () => [
       { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp") },
       { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI"), entry: true },

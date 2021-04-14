@@ -10,7 +10,7 @@ export function get2dTransformationsSpec(): SampleSpec {
     name: "2d-transformations-sample",
     label: "2d Transformations",
     image: "2d-transformations-thumbnail.png",
-    customModelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp") },

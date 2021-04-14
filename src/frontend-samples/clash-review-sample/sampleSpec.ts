@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getClashReviewSpec(): SampleSpec {
@@ -22,7 +22,7 @@ export function getClashReviewSpec(): SampleSpec {
       { name: "frontend-samples/clash-review-sample/ClashDetectionJsonData.ts", import: import("!!raw-loader!./ClashDetectionJsonData.ts") },
       { name: "frontend-samples/clash-review-sample/ClashReview.scss", import: import("!!raw-loader!./ClashReview.scss") },
     ],
-    customModelList: [SampleIModels.BayTown],
+    iModelList: [SampleIModels.BayTown],
     type: "ClashReviewUI.tsx",
   });
 }

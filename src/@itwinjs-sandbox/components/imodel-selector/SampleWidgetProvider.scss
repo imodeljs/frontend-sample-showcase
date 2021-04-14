@@ -1,0 +1,31 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+.sample-widget-ui {
+  padding: 8px;
+  color: var(--buic-foreground-body);
+}
+
+.sample-widget-header {
+  display: flex;
+  flex-direction: row;
+
+  .sample-instructions {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  .sample-instructions>span {
+    flex-grow: 1;
+    min-width: 100px;
+  }
+}
+
+.model-selector {
+  transition: all 500ms ease;
+
+  .imodel-list {
+    max-width: 100%;
+  }
+}

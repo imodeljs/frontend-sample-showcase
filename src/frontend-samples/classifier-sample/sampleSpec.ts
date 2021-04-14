@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 
 export function getClassifierSpec(): SampleSpec {
   return ({
@@ -18,7 +18,7 @@ export function getClassifierSpec(): SampleSpec {
       { name: "ClassifierProperties.tsx", import: import("!!raw-loader!./ClassifierProperties") },
       { name: "Classifier.scss", import: import("!!raw-loader!./Classifier.scss") },
     ],
-    customModelList: [SampleIModels.MetroStation],
+    iModelList: [SampleIModels.MetroStation],
     type: "ClassifierUI.tsx",
   });
 }

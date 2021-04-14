@@ -84,7 +84,8 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getRealityDataSpec(),
     getViewAttributesSpec(),
   ],
-}, {
+},
+{
   groupName: "Viewer Features", samples: [
     getViewCameraSpec(),
     getClassifierSpec(),
@@ -111,7 +112,8 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getVolumeQuerySpec(),
     getZoomToElementsSpec(),
   ],
-}, {
+},
+{
   groupName: "UI Components", samples: [
     getBadgeSpec(),
     getButtonSpec(),
@@ -127,7 +129,8 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getTilesSpec(),
     getToggleSpec(),
   ],
-}, {
+},
+{
   groupName: "UI Trees", samples: [
     getBasicTreeSpec(),
     getPresentationTreeSpec(),
@@ -138,12 +141,14 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getUnifiedSelectionTreeSpec(),
     getCustomWebfontIconsTreeSpec(),
   ],
-}, {
+},
+{
   groupName: "AppUI", samples: [
     getViewportFrontstageSample(),
     getToolbarButtonSample(),
   ],
-}, {
+},
+{
   groupName: "Geometry Samples", samples: [
     getSimpleLineSpec(),
     get2dTransformationsSpec(),

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getPropertyFormattingSpec(): SampleSpec {
@@ -11,7 +11,7 @@ export function getPropertyFormattingSpec(): SampleSpec {
     name: "property-formatting-sample",
     label: "Property Formatting",
     image: "property-formatting-thumbnail.png",
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
+    iModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp") },

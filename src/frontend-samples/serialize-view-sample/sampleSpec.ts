@@ -2,8 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getSerializeViewSpec(): SampleSpec {
@@ -11,7 +10,7 @@ export function getSerializeViewSpec(): SampleSpec {
     name: "serialize-view-sample",
     label: "Serialize View",
     image: "serialize-view-thumbnail.png",
-    customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding],
+    iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp") },

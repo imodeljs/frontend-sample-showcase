@@ -8,7 +8,7 @@ import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, Thema
 import { IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
 import { Select, Slider, Toggle } from "@bentley/ui-core";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox";
 import { SandboxViewport } from "common/SandboxViewport/SandboxViewport";
 import * as React from "react";
 import ThematicDisplayApp from "./ThematicDisplayApp";
