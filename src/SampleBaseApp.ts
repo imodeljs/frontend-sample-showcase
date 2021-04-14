@@ -83,7 +83,7 @@ export class SampleBaseApp {
 
   private static async initializeOidc() {
     // Gather configuration out of the environment
-    /*  Uncomment this block to enable signin.
+    /* Uncomment this block to enable signin.
     const clientId = Config.App.get("imjs_frontend_sample_client_id", "imodeljs-spa-samples-2686");
     const redirectUri = Config.App.get("imjs_frontend_sample_redirect_uri", "http://localhost:3000/signin-callback.html");
     const scope = Config.App.get("imjs_frontend_sample_scope", "openid email profile organization imodelhub context-registry-service:read-only product-settings-service general-purpose-imodeljs-backend imodeljs-router");
@@ -91,7 +91,7 @@ export class SampleBaseApp {
     const oidcConfig: BrowserAuthorizationClientConfiguration = { clientId, redirectUri, scope, responseType };
     await BrowserAuthorizationCallbackHandler.handleSigninCallback(oidcConfig.redirectUri);
     // Setup the IModelApp authorization client
-    IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig); ..
+    IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig);
     */
 
     // Comment this block to disable no-signin.
