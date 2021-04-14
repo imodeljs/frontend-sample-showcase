@@ -60,21 +60,24 @@ export class ActiveSample {
 }
 
 const updateURLParams = (group: string, sample: string, imodel?: string) => {
-  const params = new URLSearchParams({ group, sample });
+  const url = new URL(window.location.href);
+  if (!url.pathname.includes("signin-callback")) {
+    const params = new URLSearchParams({ group, sample });
 
-  if (imodel) {
-    params.append("imodel", imodel);
-  }
+    if (imodel) {
+      params.append("imodel", imodel);
+    }
 
-  // Detect if editor was enabled in URL params as a semi-backdoor, this
-  // bypasses the ld feature flag
-  const editorEnabled = new URLSearchParams(window.location.search).get("editor");
-  if (editorEnabled) params.append("editor", editorEnabled);
+    // Detect if editor was enabled in URL params as a semi-backdoor, this
+    // bypasses the ld feature flag
+    const editorEnabled = new URLSearchParams(window.location.search).get("editor");
+    if (editorEnabled) params.append("editor", editorEnabled);
 
-  window.history.pushState(null, "", `?${params.toString()}`);
+    window.history.pushState(null, "", `?${params.toString()}`);
 
-  // Send to parent if within an iframe.
-  if (window.self !== window.top) {
-    window.parent.postMessage(`?${params.toString()}`, "*");
+    // Send to parent if within an iframe.
+    if (window.self !== window.top) {
+      window.parent.postMessage(`?${params.toString()}`, "*");
+    }
   }
 };
