@@ -63,7 +63,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
   useEffect(() => {
-    const unsub = FrontstageManager.onFrontstageReadyEvent.addListener(FloatingWidgetsManager.onFrontstageReadyListener);
     const debounce = setTimeout(() => {
       abortController.abort();
       abortController = new AbortController();
@@ -88,7 +87,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
       initialize(abortController.signal);
     }, 1000);
     return () => {
-      unsub();
       clearTimeout(debounce);
     };
   }, [iTwinViewerReady, transpileResult, type]);
