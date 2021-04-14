@@ -11,8 +11,6 @@ import { AuthorizationClient } from "@itwinjs-sandbox/authentication/Authorizati
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { SampleBaseApp } from "SampleBaseApp";
-import { FrontstageManager } from "@bentley/ui-framework";
-import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
 
 const i18nNamespace = "sample-showcase-i18n-namespace";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);

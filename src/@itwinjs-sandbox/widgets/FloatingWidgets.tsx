@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
-import { FrontstageDef, FrontstageReadyEventArgs, UiFramework, WidgetDef, WidgetState } from "@bentley/ui-framework";
+import { FrontstageDef, UiFramework, WidgetDef, WidgetState } from "@bentley/ui-framework";
 import { CSSProperties, ReactNode } from "react";
 import ReactDOM from "react-dom";
 

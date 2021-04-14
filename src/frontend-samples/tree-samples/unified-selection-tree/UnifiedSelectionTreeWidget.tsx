@@ -7,7 +7,6 @@ import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
 import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Ruleset } from "@bentley/presentation-common";
 import RULESET_TREE_HIERARCHY from "./TreeHierarchy";
 import "./UnifiedSelectionTree.scss";
 const PAGING_SIZE = 20;
@@ -30,7 +29,7 @@ const UnifiedSelectionWidget: FunctionComponent = () => {
   // is created when any property of object passed to `usePresentationTreeNodeLoader` changes
   const nodeLoader = usePresentationTreeNodeLoader({
     imodel: iModelConnection!,
-    ruleset: RULESET_TREE_HIERARCHY as Ruleset,
+    ruleset: RULESET_TREE_HIERARCHY,
     pagingSize: PAGING_SIZE,
   });
 
