@@ -91,9 +91,8 @@ export class SampleBaseApp {
     const oidcConfig: BrowserAuthorizationClientConfiguration = { clientId, redirectUri, scope, responseType };
     await BrowserAuthorizationCallbackHandler.handleSigninCallback(oidcConfig.redirectUri);
     // Setup the IModelApp authorization client
-    IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig); 
+    IModelApp.authorizationClient = new BrowserAuthorizationClient(oidcConfig);
     */
-
 
     // Comment this block to disable no-signin.
     const authClient = new NoSignInIAuthClient();
