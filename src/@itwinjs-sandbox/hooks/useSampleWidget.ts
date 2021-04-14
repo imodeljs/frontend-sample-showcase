@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { UiItemsManager } from "@bentley/ui-abstract";
 import { useActiveFrontstageDef } from "@bentley/ui-framework";
 import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
@@ -20,6 +21,11 @@ export const useSampleWidget = (instructions: string, iModelList?: SampleIModels
   useEffect(() => {
     if (frontstage) {
       FloatingWidgetsManager.onFrontstageReady(frontstage);
+      let unsub: () => void;
+      IModelApp.viewManager.onViewOpen.addOnce((vp) => {
+        unsub = vp.onResized.addListener(() => setTimeout(async () => FloatingWidgetsManager.onFrontstageReady(frontstage), 0));
+      });
+      return () => unsub && unsub();
     }
     return;
   }, [frontstage]);
