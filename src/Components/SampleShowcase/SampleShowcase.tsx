@@ -63,7 +63,7 @@ export const SampleShowcase: FunctionComponent = () => {
   const onEditorSizeChange = (size: number) => {
     if (size < 400 && showEditor) {
       setShowEditor(false);
-    } else if (size >= 400 && !showGallery) {
+    } else if (size >= 400 && !showEditor) {
       setShowEditor(true);
     }
   };
