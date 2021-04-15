@@ -10,6 +10,7 @@ import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
 import { NumberInput, NumericInput, Select } from "@bentley/ui-core";
 import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import Advanced3dApp from "./Advanced3dApp";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 
 export interface ControlsWidgetProps {
   decorator: GeometryDecorator;
@@ -45,3 +46,27 @@ export const Advanced3dWidget: React.FunctionComponent<ControlsWidgetProps> = (p
   );
 
 };
+
+export class Advanced3dWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "Advanced3dWidgetProvider";
+  private decorator: GeometryDecorator;
+  constructor(decorator: GeometryDecorator) {
+    this.decorator = decorator;
+  }
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Right) {
+      widgets.push(
+        {
+          id: "ViewerOnly2dWidget",
+          label: "2D View Selector",
+          defaultState: WidgetState.Floating,
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <Advanced3dWidget decorator={this.decorator} />,
+        }
+      );
+    }
+    return widgets;
+  }
+}

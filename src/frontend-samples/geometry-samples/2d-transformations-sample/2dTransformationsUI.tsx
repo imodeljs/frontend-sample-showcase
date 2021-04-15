@@ -13,6 +13,7 @@ import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
+import { Transformations2dWidget, Transformations2dWidgetProvider } from "./2dTransformationsWidget";
 
 interface TransformationState {
   shape: string;
@@ -27,12 +28,15 @@ interface TransformationState {
 }
 
 export default class Transformations2dUI extends React.Component<{}, TransformationState> {
+  private uiProviders: Transformations2dWidgetProvider;
 
   constructor(props?: any) {
     super(props);
     const decorator = new GeometryDecorator();
     const connection = BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
     const viewState = BlankViewport.getViewState(true, true)
+    this.uiProviders = new Transformations2dWidgetProvider(decorator);
+
 
     this.state = {
       shape: "Square",
@@ -128,6 +132,7 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
           theme={"dark"}
           onIModelAppInit={this._onIModelAppInit}
+          uiProviders={[this.uiProviders]}
           defaultUiConfig={default3DSandboxUi}
           viewStateOptions={this.state.viewState}
           blankConnection={this.state.connection} />

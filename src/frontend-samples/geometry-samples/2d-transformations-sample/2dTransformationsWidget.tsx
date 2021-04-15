@@ -10,6 +10,7 @@ import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
 import { Button, NumberInput, NumericInput, Select } from "@bentley/ui-core";
 import { Loop, Point3d, PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import Transformations2dApp from "./2dTransformationsApp";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 
 export interface ControlsWidgetProps {
   decorator: GeometryDecorator;
@@ -88,3 +89,28 @@ export const Transformations2dWidget: React.FunctionComponent<ControlsWidgetProp
   );
 
 };
+
+
+export class Transformations2dWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ViewerOnly2dWidgetProvider";
+  private decorator: GeometryDecorator;
+  constructor(decorator: GeometryDecorator) {
+    this.decorator = decorator;
+  }
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Right) {
+      widgets.push(
+        {
+          id: "2dTransformationsWidget",
+          label: "2D Transformations",
+          defaultState: WidgetState.Floating,
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <Transformations2dWidget decorator={this.decorator} />,
+        }
+      );
+    }
+    return widgets;
+  }
+}
