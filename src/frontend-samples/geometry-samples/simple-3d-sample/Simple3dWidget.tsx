@@ -10,6 +10,7 @@ import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
 import { NumberInput, NumericInput, Select } from "@bentley/ui-core";
 import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import Simple3dApp from "./Simple3dApp";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 
 export interface ControlsWidgetProps {
   decorator: GeometryDecorator;
@@ -96,3 +97,27 @@ export const Simple3dWidget: React.FunctionComponent<ControlsWidgetProps> = (Con
   );
 
 };
+
+export class Simple3dWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "Simple3dWidgetProvider";
+  private decorator: GeometryDecorator;
+  constructor(decorator: GeometryDecorator) {
+    this.decorator = decorator;
+  }
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Right) {
+      widgets.push(
+        {
+          id: "Simple3dWidget",
+          label: "Simple 3d",
+          defaultState: WidgetState.Floating,
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <Simple3dWidget decorator={this.decorator} />,
+        }
+      );
+    }
+    return widgets;
+  }
+}
