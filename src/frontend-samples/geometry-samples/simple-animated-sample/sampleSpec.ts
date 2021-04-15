@@ -11,6 +11,7 @@ export function getSimpleAnimatedSpec(): SampleSpec {
     label: "Simple Animated",
     image: "simple-animated-thumbnail.png",
     iModelList: [],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "SimpleAnimatedApp.tsx", import: import("!!raw-loader!./SimpleAnimatedApp") },

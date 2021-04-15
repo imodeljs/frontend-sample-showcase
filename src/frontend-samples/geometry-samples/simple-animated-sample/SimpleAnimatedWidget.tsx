@@ -13,6 +13,7 @@ import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import SimpleAnimatedApp from "./SimpleAnimatedApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 
 export interface ControlsWidgetProps {
   decorator: GeometryDecorator;
@@ -79,3 +80,27 @@ export const SimpleAnimatedWidget: React.FunctionComponent<ControlsWidgetProps> 
   );
 
 };
+
+export class SimpleAnimatedWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "SimpleAnimatedWidgetProvider";
+  private decorator: GeometryDecorator;
+  constructor(decorator: GeometryDecorator) {
+    this.decorator = decorator;
+  }
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Right) {
+      widgets.push(
+        {
+          id: "SimpleAnimatedWidget",
+          label: "2D View Selector",
+          defaultState: WidgetState.Floating,
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <SimpleAnimatedWidget decorator={this.decorator} />,
+        }
+      );
+    }
+    return widgets;
+  }
+}

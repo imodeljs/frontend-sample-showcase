@@ -12,6 +12,7 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
     image: "closest-point-curve-thumbnail.png",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
+    iTwinViewerReady: true,
     files: () => [
       { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp") },
       { name: "ClosestPointOnCurveUI.tsx", import: import("!!raw-loader!./ClosestPointOnCurveUI"), entry: true },

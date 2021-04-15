@@ -11,6 +11,7 @@ export function getSimple3dSpec(): SampleSpec {
     label: "Simple 3d",
     image: "simple-3d-thumbnail.png",
     iModelList: [],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp") },

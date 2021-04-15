@@ -11,6 +11,7 @@ export function getSimpleLineSpec(): SampleSpec {
     label: "Simple Line",
     image: "simple-line-thumbnail.png",
     iModelList: [],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp") },

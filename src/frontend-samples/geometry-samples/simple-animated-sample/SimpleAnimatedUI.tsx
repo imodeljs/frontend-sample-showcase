@@ -11,89 +11,63 @@ import { ColorPickerButton } from "@bentley/ui-components";
 import { ColorDef } from "@bentley/imodeljs-common";
 import SimpleAnimatedApp from "./SimpleAnimatedApp";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
+import { SimpleAnimatedWidget, SimpleAnimatedWidgetProvider } from "./SimpleAnimatedWidget";
 
-export default class SimpleAnimatedUI extends React.Component<{}, { grid: boolean[][], dimensions: Range3d, timer: Timer, color: ColorDef, clockSpeed: number, decorator: GeometryDecorator }> {
+interface SimpleAnimatedState {
+  decorator: GeometryDecorator;
+  connection: BlankConnectionProps;
+  viewState: BlankConnectionViewState;
+}
+
+export default class SimpleAnimatedUI extends React.Component<{}, SimpleAnimatedState> {
+  private uiProviders: SimpleAnimatedWidgetProvider;
 
   constructor(props?: any, context?: any) {
     super(props, context);
     const decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(decorator);
+    const connection = BlankViewport.getBlankConnection(new Range3d(-150, -150, 0, 1150, 1150, 0));
+    const viewState = BlankViewport.getViewState(false, true);
+    this.uiProviders = new SimpleAnimatedWidgetProvider(decorator);
+
     this.state = {
-      grid: ConwaysHelpers.generateGrid(),
-      dimensions: new Range3d(-10, -10, 0, 1010, 1010, 0),
-      timer: new Timer(100),
-      clockSpeed: 100,
-      color: ColorDef.fromString("yellow"),
       decorator,
+      viewState,
+      connection,
     };
   }
 
+  private _onIModelAppInit = () => {
+    IModelApp.viewManager.addDecorator(this.state.decorator)
+  }
+
   public componentDidMount() {
-    this.setGeometry();
-    const newGrid = ConwaysHelpers.updateGrid(this.state.grid);
-    this.setState({ grid: newGrid });
-    this.state.timer.setOnExecute(this.handleTimer.bind(this));
-    this.state.timer.start();
+    if (IModelApp && IModelApp.viewManager) {
+      IModelApp.viewManager.addDecorator(this.state.decorator)
+    }
+
   }
 
   public componentWillUnmount() {
-    this.state.timer.setOnExecute(undefined);
     IModelApp.viewManager.dropDecorator(this.state.decorator);
-
-  }
-
-  public setNewTimer(clockSpeed: number) {
-    const timer = new Timer(clockSpeed);
-    timer.setOnExecute(this.handleTimer.bind(this));
-    timer.start();
-    this.setState({ clockSpeed, timer });
-  }
-
-  public getControls() {
-    return (
-      <>
-        <div className="sample-options-2col">
-          <span>Color:</span>
-          <ColorPickerButton initialColor={this.state.color} onColorPick={(color: ColorDef) => { this.setState({ color }); }} />
-          <span>Clock Speed(ms):</span>
-          <NumericInput defaultValue={this.state.clockSpeed} min={1} onChange={(value) => { if (value) { this.setNewTimer(value); } }}></NumericInput>
-        </div>
-      </>
-    );
   }
 
   public render() {
     return (
       <>
-        <ControlPane instructions="An implementation of Conway's game of life" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true} grid={false} sampleSpace={new Range3d(-10, -10, 0, 1010, 1010, 0)}></BlankViewport>
+        <BlankViewer
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          theme={"dark"}
+          onIModelAppInit={this._onIModelAppInit}
+          defaultUiConfig={default3DSandboxUi}
+          uiProviders={[this.uiProviders]}
+          viewStateOptions={this.state.viewState}
+          blankConnection={this.state.connection} />
       </>
     );
-  }
-
-  public setGeometry() {
-    this.state.decorator.clearGeometry();
-    this.state.decorator.setColor(ColorDef.white);
-    this.state.decorator.setFill(true);
-    this.state.decorator.setFillColor(this.state.color);
-    this.state.decorator.setLineThickness(2);
-    const graphicalGrid = SimpleAnimatedApp.createGridSquares(this.state.grid);
-    for (const square of graphicalGrid)
-      this.state.decorator.addGeometry(square);
-
-    IModelApp.viewManager.invalidateDecorationsAllViews();
-  }
-
-  // We are making use of a timer to consistently render animated geometry
-  // Since a viewport only re-renders a frame when it needs or receives new information,
-  // We must invalidate the old decorations on every timer tick
-  public handleTimer() {
-    this.state.timer.start();
-    this.setGeometry();
-    const newGrid = ConwaysHelpers.updateGrid(this.state.grid);
-    this.setState({ grid: newGrid });
   }
 
 }
