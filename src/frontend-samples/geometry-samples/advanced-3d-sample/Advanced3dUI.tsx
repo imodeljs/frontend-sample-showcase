@@ -10,6 +10,7 @@ import { Select } from "@bentley/ui-core";
 import Advanced3dApp from "./Advanced3dApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import { Advanced3dWidgetProvider } from "./Advanced3dWidget";
 
 interface Advanced3dState {
   shape: string;
@@ -19,11 +20,13 @@ interface Advanced3dState {
 }
 
 export default class Advanced3d extends React.Component<{}, Advanced3dState> {
+  private uiProviders: Advanced3dWidgetProvider;
 
   constructor(props?: any, context?: any) {
     super(props, context);
     const decorator = new GeometryDecorator();
     IModelApp.viewManager.addDecorator(decorator);
+    this.uiProviders = new Advanced3dWidgetProvider(decorator);
     this.state = {
       shape: "Sweeps",
       color: ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)),
@@ -75,3 +78,5 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
   }
 
 }
+
+
