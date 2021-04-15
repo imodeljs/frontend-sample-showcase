@@ -11,6 +11,8 @@ import { NumberInput, Slider } from "@bentley/ui-core";
 import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
 import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
 import CurveFractionApp from "./CurveFractionApp";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { SimpleLineWidget } from "../simple-line-sample/SimpleLineWidget";
 
 export interface ControlsWidgetProps {
   decorator: GeometryDecorator;
@@ -145,3 +147,28 @@ export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> =
   );
 
 };
+
+
+export class CurveFractionWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "CurveFractionWidgetProvider";
+  private decorator: GeometryDecorator;
+  constructor(decorator: GeometryDecorator) {
+    this.decorator = decorator;
+  }
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Right) {
+      widgets.push(
+        {
+          id: "CurveFractionWidget",
+          label: "Curve Fraction",
+          defaultState: WidgetState.Floating,
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <CurveFractionWidget decorator={this.decorator} />,
+        }
+      );
+    }
+    return widgets;
+  }
+}
