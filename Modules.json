@@ -4,7 +4,16 @@
       "name": "react"
     },
     {
+      "name": "react-dnd"
+    },
+    {
+      "name": "react-dnd-html5-backend"
+    },
+    {
       "name": "react-dom"
+    },
+    {
+      "name": "react-merge-refs"
     }
   ],
   "internal": [
@@ -13,8 +22,20 @@
       "import": "react"
     },
     {
+      "name": "react-dnd",
+      "import": "react-dnd"
+    },
+    {
+      "name": "react-dnd-html5-backend",
+      "import": "react-dnd-html5-backend"
+    },
+    {
       "name": "react-dom",
       "import": "react-dom"
+    },
+    {
+      "name": "react-merge-refs",
+      "import": "react-merge-refs"
     },
     {
       "name": "@bentley/bentleyjs-core",
@@ -215,10 +236,6 @@
       "name": "common/Geometry/SampleCurveFactory",
       "import": "./src/common/Geometry/SampleCurveFactory",
       "typedef": true
-    },
-    {
-      "name": "common/DataProvider/Trees.scss",
-      "import": "!!raw-loader!common/DataProvider/Trees.scss"
     },
     {
       "name": "common/samples-common.scss",

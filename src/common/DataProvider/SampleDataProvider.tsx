@@ -5,6 +5,7 @@
 import { DelayLoadedTreeNodeItem, ITreeDataProvider, TreeDataChangesListener, TreeNodeItem } from "@bentley/ui-components";
 import { PropertyRecord } from "@bentley/ui-abstract";
 import { BeEvent } from "@bentley/bentleyjs-core";
+import "./Trees.scss";
 
 /**
  * Data provider that returns some fake nodes to show in tree.
