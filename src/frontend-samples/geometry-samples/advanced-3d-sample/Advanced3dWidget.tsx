@@ -6,9 +6,7 @@
 import React, { useEffect } from "react";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
-import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
-import { NumberInput, NumericInput, Select } from "@bentley/ui-core";
-import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
+import { Select } from "@bentley/ui-core";
 import Advanced3dApp from "./Advanced3dApp";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 

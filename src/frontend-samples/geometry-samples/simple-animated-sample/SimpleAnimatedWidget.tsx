@@ -4,11 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
+import { ColorDef } from "@bentley/imodeljs-common";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
-import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
-import { NumberInput, NumericInput, Select, Timer } from "@bentley/ui-core";
-import { PolyfaceBuilder, Range3d, StrokeOptions } from "@bentley/geometry-core";
+import { NumberInput, Timer } from "@bentley/ui-core";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import SimpleAnimatedApp from "./SimpleAnimatedApp";
 import { IModelApp } from "@bentley/imodeljs-frontend";

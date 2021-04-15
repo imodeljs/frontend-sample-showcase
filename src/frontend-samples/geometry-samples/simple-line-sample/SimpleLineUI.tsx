@@ -9,7 +9,7 @@ import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
 import { Range3d } from "@bentley/geometry-core";
-import { SimpleLineWidget, SimpleLineWidgetProvider } from "./SimpleLineWidget";
+import { SimpleLineWidgetProvider } from "./SimpleLineWidget";
 
 interface SimpleLineState {
   point1X: number;
@@ -41,7 +41,6 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
     };
   }
 
-
   public render() {
     return (
       <>
@@ -60,18 +59,12 @@ export default class SimpleLine extends React.Component<{}, SimpleLineState> {
 
   private _onIModelAppInit = () => {
     IModelApp.viewManager.addDecorator(this.state.decorator)
-    //this.setGeometry();
-  }
+  };
 
   public componentDidMount() {
     if (IModelApp && IModelApp.viewManager) {
       IModelApp.viewManager.addDecorator(this.state.decorator)
-      //this.setGeometry();
     }
-  }
-
-  public componentDidUpdate() {
-    //this.setGeometry();
   }
 
   public componentWillUnmount() {

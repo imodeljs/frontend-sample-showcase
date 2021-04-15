@@ -4,18 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
-import { ControlPane } from "common/ControlPane/ControlPane";
-import { NumericInput, Slider } from "@bentley/ui-core";
-import CurveFractionApp from "./CurveFractionApp";
-import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
-import { InteractivePointMarker, MovePointTool } from "common/Geometry/InteractivePointMarker";
-import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
-import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
+import { MovePointTool } from "common/Geometry/InteractivePointMarker";
+import { Range3d } from "@bentley/geometry-core";
 import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
-import { CurveFractionWidget, CurveFractionWidgetProvider } from "./CurveFractionWidget";
+import { CurveFractionWidgetProvider } from "./CurveFractionWidget";
 
 interface CurveFractionState {
   decorator: GeometryDecorator;
@@ -46,7 +41,6 @@ export default class CurveFractionUI extends React.Component<{}, CurveFractionSt
     MovePointTool.register(sampleNamespace);
 
   };
-
 
   public render() {
     return (

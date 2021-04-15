@@ -4,10 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
-import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { ControlPane } from "common/ControlPane/ControlPane";
-import { Select } from "@bentley/ui-core";
-import Advanced3dApp from "./Advanced3dApp";
 import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
@@ -31,7 +27,6 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
     const viewState = BlankViewport.getViewState(true, false)
     this.uiProviders = new Advanced3dWidgetProvider(decorator);
 
-    //this._sampleWidgetUiProvider = new SampleWidgetUiProvider("Select a shape", <Advanced3dWidget decorator={decorator} />);
     this.state = {
       decorator,
       connection,

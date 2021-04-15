@@ -4,18 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
-import { ControlPane } from "common/ControlPane/ControlPane";
-import { Input, NumericInput, Select } from "@bentley/ui-core";
-import ClosestPointOnCurveApp from "./ClosestPointOnCurveApp";
-import { CurvePrimitive, LineSegment3d, Point3d, Range3d } from "@bentley/geometry-core";
-import { ColorByName, ColorDef, LinePixels } from "@bentley/imodeljs-common";
+import { CurvePrimitive, Range3d } from "@bentley/geometry-core";
 import { InteractivePointMarker, MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
-import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
 import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
-import { ClosestPointOnCurveWidget, ClosestPointOnCurveWidgetProvider } from "./ClosestPointOnCurveWidget";
+import { ClosestPointOnCurveWidgetProvider } from "./ClosestPointOnCurveWidget";
 
 interface ClosestPointOnCurveState {
   decorator: GeometryDecorator;

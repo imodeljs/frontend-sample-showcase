@@ -6,14 +6,13 @@ import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
 import { Loop, Point3d, Range3d } from "@bentley/geometry-core";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { ControlPane } from "common/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
 import Transformations2dApp from "./2dTransformationsApp";
 import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
-import { Transformations2dWidget, Transformations2dWidgetProvider } from "./2dTransformationsWidget";
+import { Transformations2dWidgetProvider } from "./2dTransformationsWidget";
 
 interface TransformationState {
   shape: string;

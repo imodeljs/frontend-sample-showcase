@@ -12,7 +12,6 @@ import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } 
 import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
 import CurveFractionApp from "./CurveFractionApp";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { SimpleLineWidget } from "../simple-line-sample/SimpleLineWidget";
 
 export interface ControlsWidgetProps {
   decorator: GeometryDecorator;
@@ -147,7 +146,6 @@ export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> =
   );
 
 };
-
 
 export class CurveFractionWidgetProvider implements UiItemsProvider {
   public readonly id: string = "CurveFractionWidgetProvider";

@@ -22,7 +22,6 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
 
   public decorator: GeometryDecorator | undefined;
 
-
   public async componentWillUnmount() {
     if (this.state.imodel) {
       await this.state.imodel.close();
@@ -45,8 +44,6 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
       eyePoint: { x: 0, y: 0, z: 25 },
       targetPoint: { x: 0, y: 0, z: 0 },
       upVector: new Vector3d(0, 0, 1),
-      //newExtents: { x: 30, y: 30 },
-      //frontDistance: 30,
     };
     const viewState: BlankConnectionViewState = {
       displayStyle: {
@@ -59,71 +56,8 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
       setAllow3dManipulations: !twoDim,
       lookAt: twoDim ? lookAt : undefined,
     };
-    /*
-        const ext = imodel.projectExtents;
-        if (!twoDim) {
-          viewState.setAllow3dManipulations(true);
-          viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
-        } else {
-          viewState.setAllow3dManipulations(false);
-          viewState.setStandardRotation(StandardViewId.Top);
-        }
-        const flags = viewState.viewFlags.clone()
-        flags.renderMode = RenderMode.SmoothShade
-        viewState.displayStyle.backgroundColor = ColorDef.white;
-        if (grid)
-          flags.grid = true;
-        else
-          flags.grid = false;
-    
-        viewState.displayStyle.viewFlags = flags;
-    */
+
     return viewState;
   }
 
-  public render() {
-    return (
-      <>
-        {this.state && this.state.imodel && this.state.viewState ? toolbar(this.props.force2d) : undefined}
-        {this.state && this.state.imodel && this.state.viewState ? <ViewportComponent imodel={this.state.imodel} viewState={this.state.viewState}></ViewportComponent> : undefined}
-      </>
-    );
-  }
-
 }
-
-// The toolbar that is used the various geometry samples
-// The rotate tool is available depending on whether the viewport is 2d or 3d
-const toolbar = (allowRotate: boolean) => {
-  /* eslint-disable */
-  return (
-    <div className="toolbar">
-      <a href="#" title={SelectionTool.flyover} onClick={(e) => { e.preventDefault(); select(); }}><span className="icon icon-cursor"></span></a>
-      <a href="#" title={FitViewTool.flyover} onClick={(e) => { e.preventDefault(); fitView(); }}><span className="icon icon-fit-to-view"></span></a>
-      {allowRotate ? undefined : <a href="#" title={RotateViewTool.flyover} onClick={(e) => { e.preventDefault(); rotate(); }}><span className="icon icon-gyroscope"></span></a>}
-      <a href="#" title={PanViewTool.flyover} onClick={(e) => { e.preventDefault(); pan(); }}><span className="icon icon-hand-2"></span></a>
-      <a href="#" title={ZoomViewTool.flyover} onClick={(e) => { e.preventDefault(); zoom(); }}><span className="icon icon-zoom"></span></a>
-    </div>
-  );
-  /* eslint-enable */
-};
-
-const select = () => {
-  IModelApp.tools.run(SelectionTool.toolId);
-};
-
-const fitView = () => {
-  IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
-};
-
-const rotate = () => {
-  IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
-};
-
-const pan = () => {
-  IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
-};
-
-const zoom = () => {
-  IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
-};

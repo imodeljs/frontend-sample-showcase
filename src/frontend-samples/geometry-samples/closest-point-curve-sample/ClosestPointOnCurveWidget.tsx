@@ -133,8 +133,6 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent<ControlsWidgetPr
 
 };
 
-
-
 export class ClosestPointOnCurveWidgetProvider implements UiItemsProvider {
   public readonly id: string = "ClosestPointOnCurveWidgetProvider";
   private decorator: GeometryDecorator;

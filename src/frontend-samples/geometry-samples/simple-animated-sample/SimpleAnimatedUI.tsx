@@ -4,18 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
-import { Range3d } from "@bentley/geometry-core";
-import { ControlPane } from "common/ControlPane/ControlPane";
-import { NumericInput, Timer } from "@bentley/ui-core";
-import { ColorPickerButton } from "@bentley/ui-components";
-import { ColorDef } from "@bentley/imodeljs-common";
-import SimpleAnimatedApp from "./SimpleAnimatedApp";
-import { ConwaysHelpers } from "./ConwaysGameOfLife";
+import { Range3d } from "@bentley/geometry-core";;
 import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
-import { SimpleAnimatedWidget, SimpleAnimatedWidgetProvider } from "./SimpleAnimatedWidget";
+import { SimpleAnimatedWidgetProvider } from "./SimpleAnimatedWidget";
 
 interface SimpleAnimatedState {
   decorator: GeometryDecorator;
