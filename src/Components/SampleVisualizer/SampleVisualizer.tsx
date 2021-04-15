@@ -80,11 +80,13 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
 
           setAppReady(true);
         } catch (err) {
+          setAppReady(false);
         }
       };
       initialize(abortController.signal);
     }, 1000);
     return () => {
+      setAppReady(false);
       clearTimeout(debounce);
     };
   }, [iTwinViewerReady, transpileResult, type]);
