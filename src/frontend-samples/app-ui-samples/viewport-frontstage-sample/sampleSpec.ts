@@ -4,7 +4,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "SampleSpec";
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 
 export function getViewportFrontstageSample(): SampleSpec {
   return ({
@@ -15,7 +15,7 @@ export function getViewportFrontstageSample(): SampleSpec {
     files: () => [
       { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
     ],
-    customModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
+    iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "ViewportFrontstageApp.tsx",
   });
 }

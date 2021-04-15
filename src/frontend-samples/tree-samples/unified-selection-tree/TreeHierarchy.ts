@@ -1,0 +1,81 @@
+import { ChildNodeSpecificationTypes, RelationshipDirection, Ruleset, RuleTypes } from "@bentley/presentation-common";
+
+const TreeHierarchy: Ruleset = {
+  id: "TreeHierarchy",
+  supportedSchemas: {
+    schemaNames: [
+      "BisCore",
+    ],
+  },
+  rules: [
+    {
+      ruleType: RuleTypes.RootNodes,
+      specifications: [
+        {
+          specType: ChildNodeSpecificationTypes.InstanceNodesOfSpecificClasses,
+          classes: [
+            {
+              schemaName: "BisCore",
+              classNames: [
+                "GeometricModel3d",
+              ],
+            },
+          ],
+          arePolymorphic: true,
+          groupByClass: false,
+          groupByLabel: false,
+        },
+      ],
+    },
+    {
+      ruleType: RuleTypes.ChildNodes,
+      condition: "ParentNode.IsOfClass(\"GeometricModel3d\", \"BisCore\")",
+      specifications: [
+        {
+          specType: ChildNodeSpecificationTypes.RelatedInstanceNodes,
+          relationshipPaths: [
+            {
+              relationship: {
+                schemaName: "BisCore",
+                className: "ModelContainsElements",
+              },
+              direction: RelationshipDirection.Forward,
+              targetClass: {
+                schemaName: "BisCore",
+                className: "GeometricElement3d",
+              },
+            },
+          ],
+          groupByClass: false,
+          groupByLabel: false,
+        },
+      ],
+    },
+    {
+      ruleType: RuleTypes.ChildNodes,
+      condition: "ParentNode.IsOfClass(\"GeometricElement3d\", \"BisCore\")",
+      specifications: [
+        {
+          specType: ChildNodeSpecificationTypes.RelatedInstanceNodes,
+          relationshipPaths: [
+            {
+              relationship: {
+                schemaName: "BisCore",
+                className: "ElementOwnsChildElements",
+              },
+              direction: RelationshipDirection.Forward,
+              targetClass: {
+                schemaName: "BisCore",
+                className: "GeometricElement3d",
+              },
+            },
+          ],
+          groupByClass: false,
+          groupByLabel: false,
+        },
+      ],
+    },
+  ],
+};
+
+export default TreeHierarchy;

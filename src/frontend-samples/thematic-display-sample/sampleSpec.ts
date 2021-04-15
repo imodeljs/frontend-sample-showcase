@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getThematicDisplaySpec(): SampleSpec {
@@ -16,7 +16,7 @@ export function getThematicDisplaySpec(): SampleSpec {
       { name: "ThematicDisplayApp.tsx", import: import("!!raw-loader!./ThematicDisplayApp") },
       { name: "ThematicDisplayUI.tsx", import: import("!!raw-loader!./ThematicDisplayUI"), entry: true },
     ],
-    customModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
+    iModelList: [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding],
     type: "ThematicDisplayUI.tsx",
   });
 }

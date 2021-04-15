@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getRealityDataSpec(): SampleSpec {
@@ -16,7 +16,7 @@ export function getRealityDataSpec(): SampleSpec {
       { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
       { name: "RealityDataUI.tsx", import: import("!!raw-loader!./RealityDataUI"), entry: true },
     ],
-    customModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
+    iModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
     type: "RealityDataUI.tsx",
   });
 }

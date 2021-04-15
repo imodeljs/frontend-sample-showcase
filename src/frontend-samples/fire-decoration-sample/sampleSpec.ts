@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getParticleFireSampleSpec(): SampleSpec {
@@ -11,7 +11,7 @@ export function getParticleFireSampleSpec(): SampleSpec {
     name: "fire-sample",
     label: "Particle Effect (Fire)",
     image: "fire-decorator-thumbnail.png",
-    customModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
+    iModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp") },

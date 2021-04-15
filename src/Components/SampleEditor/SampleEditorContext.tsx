@@ -19,7 +19,6 @@ export interface EditorProps {
 
 export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
   const { files, readme, style, onCloseClick, onTranspiled, onSampleClicked } = props;
-
   return (
     <EditorEnvironmentContextProvider>
       <SampleEditor

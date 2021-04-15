@@ -1,3 +1,4 @@
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import React from "react";
 
 export interface SampleProps {
@@ -22,7 +23,7 @@ export interface SampleSpec {
   image: string;
   readme?: () => Promise<{ default: string }>;
   files?: () => SampleSpecFile[];
-  customModelList?: string[];
-  sampleClass?: typeof React.Component;
+  iModelList?: SampleIModels[];
+  iTwinViewerReady?: boolean;
   type?: string;
 }

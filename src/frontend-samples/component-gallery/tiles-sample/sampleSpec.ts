@@ -11,7 +11,7 @@ export function getTilesSpec(): SampleSpec {
     name: "tiles-sample",
     label: "UI-Tiles",
     image: "ui-tile-thumbnail.png",
-    customModelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "Tiles.tsx", import: import("!!raw-loader!./Tiles"), entry: true },

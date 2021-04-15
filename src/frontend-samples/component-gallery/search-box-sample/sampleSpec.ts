@@ -11,7 +11,7 @@ export function getSearchBoxSpec(): SampleSpec {
     name: "search-box-sample",
     label: "UI-Search Boxes",
     image: "ui-search-boxes-thumbnail.png",
-    customModelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "SearchBox.tsx", import: import("!!raw-loader!./SearchBox"), entry: true },

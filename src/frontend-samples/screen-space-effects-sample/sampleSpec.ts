@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getScreenSpaceEffectsSpec(): SampleSpec {
@@ -11,7 +11,7 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
     name: "screen-space-effects-sample",
     label: "Screen-space Effects",
     image: "screen-space-effects-thumbnail.png",
-    customModelList: [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
+    iModelList: [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ScreenSpaceEffectsApp.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApp") },

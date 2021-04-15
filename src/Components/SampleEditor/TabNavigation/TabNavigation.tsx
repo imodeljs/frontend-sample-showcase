@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { Component } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { RunCodeButton, TabNavigation as TabNav } from "@bentley/monaco-editor";
 import { featureFlags, FeatureToggleClient } from "../../../FeatureToggleClient";
 import classNames from "classnames";
@@ -14,47 +14,31 @@ export interface TabNavigationProps {
   onShowReadme: () => void;
 }
 
-export interface TabNavigationState {
-  error?: Error;
-  result?: string;
-}
+// await FeatureToggleClient.initialize();
 
-export class TabNavigation extends Component<TabNavigationProps, TabNavigationState>{
+export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadme, onRunCompleted, onShowReadme }) => {
+  const [executable, setExecutable] = useState<boolean>();
 
-  constructor(props: TabNavigationProps) {
-    super(props);
-    this.state = {};
-  }
+  useEffect(() => {
+    FeatureToggleClient.initialize()
+      .then(() => {
+        setExecutable(FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor));
+      });
+  }, []);
 
-  public componentDidUpdate(_prevProps: TabNavigationProps, prevState: TabNavigationState) {
-    if (this.state.result && this.state.result !== prevState.result) {
-      this.props.onRunCompleted(this.state.result);
-    }
-  }
+  const _onRunCompleted = useCallback((blob: string) => {
+    onRunCompleted(blob);
+  }, [onRunCompleted]);
 
-  private _onRunStarted = () => {
-    this.setState({ error: undefined, result: undefined });
-  };
+  return (
+    <TabNav showClose={false}>
+      <div className="action-item " onClick={onShowReadme}>
+        <div className={classNames("icon icon-info readme-button", { "readme-button-active": showReadme })}></div>
+      </div>
+      <div className="action-item run-code-button">
+        {executable && <RunCodeButton style={{ paddingLeft: "10px", paddingRight: "10px" }} onRunStarted={() => { }} onBundleError={() => { }} onRunCompleted={_onRunCompleted} buildOnRender={false} />}
+      </div>
+    </TabNav>
+  );
 
-  private _onBundleError = (error: Error) => {
-    this.setState({ error, result: undefined });
-  };
-
-  private _onRunCompleted = (blob: string) => {
-    this.setState({ error: undefined, result: blob });
-  };
-
-  public render() {
-    const executable = FeatureToggleClient.isFeatureEnabled(featureFlags.enableEditor);
-    return (
-      <TabNav showClose={false}>
-        <div className="action-item " onClick={this.props.onShowReadme}>
-          <div className={classNames("icon icon-info readme-button", { "readme-button-active": this.props.showReadme })}></div>
-        </div>
-        <div className="action-item run-code-button">
-          {executable && <RunCodeButton onRunStarted={this._onRunStarted} onBundleError={this._onBundleError} onRunCompleted={this._onRunCompleted} buildOnRender={false} />}
-        </div>
-      </TabNav>
-    );
-  }
-}
+};

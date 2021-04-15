@@ -10,7 +10,7 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     name: "custom-checkboxes-sample",
     label: "Custom Checkboxes Tree",
     image: "custom-checkboxes-tree-thumbnail.png",
-    customModelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp") },
