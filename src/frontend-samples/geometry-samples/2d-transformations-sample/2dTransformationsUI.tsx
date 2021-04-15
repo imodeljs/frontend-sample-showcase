@@ -4,13 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { BlankViewport } from "common/Geometry/BlankViewport";
-import { Loop, Point3d } from "@bentley/geometry-core";
+import { Loop, Point3d, Range3d } from "@bentley/geometry-core";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { Button, NumericInput, Select } from "@bentley/ui-core";
 import Transformations2dApp from "./2dTransformationsApp";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
 
 interface TransformationState {
   shape: string;
@@ -20,6 +22,8 @@ interface TransformationState {
   rotationDeg: number;
   geometry: Loop;
   decorator: GeometryDecorator;
+  connection: BlankConnectionProps;
+  viewState: BlankConnectionViewState;
 }
 
 export default class Transformations2dUI extends React.Component<{}, TransformationState> {
@@ -27,7 +31,9 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
   constructor(props?: any) {
     super(props);
     const decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(decorator);
+    const connection = BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
+    const viewState = BlankViewport.getViewState(true, true)
+
     this.state = {
       shape: "Square",
       color: ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)),
@@ -36,8 +42,18 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
       rotationDeg: 180,
       geometry: Transformations2dApp.generateSquare(Point3d.create(0, 0), 400),
       decorator,
+      connection,
+      viewState,
     };
   }
+
+  public componentDidMount() {
+    this.generateBaseGeometry(this.state.shape);
+    if (IModelApp && IModelApp.viewManager) {
+      IModelApp.viewManager.addDecorator(this.state.decorator)
+    }
+  }
+
 
   public componentDidUpdate() {
     if (this.state.geometry) {
@@ -100,18 +116,25 @@ export default class Transformations2dUI extends React.Component<{}, Transformat
     );
   }
 
+  private _onIModelAppInit = () => {
+    IModelApp.viewManager.addDecorator(this.state.decorator)
+    this.generateBaseGeometry(this.state.shape);
+  }
+
   public render() {
     return (
       <>
-        <ControlPane instructions="Select a shape, and apply transformations to it." controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={true} grid={true} sampleSpace={undefined}></BlankViewport>
+        <BlankViewer
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          theme={"dark"}
+          onIModelAppInit={this._onIModelAppInit}
+          defaultUiConfig={default3DSandboxUi}
+          viewStateOptions={this.state.viewState}
+          blankConnection={this.state.connection} />
       </>
     );
   }
 
-  public componentDidMount() {
-    this.generateBaseGeometry(this.state.shape);
-  }
 
   public componentWillUnmount() {
     IModelApp.viewManager.dropDecorator(this.state.decorator);
