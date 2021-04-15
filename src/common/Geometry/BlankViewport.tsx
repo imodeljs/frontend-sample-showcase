@@ -4,10 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
-import { BlankConnection, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
+import { BlankConnection, BlankConnectionProps, FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, SpatialViewState, StandardViewId, ViewState, ZoomViewTool } from "@bentley/imodeljs-frontend";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { ViewportComponent } from "@bentley/ui-components";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import { BlankConnectionViewState, BlankConnectionViewStateLookAt } from "@bentley/itwin-viewer-react";
+
 import "common/SandboxViewport/Toolbar/Toolbar.scss";
 
 interface BlankViewportProps {
@@ -20,19 +22,6 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
 
   public decorator: GeometryDecorator | undefined;
 
-  public componentDidMount() {
-    let imodel;
-    if (this.props.sampleSpace) {
-      imodel = BlankViewport.getBlankConnection(this.props.sampleSpace);
-    } else {
-      imodel = BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
-    }
-    const viewState = BlankViewport.getViewState(imodel, this.props.grid, this.props.force2d);
-    this.setState({
-      viewState,
-      imodel,
-    });
-  }
 
   public async componentWillUnmount() {
     if (this.state.imodel) {
@@ -42,35 +31,53 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
 
   // Creates a blank iModelConnection with the specified dimensions
   public static getBlankConnection(sampleDimensions: Range3d) {
-    const exton: BlankConnection = BlankConnection.create({
+    const exton: BlankConnectionProps = {
       name: "GeometryConnection",
       location: Cartographic.fromDegrees(0, 0, 0),
       extents: sampleDimensions,
-    });
+    };
     return exton;
   }
 
   // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
-  public static getViewState(imodel: IModelConnection, grid: boolean, twoDim: boolean): SpatialViewState {
-    const ext = imodel.projectExtents;
-    const viewState = SpatialViewState.createBlank(imodel, ext.low, ext.high.minus(ext.low));
-    if (!twoDim) {
-      viewState.setAllow3dManipulations(true);
-      viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
-    } else {
-      viewState.setAllow3dManipulations(false);
-      viewState.setStandardRotation(StandardViewId.Top);
-    }
-    const flags = viewState.viewFlags.clone();
-    flags.renderMode = RenderMode.SmoothShade;
-    viewState.displayStyle.backgroundColor = ColorDef.white;
-    if (grid)
-      flags.grid = true;
-    else
-      flags.grid = false;
-
-    viewState.displayStyle.viewFlags = flags;
-
+  public static getViewState(grid: boolean, twoDim: boolean): BlankConnectionViewState {
+    const lookAt: BlankConnectionViewStateLookAt = {
+      eyePoint: { x: 0, y: 0, z: 25 },
+      targetPoint: { x: 0, y: 0, z: 0 },
+      upVector: new Vector3d(0, 0, 1),
+      //newExtents: { x: 30, y: 30 },
+      //frontDistance: 30,
+    };
+    const viewState: BlankConnectionViewState = {
+      displayStyle: {
+        backgroundColor: ColorDef.white,
+      },
+      viewFlags: {
+        grid,
+        renderMode: RenderMode.SmoothShade,
+      },
+      setAllow3dManipulations: !twoDim,
+      lookAt: twoDim ? lookAt : undefined,
+    };
+    /*
+        const ext = imodel.projectExtents;
+        if (!twoDim) {
+          viewState.setAllow3dManipulations(true);
+          viewState.lookAt(new Point3d(15, 15, 15), new Point3d(0, 0, 0), new Vector3d(0, 0, 1));
+        } else {
+          viewState.setAllow3dManipulations(false);
+          viewState.setStandardRotation(StandardViewId.Top);
+        }
+        const flags = viewState.viewFlags.clone()
+        flags.renderMode = RenderMode.SmoothShade
+        viewState.displayStyle.backgroundColor = ColorDef.white;
+        if (grid)
+          flags.grid = true;
+        else
+          flags.grid = false;
+    
+        viewState.displayStyle.viewFlags = flags;
+    */
     return viewState;
   }
 
