@@ -11,6 +11,7 @@ import { Input, NumberInput, Select } from "@bentley/ui-core";
 import { CurvePrimitive, LineSegment3d, Point3d } from "@bentley/geometry-core";
 import ClosestPointOnCurveApp from "./ClosestPointOnCurveApp";
 import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 
 export interface ControlsWidgetProps {
   decorator: GeometryDecorator;
@@ -131,3 +132,29 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent<ControlsWidgetPr
   );
 
 };
+
+
+
+export class ClosestPointOnCurveWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ClosestPointOnCurveWidgetProvider";
+  private decorator: GeometryDecorator;
+  constructor(decorator: GeometryDecorator) {
+    this.decorator = decorator;
+  }
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Right) {
+      widgets.push(
+        {
+          id: "ClosestPointOnCurveWidget",
+          label: "Closest Point On Curve",
+          defaultState: WidgetState.Floating,
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <ClosestPointOnCurveWidget decorator={this.decorator} />,
+        }
+      );
+    }
+    return widgets;
+  }
+}
