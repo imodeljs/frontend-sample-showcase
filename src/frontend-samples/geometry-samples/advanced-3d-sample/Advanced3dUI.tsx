@@ -8,15 +8,17 @@ import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { Select } from "@bentley/ui-core";
 import Advanced3dApp from "./Advanced3dApp";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { BlankConnectionProps, IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
+import { Range3d } from "@bentley/geometry-core";
 import { Advanced3dWidgetProvider } from "./Advanced3dWidget";
 
 interface Advanced3dState {
-  shape: string;
-  color: ColorDef;
-  sweepType: string;
   decorator: GeometryDecorator;
+  connection: BlankConnectionProps;
+  viewState: BlankConnectionViewState;
 }
 
 export default class Advanced3d extends React.Component<{}, Advanced3dState> {
@@ -25,58 +27,48 @@ export default class Advanced3d extends React.Component<{}, Advanced3dState> {
   constructor(props?: any, context?: any) {
     super(props, context);
     const decorator = new GeometryDecorator();
-    IModelApp.viewManager.addDecorator(decorator);
+    const connection = BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30));
+    const viewState = BlankViewport.getViewState(true, false)
     this.uiProviders = new Advanced3dWidgetProvider(decorator);
+
+    //this._sampleWidgetUiProvider = new SampleWidgetUiProvider("Select a shape", <Advanced3dWidget decorator={decorator} />);
     this.state = {
-      shape: "Sweeps",
-      color: ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)),
-      sweepType: "Linear",
       decorator,
+      connection,
+      viewState,
     };
   }
 
   public componentDidMount() {
-    this.state.decorator.clearGeometry();
-    const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    this.state.decorator.setColor(this.state.color);
-    this.state.decorator.addGeometry(polyface);
-    this.state.decorator.drawBase();
+    if (IModelApp && IModelApp.viewManager) {
+      IModelApp.viewManager.addDecorator(this.state.decorator)
+    }
   }
 
-  public componentDidUpdate() {
-    this.state.decorator.clearGeometry();
-    const polyface = Advanced3dApp.getPolyface(this.state.shape, this.state.sweepType);
-    this.state.decorator.setColor(this.state.color);
-    this.state.decorator.addGeometry(polyface);
-    this.state.decorator.drawBase();
-  }
 
-  public componentWillUnmount() {
-    IModelApp.viewManager.dropDecorator(this.state.decorator);
-  }
 
-  public getControls() {
-    return (
-      <>
-        <div className="sample-options-2col">
-          <span>Shape:</span>
-          <Select options={["Sweeps", "Mitered Pipes"]} onChange={(event) => { this.setState({ shape: event.target.value }); }} />
-          {this.state.shape === "Sweeps" ? <span>Sweep Type:</span> : undefined}
-          {this.state.shape === "Sweeps" ? <Select options={["Linear", "Ruled", "Rotational"]} onChange={(event) => { this.setState({ sweepType: event.target.value }); }} /> : undefined}
-        </div>
-      </>
-    );
+
+  private _onIModelAppInit = () => {
+    IModelApp.viewManager.addDecorator(this.state.decorator)
   }
 
   public render() {
     return (
       <>
-        <ControlPane instructions="Select a shape" controls={this.getControls()}></ControlPane>
-        <BlankViewport force2d={false} grid={true} sampleSpace={undefined}></BlankViewport>
-      </>
+        <BlankViewer
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          theme={"dark"}
+          onIModelAppInit={this._onIModelAppInit}
+          uiProviders={[this.uiProviders]}
+          defaultUiConfig={default3DSandboxUi}
+          viewStateOptions={this.state.viewState}
+          blankConnection={this.state.connection} />      </>
     );
   }
 
+
+  public componentWillUnmount() {
+    IModelApp.viewManager.dropDecorator(this.state.decorator);
+  }
+
 }
-
-
