@@ -30,6 +30,10 @@ export const SimpleAnimatedWidget: React.FunctionComponent<ControlsWidgetProps> 
   useEffect(() => {
     timer.setOnExecute(() => { handleTimer(grid, color, timer); });
     timer.start();
+    return () => {
+      timer.stop();
+      timer.setOnExecute(() => { });
+    };
   }, [color]);
 
   const _setGeometry = (newGrid: boolean[][], fillColor: ColorDef) => {
@@ -92,7 +96,7 @@ export class SimpleAnimatedWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "SimpleAnimatedWidget",
-          label: "2D View Selector",
+          label: "Simple Animated",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SimpleAnimatedWidget decorator={this.decorator} />,

@@ -26,7 +26,6 @@ export default class SimpleAnimatedUI extends React.Component<{}, SimpleAnimated
     const connection = BlankViewport.getBlankConnection(new Range3d(-150, -150, 0, 1150, 1150, 0));
     const viewState = BlankViewport.getViewState(false, true);
     this.uiProviders = new SimpleAnimatedWidgetProvider(decorator);
-
     this.state = {
       decorator,
       viewState,
