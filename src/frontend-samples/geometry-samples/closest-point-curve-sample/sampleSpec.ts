@@ -14,11 +14,13 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     iTwinViewerReady: true,
     files: () => [
-      { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp") },
-      { name: "ClosestPointOnCurveUI.tsx", import: import("!!raw-loader!./ClosestPointOnCurveUI"), entry: true },
+      { name: "ClosestPointOnCurveApi.ts", import: import("!!raw-loader!./ClosestPointOnCurveApi") },
+      { name: "ClosestPointOnCurveApp.tsx", import: import("!!raw-loader!./ClosestPointOnCurveApp"), entry: true },
+      { name: "ClosestPointOnCurveWidget.tsx", import: import("!!raw-loader!./ClosestPointOnCurveWidget") },
       { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!common/Geometry/SampleCurveFactory") },
       { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!common/Geometry/InteractivePointMarker") },
+      { name: "ClosestPointOnCurve.scss", import: import("!!raw-loader!./ClosestPointOnCurve.scss") },
     ],
-    type: "ClosestPointOnCurveUI.tsx",
+    type: "ClosestPointOnCurveApp.tsx",
   });
 }
