@@ -112,7 +112,6 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
     setWantEmphasisState(wantEmphasis);
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options">

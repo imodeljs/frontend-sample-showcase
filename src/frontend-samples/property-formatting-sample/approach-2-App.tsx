@@ -6,7 +6,7 @@
 import * as React from "react";
 import "common/samples-common.scss";
 import { Table } from "@bentley/ui-components";
-import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
+import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";
 import { PresentationTableDataProvider } from "@bentley/presentation-components";
 
 interface Approach2State {
@@ -15,7 +15,7 @@ interface Approach2State {
 
 /* This approach uses PresentationTableDataProvider to all the work of querying the backend and
    providing the content to the PropertyGrid component. */
-export class Approach2UI extends React.Component<PropertyProps, Approach2State> {
+export class Approach2App extends React.Component<PropertyProps, Approach2State> {
   constructor(props?: any) {
     super(props);
     this.state = {
@@ -28,7 +28,7 @@ export class Approach2UI extends React.Component<PropertyProps, Approach2State> 
       return;
     }
 
-    const dataProvider = PropertyFormattingApp.createTableDataProvider(this.props.keys, this.props.imodel);
+    const dataProvider = PropertyFormattingApi.createTableDataProvider(this.props.keys, this.props.imodel);
     this.setState({ dataProvider });
   }
 

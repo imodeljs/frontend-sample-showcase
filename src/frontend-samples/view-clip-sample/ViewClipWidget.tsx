@@ -82,7 +82,6 @@ export const ViewClipWidget: React.FunctionComponent = () => {
     [EditManipulator.RotationType.Top]: "Z",
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options">

@@ -37,7 +37,6 @@ export const SimpleLineWidget: React.FunctionComponent<ControlsWidgetProps> = (C
     });
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options-2col">

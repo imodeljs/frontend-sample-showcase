@@ -179,7 +179,6 @@ export default class ClassifierUI extends React.Component<{ iModelName: string, 
       insideDisplayKey,
     } = this.state;
 
-    // Display drawing and sheet options in separate sections.
     return (
       <>
         <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 2fr" }}>

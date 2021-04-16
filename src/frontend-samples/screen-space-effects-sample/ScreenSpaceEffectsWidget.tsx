@@ -129,7 +129,6 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
   let lensAngleValue = lensAngleState;
   lensAngleValue = Math.min(lensAngleValue, lensAngleMax);
   lensAngleValue = Math.max(lensAngleValue, lensAngleMin);
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options">

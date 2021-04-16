@@ -29,9 +29,8 @@ export const Advanced3dWidget: React.FunctionComponent<ControlsWidgetProps> = (p
     props.decorator.setColor(color);
     props.decorator.addGeometry(polyface);
     props.decorator.drawBase();
-  }
+  };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options-2col">

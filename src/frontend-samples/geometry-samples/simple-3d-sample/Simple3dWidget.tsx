@@ -62,7 +62,6 @@ export const Simple3dWidget: React.FunctionComponent<ControlsWidgetProps> = (Con
     ControlsWidgetProps.decorator.drawBase();
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options-2col">

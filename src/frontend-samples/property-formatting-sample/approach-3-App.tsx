@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import { Toggle } from "@bentley/ui-core";
 import { SelectionMode, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { PropertyRecord } from "@bentley/ui-abstract";
-import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
+import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";
 
 export interface OverlySimplePropertyRecord {
   name: string;
@@ -24,7 +24,7 @@ interface Approach3State {
 /* This approach shows how to query for property content and then process the content yourself.  The processing
    we do in for this sample yields a simplified record consisting of name, label, and value for each property.
    That data is then used to build a SimpleTableDataProvider which provides the data to a Table component. */
-export class Approach3UI extends React.Component<PropertyProps, Approach3State> {
+export class Approach3App extends React.Component<PropertyProps, Approach3State> {
 
   private static favoriteFieldNames = ["pc_bis_Element_Model", "pc_bis_Element_CodeValue", "pc_bis_Element_UserLabel"];
 
@@ -43,9 +43,9 @@ export class Approach3UI extends React.Component<PropertyProps, Approach3State> 
     let fieldNames;
 
     if (!this.state.showAll)
-      fieldNames = Approach3UI.favoriteFieldNames;
+      fieldNames = Approach3App.favoriteFieldNames;
 
-    const records = await PropertyFormattingApp.createOverlySimplePropertyRecords(this.props.keys, this.props.imodel, fieldNames);
+    const records = await PropertyFormattingApi.createOverlySimplePropertyRecords(this.props.keys, this.props.imodel, fieldNames);
     this.setState({ records });
   }
 

@@ -7,7 +7,7 @@ import * as React from "react";
 import "common/samples-common.scss";
 import { Toggle } from "@bentley/ui-core";
 import { PropertyGrid } from "@bentley/ui-components";
-import { PropertyFormattingApp, PropertyProps } from "./PropertyFormattingApp";
+import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";
 import { PresentationPropertyDataProvider } from "@bentley/presentation-components";
 
 interface Approach1State {
@@ -17,7 +17,7 @@ interface Approach1State {
 
 /* This approach uses PresentationPropertyDataProvider to all the work of querying the backend and
    providing the content to the PropertyGrid component. */
-export class Approach1UI extends React.Component<PropertyProps, Approach1State> {
+export class Approach1App extends React.Component<PropertyProps, Approach1State> {
   constructor(props?: any) {
     super(props);
     this.state = {
@@ -31,7 +31,7 @@ export class Approach1UI extends React.Component<PropertyProps, Approach1State> 
       return;
     }
 
-    const dataProvider = PropertyFormattingApp.createPropertyDataProvider(this.props.keys, this.props.imodel, this.state.enableCustomize);
+    const dataProvider = PropertyFormattingApi.createPropertyDataProvider(this.props.keys, this.props.imodel, this.state.enableCustomize);
     this.setState({ dataProvider });
   }
 

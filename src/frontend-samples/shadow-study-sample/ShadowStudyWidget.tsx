@@ -85,9 +85,8 @@ const ShadowStudyWidget: React.FunctionComponent = () => {
       minString = String(minute);
     const hour = dateState.getHours();
     return `${String(hour)}:${minString}`;
-  }
+  };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options">

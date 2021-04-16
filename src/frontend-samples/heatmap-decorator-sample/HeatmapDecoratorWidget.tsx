@@ -72,7 +72,6 @@ export const HeatmapDecoratorWidget: React.FunctionComponent = () => {
     setShowDecoratorState(checked);
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options">
