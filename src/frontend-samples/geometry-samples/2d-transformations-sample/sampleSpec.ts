@@ -14,9 +14,11 @@ export function get2dTransformationsSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp") },
-      { name: "2dTransformationsUI.tsx", import: import("!!raw-loader!./2dTransformationsUI"), entry: true },
+      { name: "2dTransformationsApi.ts", import: import("!!raw-loader!./2dTransformationsApi") },
+      { name: "2dTransformationsApp.tsx", import: import("!!raw-loader!./2dTransformationsApp"), entry: true },
+      { name: "2dTransformationsWidget.tsx", import: import("!!raw-loader!./2dTransformationsApp") },
+      { name: "2dTransofrmations.scss", import: import("!!raw-loader!./2dTransformations.scss") },
     ],
-    type: "2dTransformationsUI.tsx",
+    type: "2dTransformationsApp.tsx",
   });
 }

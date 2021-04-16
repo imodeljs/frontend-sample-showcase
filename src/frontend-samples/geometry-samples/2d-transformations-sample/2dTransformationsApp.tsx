@@ -2,60 +2,34 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Transform } from "@bentley/geometry-core";
+import React, { FunctionComponent, useState } from "react";
+import { BlankViewport } from "common/Geometry/BlankViewport";
+import { Range3d } from "@bentley/geometry-core";
+import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
+import { Transformations2dWidgetProvider } from "./2dTransformationsWidget";
 
-export default class Transformations2dApp {
+const uiProviders = [new Transformations2dWidgetProvider()];
 
-  public static handleTranslation(geometry: Loop, xTrans: number, yTrans: number): Loop | undefined {
-    const newGeometry = geometry;
-    if (newGeometry.tryTranslateInPlace(xTrans, yTrans, 0)) {
-      return newGeometry;
-    }
-    return undefined;
-  }
+const Transformations2dApp: FunctionComponent = () => {
+  const [connection] = useState<BlankConnectionProps>(BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30)));
+  const [viewState] = useState<BlankConnectionViewState>(BlankViewport.getViewState(true, true));
 
-  public static handleRotation(geometry: Loop, rotationDeg: number): Loop | undefined {
-    const newGeometry = geometry;
-    const radians = Angle.degreesToRadians(rotationDeg);
-    const rotation = Transform.createRowValues(Math.cos(radians), -Math.sin(radians), 0, 0, Math.sin(radians), Math.cos(radians), 0, 0, 0, 0, 1, 0);
-    if (newGeometry.tryTransformInPlace(rotation)) {
-      return newGeometry;
-    }
-    return undefined;
-  }
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      <BlankViewer
+        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        theme={"dark"}
+        defaultUiConfig={default3DSandboxUi}
+        viewStateOptions={viewState}
+        blankConnection={connection}
+        uiProviders={uiProviders}
+      />
+    </>
+  );
+};
 
-  public static generateSquare(center: Point3d, sideLength: number): Loop {
-    const points: Point3d[] = [];
-    points.push(Point3d.create(center.x - sideLength / 2, center.y - sideLength / 2));
-    points.push(Point3d.create(center.x - sideLength / 2, center.y + sideLength / 2));
-    points.push(Point3d.create(center.x + sideLength / 2, center.y + sideLength / 2));
-    points.push(Point3d.create(center.x + sideLength / 2, center.y - sideLength / 2));
-    points.push(Point3d.create(center.x - sideLength / 2, center.y - sideLength / 2));
-    const linestring = LineString3d.create(points);
-    const loop = Loop.create(linestring.clone());
-    return loop;
-  }
-
-  public static generateCircle(center: Point3d, radius: number): Loop {
-    const circle = Arc3d.createXY(center, radius);
-    const loop = Loop.create(circle.clone());
-    return loop;
-  }
-
-  public static generateTriangle(point1: Point3d, point2: Point3d, point3: Point3d): Loop {
-    const points: Point3d[] = [point1, point2, point3];
-    const linestring = LineString3d.create(points);
-    const loop = Loop.create(linestring.clone());
-    return loop;
-  }
-
-  public static generateConvexHull(points: Point3d[]): Loop {
-    const hullPoints: Point3d[] = [];
-    const interiorPoints: Point3d[] = [];
-    Point3dArray.computeConvexHullXY(points, hullPoints, interiorPoints, true);
-    const hullGeometry = LineString3d.create(hullPoints);
-    const loop = Loop.create(hullGeometry.clone());
-    return loop;
-  }
-
-}
+export default Transformations2dApp;
