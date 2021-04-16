@@ -11,6 +11,11 @@ import { AuthorizationClient } from "@itwinjs-sandbox/authentication/Authorizati
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { SampleBaseApp } from "SampleBaseApp";
+import { runWithCancel } from "common/CancellablePromises/CancellablePromises";
+import Initializer from "@bentley/itwin-viewer-react/build/services/Initializer";
+import { UiFramework } from "@bentley/ui-framework";
+import { UiCore } from "@bentley/ui-core";
+import { UiComponents } from "@bentley/ui-components";
 
 const i18nNamespace = "sample-showcase-i18n-namespace";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
@@ -40,54 +45,58 @@ const iModelAppShutdown = async (): Promise<void> => {
     // Do nothing, its possible that we never started.
   }
   try {
+    UiFramework.terminate();
+  } catch (err) {
+    // Do nothing, its possible that we never started.
+  }
+  try {
+    UiComponents.terminate();
+  } catch (err) {
+    // Do nothing, its possible that we never started.
+  }
+  try {
+    UiCore.terminate();
+  } catch (err) {
+    // Do nothing, its possible that we never started.
+  }
+  try {
     await IModelApp.shutdown();
   } catch (err) {
     // Do nothing, its possible that we never started.
   }
+  // HACK: So this is an interesting situation. The iTwin Viewer relies on this Initializer to set itself up.
+  // However, it relies heavily on promises and on occasion, when switching quickly between samples, it
+  // can get stuck and will throw an error about Presentation Initialize needing iModelApp.startup. By
+  // manually changing the value to false and clearning the promise that is usually populated, we can get a
+  // working sample, but we will still see an error in the console.
+  (Initializer as any)._initializing = false;
+  (Initializer as any)._initialized = undefined;
 };
 
-const iModelAppStartup = async (signal: AbortSignal): Promise<void> => {
-  await SampleBaseApp.startup(signal);
-  if (signal.aborted) {
-    throw new DOMException("Aborted", "Abort");
+function* iModelAppStartup(iTwinViewerReady: boolean) {
+  yield iModelAppShutdown();
+  yield AuthorizationClient.initializeOidc();
+
+  if (!iTwinViewerReady) {
+    yield SampleBaseApp.startup();
+    MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
   }
-  MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
-};
 
-let abortController = new AbortController();
+}
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
   const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
   useEffect(() => {
-    const debounce = setTimeout(() => {
-      abortController.abort();
-      abortController = new AbortController();
-      const initialize = async (signal: AbortSignal) => {
-        try {
-          await iModelAppShutdown();
-
-          if (signal.aborted) {
-            throw new DOMException("Aborted", "Abort");
-          }
-
-          await AuthorizationClient.initializeOidc();
-
-          if (!iTwinViewerReady) {
-            await iModelAppStartup(signal);
-          }
-
-          setAppReady(true);
-        } catch (err) {
-          setAppReady(false);
-        }
-      };
-      initialize(abortController.signal);
-    }, 1000);
+    const { promise, cancel } = runWithCancel(iModelAppStartup, iTwinViewerReady);
+    promise
+      .then(() => {
+        setAppReady(true);
+      });
     return () => {
       setAppReady(false);
-      clearTimeout(debounce);
+      cancel();
     };
   }, [iTwinViewerReady, transpileResult, type]);
 
@@ -97,7 +106,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     try {
       if (key) {
         const component = context(key).default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
+        setSampleUi(React.createElement(component, { iModelName, iModelSelector, key: Math.random() * 100 }));
       } else {
         setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
       }

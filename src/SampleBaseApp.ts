@@ -21,18 +21,11 @@ export interface SampleContext {
   viewDefinitionId: Id64String;
 }
 
-const promiseWrapper = async (signal: AbortSignal, promise: () => Promise<void>) => {
-  if (signal.aborted) {
-    throw new DOMException("Aborted", "Abort");
-  }
-  await promise();
-};
-
 export class SampleBaseApp {
   private static _appStateManager: StateManager | undefined;
 
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
-  public static async startup(signal: AbortSignal, options?: IModelAppOptions) {
+  public static async * startup(options?: IModelAppOptions) {
 
     const opts: IModelAppOptions = Object.assign({
       tileAdmin: { useProjectExtents: false },
@@ -40,7 +33,7 @@ export class SampleBaseApp {
       toolAdmin: ShowcaseToolAdmin.initialize(),
     }, options);
 
-    await promiseWrapper(signal, async () => IModelApp.startup(opts));
+    yield IModelApp.startup(opts);
 
     IModelApp.authorizationClient = AuthorizationClient.oidcClient;
 
@@ -56,21 +49,21 @@ export class SampleBaseApp {
     const initPromises = new Array<Promise<any>>();
 
     // initialize RPC communication
-    initPromises.push(promiseWrapper(signal, async () => SampleBaseApp.initializeRpc()));
+    initPromises.push(SampleBaseApp.initializeRpc());
 
     // initialize UiFramework
-    initPromises.push(promiseWrapper(signal, async () => UiFramework.initialize(undefined)));
+    initPromises.push(UiFramework.initialize(undefined));
 
     // initialize Presentation
-    initPromises.push(promiseWrapper(signal, async () => Presentation.initialize({
+    initPromises.push(Presentation.initialize({
       activeLocale: IModelApp.i18n.languageList()[0],
-    })));
+    }));
 
     // initialize Markup
-    initPromises.push(promiseWrapper(signal, async () => MarkupApp.initialize()));
+    initPromises.push(MarkupApp.initialize());
 
     // the app is ready when all initialization promises are fulfilled
-    await Promise.all(initPromises);
+    yield Promise.all(initPromises);
 
   }
 
