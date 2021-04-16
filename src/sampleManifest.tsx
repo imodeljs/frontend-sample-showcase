@@ -87,31 +87,43 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 },
 {
-  groupName: "Viewer Features", samples: [
-    getViewCameraSpec(),
+  groupName: "Left out", samples: [
+    getMultiViewportSpec(),
+    getSwipingComparisonSpec(),
+  ],
+},
+{
+  groupName: "Identify", samples: [
     getClassifierSpec(),
     getCrossProbingSpec(),
-    getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
+    getMarkerPinSpec(),
+    getPropertyFormattingSpec(),
+    getTooltipCustomizeSpec(),
+    getVolumeQuerySpec(),
+    getZoomToElementsSpec(),
+  ],
+},
+{
+  groupName: "Interface", samples: [
+    getImageExportSpec(),
+    getIotAlertSpec(),
+    getSerializeViewSpec(),
+  ],
+},
+{
+  groupName: "Visualize", samples: [
+    getViewCameraSpec(),
+    getDisplayStylesSpec(),
     getExplodeSpec(),
     getHeatmapDecoratorSpec(),
     getHyperModelingSpec(),
-    getImageExportSpec(),
-    getIotAlertSpec(),
-    getMarkerPinSpec(),
-    getMultiViewportSpec(),
     getParticleFireSampleSpec(),
     getParticleSnowSampleSpec(),
-    getPropertyFormattingSpec(),
     getScreenSpaceEffectsSpec(),
-    getSerializeViewSpec(),
     getShadowStudySpec(),
-    getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
-    getTooltipCustomizeSpec(),
     getViewClipSpec(),
-    getVolumeQuerySpec(),
-    getZoomToElementsSpec(),
   ],
 },
 {
