@@ -5,17 +5,15 @@
 
 import React, { useEffect } from "react";
 import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
-import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
+import { InteractivePointMarker, MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { NumberInput, Slider } from "@bentley/ui-core";
 import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
 import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
-import CurveFractionApp from "./CurveFractionApp";
+import CurveFractionApp from "./CurveFractionApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-
-export interface ControlsWidgetProps {
-  decorator: GeometryDecorator;
-}
+import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import "./CurveFraction.scss";
 
 interface CurveData {
   curve: CurvePrimitive;
@@ -23,8 +21,7 @@ interface CurveData {
   derivativeAtPoint: Vector3d;
 }
 
-export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> = (props: ControlsWidgetProps) => {
-  const [fraction, setFraction] = React.useState<number>(0.5);
+export const CurveFractionWidget: React.FunctionComponent = () => {
 
   const createCurves = () => {
     const size = 10;
@@ -63,10 +60,27 @@ export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> =
     return initCurvesData;
   };
 
+  const [decoratorState, setDecoratorState] = React.useState<GeometryDecorator>();
+  const [fraction, setFraction] = React.useState<number>(0.5);
   const [curvesData] = React.useState<CurveData[]>(createCurves());
 
   useEffect(() => {
-    updateVisualization();
+    if (!decoratorState) {
+      const decorator = new GeometryDecorator();
+      IModelApp.viewManager.addDecorator(decorator);
+      setDecoratorState(decorator);
+
+      const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
+      MovePointTool.register(sampleNamespace);
+    }
+
+    return (() => {
+      if (decoratorState) {
+        IModelApp.viewManager.dropDecorator(decoratorState);
+        IModelApp.tools.unRegister(MovePointTool.toolId);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -75,23 +89,15 @@ export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> =
       curveData.curvePointMarker.worldLocation = ray.origin;
       curveData.derivativeAtPoint = ray.direction;
     });
-    updateVisualization();
   }, [fraction, curvesData]);
 
-  const setCurvePoint = (inPoint: Point3d, index: number, curveData: CurveData[]) => {
-    if (curvesData.length <= index)
+  useEffect(() => {
+    if (!decoratorState)
       return;
 
-    const newFraction = CurveFractionApp.getFractionFromPoint(curveData[index].curve, inPoint);
-
-    if (newFraction)
-      setFraction(newFraction);
-  }
-
-  const updateVisualization = () => {
     // This function updates the decorator which draws the geometry in the view.  We call this when this
     // component is first mounted and then any time component's state is changed.
-    props.decorator.clearGeometry();
+    decoratorState.clearGeometry();
 
     curvesData.forEach((curveData) => {
       const curve = curveData.curve;
@@ -100,22 +106,22 @@ export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> =
       const derivative = curveData.derivativeAtPoint;
 
       // Add the curvePrimitive
-      props.decorator.setColor(ColorDef.white);
-      props.decorator.setFill(false);
-      props.decorator.setLineThickness(5);
-      props.decorator.setLinePixels(LinePixels.Solid);
-      props.decorator.addGeometry(curve);
+      decoratorState.setColor(ColorDef.white);
+      decoratorState.setFill(false);
+      decoratorState.setLineThickness(5);
+      decoratorState.setLinePixels(LinePixels.Solid);
+      decoratorState.addGeometry(curve);
 
       // Add the marker representing the curve point
-      props.decorator.addMarker(marker);
+      decoratorState.addMarker(marker);
 
       // Add an arrow representing the derivative
       const arrowEnd = curvePoint.plusScaled(derivative, 0.2);
 
-      props.decorator.setColor(ColorDef.green);
-      props.decorator.setFill(false);
-      props.decorator.setLineThickness(2);
-      props.decorator.addLine(LineSegment3d.create(curvePoint, arrowEnd)); // stem of the arrow
+      decoratorState.setColor(ColorDef.green);
+      decoratorState.setFill(false);
+      decoratorState.setLineThickness(2);
+      decoratorState.addLine(LineSegment3d.create(curvePoint, arrowEnd)); // stem of the arrow
 
       const normalized = derivative.normalize()!;
       const onStem = arrowEnd.plusScaled(normalized, -1.0);
@@ -129,18 +135,30 @@ export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> =
       const linestring = LineString3d.create(triangle);
       const loop = Loop.create(linestring.clone());
 
-      props.decorator.setLineThickness(0);
-      props.decorator.addGeometry(loop); // point of the arrow
+      decoratorState.setLineThickness(0);
+      decoratorState.addGeometry(loop); // point of the arrow
     });
+  }, [decoratorState, fraction, curvesData]);
+
+  const setCurvePoint = (inPoint: Point3d, index: number, curveData: CurveData[]) => {
+    if (curvesData.length <= index)
+      return;
+
+    const newFraction = CurveFractionApp.getFractionFromPoint(curveData[index].curve, inPoint);
+
+    if (newFraction)
+      setFraction(newFraction);
   };
 
   return (
     <>
-      <div className="sample-options-3col" style={{ gridTemplateColumns: "1fr 5rem 5rem" }}>
-        <span>Fraction:</span>
+      <div className="sample-options">
+        <div className="sample-options-3col" style={{ gridTemplateColumns: "1fr 5rem 5rem" }}>
+          <span>Fraction:</span>
 
-        <Slider min={0} max={1} values={[fraction]} step={.01} showTooltip onUpdate={(value) => { if (value) setFraction(value[0]); }} />
-        <NumberInput value={fraction} maxLength={8} precision={2} step={0.01} onChange={(value) => { if (value) setFraction(value); }}></NumberInput>
+          <Slider min={0} max={1} values={[fraction]} step={.01} showTooltip onUpdate={(value) => { if (value) setFraction(value[0]); }} />
+          <NumberInput value={fraction} maxLength={8} precision={2} step={0.01} onChange={(value) => { if (value) setFraction(value); }}></NumberInput>
+        </div>
       </div>
     </>
   );
@@ -149,10 +167,6 @@ export const CurveFractionWidget: React.FunctionComponent<ControlsWidgetProps> =
 
 export class CurveFractionWidgetProvider implements UiItemsProvider {
   public readonly id: string = "CurveFractionWidgetProvider";
-  private decorator: GeometryDecorator;
-  constructor(decorator: GeometryDecorator) {
-    this.decorator = decorator;
-  }
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
@@ -163,7 +177,7 @@ export class CurveFractionWidgetProvider implements UiItemsProvider {
           label: "Curve Fraction",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <CurveFractionWidget decorator={this.decorator} />,
+          getWidgetContent: () => <CurveFractionWidget />,
         }
       );
     }

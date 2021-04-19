@@ -14,11 +14,13 @@ export function getCurveFractionSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp") },
-      { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI"), entry: true },
+      { name: "CurveFractionApi.ts", import: import("!!raw-loader!./CurveFractionApi") },
+      { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp"), entry: true },
+      { name: "CurveFractionWidget.tsx", import: import("!!raw-loader!./CurveFractionWidget") },
       { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!common/Geometry/SampleCurveFactory") },
       { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!common/Geometry/InteractivePointMarker") },
+      { name: "CurveFraction.scss", import: import("!!raw-loader!./CurveFraction.scss") },
     ],
-    type: "CurveFractionUI.tsx",
+    type: "CurveFractionApp.tsx",
   });
 }
