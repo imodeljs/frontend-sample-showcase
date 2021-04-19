@@ -87,32 +87,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 },
 {
-  groupName: "Left out", samples: [
-    getMultiViewportSpec(),
-    getSwipingComparisonSpec(),
-  ],
-},
-{
-  groupName: "Identify", samples: [
-    getClassifierSpec(),
-    getCrossProbingSpec(),
-    getEmphasizeElementsSpec(),
-    getMarkerPinSpec(),
-    getPropertyFormattingSpec(),
-    getTooltipCustomizeSpec(),
-    getVolumeQuerySpec(),
-    getZoomToElementsSpec(),
-  ],
-},
-{
-  groupName: "Interface", samples: [
-    getImageExportSpec(),
-    getIotAlertSpec(),
-    getSerializeViewSpec(),
-  ],
-},
-{
-  groupName: "Visualize", samples: [
+  groupName: "Viewer: Visualize", samples: [
     getViewCameraSpec(),
     getDisplayStylesSpec(),
     getExplodeSpec(),
@@ -124,6 +99,31 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getShadowStudySpec(),
     getThematicDisplaySpec(),
     getViewClipSpec(),
+  ],
+},
+{
+  groupName: "Viewer: Compare", samples: [
+    getMultiViewportSpec(),
+    getSwipingComparisonSpec(),
+  ],
+},
+{
+  groupName: "Viewer: Identify", samples: [
+    getClassifierSpec(),
+    getCrossProbingSpec(),
+    getEmphasizeElementsSpec(),
+    getMarkerPinSpec(),
+    getPropertyFormattingSpec(),
+    getTooltipCustomizeSpec(),
+    getVolumeQuerySpec(),
+    getZoomToElementsSpec(),
+  ],
+},
+{
+  groupName: "Viewer: Interface", samples: [
+    getImageExportSpec(),
+    getIotAlertSpec(),
+    getSerializeViewSpec(),
   ],
 },
 {
