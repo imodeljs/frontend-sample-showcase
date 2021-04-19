@@ -14,9 +14,11 @@ export function getSimpleLineSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp") },
-      { name: "SimpleLineUI.tsx", import: import("!!raw-loader!./SimpleLineUI"), entry: true },
+      { name: "SimpleLineApi.ts", import: import("!!raw-loader!./SimpleLineApi") },
+      { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp"), entry: true },
+      { name: "SimpleLineWidget.tsx", import: import("!!raw-loader!./SimpleLineWidget") },
+      { name: "SimpleLine.scss", import: import("!!raw-loader!./SimpleLine.scss") },
     ],
-    type: "SimpleLineUI.tsx",
+    type: "SimpleLineApp.tsx",
   });
 }

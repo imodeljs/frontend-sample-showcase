@@ -12,6 +12,7 @@ import SimpleAnimatedApi from "./SimpleAnimatedApi";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import "./SimpleAnimated.scss";
 
 export const SimpleAnimatedWidget: React.FunctionComponent = () => {
   const [decoratorState, setDecoratorState] = React.useState<GeometryDecorator>();
