@@ -8,14 +8,12 @@ import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { NumberInput, Select } from "@bentley/ui-core";
 import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
-import Simple3dApp from "./Simple3dApp";
+import Simple3dApp from "./Simple3dApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 
-export interface ControlsWidgetProps {
-  decorator: GeometryDecorator;
-}
-
-export const Simple3dWidget: React.FunctionComponent<ControlsWidgetProps> = (ControlsWidgetProps) => {
+export const Simple3dWidget: React.FunctionComponent = () => {
+  const [decoratorState, setDecoratorState] = React.useState<GeometryDecorator>();
   const [shape, setShape] = React.useState<string>("Box");
   const [color] = React.useState<ColorDef>(ColorDef.fromTbgr(ColorDef.withTransparency(ColorDef.create(ColorByName.cyan).tbgr, 50)));
   const [sphereRadius, setSphereRadius] = React.useState<number>(4);
@@ -30,11 +28,28 @@ export const Simple3dWidget: React.FunctionComponent<ControlsWidgetProps> = (Con
   const [tpSweep, settpSweep] = React.useState<number>(360);
 
   useEffect(() => {
+    if (!decoratorState) {
+      const decorator = new GeometryDecorator();
+      IModelApp.viewManager.addDecorator(decorator);
+      setDecoratorState(decorator);
+    }
+
+    return (() => {
+      if (decoratorState)
+        IModelApp.viewManager.dropDecorator(decoratorState);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     _setGeometry();
   });
 
   const _setGeometry = () => {
-    ControlsWidgetProps.decorator.clearGeometry();
+    if (!decoratorState)
+      return;
+
+    decoratorState.clearGeometry();
     const options = StrokeOptions.createForCurves();
     options.needParams = false;
     options.needNormals = true;
@@ -57,39 +72,41 @@ export const Simple3dWidget: React.FunctionComponent<ControlsWidgetProps> = (Con
         builder.addTorusPipe(torusPipe);
     }
     const polyface = builder.claimPolyface(false);
-    ControlsWidgetProps.decorator.setColor(color);
-    ControlsWidgetProps.decorator.addGeometry(polyface);
-    ControlsWidgetProps.decorator.drawBase();
+    decoratorState.setColor(color);
+    decoratorState.addGeometry(polyface);
+    decoratorState.drawBase();
   };
 
   return (
     <>
-      <div className="sample-options-2col">
-        <span>Shape:</span>
-        <Select options={["Box", "Cone", "Sphere", "Torus Pipe"]} onChange={(event) => { setShape(event.target.value); }} />
-        {shape === "Sphere" ? <span>Radius:</span> : undefined}
-        {shape === "Sphere" ? <NumberInput value={sphereRadius} min={0} max={500} onChange={(value) => { if (value) setSphereRadius(value); }}></NumberInput> : undefined}
+      <div className="sample-options">
+        <div className="sample-options-2col">
+          <span>Shape:</span>
+          <Select options={["Box", "Cone", "Sphere", "Torus Pipe"]} onChange={(event) => { setShape(event.target.value); }} />
+          {shape === "Sphere" ? <span>Radius:</span> : undefined}
+          {shape === "Sphere" ? <NumberInput value={sphereRadius} min={0} max={500} onChange={(value) => { if (value) setSphereRadius(value); }}></NumberInput> : undefined}
 
-        {shape === "Box" ? <span>Length:</span> : undefined}
-        {shape === "Box" ? <NumberInput value={boxLength} min={0} max={1000} onChange={(value) => { if (value) setBoxLength(value); }}></NumberInput> : undefined}
-        {shape === "Box" ? <span>Width:</span> : undefined}
-        {shape === "Box" ? <NumberInput value={boxWidth} min={0} max={1000} onChange={(value) => { if (value) setBoxWidth(value); }}></NumberInput> : undefined}
-        {shape === "Box" ? <span>Height:</span> : undefined}
-        {shape === "Box" ? <NumberInput value={boxHeight} min={0} max={1000} onChange={(value) => { if (value) setBoxHeight(value); }}></NumberInput> : undefined}
+          {shape === "Box" ? <span>Length:</span> : undefined}
+          {shape === "Box" ? <NumberInput value={boxLength} min={0} max={1000} onChange={(value) => { if (value) setBoxLength(value); }}></NumberInput> : undefined}
+          {shape === "Box" ? <span>Width:</span> : undefined}
+          {shape === "Box" ? <NumberInput value={boxWidth} min={0} max={1000} onChange={(value) => { if (value) setBoxWidth(value); }}></NumberInput> : undefined}
+          {shape === "Box" ? <span>Height:</span> : undefined}
+          {shape === "Box" ? <NumberInput value={boxHeight} min={0} max={1000} onChange={(value) => { if (value) setBoxHeight(value); }}></NumberInput> : undefined}
 
-        {shape === "Cone" ? <span>Upper Radius:</span> : undefined}
-        {shape === "Cone" ? <NumberInput value={coneUpperRadius} min={0} max={1000} onChange={(value) => { if (value) setConeUpperRadius(value); }}></NumberInput> : undefined}
-        {shape === "Cone" ? <span>Lower Radius:</span> : undefined}
-        {shape === "Cone" ? <NumberInput value={coneLowerRadius} min={0} max={1000} onChange={(value) => { if (value) setConeLowerRadius(value); }}></NumberInput> : undefined}
-        {shape === "Cone" ? <span>Height:</span> : undefined}
-        {shape === "Cone" ? <NumberInput value={coneHeight} min={0} max={1000} onChange={(value) => { if (value) setConeHeight(value); }}></NumberInput> : undefined}
+          {shape === "Cone" ? <span>Upper Radius:</span> : undefined}
+          {shape === "Cone" ? <NumberInput value={coneUpperRadius} min={0} max={1000} onChange={(value) => { if (value) setConeUpperRadius(value); }}></NumberInput> : undefined}
+          {shape === "Cone" ? <span>Lower Radius:</span> : undefined}
+          {shape === "Cone" ? <NumberInput value={coneLowerRadius} min={0} max={1000} onChange={(value) => { if (value) setConeLowerRadius(value); }}></NumberInput> : undefined}
+          {shape === "Cone" ? <span>Height:</span> : undefined}
+          {shape === "Cone" ? <NumberInput value={coneHeight} min={0} max={1000} onChange={(value) => { if (value) setConeHeight(value); }}></NumberInput> : undefined}
 
-        {shape === "Torus Pipe" ? <span>Outer Radius:</span> : undefined}
-        {shape === "Torus Pipe" ? <NumberInput value={tpOuterRadius} min={0} max={1000} onChange={(value) => { if (value) settpOuterRadius(value); }}></NumberInput> : undefined}
-        {shape === "Torus Pipe" ? <span>Inner Radius:</span> : undefined}
-        {shape === "Torus Pipe" ? <NumberInput value={tpInnerRadius} min={0} max={1000} onChange={(value) => { if (value) settpInnerRadius(value); }}></NumberInput> : undefined}
-        {shape === "Torus Pipe" ? <span>Sweep:</span> : undefined}
-        {shape === "Torus Pipe" ? <NumberInput value={tpSweep} min={0} max={360} onChange={(value) => { if (value) settpSweep(value); }}></NumberInput> : undefined}
+          {shape === "Torus Pipe" ? <span>Outer Radius:</span> : undefined}
+          {shape === "Torus Pipe" ? <NumberInput value={tpOuterRadius} min={0} max={1000} onChange={(value) => { if (value) settpOuterRadius(value); }}></NumberInput> : undefined}
+          {shape === "Torus Pipe" ? <span>Inner Radius:</span> : undefined}
+          {shape === "Torus Pipe" ? <NumberInput value={tpInnerRadius} min={0} max={1000} onChange={(value) => { if (value) settpInnerRadius(value); }}></NumberInput> : undefined}
+          {shape === "Torus Pipe" ? <span>Sweep:</span> : undefined}
+          {shape === "Torus Pipe" ? <NumberInput value={tpSweep} min={0} max={360} onChange={(value) => { if (value) settpSweep(value); }}></NumberInput> : undefined}
+        </div>
       </div>
     </>
   );
@@ -98,10 +115,6 @@ export const Simple3dWidget: React.FunctionComponent<ControlsWidgetProps> = (Con
 
 export class Simple3dWidgetProvider implements UiItemsProvider {
   public readonly id: string = "Simple3dWidgetProvider";
-  private decorator: GeometryDecorator;
-  constructor(decorator: GeometryDecorator) {
-    this.decorator = decorator;
-  }
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
@@ -109,10 +122,10 @@ export class Simple3dWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "Simple3dWidget",
-          label: "Simple 3d",
+          label: "Simple 3d Controls",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <Simple3dWidget decorator={this.decorator} />,
+          getWidgetContent: () => <Simple3dWidget />,
         }
       );
     }
