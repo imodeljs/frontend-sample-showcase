@@ -17,7 +17,7 @@ export interface SnowProps {
 }
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
-export default class SnowDecorationApp {
+export default class SnowDecorationApi {
   /** Will be updated to dispose the currently active snow decorator. */
   private static _dispose?: VoidFunction;
 
@@ -42,8 +42,8 @@ export default class SnowDecorationApp {
 
   /** Removes listeners up and frees any resources owned by this sample. */
   public static dispose() {
-    if (SnowDecorationApp._dispose)
-      SnowDecorationApp._dispose();
+    if (SnowDecorationApi._dispose)
+      SnowDecorationApi._dispose();
   }
 
   /** Overrides the current display styles using the viewport API. */
@@ -54,12 +54,12 @@ export default class SnowDecorationApp {
   /** Handles creation of a snow decorator, and disposes of old ones. */
   public static async createSnowDecorator(viewport: Viewport, props: SnowProps) {
     // Dispose of any pre-existing decorator.
-    SnowDecorationApp.dispose();
+    SnowDecorationApi.dispose();
 
     // Create a new decorator.
-    const dimensions = SnowDecorationApp.calculateDimensions(viewport);
-    const textureUrl = SnowDecorationApp.getUrlString(props.textureUrl, props.params.windVelocity);
-    const texture = await SnowDecorationApp.allocateTextureFromUrl(textureUrl);
+    const dimensions = SnowDecorationApi.calculateDimensions(viewport);
+    const textureUrl = SnowDecorationApi.getUrlString(props.textureUrl, props.params.windVelocity);
+    const texture = await SnowDecorationApi.allocateTextureFromUrl(textureUrl);
     // The decorator takes ownership of the texture.
     const snow = new SnowDecorator(dimensions, props.params, texture);
 
@@ -69,25 +69,25 @@ export default class SnowDecorationApp {
     // When the viewport is resized, replace this decorator with a new one to match the new dimensions.
     const removeOnResized = viewport.onResized.addListener(() => {
       // Calculate the viewport's new dimensions.
-      snow.dimensions = SnowDecorationApp.calculateDimensions(viewport);
+      snow.dimensions = SnowDecorationApi.calculateDimensions(viewport);
       // Re-emit all particles to fit the new space.
       snow.resetParticles();
     });
 
     // Due to the constructions of the showcase, we know when the viewport will be closed.  Under different circumstances, the methods below are example events to ensure the timely dispose of textures owned by the decorator.
     // When the viewport is destroyed, dispose of this decorator too.
-    const removeOnDispose = viewport.onDisposed.addListener(() => SnowDecorationApp.dispose());
+    const removeOnDispose = viewport.onDisposed.addListener(() => SnowDecorationApi.dispose());
     // When the iModel is closed, dispose of any decorations.
-    const removeOnClose = viewport.iModel.onClose.addOnce(() => SnowDecorationApp.dispose());
+    const removeOnClose = viewport.iModel.onClose.addOnce(() => SnowDecorationApi.dispose());
 
     // Add the decorator to be rendered in all active views.
     const removeDecorator = IModelApp.viewManager.addDecorator(snow);
     // The function "removeDecorator" is equivalent to calling "IModelApp.viewManager.dropDecorator(snow)"
 
     // Overrides the sky box to better match the effect.
-    SnowDecorationApp.overrideSkyBoxStyle(viewport, props.skyStyle);
+    SnowDecorationApi.overrideSkyBoxStyle(viewport, props.skyStyle);
 
-    SnowDecorationApp._dispose = () => {
+    SnowDecorationApi._dispose = () => {
       // Removes all event listeners related to the decorator.
       removeDecorator();
       removeOnRender();
@@ -96,13 +96,13 @@ export default class SnowDecorationApp {
       removeOnResized();
       // Disposes of resources owned by the decorator (e.g. textures)
       snow.dispose();
-      SnowDecorationApp._dispose = undefined;
+      SnowDecorationApi._dispose = undefined;
     };
   }
 
   /** Test if the texture for the decorator has changed due to wind strength. */
   public static testForTextureUpdate(propsName: string, currentWind: number, prevWind: number): string | false {
-    const props = SnowDecorationApp.predefinedProps.get(propsName)!;
+    const props = SnowDecorationApi.predefinedProps.get(propsName)!;
     if (typeof props.textureUrl === "string")
       return false;
     else {
