@@ -8,7 +8,7 @@ import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { NumberInput, Select } from "@bentley/ui-core";
 import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
-import Simple3dApp from "./Simple3dApi";
+import Simple3dApi from "./Simple3dApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 
@@ -55,19 +55,19 @@ export const Simple3dWidget: React.FunctionComponent = () => {
     options.needNormals = true;
     const builder = PolyfaceBuilder.create(options);
     if (shape === "Cone") {
-      const cone = Simple3dApp.createCone(coneHeight, coneLowerRadius, coneUpperRadius);
+      const cone = Simple3dApi.createCone(coneHeight, coneLowerRadius, coneUpperRadius);
       if (cone)
         builder.addCone(cone);
     } else if (shape === "Sphere") {
-      const sphere = Simple3dApp.createSphere(sphereRadius);
+      const sphere = Simple3dApi.createSphere(sphereRadius);
       if (sphere)
         builder.addSphere(sphere);
     } else if (shape === "Box") {
-      const box = Simple3dApp.createBox(boxLength, boxWidth, boxHeight);
+      const box = Simple3dApi.createBox(boxLength, boxWidth, boxHeight);
       if (box)
         builder.addBox(box);
     } else if (shape === "Torus Pipe") {
-      const torusPipe = Simple3dApp.createTorusPipe(tpOuterRadius, tpInnerRadius, tpSweep);
+      const torusPipe = Simple3dApi.createTorusPipe(tpOuterRadius, tpInnerRadius, tpSweep);
       if (torusPipe)
         builder.addTorusPipe(torusPipe);
     }

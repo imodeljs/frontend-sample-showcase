@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { CurvePrimitive, Point3d } from "@bentley/geometry-core";
 
-export default class CurveFractionApp {
+export default class CurveFractionApi {
 
   public static fractionToPointAndDerivative(curve: CurvePrimitive, fraction: number) {
     return curve.fractionToPointAndDerivative(fraction);

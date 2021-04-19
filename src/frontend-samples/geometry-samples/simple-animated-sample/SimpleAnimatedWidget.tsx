@@ -8,20 +8,31 @@ import { ColorDef } from "@bentley/imodeljs-common";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { NumberInput, Timer } from "@bentley/ui-core";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
-import SimpleAnimatedApp from "./SimpleAnimatedApp";
+import SimpleAnimatedApi from "./SimpleAnimatedApi";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 
-export interface ControlsWidgetProps {
-  decorator: GeometryDecorator;
-}
-
-export const SimpleAnimatedWidget: React.FunctionComponent<ControlsWidgetProps> = (props: ControlsWidgetProps) => {
+export const SimpleAnimatedWidget: React.FunctionComponent = () => {
+  const [decoratorState, setDecoratorState] = React.useState<GeometryDecorator>();
   const [grid, setGrid] = React.useState<boolean[][]>(ConwaysHelpers.generateGrid());
   const [timer, setTimer] = React.useState<Timer>(new Timer(100));
   const [clockSpeed, setClockSpeed] = React.useState<number>(100);
   const [color, setColor] = React.useState<ColorDef>(ColorDef.fromString("yellow"));
+
+  useEffect(() => {
+    if (!decoratorState) {
+      const decorator = new GeometryDecorator();
+      IModelApp.viewManager.addDecorator(decorator);
+      setDecoratorState(decorator);
+    }
+
+    return (() => {
+      if (decoratorState)
+        IModelApp.viewManager.dropDecorator(decoratorState);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     _setGeometry(grid, color);
@@ -37,14 +48,17 @@ export const SimpleAnimatedWidget: React.FunctionComponent<ControlsWidgetProps> 
   }, [color]);
 
   const _setGeometry = (newGrid: boolean[][], fillColor: ColorDef) => {
-    props.decorator.clearGeometry();
-    props.decorator.setColor(ColorDef.white);
-    props.decorator.setFill(true);
-    props.decorator.setFillColor(fillColor);
-    props.decorator.setLineThickness(2);
-    const graphicalGrid = SimpleAnimatedApp.createGridSquares(newGrid);
+    if (!decoratorState)
+      return;
+
+    decoratorState.clearGeometry();
+    decoratorState.setColor(ColorDef.white);
+    decoratorState.setFill(true);
+    decoratorState.setFillColor(fillColor);
+    decoratorState.setLineThickness(2);
+    const graphicalGrid = SimpleAnimatedApi.createGridSquares(newGrid);
     for (const square of graphicalGrid)
-      props.decorator.addGeometry(square);
+      decoratorState.addGeometry(square);
 
     IModelApp.viewManager.invalidateDecorationsAllViews();
   };
@@ -72,11 +86,13 @@ export const SimpleAnimatedWidget: React.FunctionComponent<ControlsWidgetProps> 
 
   return (
     <>
-      <div className="sample-options-2col">
-        <span>Color:</span>
-        <ColorPickerButton initialColor={color} onColorPick={(newColor: ColorDef) => { setColor(newColor); }} />
-        <span>Clock Speed(ms):</span>
-        <NumberInput value={clockSpeed} min={1} onChange={(value) => { if (value) { setNewTimer(value, grid, color, timer); } }}></NumberInput>
+      <div className="sample-options">
+        <div className="sample-options-2col">
+          <span>Color:</span>
+          <ColorPickerButton initialColor={color} onColorPick={(newColor: ColorDef) => { setColor(newColor); }} />
+          <span>Clock Speed(ms):</span>
+          <NumberInput value={clockSpeed} min={1} onChange={(value) => { if (value) { setNewTimer(value, grid, color, timer); } }}></NumberInput>
+        </div>
       </div>
     </>
   );
@@ -85,10 +101,6 @@ export const SimpleAnimatedWidget: React.FunctionComponent<ControlsWidgetProps> 
 
 export class SimpleAnimatedWidgetProvider implements UiItemsProvider {
   public readonly id: string = "SimpleAnimatedWidgetProvider";
-  private decorator: GeometryDecorator;
-  constructor(decorator: GeometryDecorator) {
-    this.decorator = decorator;
-  }
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
@@ -96,10 +108,10 @@ export class SimpleAnimatedWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "SimpleAnimatedWidget",
-          label: "Simple Animated",
+          label: "Simple Animated Controls",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <SimpleAnimatedWidget decorator={this.decorator} />,
+          getWidgetContent: () => <SimpleAnimatedWidget />,
         }
       );
     }

@@ -9,7 +9,7 @@ import { InteractivePointMarker, MovePointTool } from "common/Geometry/Interacti
 import { NumberInput, Slider } from "@bentley/ui-core";
 import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
 import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
-import CurveFractionApp from "./CurveFractionApi";
+import CurveFractionApi from "./CurveFractionApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
@@ -30,31 +30,31 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
     const initCurvesData: CurveData[] = []
     let curve = SampleCurveFactory.createCurvePrimitive("Step Line String", size)!;
     curve.tryTranslateInPlace(shift, -shift, 0);
-    let ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
+    let ray = CurveFractionApi.fractionToPointAndDerivative(curve, fraction)!;
     let marker = new InteractivePointMarker(ray.origin, "Step Line String", ColorDef.green, (pt: Point3d) => setCurvePoint(pt, 0, curvesData));
     initCurvesData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
     curve = SampleCurveFactory.createCurvePrimitive("Half Step Line String", size)!;
     curve.tryTranslateInPlace(shift, shift, 0);
-    ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
+    ray = CurveFractionApi.fractionToPointAndDerivative(curve, fraction)!;
     marker = new InteractivePointMarker(ray.origin, "Half Step Line String", ColorDef.green, async (pt: Point3d) => setCurvePoint(pt, 1, curvesData));
     initCurvesData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
     curve = SampleCurveFactory.createCurvePrimitive("Arc", size)!;
     curve.tryTranslateInPlace(-shift, -shift, 0);
-    ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
+    ray = CurveFractionApi.fractionToPointAndDerivative(curve, fraction)!;
     marker = new InteractivePointMarker(ray.origin, "Arc", ColorDef.green, async (pt: Point3d) => setCurvePoint(pt, 2, curvesData));
     initCurvesData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
     curve = SampleCurveFactory.createCurvePrimitive("Elliptical Arc", size)!;
     curve.tryTranslateInPlace(-shift, shift, 0);
-    ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
+    ray = CurveFractionApi.fractionToPointAndDerivative(curve, fraction)!;
     marker = new InteractivePointMarker(ray.origin, "Elliptical Arc", ColorDef.green, async (pt: Point3d) => setCurvePoint(pt, 3, curvesData));
     initCurvesData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
 
     curve = SampleCurveFactory.createCurvePrimitive("Line Segment Flat Diagonal", size * 3)!;
     curve.tryTranslateInPlace(0, shift * 2, 0);
-    ray = CurveFractionApp.fractionToPointAndDerivative(curve, fraction)!;
+    ray = CurveFractionApi.fractionToPointAndDerivative(curve, fraction)!;
     marker = new InteractivePointMarker(ray.origin, "Line Segment", ColorDef.green, async (pt: Point3d) => setCurvePoint(pt, 4, curvesData));
     initCurvesData.push({ curve, curvePointMarker: marker, derivativeAtPoint: ray.direction });
     return initCurvesData;
@@ -85,7 +85,7 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     curvesData.forEach((curveData) => {
-      const ray = CurveFractionApp.fractionToPointAndDerivative(curveData.curve, fraction)!;
+      const ray = CurveFractionApi.fractionToPointAndDerivative(curveData.curve, fraction)!;
       curveData.curvePointMarker.worldLocation = ray.origin;
       curveData.derivativeAtPoint = ray.direction;
     });
@@ -144,7 +144,7 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
     if (curvesData.length <= index)
       return;
 
-    const newFraction = CurveFractionApp.getFractionFromPoint(curveData[index].curve, inPoint);
+    const newFraction = CurveFractionApi.getFractionFromPoint(curveData[index].curve, inPoint);
 
     if (newFraction)
       setFraction(newFraction);

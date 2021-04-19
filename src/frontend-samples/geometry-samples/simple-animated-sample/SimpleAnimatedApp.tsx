@@ -2,30 +2,35 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { LineString3d, Loop, Point3d } from "@bentley/geometry-core";
+import React, { FunctionComponent, useState } from "react";
+import { BlankViewport } from "common/Geometry/BlankViewport";
+import { Range3d } from "@bentley/geometry-core";
+import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
+import { SimpleAnimatedWidgetProvider } from "./SimpleAnimatedWidget";
 
-export default class SimpleAnimatedApp {
+const uiProviders = [new SimpleAnimatedWidgetProvider()];
 
-  public static createGridSquares(grid: boolean[][]) {
-    const squares: Loop[] = [];
-    const squareSize = 20;
-    // tslint:disable-next-line: prefer-for-of
-    for (let i: number = 0; i < grid.length; i++) {
-      for (let j: number = 0; j < grid[0].length; j++) {
-        if (grid[i][j]) {
-          const corners: Point3d[] = [];
-          corners.push(Point3d.create(i * squareSize, j * squareSize, 0));
-          corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize, 0));
-          corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize + squareSize, 0));
-          corners.push(Point3d.create(i * squareSize, j * squareSize + squareSize, 0));
-          corners.push(Point3d.create(i * squareSize, j * squareSize, 0));
-          const square = LineString3d.create(corners);
-          const loop = Loop.create(square.clone());
-          squares.push(loop);
-        }
-      }
-    }
-    return squares;
-  }
+const SimpleAnimatedApp: FunctionComponent = () => {
+  const [connection] = useState<BlankConnectionProps>(BlankViewport.getBlankConnection(new Range3d(-150, -150, 0, 1150, 1150, 0)));
+  const [viewState] = useState<BlankConnectionViewState>(BlankViewport.getViewState(false, true));
 
-}
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      <BlankViewer
+        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        theme={"dark"}
+        defaultUiConfig={default3DSandboxUi}
+        viewStateOptions={viewState}
+        blankConnection={connection}
+        uiProviders={uiProviders}
+      />
+    </>
+  );
+};
+
+export default SimpleAnimatedApp;
+
