@@ -11,11 +11,13 @@ export function getVolumeQuerySpec(): SampleSpec {
     name: "volume-query-sample",
     label: "Volume Query",
     image: "volume-query-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "VolumeQueryApp.tsx", import: import("!!raw-loader!./VolumeQueryApp") },
-      { name: "VolumeQueryUI.tsx", import: import("!!raw-loader!./VolumeQueryUI"), entry: true },
-      { name: "ProgressBar.tsx", import: import("!!raw-loader!./ProgressBar") },
+      { name: "VolumeQueryApi.ts", import: import("!!raw-loader!./VolumeQueryApi") },
+      { name: "VolumeQueryApp.tsx", import: import("!!raw-loader!./VolumeQueryApp"), entry: true },
+      { name: "VolumeQueryWidget.tsx", import: import("!!raw-loader!./VolumeQueryWidget") },
+      { name: "VolumeQuery.scss", import: import("!!raw-loader!./VolumeQuery.scss") },
     ],
     iModelList: [
       SampleIModels.RetailBuilding,
@@ -24,6 +26,6 @@ export function getVolumeQuerySpec(): SampleSpec {
       SampleIModels.Stadium,
       SampleIModels.MetroStation,
     ],
-    type: "VolumeQueryUI.tsx",
+    type: "VolumeQueryApp.tsx",
   });
 }
