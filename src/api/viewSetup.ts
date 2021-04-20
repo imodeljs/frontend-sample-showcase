@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
 import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, GeometricModel3dState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
 export class ViewSetup {
@@ -87,11 +87,29 @@ export class ViewSetup {
 
       // Enable model masking on the metrostation model.
       if (imodel.name === "Metrostation2") {
-        const modelIds = await ViewSetup.getAllModelIds(imodel);
+        const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
         displayStyle.changeBackgroundMapProps({
           planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.IncludeSubCategories, modelIds, subCategoryIds),
         });
+      }
+    }
+
+    if (viewState.isSpatialView()) {
+      const displayStyle = viewState.getDisplayStyle3d();
+      // Enable model masking on the Stadium model.
+      if (imodel.name === "Stadium") {
+        const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
+        displayStyle.changeBackgroundMapProps({
+          planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.Models, modelsForMasking),
+        });
+        const excludedModelIds = await ViewSetup.getModelIds(imodel,
+          "SS_Master",
+          "SS_Master_Structural.dgn, 3D Metric Design",
+          "LandscapeDetails.dgn, 3D Metric Design",
+          "Stencil Model-4-LandscapeModel, SS_MasterLandscape, SS_MasterLandscape.dgn, Road_Marking",
+        );
+        excludedModelIds.forEach((id) => viewState.modelSelector.dropModels(id));
       }
     }
 
@@ -101,18 +119,18 @@ export class ViewSetup {
   }
 
   /** Returns a set of every model's id in the iModel. */
-  public static async getAllModelIds(iModel: IModelConnection): Promise<Id64Set> {
-    const query = { from: GeometricModel3dState.classFullName, wantPrivate: true };
-    const props = await iModel.models.queryProps(query);
-    const idArray: string[] = props
-      .map((prop) => prop.id)
-      .filter((id): id is string => typeof id !== "undefined");
-    return new Set<string>(idArray);
+  public static async getModelIds(iModel: IModelConnection, ...modelNames: string[]): Promise<Id64Set> {
+    const query = `SELECT ECInstanceId FROM Bis:PhysicalPartition${modelNames.length > 0 ? ` WHERE codeValue IN ('${modelNames.join("','")}')` : ""}`;
+    const ids = new Set<string>();
+    for await (const row of iModel.query(query)) {
+      ids.add(row.id);
+    }
+    return ids;
   }
 
-  /** Returns a set of ever sub category in the specified category codes. */
+  /** Returns a set of every sub category in the specified category codes. */
   public static async getSubCategoryIds(iModel: IModelConnection, ...categoryCodes: string[]): Promise<Id64Set> {
-    const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
+    const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""}`;
     const subcategoriesIds = new Set<string>();
     for await (const row of iModel.query(selectRelevantCategories)) {
       const ids = iModel.subcategories.getSubCategories(row.id);
