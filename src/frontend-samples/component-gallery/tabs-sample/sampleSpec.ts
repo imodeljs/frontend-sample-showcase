@@ -11,7 +11,7 @@ export function getTabsSpec(): SampleSpec {
     name: "tabs-sample",
     label: "UI-Tabs",
     image: "ui-tabs-thumbnail.png",
-    customModelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "Tabs.tsx", import: import("!!raw-loader!./Tabs"), entry: true },

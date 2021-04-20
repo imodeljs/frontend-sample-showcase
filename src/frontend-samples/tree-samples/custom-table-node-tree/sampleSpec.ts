@@ -10,7 +10,7 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     name: "custom-table-node-tree-sample",
     label: "Custom Table Node Tree",
     image: "custom-table-node-tree-thumbnail.png",
-    customModelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },

@@ -2,35 +2,51 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { BingLocationProvider, queryTerrainElevationOffset, ScreenViewport } from "@bentley/imodeljs-frontend";
-import "common/samples-common.scss";
+import React, { FunctionComponent, useState } from "react";
+import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
+import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
+import { GlobalDisplayApi } from "./GlobalDisplayApi";
 
-export default class GlobalDisplayApp {
-  private static _locationProvider?: BingLocationProvider;
+const uiProviders = [new GlobalDisplayWidgetProvider()];
 
-  /** Provides conversion from a place name to a location on the Earth's surface. */
-  public static get locationProvider(): BingLocationProvider {
-    return this._locationProvider || (this._locationProvider = new BingLocationProvider());
-  }
+const GlobalDisplayApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Using the Global Display Controls Widget, type in the name of a location (e.g., \"Mount Everest\", \"White House\", your own address, etc), then click the button to travel there.", [SampleIModels.MetroStation]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  /** Given a place name - whether a specific address or a more freeform description like "New Zealand", "Ol' Faithful", etc -
-   * look up its location on the Earth and, if found, use a flyover animation to make the viewport display that location.
-   */
-  public static async travelTo(viewport: ScreenViewport, destination: string): Promise<boolean> {
-    // Obtain latitude and longitude.
-    const location = await this.locationProvider.getLocation(destination);
-    if (!location)
-      return false;
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
+      // The grid just gets in the way - turn it off.
+      viewport.view.viewFlags.grid = false;
 
-    // Determine the height of the Earth's surface at this location.
-    const elevationOffset = await queryTerrainElevationOffset(viewport, location.center);
-    if (elevationOffset !== undefined)
-      location.center.height = elevationOffset;
+      // We're not interested in seeing the contents of the iModel, only the global data.
+      if (viewport.view.isSpatialView())
+        viewport.view.modelSelector.models.clear();
+    });
+    const viewState = await GlobalDisplayApi.getInitialView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
-    // "Fly" to the location.
-    await viewport.animateFlyoverToGlobalLocation(location);
-    return true;
-  }
-}
+  return (
+    <>
+      <MessageRenderer />
+      { /* Viewport to display the iModel */}
+      {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          defaultUiConfig={default3DSandboxUi}
+          uiProviders={uiProviders}
+          theme="dark"
+          onIModelConnected={_oniModelReady}
+        />
+      }
+    </>
+  );
+};
 
+export default GlobalDisplayApp;

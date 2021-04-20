@@ -10,7 +10,7 @@ export function getSimpleLineSpec(): SampleSpec {
     name: "simple-line-sample",
     label: "Simple Line",
     image: "simple-line-thumbnail.png",
-    customModelList: [],
+    iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp") },

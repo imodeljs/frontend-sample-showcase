@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getIotAlertSpec(): SampleSpec {
@@ -17,7 +17,7 @@ export function getIotAlertSpec(): SampleSpec {
       { name: "IotAlertUI.tsx", import: import("!!raw-loader!./IotAlertUI"), entry: true },
       { name: "IotAlert.scss", import: import("!!raw-loader!./IotAlert.scss") },
     ],
-    customModelList: [SampleIModels.BayTown],
+    iModelList: [SampleIModels.BayTown],
     type: "IotAlertUI.tsx",
   });
 }

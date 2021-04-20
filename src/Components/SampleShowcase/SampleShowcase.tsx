@@ -6,8 +6,7 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector } from "common/IModelSelector/IModelSelector";
-import { MessageRenderer } from "@bentley/ui-framework";
+import { IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
 import { ActiveSample } from "./ActiveSample";
 import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
 import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
@@ -26,7 +25,8 @@ export const SampleShowcase: FunctionComponent = () => {
   const [showEditor, setShowEditor] = useState(true);
   const [showGallery, setShowGallery] = useState(true);
   const [transpileResult, setTranspileResult] = useState<string>();
-  const [dragging, setDragging] = useState(false);
+  const [dragging, setDragging] = useState<boolean>(false);
+  let sizes: string[] = ["400px", "1", "200px"];
 
   const showcaseRef = React.createRef<HTMLDivElement>();
   const galleryRef = React.createRef<SampleGallery>();
@@ -38,8 +38,7 @@ export const SampleShowcase: FunctionComponent = () => {
     }
   }, [scrollTo, galleryRef]);
 
-  const editorSize = showEditor ? "400px" : "0";
-  const gallerySize = showGallery ? "200px" : "0";
+  const [editorMinSize, _, galleryMinSize] = sizes;
 
   const galleryClassName = dragging ? "gallery-pane dragging" : "gallery-pane";
   const editorClassName = dragging ? "editor-pane dragging" : "editor-pane";
@@ -64,7 +63,7 @@ export const SampleShowcase: FunctionComponent = () => {
   const onEditorSizeChange = (size: number) => {
     if (size < 400 && showEditor) {
       setShowEditor(false);
-    } else if (size >= 400 && !showGallery) {
+    } else if (size >= 400 && !showEditor) {
       setShowEditor(true);
     }
   };
@@ -86,12 +85,12 @@ export const SampleShowcase: FunctionComponent = () => {
 
   return (
     <div className="showcase" ref={showcaseRef}>
-      <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(true)}>
-        <Pane className={editorClassName} snapSize="400px" size={editorSize} onChange={onEditorSizeChange} disabled={!showEditor}>
+      <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)} onChange={(newSizes) => sizes = newSizes}>
+        <Pane className={editorClassName} snapSize="400px" disabled={!showEditor} size={showEditor ? "400px" : "0"} onChange={onEditorSizeChange}>
           <React.Suspense fallback={spinner}>
             <Editor
               files={activeSample.getFiles}
-              style={{ minWidth: "400px" }}
+              style={{ minWidth: editorMinSize }}
               onCloseClick={() => setShowEditor(!showEditor)}
               onSampleClicked={onGalleryCardClicked}
               onTranspiled={(blob) => setTranspileResult(blob)}
@@ -103,12 +102,12 @@ export const SampleShowcase: FunctionComponent = () => {
           {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-left"></span></Button>}
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
             <React.Suspense fallback={spinner}>
-              <ErrorBoundary key={transpileResult}>
-                <MessageRenderer />
+              <ErrorBoundary key={transpileResult + activeSample.type}>
                 <Visualizer
                   iModelName={activeSample.imodel}
                   iModelSelector={getImodelSelector()}
                   transpileResult={transpileResult}
+                  iTwinViewerReady={activeSample.iTwinViewerReady}
                   type={activeSample.type} />
               </ErrorBoundary>
             </React.Suspense>
@@ -116,10 +115,10 @@ export const SampleShowcase: FunctionComponent = () => {
           {!showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-left"></span></Button>}
           {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-right"></span></Button>}
         </Pane>
-        <Pane className={galleryClassName} snapSize="200px" size={gallerySize} maxSize="20%" onChange={onSampleGallerySizeChange} disabled={!showGallery}>
+        <Pane className={galleryClassName} snapSize="200px" maxSize="20%" disabled={!showGallery} size={showGallery ? "200px" : "0"} onChange={onSampleGallerySizeChange}>
           <SampleGallery
             group={activeSample.group}
-            style={{ minWidth: "200px" }}
+            style={{ minWidth: galleryMinSize }}
             onChange={onGalleryCardClicked}
             ref={galleryRef}
             samples={sampleManifest}

@@ -102,6 +102,6 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
           <Drawer active={displayDrawer} onDrawerClosed={_onDrawerClosed} onDrawerOpen={_onDrawerOpened} />
         </Pane>
       </SplitScreen>
-    </div>
+    </div >
   );
 };

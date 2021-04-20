@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getViewClipSpec(): SampleSpec {
@@ -16,7 +16,7 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
       { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
     ],
-    customModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
+    iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     type: "ViewClipUI.tsx",
   });
 }

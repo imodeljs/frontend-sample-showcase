@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleIModels } from "common/IModelSelector/IModelSelector";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getHyperModelingSpec(): SampleSpec {
@@ -10,12 +10,15 @@ export function getHyperModelingSpec(): SampleSpec {
     name: "hypermodeling-sample",
     label: "Hyper-modeling",
     image: "hypermodeling-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "HyperModelingUI.tsx", import: import("!!raw-loader!./HyperModelingUI"), entry: true },
-      { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp") },
+      { name: "HyperModelingApp.tsx", import: import("!!raw-loader!./HyperModelingApp"), entry: true },
+      { name: "HyperModelingApi.tsx", import: import("!!raw-loader!./HyperModelingApi") },
+      { name: "HyperModelingWidget.tsx", import: import("!!raw-loader!./HyperModelingWidget") },
+      { name: "HyperModeling.scss", import: import("!!raw-loader!./HyperModeling.scss") },
     ],
-    customModelList: [SampleIModels.House],
-    type: "HyperModelingUI.tsx",
+    iModelList: [SampleIModels.House],
+    type: "HyperModelingApp.tsx",
   });
 }
