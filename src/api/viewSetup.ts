@@ -2,12 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Id64, Id64Array, Id64String } from "@bentley/bentleyjs-core";
-import { BackgroundMapProps, ColorDef } from "@bentley/imodeljs-common";
-import {
-  AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection,
-  SpatialViewState, ViewState,
-} from "@bentley/imodeljs-frontend";
+import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
+import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
+import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, GeometricModel3dState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
 export class ViewSetup {
@@ -87,11 +84,42 @@ export class ViewSetup {
           nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
         },
       });
+
+      // Enable model masking on the metrostation model.
+      if (imodel.name === "Metrostation2") {
+        const modelIds = await ViewSetup.getAllModelIds(imodel);
+        const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
+        displayStyle.changeBackgroundMapProps({
+          planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.IncludeSubCategories, modelIds, subCategoryIds),
+        });
+      }
     }
 
     const hiddenCategories = await ViewSetup.getHiddenCategories(imodel);
     if (hiddenCategories)
       viewState.categorySelector.dropCategories(hiddenCategories);
+  }
+
+  /** Returns a set of every model's id in the iModel. */
+  public static async getAllModelIds(iModel: IModelConnection): Promise<Id64Set> {
+    const query = { from: GeometricModel3dState.classFullName, wantPrivate: true };
+    const props = await iModel.models.queryProps(query);
+    const idArray: string[] = props
+      .map((prop) => prop.id)
+      .filter((id): id is string => typeof id !== "undefined");
+    return new Set<string>(idArray);
+  }
+
+  /** Returns a set of ever sub category in the specified category codes. */
+  public static async getSubCategoryIds(iModel: IModelConnection, ...categoryCodes: string[]): Promise<Id64Set> {
+    const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
+    const subcategoriesIds = new Set<string>();
+    for await (const row of iModel.query(selectRelevantCategories)) {
+      const ids = iModel.subcategories.getSubCategories(row.id);
+      if (ids !== undefined)
+        ids.forEach((id) => subcategoriesIds.add(id));
+    }
+    return subcategoriesIds;
   }
 
   /** Queries for categories that are unnecessary in the context of the of the sample showcase. */
