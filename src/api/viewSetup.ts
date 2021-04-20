@@ -128,7 +128,7 @@ export class ViewSetup {
     return ids;
   }
 
-  /** Returns a set of ever sub category in the specified category codes. */
+  /** Returns a set of every sub category in the specified category codes. */
   public static async getSubCategoryIds(iModel: IModelConnection, ...categoryCodes: string[]): Promise<Id64Set> {
     const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""}`;
     const subcategoriesIds = new Set<string>();
