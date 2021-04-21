@@ -14,7 +14,6 @@
   }
 
   .gallery-pane {
-    transition: width 0.2s ease;
 
     &.dragging {
       transition: none;
@@ -23,7 +22,6 @@
 
   .editor-pane {
     background-color: #1e1e1e;
-    transition: width 0.2s ease;
 
     &.dragging {
       transition: none;

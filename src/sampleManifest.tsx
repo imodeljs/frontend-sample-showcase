@@ -50,6 +50,7 @@ import { getCustomCheckboxesTreeSpec } from "./frontend-samples/tree-samples/cus
 import { getCustomEventHandlerTreeSpec } from "./frontend-samples/tree-samples/custom-event-handler-tree/sampleSpec";
 import { getCustomTableNodeTreeSpec } from "./frontend-samples/tree-samples/custom-table-node-tree/sampleSpec";
 import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/custom-webfont-icons-tree/sampleSpec";
+import { getDragAndDropTreeSpec } from "./frontend-samples/tree-samples/drag-and-drop-tree/sampleSpec";
 import { getCustomNodeLoadingTreeSpec } from "./frontend-samples/tree-samples/custom-node-loading-tree/sampleSpec";
 import { getUnifiedSelectionTreeSpec } from "./frontend-samples/tree-samples/unified-selection-tree/sampleSpec";
 import { getPresentationTreeSpec } from "./frontend-samples/tree-samples/presentation-tree/sampleSpec";
@@ -139,6 +140,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getCustomEventHandlerTreeSpec(),
     getCustomCheckboxesTreeSpec(),
     getUnifiedSelectionTreeSpec(),
+    getDragAndDropTreeSpec(),
     getCustomWebfontIconsTreeSpec(),
   ],
 },

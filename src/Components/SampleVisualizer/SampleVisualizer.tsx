@@ -79,14 +79,15 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
           if (!iTwinViewerReady) {
             await iModelAppStartup(signal);
           }
-          FrontstageManager.onFrontstageReadyEvent.addOnce(FloatingWidgetsManager.onFrontstageReadyListener);
           setAppReady(true);
         } catch (err) {
         }
       };
       initialize(abortController.signal);
     }, 1000);
-    return () => clearTimeout(debounce);
+    return () => {
+      clearTimeout(debounce);
+    };
   }, [iTwinViewerReady, transpileResult, type]);
 
   // Set sample UI
