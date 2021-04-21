@@ -78,12 +78,13 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
 
           if (!iTwinViewerReady) {
             await iModelAppStartup(signal);
+            // Fix to add Hilite ruleset until Bug #599922 is addressed
+            await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
           }
 
           setAppReady(true);
 
-          // Fix to add Hilite ruleset until Bug #599922 is addressed
-          await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
+
         } catch (err) {
         }
       };
