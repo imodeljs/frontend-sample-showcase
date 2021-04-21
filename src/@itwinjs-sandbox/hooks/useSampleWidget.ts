@@ -52,7 +52,7 @@ export const useSampleWidget = (instructions: string, iModelList?: SampleIModels
       }
     };
     addHiliteRuleset();
-  });
+  }, []);
 
   useEffect(() => {
     const widgetProvider = new SampleWidgetProvider(instructions, sampleIModels, setIModelName);
