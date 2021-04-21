@@ -13,10 +13,14 @@ export function getSerializeViewSpec(): SampleSpec {
     iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp") },
-      { name: "SerializeViewUI.tsx", import: import("!!raw-loader!./SerializeViewUI"), entry: true },
+      { name: "SerializeViewApi.ts", import: import("!!raw-loader!./SerializeViewApi") },
+      { name: "SerializeViewApp.tsx", import: import("!!raw-loader!./SerializeViewApp"), entry: true },
+      { name: "SerializeViewWidget.tsx", import: import("!!raw-loader!./SerializeViewWidget") },
+      { name: "JsonViewerWidget.tsx", import: import("!!raw-loader!./JsonViewerWidget") },
       { name: "SampleViewStates.ts", import: import("!!raw-loader!./SampleViewStates") },
+      { name: "SerializeView.scss", import: import("!!raw-loader!./SerializeView.scss") },
     ],
-    type: "SerializeViewUI.tsx",
+    iTwinViewerReady: true,
+    type: "SerializeViewApp.tsx",
   };
 }
