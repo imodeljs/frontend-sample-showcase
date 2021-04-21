@@ -84,7 +84,6 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
 
           setAppReady(true);
 
-
         } catch (err) {
         }
       };
