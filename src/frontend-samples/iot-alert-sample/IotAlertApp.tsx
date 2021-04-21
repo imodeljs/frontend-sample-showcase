@@ -2,78 +2,44 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "common/samples-common.scss";
-import { EmphasizeElements, FeatureOverrideType, IModelApp, OutputMessagePriority, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { ReactMessage, UnderlinedButton } from "@bentley/ui-core";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { MessageManager, ReactNotifyMessageDetails } from "@bentley/ui-framework";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useState } from "react";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
+import { IotAlertWidgetProvider } from "./IotAlertWidget";
 
-export default class IotAlertApp {
-  public static showAlertNotification(selectedElement: string, elementNameIdMap: Map<string, string>) {
-    MessageManager.outputMessage(new ReactNotifyMessageDetails(OutputMessagePriority.Warning, ``, IotAlertApp.reactMessage(selectedElement, elementNameIdMap)));
-  }
+const uiProviders = [new IotAlertWidgetProvider()];
 
-  public static reactMessage(element: string, elementNameIdMap: Map<string, string>): ReactMessage {
-    const reactNode = (
-      <span>
-        Alert! There is an issue with <UnderlinedButton onClick={async () => IotAlertApp._zoomToElements(element, elementNameIdMap)}>{element}</UnderlinedButton>
-      </span>
-    );
-    return ({ reactNode });
-  }
+const IotAlertApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the controls below to change the iModel.", [SampleIModels.BayTown]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  public static _zoomToElements = async (id: string, elementNameIdMap: Map<string, string>) => {
-    const viewChangeOpts: ViewChangeOptions = {};
-    viewChangeOpts.animateFrustumChange = true;
-    const vp = IModelApp.viewManager.selectedView!;
-    const zoomElementId = elementNameIdMap.get(id);
-    if (zoomElementId === undefined) {
-      return;
-    }
-    await vp.zoomToElements(zoomElementId, { ...viewChangeOpts });
-  };
-}
-
-export class BlinkingEffect {
-  private static _overrideON = true;
-  private static _ids = new Set<Id64String>();
-
-  public static doBlink = (ids: Set<Id64String>) => {
-    for (const id of ids) {
-      BlinkingEffect._ids.add(id);
-    }
-    const vp = IModelApp.viewManager.selectedView;
-    if (undefined === vp) {
-      return;
-    }
-    const emph = EmphasizeElements.getOrCreate(vp);
-    BlinkingEffect._overrideON = true;
-    const timer = setInterval(() => {
-      setTimeout(() => {
-        emph.overrideElements(BlinkingEffect._ids, vp, ColorDef.white, FeatureOverrideType.ColorOnly, false);
-      }, 1000);
-
-      setTimeout(() => {
-        emph.clearOverriddenElements(vp);
-      }, 2000);
-
-      if (!BlinkingEffect._overrideON) {
-        clearInterval(timer);
-      }
-    }, 2000);
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
   };
 
-  public static stopBlinking(ids: Set<Id64String>) {
-    BlinkingEffect._ids.clear();
-    if (ids.size === 0) {
-      BlinkingEffect._overrideON = false;
-    } else {
-      for (const id of ids) {
-        BlinkingEffect._ids.add(id);
+  /** The sample's render method */
+  return (
+    <>
+      <MessageRenderer />
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
       }
-    }
-  }
-}
+    </>
+  );
+
+};
+
+export default IotAlertApp;

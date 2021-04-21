@@ -11,13 +11,15 @@ export function getIotAlertSpec(): SampleSpec {
     name: "iot-alert-sample",
     label: "IoT Alerts",
     image: "IoT-Alert-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "IotAlertApp.tsx", import: import("!!raw-loader!./IotAlertApp") },
-      { name: "IotAlertUI.tsx", import: import("!!raw-loader!./IotAlertUI"), entry: true },
+      { name: "IotAlertApi.tsx", import: import("!!raw-loader!./IotAlertApi") },
+      { name: "IotAlertApp.tsx", import: import("!!raw-loader!./IotAlertApp"), entry: true },
+      { name: "IotAlertWidget.tsx", import: import("!!raw-loader!./IotAlertWidget") },
       { name: "IotAlert.scss", import: import("!!raw-loader!./IotAlert.scss") },
     ],
     iModelList: [SampleIModels.BayTown],
-    type: "IotAlertUI.tsx",
+    type: "IotAlertApp.tsx",
   });
 }
