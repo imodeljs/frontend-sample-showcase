@@ -11,6 +11,8 @@ import { AuthorizationClient } from "@itwinjs-sandbox/authentication/Authorizati
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { SampleBaseApp } from "SampleBaseApp";
+import { Ruleset } from "@bentley/presentation-common";
+import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 
 const i18nNamespace = "sample-showcase-i18n-namespace";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
@@ -76,9 +78,12 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
 
           if (!iTwinViewerReady) {
             await iModelAppStartup(signal);
+            // Fix to add Hilite ruleset until Bug #599922 is addressed
+            await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
           }
 
           setAppReady(true);
+
         } catch (err) {
         }
       };
