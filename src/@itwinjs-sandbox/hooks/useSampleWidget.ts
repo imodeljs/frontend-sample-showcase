@@ -4,6 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { Ruleset } from "@bentley/presentation-common";
+import { Presentation } from "@bentley/presentation-frontend";
+import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 import { UiItemsManager } from "@bentley/ui-abstract";
 import { useActiveFrontstageDef } from "@bentley/ui-framework";
 import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
@@ -35,6 +38,21 @@ export const useSampleWidget = (instructions: string, iModelList?: SampleIModels
       setSampleIModels(iModelList);
     }
   }, [iModelList, sampleIModels]);
+
+  /**
+   * Fix to add Hilite ruleset to presentation until BUG #599922 is addressed
+   */
+  useEffect(() => {
+    const addHiliteRuleset = async () => {
+      try {
+        if (Presentation.presentation)
+          await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
+      } catch {
+        // Presentation not initialized
+      }
+    };
+    addHiliteRuleset();
+  });
 
   useEffect(() => {
     const widgetProvider = new SampleWidgetProvider(instructions, sampleIModels, setIModelName);
