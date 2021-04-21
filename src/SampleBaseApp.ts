@@ -25,7 +25,7 @@ export class SampleBaseApp {
   private static _appStateManager: StateManager | undefined;
 
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
-  public static async * startup(options?: IModelAppOptions) {
+  public static * startup(options?: IModelAppOptions) {
 
     const opts: IModelAppOptions = Object.assign({
       tileAdmin: { useProjectExtents: false },
@@ -38,8 +38,8 @@ export class SampleBaseApp {
     IModelApp.authorizationClient = AuthorizationClient.oidcClient;
 
     // use new state manager that allows dynamic additions from extensions and snippets
-    if (!this._appStateManager) {
-      this._appStateManager = new StateManager({
+    if (!SampleBaseApp._appStateManager) {
+      SampleBaseApp._appStateManager = new StateManager({
         frameworkState: FrameworkReducer,
       });
     }

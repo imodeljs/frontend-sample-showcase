@@ -12,7 +12,6 @@ import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { SampleBaseApp } from "SampleBaseApp";
 import { runWithCancel } from "common/CancellablePromises/CancellablePromises";
-import Initializer from "@bentley/itwin-viewer-react/build/services/Initializer";
 import { UiFramework } from "@bentley/ui-framework";
 import { UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
@@ -64,39 +63,41 @@ const iModelAppShutdown = async (): Promise<void> => {
   } catch (err) {
     // Do nothing, its possible that we never started.
   }
-  // HACK: So this is an interesting situation. The iTwin Viewer relies on this Initializer to set itself up.
-  // However, it relies heavily on promises and on occasion, when switching quickly between samples, it
-  // can get stuck and will throw an error about Presentation Initialize needing iModelApp.startup. By
-  // manually changing the value to false and clearning the promise that is usually populated, we can get a
-  // working sample, but we will still see an error in the console.
-  (Initializer as any)._initializing = false;
-  (Initializer as any)._initialized = undefined;
 };
-
-function* iModelAppStartup(iTwinViewerReady: boolean) {
-  yield iModelAppShutdown();
-  yield AuthorizationClient.initializeOidc();
-
-  if (!iTwinViewerReady) {
-    yield SampleBaseApp.startup();
-    MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
-  }
-
-}
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
   const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
 
   useEffect(() => {
-    const { promise, cancel } = runWithCancel(iModelAppStartup, iTwinViewerReady);
-    promise
+    const cancellations: Function[] = [];
+    function* iModelAppStartup() {
+      yield iModelAppShutdown();
+      yield AuthorizationClient.initializeOidc();
+
+      if (!iTwinViewerReady) {
+        const startup = runWithCancel(SampleBaseApp.startup);
+        cancellations.push(startup.cancel);
+        yield startup.promise;
+        MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
+      }
+
+    }
+    const iModelAppCancellable = runWithCancel(iModelAppStartup);
+    cancellations.push(iModelAppCancellable.cancel);
+    iModelAppCancellable.promise
       .then(() => {
         setAppReady(true);
+      })
+      .catch((error) => {
+        if (error.reason !== "cancelled") {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        }
       });
     return () => {
       setAppReady(false);
-      cancel();
+      cancellations.forEach((cancel) => cancel());
     };
   }, [iTwinViewerReady, transpileResult, type]);
 

@@ -40,12 +40,12 @@ export function runWithCancel(fn: Function, ...args: any[]) {
       next(result);
     }
 
-    function next({ done, value }: any) {
-      if (done) {
-        return resolve(value);
+    function next(result: any) {
+      if (result.done) {
+        return resolve(result.value);
       }
       // we assume we always receive promises, so no type checks
-      return value.then(onFulfilled, onRejected);
+      return result.value.then(onFulfilled, onRejected);
     }
   });
 
