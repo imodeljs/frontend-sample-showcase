@@ -57,11 +57,12 @@ const IotAlertWidget: React.FunctionComponent = () => {
   };
 
   const _onCreateAlert = () => {
-    blinkingElementsState.push(selectedElementState);
-    setBlinkingElementsState(blinkingElementsState);
+    const tempSet = [...blinkingElementsState];
+    tempSet.push(selectedElementState);
+    setBlinkingElementsState(tempSet);
     setWantEmphasisState(true);
     IotAlertApi.showAlertNotification(selectedElementState, elementNameIdMapState);
-    const ids = createBlinkingElementIdSet(blinkingElementsState, elementNameIdMapState);
+    const ids = createBlinkingElementIdSet(tempSet, elementNameIdMapState);
     BlinkingEffect.doBlink(ids);
   };
 
@@ -129,6 +130,18 @@ const IotAlertWidget: React.FunctionComponent = () => {
     }
   };
 
+  const _getTags = () => {
+    if (!blinkingElementsState)
+      return "";
+
+    return blinkingElementsState.map((tag, i) => (
+      <li key={tag}>
+        <UnderlinedButton onClick={async () => IotAlertApi._zoomToElements(tag, elementNameIdMapState)}>{tag}</UnderlinedButton>
+        <button type="button" onClick={() => { _removeTag(i); }}>+</button>
+      </li>
+    ));
+  };
+
   const enableCreateAlertButton = selectedElementState && !blinkingElementsState.includes(selectedElementState);
 
   return (
@@ -158,12 +171,7 @@ const IotAlertWidget: React.FunctionComponent = () => {
           <div className="input-tag">
             <div >
               <ul className="input-tag__tags">
-                {blinkingElementsState !== undefined ? blinkingElementsState.map((tag, i) => (
-                  <li key={tag}>
-                    <UnderlinedButton onClick={async () => IotAlertApi._zoomToElements(tag, elementNameIdMapState)}>{tag}</UnderlinedButton>
-                    <button type="button" onClick={() => { _removeTag(i); }}>+</button>
-                  </li>
-                )) : ""}
+                {_getTags()}
               </ul>
             </div>
           </div>
