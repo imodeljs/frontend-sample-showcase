@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
-import { FrontstageReadyEventArgs, UiFramework, WidgetDef, WidgetState } from "@bentley/ui-framework";
+import { FrontstageDef, UiFramework, WidgetDef, WidgetState } from "@bentley/ui-framework";
 import { CSSProperties, ReactNode } from "react";
 import ReactDOM from "react-dom";
 
@@ -28,24 +28,24 @@ const setStyleAttribute = (element: HTMLElement, attrs: { [key: string]: any }) 
 
 export class FloatingWidgetsManager {
 
-  public static onFrontstageReadyListener = async (ev: FrontstageReadyEventArgs) => {
+  public static onFrontstageReady = async (frontstage: FrontstageDef) => {
     const uiSettings = UiFramework.getUiSettings();
-    const widgets = ev.frontstageDef.rightPanel?.widgetDefs.filter((widget) => widget.state === WidgetState.Floating).reverse() || [];
+    const widgets = frontstage.rightPanel?.widgetDefs.filter((widget) => widget.defaultState === WidgetState.Floating).reverse() || [];
 
-    await uiSettings.deleteSetting("uifw-frontstageSettings", `frontstageState[${ev.frontstageDef.id}]`);
-    ev.frontstageDef.restoreLayout();
+    await uiSettings.deleteSetting("uifw-frontstageSettings", `frontstageState[${frontstage.id}]`);
+    frontstage.restoreLayout();
 
-    widgets.map((widget) => ev.frontstageDef.floatWidget(widget.id, undefined, { height: 0, width: 0 }));
+    widgets.map((widget) => frontstage.floatWidget(widget.id, undefined, { height: 0, width: 0 }));
     const props = widgets.map((widget) => ({ widget, props: FloatingWidgetsManager._getWidgetProps(widget, IModelApp.viewManager.selectedView!) }));
 
-    await uiSettings.deleteSetting("uifw-frontstageSettings", `frontstageState[${ev.frontstageDef.id}]`);
-    ev.frontstageDef.restoreLayout();
+    await uiSettings.deleteSetting("uifw-frontstageSettings", `frontstageState[${frontstage.id}]`);
+    frontstage.restoreLayout();
 
     let continuousHight = 16;
     const minWidth = Math.max(...props.map((pos) => pos.props.width));
     const minX = Math.min(...props.map((pos) => pos.props.x)) - 32;
     props.map((pos,) => {
-      ev.frontstageDef.floatWidget(pos.widget.id, { x: minX, y: pos.props.y - continuousHight }, { height: pos.props.height, width: minWidth });
+      frontstage.floatWidget(pos.widget.id, { x: minX, y: pos.props.y - continuousHight }, { height: pos.props.height, width: minWidth });
       continuousHight += (pos.props.height + 16);
     });
   };
