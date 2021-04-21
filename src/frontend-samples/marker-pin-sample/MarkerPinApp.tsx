@@ -2,48 +2,58 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useState } from "react";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { MarkerPinWidgetProvider } from "./MarkerPinWidget";
 
-import "common/samples-common.scss";
-import { Point3d } from "@bentley/geometry-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";
+const uiProviders = [new MarkerPinWidgetProvider()];
 
-export default class MarkerPinApp {
-  public static _sampleNamespace: I18NNamespace;
-  public static _markerDecorator?: MarkerPinDecorator;
-  public static _images: Map<string, HTMLImageElement>;
+const MarkerPinApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.");
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  public static decoratorIsSetup() {
-    return (null != this._markerDecorator);
-  }
+  /** Get a top-down view from the defualt viewstate of the model */
+  const getTopView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
 
-  public static setupDecorator(markersData: MarkerData[]) {
-    // If we failed to load the image, there is no point in registering the decorator
-    if (!MarkerPinApp._images.has("Google_Maps_pin.svg"))
-      return;
+    // The marker pins look better in a top view
+    viewState.setStandardRotation(StandardViewId.Top);
 
-    MarkerPinApp._markerDecorator = new MarkerPinDecorator();
-    this.setMarkersData(markersData);
-  }
+    const range = viewState.computeFitRange();
+    const aspect = viewState.getAspectRatio();
 
-  public static setMarkersData(markersData: MarkerData[]) {
-    if (MarkerPinApp._markerDecorator)
-      MarkerPinApp._markerDecorator.setMarkersData(markersData, this._images.get("Google_Maps_pin.svg")!);
-  }
+    viewState.lookAtVolume(range, aspect);
 
-  public static addMarkerPoint(point: Point3d, pinImage: HTMLImageElement) {
-    if (MarkerPinApp._markerDecorator)
-      MarkerPinApp._markerDecorator.addPoint(point, pinImage);
-  }
+    return viewState;
+  };
 
-  public static enableDecorations() {
-    if (MarkerPinApp._markerDecorator)
-      IModelApp.viewManager.addDecorator(MarkerPinApp._markerDecorator);
-  }
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await getTopView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
-  public static disableDecorations() {
-    if (null != MarkerPinApp._markerDecorator)
-      IModelApp.viewManager.dropDecorator(MarkerPinApp._markerDecorator);
-  }
-}
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
+      }
+    </>
+  );
+
+};
+
+export default MarkerPinApp;

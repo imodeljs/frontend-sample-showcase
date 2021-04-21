@@ -10,14 +10,17 @@ export function getMarkerPinSpec(): SampleSpec {
     name: "marker-pin-sample",
     label: "Marker Pins",
     image: "marker-pin-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "MarkerPinApp.tsx", import: import("!!raw-loader!./MarkerPinApp.tsx") },
-      { name: "MarkerPinUI.tsx", import: import("!!raw-loader!./MarkerPinUI.tsx"), entry: true },
+      { name: "MarkerPinApi.ts", import: import("!!raw-loader!./MarkerPinApi.ts") },
+      { name: "MarkerPinWidget.tsx", import: import("!!raw-loader!./MarkerPinWidget.tsx") },
+      { name: "MarkerPinApp.tsx", import: import("!!raw-loader!./MarkerPinApp.tsx"), entry: true },
       { name: "MarkerPinDecorator.tsx", import: import("!!raw-loader!./MarkerPinDecorator") },
       { name: "PlaceMarkerTool.ts", import: import("!!raw-loader!./PlaceMarkerTool") },
       { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
+      { name: "MarkerPin.scss", import: import("!!raw-loader!./MarkerPin.scss") },
     ],
-    type: "MarkerPinUI.tsx",
+    type: "MarkerPinApp.tsx",
   });
 }
