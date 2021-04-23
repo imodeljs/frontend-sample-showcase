@@ -5,14 +5,14 @@
 
 import React, { useEffect } from "react";
 import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { InteractivePointMarker, MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { NumberInput, Slider } from "@bentley/ui-core";
 import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
-import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
-import CurveFractionApi from "./CurveFractionApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
+import CurveFractionApi from "./CurveFractionApi";
+import { GeometryDecorator } from "./GeometryDecorator";
+import { SampleCurveFactory } from "./SampleCurveFactory";
+import { InteractivePointMarker, MovePointTool } from "./InteractivePointMarker";
 import "./CurveFraction.scss";
 
 interface CurveData {
@@ -27,7 +27,7 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
     const size = 10;
     const shift = 10;
 
-    const initCurvesData: CurveData[] = []
+    const initCurvesData: CurveData[] = [];
     let curve = SampleCurveFactory.createCurvePrimitive("Step Line String", size)!;
     curve.tryTranslateInPlace(shift, -shift, 0);
     let ray = CurveFractionApi.fractionToPointAndDerivative(curve, fraction)!;
