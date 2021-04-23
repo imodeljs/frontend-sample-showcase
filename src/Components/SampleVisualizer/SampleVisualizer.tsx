@@ -6,17 +6,12 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
-import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
-import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
-import { SampleBaseApp } from "SampleBaseApp";
-import { runWithCancel } from "common/CancellablePromises/CancellablePromises";
 import { UiFramework } from "@bentley/ui-framework";
-import { UiCore } from "@bentley/ui-core";
+import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
-
-const i18nNamespace = "sample-showcase-i18n-namespace";
+import { SampleLegacyVisualizer } from "./SampleLegacyVisualizer";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 interface SampleVisualizerProps {
   iTwinViewerReady?: boolean;
@@ -32,11 +27,10 @@ interface SampleProps {
 }
 
 const iModelAppShutdown = async (): Promise<void> => {
-  if (IModelApp.i18n && IModelApp.i18n.getNamespace(i18nNamespace)) {
-    IModelApp.i18n.unregisterNamespace(i18nNamespace);
-  }
-  if (IModelApp.tools && IModelApp.tools.find(MovePointTool.toolId)) {
-    IModelApp.tools.unRegister(MovePointTool.toolId);
+  try {
+    Presentation.presentation.dispose();
+  } catch (err) {
+    // Do nothing, its possible that we never started.
   }
   try {
     Presentation.terminate();
@@ -44,62 +38,61 @@ const iModelAppShutdown = async (): Promise<void> => {
     // Do nothing, its possible that we never started.
   }
   try {
-    UiFramework.terminate();
+    if (UiFramework.initialized) {
+      UiFramework.terminate();
+    }
   } catch (err) {
-    // Do nothing, its possible that we never started.
+    // Do nothing.
   }
   try {
-    UiComponents.terminate();
+    if (UiComponents.initialized) {
+      UiComponents.terminate();
+    }
   } catch (err) {
-    // Do nothing, its possible that we never started.
+    // Do nothing.
   }
   try {
-    UiCore.terminate();
+    if (UiCore.initialized) {
+      UiCore.terminate();
+    }
   } catch (err) {
-    // Do nothing, its possible that we never started.
+    // Do nothing
+  }
+  try {
+    IModelApp.i18n.languageList().forEach((ns) => IModelApp.i18n.unregisterNamespace(ns));
+  } catch (err) {
+    // Do nothing
   }
   try {
     await IModelApp.shutdown();
   } catch (err) {
-    // Do nothing, its possible that we never started.
+    // Do nothing
   }
 };
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
-  const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
+  const [appReady, setAppReady] = useState<boolean>(false);
+  const [cleaning, setCleaning] = useState<boolean>(false);
 
   useEffect(() => {
-    const cancellations: Function[] = [];
-    function* iModelAppStartup() {
-      yield iModelAppShutdown();
-      yield AuthorizationClient.initializeOidc();
-
-      if (!iTwinViewerReady) {
-        const startup = runWithCancel(SampleBaseApp.startup);
-        cancellations.push(startup.cancel);
-        yield startup.promise;
-        MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
-      }
-
-    }
-    const iModelAppCancellable = runWithCancel(iModelAppStartup);
-    cancellations.push(iModelAppCancellable.cancel);
-    iModelAppCancellable.promise
+    setAppReady(false);
+    setCleaning(true);
+    iModelAppShutdown()
       .then(() => {
-        setAppReady(true);
-      })
-      .catch((error) => {
-        if (error.reason !== "cancelled") {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        }
+        setCleaning(false);
       });
-    return () => {
-      setAppReady(false);
-      cancellations.forEach((cancel) => cancel());
-    };
-  }, [iTwinViewerReady, transpileResult, type]);
+  }, [iTwinViewerReady, type, transpileResult, iModelName, iModelSelector]);
+
+  useEffect(() => {
+    if (sampleUi && !cleaning) {
+      AuthorizationClient
+        .initializeOidc()
+        .then(() => {
+          setAppReady(true);
+        });
+    }
+  }, [sampleUi, cleaning]);
 
   // Set sample UI
   useEffect(() => {
@@ -126,13 +119,43 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     }
   }, [transpileResult, iModelName, iModelSelector]);
 
-  if (!appReady) {
+  if (!appReady || !sampleUi || cleaning) {
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
-  return <>{sampleUi}</>;
+  return !iTwinViewerReady ? <SampleLegacyVisualizer sampleUi={sampleUi} /> : <>{sampleUi}</>;
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
   return prevProps.type === nextProps.type && prevProps.iModelName === nextProps.iModelName && prevProps.transpileResult === nextProps.transpileResult;
 });
+
+/*
+const cancellations: Function[] = [];
+    if (!IModelApp.initialized) {
+      function* iModelAppStartup() {
+        yield AuthorizationClient.initializeOidc();
+
+        if (!iTwinViewerReady) {
+          const startup = runWithCancel(SampleBaseApp.startup);
+          cancellations.push(startup.cancel);
+          yield startup.promise;
+          MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
+        }
+        setAppReady(true);
+      }
+      const iModelAppCancellable = runWithCancel(iModelAppStartup);
+      cancellations.push(iModelAppCancellable.cancel);
+      iModelAppCancellable.promise
+        .catch((error) => {
+          if (error.reason !== "cancelled") {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          }
+        });
+    }
+    return () => {
+      setAppReady(false);
+      cancellations.forEach((cancel) => cancel());
+      iModelAppShutdown();
+    };*/
