@@ -8,13 +8,14 @@ import { UrlDiscoveryClient } from "@bentley/itwin-client";
 import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection } from "@bentley/imodeljs-frontend";
 import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
 import { MarkupApp } from "@bentley/imodeljs-markup";
-import { PresentationRpcInterface } from "@bentley/presentation-common";
+import { PresentationRpcInterface, Ruleset } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 import { MovePointTool } from "common/Geometry/InteractivePointMarker";
+import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 
 // Boiler plate code
 export interface SampleContext {
@@ -76,6 +77,8 @@ export class SampleBaseApp {
 
         const namespace = IModelApp.i18n.registerNamespace(i18nNamespace);
         MovePointTool.register(namespace);
+
+        await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
         resolve();
       } catch {
         SampleBaseApp._reject = undefined;
