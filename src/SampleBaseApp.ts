@@ -8,12 +8,14 @@ import { UrlDiscoveryClient } from "@bentley/itwin-client";
 import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection } from "@bentley/imodeljs-frontend";
 import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
 import { MarkupApp } from "@bentley/imodeljs-markup";
-import { PresentationRpcInterface } from "@bentley/presentation-common";
+import { PresentationRpcInterface, Ruleset } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
+import { MovePointTool } from "common/Geometry/InteractivePointMarker";
+import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 
 // Boiler plate code
 export interface SampleContext {
@@ -21,58 +23,77 @@ export interface SampleContext {
   viewDefinitionId: Id64String;
 }
 
-const promiseWrapper = async (signal: AbortSignal, promise: () => Promise<void>) => {
-  if (signal.aborted) {
-    throw new DOMException("Aborted", "Abort");
-  }
-  await promise();
-};
-
+const i18nNamespace = "sample-showcase-i18n-namespace";
 export class SampleBaseApp {
   private static _appStateManager: StateManager | undefined;
+  private static _reject: (() => void) | undefined;
 
   public static get oidcClient() { return IModelApp.authorizationClient as BrowserAuthorizationClient; }
-  public static async startup(signal: AbortSignal, options?: IModelAppOptions) {
+  public static async startup(options?: IModelAppOptions) {
 
-    const opts: IModelAppOptions = Object.assign({
-      tileAdmin: { useProjectExtents: false },
-      notifications: new ShowcaseNotificationManager(),
-      toolAdmin: ShowcaseToolAdmin.initialize(),
-    }, options);
+    return new Promise<void>(async (resolve, reject) => {
+      SampleBaseApp._reject = () => {
+        reject("Cancelled");
+      };
 
-    await promiseWrapper(signal, async () => IModelApp.startup(opts));
+      try {
+        const opts: IModelAppOptions = Object.assign({
+          tileAdmin: { useProjectExtents: false },
+          notifications: new ShowcaseNotificationManager(),
+          toolAdmin: ShowcaseToolAdmin.initialize(),
+        }, options);
 
-    IModelApp.authorizationClient = AuthorizationClient.oidcClient;
+        await IModelApp.startup(opts);
 
-    // use new state manager that allows dynamic additions from extensions and snippets
-    if (!this._appStateManager) {
-      this._appStateManager = new StateManager({
-        frameworkState: FrameworkReducer,
-      });
-    }
+        IModelApp.authorizationClient = AuthorizationClient.oidcClient;
 
-    // contains various initialization promises which need
-    // to be fulfilled before the app is ready
-    const initPromises = new Array<Promise<any>>();
+        // use new state manager that allows dynamic additions from extensions and snippets
+        if (!SampleBaseApp._appStateManager) {
+          SampleBaseApp._appStateManager = new StateManager({
+            frameworkState: FrameworkReducer,
+          });
+        }
 
-    // initialize RPC communication
-    initPromises.push(promiseWrapper(signal, async () => SampleBaseApp.initializeRpc()));
+        // contains various initialization promises which need
+        // to be fulfilled before the app is ready
+        const initPromises = new Array<Promise<any>>();
 
-    // initialize UiFramework
-    initPromises.push(promiseWrapper(signal, async () => UiFramework.initialize(undefined)));
+        // initialize RPC communication
+        initPromises.push(SampleBaseApp.initializeRpc());
 
-    // initialize Presentation
-    initPromises.push(promiseWrapper(signal, async () => Presentation.initialize({
-      activeLocale: IModelApp.i18n.languageList()[0],
-    })));
+        // initialize UiFramework
+        initPromises.push(UiFramework.initialize(undefined));
 
-    // initialize Markup
-    initPromises.push(promiseWrapper(signal, async () => MarkupApp.initialize()));
+        // initialize Presentation
+        initPromises.push(Presentation.initialize({
+          activeLocale: IModelApp.i18n.languageList()[0],
+        }));
 
-    // the app is ready when all initialization promises are fulfilled
-    await Promise.all(initPromises);
+        // initialize Markup
+        initPromises.push(MarkupApp.initialize());
+
+        // the app is ready when all initialization promises are fulfilled
+        await Promise.all(initPromises);
+
+        const namespace = IModelApp.i18n.registerNamespace(i18nNamespace);
+        MovePointTool.register(namespace);
+
+        await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
+        resolve();
+      } catch (err) {
+        reject(err);
+      } finally {
+        SampleBaseApp._reject = undefined;
+      }
+    });
 
   }
+
+  public static cancel: () => void = () => {
+    if (SampleBaseApp._reject) {
+      SampleBaseApp._reject();
+    }
+  };
 
   private static async initializeRpc(): Promise<void> {
     const rpcInterfaces = [IModelReadRpcInterface, IModelTileRpcInterface, PresentationRpcInterface];
