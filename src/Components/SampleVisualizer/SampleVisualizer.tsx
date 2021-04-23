@@ -13,6 +13,7 @@ import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
 import { SampleLegacyVisualizer } from "./SampleLegacyVisualizer";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
+
 interface SampleVisualizerProps {
   iTwinViewerReady?: boolean;
   type: string;
@@ -129,33 +130,3 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
   return prevProps.type === nextProps.type && prevProps.iModelName === nextProps.iModelName && prevProps.transpileResult === nextProps.transpileResult;
 });
-
-/*
-const cancellations: Function[] = [];
-    if (!IModelApp.initialized) {
-      function* iModelAppStartup() {
-        yield AuthorizationClient.initializeOidc();
-
-        if (!iTwinViewerReady) {
-          const startup = runWithCancel(SampleBaseApp.startup);
-          cancellations.push(startup.cancel);
-          yield startup.promise;
-          MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
-        }
-        setAppReady(true);
-      }
-      const iModelAppCancellable = runWithCancel(iModelAppStartup);
-      cancellations.push(iModelAppCancellable.cancel);
-      iModelAppCancellable.promise
-        .catch((error) => {
-          if (error.reason !== "cancelled") {
-            // eslint-disable-next-line no-console
-            console.error(error);
-          }
-        });
-    }
-    return () => {
-      setAppReady(false);
-      cancellations.forEach((cancel) => cancel());
-      iModelAppShutdown();
-    };*/

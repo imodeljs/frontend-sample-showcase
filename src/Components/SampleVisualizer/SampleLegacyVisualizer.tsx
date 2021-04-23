@@ -6,6 +6,9 @@
 import { Spinner, SpinnerSize } from "@bentley/ui-core";
 import React, { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
+import { Ruleset } from "@bentley/presentation-common";
+import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
+import { Presentation } from "@bentley/presentation-frontend";
 
 export interface SampleLegacyVisualizerProps {
   sampleUi: ReactNode;
@@ -16,6 +19,9 @@ export const SampleLegacyVisualizer: FunctionComponent<SampleLegacyVisualizerPro
 
   useEffect(() => {
     SampleBaseApp.startup()
+      .then(async () => {
+        return Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
+      })
       .then(() => {
         setAppReady(true);
       })
