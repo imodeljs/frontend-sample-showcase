@@ -81,7 +81,7 @@ export const Transformations2dWidget: React.FunctionComponent = () => {
     if (direction === Direction.Left)
       newGeometry = Transformations2dApi.handleTranslation(geometry, -xTrans, 0);
     else if (direction === Direction.Right)
-      newGeometry = Transformations2dApi.handleTranslation(geometry, -xTrans, 0);
+      newGeometry = Transformations2dApi.handleTranslation(geometry, xTrans, 0);
 
     if (newGeometry)
       setGeometry(newGeometry);

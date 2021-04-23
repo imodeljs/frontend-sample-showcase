@@ -5,11 +5,11 @@
 
 import React, { useEffect } from "react";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { Select } from "@bentley/ui-core";
-import Advanced3dApi from "./Advanced3dApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "./GeometryDecorator";
+import Advanced3dApi from "./Advanced3dApi";
 import "./Advanced3d.scss";
 
 export const Advanced3dWidget: React.FunctionComponent = () => {
