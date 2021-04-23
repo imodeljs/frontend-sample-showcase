@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { Spinner, SpinnerSize } from "@bentley/ui-core";
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from "react";
+import React, { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
 
 export interface SampleLegacyVisualizerProps {
@@ -17,6 +17,7 @@ async function retry<T>(retries: number, executor: Promise<T>) {
       retry(retries - 1, executor);
     } else {
       if (error !== "Cancelled") {
+        // eslint-disable-next-line no-console
         console.error(error);
       }
     }
