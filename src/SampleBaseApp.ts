@@ -80,7 +80,9 @@ export class SampleBaseApp {
 
         await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
         resolve();
-      } catch {
+      } catch (err) {
+        reject(err);
+      } finally {
         SampleBaseApp._reject = undefined;
       }
     });
