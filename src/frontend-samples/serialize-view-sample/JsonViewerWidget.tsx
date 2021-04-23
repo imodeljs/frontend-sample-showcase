@@ -47,7 +47,7 @@ export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = 
   return (
     <>
       <div className="item">
-        <Textarea spellCheck={"false"} onChange={_handleJsonTextChange} style={{ overflow: "scroll", height: "12rem", resize: "none" }} value={jsonValueState} />
+        <Textarea spellCheck={"false"} onChange={_handleJsonTextChange} cols={50} style={{ overflow: "scroll", height: "17rem", resize: "none" }} value={jsonValueState} />
       </div>
       <div className="item" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Button onClick={onSaveJsonViewClick} disabled={jsonErrorState !== ""}>Save View</Button>

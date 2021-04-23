@@ -2,14 +2,15 @@ import React, { useEffect } from "react";
 import { Button, Dialog, DialogAlignment, Select, SelectOption, SmallText } from "@bentley/ui-core";
 import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";
 import SerializeViewApi from "./SerializeViewApi";
-import { StagePanelLocation, StagePanelSection, WidgetState } from "@bentley/ui-framework";
+import { ModalDialogManager, ModelessDialogManager, StagePanelLocation, StagePanelSection, WidgetState } from "@bentley/ui-framework";
 import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
 import { ViewStateProps } from "@bentley/imodeljs-common";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { JsonViewerWidget } from "./JsonViewerWidget";
 import "./SerializeView.scss";
 
 export const SerializeViewWidget: React.FunctionComponent = () => {
+  const viewport = IModelApp.viewManager.selectedView;
   const allSavedViews: IModelViews[] = [...sampleViewStates];
   const [currentViewIndexState, setCurrentViewIndexState] = React.useState<number>(0);
   const [viewsState, setViewsState] = React.useState<ViewStateWithName[]>([]);
@@ -20,13 +21,17 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
   const [loadStateError, setLoadStateError] = React.useState<string | undefined>("");
 
   useEffect(() => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp)
-      _init();
+    if (viewport)
+      _init(viewport);
     else
-      IModelApp.viewManager.onViewOpen.addOnce(() => _init());
+      IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => _init(_vp));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log("Its been set!");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jsonMenuValueState]);
 
   useEffect(() => {
     if (viewsState.length === 0)
@@ -36,12 +41,10 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
     setJsonMenuValueState(JSON.stringify(viewsState[currentViewIndexState].view, null, 2));
   }, [currentViewIndexState]);
 
-  const _init = () => {
-    const vp = IModelApp.viewManager.selectedView!;
-
+  const _init = (viewport: ScreenViewport) => {
     /** Grab the IModel with views that match the imodel loaded. */
     const iModelWithViews = allSavedViews.filter((iModelViews) => {
-      return iModelViews.iModelId === vp.iModel.iModelId;
+      return iModelViews.iModelId === viewport.iModel.iModelId;
     });
 
     /** Grab the views of the iModel just loaded and load the first view state in the SampleViewStates.ts */
@@ -62,13 +65,12 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
   };
 
   const _onSaveStateClick = () => {
-    const vp = IModelApp.viewManager.selectedView;
-    const currentimodelid = vp?.iModel?.iModelId;
+    const currentimodelid = viewport?.iModel?.iModelId;
     /** Check that the viewport is not null, and there is an iModel loaded with an ID */
-    if (vp !== undefined && currentimodelid !== undefined) {
+    if (viewport !== undefined && currentimodelid !== undefined) {
 
       /** Serialize the current view */
-      const viewStateProps = SerializeViewApi.serializeCurrentViewState(vp);
+      const viewStateProps = SerializeViewApi.serializeCurrentViewState(viewport);
 
       /** Add that serialized view to the list of views to select from */
       const views = [...viewsState, { name: `Saved View: ${viewsState.length + 1}`, view: viewStateProps }];
@@ -80,12 +82,17 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
 
   /** Loads the view selected */
   const _onLoadStateClick = () => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp) {
+    if (viewport) {
+
+      /** Close the dialog box if switching views */
+      if (showJsonViewerState) {
+        _handleDialogClose();
+      }
+
       const view = viewsState[currentViewIndexState].view;
 
       //* * Load the view state. Display error message if there is one */
-      SerializeViewApi.loadViewState(vp, view)
+      SerializeViewApi.loadViewState(viewport, view)
         .then(() => {
           if (loadStateError) {
             setLoadStateError("");
@@ -121,8 +128,7 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
 
   /** Called when user selects 'Save View' */
   const _onSaveJsonViewClick = async () => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp) {
+    if (viewport) {
       const views = [...viewsState];
       const viewStateProps = JSON.parse(jsonMenuValueState) as ViewStateProps;
       if (undefined !== viewStateProps) {
@@ -130,6 +136,50 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
         setViewsState(views);
       }
     }
+  };
+
+  // Helper method to get the offset position of an element on the browser
+  const getOffset = (element: HTMLElement) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      left: rect.left + window.scrollX,
+      top: rect.top + window.scrollY,
+      bottom: rect.bottom,
+    };
+  };
+
+  const _openDialog = () => {
+    const offset = getOffset(viewport!.canvas);
+    setShowJsonViewerState(true);
+    ModalDialogManager.openDialog(
+      <Dialog
+        opened={true}
+        modal={false}
+        onClose={_handleDialogClose}
+        resizable={true}
+        movable={true}
+        title={jsonViewerTitleState}
+        width={400}
+
+        // This is specific for this sample-showcase, the better approach is to use the
+        // 'alignment' prop to specify the inital location on screen
+        x={offset.left + 20}
+        y={offset.bottom - 380}
+      >
+        <JsonViewerWidget
+          json={jsonMenuValueState}
+          setJson={_setJson}
+          onSaveJsonViewClick={_onSaveJsonViewClick} />
+      </Dialog>);
+  };
+
+  const _setJson = (json: string) => {
+    setJsonMenuValueState(json);
+  };
+
+  const _handleDialogClose = () => {
+    setShowJsonViewerState(false);
+    ModalDialogManager.closeDialog();
   };
 
   return (
@@ -145,22 +195,8 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
         </div>
         {showError(loadStateError)}
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={() => setShowJsonViewerState(true)} disabled={viewsState.length === 0}>Edit Json</Button>
+          <Button onClick={_openDialog} disabled={viewsState.length === 0 || showJsonViewerState}>Edit Json</Button>
         </div>
-        <Dialog
-          opened={showJsonViewerState}
-          onClose={() => setShowJsonViewerState(false)}
-          onOutsideClick={() => setShowJsonViewerState(false)}
-          modal={false}
-          resizable={true}
-          movable={true}
-          title={jsonViewerTitleState}
-        >
-          <JsonViewerWidget
-            json={jsonMenuValueState}
-            setJson={(json) => setJsonMenuValueState(json)}
-            onSaveJsonViewClick={_onSaveJsonViewClick} />
-        </Dialog>
       </div>
     </>
   );
