@@ -15,6 +15,7 @@ export const SampleLegacyVisualizer: FunctionComponent<SampleLegacyVisualizerPro
   const [appReady, setAppReady] = useState(false);
 
   useEffect(() => {
+    SampleBaseApp.cancel();
     SampleBaseApp.startup()
       .then(() => {
         setAppReady(true);
@@ -23,7 +24,6 @@ export const SampleLegacyVisualizer: FunctionComponent<SampleLegacyVisualizerPro
         // do nothing
       });
     return () => {
-      SampleBaseApp.cancel();
       setAppReady(false);
     };
   }, [sampleUi]);
