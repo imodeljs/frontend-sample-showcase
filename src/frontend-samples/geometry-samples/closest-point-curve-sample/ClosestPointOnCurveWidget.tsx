@@ -5,14 +5,14 @@
 
 import React, { useEffect } from "react";
 import { ColorByName, ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
-import { InteractivePointMarker, MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { Input, NumberInput, Select } from "@bentley/ui-core";
 import { CurvePrimitive, LineSegment3d, Point3d } from "@bentley/geometry-core";
-import ClosestPointOnCurveApi from "./ClosestPointOnCurveApi";
-import { SampleCurveFactory } from "common/Geometry/SampleCurveFactory";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { InteractivePointMarker, MovePointTool } from "./InteractivePointMarker";
+import ClosestPointOnCurveApi from "./ClosestPointOnCurveApi";
+import { GeometryDecorator } from "./GeometryDecorator";
+import { SampleCurveFactory } from "./SampleCurveFactory";
 
 export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
   const [decoratorState, setDecoratorState] = React.useState<GeometryDecorator>();
