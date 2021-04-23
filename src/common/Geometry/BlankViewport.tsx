@@ -40,21 +40,15 @@ export class BlankViewport extends React.Component<BlankViewportProps, { imodel:
 
   // Generates a simple viewState with a plain white background to be used in conjunction with the blank iModelConnection
   public static getViewState(grid: boolean, twoDim: boolean): BlankConnectionViewState {
-    const lookAt: BlankConnectionViewStateLookAt = {
-      eyePoint: { x: 0, y: 0, z: 25 },
-      targetPoint: { x: 0, y: 0, z: 0 },
-      upVector: new Vector3d(0, 0, 1),
-    };
     const viewState: BlankConnectionViewState = {
-      displayStyle: {
-        backgroundColor: ColorDef.white,
-      },
-      viewFlags: {
-        grid,
-        renderMode: RenderMode.SmoothShade,
-      },
+      displayStyle: { backgroundColor: ColorDef.white },
+      viewFlags: { grid, renderMode: RenderMode.SmoothShade },
       setAllow3dManipulations: !twoDim,
-      lookAt: twoDim ? lookAt : undefined,
+      lookAt: twoDim ? {
+        eyePoint: { x: 0, y: 0, z: 25 },
+        targetPoint: { x: 0, y: 0, z: 0 },
+        upVector: new Vector3d(0, 0, 1),
+      } : undefined,
     };
 
     return viewState;
