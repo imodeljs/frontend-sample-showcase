@@ -17,6 +17,7 @@ export function getSimple3dSpec(): SampleSpec {
       { name: "Simple3dApi.tsx", import: import("!!raw-loader!./Simple3dApi") },
       { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp"), entry: true },
       { name: "Simple3dWidget.tsx", import: import("!!raw-loader!./Simple3dWidget") },
+      { name: "GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
       { name: "Simple3d.scss", import: import("!!raw-loader!./Simple3d.scss") },
     ],
     type: "Simple3dApp.tsx",

@@ -2,19 +2,30 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useState } from "react";
-import { BlankViewport } from "common/Geometry/BlankViewport";
+import React, { FunctionComponent } from "react";
 import { Range3d } from "@bentley/geometry-core";
 import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
-import { AuthorizationClient, default3DSandboxUi } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { Simple3dWidgetProvider } from "./Simple3dWidget";
+import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 
 const uiProviders = [new Simple3dWidgetProvider()];
 
 const Simple3dApp: FunctionComponent = () => {
-  const [connection] = useState<BlankConnectionProps>(BlankViewport.getBlankConnection(new Range3d(-30, -30, -30, 30, 30, 30)));
-  const [viewState] = useState<BlankConnectionViewState>(BlankViewport.getViewState(true, false));
+  useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
+
+  const connection: BlankConnectionProps = {
+    name: "GeometryConnection",
+    location: Cartographic.fromDegrees(0, 0, 0),
+    extents: new Range3d(-30, -30, -30, 30, 30, 30),
+  };
+  const viewState: BlankConnectionViewState = {
+    displayStyle: { backgroundColor: ColorDef.white },
+    viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
+    setAllow3dManipulations: true,
+    lookAt: undefined,
+  };
 
   /** The sample's render method */
   return (
