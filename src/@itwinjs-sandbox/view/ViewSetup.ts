@@ -99,9 +99,9 @@ export class ViewSetup {
           sky: {
             display: true,
             twoColor: false,
-            zenithColor: ColorDef.computeTbgrFromString("#FF7536"),
-            skyColor: ColorDef.computeTbgrFromString("#FFCD8F"),
-            groundColor: ColorDef.computeTbgrFromString("#94A38F"),
+            zenithColor: ColorDef.computeTbgrFromComponents(54, 117, 255),
+            skyColor: ColorDef.computeTbgrFromComponents(143, 205, 255),
+            groundColor: ColorDef.computeTbgrFromComponents(143, 163, 148),
             // Overridden from the original, ugly brown color.
             nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
           },
