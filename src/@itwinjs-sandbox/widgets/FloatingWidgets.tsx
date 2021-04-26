@@ -2,9 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { FrontstageDef, UiFramework, WidgetDef, WidgetState } from "@bentley/ui-framework";
-import React, { FunctionComponent, useEffect, useLayoutEffect, useRef } from "react";
-import { createElement, CSSProperties, ReactNode } from "react";
+import { FrontstageDef, UiFramework, WidgetState } from "@bentley/ui-framework";
+import React, { createElement, useRef } from "react";
 
 export class FloatingWidgetsManager {
 
