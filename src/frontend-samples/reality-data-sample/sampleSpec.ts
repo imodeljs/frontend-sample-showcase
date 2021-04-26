@@ -14,8 +14,8 @@ export function getRealityDataSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "RealityDataApi.ts", import: import("!!raw-loader!./RealityDataApi"), entry: true },
-      { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp") },
+      { name: "RealityDataApi.ts", import: import("!!raw-loader!./RealityDataApi") },
+      { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp"), entry: true },
       { name: "RealityDataWidget.tsx", import: import("!!raw-loader!./RealityDataWidget") },
       { name: "RealityData.scss", import: import("!!raw-loader!./RealityData.scss") },
     ],
