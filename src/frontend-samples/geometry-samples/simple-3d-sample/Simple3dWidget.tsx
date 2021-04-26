@@ -5,12 +5,12 @@
 
 import React, { useEffect } from "react";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { NumberInput, Select } from "@bentley/ui-core";
 import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import Simple3dApi from "./Simple3dApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "./GeometryDecorator";
 
 export const Simple3dWidget: React.FunctionComponent = () => {
   const [decoratorState, setDecoratorState] = React.useState<GeometryDecorator>();

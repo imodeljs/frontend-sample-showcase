@@ -5,12 +5,12 @@
 
 import React, { useEffect } from "react";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { Button, NumberInput, Select } from "@bentley/ui-core";
 import { Loop, Point3d } from "@bentley/geometry-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import Transformations2dApi from "./2dTransformationsApi";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import Transformations2dApi from "./2dTransformationsApi";
+import { GeometryDecorator } from "./GeometryDecorator";
 import "./2dTransformations.scss";
 
 enum Direction {
@@ -81,7 +81,7 @@ export const Transformations2dWidget: React.FunctionComponent = () => {
     if (direction === Direction.Left)
       newGeometry = Transformations2dApi.handleTranslation(geometry, -xTrans, 0);
     else if (direction === Direction.Right)
-      newGeometry = Transformations2dApi.handleTranslation(geometry, -xTrans, 0);
+      newGeometry = Transformations2dApi.handleTranslation(geometry, xTrans, 0);
 
     if (newGeometry)
       setGeometry(newGeometry);

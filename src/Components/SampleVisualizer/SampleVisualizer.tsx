@@ -6,16 +6,14 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
-import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
-import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
-import { SampleBaseApp } from "SampleBaseApp";
-import { FrontstageManager } from "@bentley/ui-framework";
-import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
-
-const i18nNamespace = "sample-showcase-i18n-namespace";
+import { UiFramework } from "@bentley/ui-framework";
+import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
+import { UiComponents } from "@bentley/ui-components";
+import { SampleLegacyVisualizer } from "./SampleLegacyVisualizer";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
+
 interface SampleVisualizerProps {
   iTwinViewerReady?: boolean;
   type: string;
@@ -30,11 +28,10 @@ interface SampleProps {
 }
 
 const iModelAppShutdown = async (): Promise<void> => {
-  if (IModelApp.i18n && IModelApp.i18n.getNamespace(i18nNamespace)) {
-    IModelApp.i18n.unregisterNamespace(i18nNamespace);
-  }
-  if (IModelApp.tools && IModelApp.tools.find(MovePointTool.toolId)) {
-    IModelApp.tools.unRegister(MovePointTool.toolId);
+  try {
+    Presentation.presentation.dispose();
+  } catch (err) {
+    // Do nothing, its possible that we never started.
   }
   try {
     Presentation.terminate();
@@ -42,53 +39,61 @@ const iModelAppShutdown = async (): Promise<void> => {
     // Do nothing, its possible that we never started.
   }
   try {
+    if (UiFramework.initialized) {
+      UiFramework.terminate();
+    }
+  } catch (err) {
+    // Do nothing.
+  }
+  try {
+    if (UiComponents.initialized) {
+      UiComponents.terminate();
+    }
+  } catch (err) {
+    // Do nothing.
+  }
+  try {
+    if (UiCore.initialized) {
+      UiCore.terminate();
+    }
+  } catch (err) {
+    // Do nothing
+  }
+  try {
+    IModelApp.i18n.languageList().forEach((ns) => IModelApp.i18n.unregisterNamespace(ns));
+  } catch (err) {
+    // Do nothing
+  }
+  try {
     await IModelApp.shutdown();
   } catch (err) {
-    // Do nothing, its possible that we never started.
+    // Do nothing
   }
 };
-
-const iModelAppStartup = async (signal: AbortSignal): Promise<void> => {
-  await SampleBaseApp.startup(signal);
-  if (signal.aborted) {
-    throw new DOMException("Aborted", "Abort");
-  }
-  MovePointTool.register(IModelApp.i18n.registerNamespace(i18nNamespace));
-};
-
-let abortController = new AbortController();
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
-  const [appReady, setAppReady] = useState(false);
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
+  const [appReady, setAppReady] = useState<boolean>(false);
+  const [cleaning, setCleaning] = useState<boolean>(false);
 
   useEffect(() => {
-    const debounce = setTimeout(() => {
-      abortController.abort();
-      abortController = new AbortController();
-      const initialize = async (signal: AbortSignal) => {
-        try {
-          await iModelAppShutdown();
+    setAppReady(false);
+    setCleaning(true);
+    iModelAppShutdown()
+      .then(() => {
+        setCleaning(false);
+      });
+  }, [iTwinViewerReady, type, transpileResult, iModelName, iModelSelector]);
 
-          if (signal.aborted) {
-            throw new DOMException("Aborted", "Abort");
-          }
-
-          await AuthorizationClient.initializeOidc();
-
-          if (!iTwinViewerReady) {
-            await iModelAppStartup(signal);
-          }
+  useEffect(() => {
+    if (sampleUi && !cleaning) {
+      AuthorizationClient
+        .initializeOidc()
+        .then(() => {
           setAppReady(true);
-        } catch (err) {
-        }
-      };
-      initialize(abortController.signal);
-    }, 1000);
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [iTwinViewerReady, transpileResult, type]);
+        });
+    }
+  }, [sampleUi, cleaning]);
 
   // Set sample UI
   useEffect(() => {
@@ -96,7 +101,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     try {
       if (key) {
         const component = context(key).default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
+        setSampleUi(React.createElement(component, { iModelName, iModelSelector, key: Math.random() * 100 }));
       } else {
         setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
       }
@@ -115,11 +120,11 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     }
   }, [transpileResult, iModelName, iModelSelector]);
 
-  if (!appReady) {
+  if (!appReady || !sampleUi || cleaning) {
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
-  return <>{sampleUi}</>;
+  return !iTwinViewerReady ? <SampleLegacyVisualizer sampleUi={sampleUi} /> : <>{sampleUi}</>;
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
