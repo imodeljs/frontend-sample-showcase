@@ -74,7 +74,7 @@ export default class SnowDecorationApi {
       snow.resetParticles();
     });
 
-    // Due to the constructions of the showcase, we know when the viewport will be closed.  Under different circumstances, the methods below are example events to ensure the timely dispose of textures owned by the decorator.
+    // The methods below are events to ensure the timely dispose of textures owned by the decorator.
     // When the viewport is destroyed, dispose of this decorator too.
     const removeOnDispose = viewport.onDisposed.addListener(() => SnowDecorationApi.dispose());
     // When the iModel is closed, dispose of any decorations.

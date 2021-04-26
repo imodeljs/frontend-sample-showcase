@@ -7,6 +7,7 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import "./SnowDecoration.scss";
 
 const windRange = 600;
+let lock: Promise<void> | false = false;
 
 const SnowDecorationWidget: React.FunctionComponent = () => {
   const [propsName, setPropsName] = React.useState<string>(SnowDecorationApi.predefinedProps.keys().next().value);
@@ -15,27 +16,19 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
   const [pauseEffect, setPauseEffect] = React.useState<boolean>(false);
 
   useEffect(() => {
-    return () => {
-      SnowDecorationApi.dispose();
-    };
-  }, []);
-
-  useEffect(() => {
+    // useEffect can not be async, so the "lock" variable will prevent the creating another decorator before the first is completed.
     const vp = IModelApp.viewManager.selectedView;
-    if (!vp)
+    if (!vp || lock)
       return;
-
-    /** Remove the previous decorator(s) */
-    SnowDecorationApi.getSnowDecorators().forEach((decorator) => decorator.dispose());
-
-    const props = SnowDecorationApi.predefinedProps.get(propsName)!;
-    SnowDecorationApi.createSnowDecorator(vp, props);
-    setParticleDensity(props.params.particleDensity);
-    setWind(props.params.windVelocity);
-    setPauseEffect(false);
-    return () => {
-      SnowDecorationApi.dispose();
-    };
+    lock = (async () => {
+      const props = SnowDecorationApi.predefinedProps.get(propsName)!;
+      SnowDecorationApi.createSnowDecorator(vp, props).then(() => {
+        setParticleDensity(props.params.particleDensity);
+        setWind(props.params.windVelocity);
+        setPauseEffect(false);
+        lock = false;
+      });
+    })();
   }, [propsName]);
 
   useEffect(() => {
