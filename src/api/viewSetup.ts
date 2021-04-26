@@ -87,12 +87,24 @@ export class ViewSetup {
         },
       });
 
-      // Enable model masking on the metrostation model.
       if (imodel.name === "Metrostation2") {
+        // Enable model masking on the metrostation model.
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
         displayStyle.changeBackgroundMapProps({
           planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.IncludeSubCategories, modelIds, subCategoryIds),
+        });
+        // Enable original sky box.
+        displayStyle.environment = new Environment({
+          sky: {
+            display: true,
+            twoColor: false,
+            zenithColor: ColorDef.computeTbgrFromString("#FF7536"),
+            skyColor: ColorDef.computeTbgrFromString("#FFCD8F"),
+            groundColor: ColorDef.computeTbgrFromString("#94A38F"),
+            // Overridden from the original, ugly brown color.
+            nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
+          },
         });
       }
     }
