@@ -17,6 +17,8 @@ export function getSimpleLineSpec(): SampleSpec {
       { name: "SimpleLineApi.ts", import: import("!!raw-loader!./SimpleLineApi") },
       { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp"), entry: true },
       { name: "SimpleLineWidget.tsx", import: import("!!raw-loader!./SimpleLineWidget") },
+      { name: "GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
+      { name: "InteractivePointMarker.ts", import: import("!!raw-loader!./InteractivePointMarker") },
       { name: "SimpleLine.scss", import: import("!!raw-loader!./SimpleLine.scss") },
     ],
     type: "SimpleLineApp.tsx",

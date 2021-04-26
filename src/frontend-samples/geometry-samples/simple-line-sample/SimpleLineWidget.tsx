@@ -5,12 +5,12 @@
 
 import React, { useEffect } from "react";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
-import SimpleLineApi from "./SimpleLineApi";
-import { InteractivePointMarker } from "common/Geometry/InteractivePointMarker";
 import { NumberInput } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
+import { GeometryDecorator } from "./GeometryDecorator";
+import { InteractivePointMarker } from "./InteractivePointMarker";
+import SimpleLineApi from "./SimpleLineApi";
 import "./SimpleLine.scss";
 
 export const SimpleLineWidget: React.FunctionComponent = () => {
