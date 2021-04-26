@@ -77,7 +77,7 @@ export class ViewSetup {
         displayStyle.changeBackgroundMapProps({ groundBias });
       }
 
-      // Enable the sky-box, but override to new sky box.
+      // Enable the sky-box, but override to old sky box.
       displayStyle.environment = new Environment({
         sky: {
           display: true,
@@ -87,24 +87,12 @@ export class ViewSetup {
         },
       });
 
+      // Enable model masking on the metrostation model.
       if (imodel.name === "Metrostation2") {
-        // Enable model masking on the metrostation model.
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
         displayStyle.changeBackgroundMapProps({
           planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.IncludeSubCategories, modelIds, subCategoryIds),
-        });
-        // Enable original sky box.
-        displayStyle.environment = new Environment({
-          sky: {
-            display: true,
-            twoColor: false,
-            zenithColor: ColorDef.computeTbgrFromComponents(54, 117, 255),
-            skyColor: ColorDef.computeTbgrFromComponents(143, 205, 255),
-            groundColor: ColorDef.computeTbgrFromComponents(143, 163, 148),
-            // Overridden from the original, ugly brown color.
-            nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
-          },
         });
       }
     }
