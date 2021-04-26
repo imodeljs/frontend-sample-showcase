@@ -8,11 +8,9 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
-import { MovePointTool } from "common/Geometry/InteractivePointMarker";
+import { MovePointTool } from "./InteractivePointMarker";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { SampleBaseApp } from "SampleBaseApp";
-import { FrontstageManager } from "@bentley/ui-framework";
-import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
 
 const i18nNamespace = "sample-showcase-i18n-namespace";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
