@@ -14,8 +14,8 @@ import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
-import { MovePointTool } from "common/Geometry/InteractivePointMarker";
 import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
+import { MovePointTool } from "Components/SampleVisualizer/InteractivePointMarker";
 
 // Boiler plate code
 export interface SampleContext {
