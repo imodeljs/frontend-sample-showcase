@@ -18,6 +18,7 @@ export function getSimpleAnimatedSpec(): SampleSpec {
       { name: "SimpleAnimatedApp.tsx", import: import("!!raw-loader!./SimpleAnimatedApp"), entry: true },
       { name: "ConwaysGameOfLife.ts", import: import("!!raw-loader!./ConwaysGameOfLife") },
       { name: "SimpleAnimatedWidget.tsx", import: import("!!raw-loader!./SimpleAnimatedWidget") },
+      { name: "GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
       { name: "SimpleAnimated.scss", import: import("!!raw-loader!./SimpleAnimated.scss") },
     ],
     type: "SimpleAnimatedApp.tsx",

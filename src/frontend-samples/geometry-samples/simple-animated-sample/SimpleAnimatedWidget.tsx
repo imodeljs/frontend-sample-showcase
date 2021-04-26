@@ -5,13 +5,13 @@
 
 import React, { useEffect } from "react";
 import { ColorDef } from "@bentley/imodeljs-common";
-import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { NumberInput, Timer } from "@bentley/ui-core";
-import { ConwaysHelpers } from "./ConwaysGameOfLife";
-import SimpleAnimatedApi from "./SimpleAnimatedApi";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ColorPickerButton } from "@bentley/ui-components";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { ConwaysHelpers } from "./ConwaysGameOfLife";
+import SimpleAnimatedApi from "./SimpleAnimatedApi";
+import { GeometryDecorator } from "./GeometryDecorator";
 import "./SimpleAnimated.scss";
 
 export const SimpleAnimatedWidget: React.FunctionComponent = () => {
