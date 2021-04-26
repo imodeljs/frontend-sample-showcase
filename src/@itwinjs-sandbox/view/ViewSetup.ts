@@ -120,22 +120,26 @@ export class ViewSetup {
 
   /** Returns a set of every model's id in the iModel. */
   public static async getModelIds(iModel: IModelConnection, ...modelNames: string[]): Promise<Id64Set> {
-    const query = `SELECT ECInstanceId FROM Bis:PhysicalPartition${modelNames.length > 0 ? ` WHERE codeValue IN ('${modelNames.join("','")}')` : ""}`;
     const ids = new Set<string>();
-    for await (const row of iModel.query(query)) {
-      ids.add(row.id);
+    if (!iModel.isClosed) {
+      const query = `SELECT ECInstanceId FROM Bis:PhysicalPartition${modelNames.length > 0 ? ` WHERE codeValue IN ('${modelNames.join("','")}')` : ""}`;
+      for await (const row of iModel.query(query)) {
+        ids.add(row.id);
+      }
     }
     return ids;
   }
 
   /** Returns a set of every sub category in the specified category codes. */
   public static async getSubCategoryIds(iModel: IModelConnection, ...categoryCodes: string[]): Promise<Id64Set> {
-    const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""}`;
     const subcategoriesIds = new Set<string>();
-    for await (const row of iModel.query(selectRelevantCategories)) {
-      const ids = iModel.subcategories.getSubCategories(row.id);
-      if (ids !== undefined)
-        ids.forEach((id) => subcategoriesIds.add(id));
+    if (!iModel.isClosed) {
+      const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""}`;
+      for await (const row of iModel.query(selectRelevantCategories)) {
+        const ids = iModel.subcategories.getSubCategories(row.id);
+        if (ids !== undefined)
+          ids.forEach((id) => subcategoriesIds.add(id));
+      }
     }
     return subcategoriesIds;
   }
@@ -144,9 +148,11 @@ export class ViewSetup {
   private static getHiddenCategories = async (imodel: IModelConnection): Promise<Id64Array | undefined> => {
     const ids: Id64String[] = [];
     const addIdsByCategory = async (...categoryCodes: string[]) => {
-      const selectInCategories = `SELECT ECInstanceId FROM bis.Category WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
-      for await (const row of imodel.query(selectInCategories))
-        ids.push(row.id);
+      if (!imodel.isClosed) {
+        const selectInCategories = `SELECT ECInstanceId FROM bis.Category WHERE CodeValue IN ('${categoryCodes.join("','")}')`;
+        for await (const row of imodel.query(selectInCategories))
+          ids.push(row.id);
+      }
     };
     if (imodel.name === "house bim upload")
       // The callout graphics in the house model are ugly - don't display them.
