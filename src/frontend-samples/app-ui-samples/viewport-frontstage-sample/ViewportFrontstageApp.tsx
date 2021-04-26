@@ -2,45 +2,36 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
-import "common/samples-common.scss";
-import "common/AppUi/app-ui.scss";
-import { SampleAppUiComponent } from "common/AppUi/SampleAppUiComponent";
-import { AppUi } from "common/AppUi/AppUi";
-import { ControlPane } from "common/ControlPane/ControlPane";
+import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
-// The Props and State for this sample component
-/** A React component that renders the UI specific for this sample */
-export default class ViewportFrontstageSample extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }> {
+const ViewportFronstageApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the toolbar at the top-right to navigate the model.");
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  // eslint-disable-next-line react/no-deprecated
-  public async componentWillMount() {
-    // Initialize utility class for AppUi samples
-    AppUi.initialize();
-    // set up iModel and AppUi Frontstage
-    await AppUi.setIModelAndFrontstage(this.props.iModelName, "ViewportFrontstage");
-  }
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
-  public async componentDidUpdate() {
-    // Initialize utility class for AppUi samples
-    AppUi.initialize();
-    // set up iModel and AppUi Frontstage
-    await AppUi.setIModelAndFrontstage(this.props.iModelName, "ViewportFrontstage");
-  }
+  return (
+    <>
+      { /* Viewport to display the iModel */}
+      {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          theme="dark"
+          onIModelConnected={_oniModelReady}
+        />
+      }
+    </>
+  );
+};
 
-  public componentWillUnmount() {
-    AppUi.restoreDefaults();
-  }
-
-  /** The sample's render method */
-  public render() {
-    return (
-      <>
-        <div className="app-ui">
-          <ControlPane instructions="A basic frontstage using the IModelViewportContentControl in UI Framework." iModelSelector={this.props.iModelSelector}></ControlPane>
-        </div>
-        <SampleAppUiComponent></SampleAppUiComponent>
-      </>
-    );
-  }
-}
+export default ViewportFronstageApp;
