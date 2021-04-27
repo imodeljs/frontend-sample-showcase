@@ -6,7 +6,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext, BriefcaseConnection, IModelConnection } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
@@ -45,8 +45,6 @@ export interface SampleIModelInfo {
 
 export type SetCurrentSampleIModel = (iModel: SampleIModels) => void;
 
-let activeConnections: IModelConnection[] = [];
-
 /** In place of providing your own iModel, the showcase offers a method of obtaining a **context ID** and **iModel ID** without signing in or creating your own iModels
  *
  * **SANDBOX USE ONLY!** */
@@ -57,33 +55,21 @@ export const useSampleIModelConnection = (iModelList?: SampleIModels[]): [Sample
   const [iModelInfo, setiModelInfo] = useState<SampleIModelInfo>();
 
   useEffect(() => {
-    const unsubscribe = BriefcaseConnection.onOpen.addListener((conn) => activeConnections.push(conn));
-    return () => {
-      activeConnections = [];
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
     if (iModelList && sampleIModels !== iModelList) {
       setSampleIModels(iModelList);
     }
   }, [iModelList, sampleIModels]);
 
   useEffect(() => {
-    if (!sampleIModels.includes(iModel)) {
-      setiModel(sampleIModels[0]);
-    } else if (!iModelInfo || iModelInfo.iModelName !== iModel) {
-      getIModelInfo(iModel)
-        .then((info) => {
-          activeConnections.forEach((conn) => {
-            if (conn.contextId !== info.contextId || conn.iModelId !== info.iModelId) {
-              conn.close();
-            }
+    if (sampleIModels.length) {
+      if (!sampleIModels.includes(iModel)) {
+        setiModel(sampleIModels[0]);
+      } else if (!iModelInfo || iModelInfo.iModelName !== iModel) {
+        getIModelInfo(iModel)
+          .then((info) => {
+            setiModelInfo(info);
           });
-          activeConnections = activeConnections.filter((conn) => !conn.isClosed);
-          setiModelInfo(info);
-        });
+      }
     }
   }, [iModel, sampleIModels, iModelInfo]);
 
