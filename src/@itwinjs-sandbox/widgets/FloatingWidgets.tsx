@@ -2,6 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
 import { AbstractWidgetProps, StagePanelLocation, UiItemsManager } from "@bentley/ui-abstract";
 import { FrontstageDef, UiFramework, WidgetState } from "@bentley/ui-framework";
 import React, { createElement, useRef } from "react";
@@ -73,6 +74,5 @@ export class FloatingWidgetsManager {
       set.dom.style.bottom = `${height}px`;
       set.dom.style.width = `${width}px`;
     });
-
   };
 }
