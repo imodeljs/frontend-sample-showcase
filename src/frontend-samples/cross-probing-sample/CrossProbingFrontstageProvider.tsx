@@ -54,10 +54,20 @@ export class CrossProbingFrontstage extends FrontstageProvider {
     return (
       <Frontstage
         id={CrossProbingFrontstage.MAIN_CONTENT_ID}
-        defaultTool={CoreTools.fitViewCommand}
+        defaultTool={CoreTools.selectElementCommand}
         defaultLayout={this._contentLayoutDef}
         contentGroup={this._contentGroup}
-        isInFooterMode={true}
+        contentManipulationTools={
+          <Zone
+            widgets={[
+              <Widget
+                key={CrossProbingFrontstage.DEFAULT_MANIPULATION_WIDGET_KEY}
+                isFreeform={true}
+                element={<div />}
+              />,
+            ]}
+          />
+        }
         viewNavigationTools={
           <Zone
             widgets={[

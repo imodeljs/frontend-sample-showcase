@@ -5,22 +5,20 @@
 import * as React from "react";
 import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
-import CrossProbingApi from "./CrossProbingApi";
-import { AuthorizationClient, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import CrossProbingApi from "./CrossProbingApi";
+import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
 
 const CrossProbingApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Click on an element in either of the views to zoom to corresponding element in the other view.", [SampleIModels.BayTown]);
-  const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
   const [frontstagesState, setFrontstagesState] = React.useState<ViewerFrontstage[]>([]);
 
   // When iModel is ready, initialize element selection listener and assign initial 2D view.
-  const _oniModelReady = async (imodel: IModelConnection) => {
-    CrossProbingApi.addElementSelectionListener(imodel);
-    await CrossProbingApi.loadElementMap(imodel);
-    const [viewState2d, viewState3d] = await Promise.all([getFirst2DView(imodel), ViewSetup.getDefaultView(imodel)]);
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    CrossProbingApi.addElementSelectionListener(iModelConnection);
+    await CrossProbingApi.loadElementMap(iModelConnection);
+    const [viewState2d, viewState3d] = await Promise.all([getFirst2DView(iModelConnection), ViewSetup.getDefaultView(iModelConnection)]);
     setFrontstagesState([{ provider: new CrossProbingFrontstage(viewState3d, viewState2d), default: true }]);
   };
 
@@ -44,9 +42,8 @@ const CrossProbingApp: React.FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
           frontstages={frontstagesState}
-          //viewportOptions={viewportOptions}
           onIModelConnected={_oniModelReady}
-          //defaultUiConfig={default3DSandboxUi}
+          defaultUiConfig={default3DSandboxUi}
           theme="dark"
         />
       }
