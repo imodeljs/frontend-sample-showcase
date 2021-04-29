@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import { RegisteredRuleset, Ruleset } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
@@ -15,6 +14,7 @@ import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
 import { useEffect, useState } from "react";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
+import "./useSampleWidget.scss";
 
 export const useSampleWidget = (instructions: string, iModelList?: SampleIModels[]): SampleIModelInfo | undefined => {
   const [sampleIModels, setSampleIModels] = useState<SampleIModels[]>(iModelList || defaultIModelList);
@@ -24,13 +24,7 @@ export const useSampleWidget = (instructions: string, iModelList?: SampleIModels
   useEffect(() => {
     if (frontstage) {
       FloatingWidgetsManager.onFrontstageReady(frontstage);
-      let unsub: () => void;
-      IModelApp.viewManager.onViewOpen.addOnce((vp) => {
-        unsub = vp.onResized.addListener(() => setTimeout(async () => FloatingWidgetsManager.onFrontstageReady(frontstage), 0));
-      });
-      return () => unsub && unsub();
     }
-    return;
   }, [frontstage]);
 
   useEffect(() => {

@@ -3,77 +3,76 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
-import { FrontstageDef, UiFramework, WidgetDef, WidgetState } from "@bentley/ui-framework";
-import { CSSProperties, ReactNode } from "react";
-import ReactDOM from "react-dom";
-
-const containerStyle: CSSProperties = {
-  padding: "8px",
-  display: "block",
-  position: "absolute",
-  visibility: "hidden",
-  maxWidth: "400px",
-  zIndex: -1,
-};
-
-const setStyleAttribute = (element: HTMLElement, attrs: { [key: string]: any }) => {
-  if (attrs !== undefined) {
-    Object.keys(attrs).forEach((key: string) => {
-      const normalizedKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
-      element.style.setProperty(normalizedKey, attrs[key]);
-    });
-  }
-};
+import { AbstractWidgetProps, StagePanelLocation, UiItemsManager } from "@bentley/ui-abstract";
+import { FrontstageDef, UiFramework, WidgetState } from "@bentley/ui-framework";
+import React, { createElement, useRef } from "react";
 
 export class FloatingWidgetsManager {
 
+  private static _updateFns: { [id: string]: () => { rect: DOMRect, dom: HTMLElement } | undefined } = {};
+
   public static onFrontstageReady = async (frontstage: FrontstageDef) => {
+    const widgets = UiItemsManager.getWidgets(frontstage.id, frontstage?.usage, StagePanelLocation.Right).filter((widget) => widget.defaultState === WidgetState.Floating && widget.providerId) || [];
+
+    widgets.forEach((widget) => {
+      const provider = UiItemsManager.getUiItemsProvider(widget.providerId!)!;
+      provider.provideWidgets = (_stageId: string, _stageUsage: string, location: StagePanelLocation) => {
+        const updatedWidgets: AbstractWidgetProps[] = [];
+        if (location === StagePanelLocation.Right) {
+          const ogNode = widget.getWidgetContent();
+          updatedWidgets.push({
+            id: widget.id,
+            label: widget.label,
+            defaultState: WidgetState.Floating,
+            // eslint-disable-next-line react/display-name
+            getWidgetContent: () => {
+              return createElement(({ children }) => {
+                const ref = useRef<HTMLDivElement>(null);
+
+                FloatingWidgetsManager._updateFns[widget.id!] = () => {
+                  if (ref.current) {
+                    const widgetDom = ref.current.closest(".nz-widget-floatingWidget");
+                    if (widgetDom && !widgetDom.classList.contains("custom")) {
+                      widgetDom.className = `${widgetDom.className} custom`;
+                      (widgetDom as HTMLElement).style.width = "unset";
+                      return { rect: widgetDom.getBoundingClientRect(), dom: widgetDom as HTMLElement };
+                    }
+                  }
+                  return undefined;
+                };
+
+                return <div ref={ref}>{children}</div>;
+              }, undefined, ogNode);
+            },
+          });
+        }
+        return updatedWidgets;
+      };
+      UiItemsManager.unregister(widget.providerId!);
+      UiItemsManager.register(provider);
+    });
+
     const uiSettings = UiFramework.getUiSettings();
-    const widgets = frontstage.rightPanel?.widgetDefs.filter((widget) => widget.defaultState === WidgetState.Floating).reverse() || [];
-
     await uiSettings.deleteSetting("uifw-frontstageSettings", `frontstageState[${frontstage.id}]`);
     frontstage.restoreLayout();
 
-    widgets.map((widget) => frontstage.floatWidget(widget.id, undefined, { height: 0, width: 0 }));
-    const props = widgets.map((widget) => ({ widget, props: FloatingWidgetsManager._getWidgetProps(widget, IModelApp.viewManager.selectedView!) }));
+    const heightSet: { rect: DOMRect, dom: HTMLElement }[] = [];
+    widgets.reverse().forEach((widget, index) => {
+      frontstage.floatWidget(widget.id!, undefined, undefined);
+      heightSet[index] = FloatingWidgetsManager._updateFns[widget.id!]()!;
+    });
 
-    await uiSettings.deleteSetting("uifw-frontstageSettings", `frontstageState[${frontstage.id}]`);
-    frontstage.restoreLayout();
+    const width = Math.max(...heightSet.map((set) => set.rect.width));
+    heightSet.forEach((set, index) => {
+      let height = 16;
+      heightSet.forEach((rect, key) => {
+        if (key < index) {
+          height += rect.rect.height + 16;
+        }
+      });
 
-    let continuousHight = 16;
-    const minWidth = Math.max(...props.map((pos) => pos.props.width));
-    const minX = Math.min(...props.map((pos) => pos.props.x)) - 32;
-    props.map((pos,) => {
-      frontstage.floatWidget(pos.widget.id, { x: minX, y: pos.props.y - continuousHight }, { height: pos.props.height, width: minWidth });
-      continuousHight += (pos.props.height + 16);
+      set.dom.style.bottom = `${height}px`;
+      set.dom.style.width = `${width}px`;
     });
   };
-
-  private static _measureDomNode(node: ReactNode) {
-    const container = document.createElement("div");
-    setStyleAttribute(container, containerStyle);
-
-    document.body.appendChild(container);
-
-    // Renders the React element into the hidden div
-    ReactDOM.render(node as any, container);
-
-    // Gets the element size
-    const height = container.clientHeight;
-    const width = container.clientWidth;
-
-    // Removes the element and its wrapper from the document
-    ReactDOM.unmountComponentAtNode(container);
-    container.parentNode!.removeChild(container);
-    return { height, width };
-  }
-
-  private static _getWidgetProps = (widget: WidgetDef, vp: Viewport) => {
-    const vpDims = vp.viewRect;
-    const { height, width } = FloatingWidgetsManager._measureDomNode(widget.reactNode);
-    const adjustedHeight = height + 30;
-    return { height: adjustedHeight, width, x: (vpDims.right - width), y: vpDims.bottom - adjustedHeight };
-  };
-
 }
