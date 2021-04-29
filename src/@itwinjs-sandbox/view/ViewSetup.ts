@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
 import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
 export class ViewSetup {
@@ -17,6 +17,26 @@ export class ViewSetup {
 
     // Making some improvements to the default views.
     await ViewSetup.overrideView(imodel, viewState);
+
+    return viewState;
+  };
+
+  /* Get the inital view for the widget*/
+  public static getIsoView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
+
+    if (viewState.is3d()) {
+      const displayStyle = viewState.getDisplayStyle3d();
+      displayStyle.changeBackgroundMapProps({ transparency: 1.0 });
+
+      // Rotate the view to make the view clip look better.
+      viewState.setStandardRotation(StandardViewId.RightIso);
+
+      const range = viewState.computeFitRange();
+      const aspect = ViewSetup.getAspectRatio();
+
+      viewState.lookAtVolume(range, aspect);
+    }
 
     return viewState;
   };

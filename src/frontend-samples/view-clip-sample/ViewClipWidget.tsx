@@ -75,7 +75,7 @@ export const ViewClipWidget: React.FunctionComponent = () => {
     return true;
   };
 
-  const options = {
+  const clipPlaneOptions = {
     None: "None",
     [EditManipulator.RotationType.Left]: "X",
     [EditManipulator.RotationType.Front]: "Y",
@@ -91,7 +91,7 @@ export const ViewClipWidget: React.FunctionComponent = () => {
           <Toggle isOn={showClipBlockState} onChange={_onToggleRangeClip} />
           <span />
           <span>Clip Plane</span>
-          <Select onChange={_onPlaneSelectChange} value={clipPlaneState} options={options} />
+          <Select onChange={_onPlaneSelectChange} value={clipPlaneState} options={clipPlaneOptions} />
           <Button buttonType={ButtonType.Primary} onClick={() => _handleFlipButton()} disabled={clipPlaneState === "None"}>Flip</Button>
         </div>
       </div>

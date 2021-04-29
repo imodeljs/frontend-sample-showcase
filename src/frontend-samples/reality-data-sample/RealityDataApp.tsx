@@ -20,6 +20,7 @@ const RealityDataApp: FunctionComponent = () => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     setViewportOptions({ viewState });
   };
+
   /** The sample's render method */
   return (
     <>

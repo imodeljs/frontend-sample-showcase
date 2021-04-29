@@ -79,94 +79,12 @@ export interface SampleSpecGroup {
 export const sampleManifest: SampleSpecGroup[] = [{
   // Please ensure that the samples stay organized alphabetically.
   groupName: "Viewer", samples: [
-    getViewportOnlySpec(),
-    getViewerOnly2dSpec(),
     getGlobalDisplaySpec(),
     getRealityDataSpec(),
-    getViewAttributesSpec(),
-  ],
-},
-{
-  groupName: "Viewer Features", samples: [
-    getViewCameraSpec(),
-    getClassifierSpec(),
-    getCrossProbingSpec(),
-    getDisplayStylesSpec(),
-    getEmphasizeElementsSpec(),
-    getExplodeSpec(),
-    getHeatmapDecoratorSpec(),
-    getHyperModelingSpec(),
-    getImageExportSpec(),
-    getIotAlertSpec(),
-    getMarkerPinSpec(),
-    getMultiViewportSpec(),
-    getParticleFireSampleSpec(),
-    getParticleSnowSampleSpec(),
-    getPropertyFormattingSpec(),
-    getScreenSpaceEffectsSpec(),
-    getSerializeViewSpec(),
-    getShadowStudySpec(),
-    getSwipingComparisonSpec(),
-    getThematicDisplaySpec(),
-    getTooltipCustomizeSpec(),
     getViewClipSpec(),
-    getVolumeQuerySpec(),
-    getZoomToElementsSpec(),
   ],
 },
-{
-  groupName: "UI Components", samples: [
-    getBadgeSpec(),
-    getButtonSpec(),
-    getCheckListBoxSpec(),
-    getExpandableListSpec(),
-    getInputsSpec(),
-    getLoadingSpec(),
-    getSearchBoxSpec(),
-    getSliderSpec(),
-    getSplitButtonSpec(),
-    getTabsSpec(),
-    getTextSpec(),
-    getTilesSpec(),
-    getToggleSpec(),
-  ],
-},
-{
-  groupName: "UI Trees", samples: [
-    getBasicTreeSpec(),
-    getPresentationTreeSpec(),
-    getCustomNodeLoadingTreeSpec(),
-    getCustomTableNodeTreeSpec(),
-    getCustomEventHandlerTreeSpec(),
-    getCustomCheckboxesTreeSpec(),
-    getUnifiedSelectionTreeSpec(),
-    getDragAndDropTreeSpec(),
-    getCustomWebfontIconsTreeSpec(),
-  ],
-},
-{
-  groupName: "AppUI", samples: [
-    getViewportFrontstageSample(),
-    getToolbarButtonSample(),
-  ],
-},
-{
-  groupName: "Geometry Samples", samples: [
-    getSimpleLineSpec(),
-    get2dTransformationsSpec(),
-    getClosestPointOnCurveSpec(),
-    getCurveFractionSpec(),
-    getSimple3dSpec(),
-    getAdvanced3dSpec(),
-    getSimpleAnimatedSpec(),
-  ],
-}, {
-  groupName: "iTwin Platform APIs", samples: [
-    getClashReviewSpec(),
-    getReadSettingsSpec(),
-  ],
 
-},
 ];
 
 export function findSpecBySampleName(nameIn: string) {

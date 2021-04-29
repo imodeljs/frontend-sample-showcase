@@ -11,6 +11,7 @@ export function getViewClipSpec(): SampleSpec {
     name: "view-clip-sample",
     label: "View Clipping",
     image: "view-clip-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ViewClipApi.ts", import: import("!!raw-loader!./ViewClipApi") },
@@ -18,7 +19,6 @@ export function getViewClipSpec(): SampleSpec {
       { name: "ViewClipWidget.tsx", import: import("!!raw-loader!./ViewClipWidget") },
       { name: "ViewClip.scss", import: import("!!raw-loader!./ViewClipWidget") },
     ],
-    iTwinViewerReady: true,
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     type: "ViewClipApp.tsx",
   });
