@@ -15,7 +15,6 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
   const [currentViewIndexState, setCurrentViewIndexState] = React.useState<number>(0);
   const [viewsState, setViewsState] = React.useState<ViewStateWithName[]>([]);
   const [optionsState, setOptionsState] = React.useState<SelectOption[]>([]);
-  const [showJsonViewerState, setShowJsonViewerState] = React.useState<boolean>(false);
   const [jsonViewerTitleState, setJsonViewerTitleState] = React.useState<string>("");
   const [jsonMenuValueState, setJsonMenuValueState] = React.useState<string>("");
   const [loadStateError, setLoadStateError] = React.useState<string | undefined>("");
@@ -85,9 +84,7 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
     if (viewport) {
 
       /** Close the dialog box if switching views */
-      if (showJsonViewerState) {
-        _handleDialogClose();
-      }
+      _handleDialogClose();
 
       const view = viewsState[currentViewIndexState].view;
 
@@ -127,10 +124,11 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
   };
 
   /** Called when user selects 'Save View' */
-  const _onSaveJsonViewClick = async () => {
+  const _onSaveJsonViewClick = async (json: string) => {
     if (viewport) {
+      const viewStateProps = JSON.parse(json) as ViewStateProps;
+      setJsonMenuValueState(json);
       const views = [...viewsState];
-      const viewStateProps = JSON.parse(jsonMenuValueState) as ViewStateProps;
       if (undefined !== viewStateProps) {
         views[currentViewIndexState].view = viewStateProps;
         setViewsState(views);
@@ -150,7 +148,6 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
 
   const _openDialog = () => {
     const offset = getOffset(viewport!.canvas);
-    setShowJsonViewerState(true);
     ModalDialogManager.openDialog(
       <Dialog
         opened={true}
@@ -168,17 +165,11 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
       >
         <JsonViewerWidget
           json={jsonMenuValueState}
-          setJson={_setJson}
           onSaveJsonViewClick={_onSaveJsonViewClick} />
       </Dialog>);
   };
 
-  const _setJson = (json: string) => {
-    setJsonMenuValueState(json);
-  };
-
   const _handleDialogClose = () => {
-    setShowJsonViewerState(false);
     ModalDialogManager.closeDialog();
   };
 
@@ -195,7 +186,7 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
         </div>
         {showError(loadStateError)}
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={_openDialog} disabled={viewsState.length === 0 || showJsonViewerState}>Edit Json</Button>
+          <Button onClick={_openDialog} disabled={viewsState.length === 0}>Edit Json</Button>
         </div>
       </div>
     </>
