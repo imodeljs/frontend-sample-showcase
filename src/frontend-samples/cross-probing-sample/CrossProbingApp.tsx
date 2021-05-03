@@ -10,16 +10,18 @@ import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
 import CrossProbingApi from "./CrossProbingApi";
 import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
 
+const frontStages: ViewerFrontstage[] = [];
+
 const CrossProbingApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Click on an element in either of the views to zoom to corresponding element in the other view.", [SampleIModels.BayTown]);
-  const [frontstagesState, setFrontstagesState] = React.useState<ViewerFrontstage[]>([]);
 
   // When iModel is ready, initialize element selection listener and assign initial 2D view.
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     CrossProbingApi.addElementSelectionListener(iModelConnection);
     await CrossProbingApi.loadElementMap(iModelConnection);
     const [viewState2d, viewState3d] = await Promise.all([getFirst2DView(iModelConnection), ViewSetup.getDefaultView(iModelConnection)]);
-    setFrontstagesState([{ provider: new CrossProbingFrontstage(viewState3d, viewState2d), default: true }]);
+    if (frontStages.length === 0)
+      frontStages.push({ provider: new CrossProbingFrontstage(viewState3d, viewState2d), default: true });
   };
 
   // Get first 2D view in iModel.
@@ -41,7 +43,7 @@ const CrossProbingApp: React.FunctionComponent = () => {
           contextId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          frontstages={frontstagesState}
+          frontstages={frontStages}
           onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

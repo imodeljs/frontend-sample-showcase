@@ -14,7 +14,6 @@ import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { useEffect, useState } from "react";
 import { useFloatingWidget } from "./useFloatingWidget";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
-import "./useSampleWidget.scss";
 
 export const useSampleWidget = (instructions: string, iModelList?: SampleIModels[]): SampleIModelInfo | undefined => {
   useFloatingWidget("sample-container");
