@@ -125,7 +125,9 @@ export class Simple3dWidgetProvider implements UiItemsProvider {
           label: "Simple 3d Controls",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <Simple3dWidget />,
+          getWidgetContent: () => {
+            return <Simple3dWidget />;
+          },
         }
       );
     }

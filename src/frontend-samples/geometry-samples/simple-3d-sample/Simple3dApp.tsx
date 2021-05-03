@@ -12,20 +12,20 @@ import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 
 const uiProviders = [new Simple3dWidgetProvider()];
 
+const connection: BlankConnectionProps = {
+  name: "GeometryConnection",
+  location: Cartographic.fromDegrees(0, 0, 0),
+  extents: new Range3d(-30, -30, -30, 30, 30, 30),
+};
+const viewState: BlankConnectionViewState = {
+  displayStyle: { backgroundColor: ColorDef.white },
+  viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
+  setAllow3dManipulations: true,
+  lookAt: undefined,
+};
+
 const Simple3dApp: FunctionComponent = () => {
   useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
-
-  const connection: BlankConnectionProps = {
-    name: "GeometryConnection",
-    location: Cartographic.fromDegrees(0, 0, 0),
-    extents: new Range3d(-30, -30, -30, 30, 30, 30),
-  };
-  const viewState: BlankConnectionViewState = {
-    displayStyle: { backgroundColor: ColorDef.white },
-    viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
-    setAllow3dManipulations: true,
-    lookAt: undefined,
-  };
 
   /** The sample's render method */
   return (

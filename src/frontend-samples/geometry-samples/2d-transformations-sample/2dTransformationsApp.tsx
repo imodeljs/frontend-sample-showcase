@@ -12,24 +12,24 @@ import { Transformations2dWidgetProvider } from "./2dTransformationsWidget";
 
 const uiProviders = [new Transformations2dWidgetProvider()];
 
+const connection: BlankConnectionProps = {
+  name: "GeometryConnection",
+  location: Cartographic.fromDegrees(0, 0, 0),
+  extents: new Range3d(-30, -30, -30, 30, 30, 30),
+};
+const viewState: BlankConnectionViewState = {
+  displayStyle: { backgroundColor: ColorDef.white },
+  viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
+  setAllow3dManipulations: false,
+  lookAt: {
+    eyePoint: { x: 0, y: 0, z: 25 },
+    targetPoint: { x: 0, y: 0, z: 0 },
+    upVector: new Vector3d(0, 0, 1),
+  },
+};
+
 const Transformations2dApp: FunctionComponent = () => {
   useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
-
-  const connection: BlankConnectionProps = {
-    name: "GeometryConnection",
-    location: Cartographic.fromDegrees(0, 0, 0),
-    extents: new Range3d(-30, -30, -30, 30, 30, 30),
-  };
-  const viewState: BlankConnectionViewState = {
-    displayStyle: { backgroundColor: ColorDef.white },
-    viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
-    setAllow3dManipulations: false,
-    lookAt: {
-      eyePoint: { x: 0, y: 0, z: 25 },
-      targetPoint: { x: 0, y: 0, z: 0 },
-      upVector: new Vector3d(0, 0, 1),
-    },
-  };
 
   /** The sample's render method */
   return (
