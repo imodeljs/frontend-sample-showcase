@@ -7,25 +7,19 @@ import { RegisteredRuleset, Ruleset } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 import { UiItemsManager } from "@bentley/ui-abstract";
-import { useActiveFrontstageDef } from "@bentley/ui-framework";
 import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
 import { defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
-import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
+// import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
 import { useEffect, useState } from "react";
+import { useFloatingWidget } from "./useFloatingWidget";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
 import "./useSampleWidget.scss";
 
 export const useSampleWidget = (instructions: string, iModelList?: SampleIModels[]): SampleIModelInfo | undefined => {
+  useFloatingWidget("sample-container");
   const [sampleIModels, setSampleIModels] = useState<SampleIModels[]>(iModelList || defaultIModelList);
   const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(sampleIModels);
-  const frontstage = useActiveFrontstageDef();
-
-  useEffect(() => {
-    if (frontstage) {
-      FloatingWidgetsManager.onFrontstageReady(frontstage);
-    }
-  }, [frontstage]);
 
   useEffect(() => {
     if (iModelList && !sampleIModels.every((el) => iModelList.includes(el))) {
@@ -53,13 +47,12 @@ export const useSampleWidget = (instructions: string, iModelList?: SampleIModels
   });
 
   useEffect(() => {
-    const widgetProvider = new SampleWidgetProvider(instructions, sampleIModels, setIModelName);
+    const widgetProvider = new SampleWidgetProvider(instructions, sampleIModels, sampleIModelInfo, setIModelName);
     UiItemsManager.register(widgetProvider);
     return () => {
       UiItemsManager.unregister(widgetProvider.id);
     };
-  }, [instructions, sampleIModels, setIModelName]);
+  }, [instructions, sampleIModels, sampleIModelInfo, setIModelName]);
 
   return sampleIModelInfo;
-
 };
