@@ -10,13 +10,15 @@ export interface ViewStateWithName {
 }
 
 export interface IModelViews {
-  iModelName: string;
+  iModelId: string;
   views: ViewStateWithName[];
 }
 
 export const sampleViewStates: IModelViews[] = [
+
+  // MetroStation Sample
   {
-    iModelName: "Metrostation Sample",
+    iModelId: "bef6d098-bcf4-41cf-a0b2-4a49553fefa2",
     views: [
       {
         name: "Basement Floor 2",
@@ -1906,8 +1908,10 @@ export const sampleViewStates: IModelViews[] = [
       },
     ],
   },
+
+  // Retail Building Sample
   {
-    iModelName: "Retail Building Sample",
+    iModelId: "97a67f36-8efa-499c-a6ed-a8e07f38a410",
     views: [
       {
         name: "Roof",
