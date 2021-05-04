@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApi } from "./VolumeQueryApi";
+import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApp } from "./VolumeQueryApp";
 import { ScreenViewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { Button, ButtonType, LoadingPrompt } from "@bentley/ui-core";
@@ -15,11 +15,20 @@ interface ProgressBarProps {
   setElementsToShow: () => void;
 }
 
-const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ getProgress, setProgress, setColoredElements, setElementsToShow }) => {
-  const [canceledState, setCanceledState] = React.useState<boolean>(false);
+interface ProgressBarStates {
+  isCanceled: boolean;
+}
+
+export class ProgressBar extends React.Component<ProgressBarProps, ProgressBarStates> {
+  constructor(props?: any) {
+    super(props);
+    this.state = {
+      isCanceled: false,
+    };
+  }
 
   /* Classifying, coloring and setting progress bar */
-  const processElements = async (classifiedElementsColors: Record<SectionOfColoring, ColorDef>, spatialElements: SpatialElement[], vp: ScreenViewport) => {
+  public async processElements(classifiedElementsColors: Record<SectionOfColoring, ColorDef>, spatialElements: SpatialElement[], vp: ScreenViewport) {
     let classifiedElements: Record<ElementPosition, SpatialElement[]> | undefined;
     const coloredElements: Record<ElementPosition, SpatialElement[]> = {
       [ElementPosition.InsideTheBox]: [],
@@ -30,29 +39,29 @@ const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ getProgress, s
     For example, if there are 18 000 spatial elements, this will create 3 arrays with 6 000 keys each.
     This is being done because API has a limit for how many ids you can send at once */
     const packsOfIds = Math.floor(spatialElements.length / 6000);
-    setColoredElements(coloredElements);
+    this.props.setColoredElements(coloredElements);
     for (let i = 0; i <= packsOfIds; i++) {
-      const progress = getProgress();
-      if (canceledState) {
-        setProgress({ isLoading: false, percentage: 0 });
-        setCanceledState(false);
+      const progress = this.props.getProgress();
+      if (this.state.isCanceled) {
+        this.props.setProgress({ isLoading: false, percentage: 0 });
+        this.setState({ isCanceled: false });
         break;
       }
 
       /* Classifying elements */
       if (i !== packsOfIds) {
-        classifiedElements = await VolumeQueryApi.getClassifiedElements(vp, spatialElements.slice(i * 6000, (i + 1) * 6000));
+        classifiedElements = await VolumeQueryApp.getClassifiedElements(vp, spatialElements.slice(i * 6000, (i + 1) * 6000));
       } else {
-        classifiedElements = await VolumeQueryApi.getClassifiedElements(vp, spatialElements.slice(i * 6000, spatialElements.length + 1));
+        classifiedElements = await VolumeQueryApp.getClassifiedElements(vp, spatialElements.slice(i * 6000, spatialElements.length + 1));
         progress.isLoading = false;
       }
       /* Coloring classified elements */
       if (classifiedElements !== undefined) {
-        await VolumeQueryApi.colorClassifiedElements(vp, classifiedElements, classifiedElementsColors);
+        await VolumeQueryApp.colorClassifiedElements(vp, classifiedElements, classifiedElementsColors);
         coloredElements.Inside = coloredElements.Inside.concat(classifiedElements.Inside);
         coloredElements.Overlap = coloredElements.Overlap.concat(classifiedElements.Overlap);
-        setColoredElements(coloredElements);
-        setElementsToShow();
+        this.props.setColoredElements(coloredElements);
+        this.props.setElementsToShow();
       }
 
       /* Calculating and setting progress percentage */
@@ -64,19 +73,22 @@ const ProgressBar: React.FunctionComponent<ProgressBarProps> = ({ getProgress, s
       }
       progress.isLoading = true;
       if (progress.percentage === 100) progress.isLoading = false;
-      setProgress(progress);
+      this.props.setProgress(progress);
     }
+  }
+
+  private _onClick = () => {
+    this.setState({ isCanceled: true });
   };
 
-  const prog = getProgress();
+  public render() {
+    const progress = this.props.getProgress();
+    return (
+      <>
+        <LoadingPrompt isDeterminate={true} percent={progress.percentage} />
+        <div style={{ textAlign: "center" }}><Button disabled={!progress.isLoading} onClick={this._onClick} buttonType={ButtonType.Hollow}>Cancel</Button></div>
+      </>
+    );
 
-  return (
-    <>
-      <LoadingPrompt isDeterminate={true} percent={prog.percentage} />
-      <div style={{ textAlign: "center" }}><Button disabled={!prog.isLoading} onClick={() => setCanceledState(true)} buttonType={ButtonType.Hollow}>Cancel</Button></div>
-    </>
-  );
-
-};
-
-export default ProgressBar;
+  }
+}
