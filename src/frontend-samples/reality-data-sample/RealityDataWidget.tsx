@@ -68,7 +68,6 @@ const RealityDataWidget: React.FunctionComponent = () => {
     );
   };
 
-
   return (
     <>
       <div className="sample-options">

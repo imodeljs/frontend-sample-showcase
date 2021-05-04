@@ -9,7 +9,6 @@ import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { ScreenSpaceEffectsWidgetProvider } from "./ScreenSpaceEffectsWidget";
-import ScreenSpaceEffectsApi from "./ScreenSpaceEffectsApi";
 
 const uiProviders = [new ScreenSpaceEffectsWidgetProvider()];
 

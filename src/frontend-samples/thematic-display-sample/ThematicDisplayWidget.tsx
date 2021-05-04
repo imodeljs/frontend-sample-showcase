@@ -3,9 +3,9 @@ import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { Select, Slider, Toggle } from "@bentley/ui-core";
 import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
-import ThematicDisplayApi from "./ThematicDisplayApi";
 import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
 import { Range1d, Range1dProps } from "@bentley/geometry-core";
+import ThematicDisplayApi from "./ThematicDisplayApi";
 import "./ThematicDisplay.scss";
 
 // defining the Thematic Display Props values that are not what is need at default,
@@ -54,6 +54,7 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
       ThematicDisplayApi.setThematicDisplayProps(ThematicDisplayApi.viewport, ThematicDisplayApi.originalProps);
       ThematicDisplayApi.setThematicDisplayOnOff(ThematicDisplayApi.viewport, ThematicDisplayApi.originalFlag);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
       return;
     ThematicDisplayApi.setThematicDisplaySunDirection(viewport, calculateSolarDirectionFromAngles({ azimuth: azimuthState, elevation: elevationState }));
     ThematicDisplayApi.syncViewport(viewport);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [azimuthState, elevationState]);
 
   /** This method should be called when the iModel is loaded to set default settings in the

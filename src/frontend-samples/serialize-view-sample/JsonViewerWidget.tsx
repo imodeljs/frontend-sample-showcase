@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, SmallText, Textarea } from "@bentley/ui-core";
 
 export interface JsonViewerWidgetProps {

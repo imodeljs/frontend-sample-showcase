@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import "./FireDecoration.scss";
 import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
 import FireDecorationApi from "./FireDecorationApi";
 import { FireEmitter } from "./FireDecorator";
 import { Point3d, Range2d, Transform } from "@bentley/geometry-core";
 import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
 import { assert } from "@bentley/bentleyjs-core";
+import "./FireDecoration.scss";
 
 interface Fire {
   particleNumScale: number;
@@ -55,16 +55,19 @@ const FireDecorationWidget: React.FunctionComponent = () => {
         IModelApp.viewManager.onViewOpen.addOnce((viewport: Viewport) => { initView(viewport).then(() => setIsLoadingState(false)); });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iModelConnection]);
 
   useEffect(() => {
     const currentParams: Fire = selectedEmitterState?.params ?? _defaultFireState;
     setFireState(currentParams);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEmitterState]);
 
   useEffect(() => {
     if (selectedEmitterState)
       selectedEmitterState.configure(fireState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fireState]);
 
   const initView = async (viewport: Viewport) => {

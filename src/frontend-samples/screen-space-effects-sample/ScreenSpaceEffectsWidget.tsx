@@ -8,7 +8,6 @@ import { Slider, Toggle } from "@bentley/ui-core";
 import { cloneEffectsConfig, EffectsConfig, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { Angle } from "@bentley/geometry-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import ScreenSpaceEffectsApi from "./ScreenSpaceEffectsApi";
 import { useActiveViewport } from "@bentley/ui-framework";
 

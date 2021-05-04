@@ -33,14 +33,17 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     configureEffect({ particleDensity });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [particleDensity]);
 
   useEffect(() => {
     configureEffect({ windVelocity: wind });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wind]);
 
   useEffect(() => {
     configureEffect({ pauseEffect });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pauseEffect]);
 
   /** Configures active snow decorators (should only ever be one in this sample). */

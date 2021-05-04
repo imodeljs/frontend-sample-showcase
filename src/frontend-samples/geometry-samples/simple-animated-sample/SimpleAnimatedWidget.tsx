@@ -46,6 +46,7 @@ export const SimpleAnimatedWidget: React.FunctionComponent = () => {
       timer.stop();
       timer.setOnExecute(() => { });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color]);
 
   const _setGeometry = (newGrid: boolean[][], fillColor: ColorDef) => {

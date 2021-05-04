@@ -12,16 +12,7 @@ const uiProviders = [new FireDecorationWidgetProvider()];
 
 const FireDecorationApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the 'Place' button to create a new fire particle emitter. After placing, use the controls to configure the new emitter.", [SampleIModels.Villa]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
-
-  // const _oniModelReady = async (iModelConnection: IModelConnection) => {
-  //   IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-  //     ViewAttributesApi.setAttrValues(_vp, ViewAttributesApi.settings);
-  //   });
-
-  //   const viewState = await ViewSetup.getDefaultView(iModelConnection);
-  //   setViewportOptions({ viewState });
-  // };
+  const [viewportOptions] = useState<IModelViewportControlOptions>();
 
   /** The sample's render method */
   return (
@@ -33,7 +24,6 @@ const FireDecorationApp: FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
           viewportOptions={viewportOptions}
-          //onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

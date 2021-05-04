@@ -50,7 +50,7 @@ const IotAlertWidget: React.FunctionComponent = () => {
 
   const _clearAll = () => {
     MessageManager.clearMessages();
-    setBlinkingElementsState([])
+    setBlinkingElementsState([]);
     setWantEmphasisState(false);
     const ids = createBlinkingElementIdSet([], elementNameIdMapState);
     BlinkingEffect.stopBlinking(ids);

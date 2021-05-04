@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { Button, Dialog, DialogAlignment, Select, SelectOption, SmallText } from "@bentley/ui-core";
-import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";
-import SerializeViewApi from "./SerializeViewApi";
-import { ModalDialogManager, ModelessDialogManager, StagePanelLocation, StagePanelSection, WidgetState } from "@bentley/ui-framework";
+import { Button, Dialog, Select, SelectOption, SmallText } from "@bentley/ui-core";
+import { ModalDialogManager, StagePanelLocation, StagePanelSection, WidgetState } from "@bentley/ui-framework";
 import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
 import { ViewStateProps } from "@bentley/imodeljs-common";
 import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";
 import { JsonViewerWidget } from "./JsonViewerWidget";
+import SerializeViewApi from "./SerializeViewApi";
 import "./SerializeView.scss";
 
 export const SerializeViewWidget: React.FunctionComponent = () => {
@@ -24,13 +24,12 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
       _init(viewport);
     else
       IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => _init(_vp));
+
+    return () => {
+      ModalDialogManager.closeDialog();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.log("Its been set!");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jsonMenuValueState]);
 
   useEffect(() => {
     if (viewsState.length === 0)
@@ -38,12 +37,13 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
 
     setJsonViewerTitleState(viewsState[currentViewIndexState].name);
     setJsonMenuValueState(JSON.stringify(viewsState[currentViewIndexState].view, null, 2));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentViewIndexState]);
 
-  const _init = (viewport: ScreenViewport) => {
+  const _init = (vp: ScreenViewport) => {
     /** Grab the IModel with views that match the imodel loaded. */
     const iModelWithViews = allSavedViews.filter((iModelViews) => {
-      return iModelViews.iModelId === viewport.iModel.iModelId;
+      return iModelViews.iModelId === vp.iModel.iModelId;
     });
 
     /** Grab the views of the iModel just loaded and load the first view state in the SampleViewStates.ts */

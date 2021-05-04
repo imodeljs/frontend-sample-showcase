@@ -2,8 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
-import "common/samples-common.scss";
+import React from "react";
 import { ShowcaseToolAdmin } from "./TooltipCustomizeApi";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-sandbox";

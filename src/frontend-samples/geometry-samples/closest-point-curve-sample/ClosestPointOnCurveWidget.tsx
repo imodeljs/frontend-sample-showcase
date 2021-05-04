@@ -52,10 +52,12 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     calculateSpacePoint(spacePoint);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve]);
 
   useEffect(() => {
     calculateSpacePoint(spacePoint);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spacePointMarker]);
 
   useEffect(() => {
@@ -65,6 +67,7 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
         setClosePoint(newClosePoint);
       updateVisualization();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spacePoint]);
 
   const createPointMarkers = () => {
