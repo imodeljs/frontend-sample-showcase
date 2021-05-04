@@ -10,7 +10,7 @@ import { UiItemsManager } from "@bentley/ui-abstract";
 import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
 import { defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
-import { FloatingWidgets } from "@itwinjs-sandbox/view/FloatingWidget";
+import { FloatingWidgets } from "@itwinjs-sandbox/hooks/FloatingWidget";
 import { useEffect } from "react";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
 
