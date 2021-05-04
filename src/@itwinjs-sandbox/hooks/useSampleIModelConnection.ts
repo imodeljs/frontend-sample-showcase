@@ -48,22 +48,15 @@ export type SetCurrentSampleIModel = (iModel: SampleIModels) => void;
 /** In place of providing your own iModel, the showcase offers a method of obtaining a **context ID** and **iModel ID** without signing in or creating your own iModels
  *
  * **SANDBOX USE ONLY!** */
-export const useSampleIModelConnection = (iModelList?: SampleIModels[]): [SampleIModelInfo | undefined, SetCurrentSampleIModel] => {
+export const useSampleIModelConnection = (iModelList: SampleIModels[] = defaultIModelList): [SampleIModelInfo | undefined, SetCurrentSampleIModel] => {
   const [iModelParam, setiModelParam] = useSampleIModelParameter();
-  const [sampleIModels, setSampleIModels] = useState<SampleIModels[]>(iModelList || defaultIModelList);
-  const [iModel, setiModel] = useState<SampleIModels>(iModelParam || sampleIModels[0] || defaultIModel);
+  const [iModel, setiModel] = useState<SampleIModels>(iModelParam || iModelList[0] || defaultIModel);
   const [iModelInfo, setiModelInfo] = useState<SampleIModelInfo>();
 
   useEffect(() => {
-    if (iModelList && sampleIModels !== iModelList) {
-      setSampleIModels(iModelList);
-    }
-  }, [iModelList, sampleIModels]);
-
-  useEffect(() => {
-    if (sampleIModels.length > 0) {
-      if (!sampleIModels.includes(iModel)) {
-        setiModel(sampleIModels[0]);
+    if (iModelList.length > 0) {
+      if (!iModelList.includes(iModel)) {
+        setiModel(iModelList[0]);
       } else if (!iModelInfo || iModelInfo.iModelName !== iModel) {
         getIModelInfo(iModel)
           .then((info) => {
@@ -71,15 +64,15 @@ export const useSampleIModelConnection = (iModelList?: SampleIModels[]): [Sample
           });
       }
     }
-  }, [iModel, sampleIModels, iModelInfo]);
+  }, [iModel, iModelList, iModelInfo]);
 
   useEffect(() => {
     if (iModelInfo && iModelInfo.iModelName !== iModelParam) {
       setiModelParam(iModelInfo.iModelName);
-    } else if (!iModelInfo && iModelParam && sampleIModels.length <= 0) {
+    } else if (!iModelInfo && iModelParam && iModelList.length <= 0) {
       setiModelParam(undefined);
     }
-  }, [iModelInfo, iModelParam, sampleIModels.length, setiModelParam]);
+  }, [iModelInfo, iModelParam, iModelList.length, setiModelParam]);
 
   const setCurrentSampleIModel = useCallback((imodel: SampleIModels) => setiModel(imodel), []);
 

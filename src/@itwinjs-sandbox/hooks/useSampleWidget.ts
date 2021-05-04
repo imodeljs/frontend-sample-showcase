@@ -10,22 +10,17 @@ import { UiItemsManager } from "@bentley/ui-abstract";
 import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
 import { defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
-// import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
-import { useEffect, useState } from "react";
-import { useFloatingWidget } from "./useFloatingWidget";
+import { FloatingWidgets } from "@itwinjs-sandbox/view/FloatingWidget";
+import { useEffect } from "react";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
-import "./useSampleWidget.scss";
 
-export const useSampleWidget = (instructions: string, iModelList?: SampleIModels[]): SampleIModelInfo | undefined => {
-  useFloatingWidget("sample-container");
-  const [sampleIModels, setSampleIModels] = useState<SampleIModels[]>(iModelList || defaultIModelList);
-  const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(sampleIModels);
+export const useSampleWidget = (instructions: string, iModelList: SampleIModels[] = defaultIModelList): SampleIModelInfo | undefined => {
+  const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(iModelList);
 
   useEffect(() => {
-    if (iModelList && !sampleIModels.every((el) => iModelList.includes(el))) {
-      setSampleIModels(iModelList);
-    }
-  }, [iModelList, sampleIModels]);
+    const floatingWidgets = new FloatingWidgets("sample-container");
+    return floatingWidgets.dispose;
+  }, [sampleIModelInfo]);
 
   /**
    * Fix to add Hilite ruleset to presentation until Bug #599922 is addressed
@@ -47,12 +42,12 @@ export const useSampleWidget = (instructions: string, iModelList?: SampleIModels
   });
 
   useEffect(() => {
-    const widgetProvider = new SampleWidgetProvider(instructions, sampleIModels, sampleIModelInfo, setIModelName);
+    const widgetProvider = new SampleWidgetProvider(instructions, iModelList, sampleIModelInfo, setIModelName);
     UiItemsManager.register(widgetProvider);
     return () => {
       UiItemsManager.unregister(widgetProvider.id);
     };
-  }, [instructions, sampleIModels, sampleIModelInfo, setIModelName]);
+  }, [instructions, iModelList, sampleIModelInfo, setIModelName]);
 
   return sampleIModelInfo;
 };
