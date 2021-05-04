@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
+import React, { useEffect } from "react";
 import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
@@ -10,10 +10,17 @@ import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
 import CrossProbingApi from "./CrossProbingApi";
 import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
 
-const frontStages: ViewerFrontstage[] = [];
+let frontStages: ViewerFrontstage[] = [];
 
 const CrossProbingApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Click on an element in either of the views to zoom to corresponding element in the other view.", [SampleIModels.BayTown]);
+
+  // Cleanup fronstages when we switch samples
+  useEffect(() => {
+    return () => {
+      frontStages = [];
+    };
+  }, []);
 
   // When iModel is ready, initialize element selection listener and assign initial 2D view.
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
