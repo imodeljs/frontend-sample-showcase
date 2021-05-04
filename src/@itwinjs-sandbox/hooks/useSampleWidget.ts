@@ -17,11 +17,6 @@ import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelCo
 export const useSampleWidget = (instructions: string, iModelList: SampleIModels[] = defaultIModelList): SampleIModelInfo | undefined => {
   const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(iModelList);
 
-  useEffect(() => {
-    const floatingWidgets = new FloatingWidgets("sample-container");
-    return floatingWidgets.dispose;
-  }, [sampleIModelInfo]);
-
   /**
    * Fix to add Hilite ruleset to presentation until Bug #599922 is addressed
    */
@@ -42,12 +37,18 @@ export const useSampleWidget = (instructions: string, iModelList: SampleIModels[
   });
 
   useEffect(() => {
+    const floatingWidgets = new FloatingWidgets("sample-container");
+    return floatingWidgets.dispose;
+  }, []);
+
+  useEffect(() => {
     const widgetProvider = new SampleWidgetProvider(instructions, iModelList, sampleIModelInfo, setIModelName);
     UiItemsManager.register(widgetProvider);
     return () => {
       UiItemsManager.unregister(widgetProvider.id);
     };
-  }, [instructions, iModelList, sampleIModelInfo, setIModelName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sampleIModelInfo]);
 
   return sampleIModelInfo;
 };
