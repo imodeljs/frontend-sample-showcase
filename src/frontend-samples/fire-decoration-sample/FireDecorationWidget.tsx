@@ -59,6 +59,7 @@ const FireDecorationWidget: React.FunctionComponent = () => {
   }, [iModelConnection]);
 
   useEffect(() => {
+    FireDecorationApi.highlightEmitter(selectedEmitterState);
     const currentParams: Fire = selectedEmitterState?.params ?? _defaultFireState;
     setFireState(currentParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -103,8 +104,11 @@ const FireDecorationWidget: React.FunctionComponent = () => {
 
   /** Deletes the selected fire decorator emitter. */
   const dropSelected = () => {
-    selectedEmitterState?.dispose();
-    setSelectedEmitterState(undefined);
+    if (selectedEmitterState) {
+      FireDecorationApi.dropDecorator(selectedEmitterState);
+      selectedEmitterState?.dispose();
+      setSelectedEmitterState(undefined);
+    }
   };
 
   /** Deletes all decorators. */

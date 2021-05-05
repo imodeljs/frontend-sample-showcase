@@ -3,13 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { EmphasizeElementsWidgetProvider } from "./EmphasizeElementsWidget";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
-import { ViewAttributesApi } from "frontend-samples/view-attributes-sample/ViewAttributesApi";
 
 const uiProviders = [new EmphasizeElementsWidgetProvider()];
 
@@ -18,10 +17,6 @@ const EmphasizeElementsApp: React.FunctionComponent = () => {
   const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      ViewAttributesApi.setAttrValues(_vp, ViewAttributesApi.settings);
-    });
-
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     setViewportOptions({ viewState });
   };
