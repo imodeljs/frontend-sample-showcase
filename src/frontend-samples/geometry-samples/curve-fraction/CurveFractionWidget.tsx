@@ -174,7 +174,7 @@ export class CurveFractionWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "CurveFractionWidget",
-          label: "Curve Fraction",
+          label: "Curve Fraction Selector",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <CurveFractionWidget />,

@@ -72,15 +72,15 @@ export const SimpleLineWidget: React.FunctionComponent = () => {
 };
 
 export class SimpleLineWidgetProvider implements UiItemsProvider {
-  public readonly id: string = "ViewerOnly2dWidgetProvider";
+  public readonly id: string = "SimpleLineWidgetProvider";
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
     if (location === StagePanelLocation.Right) {
       widgets.push(
         {
-          id: "ViewerOnly2dWidget",
-          label: "2D View Selector",
+          id: "SimpleLineWidget",
+          label: "Simple Line Selector",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SimpleLineWidget />,

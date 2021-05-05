@@ -155,7 +155,7 @@ export class Transformations2dWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "2dTransformationsWidget",
-          label: "2D Transformations",
+          label: "2D Transformations Selector",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <Transformations2dWidget />,
