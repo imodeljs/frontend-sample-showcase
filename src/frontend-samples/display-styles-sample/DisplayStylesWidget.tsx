@@ -4,9 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import DisplayStylesApp from "./DisplayStylesApi";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
+import { useActiveViewport } from "@bentley/ui-framework";
 import { displayStyles } from "./Styles";
 import { Select, Toggle } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
@@ -15,42 +14,29 @@ const CUSTOM_STYLE_INDEX = 0;
 const DEFAULT_STYLE_INDEX = 4;
 
 export const DisplayStylesWidget: React.FunctionComponent = () => {
-  const iModelConnection = useActiveIModelConnection();
+  const viewport = useActiveViewport();
   const [activePresetIndex, setActivePresetIndex] = React.useState<number>(DEFAULT_STYLE_INDEX);
   const [mergeState, setMergeState] = React.useState<boolean>(false);
 
-  // Only runs once because of the empty array passed as dependency [], similar to componentDidMount
   useEffect(() => {
-    if (iModelConnection) {
-      setActivePresetIndex(DEFAULT_STYLE_INDEX);
+    if (viewport) {
+      const style = displayStyles[activePresetIndex];
+      DisplayStylesApp.applyDisplayStyle(viewport, style);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [viewport, activePresetIndex]);
 
   useEffect(() => {
-    if (iModelConnection) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (vp) {
-        const style = displayStyles[activePresetIndex];
-        DisplayStylesApp.applyDisplayStyle(vp, style);
+    if (viewport) {
+      if (mergeState && CUSTOM_STYLE_INDEX !== activePresetIndex) {
+        const style = displayStyles[CUSTOM_STYLE_INDEX];
+        DisplayStylesApp.applyDisplayStyle(viewport, style);
+      } else if (!mergeState && CUSTOM_STYLE_INDEX !== activePresetIndex) {
+        const activeStyle = displayStyles[activePresetIndex];
+        DisplayStylesApp.applyDisplayStyle(viewport, activeStyle);
       }
-    }
-  }, [activePresetIndex, iModelConnection]);
 
-  useEffect(() => {
-    if (iModelConnection) {
-      const vp = IModelApp.viewManager.selectedView;
-      if (vp) {
-        if (mergeState && CUSTOM_STYLE_INDEX !== activePresetIndex) {
-          const style = displayStyles[CUSTOM_STYLE_INDEX];
-          DisplayStylesApp.applyDisplayStyle(vp, style);
-        } else if (!mergeState && CUSTOM_STYLE_INDEX !== activePresetIndex) {
-          const activeStyle = displayStyles[activePresetIndex];
-          DisplayStylesApp.applyDisplayStyle(vp, activeStyle);
-        }
-      }
     }
-  }, [activePresetIndex, iModelConnection, mergeState]);
+  }, [activePresetIndex, mergeState, viewport]);
 
   // Called by the control and will update the active display style.
   const _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
