@@ -59,6 +59,7 @@ const FireDecorationWidget: React.FunctionComponent = () => {
   }, [iModelConnection]);
 
   useEffect(() => {
+    FireDecorationApi.highlightEmitter(selectedEmitterState);
     const currentParams: Fire = selectedEmitterState?.params ?? _defaultFireState;
     setFireState(currentParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
