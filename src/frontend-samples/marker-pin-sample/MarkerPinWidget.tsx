@@ -7,7 +7,7 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { PopupMenu } from "./PopupMenu";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { PointSelector } from "common/PointSelector/PointSelector";
-import { RadioCard, RadioCardEntry } from "./RadioCard/RadioCard";
+import { RadioCard, RadioCardEntry } from "./RadioCard";
 import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import MarkerPinApi from "./MarkerPinApi";

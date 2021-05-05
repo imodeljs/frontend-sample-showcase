@@ -194,8 +194,8 @@
       "typedef": true
     },
     {
-      "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
-      "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "name": "frontend-samples/marker-pin-sample/RadioCard",
+      "import": "./src/frontend-samples/marker-pin-sample/RadioCard",
       "typedef": true
     },
     {

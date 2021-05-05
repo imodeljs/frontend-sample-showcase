@@ -17,9 +17,11 @@ export function getMarkerPinSpec(): SampleSpec {
       { name: "MarkerPinWidget.tsx", import: import("!!raw-loader!./MarkerPinWidget.tsx") },
       { name: "MarkerPinApp.tsx", import: import("!!raw-loader!./MarkerPinApp.tsx"), entry: true },
       { name: "MarkerPinDecorator.tsx", import: import("!!raw-loader!./MarkerPinDecorator") },
+      { name: "MarkerPin.scss", import: import("!!raw-loader!./MarkerPin.scss") },
       { name: "PlaceMarkerTool.ts", import: import("!!raw-loader!./PlaceMarkerTool") },
       { name: "PopupMenu.tsx", import: import("!!raw-loader!./PopupMenu") },
-      { name: "MarkerPin.scss", import: import("!!raw-loader!./MarkerPin.scss") },
+      { name: "RadioCard.tsx", import: import("!!raw-loader!./RadioCard") },
+      { name: "RadioCard.scss", import: import("!!raw-loader!./RadioCard.scss") },
     ],
     type: "MarkerPinApp.tsx",
   });
