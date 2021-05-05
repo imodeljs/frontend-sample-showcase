@@ -29,7 +29,7 @@ const viewState: BlankConnectionViewState = {
 };
 
 const ClosestPointOnCurveApp: FunctionComponent = () => {
-  useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
+  useSampleWidget("Click on the green space point to move it. The program will calculate the closest point on the curve.", []);
 
   /** The sample's render method */
   return (

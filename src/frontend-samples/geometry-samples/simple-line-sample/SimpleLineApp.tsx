@@ -28,7 +28,7 @@ const viewState: BlankConnectionViewState = {
 };
 
 const SimpleLineApp: FunctionComponent = () => {
-  useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
+  useSampleWidget("Creating a line segments and some points along it.", []);
 
   /** The sample's render method */
   return (

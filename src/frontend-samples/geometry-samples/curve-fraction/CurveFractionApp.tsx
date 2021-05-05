@@ -29,7 +29,7 @@ const viewState: BlankConnectionViewState = {
 };
 
 const CurveFractionApp: FunctionComponent = () => {
-  useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
+  useSampleWidget("Use the slider below or click on one of the green points to adjust the fraction and see how the points move along each path.", []);
 
   /** The sample's render method */
   return (

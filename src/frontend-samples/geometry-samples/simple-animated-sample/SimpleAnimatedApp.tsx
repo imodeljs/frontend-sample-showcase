@@ -28,7 +28,7 @@ const viewState: BlankConnectionViewState = {
 };
 
 const SimpleAnimatedApp: FunctionComponent = () => {
-  useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
+  useSampleWidget("An implementation of Conway's game of life.", []);
 
   /** The sample's render method */
   return (

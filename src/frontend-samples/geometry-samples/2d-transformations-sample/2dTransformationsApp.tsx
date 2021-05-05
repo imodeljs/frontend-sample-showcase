@@ -29,7 +29,7 @@ const viewState: BlankConnectionViewState = {
 };
 
 const Transformations2dApp: FunctionComponent = () => {
-  useSampleWidget("Use the Simple 3D Widget to adjust the size of 3D shapes.", []);
+  useSampleWidget("Select a shape, and apply transformations to it.", []);
 
   /** The sample's render method */
   return (
