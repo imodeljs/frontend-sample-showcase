@@ -6,11 +6,10 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } fro
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { DisplayStylesWidgetProvider } from "./DisplayStylesWidget";
-import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
 import "./DisplayStyles.scss";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
-import { ViewAttributesApi } from "frontend-samples/view-attributes-sample/ViewAttributesApi";
 
 const uiProviders = [new DisplayStylesWidgetProvider()];
 
@@ -20,10 +19,6 @@ const DisplayStylesApp: FunctionComponent = () => {
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      ViewAttributesApi.setAttrValues(_vp, ViewAttributesApi.settings);
-    });
-
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     setViewportOptions({ viewState });
   };
