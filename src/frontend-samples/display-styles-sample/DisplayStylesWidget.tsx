@@ -20,21 +20,13 @@ export const DisplayStylesWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport) {
-      const style = displayStyles[activePresetIndex];
+      let style = displayStyles[activePresetIndex];
       DisplayStylesApp.applyDisplayStyle(viewport, style);
-    }
-  }, [viewport, activePresetIndex]);
 
-  useEffect(() => {
-    if (viewport) {
-      if (mergeState && CUSTOM_STYLE_INDEX !== activePresetIndex) {
-        const style = displayStyles[CUSTOM_STYLE_INDEX];
+      if (mergeState) {
+        style = displayStyles[CUSTOM_STYLE_INDEX];
         DisplayStylesApp.applyDisplayStyle(viewport, style);
-      } else if (!mergeState && CUSTOM_STYLE_INDEX !== activePresetIndex) {
-        const activeStyle = displayStyles[activePresetIndex];
-        DisplayStylesApp.applyDisplayStyle(viewport, activeStyle);
       }
-
     }
   }, [activePresetIndex, mergeState, viewport]);
 
