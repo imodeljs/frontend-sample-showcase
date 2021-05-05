@@ -17,6 +17,7 @@ export function getPropertyFormattingSpec(): SampleSpec {
     files: () => [
       { name: "PropertyFormattingApi.ts", import: import("!!raw-loader!./PropertyFormattingApi") },
       { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp"), entry: true },
+      { name: "PropertyFormattingWidget.tsx", import: import("!!raw-loader!./PropertyFormattingWidget") },
       { name: "approach-1-App.tsx", import: import("!!raw-loader!./approach-1-App") },
       { name: "approach-2-App.tsx", import: import("!!raw-loader!./approach-2-App") },
       { name: "approach-3-App.tsx", import: import("!!raw-loader!./approach-3-App") },
