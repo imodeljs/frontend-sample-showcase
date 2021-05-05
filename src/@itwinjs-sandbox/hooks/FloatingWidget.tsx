@@ -39,30 +39,39 @@ export class FloatingWidgets implements IDisposable {
     }
   };
 
-  private _onFrontstageReady = () => {
-    this._handleResize(this._container.getBoundingClientRect());
-  };
-
-  private _onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
+  private _resetWidgets() {
     const frontstage = FrontstageManager.activeFrontstageDef;
     if (frontstage) {
       frontstage.restoreLayout();
       this._widgetDoms.ids.map((id) => {
         frontstage.floatWidget(id, { x: 0, y: 0 }, { height: 0, width: 0 });
       });
-      window.requestAnimationFrame(() => {
-        const entry = entries[0];
-        if (entry) {
-          const dimensions = entry.target.getBoundingClientRect();
-          this._handleResize(dimensions);
-        }
-      });
     }
+  }
+
+  private _onFrontstageReady = () => {
+    this._resetWidgets();
+    this._handleResize(this._container.getBoundingClientRect());
+  };
+
+  private _onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
+    this._resetWidgets();
+    window.requestAnimationFrame(() => {
+      const entry = entries[0];
+      if (entry) {
+        const dimensions = entry.target.getBoundingClientRect();
+        this._handleResize(dimensions);
+      }
+    });
   };
 
   private _handleResize = async (dimensions: DOMRectReadOnly) => {
     const frontstage = FrontstageManager.activeFrontstageDef;
     if (frontstage) {
+      frontstage.restoreLayout();
+      this._widgetDoms.ids.map((id) => {
+        frontstage.floatWidget(id, { x: 0, y: 0 }, { height: 0, width: 0 });
+      });
       let heightOffset = 16;
       const widgets = (await this._widgetDoms.getDoms()).map((dom) => {
         const rect = dom.element.getBoundingClientRect();
@@ -133,8 +142,12 @@ class WidgetDOMManager {
   }
 
   public resolve(id: string, element: HTMLElement | null) {
-    if (!!this._resolvers[id] && !!element) {
-      this._resolvers[id](element);
+    if (!!this._resolvers[id]) {
+      if (!!element) {
+        this._resolvers[id](element);
+      } else {
+        this.add(id);
+      }
     }
   }
 
