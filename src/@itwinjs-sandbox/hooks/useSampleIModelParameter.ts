@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 
 const getiModelParam = () => {
@@ -41,20 +41,11 @@ const updateiModelParam = (imodel?: string) => {
 export type setSampleIModelParam = (iModel?: SampleIModels) => void;
 
 export const useSampleIModelParameter = (): [SampleIModels | undefined, setSampleIModelParam] => {
-  const [iModel, setIModel] = useState<SampleIModels | undefined>(getiModelParam());
-
-  useEffect(() => {
-    const imodelParam = getiModelParam();
-    if (iModel !== imodelParam) {
-      setIModel(imodelParam);
-    }
-  }, [iModel]);
 
   const setiModelParam = useCallback((imodel?: SampleIModels) => {
     updateiModelParam(imodel);
-    setIModel(imodel);
   }, []);
 
-  return [iModel, setiModelParam];
+  return [getiModelParam(), setiModelParam];
 
 };
