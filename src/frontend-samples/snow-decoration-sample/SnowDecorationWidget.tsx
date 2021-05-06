@@ -1,35 +1,33 @@
 import React, { useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
+import { useActiveViewport } from "@bentley/ui-framework";
 import SnowDecorationApi from "./SnowDecorationApi";
 import { SnowParams } from "./SnowDecorator";
-import { IModelApp } from "@bentley/imodeljs-frontend";
 import "./SnowDecoration.scss";
 
 const windRange = 600;
-let lock: Promise<void> | false = false;
 
 const SnowDecorationWidget: React.FunctionComponent = () => {
+  const viewport = useActiveViewport();
   const [propsName, setPropsName] = React.useState<string>(SnowDecorationApi.predefinedProps.keys().next().value);
   const [wind, setWind] = React.useState<number>(0);
   const [particleDensity, setParticleDensity] = React.useState<number>(0);
   const [pauseEffect, setPauseEffect] = React.useState<boolean>(false);
+  const [decoratorCreated, setDecoratorCreated] = React.useState<boolean>(false);
 
   useEffect(() => {
-    // useEffect can not be async, so the "lock" variable will prevent the creating another decorator before the first is completed.
-    const vp = IModelApp.viewManager.selectedView;
-    if (!vp || lock)
+    if (!viewport || decoratorCreated)
       return;
-    lock = (async () => {
-      const props = SnowDecorationApi.predefinedProps.get(propsName)!;
-      SnowDecorationApi.createSnowDecorator(vp, props).then(() => {
-        setParticleDensity(props.params.particleDensity);
-        setWind(props.params.windVelocity);
-        setPauseEffect(false);
-        lock = false;
-      });
-    })();
-  }, [propsName]);
+
+    const props = SnowDecorationApi.predefinedProps.get(propsName)!;
+    SnowDecorationApi.createSnowDecorator(viewport, props).then(() => {
+      setParticleDensity(props.params.particleDensity);
+      setWind(props.params.windVelocity);
+      setPauseEffect(false);
+    });
+    setDecoratorCreated(true);
+  }, [viewport, propsName, decoratorCreated]);
 
   useEffect(() => {
     configureEffect({ particleDensity });

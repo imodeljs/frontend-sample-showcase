@@ -67,12 +67,16 @@ export default class SnowDecorationApi {
     const removeOnRender = viewport.onRender.addListener(() => viewport.invalidateDecorations());
 
     // When the viewport is resized, replace this decorator with a new one to match the new dimensions.
-    const removeOnResized = viewport.onResized.addListener(() => {
+    const removeOnResized = viewport.onResized.addListener((_vp: Viewport) => {
       // Calculate the viewport's new dimensions.
-      snow.dimensions = SnowDecorationApi.calculateDimensions(viewport);
+      snow.dimensions = SnowDecorationApi.calculateDimensions(_vp);
       // Re-emit all particles to fit the new space.
       snow.resetParticles();
     });
+
+    // Since this call is async, the dimensions can be different by this point, recalculate and reset
+    snow.dimensions = SnowDecorationApi.calculateDimensions(viewport);
+    snow.resetParticles();
 
     // The methods below are events to ensure the timely dispose of textures owned by the decorator.
     // When the viewport is destroyed, dispose of this decorator too.
