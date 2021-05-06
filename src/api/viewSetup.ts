@@ -77,11 +77,13 @@ export class ViewSetup {
         displayStyle.changeBackgroundMapProps({ groundBias });
       }
 
-      // Enable the sky-box, but override the ugly brown color.
+      // Enable the sky-box, but override to old sky box.
       displayStyle.environment = new Environment({
         sky: {
           display: true,
-          nadirColor: ColorDef.computeTbgrFromComponents(64, 74, 66),
+          twoColor: true,
+          zenithColor: ColorDef.computeTbgrFromString("#DEF2FF"),
+          nadirColor: ColorDef.computeTbgrFromString("#F0ECE8"),
         },
       });
 
