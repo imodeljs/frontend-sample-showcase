@@ -145,22 +145,14 @@ const IotAlertWidget: React.FunctionComponent = () => {
   const enableCreateAlertButton = selectedElementState && !blinkingElementsState.includes(selectedElementState);
 
   return (
-    <div className="sample-options">
+    <div className="sample-options" style={{ maxWidth: "300px" }}>
       {"Use the picker to choose an element class and instance.  Then click the 'Create' button to trigger an alert."}
       <hr></hr>
       <div className="sample-options-2col">
         <span>Pick class</span>
-        <Select
-          options={_classList}
-          onChange={_onClassChange}
-          disabled={!iModelConnection}
-        />
+        <Select options={_classList} onChange={_onClassChange} disabled={!iModelConnection} />
         <span>Pick element</span>
-        <Select
-          options={elementsState}
-          onChange={_onElementChange}
-          disabled={!iModelConnection}
-        />
+        <Select options={elementsState} onChange={_onElementChange} disabled={!iModelConnection} />
         <span>Alert</span>
         <div className="sample-options-2col-1">
           <Button onClick={() => _onCreateAlert()} disabled={!enableCreateAlertButton}>Create</Button>
