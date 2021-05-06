@@ -14,10 +14,9 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
   const [wind, setWind] = React.useState<number>(0);
   const [particleDensity, setParticleDensity] = React.useState<number>(0);
   const [pauseEffect, setPauseEffect] = React.useState<boolean>(false);
-  const [decoratorCreated, setDecoratorCreated] = React.useState<boolean>(false);
 
   useEffect(() => {
-    if (!viewport || decoratorCreated)
+    if (!viewport)
       return;
 
     const props = SnowDecorationApi.predefinedProps.get(propsName)!;
@@ -26,8 +25,7 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
       setWind(props.params.windVelocity);
       setPauseEffect(false);
     });
-    setDecoratorCreated(true);
-  }, [viewport, propsName, decoratorCreated]);
+  }, [viewport, propsName]);
 
   useEffect(() => {
     configureEffect({ particleDensity });
