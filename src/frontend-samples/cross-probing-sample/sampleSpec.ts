@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels } from "@itwinjs-sandbox";
 import { SampleSpec } from "SampleSpec";
 
 export function getCrossProbingSpec(): SampleSpec {
@@ -12,11 +12,13 @@ export function getCrossProbingSpec(): SampleSpec {
     label: "Cross-Probing",
     image: "cross-probing-thumbnail.png",
     iModelList: [SampleIModels.BayTown],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CrossProbingUI.tsx", import: import("!!raw-loader!./CrossProbingUI"), entry: true },
-      { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp") },
+      { name: "CrossProbingApi.ts", import: import("!!raw-loader!./CrossProbingApi") },
+      { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp"), entry: true },
+      { name: "CrossProbingFrontstageProvider.tsx", import: import("!!raw-loader!./CrossProbingFrontstageProvider") },
     ],
-    type: "CrossProbingUI.tsx",
+    type: "CrossProbingApp.tsx",
   });
 }

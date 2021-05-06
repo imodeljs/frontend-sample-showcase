@@ -6,7 +6,7 @@ import { dispose } from "@bentley/bentleyjs-core";
 import { Point3d, Range1d, Range2d, Range3d, Transform, Vector3d, XAndY } from "@bentley/geometry-core";
 import { ColorDef, RenderTexture } from "@bentley/imodeljs-common";
 import { DecorateContext, Decorator, GraphicType, HitDetail, ParticleCollectionBuilder, ParticleProps, Viewport } from "@bentley/imodeljs-frontend";
-import FireDecorationApp from "./FireDecorationApp";
+import FireDecorationApi from "./FireDecorationApi";
 
 /** Generate integer in [min, max]. */
 function randomInteger(min: number, max: number): number {
@@ -107,16 +107,16 @@ export class FireEmitter implements Decorator {
   /** If the textures are not created yet, will attempt to create them.  Returns true if successful. */
   private static async tryTextures(): Promise<boolean> {
     if (!FireEmitter._fireTexture)
-      FireEmitter._fireTexture = await FireDecorationApp.allocateTextureFromUrl("./particle-gradient-flame.png");
+      FireEmitter._fireTexture = await FireDecorationApi.allocateTextureFromUrl("./particle-gradient-flame.png");
     if (!FireEmitter._smokeTexture)
-      FireEmitter._smokeTexture = await FireDecorationApp.allocateTextureFromUrl("./particle-gradient-smoke.png");
+      FireEmitter._smokeTexture = await FireDecorationApi.allocateTextureFromUrl("./particle-gradient-smoke.png");
     return (FireEmitter._fireTexture !== undefined && FireEmitter._smokeTexture !== undefined);
   }
 
   /** Only dispose of resources that are not used by any other decorators. */
   private static _tryDisposeTextures() {
 
-    if (FireDecorationApp.getAllEmitters().length === 0) {
+    if (FireDecorationApi.getAllEmitters().length === 0) {
       FireEmitter._fireTexture = dispose(FireEmitter._fireTexture);
       FireEmitter._smokeTexture = dispose(FireEmitter._smokeTexture);
       // Remove listeners
@@ -135,15 +135,15 @@ export class FireEmitter implements Decorator {
       return undefined;
 
     // A transient id is needed for interacting with the mouse (tool tips).
-    const id = FireDecorationApp.getNextTransientId(viewport.iModel);
+    const id = FireDecorationApi.getNextTransientId(viewport.iModel);
     const fireDecorator = new this(id, source, params);
 
-    if (FireDecorationApp.getAllEmitters().length === 0) {
+    if (FireDecorationApi.getAllEmitters().length === 0) {
       // Due to the constructions of the showcase, we know when the viewport will be closed.  Under different circumstances, the methods below are example events to ensure the timely dispose of textures owned by the decorator.
       // When the iModel is closed, dispose of any decorations.
-      FireEmitter._removeOnClose = viewport.iModel.onClose.addOnce(() => FireDecorationApp.disposeAllEmitters());
+      FireEmitter._removeOnClose = viewport.iModel.onClose.addOnce(() => FireDecorationApi.disposeAllEmitters());
       // When the viewport is destroyed, dispose of any decorations. too.
-      FireEmitter._removeOnDispose = viewport.onDisposed.addListener(() => FireDecorationApp.disposeAllEmitters());
+      FireEmitter._removeOnDispose = viewport.onDisposed.addListener(() => FireDecorationApi.disposeAllEmitters());
     }
 
     return fireDecorator;

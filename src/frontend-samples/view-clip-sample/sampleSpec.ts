@@ -13,10 +13,13 @@ export function getViewClipSpec(): SampleSpec {
     image: "view-clip-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp") },
-      { name: "ViewClipUI.tsx", import: import("!!raw-loader!./ViewClipUI"), entry: true },
+      { name: "ViewClipApi.ts", import: import("!!raw-loader!./ViewClipApi") },
+      { name: "ViewClipApp.tsx", import: import("!!raw-loader!./ViewClipApp"), entry: true },
+      { name: "ViewClipWidget.tsx", import: import("!!raw-loader!./ViewClipWidget") },
+      { name: "ViewClip.scss", import: import("!!raw-loader!./ViewClipWidget") },
     ],
+    iTwinViewerReady: true,
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
-    type: "ViewClipUI.tsx",
+    type: "ViewClipApp.tsx",
   });
 }

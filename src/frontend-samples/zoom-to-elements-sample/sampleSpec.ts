@@ -11,13 +11,15 @@ export function getZoomToElementsSpec(): SampleSpec {
     name: "zoom-to-elements-sample",
     label: "Zoom to Elements",
     image: "zoom-to-elements-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ZoomToElementsApp.tsx", import: import("!!raw-loader!./ZoomToElementsApp") },
-      { name: "ZoomToElementsUI.tsx", import: import("!!raw-loader!./ZoomToElementsUI"), entry: true },
-      { name: "index.scss", import: import("!!raw-loader!./index.scss") },
+      { name: "ZoomToElementsApi.ts", import: import("!!raw-loader!./ZoomToElementsApi") },
+      { name: "ZoomToElementsApp.tsx", import: import("!!raw-loader!./ZoomToElementsApp"), entry: true },
+      { name: "ZoomToElementsWidget.tsx", import: import("!!raw-loader!./ZoomToElementsWidget") },
+      { name: "ZoomToElements.scss", import: import("!!raw-loader!./ZoomToElements.scss") },
     ],
     iModelList: [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium],
-    type: "ZoomToElementsUI.tsx",
+    type: "ZoomToElementsApp.tsx",
   });
 }

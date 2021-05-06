@@ -3,16 +3,16 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 
 const getiModelParam = () => {
   const params = new URLSearchParams(window.location.search);
-  const imodel = params.get("imodel");
-  return imodel as SampleIModels;
+  const imodel = params.get("imodel") ?? undefined;
+  return imodel as SampleIModels | undefined;
 };
 
-const updateiModelParam = (imodel: string) => {
+const updateiModelParam = (imodel?: string) => {
   const params = new URLSearchParams(window.location.search);
 
   if (imodel) {
@@ -21,6 +21,8 @@ const updateiModelParam = (imodel: string) => {
     } else {
       params.append("imodel", imodel);
     }
+  } else {
+    params.delete("imodel");
   }
 
   // Detect if editor was enabled in URL params as a semi-backdoor, this
@@ -36,23 +38,14 @@ const updateiModelParam = (imodel: string) => {
   }
 };
 
-export type setSampleIModelParam = (iModel: SampleIModels) => void;
+export type setSampleIModelParam = (iModel?: SampleIModels) => void;
 
-export const useSampleIModelParameter = (): [SampleIModels, setSampleIModelParam] => {
-  const [iModel, setIModel] = useState<SampleIModels>(getiModelParam());
+export const useSampleIModelParameter = (): [SampleIModels | undefined, setSampleIModelParam] => {
 
-  useEffect(() => {
-    const imodelParam = getiModelParam();
-    if (iModel !== imodelParam) {
-      setIModel(imodelParam);
-    }
-  }, [iModel]);
-
-  const setiModelParam = (imodel: SampleIModels) => {
+  const setiModelParam = useCallback((imodel?: SampleIModels) => {
     updateiModelParam(imodel);
-    setIModel(imodel);
-  };
+  }, []);
 
-  return [iModel, setiModelParam];
+  return [getiModelParam(), setiModelParam];
 
 };

@@ -2,37 +2,58 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useState } from "react";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { SerializeViewWidgetProvider } from "./SerializeViewWidget";
+import { IModelViews, sampleViewStates } from "./SampleViewStates";
+import SerializeViewApi from "./SerializeViewApi";
 
-import { ViewStateProps } from "@bentley/imodeljs-common";
-import { EntityState, Viewport, ViewState } from "@bentley/imodeljs-frontend";
-import "common/samples-common.scss";
+const uiProviders = [new SerializeViewWidgetProvider()];
 
-export default class SerializeViewApp {
+const SerializeViewApp: FunctionComponent = () => {
+  const allSavedViews: IModelViews[] = [...sampleViewStates];
+  const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.MetroStation, SampleIModels.RetailBuilding]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  public static serializeCurrentViewState(viewport: Viewport): ViewStateProps {
-    /** Create a deep copy of the view and save its properties */
-    const clonedView = viewport.view.clone();
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    /** Grab the IModel with views that match the imodel loaded. */
+    const iModelWithViews = allSavedViews.filter((iModelViews) => {
+      return iModelViews.iModelId === iModelConnection.iModelId;
+    });
 
-    /** returns a serialized ViewState as a set of properties */
-    return clonedView.toProps();
-  }
-
-  public static async deserializeViewState(viewport: Viewport, props: ViewStateProps): Promise<ViewState | undefined> {
-    /** Grab the type of imodel to reconstruct the view */
-    const ctor = await viewport.iModel.findClassFor<typeof EntityState>(props.viewDefinitionProps.classFullName, undefined) as typeof ViewState | undefined;
-
-    if (undefined !== ctor) {
-      /** Recreate the saved view from the properties json object */
-      return ctor.createFromProps(props, viewport.iModel);
+    /** Grab the views of the iModel just loaded and load the first view state in the SampleViewStates.ts */
+    if (iModelWithViews.length > 0) {
+      const views = iModelWithViews[0].views;
+      const viewState = await SerializeViewApi.deserializeViewState(iModelConnection, views[0].view);
+      setViewportOptions({ viewState });
+    } else {
+      const viewState = await ViewSetup.getDefaultView(iModelConnection);
+      setViewportOptions({ viewState });
     }
-    return undefined;
-  }
+  };
 
-  public static async loadViewState(viewport: Viewport, props: ViewStateProps) {
-    const view = await this.deserializeViewState(viewport, props);
-    if (undefined !== view) {
-      /** Load the saved view */
-      viewport.changeView(view, { animateFrustumChange: true });
-    }
-  }
-}
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
+      }
+    </>
+  );
+
+};
+
+export default SerializeViewApp;

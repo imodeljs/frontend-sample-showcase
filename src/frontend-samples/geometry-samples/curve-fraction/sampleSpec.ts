@@ -11,13 +11,17 @@ export function getCurveFractionSpec(): SampleSpec {
     label: "Curve Fractions",
     image: "curve-fraction-thumbnail.png",
     iModelList: [],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp") },
-      { name: "CurveFractionUI.tsx", import: import("!!raw-loader!./CurveFractionUI"), entry: true },
-      { name: "common/SampleCurveFactory.ts", import: import("!!raw-loader!common/Geometry/SampleCurveFactory") },
-      { name: "common/InteractivePointMarker.ts", import: import("!!raw-loader!common/Geometry/InteractivePointMarker") },
+      { name: "CurveFractionApi.ts", import: import("!!raw-loader!./CurveFractionApi") },
+      { name: "CurveFractionApp.tsx", import: import("!!raw-loader!./CurveFractionApp"), entry: true },
+      { name: "CurveFractionWidget.tsx", import: import("!!raw-loader!./CurveFractionWidget") },
+      { name: "./GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
+      { name: "./SampleCurveFactory.ts", import: import("!!raw-loader!./SampleCurveFactory") },
+      { name: "./InteractivePointMarker.ts", import: import("!!raw-loader!./InteractivePointMarker") },
+      { name: "CurveFraction.scss", import: import("!!raw-loader!./CurveFraction.scss") },
     ],
-    type: "CurveFractionUI.tsx",
+    type: "CurveFractionApp.tsx",
   });
 }

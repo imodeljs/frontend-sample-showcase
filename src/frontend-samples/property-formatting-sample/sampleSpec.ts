@@ -12,15 +12,17 @@ export function getPropertyFormattingSpec(): SampleSpec {
     label: "Property Formatting",
     image: "property-formatting-thumbnail.png",
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp") },
-      { name: "PropertyFormattingUI.tsx", import: import("!!raw-loader!./PropertyFormattingUI"), entry: true },
-      { name: "approach-1-UI.tsx", import: import("!!raw-loader!./approach-1-UI") },
-      { name: "approach-2-UI.tsx", import: import("!!raw-loader!./approach-2-UI") },
-      { name: "approach-3-UI.tsx", import: import("!!raw-loader!./approach-3-UI") },
+      { name: "PropertyFormattingApi.ts", import: import("!!raw-loader!./PropertyFormattingApi") },
+      { name: "PropertyFormattingApp.tsx", import: import("!!raw-loader!./PropertyFormattingApp"), entry: true },
+      { name: "PropertyFormattingWidget.tsx", import: import("!!raw-loader!./PropertyFormattingWidget") },
+      { name: "approach-1-App.tsx", import: import("!!raw-loader!./approach-1-App") },
+      { name: "approach-2-App.tsx", import: import("!!raw-loader!./approach-2-App") },
+      { name: "approach-3-App.tsx", import: import("!!raw-loader!./approach-3-App") },
       { name: "PropertyFormatting.scss", import: import("!!raw-loader!./PropertyFormatting.scss") },
     ],
-    type: "PropertyFormattingUI.tsx",
+    type: "PropertyFormattingApp.tsx",
   });
 }

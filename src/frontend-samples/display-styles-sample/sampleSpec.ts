@@ -11,13 +11,16 @@ export function getDisplayStylesSpec(): SampleSpec {
     name: "display-styles-sample",
     label: "Display Styles",
     image: "display-styles-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp") },
-      { name: "DisplayStylesUI.tsx", import: import("!!raw-loader!./DisplayStylesUI"), entry: true },
+      { name: "DisplayStylesApi.tsx", import: import("!!raw-loader!./DisplayStylesApi") },
+      { name: "DisplayStylesApp.tsx", import: import("!!raw-loader!./DisplayStylesApp"), entry: true },
+      { name: "DisplayStylesWidget.tsx", import: import("!!raw-loader!./DisplayStylesWidget") },
       { name: "Styles.ts", import: import("!!raw-loader!./Styles") },
+      { name: "DisplayStyles.scss", import: import("!!raw-loader!./DisplayStyles.scss") },
     ],
     iModelList: [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium],
-    type: "DisplayStylesUI.tsx",
+    type: "DisplayStylesApp.tsx",
   });
 }

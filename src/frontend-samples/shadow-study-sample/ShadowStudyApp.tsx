@@ -3,42 +3,46 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import * as React from "react";
 import "common/samples-common.scss";
-import { DisplayStyle3dState, IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewSetup } from "api/viewSetup";
-import { ViewFlags } from "@bentley/imodeljs-common";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs-sandbox";
+import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
+import { ShadowStudyWidgetProvider } from "./ShadowStudyWidget";
+import ShadowStudyApi from "./ShadowStudyApi";
 
-export default class ShadowStudyApp {
+const uiProviders = [new ShadowStudyWidgetProvider()];
 
-  // updates the sun time for the current model
-  public static updateSunTime(time: number): void {
-    const vp: ScreenViewport | undefined = IModelApp.viewManager.selectedView;
+const ShadowStudyApp: React.FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Select iModel to change.", [SampleIModels.House, SampleIModels.MetroStation]);
+  const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
-    if (vp && vp.view.is3d()) {
-      const displayStyle: DisplayStyle3dState = vp.view.getDisplayStyle3d();
-      displayStyle.setSunTime(time);
-      vp.displayStyle = displayStyle;
-      vp.synchWithView();
-    }
-  }
-
-  /**
-   * Initialize the data view when a new iModel is loaded
-   */
-  public static getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
-    const viewState: ViewState = await ViewSetup.getDefaultView(imodel);
-    const vf: ViewFlags = viewState.viewFlags.clone();
-
-    if (viewState.is3d()) {
-      const viewStyle: DisplayStyle3dState = viewState.getDisplayStyle3d();
-      viewStyle.setSunTime(new Date().getTime());
-      viewState.displayStyle = viewStyle;
-    }
-
-    // we always want shadows
-    vf.shadows = true;
-    viewState.displayStyle.viewFlags = vf;
-
-    return viewState;
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ShadowStudyApi.getInitialView(iModelConnection);
+    setViewportOptions({ viewState });
   };
-}
+
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
+      }
+    </>
+  );
+
+};
+
+export default ShadowStudyApp;

@@ -12,13 +12,16 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
     label: "Screen-space Effects",
     image: "screen-space-effects-thumbnail.png",
     iModelList: [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "ScreenSpaceEffectsApp.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApp") },
-      { name: "ScreenSpaceEffectsUI.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsUI"), entry: true },
+      { name: "ScreenSpaceEffectsApi.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApi") },
+      { name: "ScreenSpaceEffectsApp.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApp"), entry: true },
+      { name: "ScreenSpaceEffectsWidget.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsWidget") },
       { name: "Effects.ts", import: import("!!raw-loader!./Effects") },
+      { name: "ScreenSpaceEffects.scss", import: import("!!raw-loader!./ScreenSpaceEffects.scss") },
     ],
-    type: "ScreenSpaceEffectsUI.tsx",
+    type: "ScreenSpaceEffectsApp.tsx",
   });
 }
 

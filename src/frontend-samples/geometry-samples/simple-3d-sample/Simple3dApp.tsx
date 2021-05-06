@@ -2,24 +2,45 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Angle, AngleSweep, Arc3d, Box, Cone, Point3d, Range3d, Sphere, TorusPipe } from "@bentley/geometry-core";
+import React, { FunctionComponent } from "react";
+import { Range3d } from "@bentley/geometry-core";
+import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
+import { Simple3dWidgetProvider } from "./Simple3dWidget";
+import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 
-export default class Simple3dApp {
+const uiProviders = [new Simple3dWidgetProvider()];
 
-  public static createCone(height: number, lowerRadius: number, upperRadius: number): Cone | undefined {
-    return Cone.createAxisPoints(Point3d.create(0, 0, 0), Point3d.create(0, 0, height), lowerRadius, upperRadius, true);
-  }
+const connection: BlankConnectionProps = {
+  name: "GeometryConnection",
+  location: Cartographic.fromDegrees(0, 0, 0),
+  extents: new Range3d(-30, -30, -30, 30, 30, 30),
+};
+const viewState: BlankConnectionViewState = {
+  displayStyle: { backgroundColor: ColorDef.white },
+  viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
+  setAllow3dManipulations: true,
+  lookAt: undefined,
+};
 
-  public static createSphere(radius: number): Sphere | undefined {
-    return Sphere.createCenterRadius(Point3d.create(0, 0, radius), radius);
-  }
+const Simple3dApp: FunctionComponent = () => {
+  useSampleWidget("Select a shape and adjust.", []);
 
-  public static createBox(length: number, width: number, height: number): Box | undefined {
-    return Box.createRange(new Range3d(0 - length / 2, 0 - width / 2, 0 / 2, 0 + length / 2, 0 + width / 2, height), true);
-  }
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      <BlankViewer
+        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        theme={"dark"}
+        defaultUiConfig={default3DSandboxUi}
+        viewStateOptions={viewState}
+        blankConnection={connection}
+        uiProviders={uiProviders}
+      />
+    </>
+  );
+};
 
-  public static createTorusPipe(outerRadius: number, innerRadius: number, sweep: number) {
-    return TorusPipe.createAlongArc(Arc3d.createXY(new Point3d(0, 0, innerRadius), outerRadius, AngleSweep.create(Angle.createDegrees(sweep))), innerRadius, false);
-  }
-
-}
+export default Simple3dApp;
