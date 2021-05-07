@@ -9,6 +9,19 @@ $viewport-height: 50%;
   width: 100%;
 }
 
+.sample-options {
+  color: var(--buic-foreground-body);
+  padding: 8px;
+}
+
+.sample-options-2col {
+  display: grid;
+  row-gap: 8px;
+  column-gap: 8px;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+}
+
 .active-viewport:after {
   content: "";
   box-shadow: inset 0 0 10px #A5D7F5;
