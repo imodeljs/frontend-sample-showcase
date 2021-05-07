@@ -8,7 +8,6 @@ import { TwoWayViewportSync, Viewport } from "@bentley/imodeljs-frontend";
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApi {
   public static twoWaySync: TwoWayViewportSync = new TwoWayViewportSync();
-  public static listenerCallbacks: Array<() => void> = [];
 
   /** Connects the views of the two provided viewports, overriding the second parameter's view with the first's view. */
   public static connectViewports(vp1: Viewport, vp2: Viewport) {
