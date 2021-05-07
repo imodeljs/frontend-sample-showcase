@@ -3,12 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-$viewport-height: 50%;
-
-%mutli-view-viewport {
-  width: 100%;
-}
-
 .sample-options {
   color: var(--buic-foreground-body);
   padding: 8px;
@@ -22,11 +16,10 @@ $viewport-height: 50%;
   align-items: center;
 }
 
-.active-viewport:after {
+.uifw-contentlayout-overlay-active:after {
   content: "";
   box-shadow: inset 0 0 10px #A5D7F5;
   pointer-events: none;
-  z-index: 49;
   position: absolute;
   left: 0px;
   top: 0px;
@@ -34,19 +27,7 @@ $viewport-height: 50%;
   bottom: 0px;
 }
 
-.active-viewport {
-  box-sizing: border-box;
-  border-color: #A5D7F5;
-  border-width: 2px;
-  border-style: solid;
-}
-
-.mutli-view-viewport-top {
-  @extend %mutli-view-viewport;
-  height: $viewport-height;
-}
-
-.mutli-view-viewport-bottom {
-  @extend %mutli-view-viewport;
-  height: 100% - $viewport-height;
+.uifw-contentlayout-overlay-active {
+  border-color: #A5D7F5 !important;
+  border-width: 2px !important;
 }

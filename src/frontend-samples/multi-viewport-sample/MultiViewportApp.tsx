@@ -9,6 +9,7 @@ import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
 import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import "./multi-view-sample.scss";
 
 const uiProviders = [new MultiViewportWidgetProvider()];
 let frontStages: ViewerFrontstage[] = [];
