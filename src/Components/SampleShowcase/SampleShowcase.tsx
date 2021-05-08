@@ -19,14 +19,18 @@ import "common/samples-common.scss";
 const Editor = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleEditor/SampleEditorContext"));
 const Visualizer = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleVisualizer/SampleVisualizer"));
 
+const getGalleryMinSize = () => {
+  return screen.width <= 768 ? screen.width * 0.2 : 200;
+};
+
 export const SampleShowcase: FunctionComponent = () => {
   const [activeSample, setActiveSample] = useState(() => new ActiveSample());
   const [scrollTo, setScrollTo] = useState(true);
-  const [showEditor, setShowEditor] = useState(true);
+  const [showEditor, setShowEditor] = useState(screen.width > 1024);
   const [showGallery, setShowGallery] = useState(true);
   const [transpileResult, setTranspileResult] = useState<string>();
   const [dragging, setDragging] = useState<boolean>(false);
-  let sizes: string[] = ["400px", "1", "200px"];
+  let sizes: string[] = ["362px", "1", `${getGalleryMinSize()}px`];
 
   const showcaseRef = React.createRef<HTMLDivElement>();
   const galleryRef = React.createRef<SampleGallery>();
@@ -53,17 +57,20 @@ export const SampleShowcase: FunctionComponent = () => {
   };
 
   const onSampleGallerySizeChange = (size: number) => {
-    if (size < 200 && showGallery) {
+    const minSize = getGalleryMinSize() - 1;
+    if (size < minSize && showGallery) {
       setShowGallery(false);
-    } else if (size >= 200 && !showGallery) {
+      document.dispatchEvent(new MouseEvent("mouseup"));
+    } else if (size >= minSize && !showGallery) {
       setShowGallery(true);
     }
   };
 
   const onEditorSizeChange = (size: number) => {
-    if (size < 400 && showEditor) {
+    if (size < 362 && showEditor) {
       setShowEditor(false);
-    } else if (size >= 400 && !showEditor) {
+      document.dispatchEvent(new MouseEvent("mouseup"));
+    } else if (size >= 362 && !showEditor) {
       setShowEditor(true);
     }
   };
@@ -86,7 +93,7 @@ export const SampleShowcase: FunctionComponent = () => {
   return (
     <div className="showcase" ref={showcaseRef}>
       <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)} onChange={(newSizes) => sizes = newSizes}>
-        <Pane className={editorClassName} snapSize="400px" disabled={!showEditor} size={showEditor ? "400px" : "0"} onChange={onEditorSizeChange}>
+        <Pane className={editorClassName} disabled={!showEditor} size={showEditor ? "362px" : "0"} onChange={onEditorSizeChange}>
           <React.Suspense fallback={spinner}>
             <Editor
               files={activeSample.getFiles}
@@ -97,8 +104,8 @@ export const SampleShowcase: FunctionComponent = () => {
               readme={activeSample.getReadme} />
           </React.Suspense>
         </Pane>
-        <Pane className="preview" minSize="500px">
-          {!showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-right"></span></Button>}
+        <Pane className="preview" minSize="462px">
+          {(screen.width > 1024 || (screen.width <= 1024 && !showGallery)) && screen.width > 768 && !showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-right"></span></Button>}
           {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={() => setShowEditor(!showEditor)}><span className="icon icon-chevron-left"></span></Button>}
           <div id="sample-container" className="sample-content" style={{ height: "100%" }}>
             <React.Suspense fallback={spinner}>
@@ -112,10 +119,10 @@ export const SampleShowcase: FunctionComponent = () => {
               </ErrorBoundary>
             </React.Suspense>
           </div>
-          {!showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-left"></span></Button>}
+          {(screen.width > 1024 || (screen.width <= 1024 && !showEditor)) && !showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-left"></span></Button>}
           {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={() => setShowGallery(!showGallery)}><span className="icon icon-chevron-right"></span></Button>}
         </Pane>
-        <Pane className={galleryClassName} snapSize="200px" maxSize="20%" disabled={!showGallery} size={showGallery ? "200px" : "0"} onChange={onSampleGallerySizeChange}>
+        <Pane className={galleryClassName} maxSize="20%" disabled={!showGallery} size={showGallery ? "200px" : "0"} onChange={onSampleGallerySizeChange}>
           <SampleGallery
             group={activeSample.group}
             style={{ minWidth: galleryMinSize }}
