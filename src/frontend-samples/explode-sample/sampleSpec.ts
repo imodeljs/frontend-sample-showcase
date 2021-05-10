@@ -11,13 +11,16 @@ export function getExplodeSpec(): SampleSpec {
     name: "explode-sample",
     label: "Exploded View",
     image: "exploded-view-thumbnail.png",
-    readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [SampleIModels.House],
+    iTwinViewerReady: true,
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp") },
-      { name: "ExplodeUI.tsx", import: import("!!raw-loader!./ExplodeUI"), entry: true },
+      { name: "ExplodeApi.ts", import: import("!!raw-loader!./ExplodeApi") },
+      { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp"), entry: true },
+      { name: "ExplodeWidget.tsx", import: import("!!raw-loader!./ExplodeWidget") },
       { name: "ExplodeTile.ts", import: import("!!raw-loader!./ExplodeTile") },
+      { name: "Explode.scss", import: import("!!raw-loader!./Explode.scss") },
     ],
-    type: "ExplodeUI.tsx",
+    type: "ExplodeApp.tsx",
   });
 }
