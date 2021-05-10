@@ -108,7 +108,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
 
-        // The API has a 'current' state because this animate function cannont be tied to a useState variable or it will become stale.
+        // The API has a 'current' state because this animate function cannot be tied to a useState variable or it will become stale.
         // The simplest solution was to introduce a static variable in the API but this could be kept in an object instead.
         ExplodeApi.explodeAttributes.current = newFactor;
         setExplodeFactor(newFactor);
