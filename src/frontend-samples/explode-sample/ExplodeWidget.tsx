@@ -44,6 +44,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
     };
   }, []);
 
+  /** Populates the element ids of objects defined by category codes on iModel connect. */
   useEffect(() => {
     if (iModelConnection) {
       populateObjects(iModelConnection).then(() => {
@@ -52,9 +53,12 @@ const ExplodeWidget: React.FunctionComponent = () => {
     }
   }, [iModelConnection]);
 
+  /** Causes the exploded view */
   useEffect(() => {
-    if (viewport)
+    if (viewport) {
+      ExplodeApi.explodeAttributes.current = explodeFactor;
       ExplodeApi.refSetData(viewport, object.name, object.elementIds, explodeFactor);
+    }
   }, [explodeFactor, object.elementIds, object.name, viewport]);
 
   useEffect(() => {
@@ -100,9 +104,11 @@ const ExplodeWidget: React.FunctionComponent = () => {
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
 
-        // Side effects of updating the state are disabled.
+        // The API has a 'current' state because this animate function cannont be tied to a useState variable or it will become stale.
+        // The simplest solution was to introduce a static variable in the API but this could be kept in an object instead.
         ExplodeApi.explodeAttributes.current = newFactor;
         setExplodeFactor(newFactor);
+
         return false;
       },
       // Will be called if the animations is interrupt (e.g. the camera is moved)
