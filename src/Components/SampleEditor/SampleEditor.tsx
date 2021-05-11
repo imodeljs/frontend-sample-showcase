@@ -81,7 +81,6 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
 
   const drawerMinSize = showReadme ? "0" : "35px";
   const drawerSize = !showReadme ? displayDrawer ? "200px" : "35px" : "0";
-  const style = props.style;
 
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
@@ -89,7 +88,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   };
 
   return (
-    <div className="sample-editor-container" style={style}>
+    <div className="sample-editor-container">
       <SplitScreen split="horizontal">
         <Pane className="sample-editor">
           <TabNavigation onRunCompleted={props.onTranspiled} showReadme={showReadme} onShowReadme={onShowReadme} />
