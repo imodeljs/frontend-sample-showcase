@@ -86,7 +86,7 @@ export class FloatingWidgets implements IDisposable {
         frontstage.floatWidget(widget.id, widget.point, widget.size);
       });
     }
-  }, 100);
+  }, 300);
 
   private _getOverrideWidgetComponent = (id: string, content: () => any) => {
     // eslint-disable-next-line react/display-name
