@@ -21,42 +21,46 @@ interface Sizes {
   maxGallerySize: number;
 }
 
+const calculateSizes = (width: number) => {
+  if (width >= 1024) {
+    return {
+      editorSize: Math.floor(width * 0.33),
+      gallerySize: 200,
+      minPreviewSize: 400,
+      maxGallerySize: 20,
+    };
+  } else if (width < 1024 && width >= 768) {
+    return {
+      editorSize: Math.floor(width * 0.5),
+      gallerySize: Math.floor(width * 0.2),
+      minPreviewSize: Math.floor(width * 0.33),
+      maxGallerySize: 30,
+    };
+  } else if (width < 768 && width >= 576) {
+    return {
+      editorSize: Math.floor(width * 0.5),
+      gallerySize: 150,
+      minPreviewSize: Math.floor(width * 0.33),
+      maxGallerySize: 30,
+    };
+  } else {
+    return {
+      editorSize: width,
+      gallerySize: width,
+      minPreviewSize: width,
+      maxGallerySize: 100,
+    };
+  }
+};
+
 export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneProps> = ({ width, editor, visualizer, gallery }) => {
-  const [sizes, setSizes] = useState<Sizes>();
-  const [showEditor, setShowEditor] = useState(width > 1024);
-  const [showGallery, setShowGallery] = useState(width > 576);
+  const [sizes, setSizes] = useState<Sizes>(calculateSizes(width));
+  const [showEditor, setShowEditor] = useState(width >= 1024);
+  const [showGallery, setShowGallery] = useState(width >= 576);
   const [dragging, setDragging] = useState<boolean>(false);
 
   useEffect(() => {
-    if (width >= 1024) {
-      setSizes({
-        editorSize: Math.floor((width - 300) * 0.5),
-        gallerySize: 200,
-        minPreviewSize: 400,
-        maxGallerySize: 20,
-      });
-    } else if (width < 1024 && width >= 768) {
-      setSizes({
-        editorSize: Math.floor(width * 0.5),
-        gallerySize: Math.floor(width * 0.2),
-        minPreviewSize: Math.floor(width * 0.33),
-        maxGallerySize: 30,
-      });
-    } else if (width < 768 && width >= 576) {
-      setSizes({
-        editorSize: Math.floor(width * 0.5),
-        gallerySize: 150,
-        minPreviewSize: Math.floor(width * 0.33),
-        maxGallerySize: 30,
-      });
-    } else {
-      setSizes({
-        editorSize: width,
-        gallerySize: width,
-        minPreviewSize: width,
-        maxGallerySize: 100,
-      });
-    }
+    setSizes(calculateSizes(width));
   }, [width]);
 
   const editorClassName = ["editor-pane"];
