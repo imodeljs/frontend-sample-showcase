@@ -65,7 +65,7 @@ export class FloatingWidgets implements IDisposable {
     });
   };
 
-  private _handleResize = async (dimensions: DOMRectReadOnly) => {
+  private _handleResize = debounce(async (dimensions: DOMRectReadOnly) => {
     const frontstage = FrontstageManager.activeFrontstageDef;
     if (frontstage) {
       frontstage.restoreLayout();
@@ -86,7 +86,7 @@ export class FloatingWidgets implements IDisposable {
         frontstage.floatWidget(widget.id, widget.point, widget.size);
       });
     }
-  };
+  }, 300);
 
   private _getOverrideWidgetComponent = (id: string, content: () => any) => {
     // eslint-disable-next-line react/display-name
@@ -202,4 +202,14 @@ class ProviderManager {
   public get overrideProviderIds() {
     return new Set([...this._providers.values()].map((provider) => provider.id));
   }
+}
+
+export function debounce<Params extends unknown[]>(func: (...args: Params) => unknown, timeout: number): (...args: Params) => void {
+  let timer: NodeJS.Timeout;
+  return (...args: Params) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func(...args);
+    }, timeout);
+  };
 }
