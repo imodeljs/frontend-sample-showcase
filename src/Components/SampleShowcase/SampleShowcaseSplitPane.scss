@@ -1,0 +1,70 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+.preview {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.mobile-visible {
+  position: absolute;
+  height: 100%;
+  z-index: 9000;
+  width: 100% !important;
+}
+
+.gallery-pane,
+.editor-pane {
+  &.dragging {
+    transition: none;
+  }
+}
+
+.editor-pane {
+  background-color: #1e1e1e;
+}
+
+.show-panel,
+.hide-panel {
+  box-shadow: 1px 5px 0px rgba(0, 0, 0, 0.25) !important;
+  position: absolute;
+  top: 50%;
+  z-index: 99999;
+  padding-left: 1px !important;
+  padding-right: 1px !important;
+}
+
+.show-panel:hover {
+  padding-left: 1em !important;
+  padding-right: 1em !important;
+}
+
+.show-panel:hover span {
+  display: none !important;
+}
+
+.show-code-button {
+  left: 0px !important;
+}
+
+.show-code-button:hover:before {
+  content: "Explore Code" !important;
+}
+
+.show-gallery-button {
+  right: 0px !important;
+}
+
+.show-gallery-button:hover:before {
+  content: "Explore Samples" !important;
+}
+
+.hide-code-button {
+  left: 0 !important;
+}
+
+.hide-gallery-button {
+  right: 0px !important;
+}
