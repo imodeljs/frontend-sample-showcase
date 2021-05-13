@@ -3,8 +3,8 @@ import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framew
 import { SpatialClassificationProps } from "@bentley/imodeljs-common";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { KeySet } from "@bentley/presentation-common";
-import { Button, Input, Select } from "@bentley/ui-core";
-import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { Input, Select } from "@bentley/ui-core";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import ClassifierApi from "./ClassifierApi";
 import { ClassifierProperties } from "./ClassifierProperties";
