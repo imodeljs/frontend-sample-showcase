@@ -5,7 +5,7 @@
 
 import React, { FunctionComponent } from "react";
 import { SampleShowcase } from "Components/SampleShowcase/SampleShowcase";
-import SearchIndex from "SearchIndex";
+import SearchIndex from "Components/Search/SearchIndex";
 
 export const App: FunctionComponent = () => {
 

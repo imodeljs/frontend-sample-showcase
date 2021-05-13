@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { sampleManifest } from "./sampleManifest";
+import { sampleManifest } from "../../sampleManifest";
 
 class SearchIndex extends Component {
 
