@@ -12,3 +12,8 @@ export enum SampleIModels {
   ExtonCampus = "Exton Campus",
   Villa = "Villa",
 }
+
+export interface SampleIModelWithAlternativeName {
+  context: SampleIModels;
+  imodel: string;
+}

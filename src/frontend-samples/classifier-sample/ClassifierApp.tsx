@@ -2,106 +2,63 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useState } from "react";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { ClassifierWidgetProvider } from "./ClassifierWidget";
+import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@bentley/geometry-core";
 
-import "common/samples-common.scss";
-import { ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassificationProps } from "@bentley/imodeljs-common";
-import { ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
-import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
+const uiProviders = [new ClassifierWidgetProvider()];
 
-export default class ClassifierApp {
-  private static _selectionListener: SelectionChangesListener;
+const ClassifierApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [{ context: SampleIModels.MetroStation, imodel: "Philadelphia" }]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  public static removeSelectionListener() {
-    Presentation.selection.selectionChange.removeListener(this._selectionListener);
-  }
+  /** This callback will be executed by SandboxViewport to initialize the ViewState.
+ * Set up camera looking at Rittenhouse Square.
+ */
+  const getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(imodel);
 
-  public static addSelectionListener(listener: SelectionChangesListener) {
-    this._selectionListener = listener;
-    Presentation.selection.selectionChange.addListener(this._selectionListener);
-  }
-
-  public static async turnOnAvailableRealityModel(viewPort: ScreenViewport, imodel: IModelConnection) {
-    const style = viewPort.displayStyle.clone();
-
-    // Get first available reality models and attach them to displayStyle
-    const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
-    for (const crmProp of availableModels) {
-      style.attachRealityModel(crmProp);
-      viewPort.displayStyle = style;
-      break;
+    if (viewState.is3d()) {
+      viewState.setFocusDistance(375);
+      viewState.setRotation(YawPitchRollAngles.createDegrees(30, -35.2, -44).toMatrix3d());
+      viewState.setEyePoint(Point3d.create(-1141.7, -1048.9, 338.3));
+      viewState.setLensAngle(Angle.createRadians(58.5));
     }
-  }
 
-  /**
-   * Query the iModel to get available spatial classifiers.
-   * Also do a custom sort and filtering for the purposes of this sample.
-   */
-  public static async getAvailableClassifierListForViewport(vp?: Viewport): Promise<{ [key: string]: string }> {
-    const models: { [key: string]: string } = {};
-    if (!vp || !(vp.view instanceof SpatialViewState))
-      return Promise.resolve(models);
+    viewState.setOrigin(Point3d.create(-1270.3, -647.2, -38.9));
+    viewState.setExtents(new Vector3d(750, 393, 375));
 
-    const modelQueryParams: ModelQueryParams = {
-      from: SpatialModelState.classFullName,
-      wantPrivate: false,
-    };
+    return viewState;
+  };
 
-    let curModelProps: ModelProps[] = new Array<ModelProps>();
-    curModelProps = await vp.iModel.models.queryProps(modelQueryParams);
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await getClassifierView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
-    // Custom sort to put 'Commercial' first. It makes the best default example.
-    curModelProps = curModelProps.sort((a, b) => {
-      if (b.name?.includes("Commercial"))
-        return 1;
-      if (a.name?.includes("Commercial"))
-        return -1;
-      return a.name!.localeCompare(b.name!);
-    });
-
-    // Filter out models that are not classifiers and form {[key: string]: string } object
-    for (const modelProps of curModelProps) {
-      if (modelProps.id && modelProps.name !== "PhiladelphiaClassification" && modelProps.name !== "Philadelphia_Pictometry") {
-        const modelId = modelProps.id;
-        const name = modelProps.name ? modelProps.name : modelId;
-        models[modelId] = name.substring(0, name.indexOf(","));
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
       }
-    }
+    </>
+  );
 
-    return Promise.resolve(models);
-  }
+};
 
-  // Update the classifier in the ViewPort
-  public static updateRealityDataClassifiers(vp: ScreenViewport, classifier: SpatialClassificationProps.Classifier) {
-    // Get the first reality model in the view
-    const existingRealityModels: ContextRealityModelState[] = [];
-    vp.displayStyle.forEachRealityModel(
-      (modelState: ContextRealityModelState) =>
-        existingRealityModels.push(modelState),
-    );
-    const realityModel = existingRealityModels[0];
-
-    // Loop through all classifiers in the reality model.
-    // If the classifier exists, update it with classifier properties
-    // If the classifier is not found, add it to realityModel.classifiers
-    let existingClassifier: boolean = false;
-    if (realityModel && realityModel.classifiers) {
-      Array.from(realityModel.classifiers).forEach((storedClassifier) => {
-        if (classifier.name === storedClassifier.name) {
-          existingClassifier = true;
-          storedClassifier.name = classifier.name;
-          storedClassifier.expand = classifier.expand;
-          storedClassifier.flags = classifier.flags;
-          storedClassifier.modelId = classifier.modelId;
-        }
-      });
-
-      if (!existingClassifier)
-        realityModel.classifiers.push(classifier);
-
-      realityModel.classifiers.active = classifier;
-      vp.invalidateScene();
-
-      return;
-    }
-  }
-}
+export default ClassifierApp;
