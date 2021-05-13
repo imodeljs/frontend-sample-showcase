@@ -11,6 +11,7 @@ class MarkerHandler extends SectionMarkerHandler {
   private _activeMarker?: SectionMarker;
 
   public readonly onActiveMarkerChanged = new BeEvent<(activeMarker: SectionMarker | undefined) => void>();
+  public readonly onToolbarCommand = new BeEvent<(commandId: string, prevMarker: SectionMarker | undefined) => void>();
 
   public async activateMarker(marker: SectionMarker, decorator: HyperModelingDecorator): Promise<boolean> {
     const activated = await super.activateMarker(marker, decorator);
@@ -41,6 +42,12 @@ class MarkerHandler extends SectionMarkerHandler {
     // One of the section drawings in the source model is bad - hide it.
     return marker.state.id !== "0x170c" && super.isMarkerVisible(marker, decorator, config);
   }
+
+  public async executeCommand(commandId: string, marker: SectionMarker, decorator: HyperModelingDecorator) {
+    this.onToolbarCommand.raiseEvent(commandId, this._activeMarker);
+    this.setActiveMarker(marker);
+    super.executeCommand(commandId, marker, decorator);
+  }
 }
 
 export default class HyperModelingApi {
@@ -55,7 +62,6 @@ export default class HyperModelingApi {
 
     // Turn on hypermodeling for the viewport.
     await HyperModeling.startOrStop(viewport, true);
-
     HyperModelingApi.onReady.raiseEvent();
   }
 
@@ -84,16 +90,18 @@ export default class HyperModelingApi {
   }
 
   /** Restore a 3d view and activate the specified section marker. */
-  public static async switchTo3d(viewport: ScreenViewport, view: ViewState, activeMarkerId: Id64String): Promise<void> {
+  public static async switchTo3d(viewport: ScreenViewport, view: ViewState, activeMarkerId?: Id64String): Promise<void> {
     viewport.changeView(view);
     const decorator = await HyperModeling.startOrStop(viewport, true);
     if (!decorator)
       return;
 
-    for (const marker of decorator.markers.markers) {
-      if (marker.state.id === activeMarkerId) {
-        decorator.setActiveMarker(marker);
-        break;
+    if (activeMarkerId) {
+      for (const marker of decorator.markers.markers) {
+        if (marker.state.id === activeMarkerId) {
+          decorator.setActiveMarker(marker);
+          break;
+        }
       }
     }
   }
