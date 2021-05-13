@@ -3,7 +3,7 @@ import { sampleManifest } from "./sampleManifest";
 
 class SearchIndex extends Component {
 
-  newMap = sampleManifest.map(group => {
+  sampleIndexMetadata = sampleManifest.map(group => {
     const sampleIndex: any = [];
 
     group.samples.forEach((sample) => {
@@ -21,10 +21,10 @@ class SearchIndex extends Component {
     return sampleIndex;
   });
 
-  merged = [].concat.apply([], this.newMap);
+  mergedSampleIndexMetadata = [].concat.apply([], this.sampleIndexMetadata);
 
   render() {
-    return (<div id="searchIndex">{JSON.stringify(this.merged)}</div>)
+    return (<div id="searchIndex">{JSON.stringify(this.mergedSampleIndexMetadata)}</div>)
   }
 }
 
