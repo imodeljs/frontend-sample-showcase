@@ -4,26 +4,35 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { useCallback } from "react";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { isSampleIModelWithAlternativeName, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
 
 const getiModelParam = () => {
   const params = new URLSearchParams(window.location.search);
   const imodel = params.get("imodel") ?? undefined;
+  const context = params.get("context") ?? undefined;
+  if (context && imodel) {
+    return { context, imodel } as SampleIModelWithAlternativeName;
+  }
   return imodel as SampleIModels | undefined;
 };
 
-const updateiModelParam = (imodel?: string) => {
+const updateiModelParam = (imodel?: string, context?: string) => {
   const params = new URLSearchParams(window.location.search);
 
-  if (imodel) {
-    if (params.has("imodel")) {
-      params.set("imodel", imodel);
+  const setOrDeleteParam = (name: string, value?: string) => {
+    if (value) {
+      if (params.has(name)) {
+        params.set(name, value);
+      } else {
+        params.append(name, value);
+      }
     } else {
-      params.append("imodel", imodel);
+      params.delete(name);
     }
-  } else {
-    params.delete("imodel");
-  }
+  };
+
+  setOrDeleteParam("context", context);
+  setOrDeleteParam("imodel", imodel);
 
   // Detect if editor was enabled in URL params as a semi-backdoor, this
   // bypasses the ld feature flag
@@ -38,12 +47,16 @@ const updateiModelParam = (imodel?: string) => {
   }
 };
 
-export type setSampleIModelParam = (iModel?: SampleIModels) => void;
+export type setSampleIModelParam = (iModel?: (SampleIModels | SampleIModelWithAlternativeName)) => void;
 
-export const useSampleIModelParameter = (): [SampleIModels | undefined, setSampleIModelParam] => {
+export const useSampleIModelParameter = (): [(SampleIModels | SampleIModelWithAlternativeName) | undefined, setSampleIModelParam] => {
 
-  const setiModelParam = useCallback((imodel?: SampleIModels) => {
-    updateiModelParam(imodel);
+  const setiModelParam = useCallback((imodel?: (SampleIModels | SampleIModelWithAlternativeName)) => {
+    if (isSampleIModelWithAlternativeName(imodel)) {
+      updateiModelParam(imodel.imodel, imodel.context);
+    } else {
+      updateiModelParam(imodel);
+    }
   }, []);
 
   return [getiModelParam(), setiModelParam];

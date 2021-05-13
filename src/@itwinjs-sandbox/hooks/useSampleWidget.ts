@@ -14,7 +14,6 @@ import { FloatingWidgets } from "@itwinjs-sandbox/hooks/FloatingWidget";
 import { useEffect } from "react";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
 
-// iModelList?: SampleIModels[] | {context: SampleIModels, imodel: string}[]
 export const useSampleWidget = (instructions: string, iModelList: (SampleIModels | SampleIModelWithAlternativeName)[] = defaultIModelList): SampleIModelInfo | undefined => {
   const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(iModelList);
 

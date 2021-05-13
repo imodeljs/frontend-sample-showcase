@@ -10,7 +10,7 @@ import { Select } from "@bentley/ui-core/lib/ui-core/select/Select";
 // The Props and State for this sample component
 interface IModelSelectorProps {
   iModelNames: (SampleIModels | SampleIModelWithAlternativeName)[];
-  iModelName?: SampleIModels;
+  iModelName?: string;
   onIModelChange: (iModelName: SampleIModels) => void;
 }
 
