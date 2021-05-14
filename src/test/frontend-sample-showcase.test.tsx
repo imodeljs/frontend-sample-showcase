@@ -15,7 +15,6 @@ import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyA
 import ThematicDisplayApi from "../frontend-samples/thematic-display-sample/ThematicDisplayApi";
 import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApi";
 import { TestUtilities } from "./utils/testUtilities";
-import ClassifierApp from "frontend-samples/classifier-sample/ClassifierApp";
 import ClassifierApi from "frontend-samples/classifier-sample/ClassifierApi";
 
 describe("View Clipping Sample", () => {
