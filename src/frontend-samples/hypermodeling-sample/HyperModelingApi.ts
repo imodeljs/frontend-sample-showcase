@@ -11,7 +11,7 @@ class MarkerHandler extends SectionMarkerHandler {
   private _activeMarker?: SectionMarker;
 
   public readonly onActiveMarkerChanged = new BeEvent<(activeMarker: SectionMarker | undefined) => void>();
-  public readonly onToolbarCommand = new BeEvent<(commandId: string, prevMarker: SectionMarker | undefined) => void>();
+  public readonly onToolbarCommand = new BeEvent<(prevMarker: SectionMarker | undefined) => void>();
 
   public async activateMarker(marker: SectionMarker, decorator: HyperModelingDecorator): Promise<boolean> {
     const activated = await super.activateMarker(marker, decorator);
@@ -44,8 +44,9 @@ class MarkerHandler extends SectionMarkerHandler {
   }
 
   public async executeCommand(commandId: string, marker: SectionMarker, decorator: HyperModelingDecorator) {
-    this.onToolbarCommand.raiseEvent(commandId, this._activeMarker);
-    this.setActiveMarker(marker);
+    if (commandId !== "apply_view") {
+      this.onToolbarCommand.raiseEvent(this._activeMarker);
+    }
     super.executeCommand(commandId, marker, decorator);
   }
 }
@@ -53,6 +54,7 @@ class MarkerHandler extends SectionMarkerHandler {
 export default class HyperModelingApi {
   public static markerHandler = new MarkerHandler();
   public static onReady = new BeEvent();
+  public static ready = false;
 
   /** Turn on hyper-modeling for the viewport. */
   public static async enableHyperModeling(viewport: ScreenViewport) {
@@ -62,6 +64,7 @@ export default class HyperModelingApi {
 
     // Turn on hypermodeling for the viewport.
     await HyperModeling.startOrStop(viewport, true);
+    HyperModelingApi.ready = true;
     HyperModelingApi.onReady.raiseEvent();
   }
 

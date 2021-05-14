@@ -41,11 +41,9 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
           removeListeners.push(HyperModelingApi.markerHandler.onActiveMarkerChanged.addListener((marker) => {
             setActiveMarker(marker);
           }));
-          removeListeners.push(HyperModelingApi.markerHandler.onToolbarCommand.addListener((commandId, prevMarker) => {
-            if (commandId !== "apply_view") {
-              const view = viewport.view;
-              setPrevious({ view, markerId: prevMarker?.state.id });
-            }
+          removeListeners.push(HyperModelingApi.markerHandler.onToolbarCommand.addListener((prevMarker) => {
+            const view = viewport.view;
+            setPrevious({ view, markerId: prevMarker?.state.id });
           }));
         });
       return () => {
@@ -69,14 +67,13 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
     }
   };
 
-  const onClickSwitchTo2d = useCallback(async (which: "sheet" | "drawing") => {
-    const marker = activeMarker;
+  const onClickSwitchTo2d = useCallback(async (which: "sheet" | "drawing", marker: SectionMarker | undefined) => {
     assert(undefined !== viewport && undefined !== marker);
 
     const view = viewport.view;
     if (await HyperModelingApi.switchTo2d(viewport, marker, which))
       setPrevious({ view, markerId: marker.state.id });
-  }, [activeMarker, viewport]);
+  }, [viewport]);
 
   const onToggle2dGraphics = useCallback((toggle: boolean) => {
     if (viewport) {
@@ -86,12 +83,12 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
   }, [viewport]);
 
   const switchToDrawingView = useCallback(async () => {
-    return onClickSwitchTo2d("drawing");
-  }, [onClickSwitchTo2d]);
+    return onClickSwitchTo2d("drawing", activeMarker);
+  }, [onClickSwitchTo2d, activeMarker]);
 
   const switchToSheetView = useCallback(async () => {
-    return onClickSwitchTo2d("sheet");
-  }, [onClickSwitchTo2d]);
+    return onClickSwitchTo2d("sheet", activeMarker);
+  }, [onClickSwitchTo2d, activeMarker]);
 
   return (
     <div className="sample-options">
