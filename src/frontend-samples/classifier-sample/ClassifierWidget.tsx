@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
 import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
 import { SpatialClassificationProps } from "@bentley/imodeljs-common";
@@ -42,6 +46,7 @@ const ClassifierWidget: React.FunctionComponent = () => {
       ClassifierApi.addSelectionListener(_onSelectionChanged);
     }
 
+    /** Turn on RealityData and initalize the classifierState */
     if (!initalized && viewport && iModelConnection) {
       ClassifierApi.turnOnAvailableRealityModel(viewport, iModelConnection).then(() => {
         ClassifierApi.getAvailableClassifierListForViewport(viewport).then((classifiers) => {
@@ -54,6 +59,7 @@ const ClassifierWidget: React.FunctionComponent = () => {
       setInitalized(true);
     }
 
+    /** On Widget deleteion, remove the selection listener */
     return () => {
       ClassifierApi.removeSelectionListener();
     };
@@ -87,6 +93,7 @@ const ClassifierWidget: React.FunctionComponent = () => {
     }
   }, [classifierState, getClassifierValues]);
 
+  /** When the user selects an element, grab the keys */
   const _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
     const keys = new KeySet(selection);
