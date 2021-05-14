@@ -16,6 +16,7 @@ import ThematicDisplayApi from "../frontend-samples/thematic-display-sample/Them
 import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApi";
 import { TestUtilities } from "./utils/testUtilities";
 import ClassifierApp from "frontend-samples/classifier-sample/ClassifierApp";
+import ClassifierApi from "frontend-samples/classifier-sample/ClassifierApi";
 
 describe("View Clipping Sample", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
@@ -201,7 +202,7 @@ describe("Classifers", () => {
       flags.inside = SpatialClassificationProps.Display.On;
       flags.outside = SpatialClassificationProps.Display.Dimmed;
       const testClassifier: SpatialClassificationProps.Properties = { isActive: true, modelId: "TestId", expand: 1, name: "Test Name", flags };
-      ClassifierApp.updateRealityDataClassifiers(vp, testClassifier);
+      ClassifierApi.updateRealityDataClassifiers(vp, testClassifier);
       const style = vp.displayStyle.clone();
       style.forEachRealityModel(
         (model) => {
