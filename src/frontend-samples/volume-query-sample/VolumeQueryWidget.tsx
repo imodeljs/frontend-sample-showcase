@@ -204,7 +204,6 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
     setClassifiedElementsColors(previousColors);
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <div className="sample-options">
       <div style={{ maxWidth: "340px" }} >

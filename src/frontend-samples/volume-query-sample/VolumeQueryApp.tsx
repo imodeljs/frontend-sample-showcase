@@ -13,7 +13,7 @@ import { VolumeQueryApi } from "./VolumeQueryApi";
 const uiProviders = [new VolumeQueryWidgetProvider()];
 
 const VolumeQueryApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.RetailBuilding]);
+  const sampleIModelInfo = useSampleWidget("Use the controls below to query and color spatial elements in the iModel using a volume box.", [SampleIModels.RetailBuilding]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
