@@ -44,6 +44,9 @@ class MarkerHandler extends SectionMarkerHandler {
   }
 
   public async executeCommand(commandId: string, marker: SectionMarker, decorator: HyperModelingDecorator) {
+    // We are overriding the executeCommand method to support the HyperModeling Widget.
+    // By default, the view is already using a spatial view and decorators only appear in the spatial view. We don't have to raise an event when the spatial command is used.
+    // Instead, we want to raise an event when we enter a sheet or drawing view to ensure we can return to a spatial view.
     if (commandId !== "apply_view") {
       this.onToolbarCommand.raiseEvent(this._activeMarker);
     }
