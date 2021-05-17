@@ -1,58 +1,62 @@
-import React, { useCallback, useEffect } from "react";
-import { ModalDialogManager, useActiveIModelConnection } from "@bentley/ui-framework";
+import React, { useEffect } from "react";
+import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import ClashReviewApi from "./ClashReviewApi";
 import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
-import { Button, ButtonSize, ButtonType, Dialog, DialogAlignment, Toggle } from "@bentley/ui-core";
+import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import "./ClashReview.scss";
-import { ClashReviewTable } from "./ClashReviewTableWidget";
 
 const ClashReviewWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [applyZoom, setApplyZoom] = React.useState<boolean>(true);
   const [showDecorator, setShowDecorator] = React.useState<boolean>(true);
-  //const [clashData, setClashData] = React.useState<any>();
+  const [clashData, setClashData] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>([]);
   const [initalized, setInitalized] = React.useState<boolean>(false);
 
-  const _openDialog = useCallback(() => {
-    ModalDialogManager.openDialog(
-      <Dialog
-        opened={true}
-        modal={false}
-        width={"100%"}
-        height={200}
-        alignment={DialogAlignment.Bottom}
-      >
-        <ClashReviewTable clashData={undefined} />
-      </Dialog>);
-  }, []);
-
-  const _handleDialogClose = () => {
-    ModalDialogManager.closeDialog();
-  };
-
   useEffect(() => {
-    if (!initalized) {
-      //_openDialog();
+    let removeListener: () => void;
+    if (!initalized && iModelConnection) {
+      removeListener = ClashReviewApi.onClashDataChanged.addListener((data: any) => {
+        setClashData(data);
+      });
+
+      /** Initalize the marker pin svg icons on screen */
       ClashReviewApi._images = new Map();
       imageElementFromUrl(".\\clash_pin.svg").then((image) => {
         ClashReviewApi._images.set("clash_pin.svg", image);
       });
+
+      /** Get the clash data */
+      ClashReviewApi.setClashData(iModelConnection.contextId!);
       setInitalized(true);
     }
     return () => {
+      if (removeListener)
+        removeListener();
       ClashReviewApi.disableDecorations();
       ClashReviewApi.resetDisplay();
     };
-  }, [_openDialog, iModelConnection, initalized]);
+  }, [iModelConnection, initalized]);
+
+  useEffect(() => {
+    if (iModelConnection && clashData) {
+      ClashReviewApi.getClashMarkersData(iModelConnection, clashData).then((mData) => {
+        setMarkersData(mData);
+      });
+    }
+  }, [iModelConnection, clashData]);
 
   useEffect(() => {
     if (ClashReviewApi.decoratorIsSetup())
       ClashReviewApi.setDecoratorPoints(markersData);
     else {
       ClashReviewApi.setupDecorator(markersData);
+      // Automatically visualize first clash
+      if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
+        ClashReviewApi.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
+      }
     }
   }, [markersData]);
 

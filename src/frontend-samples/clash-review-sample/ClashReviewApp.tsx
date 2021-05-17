@@ -8,15 +8,13 @@ import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { ClashReviewWidgetProvider } from "./ClashReviewWidget";
-import { Spinner, SpinnerSize } from "@bentley/ui-core";
-import { ClashReviewTable } from "./ClashReviewTableWidget";
+import { ClashReviewTableWidgetProvider } from "./ClashReviewTableWidget";
 
-const uiProviders = [new ClashReviewWidgetProvider()];
+const uiProviders = [new ClashReviewWidgetProvider(), new ClashReviewTableWidgetProvider()];
 
 const ClashReviewApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to review clashes.", [SampleIModels.BayTown]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
-  const [clashData, setClashData] = React.useState<any>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
@@ -31,29 +29,20 @@ const ClashReviewApp: FunctionComponent = () => {
 
   return (
     <>
-      <div className="app-content">
-        <div className="top">
-          {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
-            <Viewer
-              productId="2686"
-              contextId={sampleIModelInfo.contextId}
-              iModelId={sampleIModelInfo.iModelId}
-              authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-              viewportOptions={viewportOptions}
-              defaultUiConfig={default2DSandboxUi}
-              onIModelConnected={_oniModelReady}
-              uiProviders={uiProviders}
-              theme="dark"
-            />
-          }
-        </div>
-        <div className="bottom">
-          {clashData === undefined ?
-            (<div ><Spinner size={SpinnerSize.Small} /> Calling API...</div>) :
-            (<ClashReviewTable clashData={clashData} />)}
-        </div>
-      </div>
       { /* Viewport to display the iModel */}
+      {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          productId="2686"
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          defaultUiConfig={default2DSandboxUi}
+          onIModelConnected={_oniModelReady}
+          uiProviders={uiProviders}
+          theme="dark"
+        />
+      }
     </>
   );
 };

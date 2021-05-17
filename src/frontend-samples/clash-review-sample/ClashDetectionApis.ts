@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@bentley/bentleyjs-core";
-import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
+import { AuthorizedClientRequestContext, IncludePrefix, request, RequestOptions, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { IModelHubClient, VersionQuery } from "@bentley/imodelhub-client";
-import { NoSignInIAuthClient } from "NoSignInIAuthClient";
+import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export default class ClashDetectionApis {
 
@@ -44,12 +44,10 @@ export default class ClashDetectionApis {
       return undefined;
 
     const url = `https://api.bentley.com/projects/${projectId}/validation/runs`;
-    const options = {
+    const options: RequestOptions = {
       method: "GET",
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         Prefer: "return=representation",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
     };
@@ -141,7 +139,7 @@ export default class ClashDetectionApis {
 
   private static async getAccessToken() {
     try {
-      return (IModelApp.authorizationClient as NoSignInIAuthClient).getDevAccessToken();
+      return (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
     } catch (e) {
       return undefined;
     }

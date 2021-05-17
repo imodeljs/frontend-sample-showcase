@@ -1,17 +1,35 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { Spinner, SpinnerSize } from "@bentley/ui-core";
-import { PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import ClashReviewApi from "./ClashReviewApi";
+import { useActiveIModelConnection } from "@bentley/ui-framework";
 
-export interface ClashReviewTableProps {
-  clashData?: any;
-}
+const ClashReviewTableWidget: React.FunctionComponent = () => {
+  const iModelConnection = useActiveIModelConnection();
+  const [clashData, setClashData] = React.useState<any>();
 
-export const ClashReviewTable: React.FunctionComponent<ClashReviewTableProps> = ({ clashData }) => {
+  useEffect(() => {
+    const removeListener = ClashReviewApi.onClashDataChanged.addListener((data: any) => {
+      console.log("setting clash data");
+      setClashData(data);
+    });
 
-  const _getDataProvider = (): SimpleTableDataProvider => {
+    if (iModelConnection) {
+      console.log(iModelConnection);
+      ClashReviewApi.setClashData(iModelConnection.contextId!);
+    }
+    return () => {
+      removeListener();
+    };
+  }, [iModelConnection]);
+
+  useEffect(() => {
+    console.log(clashData);
+  }, [clashData]);
+
+  const _getDataProvider = useCallback((): SimpleTableDataProvider => {
 
     // Limit the number of clashes in this demo
     const maxClashes = 70;
@@ -57,7 +75,7 @@ export const ClashReviewTable: React.FunctionComponent<ClashReviewTableProps> = 
       });
     }
     return dataProvider;
-  };
+  }, [clashData]);
 
   // bonus: zooming into and highlighting element when row is selected.
   const _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
@@ -83,3 +101,23 @@ export const ClashReviewTable: React.FunctionComponent<ClashReviewTableProps> = 
     </>
   );
 };
+
+export class ClashReviewTableWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ClashReviewTableWidgetProvider";
+
+  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
+    const widgets: AbstractWidgetProps[] = [];
+    if (location === StagePanelLocation.Bottom) {
+      widgets.push(
+        {
+          id: "ClashReviewTableWidget",
+          label: "Clash Review Table Selector",
+          defaultState: WidgetState.Open,
+          // eslint-disable-next-line react/display-name
+          getWidgetContent: () => <ClashReviewTableWidget />,
+        }
+      );
+    }
+    return widgets;
+  }
+}

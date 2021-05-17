@@ -10,11 +10,15 @@ import { Point3d } from "@bentley/geometry-core";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import ClashDetectionApis from "./ClashDetectionApis";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
+import { BeEvent } from "@bentley/bentleyjs-core";
 
 export default class ClashReviewApi {
-  private static _requestContext: AuthorizedClientRequestContext;
+
+  public static onClashDataChanged = new BeEvent<any>();
+
   public static _clashPinDecorator?: MarkerPinDecorator;
   public static _images: Map<string, HTMLImageElement>;
+  private static _requestContext: AuthorizedClientRequestContext;
   private static _clashData: { [id: string]: any } = {};
   private static _applyZoom: boolean = true;
 
@@ -59,6 +63,11 @@ export default class ClashReviewApi {
 
   public static disableZoom() {
     this._applyZoom = false;
+  }
+
+  public static async setClashData(projectId: string): Promise<void> {
+    const clashData = await ClashReviewApi.getClashData(projectId);
+    ClashReviewApi.onClashDataChanged.raiseEvent(clashData);
   }
 
   public static async getClashData(projectId: string): Promise<any> {
