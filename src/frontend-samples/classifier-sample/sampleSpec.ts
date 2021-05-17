@@ -11,14 +11,16 @@ export function getClassifierSpec(): SampleSpec {
     name: "classifier-sample",
     label: "Classifiers",
     image: "classifier-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ClassifierApp.tsx", import: import("!!raw-loader!./ClassifierApp") },
-      { name: "ClassifierUI.tsx", import: import("!!raw-loader!./ClassifierUI"), entry: true },
+      { name: "ClassifierApi.ts", import: import("!!raw-loader!./ClassifierApi") },
+      { name: "ClassifierApp.tsx", import: import("!!raw-loader!./ClassifierApp"), entry: true },
+      { name: "ClassifierWidget.tsx", import: import("!!raw-loader!./ClassifierWidget") },
       { name: "ClassifierProperties.tsx", import: import("!!raw-loader!./ClassifierProperties") },
       { name: "Classifier.scss", import: import("!!raw-loader!./Classifier.scss") },
     ],
     iModelList: [SampleIModels.MetroStation],
-    type: "ClassifierUI.tsx",
+    type: "ClassifierApp.tsx",
   });
 }

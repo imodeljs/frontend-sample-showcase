@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 import React, { useEffect } from "react";
 import { Button, Dialog, Select, SelectOption, SmallText } from "@bentley/ui-core";
 import { ModalDialogManager, StagePanelLocation, StagePanelSection, WidgetState } from "@bentley/ui-framework";

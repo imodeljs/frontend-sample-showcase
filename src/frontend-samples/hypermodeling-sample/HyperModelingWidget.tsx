@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { SectionMarker } from "@bentley/hypermodeling-frontend";
 import { Button, Toggle } from "@bentley/ui-core";
 import { IModelApp, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
@@ -16,7 +16,7 @@ interface Previous {
   /** The 3d view. */
   view: ViewState;
   /** The Id of the previously-active section marker. */
-  markerId: Id64String;
+  markerId?: Id64String;
 }
 
 export const HyperModelingWidget: React.FunctionComponent = () => {
@@ -35,25 +35,31 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport) {
+      const removeListeners: (() => void)[] = [];
       HyperModelingApi.enableHyperModeling(viewport)
         .then(() => {
-          HyperModelingApi.markerHandler.onActiveMarkerChanged.addListener((marker) => {
+          removeListeners.push(HyperModelingApi.markerHandler.onActiveMarkerChanged.addListener((marker) => {
             setActiveMarker(marker);
-          });
+          }));
+          removeListeners.push(HyperModelingApi.markerHandler.onToolbarCommand.addListener((prevMarker) => {
+            const view = viewport.view;
+            setPrevious({ view, markerId: prevMarker?.state.id });
+          }));
         });
       return () => {
+        removeListeners.forEach((remove) => remove());
         HyperModelingApi.disableHyperModeling(viewport);
       };
     }
     return;
   }, [viewport]);
 
-  const onClickReturnTo3D = async () => {
+  const onClickReturnTo3D = useCallback(async () => {
     if (viewport && previous) {
       await HyperModelingApi.switchTo3d(viewport, previous.view, previous.markerId);
       setPrevious(undefined);
     }
-  };
+  }, [previous, viewport]);
 
   const onClickSelectNewMarker = () => {
     if (viewport) {
@@ -61,29 +67,28 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
     }
   };
 
-  const onClickSwitchTo2d = async (which: "sheet" | "drawing") => {
-    const marker = activeMarker;
+  const onClickSwitchTo2d = useCallback(async (which: "sheet" | "drawing", marker: SectionMarker | undefined) => {
     assert(undefined !== viewport && undefined !== marker);
 
     const view = viewport.view;
     if (await HyperModelingApi.switchTo2d(viewport, marker, which))
       setPrevious({ view, markerId: marker.state.id });
-  };
+  }, [viewport]);
 
-  const onToggle2dGraphics = (toggle: boolean) => {
+  const onToggle2dGraphics = useCallback((toggle: boolean) => {
     if (viewport) {
       HyperModelingApi.toggle2dGraphics(toggle);
       setToggle2dGraphics(toggle);
     }
-  };
+  }, [viewport]);
 
-  const switchToDrawingView = async () => {
-    return onClickSwitchTo2d("drawing");
-  };
+  const switchToDrawingView = useCallback(async () => {
+    return onClickSwitchTo2d("drawing", activeMarker);
+  }, [onClickSwitchTo2d, activeMarker]);
 
-  const switchToSheetView = async () => {
-    return onClickSwitchTo2d("sheet");
-  };
+  const switchToSheetView = useCallback(async () => {
+    return onClickSwitchTo2d("sheet", activeMarker);
+  }, [onClickSwitchTo2d, activeMarker]);
 
   return (
     <div className="sample-options">
