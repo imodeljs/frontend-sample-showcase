@@ -5,7 +5,7 @@
 
 import "common/samples-common.scss";
 import { ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassificationProps } from "@bentley/imodeljs-common";
-import { ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
+import { ContextRealityModelState, IModelConnection, queryRealityData, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 
 export default class ClassifierApp {
@@ -24,7 +24,7 @@ export default class ClassifierApp {
     const style = viewPort.displayStyle.clone();
 
     // Get first available reality models and attach them to displayStyle
-    const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
+    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
     for (const crmProp of availableModels) {
       style.attachRealityModel(crmProp);
       viewPort.displayStyle = style;

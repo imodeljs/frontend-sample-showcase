@@ -6,7 +6,7 @@
 import "common/samples-common.scss";
 import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
 import {
-  ContextRealityModelState, findAvailableUnattachedRealityModels, IModelConnection, ScreenViewport,
+  ContextRealityModelState, IModelConnection, queryRealityData, ScreenViewport,
 } from "@bentley/imodeljs-frontend";
 
 export default class RealityDataApi {
@@ -19,7 +19,7 @@ export default class RealityDataApi {
 
     if (showReality) {
       // Get first available reality model and attach it to displayStyle
-      const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
+      const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
       for (const crmProp of availableModels) {
         style.attachRealityModel(crmProp);
         viewPort.displayStyle = style;

@@ -38,7 +38,7 @@ const CrossProbingApp: React.FunctionComponent = () => {
     if (models.length === 0)
       throw new Error("No 2D models found in iModel.");
 
-    return viewCreator.createViewForModel(models[0].id!, models[0].classFullName, { bgColor: ColorDef.black });
+    return viewCreator.createViewForModel(models[0].id!, { bgColor: ColorDef.black });
   };
 
   /** The sample's render method */
