@@ -16,7 +16,8 @@ function SearchIndex() {
             objectID: `${group.groupName.replace(/\s/g, "_")}_${sample.name}`,
             groupName: group.groupName,
             sampleName: sample.name,
-            readme: sample.readme ? (await sample.readme()).default : ""
+            description: sample.description,
+            // readme: sample.readme ? (await sample.readme()).default : ""
           }
         );
 
