@@ -49,9 +49,9 @@ const ClassifierWidget: React.FunctionComponent = () => {
     /** Turn on RealityData and initalize the classifierState */
     if (!initalized && viewport && iModelConnection) {
       ClassifierApi.turnOnAvailableRealityModel(viewport, iModelConnection).then(() => {
-        ClassifierApi.getAvailableClassifierListForViewport(viewport).then((classifiers) => {
-          const commercialModelId = Object.keys(classifiers)[0];
-          setClassifiers(classifiers);
+        ClassifierApi.getAvailableClassifierListForViewport(viewport).then((_classifiers) => {
+          const commercialModelId = Object.keys(_classifiers)[0];
+          setClassifiers(_classifiers);
           setCurrentClassifier(commercialModelId);
         });
       });
