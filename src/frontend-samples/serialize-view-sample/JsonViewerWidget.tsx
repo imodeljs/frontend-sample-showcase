@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 import React from "react";
 import { Button, SmallText, Textarea } from "@bentley/ui-core";
 
