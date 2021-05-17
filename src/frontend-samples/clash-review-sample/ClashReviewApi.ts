@@ -11,6 +11,7 @@ import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDe
 import ClashDetectionApis from "./ClashDetectionApis";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 import { BeEvent } from "@bentley/bentleyjs-core";
+import { jsonData } from "./ClashDetectionJsonData";
 
 export default class ClashReviewApi {
 
@@ -81,7 +82,8 @@ export default class ClashReviewApi {
           ClashReviewApi._clashData[projectId] = resultResponse;
       }
     }
-    return ClashReviewApi._clashData[projectId];
+
+    return ClashReviewApi._clashData[projectId] ? ClashReviewApi._clashData[projectId] : jsonData;
   }
 
   public static async getClashMarkersData(imodel: IModelConnection, clashData: any): Promise<MarkerData[]> {

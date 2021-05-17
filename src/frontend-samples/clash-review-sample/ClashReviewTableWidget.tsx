@@ -12,22 +12,16 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     const removeListener = ClashReviewApi.onClashDataChanged.addListener((data: any) => {
-      console.log("setting clash data");
       setClashData(data);
     });
 
     if (iModelConnection) {
-      console.log(iModelConnection);
       ClashReviewApi.setClashData(iModelConnection.contextId!);
     }
     return () => {
       removeListener();
     };
   }, [iModelConnection]);
-
-  useEffect(() => {
-    console.log(clashData);
-  }, [clashData]);
 
   const _getDataProvider = useCallback((): SimpleTableDataProvider => {
 
