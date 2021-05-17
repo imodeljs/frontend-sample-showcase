@@ -103,7 +103,6 @@ export class AuthorizationClient implements FrontendAuthorizationClient {
         startsAt: body._startsAt,
         expiresAt: body._expiresAt,
         userInfo: { id: "MockId" },
-        //userInfo: body._userInfo,
         tokenString: body._jwt,
       };
       this._devAccessToken = AccessToken.fromJson(tokenJson);
