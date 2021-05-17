@@ -10,36 +10,34 @@ import "./ClashReview.scss";
 const ClashReviewWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [applyZoom, setApplyZoom] = React.useState<boolean>(true);
-  const [showDecorator, setShowDecorator] = React.useState<boolean>(true);
+  const [showDecorator, setShowDecorator] = React.useState<boolean>();
   const [clashData, setClashData] = React.useState<any>();
-  const [markersData, setMarkersData] = React.useState<MarkerData[]>([]);
-  const [initalized, setInitalized] = React.useState<boolean>(false);
+  const [markersData, setMarkersData] = React.useState<MarkerData[]>();
 
   useEffect(() => {
-    let removeListener: () => void;
-    if (!initalized && iModelConnection) {
-      removeListener = ClashReviewApi.onClashDataChanged.addListener((data: any) => {
-        setClashData(data);
-      });
+    /** Create a listener that responds to clashData retrival */
+    const removeListener = ClashReviewApi.onClashDataChanged.addListener((data: any) => {
+      setClashData(data);
+    });
 
+    if (iModelConnection) {
       /** Initalize the marker pin svg icons on screen */
       ClashReviewApi._images = new Map();
       imageElementFromUrl(".\\clash_pin.svg").then((image) => {
         ClashReviewApi._images.set("clash_pin.svg", image);
       });
 
-      /** Get the clash data */
+      /** Will start the clashData retrieval and recieve the data through the listener */
       ClashReviewApi.setClashData(iModelConnection.contextId!);
-      setInitalized(true);
     }
     return () => {
-      if (removeListener)
-        removeListener();
+      removeListener();
       ClashReviewApi.disableDecorations();
       ClashReviewApi.resetDisplay();
     };
-  }, [iModelConnection, initalized]);
+  }, [iModelConnection]);
 
+  /** When the clashData comes in, get the marker data */
   useEffect(() => {
     if (iModelConnection && clashData) {
       ClashReviewApi.getClashMarkersData(iModelConnection, clashData).then((mData) => {
@@ -49,14 +47,15 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   }, [iModelConnection, clashData]);
 
   useEffect(() => {
-    if (ClashReviewApi.decoratorIsSetup())
+    if (markersData && ClashReviewApi.decoratorIsSetup()) {
       ClashReviewApi.setDecoratorPoints(markersData);
-    else {
+    } else if (markersData) {
       ClashReviewApi.setupDecorator(markersData);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ClashReviewApi.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
       }
+      setShowDecorator(true);
     }
   }, [markersData]);
 
@@ -74,22 +73,6 @@ const ClashReviewWidget: React.FunctionComponent = () => {
       ClashReviewApi.disableZoom();
     }
   }, [applyZoom]);
-
-  //   /** This callback will be executed by iTwin Viewer to initialize the viewstate */
-  //   private _oniModelReady = async (iModelConnection: IModelConnection) => {
-
-  //   if (this.state.contextId) {
-  //     const clashData = await ClashReviewApp.getClashData(this.state.contextId);
-  //     const markersData = await ClashReviewApp.getClashMarkersData(iModelConnection, clashData);
-
-  //     this.setState({ clashData, markersData });
-
-  //     // Automatically visualize first clash
-  //     if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
-  //       ClashReviewApp.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
-  //     }
-  //   }
-  // };
 
   return (
     <>

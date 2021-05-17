@@ -87,7 +87,7 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
 
   return (
     <>
-      {!clashData ? <div ><Spinner size={SpinnerSize.Small} /> Calling API...</div> :
+      {!clashData ? <div style={{ height: "200px" }}><Spinner size={SpinnerSize.Small} /> Calling API...</div> :
         <div style={{ height: "100%" }}>
           <Table dataProvider={_getDataProvider()} onRowsSelected={_onRowsSelected} />
         </div>
