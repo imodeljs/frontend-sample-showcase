@@ -30,8 +30,8 @@ const ClassifierWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const viewport = useActiveViewport();
   const [initalized, setInitalized] = React.useState<boolean>(false);
-  const [classifiersState, setClassifiersState] = React.useState<{ [key: string]: string }>({});
-  const [classifierState, setClassifierState] = React.useState<string>();
+  const [classifiers, setClassifiers] = React.useState<{ [key: string]: string }>({});
+  const [currentClassifier, setCurrentClassifier] = React.useState<string>();
   const [expandDistState, setExpandDistState] = React.useState<number>(3);
   const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<string>(SpatialClassificationProps.Display[SpatialClassificationProps.Display.Dimmed]);
   const [insideDisplayKeyState, setInsideDisplayKeyState] = React.useState<string>(SpatialClassificationProps.Display[SpatialClassificationProps.Display.ElementColor]);
@@ -51,8 +51,8 @@ const ClassifierWidget: React.FunctionComponent = () => {
       ClassifierApi.turnOnAvailableRealityModel(viewport, iModelConnection).then(() => {
         ClassifierApi.getAvailableClassifierListForViewport(viewport).then((classifiers) => {
           const commercialModelId = Object.keys(classifiers)[0];
-          setClassifiersState(classifiers);
-          setClassifierState(commercialModelId);
+          setClassifiers(classifiers);
+          setCurrentClassifier(commercialModelId);
         });
       });
 
@@ -88,10 +88,10 @@ const ClassifierWidget: React.FunctionComponent = () => {
     const vp = IModelApp.viewManager.selectedView;
     setKeysState(new KeySet());
     if (vp) {
-      const classifier: SpatialClassificationProps.Classifier = getClassifierValues(classifierState!);
+      const classifier: SpatialClassificationProps.Classifier = getClassifierValues(currentClassifier!);
       ClassifierApi.updateRealityDataClassifiers(vp, classifier);
     }
-  }, [classifierState, getClassifierValues]);
+  }, [currentClassifier, getClassifierValues]);
 
   /** When the user selects an element, grab the keys */
   const _onSelectionChanged = async (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
@@ -102,24 +102,24 @@ const ClassifierWidget: React.FunctionComponent = () => {
 
   // Some reasonable defaults depending on what classifier is chosen.
   const _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (classifiersState[event.target.value].includes("Buildings")) {
+    if (classifiers[event.target.value].includes("Buildings")) {
       setInsideDisplayKeyState("On");
       setExpandDistState(3.5);
     }
-    if (classifiersState[event.target.value].includes("Streets")) {
+    if (classifiers[event.target.value].includes("Streets")) {
       setInsideDisplayKeyState("Hilite");
       setExpandDistState(2);
     }
-    if (classifiersState[event.target.value].includes("Commercial")) {
+    if (classifiers[event.target.value].includes("Commercial")) {
       setInsideDisplayKeyState("ElementColor");
       setExpandDistState(1);
     }
-    if (classifiersState[event.target.value].includes("Street Poles")) {
+    if (classifiers[event.target.value].includes("Street Poles")) {
       setInsideDisplayKeyState("Hilite");
       setExpandDistState(1);
     }
 
-    setClassifierState(event.target.value);
+    setCurrentClassifier(event.target.value);
     setOutsideDisplayKeyState("Dimmed");
   };
 
@@ -138,12 +138,11 @@ const ClassifierWidget: React.FunctionComponent = () => {
     setInsideDisplayKeyState(event.target.value);
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <div className="sample-options">
       <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 2fr" }}>
         <span>Select classifier:</span>
-        <Select className="classification-dialog-select" options={classifiersState} onChange={_onClassifierChange} />
+        <Select className="classification-dialog-select" options={classifiers} onChange={_onClassifierChange} />
         <span>Margin:</span>
         <Input type="number" min="0" max="100" value={expandDistState} onChange={_onMarginChange} />
         <span>Outside Display:</span>
