@@ -12,3 +12,19 @@ export enum SampleIModels {
   ExtonCampus = "Exton Campus",
   Villa = "Villa",
 }
+
+export interface SampleIModelWithAlternativeName {
+  context: SampleIModels;
+  imodel: string;
+}
+
+export function isSampleIModelWithAlternativeName(sampleIModel?: SampleIModels | SampleIModelWithAlternativeName): sampleIModel is SampleIModelWithAlternativeName {
+  if (sampleIModel && (sampleIModel as SampleIModelWithAlternativeName).context) {
+    return true;
+  }
+  return false;
+}
+
+export function isSampleIModelWithAlternativeNameArray(sampleIModels: (SampleIModels | SampleIModelWithAlternativeName)[]): sampleIModels is SampleIModelWithAlternativeName[] {
+  return sampleIModels.every(isSampleIModelWithAlternativeName);
+}
