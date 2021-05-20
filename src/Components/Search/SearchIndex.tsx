@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { sampleManifest } from "../../sampleManifest";
 
 function SearchIndex() {
   const [sampleIndex, setSampleIndex] = useState([]);
 
   useEffect(() => {
-
-    const sampleIndex: any = [];
+    const index: any = [];
 
     sampleManifest.map((group) => {
       group.samples.forEach(async (sample) => {
-        sampleIndex.push(
+        index.push(
           {
             contentType: "Sample",
             objectID: `${group.groupName.replace(/\s/g, "_")}_${sample.name}`,
@@ -21,11 +20,10 @@ function SearchIndex() {
           }
         );
 
-        setSampleIndex([].concat.apply([], sampleIndex));
-      })
+        setSampleIndex([].concat.apply([], index));
+      });
     });
-
-  }, [])
+  }, []);
 
   return (<div id="searchIndex">{JSON.stringify(sampleIndex)}</div>);
 }
