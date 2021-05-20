@@ -21,6 +21,7 @@ export interface SampleSpec {
   name: string;
   label: string;
   image: string;
+  description?: string;
   readme?: () => Promise<{ default: string }>;
   files?: () => SampleSpecFile[];
   iModelList?: SampleIModels[];
