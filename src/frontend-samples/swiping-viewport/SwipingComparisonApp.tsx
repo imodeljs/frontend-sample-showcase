@@ -5,7 +5,7 @@
 
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { EditManipulator, FeatureSymbology, findAvailableUnattachedRealityModels, GraphicBranch, IModelApp, IModelConnection, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { EditManipulator, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, queryRealityData, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 
 export enum ComparisonType {
   Wireframe,
@@ -114,7 +114,6 @@ export default class SwipingViewportApp {
 
     // Update in Provider
     const clip = SwipingViewportApp.createClip(normal.clone().negate(), worldPoint);
-    provider.clipVolume?.dispose();
     provider.setClipVector(clip);
 
     // Update in Viewport
@@ -145,14 +144,12 @@ export default class SwipingViewportApp {
   /** Removes the provider from the viewport, and disposed of any resources it has. */
   private static disposeProvider(viewport: Viewport, provider: SampleTiledGraphicsProvider) {
     viewport.dropTiledGraphicsProvider(provider);
-    // Not all [TiledGraphicsProvider] are disposable the ones used in this sample are.
-    provider.dispose();
   }
 
   /** Get all available reality models and attach them to displayStyle. */
   public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
     const style = viewport.displayStyle.clone();
-    const availableModels: ContextRealityModelProps[] = await findAvailableUnattachedRealityModels(imodel.contextId!, imodel);
+    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
     for (const crmProp of availableModels) {
       style.attachRealityModel(crmProp);
       viewport.displayStyle = style;
@@ -184,6 +181,9 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   /** Apply the supplied function to each [[TileTreeReference]] to be drawn in the specified [[Viewport]]. */
   public forEachTileTreeRef(viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
     viewport.view.forEachTileTreeRef(func);
+
+    // Do not apply the view's clip to this provider's graphics - it applies its own (opposite) clip to its graphics.
+    this.viewFlagOverrides.setShowClipVolume(false);
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
@@ -194,7 +194,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     const clip = vp.view.getViewClip();
 
     // Replace the clipping plane with a flipped one.
-    vp.view.setViewClip(this.clipVolume?.clipVector);  // TODO: Have Paul review
+    vp.view.setViewClip(this.clipVolume?.clipVector);
 
     this.prepareNewBranch(vp);
 
@@ -231,11 +231,6 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
    */
   public setClipVector(clipVector: ClipVector): void {
     this.clipVolume = IModelApp.renderSystem.createClipVolume(clipVector);
-  }
-
-  /** Disposes of any WebGL resources owned by this volume. */
-  public dispose(): void {
-    this.clipVolume?.dispose();
   }
 }
 
