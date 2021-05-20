@@ -148,7 +148,6 @@ export const ViewAttributesWidget: React.FunctionComponent = () => {
     return createJSXElementForAttribute(label, info, element);
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <div className="sample-options">
       <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>

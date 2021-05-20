@@ -2,29 +2,48 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useState } from "react";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
+import { ScreenSpaceEffectsWidgetProvider } from "./ScreenSpaceEffectsWidget";
 
-import { assert } from "@bentley/bentleyjs-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import "common/samples-common.scss";
-import { effects } from "./Effects";
+const uiProviders = [new ScreenSpaceEffectsWidgetProvider()];
 
-export default class ScreenSpaceEffectsApp {
-  public static _effectsRegistered = false;
+const ScreenSpaceEffectsApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the toggles below to select which effects are applied to the viewport.", [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  public static registerEffects(): void {
-    for (const effect of effects) {
-      if ("None" === effect.name)
-        continue;
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
+      viewport.viewFlags.grid = false;
+    });
 
-      // Create an effect builder.
-      const builder = IModelApp.renderSystem.createScreenSpaceEffectBuilder(effect);
-      assert(undefined !== builder, "The default render system supports screen-space effects");
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
-      // Add any uniform or varying variables.
-      effect.defineEffect(builder);
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
+      }
+    </>
+  );
 
-      // Compile the shaders and register the effect.
-      builder.finish();
-    }
-  }
-}
+};
+
+export default ScreenSpaceEffectsApp;

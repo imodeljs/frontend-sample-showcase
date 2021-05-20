@@ -7,7 +7,7 @@ import { assert, BeEvent, BeTimePoint, ByteStream, compareStrings, Id64, partiti
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
 import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
 import { GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
-import ExplodeApp from "./ExplodeApp";
+import ExplodeApp from "./ExplodeApi";
 
 /** Data describing an element for the exploded effect. */
 interface ElementData {

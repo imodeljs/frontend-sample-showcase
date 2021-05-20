@@ -2,92 +2,44 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import * as React from "react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { EmphasizeElementsWidgetProvider } from "./EmphasizeElementsWidget";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
-import "common/samples-common.scss";
-import { EmphasizeElements, FeatureOverrideType, IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
+const uiProviders = [new EmphasizeElementsWidgetProvider()];
 
-abstract class EmphasizeActionBase {
-  protected abstract execute(emph: EmphasizeElements, vp: ScreenViewport): boolean;
+const EmphasizeElementsApp: React.FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the toggle below for displaying the reality data in the model.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
+  const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
-  public run(): boolean {
-    const vp = IModelApp.viewManager.selectedView;
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
-    if (undefined === vp) {
-      return false;
-    }
+  /** The sample's render method */
+  return (
+    <>
+      { /** Viewport to display the iModel */}
+      {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          onIModelConnected={_oniModelReady}
+          defaultUiConfig={default3DSandboxUi}
+          theme="dark"
+          uiProviders={uiProviders}
+        />
+      }
+    </>
+  );
 
-    const emph = EmphasizeElements.getOrCreate(vp);
-    return this.execute(emph, vp);
-  }
-}
+};
 
-export class EmphasizeAction extends EmphasizeActionBase {
-  private _wantEmphasis: boolean;
-
-  public constructor(wantEmphasis: boolean) {
-    super();
-    this._wantEmphasis = wantEmphasis;
-  }
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.wantEmphasis = this._wantEmphasis;
-    emph.emphasizeSelectedElements(vp);
-    return true;
-  }
-}
-
-export class ClearEmphasizeAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearEmphasizedElements(vp);
-    return true;
-  }
-}
-
-export class HideAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.hideSelectedElements(vp);
-    return true;
-  }
-}
-
-export class ClearHideAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearHiddenElements(vp);
-    return true;
-  }
-}
-
-export class IsolateAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.isolateSelectedElements(vp);
-    return true;
-  }
-}
-
-export class ClearIsolateAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearIsolatedElements(vp);
-    return true;
-  }
-}
-
-export class OverrideAction extends EmphasizeActionBase {
-  private _colorValue: ColorDef;
-
-  public constructor(colorValue: ColorDef) {
-    super();
-    this._colorValue = colorValue;
-  }
-
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.overrideSelectedElements(vp, this._colorValue, FeatureOverrideType.ColorOnly, false, true);
-    return true;
-  }
-}
-
-export class ClearOverrideAction extends EmphasizeActionBase {
-  public execute(emph: EmphasizeElements, vp: ScreenViewport): boolean {
-    emph.clearOverriddenElements(vp);
-    return true;
-  }
-}
+export default EmphasizeElementsApp;

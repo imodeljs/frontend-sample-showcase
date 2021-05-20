@@ -7,31 +7,15 @@ import { RegisteredRuleset, Ruleset } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
 import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 import { UiItemsManager } from "@bentley/ui-abstract";
-import { useActiveFrontstageDef } from "@bentley/ui-framework";
 import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
 import { defaultIModelList } from "@itwinjs-sandbox/constants";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
-import { FloatingWidgetsManager } from "@itwinjs-sandbox/widgets/FloatingWidgets";
-import { useEffect, useState } from "react";
+import { SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import { FloatingWidgets } from "@itwinjs-sandbox/hooks/FloatingWidget";
+import { useEffect } from "react";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
-import "./useSampleWidget.scss";
 
-export const useSampleWidget = (instructions: string, iModelList?: SampleIModels[]): SampleIModelInfo | undefined => {
-  const [sampleIModels, setSampleIModels] = useState<SampleIModels[]>(iModelList || defaultIModelList);
-  const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(sampleIModels);
-  const frontstage = useActiveFrontstageDef();
-
-  useEffect(() => {
-    if (frontstage) {
-      FloatingWidgetsManager.onFrontstageReady(frontstage);
-    }
-  }, [frontstage]);
-
-  useEffect(() => {
-    if (iModelList && !sampleIModels.every((el) => iModelList.includes(el))) {
-      setSampleIModels(iModelList);
-    }
-  }, [iModelList, sampleIModels]);
+export const useSampleWidget = (instructions: string, iModelList: (SampleIModels | SampleIModelWithAlternativeName)[] = defaultIModelList): SampleIModelInfo | undefined => {
+  const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(iModelList);
 
   /**
    * Fix to add Hilite ruleset to presentation until Bug #599922 is addressed
@@ -53,13 +37,18 @@ export const useSampleWidget = (instructions: string, iModelList?: SampleIModels
   });
 
   useEffect(() => {
-    const widgetProvider = new SampleWidgetProvider(instructions, sampleIModels, setIModelName);
+    const floatingWidgets = new FloatingWidgets("sample-container");
+    return floatingWidgets.dispose;
+  }, []);
+
+  useEffect(() => {
+    const widgetProvider = new SampleWidgetProvider(instructions, iModelList, sampleIModelInfo, setIModelName);
     UiItemsManager.register(widgetProvider);
     return () => {
       UiItemsManager.unregister(widgetProvider.id);
     };
-  }, [instructions, sampleIModels, setIModelName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sampleIModelInfo]);
 
   return sampleIModelInfo;
-
 };

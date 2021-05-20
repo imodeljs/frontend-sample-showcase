@@ -10,12 +10,12 @@ import { Range3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, SpatialClassificationProps } from "@bentley/imodeljs-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApp";
-import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApp";
-import ThematicDisplayApp from "../frontend-samples/thematic-display-sample/ThematicDisplayApp";
+import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
+import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApi";
+import ThematicDisplayApi from "../frontend-samples/thematic-display-sample/ThematicDisplayApi";
 import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApi";
 import { TestUtilities } from "./utils/testUtilities";
-import ClassifierApp from "frontend-samples/classifier-sample/ClassifierApp";
+import ClassifierApi from "frontend-samples/classifier-sample/ClassifierApi";
 
 describe("View Clipping Sample", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
@@ -62,9 +62,9 @@ describe("Thematic display", () => {
 
   it("Turns thematic display on/off", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
-    ThematicDisplayApp.setThematicDisplayOnOff(vp, false);
+    ThematicDisplayApi.setThematicDisplayOnOff(vp, false);
     expect(vp.viewFlags.thematicDisplay).to.equal(false);
-    ThematicDisplayApp.setThematicDisplayOnOff(vp, true);
+    ThematicDisplayApi.setThematicDisplayOnOff(vp, true);
     expect(vp.viewFlags.thematicDisplay).to.equal(true);
 
   });
@@ -201,7 +201,7 @@ describe("Classifers", () => {
       flags.inside = SpatialClassificationProps.Display.On;
       flags.outside = SpatialClassificationProps.Display.Dimmed;
       const testClassifier: SpatialClassificationProps.Properties = { isActive: true, modelId: "TestId", expand: 1, name: "Test Name", flags };
-      ClassifierApp.updateRealityDataClassifiers(vp, testClassifier);
+      ClassifierApi.updateRealityDataClassifiers(vp, testClassifier);
       const style = vp.displayStyle.clone();
       style.forEachRealityModel(
         (model) => {

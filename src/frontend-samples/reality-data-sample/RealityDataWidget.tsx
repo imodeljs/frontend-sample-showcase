@@ -6,7 +6,7 @@ import "common/samples-common.scss";
 import React, { useEffect } from "react";
 import { Toggle } from "@bentley/ui-core";
 import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { RealityDataApi } from "./RealityDataApi";
+import RealityDataApi from "./RealityDataApi";
 import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, WidgetState } from "@bentley/ui-framework";
 import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
 import "./RealityData.scss";
@@ -68,7 +68,6 @@ const RealityDataWidget: React.FunctionComponent = () => {
     );
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options">

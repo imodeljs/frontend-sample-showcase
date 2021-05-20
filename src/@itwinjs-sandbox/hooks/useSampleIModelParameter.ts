@@ -3,25 +3,36 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { useEffect, useState } from "react";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { useCallback } from "react";
+import { isSampleIModelWithAlternativeName, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
 
 const getiModelParam = () => {
   const params = new URLSearchParams(window.location.search);
-  const imodel = params.get("imodel");
-  return imodel as SampleIModels;
+  const imodel = params.get("imodel") ?? undefined;
+  const context = params.get("context") ?? undefined;
+  if (context && imodel) {
+    return { context, imodel } as SampleIModelWithAlternativeName;
+  }
+  return imodel as SampleIModels | undefined;
 };
 
-const updateiModelParam = (imodel: string) => {
+const updateiModelParam = (imodel?: string, context?: string) => {
   const params = new URLSearchParams(window.location.search);
 
-  if (imodel) {
-    if (params.has("imodel")) {
-      params.set("imodel", imodel);
+  const setOrDeleteParam = (name: string, value?: string) => {
+    if (value) {
+      if (params.has(name)) {
+        params.set(name, value);
+      } else {
+        params.append(name, value);
+      }
     } else {
-      params.append("imodel", imodel);
+      params.delete(name);
     }
-  }
+  };
+
+  setOrDeleteParam("context", context);
+  setOrDeleteParam("imodel", imodel);
 
   // Detect if editor was enabled in URL params as a semi-backdoor, this
   // bypasses the ld feature flag
@@ -36,23 +47,18 @@ const updateiModelParam = (imodel: string) => {
   }
 };
 
-export type setSampleIModelParam = (iModel: SampleIModels) => void;
+export type setSampleIModelParam = (iModel?: (SampleIModels | SampleIModelWithAlternativeName)) => void;
 
-export const useSampleIModelParameter = (): [SampleIModels, setSampleIModelParam] => {
-  const [iModel, setIModel] = useState<SampleIModels>(getiModelParam());
+export const useSampleIModelParameter = (): [(SampleIModels | SampleIModelWithAlternativeName) | undefined, setSampleIModelParam] => {
 
-  useEffect(() => {
-    const imodelParam = getiModelParam();
-    if (iModel !== imodelParam) {
-      setIModel(imodelParam);
+  const setiModelParam = useCallback((imodel?: (SampleIModels | SampleIModelWithAlternativeName)) => {
+    if (isSampleIModelWithAlternativeName(imodel)) {
+      updateiModelParam(imodel.imodel, imodel.context);
+    } else {
+      updateiModelParam(imodel);
     }
-  }, [iModel]);
+  }, []);
 
-  const setiModelParam = (imodel: SampleIModels) => {
-    updateiModelParam(imodel);
-    setIModel(imodel);
-  };
-
-  return [iModel, setiModelParam];
+  return [getiModelParam(), setiModelParam];
 
 };

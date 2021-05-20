@@ -3,36 +3,30 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
-import { IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
-import { defaultIModelList } from "@itwinjs-sandbox/constants";
-import { useSampleIModelParameter } from "@itwinjs-sandbox/hooks/useSampleIModelParameter";
+import { SampleIModels, SampleIModelWithAlternativeName } from "../../SampleIModels";
+import { IModelSelector } from "../imodel-selector/IModelSelector";
+import { defaultIModelList } from "../../constants";
 import "./SampleWidgetProvider.scss";
+import { SampleIModelInfo } from "@itwinjs-sandbox/hooks/useSampleIModelConnection";
 
 interface IModelSelectorWidgetProps {
-  iModels: SampleIModels[];
+  iModel?: SampleIModelInfo;
+  iModels: (SampleIModels | SampleIModelWithAlternativeName)[];
   onSampleiModelInfoChange: (imodelName: SampleIModels) => void;
 }
 
-const SampleIModelSelectorWidget: FunctionComponent<IModelSelectorWidgetProps> = ({ iModels, onSampleiModelInfoChange }) => {
-  const [iModelParam] = useSampleIModelParameter();
-  const [iModelName, setiModelName] = useState<SampleIModels>(iModelParam);
+const SampleIModelSelectorWidget: FunctionComponent<IModelSelectorWidgetProps> = ({ iModel, iModels, onSampleiModelInfoChange }) => {
 
-  useEffect(() => {
-    if (iModelName) {
-      onSampleiModelInfoChange(iModelName);
-    }
-  });
-
-  return <IModelSelector iModelName={iModelName} iModelNames={iModels} onIModelChange={setiModelName} />;
+  return <IModelSelector iModelName={iModel?.iModelName} iModelNames={iModels} onIModelChange={onSampleiModelInfoChange} />;
 };
 
 export class SampleWidgetProvider implements UiItemsProvider {
   public readonly id: string = "SampleiModelSelectorWidgetUiProvider";
   public static readonly sampleIModelSelectorWidgetId: string = "SampleiModelSelectorWidget";
-  private _iModels: SampleIModels[];
+  private _iModels: (SampleIModels | SampleIModelWithAlternativeName)[];
+  private _iModel: SampleIModelInfo | undefined;
   private _onSampleiModelInfoChange: (imodelName: SampleIModels) => void;
   private _instructions: string;
 
@@ -40,9 +34,10 @@ export class SampleWidgetProvider implements UiItemsProvider {
    * @param onIModelChange - A callback in the case that the current iModel changes via the iModelSelector
    * @param iModels - A list of iModels the selector will be populated with (defaults to ALL)
   */
-  constructor(instructions: string, iModels: SampleIModels[] = defaultIModelList, onSampleiModelInfoChange: (imodelName: SampleIModels) => void) {
+  constructor(instructions: string, iModels: (SampleIModels | SampleIModelWithAlternativeName)[] = defaultIModelList, imodelInfo: SampleIModelInfo | undefined, onSampleiModelInfoChange: (imodelName: SampleIModels) => void) {
     this._instructions = instructions;
     this._iModels = iModels;
+    this._iModel = imodelInfo;
     this._onSampleiModelInfoChange = onSampleiModelInfoChange;
   }
 
@@ -62,7 +57,7 @@ export class SampleWidgetProvider implements UiItemsProvider {
               </div>
             </div>
             {this._iModels.length > 1 && <hr></hr>}
-            {this._iModels.length > 1 && <SampleIModelSelectorWidget iModels={this._iModels} onSampleiModelInfoChange={this._onSampleiModelInfoChange} />}
+            {this._iModels.length > 1 && <SampleIModelSelectorWidget iModels={this._iModels} iModel={this._iModel} onSampleiModelInfoChange={this._onSampleiModelInfoChange} />}
           </div>
         ),
       });

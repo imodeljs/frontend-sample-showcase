@@ -194,8 +194,8 @@
       "typedef": true
     },
     {
-      "name": "frontend-samples/marker-pin-sample/RadioCard/RadioCard",
-      "import": "./src/frontend-samples/marker-pin-sample/RadioCard/RadioCard",
+      "name": "frontend-samples/marker-pin-sample/RadioCard",
+      "import": "./src/frontend-samples/marker-pin-sample/RadioCard",
       "typedef": true
     },
     {
@@ -206,26 +206,6 @@
     {
       "name": "common/UIComponents/index.scss",
       "import": "!!raw-loader!common/UIComponents/index.scss"
-    },
-    {
-      "name": "common/Geometry/BlankViewport",
-      "import": "./src/common/Geometry/BlankViewport",
-      "typedef": true
-    },
-    {
-      "name": "common/Geometry/GeometryDecorator",
-      "import": "./src/common/Geometry/GeometryDecorator",
-      "typedef": true
-    },
-    {
-      "name": "common/Geometry/InteractivePointMarker",
-      "import": "./src/common/Geometry/InteractivePointMarker",
-      "typedef": true
-    },
-    {
-      "name": "common/Geometry/SampleCurveFactory",
-      "import": "./src/common/Geometry/SampleCurveFactory",
-      "typedef": true
     },
     {
       "name": "common/samples-common.scss",

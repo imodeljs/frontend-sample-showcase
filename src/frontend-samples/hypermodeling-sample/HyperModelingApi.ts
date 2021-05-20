@@ -11,6 +11,7 @@ class MarkerHandler extends SectionMarkerHandler {
   private _activeMarker?: SectionMarker;
 
   public readonly onActiveMarkerChanged = new BeEvent<(activeMarker: SectionMarker | undefined) => void>();
+  public readonly onToolbarCommand = new BeEvent<(prevMarker: SectionMarker | undefined) => void>();
 
   public async activateMarker(marker: SectionMarker, decorator: HyperModelingDecorator): Promise<boolean> {
     const activated = await super.activateMarker(marker, decorator);
@@ -41,11 +42,22 @@ class MarkerHandler extends SectionMarkerHandler {
     // One of the section drawings in the source model is bad - hide it.
     return marker.state.id !== "0x170c" && super.isMarkerVisible(marker, decorator, config);
   }
+
+  public async executeCommand(commandId: string, marker: SectionMarker, decorator: HyperModelingDecorator) {
+    // We are overriding the executeCommand method to support the HyperModeling Widget.
+    // By default, the view is already using a spatial view and decorators only appear in the spatial view. We don't have to raise an event when the spatial command is used.
+    // Instead, we want to raise an event when we enter a sheet or drawing view to ensure we can return to a spatial view.
+    if (commandId !== "apply_view") {
+      this.onToolbarCommand.raiseEvent(this._activeMarker);
+    }
+    super.executeCommand(commandId, marker, decorator);
+  }
 }
 
 export default class HyperModelingApi {
   public static markerHandler = new MarkerHandler();
   public static onReady = new BeEvent();
+  public static ready = false;
 
   /** Turn on hyper-modeling for the viewport. */
   public static async enableHyperModeling(viewport: ScreenViewport) {
@@ -55,7 +67,7 @@ export default class HyperModelingApi {
 
     // Turn on hypermodeling for the viewport.
     await HyperModeling.startOrStop(viewport, true);
-
+    HyperModelingApi.ready = true;
     HyperModelingApi.onReady.raiseEvent();
   }
 
@@ -84,16 +96,18 @@ export default class HyperModelingApi {
   }
 
   /** Restore a 3d view and activate the specified section marker. */
-  public static async switchTo3d(viewport: ScreenViewport, view: ViewState, activeMarkerId: Id64String): Promise<void> {
+  public static async switchTo3d(viewport: ScreenViewport, view: ViewState, activeMarkerId?: Id64String): Promise<void> {
     viewport.changeView(view);
     const decorator = await HyperModeling.startOrStop(viewport, true);
     if (!decorator)
       return;
 
-    for (const marker of decorator.markers.markers) {
-      if (marker.state.id === activeMarkerId) {
-        decorator.setActiveMarker(marker);
-        break;
+    if (activeMarkerId) {
+      for (const marker of decorator.markers.markers) {
+        if (marker.state.id === activeMarkerId) {
+          decorator.setActiveMarker(marker);
+          break;
+        }
       }
     }
   }

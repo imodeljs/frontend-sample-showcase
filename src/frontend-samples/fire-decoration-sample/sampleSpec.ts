@@ -11,14 +11,17 @@ export function getParticleFireSampleSpec(): SampleSpec {
     name: "fire-sample",
     label: "Particle Effect (Fire)",
     image: "fire-decorator-thumbnail.png",
+    iTwinViewerReady: true,
     iModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp") },
-      { name: "FireDecorationUI.tsx", import: import("!!raw-loader!./FireDecorationUI"), entry: true },
+      { name: "FireDecorationApi.tsx", import: import("!!raw-loader!./FireDecorationApi") },
+      { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp"), entry: true },
+      { name: "FireDecorationWidget.tsx", import: import("!!raw-loader!./FireDecorationWidget") },
       { name: "FireDecorator.ts", import: import("!!raw-loader!./FireDecorator") },
       { name: "PlacementTool.ts", import: import("!!raw-loader!./PlacementTool") },
+      { name: "FireDecoration.scss", import: import("!!raw-loader!./FireDecoration.scss") },
     ],
-    type: "FireDecorationUI.tsx",
+    type: "FireDecorationApp.tsx",
   });
 }

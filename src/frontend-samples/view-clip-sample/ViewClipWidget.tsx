@@ -75,14 +75,13 @@ export const ViewClipWidget: React.FunctionComponent = () => {
     return true;
   };
 
-  const clipPlaneOptions = {
+  const options = {
     None: "None",
     [EditManipulator.RotationType.Left]: "X",
     [EditManipulator.RotationType.Front]: "Y",
     [EditManipulator.RotationType.Top]: "Z",
   };
 
-  // Display drawing and sheet options in separate sections.
   return (
     <>
       <div className="sample-options">
@@ -91,7 +90,7 @@ export const ViewClipWidget: React.FunctionComponent = () => {
           <Toggle isOn={showClipBlockState} onChange={_onToggleRangeClip} />
           <span />
           <span>Clip Plane</span>
-          <Select onChange={_onPlaneSelectChange} value={clipPlaneState} options={clipPlaneOptions} />
+          <Select onChange={_onPlaneSelectChange} value={clipPlaneState} options={options} />
           <Button buttonType={ButtonType.Primary} onClick={() => _handleFlipButton()} disabled={clipPlaneState === "None"}>Flip</Button>
         </div>
       </div>

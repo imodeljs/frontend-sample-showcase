@@ -12,9 +12,12 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     image: "tooltip-customize-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp") },
-      { name: "TooltipCustomizeUI.tsx", import: import("!!raw-loader!./TooltipCustomizeUI"), entry: true },
+      { name: "TooltipCustomizeApi.tsx", import: import("!!raw-loader!./TooltipCustomizeApi") },
+      { name: "TooltipCustomizeApp.tsx", import: import("!!raw-loader!./TooltipCustomizeApp"), entry: true },
+      { name: "TooltipCustomizeWidget.tsx", import: import("!!raw-loader!./TooltipCustomizeWidget") },
+      { name: "TooltipCustomize.scss", import: import("!!raw-loader!./TooltipCustomize.scss") },
     ],
-    type: "TooltipCustomizeUI.tsx",
+    iTwinViewerReady: true,
+    type: "TooltipCustomizeApp.tsx",
   });
 }

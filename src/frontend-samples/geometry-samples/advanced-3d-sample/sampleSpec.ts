@@ -11,11 +11,15 @@ export function getAdvanced3dSpec(): SampleSpec {
     label: "Advanced 3d",
     image: "advanced-3d-thumbnail.png",
     iModelList: [],
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Advanced3dApp.tsx", import: import("!!raw-loader!./Advanced3dApp") },
-      { name: "Advanced3dUI.tsx", import: import("!!raw-loader!./Advanced3dUI"), entry: true },
+      { name: "Advanced3dApi.ts", import: import("!!raw-loader!./Advanced3dApi") },
+      { name: "Advanced3dApp.tsx", import: import("!!raw-loader!./Advanced3dApp"), entry: true },
+      { name: "Advanced3dWidget.tsx", import: import("!!raw-loader!./Advanced3dWidget") },
+      { name: "GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
+      { name: "Advanced3d.scss", import: import("!!raw-loader!./Advanced3d.scss") },
     ],
-    type: "Advanced3dUI.tsx",
+    type: "Advanced3dApp.tsx",
   });
 }

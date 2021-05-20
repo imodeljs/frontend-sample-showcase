@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useCallback, useState } from "react";
 import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
@@ -19,17 +19,26 @@ const HyperModelingApp: FunctionComponent = () => {
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     setViewportOptions({ viewState });
-
-    HyperModelingApi.onReady.addOnce(() => {
-      HyperModelingApi.activateMarkerByName(IModelApp.viewManager.selectedView!, "Section-Left");
-    });
   };
+
+  const _onIModelInit = useCallback(() => {
+    IModelApp.viewManager.onViewOpen.addOnce((view) => {
+      if (HyperModelingApi.ready) {
+        HyperModelingApi.activateMarkerByName(view, "Section-Left");
+      } else {
+        HyperModelingApi.onReady.addOnce(() => {
+          HyperModelingApi.activateMarkerByName(view, "Section-Left");
+        });
+      }
+    });
+  }, []);
 
   return (
     <>
       { /* Viewport to display the iModel */}
       {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
+          onIModelAppInit={_onIModelInit}
           contextId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
