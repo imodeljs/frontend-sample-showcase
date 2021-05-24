@@ -275,11 +275,6 @@ class ExplodeTileTree extends TileTree {
     for (const tile of tiles)
       tile.drawGraphics(args);
 
-    // Unused by this sample but helpful for debugging the tiles.
-    const rangeGfx = this.rootTile.getRangeGraphic(args.context);
-    if (undefined !== rangeGfx)
-      args.graphics.add(rangeGfx);
-
     args.drawGraphics();
   }
 

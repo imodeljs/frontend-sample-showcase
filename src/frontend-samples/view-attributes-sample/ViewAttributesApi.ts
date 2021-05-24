@@ -165,7 +165,6 @@ export class ViewAttributesApi {
     if (vp.view.is3d()) {
       const style = vp.view.getDisplayStyle3d();
       style.environment = new Environment({ sky: { display: on } });
-      vp.invalidateRenderPlan();
     }
   }
 
