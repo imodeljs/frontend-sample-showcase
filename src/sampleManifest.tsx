@@ -70,6 +70,7 @@ import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
 import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
+import { getVersionCompareSpec } from "frontend-samples/version-compare-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -109,6 +110,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
+    getVersionCompareSpec(),
     getViewClipSpec(),
     getVolumeQuerySpec(),
     getZoomToElementsSpec(),
