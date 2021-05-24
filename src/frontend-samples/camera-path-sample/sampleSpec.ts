@@ -10,13 +10,16 @@ export function getViewCameraSpec(): SampleSpec {
     name: "Camera Path Sample",
     label: "Camera Path",
     image: "camera-path-thumbnail.png",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CameraPathUI.tsx", import: import("!!raw-loader!./CameraPathUI"), entry: true },
-      { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp") },
+      { name: "CameraPathApi.ts", import: import("!!raw-loader!./CameraPathApi") },
+      { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp"), entry: true },
+      { name: "CameraPathWidget.tsx", import: import("!!raw-loader!./CameraPathWidget") },
       { name: "CameraPathTool.ts", import: import("!!raw-loader!./CameraPathTool") },
       { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
+      { name: "CameraPath.scss", import: import("!!raw-loader!./CameraPath.scss") },
     ],
-    type: "CameraPathUI.tsx",
+    type: "CameraPathApp.tsx",
   });
 }
