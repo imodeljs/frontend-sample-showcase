@@ -7,8 +7,8 @@ import { Spinner, SpinnerSize } from "@bentley/ui-core";
 import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import ClashReviewApi from "./ClashReviewApi";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
+import ClashReviewApi from "./ClashReviewApi";
 
 const ClashReviewTableWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();

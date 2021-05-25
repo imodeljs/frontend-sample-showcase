@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "common/samples-common.scss";
 import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
 import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
 import { Point3d } from "@bentley/geometry-core";
@@ -67,11 +66,15 @@ export default class ClashReviewApi {
   }
 
   public static async setClashData(projectId: string): Promise<void> {
-    const clashData = await ClashReviewApi.getClashData(projectId);
+    const clashData = await ClashReviewApi.getClashData(projectId, true);
     ClashReviewApi.onClashDataChanged.raiseEvent(clashData);
   }
 
-  public static async getClashData(projectId: string): Promise<any> {
+  /** The API has been significantly reworked, so for the time being the static jsonData file will be used */
+  public static async getClashData(projectId: string, staticData?: boolean): Promise<any> {
+    if(staticData)
+      return jsonData;
+
     const context = await ClashReviewApi.getRequestContext();
     if (ClashReviewApi._clashData[projectId] === undefined) {
       const runsResponse = await ClashDetectionApis.getProjectValidationRuns(context, projectId);
