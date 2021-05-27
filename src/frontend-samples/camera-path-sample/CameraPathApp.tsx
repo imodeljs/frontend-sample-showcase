@@ -27,21 +27,12 @@ const CameraPathApp: FunctionComponent = () => {
     setViewportOptions({ viewState });
   };
 
+  /** Remove unnecessary tools  */
   const uiConfig = {
     ...default3DSandboxUi,
     navigationTools: {
-      verticalItems: {
-        walkView: false,
-        cameraView: false,
-      },
-      horizontalItems: {
-        rotateView: false,
-        panView: false,
-        fitView: false,
-        windowArea: false,
-        undoView: false,
-        redoView: false,
-      },
+      verticalItems: { walkView: false, cameraView: false },
+      horizontalItems: { rotateView: false, panView: false, fitView: false, windowArea: false, undoView: false, redoView: false },
     },
   };
 
