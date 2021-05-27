@@ -16,23 +16,17 @@ export interface CameraPathPoint {
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class CameraPathApp {
 
-  public static async animateCameraPath(cameraPoint: CameraPathPoint, viewport: Viewport, keyDown: boolean) {
+  public static animateCameraPath(cameraPoint: CameraPathPoint, viewport: Viewport, keyDown: boolean) {
     if (!keyDown)
       (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     else
       (viewport.view as ViewState3d).setEyePoint(cameraPoint.eyePoint);
     viewport.synchWithView();
-    await CameraPathApp.delay();
   }
 
   public static setViewFromPathPoint(cameraPoint: CameraPathPoint, viewport: Viewport) {
     (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
     viewport.synchWithView();
-  }
-
-  // For Delay between two Coordinates while animation is Active
-  public static async delay() {
-    return new Promise((resolve) => setTimeout(resolve, Math.pow(10, -4)));
   }
 
   // Turn the viewport camera on

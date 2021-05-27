@@ -27,6 +27,23 @@ const CameraPathApp: FunctionComponent = () => {
     setViewportOptions({ viewState });
   };
 
+  const uiConfig = {
+    ...default3DSandboxUi, navigationTools: {
+      verticalItems: {
+        walkView: false,
+        cameraView: false,
+      },
+      horizontalItems: {
+        rotateView: false,
+        panView: false,
+        fitView: false,
+        windowArea: false,
+        undoView: false,
+        redoView: false,
+      },
+    },
+  };
+
   /** The sample's render method */
   return (
     <>
@@ -38,7 +55,7 @@ const CameraPathApp: FunctionComponent = () => {
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
           viewportOptions={viewportOptions}
           onIModelConnected={_oniModelReady}
-          defaultUiConfig={default3DSandboxUi}
+          defaultUiConfig={uiConfig}
           theme="dark"
           uiProviders={uiProviders}
         />

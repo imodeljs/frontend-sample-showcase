@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useActiveViewport } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
@@ -9,14 +9,12 @@ import "./CameraPath.scss";
 
 const CameraPathWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
-  const [lookAround, setLookAround] = useState<boolean>(true);
   const [cameraPath, setCameraPath] = useState<CameraPath>(CameraPath.createByLoadingFromJson("TrainPath"));
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [speedLevel, setSpeedLevel] = useState<string>("3 Mph: Walking");
   const [currentSpeed, setCurrentSpeed] = useState<number>(1.4);
-  const [isMouseWheelAnimationActive, setIsMouseWheelAnimationActive] = useState<boolean>(false);
-  const [keyDown, setKeyDown] = useState<boolean>(false);
+  const keyDown = useRef<boolean>(false);
 
   /** Initalize the camera namespace on widget load */
   useEffect(() => {
@@ -30,11 +28,11 @@ const CameraPathWidget: React.FunctionComponent = () => {
   }, []);
 
   const handleUnlockDirection = (isKeyDown: boolean) => {
-    setKeyDown(isKeyDown);
+    keyDown.current = isKeyDown;
   };
 
   const _handleScrollPath = useCallback(async (eventDeltaY: number) => {
-    if (viewport === undefined)
+    if (viewport === undefined || cameraPath === undefined)
       return;
     const stepLength = (cameraPath.getLength() / 10) / 30;
     let cameraPathIterationValue: number = sliderValue;
@@ -47,16 +45,12 @@ const CameraPathWidget: React.FunctionComponent = () => {
       if (cameraPathIterationValue < 0)
         cameraPathIterationValue = 0;
     }
-    setIsMouseWheelAnimationActive(true);
-    setSliderValue(cameraPathIterationValue);
+
+    setIsPaused(true);
     const nextPathFraction = cameraPath.advanceAlongPath(cameraPathIterationValue, stepLength);
     const nextPathPoint = cameraPath.getPathPoint(nextPathFraction);
-    await CameraPathApi.animateCameraPath(nextPathPoint, viewport, keyDown);
+    CameraPathApi.animateCameraPath(nextPathPoint, viewport, keyDown.current);
     setSliderValue(nextPathFraction);
-    if (sliderValue === 1) {
-      setIsPaused(true);
-      setIsMouseWheelAnimationActive(false);
-    }
   }, [viewport, cameraPath, sliderValue, keyDown]);
 
   const handleScrollAnimation = useCallback((eventDeltaY: number) => {
@@ -77,36 +71,52 @@ const CameraPathWidget: React.FunctionComponent = () => {
     IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection);
   }, [handleScrollAnimation]);
 
-  /** Turn the camera on, and initalize the tool */
-  useEffect(() => {
-    if (viewport && cameraPath) {
-      viewport.turnCameraOn();
-      toolActivation();
-      CameraPathApi.prepareView(viewport);
-    }
-  }, [viewport, cameraPath, toolActivation]);
-
   /** When the slider Value is changed, change the view to reflect the position in the path */
   useEffect(() => {
-    if (viewport && cameraPath && !isMouseWheelAnimationActive) {
+    if (viewport && cameraPath && isPaused) {
       const nextPathPoint = cameraPath.getPathPoint(sliderValue);
       CameraPathApi.setViewFromPathPoint(nextPathPoint, viewport);
+      viewport.synchWithView();
     }
-  }, [viewport, sliderValue, cameraPath, isMouseWheelAnimationActive]);
+  }, [viewport, sliderValue, cameraPath, isPaused]);
 
-  /** When the slider value changes, and the the user is currently playing, advance to the next point in the path at the current speed */
+  /** Turn the camera on, and initalize the tool */
   useEffect(() => {
-    if (!isPaused && sliderValue < 1 && !isMouseWheelAnimationActive) {
-      const nextPathFraction = cameraPath.advanceAlongPath(sliderValue, currentSpeed / 30);
-      const nextPathPoint = cameraPath.getPathPoint(nextPathFraction);
-      CameraPathApi.animateCameraPath(nextPathPoint, viewport!, keyDown)
-        .then(() => {
-          setSliderValue(nextPathFraction);
-        });
-    } else if (sliderValue >= 1 && !isPaused) {
-      setIsPaused(true);
+    if (viewport) {
+      //viewport.turnCameraOn();
+      toolActivation();
+      //CameraPathApi.prepareView(viewport);
+      //setCameraPath(CameraPath.createByLoadingFromJson("TrainPath"));
     }
-  }, [sliderValue, isPaused, cameraPath, currentSpeed, viewport, keyDown, isMouseWheelAnimationActive]);
+  }, [toolActivation, viewport]);
+
+  useEffect(() => {
+    let animID: number;
+    if (!isPaused && cameraPath && viewport) {
+      const animate = (currentPathFraction: number) => {
+        if (currentPathFraction < 1) {
+          const nextPathFraction = cameraPath.advanceAlongPath(currentPathFraction, currentSpeed / 30);
+          const nextPathPoint = cameraPath.getPathPoint(nextPathFraction);
+          console.log(`keydown.current: ${keyDown.current}`);
+          CameraPathApi.animateCameraPath(nextPathPoint, viewport, false);
+          setSliderValue(nextPathFraction);
+          animID = requestAnimationFrame(() => {
+            animate(nextPathFraction);
+          });
+        } else {
+          setIsPaused(true);
+        }
+      };
+      animID = requestAnimationFrame(() => animate(sliderValue));
+    }
+    return () => {
+      if (animID) {
+        cancelAnimationFrame(animID);
+      }
+    };
+    // This effect should NOT be called when the sliderValue is changed because the animate value sets the slider value. It is only needed on inital call.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cameraPath, currentSpeed, isPaused, viewport]);
 
   // This common function is used to create the react components for each row of the UI.
   const _createJSXElementForAttribute = (label: string, element: JSX.Element) => {
@@ -119,9 +129,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
   };
 
   const _onChangeCameraSliderValue = (sliderNumber: number) => {
-    if (!isPaused) {
-      setIsPaused(true);
-    }
+    setIsPaused(true);
     setSliderValue(sliderNumber);
   };
 
@@ -138,24 +146,23 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   // Update the States for the Play / Pause button click event
   const _handleCameraPlay = () => {
-    const isCameraPaused = !isPaused;
-    if (!isCameraPaused && sliderValue === 1) {
+    if (sliderValue >= 1) {
       setSliderValue(0);
     }
-    setIsPaused(isCameraPaused);
-    setIsMouseWheelAnimationActive(false);
+    setIsPaused(!isPaused);
   };
 
   // Handle the Path Change
   const _onChangeRenderPath = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSliderValue(0);
+    setIsPaused(true);
     setCameraPath(CameraPath.createByLoadingFromJson(event.target.value));
   };
 
   // Create the react components for the  Paths
   const _createRenderPath = (label: string) => {
     const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" };
-    const element = <Select style={{ width: "fit-content", marginLeft: "12px" }} disabled={!isPaused} onChange={_onChangeRenderPath} options={options} />;
+    const element = <Select style={{ width: "fit-content", marginLeft: "12px" }} onChange={_onChangeRenderPath} options={options} />;
     return _createJSXElementForAttribute(label, element);
   };
 
