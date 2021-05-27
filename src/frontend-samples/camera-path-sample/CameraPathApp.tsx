@@ -28,7 +28,8 @@ const CameraPathApp: FunctionComponent = () => {
   };
 
   const uiConfig = {
-    ...default3DSandboxUi, navigationTools: {
+    ...default3DSandboxUi,
+    navigationTools: {
       verticalItems: {
         walkView: false,
         cameraView: false,

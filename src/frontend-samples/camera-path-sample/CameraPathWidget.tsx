@@ -41,15 +41,14 @@ const CameraPathWidget: React.FunctionComponent = () => {
       const stepLength = (cameraPath.getLength() / 10) / 30;
       let cameraPathIterationValue: number = prevSliderValue;
 
-      if (eventDeltaY > 0) {
+      if (eventDeltaY > 0)
         cameraPathIterationValue += 0.009;
-        if (cameraPathIterationValue > 1)
-          cameraPathIterationValue = 1;
-      } else if (eventDeltaY < 0) {
+      else
         cameraPathIterationValue -= 0.009;
-        if (cameraPathIterationValue < 0)
-          cameraPathIterationValue = 0;
-      }
+
+      // If we go over
+      if (cameraPathIterationValue > 1) cameraPathIterationValue = 1;
+      if (cameraPathIterationValue < 0) cameraPathIterationValue = 0;
 
       setIsPaused(true);
       const nextPathFraction = cameraPath.advanceAlongPath(cameraPathIterationValue, stepLength);
@@ -80,7 +79,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
       // We will use this method to activate the CameraPathTool
       // The CameraPathTool will prevent the view tool and standard mouse events
-      IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection);
+      setTimeout(() => { IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection); }, 10);
     }
   }, [handleScrollAnimation, viewport]);
 

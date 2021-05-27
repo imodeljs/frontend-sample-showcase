@@ -24,7 +24,7 @@ export default class CameraPathApp {
   }
 
   // Turn the viewport camera on
-  public static async prepareView( vp: Viewport) {
+  public static prepareView( vp: Viewport) {
     vp.turnCameraOn();
     vp.synchWithView();
   }
