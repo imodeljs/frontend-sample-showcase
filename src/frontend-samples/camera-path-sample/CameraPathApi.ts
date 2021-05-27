@@ -2,8 +2,6 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
-import "common/samples-common.scss";
 import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
 import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
@@ -16,16 +14,12 @@ export interface CameraPathPoint {
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class CameraPathApp {
 
-  public static animateCameraPath(cameraPoint: CameraPathPoint, viewport: Viewport, keyDown: boolean) {
-    if (!keyDown)
-      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
-    else
+  public static changeCameraPositionAndTarget(cameraPoint: CameraPathPoint, viewport: Viewport, changeCameraTargetOnly: boolean = false) {
+    if (changeCameraTargetOnly){
       (viewport.view as ViewState3d).setEyePoint(cameraPoint.eyePoint);
-    viewport.synchWithView();
-  }
-
-  public static setViewFromPathPoint(cameraPoint: CameraPathPoint, viewport: Viewport) {
-    (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+    } else {
+      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+    }
     viewport.synchWithView();
   }
 

@@ -34,61 +34,55 @@ const CameraPathWidget: React.FunctionComponent = () => {
   const _handleScrollPath = useCallback(async (eventDeltaY: number) => {
     if (viewport === undefined || cameraPath === undefined)
       return;
-    const stepLength = (cameraPath.getLength() / 10) / 30;
-    let cameraPathIterationValue: number = sliderValue;
-    if (eventDeltaY > 0) {
-      cameraPathIterationValue += 0.009;
-      if (cameraPathIterationValue > 1)
-        cameraPathIterationValue = 1;
-    } else if (eventDeltaY < 0) {
-      cameraPathIterationValue -= 0.009;
-      if (cameraPathIterationValue < 0)
-        cameraPathIterationValue = 0;
-    }
+    setSliderValue((prevSliderValue) => {
+      if (((prevSliderValue === 1) && (eventDeltaY > 0)) || ((prevSliderValue === 0) && (eventDeltaY < 0)))
+        return prevSliderValue;
 
-    setIsPaused(true);
-    const nextPathFraction = cameraPath.advanceAlongPath(cameraPathIterationValue, stepLength);
-    const nextPathPoint = cameraPath.getPathPoint(nextPathFraction);
-    CameraPathApi.animateCameraPath(nextPathPoint, viewport, keyDown.current);
-    setSliderValue(nextPathFraction);
-  }, [viewport, cameraPath, sliderValue, keyDown]);
+      const stepLength = (cameraPath.getLength() / 10) / 30;
+      let cameraPathIterationValue: number = prevSliderValue;
+
+      if (eventDeltaY > 0) {
+        cameraPathIterationValue += 0.009;
+        if (cameraPathIterationValue > 1)
+          cameraPathIterationValue = 1;
+      } else if (eventDeltaY < 0) {
+        cameraPathIterationValue -= 0.009;
+        if (cameraPathIterationValue < 0)
+          cameraPathIterationValue = 0;
+      }
+
+      setIsPaused(true);
+      const nextPathFraction = cameraPath.advanceAlongPath(cameraPathIterationValue, stepLength);
+      const nextPathPoint = cameraPath.getPathPoint(nextPathFraction);
+      CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport, keyDown.current);
+
+      return nextPathFraction;
+    });
+  }, [viewport, cameraPath, keyDown]);
 
   const handleScrollAnimation = useCallback((eventDeltaY: number) => {
-    if (((sliderValue === 1) && (eventDeltaY > 0)) || ((sliderValue === 0) && (eventDeltaY < 0)))
-      return;
-
-    // If the user interrupts the animation with a scroll, pause it.
-    if (!isPaused) {
-      setIsPaused(true);
-    }
-
+    setIsPaused(true);
     _handleScrollPath(eventDeltaY);
-  }, [_handleScrollPath, isPaused, sliderValue]);
-
-  // We will use this method to activate the CameraPathTool
-  // The CameraPathTool will prevent the view tool and standard mouse events
-  const toolActivation = useCallback(() => {
-    IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection);
-  }, [handleScrollAnimation]);
+  }, [_handleScrollPath]);
 
   /** When the slider Value is changed, change the view to reflect the position in the path */
   useEffect(() => {
     if (viewport && cameraPath && isPaused) {
       const nextPathPoint = cameraPath.getPathPoint(sliderValue);
-      CameraPathApi.setViewFromPathPoint(nextPathPoint, viewport);
-      viewport.synchWithView();
+      CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport);
     }
   }, [viewport, sliderValue, cameraPath, isPaused]);
 
   /** Turn the camera on, and initalize the tool */
   useEffect(() => {
     if (viewport) {
-      //viewport.turnCameraOn();
-      toolActivation();
-      //CameraPathApi.prepareView(viewport);
-      //setCameraPath(CameraPath.createByLoadingFromJson("TrainPath"));
+      CameraPathApi.prepareView(viewport);
+
+      // We will use this method to activate the CameraPathTool
+      // The CameraPathTool will prevent the view tool and standard mouse events
+      IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection);
     }
-  }, [toolActivation, viewport]);
+  }, [handleScrollAnimation, viewport]);
 
   useEffect(() => {
     let animID: number;
@@ -97,8 +91,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
         if (currentPathFraction < 1) {
           const nextPathFraction = cameraPath.advanceAlongPath(currentPathFraction, currentSpeed / 30);
           const nextPathPoint = cameraPath.getPathPoint(nextPathFraction);
-          console.log(`keydown.current: ${keyDown.current}`);
-          CameraPathApi.animateCameraPath(nextPathPoint, viewport, false);
+          CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport, keyDown.current);
           setSliderValue(nextPathFraction);
           animID = requestAnimationFrame(() => {
             animate(nextPathFraction);
@@ -195,19 +188,6 @@ const CameraPathWidget: React.FunctionComponent = () => {
     const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
     return _createJSXElementForAttribute(label, element);
   };
-
-  // const selectToolActivation = () => {
-  //   IModelApp.toolAdmin.startDefaultTool();
-  // };
-
-  // useEffect(() => {
-  //   //toolActivation();
-  //   if (lookAround) {
-  //     toolActivation();
-  //   } else {
-  //     selectToolActivation();
-  //   }
-  // }, [lookAround, toolActivation]);
 
   return (
     <div className="sample-options">
