@@ -11,7 +11,6 @@ import { AuthorizationClient } from "@itwinjs-sandbox";
 export default class ClashDetectionApis {
 
   // Retrieves a list of Design Validation tests for the project specified by the project id.
-  // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-tests
   public static async getProjectValidationTests(requestContext: AuthorizedClientRequestContext, projectId: string): Promise<any | undefined> {
     const accessToken = await ClashDetectionApis.getAccessToken();
     if (accessToken === undefined)
@@ -37,7 +36,6 @@ export default class ClashDetectionApis {
   }
 
   // Retrieves a list of Design Validation runs for the project specified by the project id.
-  // https://developer.bentley.com/api-operations?group=administration&api=projects&operation=get-project-validation-runs
   public static async getProjectValidationRuns(requestContext: AuthorizedClientRequestContext, projectId: string): Promise<any | undefined> {
     const accessToken = await ClashDetectionApis.getAccessToken();
     if (accessToken === undefined)
@@ -61,8 +59,6 @@ export default class ClashDetectionApis {
   }
 
   // Gets the response body for the specified validation URL.
-  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-test
-  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result
   public static async getValidationUrlResponse(requestContext: AuthorizedClientRequestContext, url: string) {
     if (url === undefined)
       return undefined;
@@ -104,8 +100,6 @@ export default class ClashDetectionApis {
   // }
   // You can pass the URL returned in the href to the following function:
   //   const response = ClashDetectionApis.getValidationUrlResponse(body._links.run.href);
-  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/run-validation-test
-  // https://dev-developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-run
   public static async runValidationTest(requestContext: AuthorizedClientRequestContext, iModelId: string, testId: string) {
     if (testId === undefined)
       return undefined;

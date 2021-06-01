@@ -32,7 +32,6 @@ const ClashReviewApp: FunctionComponent = () => {
       { /* Viewport to display the iModel */}
       {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
-          productId="2686"
           contextId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
