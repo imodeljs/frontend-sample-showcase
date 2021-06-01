@@ -3,10 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-
+const path = require("path");
 const {
   override,
   addWebpackPlugin,
+  // addWebpackModuleRule,
 } = require("customize-cra");
 
 /* config-overrides.js */
@@ -25,6 +26,18 @@ module.exports = function (config, env) {
   config.resolve.alias = {
     "monaco-editor": "monaco-editor/esm/vs/editor/editor.api.js"
   }
+
+  config.module.rules.unshift({
+    test: /frontend-samples.*\.(ts|tsx)$/,
+    enforce: "post",
+    loader: path.resolve("./annotation-loader/index.js"),
+    options: {
+      start: /^\s*\/\/\s*(?:START)\s*ANNOTATION\s*[0-9]+\s*$/i,
+      end: /^\s*\/\/\s*(?:END)\s*ANNOTATION\s*[0-9]+\s*$/i,
+      identifier: /[0-9]+/i,
+      replace: "",
+    }
+  });
 
   return Object.assign(config, override(
     addWebpackPlugin(new MonacoWebpackPlugin({
