@@ -10,10 +10,10 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     name: "custom-node-loading-sample",
     label: "Custom Node Loading Tree",
     image: "custom-node-loading-tree-thumbnail.png",
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("-!raw-loader!./readme.md"),
     files: () => [
-      { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp") },
-      { name: "CustomNodeLoadingTreeUI.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
+      { name: "CustomNodeLoadingTreeApp.tsx", import: import("-!raw-loader!./CustomNodeLoadingTreeApp") },
+      { name: "CustomNodeLoadingTreeUI.tsx", import: import("-!raw-loader!./CustomNodeLoadingTreeUI"), entry: true },
     ],
     type: "CustomNodeLoadingTreeUI.tsx",
   });

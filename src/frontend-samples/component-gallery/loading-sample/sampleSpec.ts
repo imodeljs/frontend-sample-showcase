@@ -12,9 +12,9 @@ export function getLoadingSpec(): SampleSpec {
     label: "UI-Loading Icons",
     image: "ui-loading-thumbnail.png",
     iModelList: [],
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("-!raw-loader!./readme.md"),
     files: () => [
-      { name: "Loading.tsx", import: import("!!raw-loader!./Loading"), entry: true },
+      { name: "Loading.tsx", import: import("-!raw-loader!./Loading"), entry: true },
     ],
     type: "Loading.tsx",
   });

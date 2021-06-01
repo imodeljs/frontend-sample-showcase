@@ -28,12 +28,12 @@ module.exports = function (config, env) {
   }
 
   config.module.rules.unshift({
-    test: /frontend-samples.*\.(ts|tsx)$/,
+    test: /frontend-samples.*\.(ts|tsx|scss)$/,
     enforce: "post",
     loader: path.resolve("./annotation-loader/index.js"),
     options: {
-      start: /^\s*\/\/\s*(?:START)\s*ANNOTATION\s*[0-9]+\s*$/i,
-      end: /^\s*\/\/\s*(?:END)\s*ANNOTATION\s*[0-9]+\s*$/i,
+      start: /\/\/\s*(?:START)\s*ANNOTATION\s*[0-9]+/i,
+      end: /\/\/\s*(?:END)\s*ANNOTATION\s*[0-9]+/i,
       identifier: /[0-9]+/i,
       replace: "",
     }

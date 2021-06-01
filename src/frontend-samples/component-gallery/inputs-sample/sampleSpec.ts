@@ -12,10 +12,10 @@ export function getInputsSpec(): SampleSpec {
     label: "UI-Inputs",
     image: "ui-inputs-thumbnail.png",
     iModelList: [],
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("-!raw-loader!./readme.md"),
     files: () => [
-      { name: "Inputs.tsx", import: import("!!raw-loader!./Inputs"), entry: true },
-      { name: "SampleImageCheckBox.tsx", import: import("!!raw-loader!./SampleImageCheckBox") },
+      { name: "Inputs.tsx", import: import("-!raw-loader!./Inputs"), entry: true },
+      { name: "SampleImageCheckBox.tsx", import: import("-!raw-loader!./SampleImageCheckBox") },
     ],
     type: "Inputs.tsx",
   });

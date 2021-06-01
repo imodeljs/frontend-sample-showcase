@@ -11,10 +11,10 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     label: "Custom Checkboxes Tree",
     image: "custom-checkboxes-tree-thumbnail.png",
     iModelList: [],
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("-!raw-loader!./readme.md"),
     files: () => [
-      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp") },
-      { name: "CustomCheckboxesTreeUI.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeUI"), entry: true },
+      { name: "CustomCheckboxesTreeApp.tsx", import: import("-!raw-loader!./CustomCheckboxesTreeApp") },
+      { name: "CustomCheckboxesTreeUI.tsx", import: import("-!raw-loader!./CustomCheckboxesTreeUI"), entry: true },
     ],
     type: "CustomCheckboxesTreeUI.tsx",
   });

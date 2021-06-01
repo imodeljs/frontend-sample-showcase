@@ -12,9 +12,9 @@ export function getToggleSpec(): SampleSpec {
     label: "UI-Toggles",
     image: "ui-toggle-thumbnail.png",
     iModelList: [],
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("-!raw-loader!./readme.md"),
     files: () => [
-      { name: "Toggle.tsx", import: import("!!raw-loader!./Toggle"), entry: true },
+      { name: "Toggle.tsx", import: import("-!raw-loader!./Toggle"), entry: true },
     ],
     type: "Toggle.tsx",
   });

@@ -11,10 +11,10 @@ export function getViewportFrontstageSample(): SampleSpec {
     name: "viewport-frontstage-sample",
     label: "Viewport Frontstage",
     image: "viewport-frontstage-thumbnail.png",
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("-!raw-loader!./readme.md"),
     iTwinViewerReady: true,
     files: () => [
-      { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
+      { name: "ViewportFrontstageSample.tsx", import: import("-!raw-loader!./ViewportFrontstageApp"), entry: true },
     ],
     iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "ViewportFrontstageApp.tsx",
