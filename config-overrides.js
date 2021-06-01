@@ -32,8 +32,8 @@ module.exports = function (config, env) {
     enforce: "post",
     loader: path.resolve("./annotation-loader/index.js"),
     options: {
-      start: /\/\/\s*(?:START)\s*ANNOTATION\s*[0-9]+/i,
-      end: /\/\/\s*(?:END)\s*ANNOTATION\s*[0-9]+/i,
+      start: /(?:START)\s*ANNOTATION\s*[0-9]+/i,
+      end: /(?:END)\s*ANNOTATION\s*[0-9]+/i,
       identifier: /[0-9]+/i,
       replace: "",
     }

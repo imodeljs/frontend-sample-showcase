@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-const METADATA_REGEX = /\[_metadata_:(.*)\]:-\s*\".*\"/i;
+const METADATA_REGEX = /(?:\#\s+(.*))|(?:\[_metadata_:(.*)\]:-\s*\".*\")/i;
 const TITLE_REGEX = /\#\s+(.*)/i
 const FILE_REGEX = /\[_metadata_:(?:file)\]:-\s*\"(.*)\"/i
 const SKIP_REGEX = /\[_metadata_:(?:skip)\]:-\s*\"(.*)\"/i
@@ -22,18 +22,16 @@ class AnnotationParser {
     const splitMarkdown = markdown.split("\n");
     splitMarkdown.forEach((line) => {
       const matches = line.match(METADATA_REGEX);
-      if (matches && matches[1]) {
+      if (matches && (matches[1] || matches[2])) {
         if (currentStep) {
           currentStep.markdown = markdownStack.join("\n");
           result.push(currentStep);
           currentStep = undefined;
           markdownStack = [];
         }
-        if (/file|skip|start|end/i.test(matches[1])) {
-          metadataStack.push(matches[0]);
-        }
-      } else if (!currentStep && TITLE_REGEX.test(line)) {
-        metadataStack.push(line);
+
+        metadataStack.push(matches[0]);
+
       } else if (!currentStep && line.length > 0 && metadataStack.length) {
         currentStep = AnnotationParser.deserializeStep(metadataStack, result.length);
         metadataStack = [];

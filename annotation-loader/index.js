@@ -5,7 +5,6 @@ const fs = require('fs');
 const path = require("path");
 
 function processChunk(source, map) {
-  this.cacheable()
 
   const options = getOptions(this)
   let newSource = source
