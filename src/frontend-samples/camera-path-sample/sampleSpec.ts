@@ -10,6 +10,7 @@ export function getViewCameraSpec(): SampleSpec {
     name: "Camera Path Sample",
     label: "Camera Path",
     image: "camera-path-thumbnail.png",
+    description: "#camera",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CameraPathUI.tsx", import: import("!!raw-loader!./CameraPathUI"), entry: true },

@@ -11,6 +11,7 @@ export function getClassifierSpec(): SampleSpec {
     name: "classifier-sample",
     label: "Classifiers",
     image: "classifier-thumbnail.png",
+    description: "#classifier",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
