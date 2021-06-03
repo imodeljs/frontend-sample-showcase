@@ -50,9 +50,9 @@ const optionsSchema = {
 }
 
 const defaultOptions = {
-  start: /START\s*[a-z0-9\_\-]+/,
-  end: /END\s*[a-z0-9\_\-]+/,
-  identifier: /(?:START|END)\s*([a-z0-9\_\-]+)/,
+  start: /START\s*[A-Z0-9\_\-]+/,
+  end: /END\s*[A-Z0-9\_\-]+/,
+  identifier: /(?:START|END)\s*([A-Z0-9\_\-]+)/,
   generatedFileName: "walkthrough.json",
 }
 
