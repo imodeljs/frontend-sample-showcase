@@ -5,7 +5,7 @@
 const getLoaderOptions = require('loader-utils').getOptions
 const { validate } = require('schema-utils')
 
-const loaderName = 'annotation-raw-loader'
+const loaderName = 'editor-file-loader'
 
 const optionsSchema = {
   type: 'object',

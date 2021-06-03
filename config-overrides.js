@@ -27,8 +27,8 @@ module.exports = function (config, env) {
   }
 
   config.resolveLoader.alias = {
-    "annotation-raw-loader": path.resolve(__dirname, "loaders/annotation-raw-loader/index.js"),
-    "annotation-loader": path.resolve(__dirname, "loaders/annotation-loader/index.js")
+    "editor-file-loader": path.resolve(__dirname, "loaders/editor-file-loader/index.js"),
+    "walkthrough-loader": path.resolve(__dirname, "loaders/walkthrough-loader/index.js")
   }
 
   return Object.assign(config, override(
