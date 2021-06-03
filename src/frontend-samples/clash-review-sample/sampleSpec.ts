@@ -11,7 +11,7 @@ export function getClashReviewSpec(): SampleSpec {
     name: "clash-review-sample",
     label: "Clash Review",
     image: "clashreview.png",
-    description: "#clash",
+    description: "Uses the #validation REST api to get and visualize #clash results.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "frontend-samples/clash-review-sample/ClashReviewApp.tsx", import: import("!!raw-loader!./ClashReviewApp.tsx") },

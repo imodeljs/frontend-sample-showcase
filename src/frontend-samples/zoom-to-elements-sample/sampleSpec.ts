@@ -11,6 +11,7 @@ export function getZoomToElementsSpec(): SampleSpec {
     name: "zoom-to-elements-sample",
     label: "Zoom to Elements",
     image: "zoom-to-elements-thumbnail.png",
+    description: "Uses #zoomToElement, #ZoomToOptions, and #ViewChangeOptions to center the view on element(s) of interest.",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
