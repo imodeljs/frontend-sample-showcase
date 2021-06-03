@@ -22,7 +22,7 @@ const optionsSchema = {
 }
 
 const defaultOptions = {
-  replace: /(?:START|END)\s*([a-z0-9\_\-]+)/i,
+  replace: /(?:START|END)\s*([a-z0-9\_\-]+)/,
 }
 
 module.exports = function getOptions(config) {
