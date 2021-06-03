@@ -1,7 +1,11 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 const getLoaderOptions = require('loader-utils').getOptions
 const { validate } = require('schema-utils')
 
-const loaderName = 'annotations-loader'
+const loaderName = 'annotation-loader'
 
 const optionsSchema = {
   type: 'object',
@@ -33,23 +37,30 @@ const optionsSchema = {
           type: 'string'
         }
       ]
+    },
+    generatedFileName: {
+      anyOf: [
+        {
+          type: 'string'
+        }
+      ]
     }
   },
   additionalProperties: false
 }
 
 const defaultOptions = {
-  start: null,
-  end: null,
-  replace: "",
-  identifier: /[0-9]+/i
+  start: /START\s*[a-z0-9\_\-]+/i,
+  end: /END\s*[a-z0-9\_\-]+/i,
+  identifier: /(?:START|END)\s*([a-z0-9\_\-]+)/i,
+  generatedFileName: "walkthrough.json",
 }
 
 module.exports = function getOptions(config) {
   const rawOptions = getLoaderOptions(config)
 
-  validate(optionsSchema, rawOptions, { name: loaderName })
   const options = Object.assign({}, defaultOptions, rawOptions)
+  validate(optionsSchema, options, { name: loaderName })
 
   return options
 }
