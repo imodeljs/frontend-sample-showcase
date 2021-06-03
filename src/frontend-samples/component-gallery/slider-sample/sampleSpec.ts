@@ -12,9 +12,9 @@ export function getSliderSpec(): SampleSpec {
     label: "UI-Sliders",
     image: "ui-sliders-thumbnail.png",
     iModelList: [],
-    readme: async () => import("-!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Slider.tsx", import: import("-!raw-loader!./Slider"), entry: true },
+      { name: "Slider.tsx", import: import("!!raw-loader!./Slider"), entry: true },
     ],
     type: "Slider.tsx",
   });

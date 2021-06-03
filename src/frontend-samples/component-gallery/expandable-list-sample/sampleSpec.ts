@@ -12,10 +12,10 @@ export function getExpandableListSpec(): SampleSpec {
     label: "UI-Expandable Lists",
     image: "ui-expandable-list-thumbnail.png",
     iModelList: [],
-    readme: async () => import("-!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ExpandableList.tsx", import: import("-!raw-loader!./ExpandableList"), entry: true },
-      { name: "SampleExpandableBlock.tsx", import: import("-!raw-loader!./SampleExpandableBlock") },
+      { name: "ExpandableList.tsx", import: import("!!raw-loader!./ExpandableList"), entry: true },
+      { name: "SampleExpandableBlock.tsx", import: import("!!raw-loader!./SampleExpandableBlock") },
     ],
     type: "ExpandableList.tsx",
   });

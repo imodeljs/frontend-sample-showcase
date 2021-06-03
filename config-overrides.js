@@ -26,20 +26,6 @@ module.exports = function (config, env) {
     "monaco-editor": "monaco-editor/esm/vs/editor/editor.api.js"
   }
 
-  // config.module.rules.unshift({
-  //   test: /reality-data-sample.*\.(ts|tsx|scss|md)$/,
-  //   enforce: "pre",
-  //   loader: path.resolve("./annotation-loader/index.js"),
-  //   options: {
-  //     annotationFileName: "annotations.md",
-  //     generatedFileName: "walkthrough.json",
-  //     start: /START\s*[a-z0-9\_\-]+/i,
-  //     end: /END\s*[a-z0-9\_\-]+/i,
-  //     identifier: /(?:START|END)\s*([a-z0-9\_\-]+)/i,
-  //     replace: "",
-  //   }
-  // });
-
   config.resolveLoader.alias = {
     "annotation-raw-loader": path.resolve(__dirname, "loaders/annotation-raw-loader/index.js"),
     "annotation-loader": path.resolve(__dirname, "loaders/annotation-loader/index.js")

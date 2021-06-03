@@ -11,12 +11,12 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     label: "Unified Selection Tree",
     image: "unified-selection-tree-thumbnail.png",
     iTwinViewerReady: true,
-    readme: async () => import("-!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "UnifiedSelectionTreeWidget.tsx", import: import("-!raw-loader!./UnifiedSelectionTreeWidget") },
-      { name: "UnifiedSelectionTreeApp.tsx", import: import("-!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
-      { name: "TreeHierarchy.ts", import: import("-!raw-loader!./TreeHierarchy.ts") },
-      { name: "UnifiedSelectionTree.scss", import: import("-!raw-loader!./UnifiedSelectionTree.scss") },
+      { name: "UnifiedSelectionTreeWidget.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeWidget") },
+      { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
+      { name: "TreeHierarchy.ts", import: import("!!raw-loader!./TreeHierarchy.ts") },
+      { name: "UnifiedSelectionTree.scss", import: import("!!raw-loader!./UnifiedSelectionTree.scss") },
     ],
     type: "UnifiedSelectionTreeApp.tsx",
   });

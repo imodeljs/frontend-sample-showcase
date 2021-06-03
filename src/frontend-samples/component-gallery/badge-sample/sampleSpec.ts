@@ -11,10 +11,10 @@ export function getBadgeSpec(): SampleSpec {
     name: "badge-sample",
     label: "UI-Badges",
     image: "ui-badge-thumbnail.png",
-    readme: async () => import("-!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [
-      { name: "Badge.tsx", import: import("-!raw-loader!./Badge"), entry: true },
+      { name: "Badge.tsx", import: import("!!raw-loader!./Badge"), entry: true },
     ],
     type: "Badge.tsx",
   });

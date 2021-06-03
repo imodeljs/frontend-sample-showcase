@@ -11,13 +11,13 @@ export function getSwipingComparisonSpec(): SampleSpec {
     name: "swiping-viewport-sample",
     label: "Swiping Comparison",
     image: "swiping-viewport-thumbnail.png",
-    readme: async () => import("-!raw-loader!./README.md"),
+    readme: async () => import("!!raw-loader!./README.md"),
     iModelList: [SampleIModels.ExtonCampus],
     files: () => [
-      { name: "SwipingComparisonApp.tsx", import: import("-!raw-loader!./SwipingComparisonApp") },
-      { name: "SwipingComparisonUI.tsx", import: import("-!raw-loader!./SwipingComparisonUI"), entry: true },
-      { name: "Divider.tsx", import: import("-!raw-loader!./Divider") },
-      { name: "Divider.scss", import: import("-!raw-loader!./Divider.scss") },
+      { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp") },
+      { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI"), entry: true },
+      { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
+      { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
     ],
     type: "SwipingComparisonUI.tsx",
   });

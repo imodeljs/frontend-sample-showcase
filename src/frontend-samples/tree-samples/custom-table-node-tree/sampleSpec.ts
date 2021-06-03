@@ -11,11 +11,11 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     label: "Custom Table Node Tree",
     image: "custom-table-node-tree-thumbnail.png",
     iModelList: [],
-    readme: async () => import("-!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CustomTableNodeTreeApp.tsx", import: import("-!raw-loader!./CustomTableNodeTreeApp") },
-      { name: "CustomTableNodeTreeUI.tsx", import: import("-!raw-loader!./CustomTableNodeTreeUI"), entry: true },
-      { name: "TableNodeTree.scss", import: import("-!raw-loader!./TableNodeTree.scss") },
+      { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
+      { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },
+      { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
     ],
     type: "CustomTableNodeTreeUI.tsx",
   });
