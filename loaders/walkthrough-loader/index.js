@@ -48,7 +48,9 @@ function processChunk(source, map) {
     }
   })
 
-  let result = JSON.stringify(walkthrough.sort(sort))
+  const sortedWalkthrough = walkthrough.sort(sort);
+
+  let result = JSON.stringify(sortedWalkthrough)
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
 
