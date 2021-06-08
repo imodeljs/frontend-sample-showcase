@@ -11,6 +11,7 @@ export function getReadSettingsSpec(): SampleSpec {
     name: "read-settings-sample",
     label: "Read Settings",
     image: "read-settings-thumbnail.png",
+    description: "Reads and writes custom #userSettings associated with an iModel",
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp") },

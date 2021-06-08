@@ -10,6 +10,7 @@ export function getImageExportSpec(): SampleSpec {
     name: "image-export-sample",
     label: "Image Export",
     image: "image-export-thumbnail.png",
+    description: "Exports visible viewport of iModel as PNG image. #ImageExport",
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ImageExportApi.ts", import: import("!!raw-loader!./ImageExportApi") },
