@@ -16,7 +16,7 @@ function SearchIndex() {
             groupName: group.groupName,
             sampleName: sample.name,
             description: sample.description ? sample.description : "",
-            tags: sample.description ? sample.description!.match(/#[a-z0-9]+/gi) : []
+            tags: sample.description ? sample.description.match(/#[a-z0-9]+/gi) : [],
             // readme: sample.readme ? (await sample.readme()).default : ""
           }
         );
