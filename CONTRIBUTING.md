@@ -5,6 +5,7 @@ To add sample code to the repo, there are a few steps required for it to functio
 ## SampleSpec
 
 Each sample is **required** to have a SampleSpec. The SampleSpec's serves three main purposes:
+
 1) Tell the showcase app which React Component needs to be rendered for the sample
 2) Provide files to the code editor
 3) Provide the link to the screenshot for the navigation carousel.
