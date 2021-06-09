@@ -10,6 +10,7 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     name: "custom-event-handler-tree-sample",
     label: "Custom Event Handler Tree",
     image: "custom-event-handler-tree-thumbnail.png",
+    description: "#Tree #sample showing how to create a tree with custom #events using a #TreeEventHandler.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

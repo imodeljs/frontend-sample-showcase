@@ -11,6 +11,7 @@ export function getBadgeSpec(): SampleSpec {
     name: "badge-sample",
     label: "UI-Badges",
     image: "ui-badge-thumbnail.png",
+    description: "#Component #sample showing different #styles of #badges.",
     readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [
