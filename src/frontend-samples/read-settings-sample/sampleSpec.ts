@@ -12,13 +12,15 @@ export function getReadSettingsSpec(): SampleSpec {
     label: "Read Settings",
     image: "read-settings-thumbnail.png",
     description: "Reads and writes custom #userSettings associated with an iModel",
+    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp") },
-      { name: "ReadSettingsUI.tsx", import: import("!!raw-loader!./ReadSettingsUI"), entry: true },
-      { name: "index.scss", import: import("!!raw-loader!./index.scss") },
+      { name: "ReadSettingsApi.ts", import: import("!!raw-loader!./ReadSettingsApi") },
+      { name: "ReadSettingsApp.tsx", import: import("!!raw-loader!./ReadSettingsApp"), entry: true },
+      { name: "ReadSettingsWidget.tsx", import: import("!!raw-loader!./ReadSettingsWidget") },
+      { name: "ReadSettings.scss", import: import("!!raw-loader!./ReadSettings.scss") },
     ],
     iModelList: [SampleIModels.BayTown],
-    type: "ReadSettingsUI.tsx",
+    type: "ReadSettingsApp.tsx",
   });
 }
