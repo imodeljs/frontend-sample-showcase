@@ -13,6 +13,7 @@ import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 const uiProviders = [new RealityDataWidgetProvider()];
 
 const RealityDataApp: FunctionComponent = () => {
+  // START VIEW_SETUP
   const sampleIModelInfo = useSampleWidget("Use the toggle below for displaying the reality data in the model.", [SampleIModels.ExtonCampus, SampleIModels.MetroStation]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
@@ -20,11 +21,13 @@ const RealityDataApp: FunctionComponent = () => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     setViewportOptions({ viewState });
   };
+  // END VIEW_SETUP
   /** The sample's render method */
   return (
     <>
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        // START VIEWER
         <Viewer
           contextId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
@@ -35,6 +38,7 @@ const RealityDataApp: FunctionComponent = () => {
           theme="dark"
           uiProviders={uiProviders}
         />
+        // END VIEWER
       }
     </>
   );

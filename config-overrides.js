@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-
+const path = require("path");
 const {
   override,
   addWebpackPlugin,
@@ -24,6 +24,11 @@ module.exports = function (config, env) {
   // https://github.com/Microsoft/monaco-editor-webpack-plugin/issues/43
   config.resolve.alias = {
     "monaco-editor": "monaco-editor/esm/vs/editor/editor.api.js"
+  }
+
+  config.resolveLoader.alias = {
+    "editor-file-loader": path.resolve(__dirname, "loaders/editor-file-loader/index.js"),
+    "walkthrough-loader": path.resolve(__dirname, "loaders/walkthrough-loader/index.js")
   }
 
   return Object.assign(config, override(

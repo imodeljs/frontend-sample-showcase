@@ -27,4 +27,5 @@ export interface SampleSpec {
   iModelList?: SampleIModels[];
   iTwinViewerReady?: boolean;
   type?: string;
+  walkthrough?: () => any;
 }
