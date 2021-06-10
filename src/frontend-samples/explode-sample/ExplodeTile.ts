@@ -591,7 +591,7 @@ export class ExplodedGraphicsTile extends Tile {
     const graphic = await readElementGraphics(data, tree.iModel, tree.modelId, tree.is3d);
 
     (this.tree as ExplodeTileTree).elementContentLoaded(this.data.elementId);
-    return { isLeaf: true, graphic } as TileContent;
+    return { isLeaf: true, graphic };
   }
 
   /** Updates the content range and transform applied to the graphics with a changed explode scaling. */

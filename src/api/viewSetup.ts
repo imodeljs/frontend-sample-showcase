@@ -132,13 +132,15 @@ export class ViewSetup {
   public static async getSubCategoryIds(iModel: IModelConnection, ...categoryCodes: string[]): Promise<Id64Set> {
     const subcategoriesIds = new Set<string>();
     if (!iModel.isClosed) {
-      const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""}`;
-      for await (const row of iModel.query(selectRelevantCategories)) {
-        /** Query the subcategories of the imodel */
-        const selectSubCategories = `SELECT ECInstanceId as id FROM BisCore.SubCategory WHERE Parent.Id IN (${row.id})`;
-        for await (const subRow of iModel.query(selectSubCategories)){
-          subcategoriesIds.add(subRow.id);
-        }
+      const selectSubCategories =  `SELECT ECInstanceId as id 
+                                    FROM BisCore.SubCategory 
+                                    WHERE Parent.Id IN (
+                                      SELECT ECInstanceId 
+                                      FROM BisCore.SpatialCategory 
+                                      ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""})`;
+
+      for await (const row of iModel.query(selectSubCategories)) {
+        subcategoriesIds.add(row.id);
       }
     }
     return subcategoriesIds;
