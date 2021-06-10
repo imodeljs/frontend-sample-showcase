@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthStatus, BeEvent, BentleyError, ClientRequestContext, Config } from "@bentley/bentleyjs-core";
-import { AccessToken } from "@bentley/itwin-client";
+import { AccessToken, AccessTokenProps } from "@bentley/itwin-client";
 import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
 
 export class AuthorizationClient implements FrontendAuthorizationClient {
@@ -99,12 +99,11 @@ export class AuthorizationClient implements FrontendAuthorizationClient {
     if (!this._devAccessToken) {
       const response = await fetch("https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
       const body = await response.json();
-      const tokenJson = {
-        ...await body,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _userInfo: { id: "MockId" },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _tokenString: body._jwt,
+      const tokenJson: AccessTokenProps = {
+        startsAt: body._startsAt,
+        expiresAt: body._expiresAt,
+        userInfo: { id: "MockId" },
+        tokenString: body._jwt,
       };
       this._devAccessToken = AccessToken.fromJson(tokenJson);
 
