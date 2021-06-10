@@ -6,7 +6,7 @@
 import { assert, BeEvent, BeTimePoint, ByteStream, compareStrings, Id64, partitionArray } from "@bentley/bentleyjs-core";
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
 import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileFormat, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { GraphicBranch, ImdlReader, IModelApp, IModelConnection, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
+import { GraphicBranch, IModelApp, IModelConnection, readElementGraphics, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
 import ExplodeApp from "./ExplodeApi";
 
 /** Data describing an element for the exploded effect. */
@@ -572,7 +572,7 @@ export class ExplodedGraphicsTile extends Tile {
   }
 
   /** Return a Promise that deserializes this tile's content from raw format produced by [[requestContent]]. */
-  public async readContent(data: TileRequest.ResponseData, system: RenderSystem, isCanceled?: () => boolean): Promise<TileContent> {
+  public async readContent(data: TileRequest.ResponseData, _system: RenderSystem, isCanceled?: () => boolean): Promise<TileContent> {
     if (undefined === isCanceled)
       isCanceled = () => !this.isLoading;
 
@@ -586,19 +586,12 @@ export class ExplodedGraphicsTile extends Tile {
     assert(TileFormat.IModel === format);
 
     const tree = this.tree;
-    const reader = ImdlReader.create(stream, tree.iModel, tree.modelId, tree.is3d, system, undefined, undefined, isCanceled, undefined, this.contentId);
 
-    let content: TileContent = { isLeaf: true };
-    if (reader) {
-      try {
-        content = await reader.read();
-      } catch (_) {
-        //
-      }
-    }
+    // When for next iModel.js update, the API will include an argument for batching options.  This should be set to the contentId.
+    const graphic = await readElementGraphics(data, tree.iModel, tree.modelId, tree.is3d);
 
     (this.tree as ExplodeTileTree).elementContentLoaded(this.data.elementId);
-    return content;
+    return { isLeaf: true, graphic } as TileContent;
   }
 
   /** Updates the content range and transform applied to the graphics with a changed explode scaling. */
