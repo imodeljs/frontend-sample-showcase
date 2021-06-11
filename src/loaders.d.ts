@@ -2,16 +2,7 @@
  * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
-interface AnnotationStep {
-  id: number;
-  startLineNumber: number;
-  endLineNumber: number;
-  title: string;
-  file: string;
-  markdown: string;
-  skip?: boolean;
-}
-
+import type { AnnotationStep } from "@bentley/monaco-editor";
 declare module "!walkthrough-loader!*" {
   const contents: AnnotationStep[];
   export = contents;

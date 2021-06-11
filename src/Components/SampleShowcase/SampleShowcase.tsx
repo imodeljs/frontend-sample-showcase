@@ -61,7 +61,9 @@ export const SampleShowcase: FunctionComponent = () => {
         files={activeSample.getFiles}
         onSampleClicked={onGalleryCardClicked}
         onTranspiled={(blob) => setTranspileResult(blob)}
-        readme={activeSample.getReadme} />
+        readme={activeSample.getReadme}
+        walkthrough={activeSample.walkthrough}
+      />
     </React.Suspense>
   );
 

@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import type { AnnotationStep } from "@bentley/monaco-editor";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { sampleManifest } from "sampleManifest";
@@ -22,6 +23,7 @@ export class ActiveSample {
   public iTwinViewerReady?: boolean;
   public getReadme?: () => Promise<{ default: string }>;
   public getFiles?: () => SampleSpecFile[];
+  public walkthrough?: AnnotationStep[];
   public type: string;
   public galleryVisible: boolean = true;
 
@@ -41,6 +43,7 @@ export class ActiveSample {
     this.iTwinViewerReady = result.spec.iTwinViewerReady;
     this.getFiles = result.spec.files;
     this.getReadme = result.spec.readme;
+    this.walkthrough = result.spec.walkthrough;
     this.type = result.spec.type || "";
 
     updateURLParams(this.group, this.name, this.imodel);
