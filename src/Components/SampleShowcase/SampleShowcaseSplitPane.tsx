@@ -122,7 +122,7 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
           {visualizer}
         </Pane>
       </SplitScreen >
-    )
+    );
 
   return (
     <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)}>

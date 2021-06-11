@@ -29,7 +29,7 @@ export const SampleShowcase: FunctionComponent = () => {
       galleryRef.current.scrollToActiveSample();
       setScrollTo(false);
     }
-  }, [scrollTo, galleryRef]);
+  }, [scrollTo, galleryRef, activeSample]);
 
   const onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
     if (transpileResult && !window.confirm("Changes made to the code will not be saved!")) {
