@@ -10,7 +10,7 @@ import { Range3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, SpatialClassificationProps } from "@bentley/imodeljs-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import { EmphasizeAction } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
+import { EmphasizeElementsApi } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApi";
 import ThematicDisplayApi from "../frontend-samples/thematic-display-sample/ThematicDisplayApi";
 import ViewClipApp from "../frontend-samples/view-clip-sample/ViewClipApi";
@@ -126,12 +126,12 @@ describe("Emphasize Elements", () => {
       const oldEmphasizedElms = emphasizeElem.getEmphasizedElements(vp);
       expect(oldEmphasizedElms).to.be.undefined;
 
-      // Select some elements and run EmphasizeAction
+      // Select some elements and run emphasizeSelectedElements
       const ids = new Set<string>();
       ids.add("0x1"); ids.add("0x2"); ids.add("0x3");
 
       vp.view.iModel.selectionSet.add(ids);
-      new EmphasizeAction(true).run();
+      EmphasizeElementsApi.emphasizeSelectedElements(true, vp);
 
       // Expect emphasized elements to be changed
       expect(emphasizeElem.getEmphasizedElements(vp)).to.not.equal(oldEmphasizedElms);
