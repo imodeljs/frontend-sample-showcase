@@ -25,7 +25,7 @@ export const SampleShowcase: FunctionComponent = () => {
   const galleryRef = React.createRef<SampleGallery>();
 
   useEffect(() => {
-    if (scrollTo && galleryRef.current) {
+    if (activeSample.galleryVisible && scrollTo && galleryRef.current) {
       galleryRef.current.scrollToActiveSample();
       setScrollTo(false);
     }
@@ -80,14 +80,14 @@ export const SampleShowcase: FunctionComponent = () => {
     </div>
   );
 
-  const gallery = (
+  const gallery = activeSample.galleryVisible ? (
     <SampleGallery
       group={activeSample.group}
       onChange={onGalleryCardClicked}
       ref={galleryRef}
       samples={sampleManifest}
       selected={activeSample.name} />
-  );
+  ) : undefined;
 
   return (
     <SampleShowcaseViewHandler editor={editor} visualizer={visualizer} gallery={gallery} />
