@@ -10,6 +10,7 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
     name: "heatmap-decorator-sample",
     label: "Heatmap Decorator",
     image: "heatmap-decorator-thumbnail.png",
+    description: "Uses a #Decorator to show a #heatmap as a #WorldOverlay on top of the viewport.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "HeatmapDecoratorApi.ts", import: import("!!raw-loader!./HeatmapDecoratorApi") },

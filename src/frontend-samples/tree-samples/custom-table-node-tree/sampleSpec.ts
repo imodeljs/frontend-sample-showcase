@@ -10,6 +10,7 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     name: "custom-table-node-tree-sample",
     label: "Custom Table Node Tree",
     image: "custom-table-node-tree-thumbnail.png",
+    description: "#Tree #sample showing how to override the default #node #rendering of a tree.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

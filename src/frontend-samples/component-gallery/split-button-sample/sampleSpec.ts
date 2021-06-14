@@ -11,6 +11,7 @@ export function getSplitButtonSpec(): SampleSpec {
     name: "split-button-sample",
     label: "UI-Split Buttons",
     image: "ui-split-button-thumbnail.png",
+    description: "#Component #sample showing different #styles of #split #buttons.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
