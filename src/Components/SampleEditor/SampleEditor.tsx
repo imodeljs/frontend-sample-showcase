@@ -11,6 +11,8 @@ import { EditorProps } from "./SampleEditorContext";
 import "./SampleEditor.scss";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import MonacoEditor from "./Monaco";
+import { useFeatureToggleClient } from "hooks/useFeatureToggleClient/UseFeatureToggleClient";
+import { FeatureFlags } from "FeatureToggleClient";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 
@@ -20,10 +22,11 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const [activityState, activityActions] = useActivityState();
   const [entryState, entryActions] = useEntryState();
   const [showReadme, setShowReadme] = React.useState<boolean>(true);
-  const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false);
   const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
-  const [displayWalkthrough, setDisplayWalkthrough] = React.useState<boolean>(false);
+  const [drawerSize, setDrawerSize] = React.useState<number>(0);
+  const [walkthroughSize, setWalkthroughSize] = React.useState<number>(0);
+  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.enableWalkthrough);
 
   React.useEffect(() => {
     if (files) {
@@ -65,42 +68,44 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   }, [activityActions, entryState, showReadme]);
 
   const _onDrawerOpened = React.useCallback(() => {
-    setDisplayDrawer(true);
+    setDrawerSize(200);
   }, []);
 
   const _onDrawerClosed = React.useCallback(() => {
-    setDisplayDrawer(false);
+    setDrawerSize(32);
   }, []);
 
   const _onDrawerChange = React.useCallback((size: number) => {
     if (size < 200) {
-      setDisplayDrawer(false);
+      _onDrawerClosed();
     } else {
-      setDisplayDrawer(true);
+      _onDrawerOpened();
     }
-  }, []);
+  }, [_onDrawerClosed, _onDrawerOpened]);
 
   const onOpenClick = React.useCallback(() => {
-    setDisplayWalkthrough(true);
+    setWalkthroughSize(200);
   }, []);
 
   const onCloseClick = React.useCallback(() => {
-    setDisplayWalkthrough(false);
+    setWalkthroughSize(32);
   }, []);
 
   const _onWalkthroughChange = React.useCallback((size: number) => {
-    if (size < 96) {
-      setDisplayWalkthrough(false);
+    if (walkthrough?.length) {
+      if (size < 96) {
+        onCloseClick();
+      } else {
+        onOpenClick();
+      }
     } else {
-      setDisplayWalkthrough(true);
+      setWalkthroughSize(0);
     }
-  }, []);
+  }, [onCloseClick, onOpenClick, walkthrough]);
 
-  const drawerMinSize = showReadme ? "0" : "35px";
-  const drawerSize = !showReadme ? displayDrawer ? "200px" : "35px" : "0";
+  const drawerMinSize = showReadme ? 0 : 35;
 
-  const walkthroughMinSize = displayWalkthrough ? "32px" : "0";
-  const walkthroughSize = walkthrough && !showReadme ? displayWalkthrough ? "200px" : "32px" : "0";
+  const walkthroughMinSize = walkthrough && !showReadme ? 32 : 0;
 
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
@@ -110,9 +115,12 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   return (
     <div className="sample-editor-container">
       <SplitScreen split="horizontal">
-        <Pane onChange={_onWalkthroughChange} snapSize={"96px"} minSize={walkthroughMinSize} maxSize={"250px"} size={walkthroughSize} disabled={!walkthrough || !displayWalkthrough} defaultSize={"0"}>
-          {walkthrough && <Annotations steps={walkthrough} show={displayWalkthrough} onOpenClick={onOpenClick} onCloseClick={onCloseClick} />}
-        </Pane>
+        {enableWalkthrough && walkthrough ?
+          <Pane onChange={_onWalkthroughChange} snapSize={"96px"} minSize={`${walkthroughMinSize}px`} maxSize={"250px"} size={walkthroughMinSize ? `${walkthroughSize}px` : `${walkthroughMinSize}px`} disabled={showReadme || !walkthrough || !walkthroughSize}>
+            <Annotations steps={walkthrough} show={walkthroughSize > 32} onOpenClick={onOpenClick} onCloseClick={onCloseClick} />
+          </Pane>
+          :
+          <Pane disabled defaultSize="0" />}
         <Pane className="sample-editor">
           <TabNavigation onRunCompleted={props.onTranspiled} showReadme={showReadme} onShowReadme={onShowReadme} />
           <div style={{ height: "100%" }}>
@@ -120,8 +128,8 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
             <MonacoEditor />
           </div>
         </Pane>
-        <Pane onChange={_onDrawerChange} snapSize={"200px"} minSize={drawerMinSize} maxSize={"50%"} size={drawerSize} disabled={showReadme || !displayDrawer} defaultSize={"0"}>
-          <Drawer active={displayDrawer} onDrawerClosed={_onDrawerClosed} onDrawerOpen={_onDrawerOpened} />
+        <Pane onChange={_onDrawerChange} snapSize={"200px"} minSize={`${drawerMinSize}px`} maxSize={"50%"} size={drawerMinSize ? `${drawerSize}px` : `${drawerMinSize}px`} disabled={showReadme || !drawerSize} defaultSize={"0"}>
+          <Drawer active={Boolean(drawerSize > drawerMinSize)} onDrawerClosed={_onDrawerClosed} onDrawerOpen={_onDrawerOpened} />
         </Pane>
       </SplitScreen>
     </div >
