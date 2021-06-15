@@ -10,9 +10,10 @@ import { assert, Guid } from "@bentley/bentleyjs-core";
  *  This simplifies maintenance consistency between flags defined in LaunchDarkly
  *  and used by the sample showcase.
  */
-export const featureFlags = {
-  enableEditor: "sample-showcase-code-editor",
-};
+export enum FeatureFlags {
+  enableEditor = "sample-showcase-code-editor",
+  enableWalkthrough = "sandbox-walkthrough",
+}
 
 export class FeatureToggleClient {
   private static readonly _ldClientSideIds: { [deploymentEnv: string]: string } = {
@@ -22,18 +23,18 @@ export class FeatureToggleClient {
   private static _ldClient?: LDClient;
   private static _offlineValue: boolean = false;
 
-  public static isFeatureEnabled(featureKey: string, defaultValue?: boolean): boolean {
+  public static async isFeatureEnabled(featureKey: string, defaultValue?: boolean): Promise<boolean> {
     if (!FeatureToggleClient._ldClient)
-      return false;
+      await FeatureToggleClient.initialize();
 
     return FeatureToggleClient.evaluateFeature(featureKey, !!defaultValue ? defaultValue : FeatureToggleClient._offlineValue) as boolean;
   }
 
-  public static async initialize(): Promise<void> {
-    assert(!FeatureToggleClient._ldClient, "FeatureToggleClient.initialize must not be called twice.");
-    const ldClient: LDClient = initialize(FeatureToggleClient._ldClientSideIds.DEPLOYED, { key: Guid.createValue(), anonymous: true }, { evaluationReasons: false, streaming: false, sendLDHeaders: false });
-    await ldClient.waitUntilReady();
-    FeatureToggleClient._ldClient = ldClient;
+  private static async initialize(): Promise<void> {
+    if (!FeatureToggleClient._ldClient) {
+      FeatureToggleClient._ldClient = initialize(FeatureToggleClient._ldClientSideIds.DEPLOYED, { key: Guid.createValue(), anonymous: true }, { evaluationReasons: false, streaming: false, sendLDHeaders: false });
+    }
+    await FeatureToggleClient._ldClient.waitUntilReady();
   }
 
   private static evaluateFeature(featureKey: string, defaultValue?: LDFlagValue): LDFlagValue {
