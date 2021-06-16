@@ -33,18 +33,6 @@ const updateiModelParam = (imodel?: string, context?: string) => {
 
   setOrDeleteParam("context", context);
   setOrDeleteParam("imodel", imodel);
-
-  // Detect if editor was enabled in URL params as a semi-backdoor, this
-  // bypasses the ld feature flag
-  const editorEnabled = new URLSearchParams(window.location.search).get("editor");
-  if (editorEnabled) params.append("editor", editorEnabled);
-
-  window.history.pushState(null, "", `?${params.toString()}`);
-
-  // Send to parent if within an iframe.
-  if (window.self !== window.top) {
-    window.parent.postMessage(`?${params.toString()}`, "*");
-  }
 };
 
 export type setSampleIModelParam = (iModel?: (SampleIModels | SampleIModelWithAlternativeName)) => void;
