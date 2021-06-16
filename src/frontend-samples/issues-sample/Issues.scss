@@ -1,0 +1,247 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+@import "~@bentley/ui-core/lib/ui-core/index";
+
+.sample-options {
+    color: var(--buic-foreground-body);
+    padding: 8px;
+  }
+
+.issue-list-header {
+    padding: 6px;
+    border-bottom: 1px solid $buic-background-divider;
+
+    > span {
+        font-size: $uicore-font-size-leading;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        text-decoration: none;
+        color: $buic-foreground-body;
+    }
+}
+
+.issue {
+    height: 100%;
+    transition: background .15s ease;
+    border-bottom: 1px solid $buic-background-divider;
+    display: flex;
+    padding: 8px 5px;
+    margin: 0;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+
+    &:hover {
+        background: $buic-row-hover;
+    }
+
+    .issue-preview {
+        width: 78px;
+        margin-right: $uicore-s;
+        background-color: $buic-background-2;
+        box-sizing: border-box;
+        position: relative;
+
+        .issue-status {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        }
+    }
+
+    .issue-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+
+        .issue-title {
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: normal;
+        }
+
+        .issue-subtitle {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        .assignee-display-name {
+            font-size: $uicore-font-size-small;
+            color: $buic-foreground-muted;
+        }
+
+        .created-date {
+            font-size: $uicore-font-size-small;
+            display: flex;
+            align-items: center;
+
+            > span:first-child {
+            flex: 1;
+            color: $buic-foreground-muted;
+            }
+        }
+        }
+    }
+}
+
+/** Override the padding of the tabs */
+.uicore-tabs-horizontal > li > a {
+    padding: 5px !important;
+}
+
+.issue-details {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  @include uicore-scrollbar();
+  flex: 1;
+  overflow-x: hidden;
+
+    .header {
+        margin-top: 8px;
+        margin-right: 4px;
+        display: inline-flex;
+        align-items: center;
+        width: 100%;
+    }
+}
+  
+// The thumbnail image for each issue
+.thumbnail {
+  height: 100%;
+  width: 100%;
+  background-color: #85929d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #f8f9fb;
+  position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+
+  .spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .open {
+    display: inline-block;
+    text-decoration: none;
+    font-size: $uicore-font-size;
+    z-index: 3;
+    padding: 7px;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    -webkit-transform: scale(0.5);
+    -ms-transform: scale(0.5);
+    transform: scale(0.5);
+    -webkit-transition: all 0.3s ease-in;
+    transition: all 0.3s ease-in;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    color: $uicore-white;
+    text-transform: uppercase;
+  }
+
+  &:hover .open {
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+
+    &:hover {
+      box-shadow: 0 0 5px #fff;
+      cursor: pointer;
+    }
+  }
+}
+
+.thumbnail:hover + .open {
+  opacity: 0;
+}
+
+.issue-comments {
+    .comment-group {
+        display: flex;
+        flex-direction: column;
+        
+        .comment-date {
+          position: relative;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: $uicore-s;
+          font-size: $uicore-font-size-small;
+      
+          &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: $buic-inputs-border;
+          }
+      
+          > span {
+            background: var(--iui-color-background-1);
+            padding: 0 $uicore-sm;
+            z-index: 1;
+          }
+        }
+
+        .comment-container {
+            margin: $uicore-sm $uicore-xs;
+            position: relative;
+            border: 1px solid #d4d4d4;
+            padding: 6px $uicore-sm;
+            position: relative;
+            background: $buic-accessory-primary;
+            color: white;
+            border-radius: 12px;
+          
+            .comment-header {
+              display: flex;
+              align-items: center;
+              font-size: 12px;
+            }
+          
+            .comment-content {
+              margin-top: $uicore-s;
+              margin-bottom: $uicore-xs;
+          
+              .comment-text {
+                word-break: break-word;
+          
+                > a {
+                  color: RGB(255,255,255);      
+                }
+              }
+            }
+          }
+      }
+}
