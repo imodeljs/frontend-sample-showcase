@@ -33,6 +33,11 @@ const updateiModelParam = (imodel?: string, context?: string) => {
 
   setOrDeleteParam("context", context);
   setOrDeleteParam("imodel", imodel);
+
+  window.history.pushState(null, "", `?${params.toString()}`);
+  if (window.self !== window.top) {
+    window.parent.postMessage(`?${params.toString()}`, "*");
+  }
 };
 
 export type setSampleIModelParam = (iModel?: (SampleIModels | SampleIModelWithAlternativeName)) => void;
