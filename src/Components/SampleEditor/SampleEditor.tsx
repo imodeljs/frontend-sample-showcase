@@ -26,7 +26,8 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const [readmeLoading, setReadmeLoading] = React.useState(true);
   const [drawerSize, setDrawerSize] = React.useState<number>(0);
   const [walkthroughSize, setWalkthroughSize] = React.useState<number>(0);
-  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.enableWalkthrough);
+  // DO NOT PUSH THIS CHANGE!
+  const enableWalkthrough = true; //useFeatureToggleClient(FeatureFlags.enableWalkthrough);
 
   React.useEffect(() => {
     if (files) {
@@ -116,7 +117,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     <div className="sample-editor-container">
       <SplitScreen split="horizontal">
         {enableWalkthrough && walkthrough ?
-          <Pane onChange={_onWalkthroughChange} snapSize={"96px"} minSize={`${walkthroughMinSize}px`} maxSize={"250px"} size={walkthroughMinSize ? `${walkthroughSize}px` : `${walkthroughMinSize}px`} disabled={showReadme || !walkthrough || !walkthroughSize}>
+          <Pane onChange={_onWalkthroughChange} minSize={`${walkthroughMinSize}px`} maxSize={"250px"} size={walkthroughMinSize ? `${walkthroughSize}px` : `${walkthroughMinSize}px`} disabled={showReadme || !walkthrough || !walkthroughSize}>
             <Annotations steps={walkthrough} show={walkthroughSize > 32} onOpenClick={onOpenClick} onCloseClick={onCloseClick} />
           </Pane>
           :
