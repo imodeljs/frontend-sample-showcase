@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { SampleIModels } from "@itwinjs-sandbox";
 import { SampleSpec } from "SampleSpec";
 
 export function getVersionCompareSpec(): SampleSpec {
@@ -17,7 +18,7 @@ export function getVersionCompareSpec(): SampleSpec {
       { name: "VersionCompareWidget.tsx", import: import("!!raw-loader!./VersionCompareWidget.tsx") },
       { name: "VersionCompareApi.ts", import: import("!!raw-loader!./VersionCompareApi.ts"), entry: true },
     ],
-    // iModelList: [SampleIModels.BayTown],
+    iModelList: [SampleIModels.Stadium],
     type: "VersionCompareApp.tsx",
   });
 }

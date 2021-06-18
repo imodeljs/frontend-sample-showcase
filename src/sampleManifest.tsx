@@ -110,7 +110,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
-    getVersionCompareSpec(),
     getViewClipSpec(),
     getVolumeQuerySpec(),
     getZoomToElementsSpec(),
@@ -166,6 +165,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "iTwin Platform APIs", samples: [
     getClashReviewSpec(),
     getReadSettingsSpec(),
+    getVersionCompareSpec(),
   ],
 
 },
