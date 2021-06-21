@@ -3,42 +3,33 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { Annotations, Pane, setEditorState, SplitScreen, useActivityState, useEntryState, useFileState } from "@bentley/monaco-editor";
+import { Annotation, Annotations, Pane, SplitScreen, useActivityState, useEntryState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import Drawer from "./Drawer/Drawer";
-import { EditorProps } from "./SampleEditorContext";
 import "./SampleEditor.scss";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import MonacoEditor from "./Monaco";
 import { useFeatureToggleClient } from "hooks/useFeatureToggleClient/UseFeatureToggleClient";
 import { FeatureFlags } from "FeatureToggleClient";
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+export interface EditorProps {
+  readme?: () => Promise<{ default: string }>;
+  walkthrough?: Annotation[];
+  onTranspiled: ((blobUrl: string) => void);
+  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
+}
 
 export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
-  const { files, readme, walkthrough } = props;
-  const fileActions = useFileState()[1];
+  const { readme, walkthrough } = props;
   const [activityState, activityActions] = useActivityState();
-  const [entryState, entryActions] = useEntryState();
+  const [entryState] = useEntryState();
   const [showReadme, setShowReadme] = React.useState<boolean>(true);
   const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
   const [drawerSize, setDrawerSize] = React.useState<number>(0);
   const [walkthroughSize, setWalkthroughSize] = React.useState<number>(0);
-  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.enableWalkthrough);
-
-  React.useEffect(() => {
-    if (files) {
-      const editorFiles = files() || [];
-      Promise.all(editorFiles.map(async (file) => ({ content: (await file.import).default, name: file.name })))
-        .then(fileActions.setFiles)
-        .then(() => entryActions.setEntry(editorFiles.find((file) => file.entry)?.name || null));
-    }
-    return () => {
-      setEditorState(null, []);
-    };
-  }, [files, fileActions, entryActions, activityActions]);
+  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.enableWalkthrough, true);
 
   React.useEffect(() => {
     if (readme) {
