@@ -572,7 +572,6 @@ export class ExplodedGraphicsTile extends Tile {
       isCanceled = () => !this.isLoading;
 
     assert(data instanceof Uint8Array);
-    const stream: Uint8Array = new Uint8Array(data.buffer);
 
     const tree = this.tree;
 

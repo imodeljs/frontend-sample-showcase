@@ -115,15 +115,7 @@
         }
       ],
       "@typescript-eslint/unbound-method": "off",
-      "deprecation/deprecation": "off",
-      "@bentley/no-internal": [
-        "error",
-        {
-          "tag": [
-            "internal"
-          ]
-        }
-      ]
+      "deprecation/deprecation": "off"
     }
   },
   "browserslist": [
