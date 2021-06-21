@@ -11,6 +11,7 @@ export function getSliderSpec(): SampleSpec {
     name: "slider-sample",
     label: "UI-Sliders",
     image: "ui-sliders-thumbnail.png",
+    description: "#Component #sample showing different #styles of #sliders.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

@@ -2,12 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
 import React, { useEffect } from "react";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { ColorPickerButton } from "@bentley/ui-components";
-import { ClearEmphasizeAction, ClearHideAction, ClearIsolateAction, ClearOverrideAction, EmphasizeAction, HideAction, IsolateAction, OverrideAction } from "./EmphasizeElementsApi";
+import { EmphasizeElementsApi } from "./EmphasizeElementsApi";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { EmphasizeElements, IModelApp } from "@bentley/imodeljs-frontend";
@@ -57,52 +56,62 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
   };
 
   const _handleActionButton = (type: ActionType) => {
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (undefined === vp)
+      return;
+
     switch (type) {
       default:
       case ActionType.Emphasize: {
-        if (new EmphasizeAction(wantEmphasisState).run())
-          setEmphasizeIsActiveState(true);
+        EmphasizeElementsApi.emphasizeSelectedElements(wantEmphasisState, vp);
+        setEmphasizeIsActiveState(true);
         break;
       }
       case ActionType.Isolate: {
-        if (new IsolateAction().run())
-          setIsolateIsActiveState(true);
+        EmphasizeElementsApi.isolateSelectedElements(vp);
+        setIsolateIsActiveState(true);
         break;
       }
       case ActionType.Hide: {
-        if (new HideAction().run())
-          setHideIsActiveState(true);
+        EmphasizeElementsApi.hideSelectedElements(vp);
+        setHideIsActiveState(true);
         break;
       }
       case ActionType.Override: {
-        if (new OverrideAction(colorValueState).run())
-          setOverrideIsActiveState(true);
+        EmphasizeElementsApi.overrideSelectedElements(colorValueState, vp);
+        setOverrideIsActiveState(true);
         break;
       }
     }
   };
 
   const _handleClearButton = (type: ActionType) => {
+    const vp = IModelApp.viewManager.selectedView;
+
+    if (undefined === vp)
+      return;
+
     switch (type) {
       default:
       case ActionType.Emphasize: {
-        if (new ClearEmphasizeAction().run())
-          setEmphasizeIsActiveState(false);
+        EmphasizeElementsApi.clearEmphasizedElements(vp);
+        setEmphasizeIsActiveState(false);
         break;
       }
       case ActionType.Isolate: {
-        if (new ClearIsolateAction().run())
-          setIsolateIsActiveState(false);
+        EmphasizeElementsApi.clearIsolatedElements(vp);
+        setIsolateIsActiveState(false);
         break;
       }
       case ActionType.Hide: {
-        if (new ClearHideAction().run())
-          setHideIsActiveState(false);
+        EmphasizeElementsApi.clearHiddenElements(vp);
+        setHideIsActiveState(false);
         break;
       }
       case ActionType.Override: {
-        if (new ClearOverrideAction().run())
-          setOverrideIsActiveState(false);
+        EmphasizeElementsApi.clearOverriddenElements(vp);
+        setOverrideIsActiveState(false);
         break;
       }
     }

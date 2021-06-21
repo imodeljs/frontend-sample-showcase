@@ -5,6 +5,7 @@ To add sample code to the repo, there are a few steps required for it to functio
 ## SampleSpec
 
 Each sample is **required** to have a SampleSpec. The SampleSpec's serves three main purposes:
+
 1) Tell the showcase app which React Component needs to be rendered for the sample
 2) Provide files to the code editor
 3) Provide the link to the screenshot for the navigation carousel.
@@ -17,12 +18,20 @@ interface SampleSpec {
   label: string;
   /** The url relative to the public folder for the image that appears in the navigation carousel. */
   image: string;
+  /** The description used for search index purposes. */
+  description?: string;
+  /** The readme for the sample. */
+  readme?: () => Promise<{ default: string }>;
+  /** The walkthrough steps for the sample */
+  walkthrough?: () => any;
   /** A list of files that will be imported by the code editor of the showcase. */
   files: IInternalFile[];
   /** The list of models this sample can use, in the case that the sample cannot use all available models */
-  customModelList?: string[];
+  iModelList?: string[];
+  /** Indicates is the sample is using the iTwin Viewer or the legacy viewer.*/
+  iTwinViewerReady?: boolean;
   /** The class name for the sample */
-  sampleClass: typeof React.Component;
+  type: typeof React.Component;
 ```
 
 Below are more in-depth explanations for some of the SampleSpec properties.
@@ -51,16 +60,25 @@ The UI component is the component users will interact with in the sample. Typica
 Using iModel.js in your UI component is relatively easy. To render the viewport for your iModel, there is a ready made component you can import and add to your render method.
 
 ```ts
-import { SandboxViewport } from "Components/Viewport/SandboxViewport"; // That's not a typo, be sure to import the component as non-relative.
-export default class MySampleUI extends React.Component<{ iModelName: string, iModelSelector: React.ReactNode }, {}> {
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { AuthorizationClient, default3DSandboxUi, } from "@itwinjs-sandbox";
+export const MySampleApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Sample Instructions");
 
   /** The sample's render method */
   public render() {
     return (
-      <SandboxViewport iModelName={this.props.iModelName} />
+      <Viewer
+        contextId={sampleIModelInfo.contextId}
+        iModelId={sampleIModelInfo.iModelId}
+        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        defaultUiConfig={default3DSandboxUi}
+        theme="dark"
+      />
     );
   }
 }
+export default MySampleUI;
 ```
 
 ## Imports
@@ -83,7 +101,6 @@ import { MyVisibleFile } from "./MyVisibleFile";
 Since I would like this file to be editable, my SampleSpec should reflect it:
 
 ```ts
-import MySampleApp from "./MySampleApp";
 export function getMySampleAppSampleSpec(): SampleSpec {
   return ({
     [...]
@@ -92,7 +109,7 @@ export function getMySampleAppSampleSpec(): SampleSpec {
       { name: "MyUiComponent.tsx", import: import("!!raw-loader!./MyUiComponent") },
       { name: "MyVisibleFile.tsx", import: import("!!raw-loader!./MyVisibleFile") },
     ],
-    sampleClass: MySampleApp
+    type: MySampleApp
   });
 }
 ```
@@ -121,6 +138,85 @@ Since I would like this file to not be editable or viewable, I need to add the f
 ```
 
 Note that if the file is a scss/sass file, it is not necessary to include the ```"typedef": true``` property, however it will require the ```"import"``` property to include ```!!raw-loader!``` before the file reference.
+
+## Annotations/Walkthrough
+
+To get the most out of the sample, it's suggested to add a walkthrough for your sample. A walkthrough consists of steps which describe sections of code in your sample. In these steps, you, as the author, can explain why and how you used certain methods and patterns to make your sample come to life. Below are guidelines to help you get started with writing your walkthrough.
+
+### Create annotations.md
+
+In the same folder as your sample, create a file called `annotations.md`. This file will contain the steps and markdown for the walkthrough. Each steps consists of three parts: A title, the content, and metadata for the parser.
+
+An example step:
+
+```markdown
+# This is a title
+
+This is my step content
+
+[_metadata_:annotation]:- "STEP_ANNOTATION"
+```
+
+**Title**: This is what will appear in the dropdown for selecting the current step. Try to keep it short but still describing what you are highlighting.
+
+**content**: This is the content that will appear in the Annotation viewer. It can be as long or as short as you desire but should describe what you are highlighting.
+
+**Metadata**: There are two metadata properties. The first is the _annotation_ metadata property (required). This property describe the tag that the parser should look for when connecting this step to content in the editor. The second is the _skip_ property. If what you are describing is seen as common knowledge for most samples, appending this metadata tag will allow users to skip this step.
+
+### Create Annotation Comments
+
+Each step in the `annotation.md` file requires a _annotation_ metadata property. This metadata property should match annotation start and end comments in the files of your choosing. Each annotation property is required to be uppercase and cannot include spaces but are allowed underscores (_) and dashes (-). Failure to meet these requirements will result in your walkthrough missing steps. The comments are non-inclusive, so surrounding the code you would like to highlight is recommended.
+
+Example:
+
+**annotations.md:**
+
+```markdown
+# Hello World
+
+The SampleApp component will return a `div` containing the words "hello world". This works because react renders the dom.
+
+[_metadata_:annotation]:- "HELLO_WORLD"
+[_metadata_:skip]:- "true"
+```
+
+**MySampleApp.tsx:**
+
+```tsx
+1  export const MySampleApp: FunctionComponent = () => {
+2  
+3    // START HELLO_WORLD
+4    return (
+5      <div>
+6        hello world
+7      </div>
+8    );
+9    // END HELLO_WORLD
+10 } 
+```
+
+In this example, my "Hello World" step will highlight the lines 4-8. When the file is loaded into the online editor, these comments will be removed.
+
+### Preparing SampleSpec
+
+When using a walkthrough, some additional loaders are needed to ensure the walkthrough is parsed correctly and the comments are removed from the files when loaded into the editor.Instead of using a raw-loader to load the editor files, we need to use the `editor-file-loader`, and to load the annmotations.md file, we need to use the `walkthrough-loader`.
+
+Example:
+
+**SampleSpec.ts:**
+
+```ts
+export function getMySampleAppSampleSpec(): SampleSpec {
+  return ({
+    [...]
+    walkthrough: async () => import("!walkthrough-loader!./annotations.md"),
+    files: [
+      { name: "MySampleApp.tsx", import: import("!editor-file-loader!./MySampleApp"), entry: true },
+    ],
+    type: MySampleApp
+  });
+}
+```
 
 ## Asking Questions
 

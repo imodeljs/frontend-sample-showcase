@@ -10,6 +10,7 @@ export function getViewCameraSpec(): SampleSpec {
     name: "Camera Path Sample",
     label: "Camera Path",
     image: "camera-path-thumbnail.png",
+    description: "#Animates the #camera along a path using #setEyePoint.  Also shows a #tool to control the look direction using #setupViewFromFrustum.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CameraPathUI.tsx", import: import("!!raw-loader!./CameraPathUI"), entry: true },

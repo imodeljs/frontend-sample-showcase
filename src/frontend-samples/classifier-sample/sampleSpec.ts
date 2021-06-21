@@ -22,5 +22,6 @@ export function getClassifierSpec(): SampleSpec {
     ],
     iModelList: [SampleIModels.MetroStation],
     type: "ClassifierApp.tsx",
+    description: "How to apply a #classifier to a #realitymodel. Also demonstrates how to adjust the display of #classifier, in this case a #spatial classifier",
   });
 }

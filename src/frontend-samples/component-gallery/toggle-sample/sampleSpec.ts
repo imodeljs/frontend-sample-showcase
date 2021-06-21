@@ -11,6 +11,7 @@ export function getToggleSpec(): SampleSpec {
     name: "toggle-sample",
     label: "UI-Toggles",
     image: "ui-toggle-thumbnail.png",
+    description: "#Component #sample showing different #styles of #toggles.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

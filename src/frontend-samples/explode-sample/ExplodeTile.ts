@@ -575,10 +575,12 @@ export class ExplodedGraphicsTile extends Tile {
     const stream: Uint8Array = new Uint8Array(data.buffer);
 
     const tree = this.tree;
-    const renderGraphic: RenderGraphic | undefined = await readElementGraphics(stream, tree.iModel, tree.modelId, tree.is3d);
+
+    // When for next iModel.js update, the API will include an argument for batching options.  This should be set to the contentId.
+    const graphic: RenderGraphic | undefined = await readElementGraphics(data, tree.iModel, tree.modelId, tree.is3d);
 
     (this.tree as ExplodeTileTree).elementContentLoaded(this.data.elementId);
-    return { graphic: renderGraphic };
+    return { isLeaf: true, graphic };
   }
 
   /** Updates the content range and transform applied to the graphics with a changed explode scaling. */
