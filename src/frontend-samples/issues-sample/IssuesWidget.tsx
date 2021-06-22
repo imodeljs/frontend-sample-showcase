@@ -145,10 +145,10 @@ const IssuesWidget: React.FunctionComponent = () => {
       }
 
       /** Add the point to the decorator */
-      IssuesApi.addDecoratorPoint(issue, svg, issue.number, issue.subject, (issue: any) => {
-        applyView(issue);
+      IssuesApi.addDecoratorPoint(issue, svg, issue.number, issue.subject, (iss: any) => {
+        applyView(iss);
         setActiveTab(0);
-        setCurrentIssue(issue);
+        setCurrentIssue(iss);
       });
     }
   }, [applyView, issues]);
