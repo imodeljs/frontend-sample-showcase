@@ -11,6 +11,7 @@ export function getPropertyFormattingSpec(): SampleSpec {
     name: "property-formatting-sample",
     label: "Property Formatting",
     image: "property-formatting-thumbnail.png",
+    description: "Uses the #Presentation API to display element #properties.",
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),

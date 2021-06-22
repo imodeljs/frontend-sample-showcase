@@ -11,12 +11,16 @@ import {
 
 export default class RealityDataApi {
 
+  // START REALITY_TOGGLE_CALLBACK
   public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
+    // START DISPLAY_STYLE
     const style = viewPort.displayStyle.clone();
 
     // Turn off the background
     style.viewFlags.backgroundMap = false;
+    // END DISPLAY_STYLE
 
+    // START REALITY_MODEL_ON
     if (showReality) {
       // Get first available reality model and attach it to displayStyle
       const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
@@ -25,6 +29,8 @@ export default class RealityDataApi {
         viewPort.displayStyle = style;
         return;
       }
+      // END REALITY_MODEL_ON
+      // START REALITY_MODEL_OFF
     } else {
       // Collect reality models on displayStyle and detach
       const models: ContextRealityModelState[] = [];
@@ -35,12 +41,20 @@ export default class RealityDataApi {
         style.detachRealityModelByNameAndUrl(model.name, model.url);
       viewPort.displayStyle = style;
     }
+    // END REALITY_MODEL_OFF
   }
+  // END REALITY_TOGGLE_CALLBACK
 
+  // START TRANSPARENCY
   // Modify reality data background transparency using the Viewport API
   public static async setRealityDataTransparency(vp: ScreenViewport, transparency: number) {
     // For this example we want to affect the appearance of *all* reality models. Therefore, we use -1 as the index.
+    // START APPEARANCE
     const existingOverrides = vp.getRealityModelAppearanceOverride(-1);
+    // END APPEARANCE
+    // START OVERRIDES
     return vp.overrideRealityModelAppearance(-1, existingOverrides ? existingOverrides.clone({ transparency }) : FeatureAppearance.fromJSON({ transparency }));
+    // END OVERRIDES
   }
+  // END TRANSPARENCY
 }

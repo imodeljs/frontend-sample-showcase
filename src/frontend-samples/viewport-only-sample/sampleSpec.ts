@@ -10,6 +10,7 @@ export function getViewportOnlySpec(): SampleSpec {
     name: "viewport-only-sample",
     label: "3d",
     image: "viewport-only-thumbnail.png",
+    description: "#Basic #sample showing how to use the #iTwin #viewer component.",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

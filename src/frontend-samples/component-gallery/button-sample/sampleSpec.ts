@@ -11,6 +11,7 @@ export function getButtonSpec(): SampleSpec {
     name: "button-sample",
     label: "UI-Buttons",
     image: "ui-button-thumbnail.png",
+    description: "#Component #sample showing different #styles of #buttons.",
     readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [

@@ -11,7 +11,7 @@ import "./SampleShowcaseViewHandler.scss";
 export interface SampleShowcaseViewHandlerProps {
   editor: JSX.Element;
   visualizer: JSX.Element;
-  gallery: JSX.Element;
+  gallery?: JSX.Element;
 }
 
 export const SampleShowcaseViewHandler: FunctionComponent<SampleShowcaseViewHandlerProps> = ({ editor, visualizer, gallery }) => {
