@@ -3,10 +3,15 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ErrorIndicator, ErrorList } from "@bentley/monaco-editor";
+
+export interface Label {
+  value: string;
+  component: React.ReactNode;
+}
 
 export interface DrawerProps {
-  active?: boolean;
+  labels: Label[];
+  open?: boolean;
   onDrawerOpen: () => void;
   onDrawerClosed: () => void;
 }
@@ -15,53 +20,74 @@ export interface DrawState {
   active?: string;
 }
 
-export default class Drawer extends React.Component<DrawerProps, DrawState> {
-  constructor(props: DrawerProps) {
-    super(props);
-    this.state = {};
-  }
+export const Drawer: React.FunctionComponent<DrawerProps> = ({ labels, open, onDrawerClosed, onDrawerOpen, children }) => {
+  const [active, setActive] = React.useState<string | undefined>();
 
-  public componentDidUpdate(prevProps: DrawerProps, prevState: DrawState) {
-    if (this.state.active !== prevState.active) {
-      if (this.state.active) {
-        this.props.onDrawerOpen();
-      } else {
-        this.props.onDrawerClosed();
-      }
-    }
-    if (prevProps.active !== this.props.active) {
-      if (!this.props.active) {
-        this.setState({ active: undefined });
-      } else {
-        this.setState({ active: "problems" });
-      }
-    }
-  }
-
-  private _onNavItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const target = (event.target as HTMLElement).closest(".sample-editor-pane-nav-item") as HTMLElement;
-    if (target && target.title && target.title.toLowerCase() !== this.state.active) {
-      this.setState({ active: target.title.toLowerCase() });
+  React.useEffect(() => {
+    if (!open) {
+      setActive(undefined);
     } else {
-      this.setState({ active: undefined });
+      setActive((prev) => {
+        if (!prev) {
+          return labels[0]?.value;
+        }
+        return prev;
+      });
     }
-  };
+  }, [open, labels]);
 
-  public render() {
+  const onItemClick = React.useCallback((value: string) => {
+    setActive((prev) => {
+      if (prev === value) {
+        onDrawerClosed();
+        return undefined;
+      }
+      onDrawerOpen();
+      return value;
+    });
+  }, [onDrawerClosed, onDrawerOpen]);
 
-    return (
-      <div className="sample-editor-pane">
-        <div id="sample-editor-pane-nav">
-          <div className={`sample-editor-pane-nav-item${this.state.active === "problems" ? " active" : ""}`} title="Problems" onClick={this._onNavItemClick}>
-            <span>Problems</span>
-            <ErrorIndicator />
-          </div>
-        </div>
-        <div id="sample-editor-pane-drawer">
-          {this.props.active && <ErrorList />}
-        </div>
+  const activeIndex = labels.findIndex((label) => label.value === active);
+
+  return (
+    <div className="sample-editor-pane">
+      <div id="sample-editor-pane-nav">
+        {labels.map((label, index) => (
+          <DrawerItem key={index} value={label.value} active={label.value === active} onClick={onItemClick}>
+            {label.component}
+          </DrawerItem>
+        ))}
       </div>
-    );
-  }
+      {React.Children.toArray(children).map((child, index) =>
+        <div key={index} id="sample-editor-pane-drawer" style={activeIndex !== index ? { display: "none" } : undefined}>
+          {child}
+        </div>
+      )
+      }
+    </div >
+  );
+};
+
+interface DrawerItemProps {
+  active?: boolean;
+  value: string;
+  onClick: (value: string) => void;
 }
 
+const DrawerItem: React.FunctionComponent<DrawerItemProps> = ({ active, value, onClick, children }) => {
+
+  const onItemClick = React.useCallback(() => {
+    onClick(value);
+  }, [onClick, value]);
+
+  const classes = ["sample-editor-pane-nav-item"];
+  if (active) {
+    classes.push("active");
+  }
+
+  return (
+    <div className={classes.join(" ")} title={value} onClick={onItemClick}>
+      {children}
+    </div>
+  );
+};

@@ -1,4 +1,4 @@
-import type { AnnotationStep } from "@bentley/monaco-editor";
+import type { Annotation } from "@bentley/monaco-editor";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import React from "react";
 
@@ -25,7 +25,7 @@ export interface SampleSpec {
   description?: string;
   readme?: () => Promise<{ default: string }>;
   files?: () => SampleSpecFile[];
-  walkthrough?: AnnotationStep[];
+  walkthrough?: Annotation[];
   iModelList?: SampleIModels[];
   iTwinViewerReady?: boolean;
   type?: string;

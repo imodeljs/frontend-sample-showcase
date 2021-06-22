@@ -3,25 +3,34 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent } from "react";
-import { AnnotationStep, EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
 import { SampleSpecFile } from "SampleSpec";
-import { SampleEditor } from "./SampleEditor";
-
-export interface EditorProps {
+import { EditorProps, SampleEditor } from "./SampleEditor";
+import modules from "./Modules";
+export interface SampleEditorContextProps extends EditorProps {
   files?: () => SampleSpecFile[];
-  readme?: () => Promise<{ default: string }>;
-  walkthrough?: AnnotationStep[];
-  onTranspiled: ((blobUrl: string) => void);
-  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
 }
 
-export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
-  const { files, readme, onTranspiled, onSampleClicked, walkthrough } = props;
+export const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props) => {
+  const { files: getFiles, readme, onTranspiled, onSampleClicked, walkthrough } = props;
+  const [defaultFiles, setDefaultFiles] = useState<{ content: string, name: string }[]>([]);
+  const [defaultEntry, setdefaultEntry] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (getFiles) {
+      const files = getFiles() || [];
+      Promise.all(files.map(async (file) => ({ content: (await file.import).default, name: file.name })))
+        .then((mapped) => {
+          setDefaultFiles(mapped);
+          setdefaultEntry(files.find((file) => file.entry)?.name);
+        });
+    }
+  }, [getFiles]);
+
   return (
-    <EditorEnvironmentContextProvider>
+    <EditorEnvironmentContextProvider defaultModules={modules} defaultFiles={defaultFiles} defaultEntry={defaultEntry}>
       <SampleEditor
-        files={files}
         onSampleClicked={onSampleClicked}
         onTranspiled={onTranspiled}
         readme={readme}

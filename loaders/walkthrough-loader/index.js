@@ -14,38 +14,45 @@ function processChunk(source, map) {
 
   const annotations = annotationParser.deserialize(source);
 
-  const files = this.fs.readdirSync(this.context)
+  const files = getAllFiles(this.fs, this.context);
 
   const fileLocations = [];
   files.forEach((file) => {
     const fileContent = this.fs.readFileSync(path.resolve(this.context, file));
     const locations = parseAnnotationLocations(fileContent.toString(), options);
-    fileLocations.push({ file, locations });
+    fileLocations.push({ file: file.replace(this.context, ""), locations });
   });
 
   const walkthrough = [];
 
-  annotations.forEach((annotation, index) => {
-    const fileLocation = fileLocations.find((fileLoc) => fileLoc.locations.some((loc) => loc.id === annotation.id));
-    if (fileLocation) {
-      const location = fileLocation.locations.find((loc) => loc.id === annotation.id);
-      if (location) {
-        const step = {
-          id: index,
-          startLineNumber: location.start,
-          endLineNumber: location.end,
-          title: annotation.title,
-          file: fileLocation.file,
-          markdown: annotation.markdown.trim(),
-          skip: annotation.skip,
-        }
-        if (walkthrough.find((anno) => anno.id === index)) {
-          walkthrough.splice(index, 1, step);
-        } else {
-          walkthrough.push(step);
+  let currentStep = 1;
+  annotations.forEach((annotation) => {
+    const step = {
+      index: annotation.index !== undefined ? annotation.index : currentStep,
+      id: annotation.id,
+      title: annotation.title,
+      markdown: annotation.markdown.trim(),
+    }
+
+    if (annotation.id !== "NONE") {
+      const fileLocation = fileLocations.find((fileLoc) => fileLoc.locations.some((loc) => loc.id === annotation.id));
+      if (fileLocation) {
+        const location = fileLocation.locations.find((loc) => loc.id === annotation.id);
+        if (location) {
+          step.startLineNumber = location.start;
+          step.endLineNumber = location.end;
+          step.file = fileLocation.file;
         }
       }
     }
+
+    const walkthroughIndex = walkthrough.find((anno) => anno.id === step.id);
+    if (walkthroughIndex > -1) {
+      walkthrough.splice(walkthroughIndex, 1, step);
+    } else {
+      walkthrough.push(step);
+    }
+    currentStep = Math.floor(step.index + 1);
   })
 
   const sortedWalkthrough = walkthrough.sort(sort);
@@ -58,12 +65,28 @@ function processChunk(source, map) {
 }
 
 function sort(a, b) {
-  if (a.id < b.id) {
+  if (a.index < b.index) {
     return -1;
-  } else if (a.id > b.id) {
+  } else if (a.index > b.index) {
     return 1;
   }
   return 0;
+}
+
+function getAllFiles(fs, dirPath, arrayOfFiles) {
+  const files = fs.readdirSync(dirPath)
+
+  arrayOfFiles = arrayOfFiles || []
+
+  files.forEach(function (file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(fs, dirPath + "/" + file, arrayOfFiles)
+    } else {
+      arrayOfFiles.push(path.join(dirPath, "/", file))
+    }
+  })
+
+  return arrayOfFiles
 }
 
 module.exports = processChunk

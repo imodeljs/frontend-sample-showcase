@@ -1,3 +1,9 @@
+# Welcome
+
+Welcome this this non-step step.
+
+[_metadata_:annotation]:- "NONE"
+[_metadata_:id]:- "0"
 # View Setup
 
 View setup used by all samples and an iModel selector from `useSampleWidget`.
