@@ -34,6 +34,7 @@ export interface MarkerData {
 }
 // END MarkerData
 
+// START SAMPLEPINMARKER
 /** Shows a pin marking the location of a point. */
 class SamplePinMarker extends Marker {
   private _markerSet: SampleMarkerSet;
@@ -42,20 +43,23 @@ class SamplePinMarker extends Marker {
   public toolTipDescription: string;
   private static _height = 35;
   private _onMouseButtonCallback?: any;
+  // END SAMPLEPINMARKER
 
   /** Create a new SamplePinMarker */
   constructor(markerData: MarkerData, title: string, description: string, image: HTMLImageElement, markerSet: SampleMarkerSet, onMouseButtonCallback?: any) {
     // Use the same height for all the markers, but preserve the aspect ratio from the image
     super(markerData.point, new Point2d(image.width * (SamplePinMarker._height / image.height), SamplePinMarker._height));
+
+    // START MARKERPINIMAGE
+    // Add an offset so that the pin 'points' at the location, rather than floating in the middle of it
     this.setImage(image);
+    this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
+    // START MARKERPINIMAGE
 
     this._onMouseButtonCallback = onMouseButtonCallback;
 
     // Keep a pointer back to the marker set
     this._markerSet = markerSet;
-
-    // Add an offset so that the pin 'points' at the location, rather than floating in the middle of it
-    this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
 
     // The JSON data is stored on the marker
     this.data = markerData.data;
@@ -86,6 +90,7 @@ class SamplePinMarker extends Marker {
     this.setScaleFactor({ low: .75, high: 2.0 });
   }
 
+  // START MARKERPINPICK
   /** Determine whether the point is within this Marker */
   public pick(pt: XAndY): boolean {
     if (undefined === this.imageOffset)
@@ -101,6 +106,7 @@ class SamplePinMarker extends Marker {
     pickRect.right -= offsetX;
     return pickRect.containsPoint(pt);
   }
+  // END MARKERPINPICK
 
   /** This method will be called when the user clicks on a marker */
   public onMouseButton(ev: BeButtonEvent): boolean {
@@ -153,12 +159,15 @@ class SamplePinMarker extends Marker {
   };
 }
 
+// START SAMPLECLUSTERMARKER
 /** Marker to show as a stand-in for a cluster of overlapping markers. */
 class SampleClusterMarker extends Marker {
   private static _radius = 13;
   private _cluster: any;
   private _onMouseButtonCallback?: any;
+  // END SAMPLECLUSTERMARKER
 
+  // START CLUSTERMARKERCONSTRUCTOR
   /** Create a new cluster marker */
   constructor(location: XYAndZ, size: XAndY, cluster: Cluster<SamplePinMarker>, onMouseButtonCallback?: any) {
     super(location, size);
@@ -171,7 +180,9 @@ class SampleClusterMarker extends Marker {
     this.label = cluster.markers.length.toLocaleString();
     this.labelColor = "black";
     this.labelFont = "bold 14px san-serif";
+    // END CLUSTERMARKERCONSTRUCTOR
 
+    // START CLUSTERMARKERTOOLTIP
     // Concatenate the tooltips from the markers to create the tooltip for the cluster
     const maxLen = 10;
     let title = "";
@@ -191,8 +202,10 @@ class SampleClusterMarker extends Marker {
     const div = document.createElement("div");
     div.innerHTML = title;
     this.title = div;
+    // END CLUSTERMARKERTOOLTIP
   }
 
+  // START CLUSTERMARKERMOUSEBUTTON
   /** This method will be called when the user clicks on a marker */
   public onMouseButton(ev: BeButtonEvent): boolean {
     if (BeButton.Data !== ev.button || !ev.isDown || !ev.viewport || !ev.viewport.view.isSpatialView())
@@ -203,7 +216,9 @@ class SampleClusterMarker extends Marker {
 
     return true; // Don't allow clicks to be sent to active tool
   }
+  // END CLUSTERMARKERMOUSEBUTTON
 
+  // START CLUSTERMARKERDRAWFUNC
   /** Show the cluster as a white circle with a thick outline */
   public drawFunc(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
@@ -214,16 +229,20 @@ class SampleClusterMarker extends Marker {
     ctx.fill();
     ctx.stroke();
   }
+  // END CLUSTERMARKERDRAWFUNC
 }
 
 /** A MarkerSet to hold pin locations. This class supplies to `getClusterMarker` method to create SampleClusterMarker. */
+// START SAMPLEMARKERSET
 class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
   public minimumClusterSize = 5;
   private _onMouseButtonCallback?: any;
 
   // This method is called from within the MarkerSet base class based on the proximity of the markers and the minimumClusterSize
   protected getClusterMarker(cluster: Cluster<SamplePinMarker>): Marker { return SampleClusterMarker.makeFrom(cluster.markers[0], cluster, this._onMouseButtonCallback); }
+  // END SAMPLEMARKERSET
 
+  // START SETMARKERSDATA
   /** Create a SamplePinMarker for each input point. */
   public setMarkersData(markersData: MarkerData[], image: HTMLImageElement, onMouseButtonCallback?: any): void {
     this.markers.clear();
@@ -234,7 +253,9 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
       this.markers.add(new SamplePinMarker(markerData, `Marker ${index++}`, ``, image, this, onMouseButtonCallback));
     }
   }
+  // END SETMARKERSDATA
 
+  // START REMOVEMARKER
   /** Drop one particular marker from the set. */
   public removeMarker(marker: SamplePinMarker) {
     this.markers.delete(marker);
@@ -244,6 +265,7 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
     if (undefined !== vp)
       vp.invalidateDecorations();
   }
+  // REMOVEMARKER
 }
 
 /** A MarkerPinDecorator can be registered with ViewManager.addDecorator.  Once registered, the decorate method will be called

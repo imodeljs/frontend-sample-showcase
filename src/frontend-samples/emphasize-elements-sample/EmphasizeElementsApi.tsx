@@ -21,6 +21,7 @@ export class EmphasizeElementsApi {
   }
   // END EMPHASIZE
 
+  // START HIDE
   public static hideSelectedElements(vp: ScreenViewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.hideSelectedElements(vp);
@@ -30,7 +31,9 @@ export class EmphasizeElementsApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearHiddenElements(vp);
   }
+  // END HIDE
 
+  // START ISOLATE
   public static isolateSelectedElements(vp: ScreenViewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.isolateSelectedElements(vp);
@@ -40,7 +43,9 @@ export class EmphasizeElementsApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearIsolatedElements(vp);
   }
+  // END ISOLATE
 
+  // START OVERRIDE
   public static overrideSelectedElements(colorValue: ColorDef, vp: ScreenViewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.overrideSelectedElements(vp, colorValue, FeatureOverrideType.ColorOnly, false, true);
@@ -50,4 +55,5 @@ export class EmphasizeElementsApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearOverriddenElements(vp);
   }
+  // END OVERRIDE
 }
