@@ -1,6 +1,6 @@
 # Welcome
 
-This panel will give you a guided tour of the basic 3d viewer code sample.  Please use the 'next' button below to start the tour.  Or you can browse through and jump directly to any step using the control above.
+This panel will give you a guided tour of the Marker Pins code sample.  Please use the &#x02192; button below to start the tour.  Or you can browse through and jump directly to any step using the control above.  During the tour, the &#x025ef;  button will recenter the code editor.
 
 [_metadata_:annotation]:- "VIEW_SETUP"
 
