@@ -18,6 +18,7 @@ export default class MarkerPinApi {
     return (null != this._markerDecorator);
   }
 
+  // START SETUPDECORATOR
   public static setupDecorator(markersData: MarkerData[]) {
     // If we failed to load the image, there is no point in registering the decorator
     if (!MarkerPinApi._images.has("Google_Maps_pin.svg"))
@@ -26,6 +27,7 @@ export default class MarkerPinApi {
     MarkerPinApi._markerDecorator = new MarkerPinDecorator();
     this.setMarkersData(markersData);
   }
+  // END SETUPDECORATOR
 
   public static setMarkersData(markersData: MarkerData[]) {
     if (MarkerPinApi._markerDecorator)
@@ -37,10 +39,12 @@ export default class MarkerPinApi {
       MarkerPinApi._markerDecorator.addPoint(point, pinImage);
   }
 
+  // START ENABLEDECORATIONS
   public static enableDecorations() {
     if (MarkerPinApi._markerDecorator)
       IModelApp.viewManager.addDecorator(MarkerPinApi._markerDecorator);
   }
+  // END ENABLEDECORATIONS
 
   public static disableDecorations() {
     if (null != MarkerPinApi._markerDecorator)

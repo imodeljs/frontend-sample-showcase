@@ -25,12 +25,14 @@ import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
  *                      markers and marker clusters.  This sample creates exactly one MarkerPinDecorator.
  */
 
+// START MarkerData
 export interface MarkerData {
   point: Point3d;
   title?: string;         // override default marker tooltip title
   description?: string;   // override default marker tooltip description
   data?: any;
 }
+// END MarkerData
 
 /** Shows a pin marking the location of a point. */
 class SamplePinMarker extends Marker {
@@ -62,14 +64,14 @@ class SamplePinMarker extends Marker {
     let tooltip = "";
     if (markerData.title) {
       this.toolTipTitle = markerData.title;
-      this.toolTipDescription = markerData.description? markerData.description : "";
+      this.toolTipDescription = markerData.description ? markerData.description : "";
       tooltip = markerData.title;
       if (markerData.description) {
         tooltip += `<br>${markerData.description}`;
       }
     } else {
       this.toolTipTitle = title;
-      this.toolTipDescription = description? description : "";
+      this.toolTipDescription = description ? description : "";
       tooltip = title;
       if (description) {
         tooltip += `<br>${description}`;
@@ -247,6 +249,8 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
 /** A MarkerPinDecorator can be registered with ViewManager.addDecorator.  Once registered, the decorate method will be called
  *  with a supplied DecorateContext.  The Decorator will call the MarkerSet to create the decorations.
  */
+
+// START MARKERPINDECORATOR
 export class MarkerPinDecorator implements Decorator {
   private _autoMarkerSet = new SampleMarkerSet();
   private _manualMarkerSet = new SampleMarkerSet();
@@ -260,6 +264,7 @@ export class MarkerPinDecorator implements Decorator {
     if (undefined !== vp)
       vp.invalidateDecorations();
   }
+  // END MARKERPINDECORATOR
 
   /* Adds a single new marker to the "manual" markerset */
   public addPoint(point: Point3d, pinImage: HTMLImageElement): void {
@@ -272,6 +277,7 @@ export class MarkerPinDecorator implements Decorator {
       vp.invalidateDecorations();
   }
 
+  // START DECORATE
   /* Implement this method to add Decorations into the supplied DecorateContext. */
   public decorate(context: DecorateContext): void {
 
@@ -282,4 +288,5 @@ export class MarkerPinDecorator implements Decorator {
       this._manualMarkerSet.addDecoration(context);
     }
   }
+  // END DECORATE
 }

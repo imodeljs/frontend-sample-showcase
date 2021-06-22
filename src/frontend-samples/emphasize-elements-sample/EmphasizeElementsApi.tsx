@@ -8,6 +8,7 @@ import { ColorDef } from "@bentley/imodeljs-common";
 
 export class EmphasizeElementsApi {
 
+  // START EMPHASIZE
   public static emphasizeSelectedElements(wantEmphasis: boolean, vp: ScreenViewport) {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.wantEmphasis = wantEmphasis;
@@ -18,6 +19,7 @@ export class EmphasizeElementsApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
   }
+  // END EMPHASIZE
 
   public static hideSelectedElements(vp: ScreenViewport) {
     const emph = EmphasizeElements.getOrCreate(vp);

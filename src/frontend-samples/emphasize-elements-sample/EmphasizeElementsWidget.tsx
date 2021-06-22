@@ -19,6 +19,7 @@ enum ActionType {
 }
 
 export const EmphasizeElementsWidget: React.FunctionComponent = () => {
+  // START WIDGET_SETUP
   const [selectionIsEmptyState, setSelectionIsEmptyState] = React.useState<boolean>(true);
   const [emphasizeIsActiveState, setEmphasizeIsActiveState] = React.useState<boolean>(false);
   const [hideIsActiveState, setHideIsActiveState] = React.useState<boolean>(false);
@@ -45,6 +46,7 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
       emph.clearOverriddenElements(vp);
     };
   }, []);
+  // END WIDGET_SETUP
 
   const _onSelectionChanged = (evt: SelectionChangeEventArgs, selectionProvider: ISelectionProvider) => {
     const selection = selectionProvider.getSelection(evt.imodel, evt.level);
@@ -55,6 +57,7 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
     setColorValueState(colorValue);
   };
 
+  // START ON_CLICK_ACTION
   const _handleActionButton = (type: ActionType) => {
     const vp = IModelApp.viewManager.selectedView;
 
@@ -85,7 +88,9 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
       }
     }
   };
+  // END ON_CLICK_ACTION
 
+  // START ON_CLICK_CLEAR
   const _handleClearButton = (type: ActionType) => {
     const vp = IModelApp.viewManager.selectedView;
 
@@ -116,12 +121,14 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
       }
     }
   };
+  // END ON_CLICK_CLEAR
 
   const _onToggleEmphasis = (wantEmphasis: boolean) => {
     setWantEmphasisState(wantEmphasis);
   };
 
   return (
+    // START CONTROLS
     <>
       <div className="sample-options">
         <div className="sample-options-4col">
@@ -144,6 +151,7 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
         </div>
       </div>
     </>
+    // END CONTROLS
   );
 };
 

@@ -14,13 +14,13 @@ function processChunk(source, map) {
 
   const annotations = annotationParser.deserialize(source);
 
-  const files = this.fs.readdirSync(this.context)
+  const files = getAllFiles(this.fs, this.context);
 
   const fileLocations = [];
   files.forEach((file) => {
     const fileContent = this.fs.readFileSync(path.resolve(this.context, file));
     const locations = parseAnnotationLocations(fileContent.toString(), options);
-    fileLocations.push({ file, locations });
+    fileLocations.push({ file: file.replace(this.context, ""), locations });
   });
 
   const walkthrough = [];
@@ -71,6 +71,22 @@ function sort(a, b) {
     return 1;
   }
   return 0;
+}
+
+function getAllFiles(fs, dirPath, arrayOfFiles) {
+  const files = fs.readdirSync(dirPath)
+
+  arrayOfFiles = arrayOfFiles || []
+
+  files.forEach(function (file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(fs, dirPath + "/" + file, arrayOfFiles)
+    } else {
+      arrayOfFiles.push(path.join(dirPath, "/", file))
+    }
+  })
+
+  return arrayOfFiles
 }
 
 module.exports = processChunk
