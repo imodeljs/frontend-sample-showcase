@@ -70,6 +70,7 @@ import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
 import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
+import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -164,6 +165,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
   groupName: "iTwin Platform APIs", samples: [
     getClashReviewSpec(),
     getReadSettingsSpec(),
+    getIssuesSpec(),
   ],
 
 },

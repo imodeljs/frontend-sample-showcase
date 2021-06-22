@@ -6,20 +6,21 @@
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
-export function getIotAlertSpec(): SampleSpec {
+export function getIssuesSpec(): SampleSpec {
   return ({
-    name: "iot-alert-sample",
-    label: "IoT Alerts",
-    image: "IoT-Alert-thumbnail.png",
+    name: "issue-sample",
+    label: "Issues",
+    image: "issues-thumbnail.png",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "IotAlertApi.tsx", import: import("!!raw-loader!./IotAlertApi") },
-      { name: "IotAlertApp.tsx", import: import("!!raw-loader!./IotAlertApp"), entry: true },
-      { name: "IotAlertWidget.tsx", import: import("!!raw-loader!./IotAlertWidget") },
-      { name: "IotAlert.scss", import: import("!!raw-loader!./IotAlert.scss") },
+      { name: "IssuesApi.tsx", import: import("!!raw-loader!./IssuesApi") },
+      { name: "IssuesApp.tsx", import: import("!!raw-loader!./IssuesApp"), entry: true },
+      { name: "IssuesWidget.tsx", import: import("!!raw-loader!./IssuesWidget") },
+      { name: "IssuesClient.ts", import: import("!!raw-loader!./IssuesClient") },
+      { name: "Issues.scss", import: import("!!raw-loader!./Issues.scss") },
     ],
-    iModelList: [SampleIModels.BayTown],
-    type: "IotAlertApp.tsx",
+    iModelList: [SampleIModels.MetroStation],
+    type: "IssuesApp.tsx",
   });
 }

@@ -272,6 +272,16 @@ export class MarkerPinDecorator implements Decorator {
       vp.invalidateDecorations();
   }
 
+  /* Adds a single new marker to the "manual" markerset */
+  public addMarkerPoint(markerData: MarkerData, pinImage: HTMLImageElement, title?: string, description?: string, onMouseButtonCallback?: any): void {
+    this._manualMarkerSet.markers.add(new SamplePinMarker(markerData, title ?? "Manual", description ?? "description test goes here", pinImage, this._manualMarkerSet, onMouseButtonCallback));
+
+    // When the markers change we notify the viewmanager to remove the existing decorations
+    const vp = IModelApp.viewManager.selectedView;
+    if (undefined !== vp)
+      vp.invalidateDecorations();
+  }
+
   /* Implement this method to add Decorations into the supplied DecorateContext. */
   public decorate(context: DecorateContext): void {
 

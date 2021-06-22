@@ -6,13 +6,13 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
-import { IotAlertWidgetProvider } from "./IotAlertWidget";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IssuesWidgetProvider } from "./IssuesWidget";
 
-const uiProviders = [new IotAlertWidgetProvider()];
+const uiProviders = [new IssuesWidgetProvider()];
 
-const IotAlertApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the controls below to change the iModel.", [SampleIModels.BayTown]);
+const IssuesApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the controls below to change the iModel.", [SampleIModels.MetroStation]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
@@ -23,7 +23,6 @@ const IotAlertApp: FunctionComponent = () => {
   /** The sample's render method */
   return (
     <>
-      <MessageRenderer />
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
@@ -42,4 +41,4 @@ const IotAlertApp: FunctionComponent = () => {
 
 };
 
-export default IotAlertApp;
+export default IssuesApp;

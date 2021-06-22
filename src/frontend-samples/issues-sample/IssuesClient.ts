@@ -9,8 +9,8 @@
  * ---------------------------------------------------------------
  */
 
-import APIMAuthClient from "./APIMAuthClient";
 import { Point3d } from "@bentley/geometry-core";
+import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 
 export interface CommentsListPreferReturnMinimal {
   comments?: CommentGetPreferReturnMinimal[];
@@ -156,7 +156,7 @@ export interface AuditTrailEntryGet {
   | "Form Raised";
 
   /** The individual property modifications that were made in this changeset. */
-  changes?: { property?: string; oldValue?: string; newValue?: string }[];
+  changes?: { property?: string, oldValue?: string, newValue?: string }[];
 }
 
 export interface FormDefinitionList {
@@ -693,7 +693,7 @@ export interface Link {
  * Gives details for an error that occurred while handling the request. Note that clients MUST NOT assume that every failed request will produce an object of this schema, or that all of the properties in the response will be non-null, as the error may have prevented this response from being constructed.
  */
 export interface ErrorResponse {
-  error?: { code?: string; message?: string };
+  error?: { code?: string, message?: string };
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -745,6 +745,7 @@ export class HttpClient<SecurityDataType = unknown> {
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
+  private requestContext: AuthorizedClientRequestContext;
 
   private baseApiParams: RequestParams = {
     credentials: "same-origin",
@@ -753,7 +754,8 @@ export class HttpClient<SecurityDataType = unknown> {
     referrerPolicy: "no-referrer",
   };
 
-  constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
+  constructor(requestContext: AuthorizedClientRequestContext, apiConfig: ApiConfig<SecurityDataType> = {}) {
+    this.requestContext = requestContext
     Object.assign(this, apiConfig);
   }
 
@@ -765,9 +767,9 @@ export class HttpClient<SecurityDataType = unknown> {
     const value = query[key];
 
     return (
-      encodeURIComponent(key) +
-      "=" +
-      encodeURIComponent(Array.isArray(value) ? value.join(",") : typeof value === "number" ? value : `${value}`)
+      `${encodeURIComponent(key)
+      }=${
+        encodeURIComponent(Array.isArray(value) ? value.join(",") : typeof value === "number" ? value : `${value}`)}`
     );
   }
 
@@ -857,7 +859,7 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
         ...(requestParams.headers || {}),
-        Authorization: (await APIMAuthClient.oidcClient.getAccessToken()).toTokenString(), /* TODO: Use built in securityWorker */
+        Authorization: this.requestContext.accessToken.toTokenString(), // TODO: Remove hardcoded bearer token and uncomment this line
       },
       signal: cancelToken ? this.createAbortSignal(cancelToken) : void 0,
       body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),
@@ -909,7 +911,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
    * @request POST:/
    * @secure
    */
-  createIssue = (data: IssueCreate, params: RequestParams = {}) =>
+  createIssue = async (data: IssueCreate, params: RequestParams = {}) =>
     this.request<IssueGet, ErrorResponse | void>({
       path: `/`,
       method: "POST",
@@ -929,7 +931,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
    * @request GET:/
    * @secure
    */
-  getProjectIssues = (
+  getProjectIssues = async (
     query: {
       type?:
       | "Punchlist"
@@ -955,7 +957,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
     this.request<IssuesList, void | ErrorResponse>({
       path: `/`,
       method: "GET",
-      query: query,
+      query,
       secure: true,
       format: "json",
       ...params,
@@ -971,7 +973,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/formDefinitions/{id}
      * @secure
      */
-    getFormDefinitionById: (id: any, params: RequestParams = {}) =>
+    getFormDefinitionById: async (id: any, params: RequestParams = {}) =>
       this.request<FormDefinitionDetailsResponse, void | ErrorResponse>({
         path: `/formDefinitions/${id}`,
         method: "GET",
@@ -989,7 +991,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/formDefinitions/{id}/staticImages/{fileId}
      * @secure
      */
-    getStaticImage: (id: string, fileId: number, params: RequestParams = {}) =>
+    getStaticImage: async (id: string, fileId: number, params: RequestParams = {}) =>
       this.request<StaticImageResponse, void | ErrorResponse>({
         path: `/formDefinitions/${id}/staticImages/${fileId}`,
         method: "GET",
@@ -1007,11 +1009,11 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/formDefinitions
      * @secure
      */
-    getProjectFormDefinitions: (query: { projectId: string; type?: string }, params: RequestParams = {}) =>
+    getProjectFormDefinitions: async (query: { projectId: string, type?: string }, params: RequestParams = {}) =>
       this.request<FormDefinitionList, void | ErrorResponse>({
         path: `/formDefinitions`,
         method: "GET",
-        query: query,
+        query,
         secure: true,
         format: "json",
         ...params,
@@ -1026,7 +1028,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/formDefinitions/{id}/listGroups/{listGroupId}
      * @secure
      */
-    getListGroup: (id: string, listGroupId: string, params: RequestParams = {}) =>
+    getListGroup: async (id: string, listGroupId: string, params: RequestParams = {}) =>
       this.request<ListGroupResponse, void | ErrorResponse>({
         path: `/formDefinitions/${id}/listGroups/${listGroupId}`,
         method: "GET",
@@ -1045,7 +1047,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/{id}/attachments
      * @secure
      */
-    getIssueAttachments: (id: string, params: RequestParams = {}) =>
+    getIssueAttachments: async (id: string, params: RequestParams = {}) =>
       this.request<AttachmentMetadataList, void | ErrorResponse>({
         path: `/${id}/attachments`,
         method: "GET",
@@ -1063,7 +1065,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request POST:/{id}/attachments
      * @secure
      */
-    addAttachmentToIssue: (id: string, data: AttachmentMetadataCreate, params: RequestParams = {}) =>
+    addAttachmentToIssue: async (id: string, data: AttachmentMetadataCreate, params: RequestParams = {}) =>
       this.request<void, ErrorResponse | void>({
         path: `/${id}/attachments`,
         method: "POST",
@@ -1082,7 +1084,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request DELETE:/{id}/attachments/{attachmentId}
      * @secure
      */
-    deleteAttachment: (id: string, attachmentId: string, params: RequestParams = {}) =>
+    deleteAttachment: async (id: string, attachmentId: string, params: RequestParams = {}) =>
       this.request<void, void | ErrorResponse>({
         path: `/${id}/attachments/${attachmentId}`,
         method: "DELETE",
@@ -1099,12 +1101,12 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/{id}/attachments/{attachmentId}
      * @secure
      */
-    getAttachmentById: (id: string, attachmentId: string, params: RequestParams = {}) =>
+    getAttachmentById: async (id: string, attachmentId: string, params: RequestParams = {}) =>
       this.request<void, void | ErrorResponse>({
         path: `/${id}/attachments/${attachmentId}`,
         method: "GET",
         secure: true,
-        format: 'blob',
+        format: "blob",
         ...params,
       }),
 
@@ -1117,7 +1119,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request PUT:/{id}/attachments/{attachmentId}
      * @secure
      */
-    uploadAttachmentFileDeprecated: (id: string, attachmentId: string, body: string, params: RequestParams = {}) =>
+    uploadAttachmentFileDeprecated: async (id: string, attachmentId: string, body: string, params: RequestParams = {}) =>
       this.request<void, void | ErrorResponse>({
         body,
         path: `/${id}/attachments/${attachmentId}`,
@@ -1128,33 +1130,6 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
       }),
 
     /**
-     * The default uploadAttachmentFile needed some significant changes.
-     * @param id 
-     * @param attachmentId 
-     * @param attachmentData 
-     * @param params 
-     * @returns 
-     */
-    uploadAttachmentFile: async (id: string, attachmentId: string, attachmentData: string, params: RequestParams = {}) => {
-      const url = `https://api.bentley.com/issues/v1/${id}/attachments/${attachmentId}`;
-
-      const fileResponse = await fetch(attachmentData);
-      const blob = await fileResponse.blob();
-
-      const xhr = new XMLHttpRequest();
-      const promise = new Promise<string>(async (resolve) => {
-
-        xhr.open("PUT", `${url}`);
-        xhr.setRequestHeader("authorization", (await APIMAuthClient.oidcClient.getAccessToken()).toTokenString());
-
-        xhr.send(blob);
-        resolve(attachmentId);
-      });
-
-      return promise;
-    },
-
-    /**
      * @description --- Deletes the issue with the specified ID. ### Authentication Requires *Authorization* header with valid Bearer token for scope *issues:modify*. ---
      *
      * @tags Issues
@@ -1163,7 +1138,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request DELETE:/{id}
      * @secure
      */
-    deleteIssue: (id: string, params: RequestParams = {}) =>
+    deleteIssue: async (id: string, params: RequestParams = {}) =>
       this.request<void, void | ErrorResponse>({
         path: `/${id}`,
         method: "DELETE",
@@ -1180,7 +1155,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request PATCH:/{id}
      * @secure
      */
-    modifyIssue: (id: string, data: IssueUpdate, params: RequestParams = {}) =>
+    modifyIssue: async (id: string, data: IssueUpdate, params: RequestParams = {}) =>
       this.request<IssueGet, ErrorResponse | void>({
         path: `/${id}`,
         method: "PATCH",
@@ -1200,7 +1175,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/{id}
      * @secure
      */
-    getIssueDetails: (id: string, params: RequestParams = {}) =>
+    getIssueDetails: async (id: string, params: RequestParams = {}) =>
       this.request<IssueDetailsGet, void | ErrorResponse>({
         path: `/${id}`,
         method: "GET",
@@ -1217,15 +1192,15 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/{id}/download
      * @secure
      */
-    downloadIssueAsFile: (
+    downloadIssueAsFile: async (
       id: string,
-      query?: { fileType?: "pdf"; includeHeader?: true | false },
+      query?: { fileType?: "pdf", includeHeader?: true | false },
       params: RequestParams = {},
     ) =>
       this.request<void, ErrorResponse | void>({
         path: `/${id}/download`,
         method: "GET",
-        query: query,
+        query,
         secure: true,
         ...params,
       }),
@@ -1239,7 +1214,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request POST:/{id}/comments
      * @secure
      */
-    addCommentToIssue: (id: any, data: CommentCreate, params: RequestParams = {}) =>
+    addCommentToIssue: async (id: any, data: CommentCreate, params: RequestParams = {}) =>
       this.request<void, ErrorResponse | void>({
         path: `/${id}/comments`,
         method: "POST",
@@ -1258,7 +1233,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/{id}/comments
      * @secure
      */
-    getIssueComments: (id: string, params: RequestParams = {}) =>
+    getIssueComments: async (id: string, params: RequestParams = {}) =>
       this.request<CommentsListPreferReturnMinimal, void | ErrorResponse>({
         path: `/${id}/comments`,
         method: "GET",
@@ -1275,7 +1250,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request DELETE:/{id}/comments/{commentId}
      * @secure
      */
-    deleteComment: (id: string, commentId: string, params: RequestParams = {}) =>
+    deleteComment: async (id: string, commentId: string, params: RequestParams = {}) =>
       this.request<void, void | ErrorResponse>({
         path: `/${id}/comments/${commentId}`,
         method: "DELETE",
@@ -1292,7 +1267,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/{id}/auditTrailEntries
      * @secure
      */
-    getIssueAuditTrail: (id: string, params: RequestParams = {}) =>
+    getIssueAuditTrail: async (id: string, params: RequestParams = {}) =>
       this.request<AuditTrail, void | ErrorResponse>({
         path: `/${id}/auditTrailEntries`,
         method: "GET",
@@ -1311,11 +1286,11 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/workflows/{type}
      * @secure
      */
-    getWorkflow: (type: string, query: { projectId: string }, params: RequestParams = {}) =>
+    getWorkflow: async (type: string, query: { projectId: string }, params: RequestParams = {}) =>
       this.request<WorkflowResponseGet, ErrorResponse | void>({
         path: `/workflows/${type}`,
         method: "GET",
-        query: query,
+        query,
         secure: true,
         format: "json",
         ...params,
@@ -1330,14 +1305,14 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
      * @request GET:/storageExport
      * @secure
      */
-    exportIssuesToStorage: (
-      query: { "ids ": string; includeHeader?: true | false; fileType?: "pdf"; folderId?: string },
+    exportIssuesToStorage: async (
+      query: { "ids ": string, includeHeader?: true | false, fileType?: "pdf", folderId?: string },
       params: RequestParams = {},
     ) =>
       this.request<ExportFileToShareResponse, ErrorResponse | void>({
         path: `/storageExport`,
         method: "GET",
-        query: query,
+        query,
         secure: true,
         format: "json",
         ...params,

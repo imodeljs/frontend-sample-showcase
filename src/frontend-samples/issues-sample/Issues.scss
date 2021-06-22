@@ -9,6 +9,17 @@
     padding: 8px;
   }
 
+.table {
+  // Color the table heading background to match dark mode
+  .iui-tables-head{
+    background: var(--buic-background-table-header) !important;
+  }
+  .iui-tables-cell {
+    padding: 8px !important;
+    color: var(--buic-foreground-body) !important;
+  }
+}
+
 .issue-list-header {
     padding: 6px;
     border-bottom: 1px solid $buic-background-divider;
@@ -54,6 +65,16 @@
         height: 0;
         }
     }
+  
+  .issue-title {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+    margin: 0;
+    color: #fff
+  }
 
     .issue-info {
         flex: 1;
@@ -61,15 +82,6 @@
         flex-direction: column;
         justify-content: space-between;
         overflow: hidden;
-
-        .issue-title {
-        font-size: 14px;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: normal;
-        }
 
         .issue-subtitle {
         flex: 1;
@@ -101,6 +113,11 @@
     padding: 5px !important;
 }
 
+/** Override the spinner on inital widget load to be in the center of the widget */
+.core-spinner-medium {
+  position: unset;
+}
+
 .issue-details {
   width: 100%;
   height: 100%;
@@ -111,11 +128,13 @@
   overflow-x: hidden;
 
     .header {
-        margin-top: 8px;
-        margin-right: 4px;
         display: inline-flex;
         align-items: center;
         width: 100%;
+    }
+    .issue-tab-content {
+      border-top: 1px solid var(--buic-background-4);
+      padding: 5px;
     }
 }
   
@@ -183,18 +202,43 @@
   opacity: 0;
 }
 
-.issue-comments {
-    .comment-group {
+.issue-audit-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 2 0;
+  font-size: $uicore-font-size-small;
+  color: #fff;
+
+  .issue-audit-content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .issue-audit-bubble {
+      border-radius: 50%;
+      width: 8px;
+      height: 8px;
+      box-sizing: border-box;
+    }
+
+    .issue-audit-label {
+      font-weight: 600;
+    }
+  }
+}
+
+.issue-audit-trail {
+    .date-group {
         display: flex;
         flex-direction: column;
         
-        .comment-date {
+        .date {
           position: relative;
           width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: $uicore-s;
           font-size: $uicore-font-size-small;
       
           &::after {
@@ -208,7 +252,8 @@
           }
       
           > span {
-            background: var(--iui-color-background-1);
+            color: #fff;
+            background: var(--buic-background-2);
             padding: 0 $uicore-sm;
             z-index: 1;
           }
