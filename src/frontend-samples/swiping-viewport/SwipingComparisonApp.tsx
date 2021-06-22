@@ -5,7 +5,7 @@
 
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { EditManipulator, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, queryRealityData, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, queryRealityData, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 
 export enum ComparisonType {
   Wireframe,
@@ -67,7 +67,7 @@ export default class SwipingViewportApp {
   public static getPerpendicularNormal(vp: Viewport, screenPoint: Point3d): Vector3d {
     const point = SwipingViewportApp.getWorldPoint(vp, screenPoint);
 
-    const boresite = EditManipulator.HandleUtils.getBoresite(point, vp);
+    const boresite = AccuDrawHintBuilder.getBoresite(point, vp);
     const viewY = vp.rotation.rowY();
     const normal = viewY.crossProduct(boresite.direction);
     return normal;
@@ -198,7 +198,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
 
     this.prepareNewBranch(vp);
 
-    const context = vp.createSceneContext();
+    const context: SceneContext = new SceneContext(vp);
     vp.view.createScene(context);
 
     // This graphics branch contains the graphics that were excluded by the flipped clipping plane
@@ -212,7 +212,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
         branch.entries.push(gf);
 
       // Overwrites the view flags for this view branch.
-      branch.setViewFlagOverrides(this.viewFlagOverrides);
+      branch.viewFlagOverrides.copyFrom(this.viewFlagOverrides);
       // Draw the graphics to the screen.
       output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
     }

@@ -71,8 +71,16 @@ const updateURLParams = (group: string, sample: string, imodel?: string) => {
     }
 
     const currentParams = new URLSearchParams(window.location.search);
-    currentParams.has("editor") && params.append("editor", currentParams.get("editor")!);
-    currentParams.has("gallery") && params.append("gallery", currentParams.get("gallery")!);
+
+    // Replace these three params
+    currentParams.delete("group");
+    currentParams.delete("sample");
+    currentParams.delete("imodel");
+
+    // Keep other params
+    currentParams.forEach((value, key) => {
+      params.append(key, value);
+    });
 
     window.history.pushState(null, "", `?${params.toString()}`);
 
