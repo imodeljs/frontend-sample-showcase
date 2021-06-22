@@ -164,8 +164,8 @@ export const sampleManifest: SampleSpecGroup[] = [{
 }, {
   groupName: "iTwin Platform APIs", samples: [
     getClashReviewSpec(),
-    getReadSettingsSpec(),
     getIssuesSpec(),
+    getReadSettingsSpec(),
   ],
 
 },
