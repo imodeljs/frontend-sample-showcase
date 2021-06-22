@@ -17,15 +17,27 @@ interface SpecResolveResult {
 
 export class ActiveSample {
   private _spec: SampleSpec;
+  private _walkthrough?: Annotation[];
   public group: string;
   public name: string;
   public imodel: SampleIModels;
   public iTwinViewerReady?: boolean;
   public getReadme?: () => Promise<{ default: string }>;
   public getFiles?: () => SampleSpecFile[];
-  public walkthrough?: Annotation[];
   public type: string;
   public galleryVisible: boolean = true;
+
+  public get walkthrough() {
+    if (this._walkthrough) {
+      const initialStep: Annotation = {
+        index: 0,
+        markdown: `This panel will give you a guided tour of the Emphasize Element code sample.  Please use the 'next' button below to start the tour.  Or you can browse through and jump directly to any step using the control above.`,
+        title: "Welcome",
+      };
+      return [initialStep, ...this._walkthrough];
+    }
+    return undefined;
+  }
 
   constructor(group?: string | null, name?: string | null, imodel?: SampleIModels | null) {
     const params = new URLSearchParams(window.location.search);
@@ -43,7 +55,7 @@ export class ActiveSample {
     this.iTwinViewerReady = result.spec.iTwinViewerReady;
     this.getFiles = result.spec.files;
     this.getReadme = result.spec.readme;
-    this.walkthrough = result.spec.walkthrough;
+    this._walkthrough = result.spec.walkthrough;
     this.type = result.spec.type || "";
 
     updateURLParams(this.group, this.name, this.imodel);
