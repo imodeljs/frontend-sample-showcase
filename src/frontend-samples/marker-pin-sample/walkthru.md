@@ -55,6 +55,8 @@ To do this the class overrides the following methods:
 - `onMouseButton` - forwards the mouse button event to the callback.  // LINK TO CLUSTERMARKERMOUSEBUTTON
 - `drawFunc` - draws a simple white circle centered on the origin of the marker's local coordinate system.  // LINK TO CLUSTERMARKERDRAWFUNC
 
+[_metadata_:annotation]:- "SAMPLECLUSTERMARKER"
+
 # Marker
 
 The class `SamplePinMarker` also extends the `Marker` base class.  It is similar to the `SampleClusterMarker` with these differences:
@@ -62,3 +64,4 @@ The class `SamplePinMarker` also extends the `Marker` base class.  It is similar
 - image - this marker uses setImage rather than overriding `drawFunc` like the cluster marker does.  // LINK TO MARKERPINIMAGE
 - pick - override `pick` to account for the image offset // LINK TO MARKERPINPICK
 
+[_metadata_:annotation]:- "SAMPLEPINMARKER"
