@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { EditManipulator, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, Viewport, ViewState } from "@bentley/imodeljs-frontend";
+import { AccuDrawHintBuilder, ContextRotationId, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, Viewport, ViewState } from "@bentley/imodeljs-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@bentley/geometry-core";
 import { ViewSetup } from "@itwinjs-sandbox";
 
@@ -47,8 +47,8 @@ export default class ViewClipApi {
   };
 
   /* Method for getting a normal vector. */
-  public static getPlaneInwardNormal(orientation: EditManipulator.RotationType, viewport: Viewport): Vector3d | undefined {
-    const matrix = EditManipulator.HandleUtils.getRotation(orientation, viewport);
+  public static getPlaneInwardNormal(orientation: ContextRotationId, viewport: Viewport): Vector3d | undefined {
+    const matrix = AccuDrawHintBuilder.getContextRotation(orientation, viewport);
     if (undefined === matrix)
       return undefined;
     return matrix.getColumn(2).negate();
@@ -66,12 +66,12 @@ export default class ViewClipApi {
 
   /* Method for setting a plane as the view clip */
   public static setClipPlane(vp: ScreenViewport, clipPlane: string, imodel: IModelConnection) {
-    let rotationType: EditManipulator.RotationType;
+    let rotationType: ContextRotationId;
     switch (clipPlane) {
       default:
-      case "0": rotationType = EditManipulator.RotationType.Top; break;
-      case "1": rotationType = EditManipulator.RotationType.Front; break;
-      case "2": rotationType = EditManipulator.RotationType.Left; break;
+      case "0": rotationType = ContextRotationId.Top; break;
+      case "1": rotationType = ContextRotationId.Front; break;
+      case "2": rotationType = ContextRotationId.Left; break;
       case "None": return true;
     }
 

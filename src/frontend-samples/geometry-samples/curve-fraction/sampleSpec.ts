@@ -10,6 +10,7 @@ export function getCurveFractionSpec(): SampleSpec {
     name: "curve-fraction-sample",
     label: "Curve Fractions",
     image: "curve-fraction-thumbnail.png",
+    description: "#Geometry #sample showing how to find a #point along a set #fraction of a #curve using the #fractionToPointAndDerivative method",
     iModelList: [],
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),

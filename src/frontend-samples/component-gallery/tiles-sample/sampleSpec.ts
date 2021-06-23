@@ -11,6 +11,7 @@ export function getTilesSpec(): SampleSpec {
     name: "tiles-sample",
     label: "UI-Tiles",
     image: "ui-tile-thumbnail.png",
+    description: "#Component #sample showing different #styles of #tiles.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

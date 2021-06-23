@@ -10,6 +10,7 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     name: "custom-checkboxes-sample",
     label: "Custom Checkboxes Tree",
     image: "custom-checkboxes-tree-thumbnail.png",
+    description: "#Tree #sample showing how to create a tree with custom #checkboxes using a #ImageCheckBox component.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

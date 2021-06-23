@@ -11,6 +11,7 @@ export function getInputsSpec(): SampleSpec {
     name: "inputs-sample",
     label: "UI-Inputs",
     image: "ui-inputs-thumbnail.png",
+    description: "#Component #sample showing different #styles of #inputs.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

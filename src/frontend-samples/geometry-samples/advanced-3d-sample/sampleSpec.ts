@@ -10,6 +10,7 @@ export function getAdvanced3dSpec(): SampleSpec {
     name: "advanced-3d-sample",
     label: "Advanced 3d",
     image: "advanced-3d-thumbnail.png",
+    description: "#Geometry #sample showing how to generate several #3d pieces of geometry including #mitered #pipes, #rotational, #linear, and #ruled, #sweeps.",
     iModelList: [],
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),

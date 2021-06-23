@@ -11,6 +11,7 @@ export function getCheckListBoxSpec(): SampleSpec {
     name: "checklistbox-sample",
     label: "UI-CheckListBoxes",
     image: "ui-checklistbox-thumbnail.png",
+    description: "#Component #sample showing different #styles of #checklistboxes.",
     readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [
