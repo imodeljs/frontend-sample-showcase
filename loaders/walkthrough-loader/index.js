@@ -25,13 +25,35 @@ function processChunk(source, map) {
 
   const walkthrough = [];
 
-  let currentStep = 1;
+  let currentStep = 0;
+  let minorStep = 0.1;
+  let prevMarkdown = "";
   annotations.forEach((annotation) => {
+    let index = annotation.index;
+    if (index === undefined) {
+      index = currentStep;
+      if (annotation.minor) {
+        index += minorStep;
+        minorStep += 0.1;
+      } else {
+        minorStep = 0.1;
+        index++;
+      }
+    }
+
+    let markdown = annotation.markdown;
+    if (markdown.length) {
+      prevMarkdown = annotation.markdown;
+    } else {
+      markdown = prevMarkdown;
+    }
+
     const step = {
-      index: annotation.index !== undefined ? annotation.index : currentStep,
+      index: index.toString(),
       id: annotation.id,
       title: annotation.title,
-      markdown: annotation.markdown.trim(),
+      markdown,
+      skip: annotation.minor,
     }
 
     if (annotation.id !== "NONE") {
@@ -46,13 +68,13 @@ function processChunk(source, map) {
       }
     }
 
-    const walkthroughIndex = walkthrough.find((anno) => anno.id === step.id);
+    const walkthroughIndex = walkthrough.findIndex((anno) => anno.index === step.index);
     if (walkthroughIndex > -1) {
       walkthrough.splice(walkthroughIndex, 1, step);
     } else {
       walkthrough.push(step);
     }
-    currentStep = Math.floor(step.index + 1);
+    currentStep = Math.floor(index);
   })
 
   const sortedWalkthrough = walkthrough.sort(sort);

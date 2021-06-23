@@ -30,7 +30,7 @@ export class ActiveSample {
   public get walkthrough() {
     if (this._walkthrough) {
       const initialStep: Annotation = {
-        index: 0,
+        index: "0",
         markdown: `This panel will give you a guided tour of the ${this.name.split("-").map((word) => word[0].toUpperCase() + word.substr(1)).join(" ")} code sample. Please use the → button below to start the tour. Or you can browse through and jump directly to any step using the control above. During the tour, the ◯ button will recenter the code editor.`,
         title: "Welcome",
       };

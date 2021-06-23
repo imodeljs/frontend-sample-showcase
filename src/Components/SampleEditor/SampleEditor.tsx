@@ -33,7 +33,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const [readmeLoading, setReadmeLoading] = React.useState(true);
   const [drawerSize, setDrawerSize] = React.useState<number>(drawerOpenSize);
   const [labels, setLabels] = React.useState<Label[]>([]);
-  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.enableWalkthrough, true);
+  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.EnableWalkthrough, true);
 
   React.useEffect(() => {
     if (readme) {

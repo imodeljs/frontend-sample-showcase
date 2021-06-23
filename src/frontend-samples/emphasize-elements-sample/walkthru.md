@@ -1,9 +1,3 @@
-# Welcome
-
-This panel will give you a guided tour of the Marker Pins code sample.  Please use the &#x02192; button below to start the tour.  Or you can browse through and jump directly to any step using the control above.  During the tour, the &#x025ef;  button will recenter the code editor.
-
-[_metadata_:annotation]:- "EMPHASIZE"
-
 # Emphasize Elements
 
 This sample uses the [`EmphasizeElements`](https://www.itwinjs.org/reference/imodeljs-frontend/rendering/emphasizeelements/) class to apply various display effects to an individual or small group of elements.
@@ -17,7 +11,23 @@ This sample shows how to apply four different effects:
 
 For the sample, we first require that the elements be selected by the user and then we call methods to apply the effect to the selected elements.  There are similar methods that can apply the same affects to elements that have not been selected by the user.
 
+[_metadata_:annotation]:- "API"
+
+# Emphasize
+[_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "EMPHASIZE"
+
+# Hide
+[_metadata_:minor]:- "true"
+[_metadata_:annotation]:- "HIDE"
+
+# Isolate
+[_metadata_:minor]:- "true"
+[_metadata_:annotation]:- "ISOLATE"
+
+# Override
+[_metadata_:minor]:- "true"
+[_metadata_:annotation]:- "OVERRIDE"
 
 # Viewer
 
