@@ -6,7 +6,7 @@ import { Point2d, Point3d, XAndY, XYAndZ } from "@bentley/geometry-core";
 import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, Marker, MarkerSet } from "@bentley/imodeljs-frontend";
 import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
 
-/**
+/*
  * There are four classes that cooperate to produce the markers.
  *
  * SamplePinMarker  - Displays a single pin image at a given world location.  The image is offset upwards so that the
@@ -25,14 +25,14 @@ import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
  *                      markers and marker clusters.  This sample creates exactly one MarkerPinDecorator.
  */
 
-// START MarkerData
+// START MARKERDATA
 export interface MarkerData {
   point: Point3d;
   title?: string;         // override default marker tooltip title
   description?: string;   // override default marker tooltip description
   data?: any;
 }
-// END MarkerData
+// END MARKERDATA
 
 // START SAMPLEPINMARKER
 /** Shows a pin marking the location of a point. */

@@ -19,7 +19,7 @@ export function getMarkerPinSpec(): SampleSpec {
       { name: "MarkerPinApi.ts", import: import("!editor-file-loader!./MarkerPinApi.ts") },
       { name: "MarkerPinWidget.tsx", import: import("!editor-file-loader!./MarkerPinWidget.tsx") },
       { name: "MarkerPinApp.tsx", import: import("!editor-file-loader!./MarkerPinApp.tsx"), entry: true },
-      { name: "MarkerPinDecorator.tsx", import: import("!editor-file-loader!./MarkerPinDecorator") },
+      { name: "MarkerPinDecorator.ts", import: import("!editor-file-loader!./MarkerPinDecorator") },
       { name: "MarkerPin.scss", import: import("!editor-file-loader!./MarkerPin.scss") },
       { name: "PlaceMarkerTool.ts", import: import("!editor-file-loader!./PlaceMarkerTool") },
       { name: "PopupMenu.tsx", import: import("!editor-file-loader!./PopupMenu") },
