@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
+import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { Point3d } from "@bentley/geometry-core";
 import { ApiConfig, IssueGet, IssuesClient } from "./IssuesClient";
 import { AuthorizationClient } from "@itwinjs-sandbox";

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Point2d, Point3d, XAndY, XYAndZ } from "@bentley/geometry-core";
 import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, Marker, MarkerSet } from "@bentley/imodeljs-frontend";
-import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
+import { PopupMenu, PopupMenuEntry } from "frontend-samples/marker-pin-sample/PopupMenu";
 
 /**
  * There are four classes that cooperate to produce the markers.
