@@ -448,7 +448,7 @@ const IssuesWidget: React.FunctionComponent = () => {
                         <span className="open icon icon-zoom" title={"Locate & Zoom"} />
                       </div>
                     }
-                    <div className="issue-status" style={{ borderTop: `14px solid ${issue.properties._StatusColor ?? "red"}`, borderLeft: `14px solid transparent` }} />
+                    <div className="issue-status" style={{ borderTop: `14px solid ${issueStatusColor(issue)}`, borderLeft: `14px solid transparent` }} />
                   </div>
                   <div className="issue-info" onClick={() => setCurrentIssue(issue)}>
                     <Leading className={"issue-title"}>{`${issue.number} | ${issue.subject}`}</Leading>
