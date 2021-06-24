@@ -1,9 +1,3 @@
-# Welcome
-
-This panel will give you a guided tour of the Marker Pins code sample.  Please use the &#x02192; button below to start the tour.  Or you can browse through and jump directly to any step using the control above.  During the tour, the &#x025ef;  button will recenter the code editor.
-
-[_metadata_:annotation]:- "VIEW_SETUP"
-
 # Viewer Setup
 
 This sample consists of a single [functional REACT component](https://reactjs.org/docs/components-and-props.html) named `ViewportOnlyApp`.  This component uses the hook `useSampleWidget` which is delivered as part of the sample environment.  The hook takes care of adding a widget which shows the sample instructions and also a picker to select among the example iModels.  The hook returns the contextId and iModelId used to identify the iModel.
