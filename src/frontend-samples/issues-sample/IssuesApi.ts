@@ -8,20 +8,21 @@ import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-samp
 import { Point3d } from "@bentley/geometry-core";
 import { ApiConfig, IssueGet, IssuesClient } from "./IssuesClient";
 import { AuthorizationClient } from "@itwinjs-sandbox";
+import { AccessToken } from "@bentley/itwin-client";
 
 export default class IssuesApi {
-  private static _issueClient: IssuesClient<string>;
+  private static _issueClient: IssuesClient<AccessToken>;
   public static _issuesPinDecorator?: MarkerPinDecorator;
 
   public static async getClient() {
     if (!IssuesApi._issueClient) {
       // Create the config the client uses to authenticate
-      const config: ApiConfig<string> = {
-        securityWorker: (accessToken: string | null) => accessToken ? { headers: { ["Authorization"]: token } } : undefined,
+      const config: ApiConfig<AccessToken> = {
+        securityWorker: (accessToken: AccessToken | null) => accessToken ? { headers: { ["Authorization"]: accessToken.toTokenString() } } : undefined,
       };
 
       /** Create the token, pass in the config and token used to authenticate */
-      const token = (await (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken()).toTokenString();
+      const token = await (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
       IssuesApi._issueClient = new IssuesClient(config);
       IssuesApi._issueClient.setSecurityData(token);
     }
