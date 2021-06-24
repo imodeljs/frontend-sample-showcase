@@ -40,8 +40,9 @@ export default class IssuesApi {
 
   public static addDecoratorPoint(issue: IssueGet, pinImage: HTMLImageElement, title?: string, description?: string, onMouseButtonCallback?: any) {
     const markerData: MarkerData = { point: issue.modelPin?.location ?? Point3d.createZero(), title, description, data: issue };
+    const scale = { low: .2, high: 1.4 };
     if (this._issuesPinDecorator)
-      this._issuesPinDecorator.addMarkerPoint(markerData, pinImage, title, description, onMouseButtonCallback);
+      this._issuesPinDecorator.addMarkerPoint(markerData, pinImage, title, description, scale, onMouseButtonCallback);
   }
 
   public static enableDecorations() {
