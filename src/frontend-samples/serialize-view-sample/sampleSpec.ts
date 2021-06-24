@@ -22,5 +22,6 @@ export function getSerializeViewSpec(): SampleSpec {
     ],
     iTwinViewerReady: true,
     type: "SerializeViewApp.tsx",
+    description: "How to #serialize, #deserialize and load a #viewstate from JSON.",
   };
 }

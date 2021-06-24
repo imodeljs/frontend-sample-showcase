@@ -23,5 +23,6 @@ export function getRealityDataSpec(): SampleSpec {
     ],
     iModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
     type: "RealityDataApp.tsx",
+    description: "Adding, removing, and modifying the display of #reality data. Discovers available #realitymodel and attaches the first one to the viewport.",
   });
 }

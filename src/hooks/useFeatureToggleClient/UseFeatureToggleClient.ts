@@ -17,5 +17,4 @@ export const useFeatureToggleClient = (feature: FeatureFlags, defaultValue: bool
   }, [defaultValue, feature]);
 
   return featureEnabled;
-
 };

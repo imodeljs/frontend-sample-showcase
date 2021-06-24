@@ -10,6 +10,7 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
     name: "closest-point-curve-sample",
     label: "Closest Point on Curve",
     image: "closest-point-curve-thumbnail.png",
+    description: "#Geometry #sample showing how to find the #closest #point on a #curve by using the #closestPoint method.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     iTwinViewerReady: true,

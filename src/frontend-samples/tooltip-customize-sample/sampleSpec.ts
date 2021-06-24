@@ -10,6 +10,7 @@ export function getTooltipCustomizeSpec(): SampleSpec {
     name: "tooltip-customize-sample",
     label: "Tooltip Customize",
     image: "tooltip-customize-thumbnail.png",
+    description: "Shows customized element #tooltips by supplying a #ToolAdmin that overrides the #getToolTip method.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "TooltipCustomizeApi.tsx", import: import("!!raw-loader!./TooltipCustomizeApi") },

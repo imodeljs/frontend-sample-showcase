@@ -30,8 +30,8 @@ export class ActiveSample {
   public get walkthrough() {
     if (this._walkthrough) {
       const initialStep: Annotation = {
-        index: 0,
-        markdown: `This panel will give you a guided tour of the Emphasize Element code sample.  Please use the 'next' button below to start the tour.  Or you can browse through and jump directly to any step using the control above.`,
+        index: "0",
+        markdown: `This panel will give you a guided tour of the ${this.name.split("-").map((word) => word[0].toUpperCase() + word.substr(1)).join(" ")} code sample. Please use the → button below to start the tour. Or you can browse through and jump directly to any step using the control above. During the tour, the ◯ button will recenter the code editor.`,
         title: "Welcome",
       };
       return [initialStep, ...this._walkthrough];
@@ -86,8 +86,16 @@ const updateURLParams = (group: string, sample: string, imodel?: string) => {
     }
 
     const currentParams = new URLSearchParams(window.location.search);
-    currentParams.has("editor") && params.append("editor", currentParams.get("editor")!);
-    currentParams.has("gallery") && params.append("gallery", currentParams.get("gallery")!);
+
+    // Replace these three params
+    currentParams.delete("group");
+    currentParams.delete("sample");
+    currentParams.delete("imodel");
+
+    // Keep other params
+    currentParams.forEach((value, key) => {
+      params.append(key, value);
+    });
 
     window.history.pushState(null, "", `?${params.toString()}`);
 

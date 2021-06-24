@@ -5,6 +5,7 @@
 const TITLE_REGEX = /#\s+(.*)/i;
 const METADATA_REGEX = /(?:\[_metadata_:.*\]:-\s*\".*\")/i;
 const INDEX_REGEX = /\[_metadata_:index\]:-\s*\"([0-9]+)\"/i
+const MINOR_REGEX = /\[_metadata_:minor\]:-\s*\"(true|false)\"/i
 const ANNOTATION_REGEX = /\[_metadata_:annotation\]:-\s*\"(.*)\"/i
 
 
@@ -40,7 +41,7 @@ class AnnotationParser {
   }
 
   static deserializeStep(metadata, markdown) {
-    let id, index, title;
+    let id, index, title, minor;
 
     for (let i = 0; i < metadata.length; i++) {
       let match = metadata[i].match(ANNOTATION_REGEX);
@@ -56,12 +57,17 @@ class AnnotationParser {
       if (match && match[1]) {
         title = match[1].trim();
       }
+      match = metadata[i].match(MINOR_REGEX);
+      if (match && match[1]) {
+        minor = Boolean(match[1].trim());
+      }
     }
 
     const step = {
       id,
       title,
       index,
+      minor,
       markdown: markdown.join("\n").trim(),
     }
 

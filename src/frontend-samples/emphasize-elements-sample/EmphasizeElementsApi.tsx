@@ -6,6 +6,7 @@ import "common/samples-common.scss";
 import { EmphasizeElements, FeatureOverrideType, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 
+// START API
 export class EmphasizeElementsApi {
 
   // START EMPHASIZE
@@ -57,3 +58,4 @@ export class EmphasizeElementsApi {
   }
   // END OVERRIDE
 }
+// END API

@@ -16,7 +16,7 @@ export interface TabNavigationProps {
 }
 
 export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadme, onRunCompleted, onShowReadme }) => {
-  const executable = useFeatureToggleClient(FeatureFlags.enableEditor);
+  const executable = useFeatureToggleClient(FeatureFlags.EnableEditor);
 
   const _onRunCompleted = useCallback((blob: string) => {
     onRunCompleted(blob);
@@ -32,5 +32,4 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
       </div>
     </TabNav>
   );
-
 };
