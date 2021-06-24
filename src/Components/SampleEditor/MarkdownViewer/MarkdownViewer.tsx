@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import Markdown from "markdown-to-jsx";
-import { Link } from "../Link/Link";
+import { SampleLink } from "../MarkdownComponents/Link/SampleLink";
 
 export interface MarkdownViewerProps {
   readme: string;
@@ -17,7 +17,7 @@ export default class MarkdownViewer extends React.Component<MarkdownViewerProps>
   public render() {
     const options = {
       overrides: {
-        a: { component: Link, props: { fileClicked: this.props.onFileClicked, sampleClicked: this.props.onSampleClicked } },
+        a: { component: SampleLink, props: { fileClicked: this.props.onFileClicked, sampleClicked: this.props.onSampleClicked } },
       },
     };
 

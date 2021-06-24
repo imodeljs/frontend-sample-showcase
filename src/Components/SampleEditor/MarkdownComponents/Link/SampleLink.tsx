@@ -6,14 +6,14 @@
 import React from "react";
 import { findSpecBySampleName } from "sampleManifest";
 
-export interface LinkProps {
+export interface SampleLinkProps {
   href: string;
   fileClicked: (fileName: string) => void;
-  sampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
+  sampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => Promise<void>;
   onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
-export class Link extends React.Component<LinkProps> {
+export class SampleLink extends React.Component<SampleLinkProps> {
   private onClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const substrings = this.props.href.split("/");
 
@@ -44,9 +44,9 @@ export class Link extends React.Component<LinkProps> {
         return; // throw an error?
 
       event.preventDefault();
-      this.props.sampleClicked(fromManifest.group.groupName, fromManifest.spec.name, true);
-      // NEEDSWORK: need to wait for the sample before selecting the file.  How?
-      this.props.fileClicked(fileName);
+      this.props.sampleClicked(fromManifest.group.groupName, fromManifest.spec.name, true).then(() => {
+        this.props.fileClicked(fileName);
+      });
     }
   };
 

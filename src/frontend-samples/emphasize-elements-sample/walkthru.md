@@ -4,10 +4,10 @@ This sample uses the [`EmphasizeElements`](https://www.itwinjs.org/reference/imo
 
 This sample shows how to apply four different effects:
 
-- Emphasize - Fade all other elements into the background // NEEDSWORK: link to EMPHASIZE
-- Hide - Do not display the selected elements // NEEDSWORK: link to HIDE
-- Isolate - Do not display all other elements // NEEDSWORK: link to ISOLATE
-- Override - Change the color of the selected elements // NEEDSWORK: link to OVERRIDE
+- [Emphasize](/?step=EMPHASIZE) \- Fade all other elements into the background
+- [Hide](/?step=HIDE) \- Do not display the selected elements // NEEDSWORK: link to HIDE
+- [Isolate](/?step=ISOLATE) \- Do not display all other elements // NEEDSWORK: link to ISOLATE
+- [Override](/?step=OVERRIDE) \- Change the color of the selected elements // NEEDSWORK: link to OVERRIDE
 
 For the sample, we first require that the elements be selected by the user and then we call methods to apply the effect to the selected elements.  There are similar methods that can apply the same affects to elements that have not been selected by the user.
 
