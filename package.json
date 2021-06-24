@@ -33,6 +33,7 @@
     "@bentley/ui-framework": "^2.16.0",
     "@bentley/ui-ninezone": "^2.16.0",
     "@bentley/webgl-compatibility": "^2.16.0",
+    "@itwin/itwinui-react": "^1.2.0",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
