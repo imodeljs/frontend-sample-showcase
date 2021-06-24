@@ -117,7 +117,7 @@ const IssuesWidget: React.FunctionComponent = () => {
     </svg>`;
 
     for (const issue of issues) {
-      const fillColor = issue.properties._StatusColor ?? "red";
+      const fillColor = issueStatusColor(issue);
       let svg = SVGMAP[fillColor];
       if (!svg) {
         const imgXml = parser.parseFromString(issue_marker, "application/xml");
@@ -152,6 +152,20 @@ const IssuesWidget: React.FunctionComponent = () => {
       });
     }
   }, [applyView, issues]);
+
+  /** Returns a color corresponding to the status of the issue */
+  const issueStatusColor = (issue: IssueGet) => {
+    switch (issue.status) {
+      case "Unresolved": /* Orange */
+        return "#F18812";
+      case "Verified":  /* Blue */
+        return "#0088FF";
+      case "Resolved": /* Green */
+        return "#56A91C";
+      default: /* Rejected: Red */
+        return "#D30A0A";
+    }
+  };
 
   /** Helper to determine text color on the basis of background hex color. */
   const buildForegroundColor = (markerFillColor: string): string | undefined => {

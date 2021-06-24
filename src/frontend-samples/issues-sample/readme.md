@@ -19,8 +19,11 @@ This sample utilizes the [@itwinui-react](https://itwin.github.io/iTwinUI-react/
 
 Each issue's color indicates the status.
 
-- Review = Yellow
+- Unresolved = Orange
 
-- Open = Red
+- Resolved = Green
 
-- Draft = Orange
+- Verified = Blue
+
+- Rejected = Red
+
