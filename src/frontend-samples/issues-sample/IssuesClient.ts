@@ -939,7 +939,7 @@ export class IssuesClient<SecurityDataType extends unknown> extends HttpClient<S
       | "Clash"
       | "Closeout"
       | "Communication"
-      | "Defiiciency"
+      | "Deficiency"
       | "Design"
       | "Field Data"
       | "Issue"
