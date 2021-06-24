@@ -5,8 +5,15 @@
 /* eslint-disable */
 /* tslint:disable */
 
+/*
+ * ---------------------------------------------------------------
+ * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
+ * ##                                                           ##
+ * ## AUTHOR: acacode                                           ##
+ * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
+ * ---------------------------------------------------------------
+ */
 import { Point3d } from "@bentley/geometry-core";
-import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 
 export interface CommentsListPreferReturnMinimal {
   comments?: CommentGetPreferReturnMinimal[];
@@ -741,7 +748,6 @@ export class HttpClient<SecurityDataType = unknown> {
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
-  private requestContext: AuthorizedClientRequestContext;
 
   private baseApiParams: RequestParams = {
     credentials: "same-origin",
@@ -750,8 +756,7 @@ export class HttpClient<SecurityDataType = unknown> {
     referrerPolicy: "no-referrer",
   };
 
-  constructor(requestContext: AuthorizedClientRequestContext, apiConfig: ApiConfig<SecurityDataType> = {}) {
-    this.requestContext = requestContext
+  constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
     Object.assign(this, apiConfig);
   }
 
@@ -855,7 +860,6 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
         ...(requestParams.headers || {}),
-        Authorization: this.requestContext.accessToken.toTokenString(), // TODO: Remove hardcoded bearer token and uncomment this line
       },
       signal: cancelToken ? this.createAbortSignal(cancelToken) : void 0,
       body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),

@@ -32,7 +32,7 @@ const IssuesWidget: React.FunctionComponent = () => {
   /** The active tab when the issue is being shown */
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  /** Initalize Decorator */
+  /** Initialize Decorator */
   useEffect(() => {
     IssuesApi.setupDecorator();
     IssuesApi.enableDecorations();
@@ -68,7 +68,7 @@ const IssuesWidget: React.FunctionComponent = () => {
     })();
   }, [iModelConnection, issues]);
 
-  /** Set the privew Images on issue load */
+  /** Set the preview Images on issue load */
   useEffect(() => {
     issues.map(async (issue) => {
       if (issue.id) {
@@ -81,7 +81,7 @@ const IssuesWidget: React.FunctionComponent = () => {
           setPreviewImages((prevState) => ({ ...prevState, [issue.displayName as string]: binaryImage }));
         }
 
-        /** Set the rest of the attachments in the attachmentMeta data */
+        /** Set the rest of the attachments in the attachmentMetaData */
         if (metaData.data.attachments) {
           setIssueAttachmentMetaData((prevState) => ({ ...prevState, [issue.displayName as string]: metaData.data.attachments!.length > 1 ? metaData.data.attachments!.slice(1) : [] }));
         }
@@ -163,7 +163,8 @@ const IssuesWidget: React.FunctionComponent = () => {
     const g = parseInt(markerFillColor.substr(2, 2), 16);
     const b = parseInt(markerFillColor.substr(4, 2), 16);
     const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-    // All focus on yellow only, when user will start picking their own color, we may pick another threshhold value or change algo :|
+
+    // All focus on yellow only
     return yiq >= 190 ? "#000000" : "#FFFFFF";
   };
 
@@ -254,7 +255,7 @@ const IssuesWidget: React.FunctionComponent = () => {
   };
 
   const issueAttachmentsContent = React.useCallback(() => {
-    /** grab the commesnt for the current issue */
+    /** grab the comment for the current issue */
     const attachments = issueAttachments[currentIssue!.displayName!];
     const metaData = issueAttachmentMetaData[currentIssue!.displayName!];
 
@@ -355,7 +356,7 @@ const IssuesWidget: React.FunctionComponent = () => {
     else if (comments.length === 0 && auditTrail.length === 0)
       return (<Body style={{ color: "fff" }}>No content.</Body>);
 
-    /** seperate audit trail by day */
+    /** separate audit trail by day */
     const combinedByDay: { [day: string]: JSX.Element[] } = {};
     auditTrail.sort((a, b) => new Date(a.changeDateTime!).getTime() - new Date(b.changeDateTime!).getTime());
     auditTrail.forEach((trail) => {
@@ -450,11 +451,11 @@ const IssuesWidget: React.FunctionComponent = () => {
           </div>
         }
 
-        {/** When an issue is slected from the inital list, show the tab interface */}
+        {/** When an issue is selected from the initial list, show the tab interface */}
         {currentIssue &&
           <div className={"issue-details"}>
             <div className={"header"}>
-              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setActiveTab(0); }}><img src=".\\progress-backward_3.svg" /></IconButton>
+              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setActiveTab(0); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
               <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`${currentIssue.number} | ${currentIssue.subject}`}</Subheading>
             </div>
 

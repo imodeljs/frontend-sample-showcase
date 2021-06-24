@@ -18,6 +18,7 @@ export function getIssuesSpec(): SampleSpec {
       { name: "IssuesApp.tsx", import: import("!!raw-loader!./IssuesApp"), entry: true },
       { name: "IssuesWidget.tsx", import: import("!!raw-loader!./IssuesWidget") },
       { name: "IssuesClient.ts", import: import("!!raw-loader!./IssuesClient") },
+      { name: "frontend-samples/marker-pin-sample/MarkerPinDecorator.ts", import: import("!!raw-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts") },
       { name: "Issues.scss", import: import("!!raw-loader!./Issues.scss") },
     ],
     iModelList: [SampleIModels.MetroStation],
