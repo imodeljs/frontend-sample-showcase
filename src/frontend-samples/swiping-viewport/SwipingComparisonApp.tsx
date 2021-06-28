@@ -21,7 +21,7 @@ const SwipingComparisonApp: FunctionComponent = () => {
   const [dividerLeftState, setDividerLeftState] = React.useState<number>();
   const [isLockedState, setIsLockedState] = React.useState<boolean>(false);
 
-  /** On function component initalization, subscribe to the locked event for when the widget toggles a locked the state is updated */
+  /** On function component initialization, subscribe to the locked event for when the widget toggles a locked the state is updated */
   useEffect(() => {
     const unsub = SwipingComparisonApi.onLockEvent.addListener((isLocked) => setIsLockedState(isLocked));
     return () => { unsub(); };
@@ -72,7 +72,7 @@ const SwipingComparisonApp: FunctionComponent = () => {
           >
           </Viewer>
 
-          {/** The divder to move left and right. */}
+          {/** The divider to move left and right. */}
           {boundsState && dividerLeftState && !isLockedState ?
             <DividerComponent sideL={dividerLeftState - boundsState.left} bounds={boundsState} onDragged={_onDividerMoved} />
             : <></>}
