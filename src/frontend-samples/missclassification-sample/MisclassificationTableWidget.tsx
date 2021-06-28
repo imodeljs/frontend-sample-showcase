@@ -40,6 +40,12 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
       if (testResults) {
         //download the results        
         const sasUri = testResults.resultSasUri;
+
+        if (sasUri.includes("resanalysis")) {
+          setMisclassData(MisclassificationsJson);
+          return;
+        }
+
         const testData = await MisclassificationApi.getTestResultsData(sasUri);
         if (testData != undefined) {
           const testDataObj = JSON.parse(testData);
