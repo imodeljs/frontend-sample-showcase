@@ -12,9 +12,9 @@ export function getDragAndDropTreeSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "DragAndDropTreeApp.tsx", import: import("!!raw-loader!./DragAndDropTreeApp") },
-      { name: "DragAndDropTreeUI.tsx", import: import("!!raw-loader!./DragAndDropTreeUI"), entry: true },
-      { name: "BasicTreeNode.tsx", import: import("!!raw-loader!./BasicTreeNode") },
+      import("!editor-file-loader!./DragAndDropTreeApp"),
+      import("!editor-file-loader!./DragAndDropTreeUI?entry=true"),
+      import("!editor-file-loader!./BasicTreeNode"),
     ],
     type: "DragAndDropTreeUI.tsx",
   });

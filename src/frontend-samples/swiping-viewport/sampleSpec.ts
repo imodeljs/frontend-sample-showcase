@@ -15,10 +15,10 @@ export function getSwipingComparisonSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./README.md"),
     iModelList: [SampleIModels.ExtonCampus],
     files: () => [
-      { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp") },
-      { name: "SwipingComparisonUI.tsx", import: import("!!raw-loader!./SwipingComparisonUI"), entry: true },
-      { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
-      { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
+      import("!editor-file-loader!./SwipingComparisonApp"),
+      import("!editor-file-loader!./SwipingComparisonUI?entry=true"),
+      import("!editor-file-loader!./Divider"),
+      import("!editor-file-loader!./Divider.scss"),
     ],
     type: "SwipingComparisonUI.tsx",
   });

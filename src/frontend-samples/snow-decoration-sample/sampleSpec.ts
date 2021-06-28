@@ -16,11 +16,11 @@ export function getParticleSnowSampleSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "SnowDecorationApi.tsx", import: import("!!raw-loader!./SnowDecorationApi"), entry: true },
-      { name: "SnowDecorationApp.tsx", import: import("!!raw-loader!./SnowDecorationApp") },
-      { name: "SnowDecorationWidget.tsx", import: import("!!raw-loader!./SnowDecorationWidget") },
-      { name: "SnowDecorator.ts", import: import("!!raw-loader!./SnowDecorator") },
-      { name: "SnowDecoration.scss", import: import("!!raw-loader!./SnowDecoration.scss") },
+      import("!editor-file-loader!./SnowDecorationApi?entry=true"),
+      import("!editor-file-loader!./SnowDecorationApp"),
+      import("!editor-file-loader!./SnowDecorationWidget"),
+      import("!editor-file-loader!./SnowDecorator"),
+      import("!editor-file-loader!./SnowDecoration.scss"),
     ],
     type: "SnowDecorationApp.tsx",
   });

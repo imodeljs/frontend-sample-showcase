@@ -15,9 +15,9 @@ export function getCrossProbingSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CrossProbingApi.ts", import: import("!!raw-loader!./CrossProbingApi") },
-      { name: "CrossProbingApp.tsx", import: import("!!raw-loader!./CrossProbingApp"), entry: true },
-      { name: "CrossProbingFrontstageProvider.tsx", import: import("!!raw-loader!./CrossProbingFrontstageProvider") },
+      import("!editor-file-loader!./CrossProbingApi"),
+      import("!editor-file-loader!./CrossProbingApp?entry=true"),
+      import("!editor-file-loader!./CrossProbingFrontstageProvider"),
     ],
     type: "CrossProbingApp.tsx",
   });

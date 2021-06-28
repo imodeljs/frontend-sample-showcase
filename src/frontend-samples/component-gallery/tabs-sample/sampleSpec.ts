@@ -15,7 +15,7 @@ export function getTabsSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Tabs.tsx", import: import("!!raw-loader!./Tabs"), entry: true },
+      import("!editor-file-loader!./Tabs?entry=true"),
     ],
     type: "Tabs.tsx",
   });
