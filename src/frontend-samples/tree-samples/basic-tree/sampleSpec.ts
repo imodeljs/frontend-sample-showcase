@@ -10,6 +10,7 @@ export function getBasicTreeSpec(): SampleSpec {
     name: "basic-tree-sample",
     label: "Basic Tree",
     image: "basic-tree-thumbnail.png",
+    description: "#Tree #sample showing how to create a #simple tree using a #ControlledTree component.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

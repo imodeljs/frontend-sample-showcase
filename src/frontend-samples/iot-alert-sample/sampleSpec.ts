@@ -11,6 +11,7 @@ export function getIotAlertSpec(): SampleSpec {
     name: "iot-alert-sample",
     label: "IoT Alerts",
     image: "IoT-Alert-thumbnail.png",
+    description: "How to simulate out-of-bound condition from a #sensor and trigger #IotAlert, #blinking effect",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

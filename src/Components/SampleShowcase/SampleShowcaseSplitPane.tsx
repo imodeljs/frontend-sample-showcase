@@ -56,7 +56,7 @@ const calculateSizes = (width: number) => {
 export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneProps> = ({ width, editor, visualizer, gallery }) => {
   const [sizes, setSizes] = useState<Sizes>(calculateSizes(width));
   const [showEditor, setShowEditor] = useState(width >= 1024);
-  const [showGallery, setShowGallery] = useState(width >= 576);
+  const [showGallery, setShowGallery] = useState(width >= 576 && !!gallery);
   const [dragging, setDragging] = useState<boolean>(false);
 
   useEffect(() => {
@@ -109,6 +109,20 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
     }
     setShowEditor(!showEditor);
   }, [showEditor, showGallery, width]);
+
+  if (!gallery)
+    return (
+      <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)}>
+        <Pane className={editorClassName.join(" ")} disabled={!showEditor} size={showEditor ? `${sizes?.editorSize}px` : "0"} onChange={onEditorSizeChange}>
+          {editor}
+        </Pane>
+        <Pane className={"preview"} minSize={`${sizes?.minPreviewSize}px`}>
+          {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+          {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+          {visualizer}
+        </Pane>
+      </SplitScreen >
+    );
 
   return (
     <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)}>

@@ -10,6 +10,7 @@ export function getPresentationTreeSpec(): SampleSpec {
     name: "presetation-tree-sample",
     label: "Presentation Tree",
     image: "presentation-tree-thumbnail.png",
+    description: "#Tree #sample showing how to load data using #presentation #rules.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "PresentationTreeApp.tsx", import: import("!!raw-loader!./PresentationTreeApp") },

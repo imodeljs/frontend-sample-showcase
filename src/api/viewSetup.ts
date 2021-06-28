@@ -55,11 +55,7 @@ export class ViewSetup {
   public static async overrideView(imodel: IModelConnection, viewState: ViewState) {
     const aspect = ViewSetup.getAspectRatio();
     if (undefined !== aspect) {
-      const extents = viewState.getExtents();
-      const origin = viewState.getOrigin();
-      viewState.adjustViewDelta(extents, origin, viewState.getRotation(), aspect);
-      viewState.setExtents(extents);
-      viewState.setOrigin(origin);
+      viewState.adjustAspectRatio(aspect);
     }
 
     const viewFlags = viewState.viewFlags.clone();
@@ -136,11 +132,15 @@ export class ViewSetup {
   public static async getSubCategoryIds(iModel: IModelConnection, ...categoryCodes: string[]): Promise<Id64Set> {
     const subcategoriesIds = new Set<string>();
     if (!iModel.isClosed) {
-      const selectRelevantCategories = `SELECT ECInstanceId FROM BisCore.SpatialCategory ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""}`;
-      for await (const row of iModel.query(selectRelevantCategories)) {
-        const ids = iModel.subcategories.getSubCategories(row.id);
-        if (ids !== undefined)
-          ids.forEach((id) => subcategoriesIds.add(id));
+      const selectSubCategories =  `SELECT ECInstanceId as id 
+                                    FROM BisCore.SubCategory 
+                                    WHERE Parent.Id IN (
+                                      SELECT ECInstanceId 
+                                      FROM BisCore.SpatialCategory 
+                                      ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""})`;
+
+      for await (const row of iModel.query(selectSubCategories)) {
+        subcategoriesIds.add(row.id);
       }
     }
     return subcategoriesIds;

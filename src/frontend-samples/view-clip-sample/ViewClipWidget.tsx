@@ -5,7 +5,7 @@
 
 import React, { useEffect } from "react";
 import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
-import { EditManipulator, IModelApp } from "@bentley/imodeljs-frontend";
+import { ContextRotationId, IModelApp } from "@bentley/imodeljs-frontend";
 import ViewClipApi from "./ViewClipApi";
 import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, useActiveViewport, WidgetState } from "@bentley/ui-framework";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
@@ -77,9 +77,9 @@ export const ViewClipWidget: React.FunctionComponent = () => {
 
   const options = {
     None: "None",
-    [EditManipulator.RotationType.Left]: "X",
-    [EditManipulator.RotationType.Front]: "Y",
-    [EditManipulator.RotationType.Top]: "Z",
+    [ContextRotationId.Left]: "X",
+    [ContextRotationId.Front]: "Y",
+    [ContextRotationId.Top]: "Z",
   };
 
   return (

@@ -25,7 +25,7 @@ export function PresentationTree(props: PresentationTreeProps) {
   // 'usePresentationTreeNodeLoader' creates tree model source and paged tree node loader.
   // Tree model source can be accessed through node loader. New model source and node loader
   // is created when any property of object passed to `usePresentationTreeNodeLoader` changes
-  const nodeLoader = usePresentationTreeNodeLoader({
+  const { nodeLoader } = usePresentationTreeNodeLoader({
     imodel: props.imodel,
     ruleset: RULESET_TREE_HIERARCHY,
     pagingSize: PAGING_SIZE,

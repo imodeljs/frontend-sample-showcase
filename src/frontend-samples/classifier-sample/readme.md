@@ -17,7 +17,7 @@ The purpose of this sample is to demonstrate the following:
 Reality models derived from either photogrammetry or point cloud scanning provide an important representation of the physical state of a digital twin. They are however inherently monolithic, a single reality model will represent many digital twin components. Spatial classification provides a method to spatially partition a reality model by superimposing it with a spatial model. Reality model geometry within the boundaries of the spatial model components behave much like the components themselves. 
 Classification controls not only the reality model display but the way the reality models are selected. When a reality model is classified the classified geometry is selected rather than the entire model and the properties from the classifier are automatically associated to that portion of the reality model. This is an important feature. To demonstrate the use of GIS data within a reality model this sample uses a reality model of Philadelphia and GIS data representing the building footprints, commercial corridors, arterial streets, and light poles. All sourced from ([OpenDataPhilly](https://www.opendataphilly.org/dataset/)).
 
-[`ClassifierApp`](./ClassifierApi.tsx) has the necessary static methods for interacting with classifier related portions of the iModel.js API.
+[`ClassifierApp`](./ClassifierApp.tsx) has the necessary static methods for interacting with classifier related portions of the iModel.js API.
 
 First the reality model must be attached to the viewport. There is more info about interacting with reality models in the [reality model sample](../reality-data-sample/readme.md).
 

@@ -48,7 +48,7 @@ export default class CrossProbingApi {
         const targetElement = targetLink[0].drawElementId;
         const targetModel = await ev.set.iModel.models.getProps(targetLink[0].drawModelId);
         const viewCreator = new ViewCreator2d(ev.set.iModel);
-        const targetViewState = await viewCreator.createViewForModel(targetModel[0].id!, targetModel[0].classFullName, { bgColor: ColorDef.black });
+        const targetViewState = await viewCreator.createViewForModel(targetModel[0].id!, { bgColor: ColorDef.black });
         const vp2d = CrossProbingApi._get2DViewport();
         vp2d.onChangeView.addOnce(async () => {
           // when view opens, zoom into target 2D element.

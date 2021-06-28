@@ -134,9 +134,8 @@
       "import": "@bentley/hypermodeling-frontend"
     },
     {
-      "name": "NoSignInIAuthClient",
-      "import": "./src/NoSignInIAuthClient",
-      "typedef": true
+      "name": "@itwin/itwinui-react",
+      "import": "@itwin/itwinui-react"
     },
     {
       "name": "api/viewSetup",

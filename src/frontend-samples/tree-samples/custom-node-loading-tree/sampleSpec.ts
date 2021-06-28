@@ -10,6 +10,7 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     name: "custom-node-loading-sample",
     label: "Custom Node Loading Tree",
     image: "custom-node-loading-tree-thumbnail.png",
+    description: "#Tree #sample showing how to create two different trees, one that loads data from #memory, and the other using #presentation #rules.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CustomNodeLoadingTreeApp.tsx", import: import("!!raw-loader!./CustomNodeLoadingTreeApp") },

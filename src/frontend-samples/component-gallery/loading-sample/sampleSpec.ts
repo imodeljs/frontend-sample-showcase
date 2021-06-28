@@ -11,6 +11,7 @@ export function getLoadingSpec(): SampleSpec {
     name: "loading-sample",
     label: "UI-Loading Icons",
     image: "ui-loading-thumbnail.png",
+    description: "#Component #sample showing different #styles of #loading #icons.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

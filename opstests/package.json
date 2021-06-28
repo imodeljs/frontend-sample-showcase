@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "Tests the UI for showcase",
   "main": "showcase-opstests.js",
+  "private": "true",
   "scripts": {
     "opstests": "node showcase-opstests.js"
   },
-  "author": "bao.ton@bentley.com",
-  "license": "ISC",
+  "author": {
+    "name": "Bentley Systems, Inc.",
+    "url": "http://www.bentley.com"
+  },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/imodeljs/frontend-sample-showcase"
