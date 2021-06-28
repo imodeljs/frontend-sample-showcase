@@ -3,38 +3,28 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { Pane, setEditorState, SplitScreen, useActivityState, useEntryState, useFileState } from "@bentley/monaco-editor";
-import { TabNavigation } from "./TabNavigation/TabNavigation";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
-import Drawer from "./Drawer/Drawer";
-import { EditorProps } from "./SampleEditorContext";
-import "./SampleEditor.scss";
-import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import MonacoEditor from "./Monaco";
+import Drawer from "./Drawer/Drawer";
+import { Pane, SplitScreen, useActivityState, useEntryState } from "@bentley/monaco-editor";
+import { TabNavigation } from "./TabNavigation/TabNavigation";
+import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+import "./SampleEditor.scss";
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
+export interface EditorProps {
+  readme?: () => Promise<{ default: string }>;
+  onTranspiled: ((blobUrl: string) => void);
+  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
+}
 
 export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
-  const { files, readme } = props;
-  const fileActions = useFileState()[1];
+  const { readme } = props;
   const [activityState, activityActions] = useActivityState();
-  const [entryState, entryActions] = useEntryState();
+  const [entryState] = useEntryState();
   const [showReadme, setShowReadme] = React.useState<boolean>(true);
   const [displayDrawer, setDisplayDrawer] = React.useState<boolean>(false);
   const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    if (files) {
-      const editorFiles = files() || [];
-      Promise.all(editorFiles.map(async (file) => ({ content: (await file.import).default, name: file.name })))
-        .then(fileActions.setFiles)
-        .then(() => entryActions.setEntry(editorFiles.find((file) => file.entry)?.name || null));
-    }
-    return () => {
-      setEditorState(null, []);
-    };
-  }, [files, fileActions, entryActions, activityActions]);
 
   React.useEffect(() => {
     if (readme) {
