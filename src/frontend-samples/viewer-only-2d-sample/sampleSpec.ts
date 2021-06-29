@@ -16,7 +16,7 @@ export function getViewerOnly2dSpec(): SampleSpec {
     files: () => [
       import("!editor-file-loader!./ViewerOnly2dApi"),
       import("!editor-file-loader!./ViewerOnly2dApp?entry=true"),
-      import("!editor-file-loader!./ViewerOnly2dWidget?entry=true"),
+      import("!editor-file-loader!./ViewerOnly2dWidget"),
       import("!editor-file-loader!./ViewerOnly2d.scss"),
     ],
     iModelList: [SampleIModels.House, SampleIModels.MetroStation],
