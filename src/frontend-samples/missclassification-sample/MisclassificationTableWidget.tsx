@@ -41,11 +41,16 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
         // download the results
         const sasUri = testResults.resultSasUri;
 
+        // the ML sasURI is guarded by a launch darkly flag
+        // there was an issue adding the showcase user, so in the case the flag is off,
+        // fallback on hardcoded JSON
         if (sasUri.includes("resanalysis")) {
           setMisclassData(MisclassificationsJson);
           return;
         }
 
+        // Fallbacks to hardcoded data were added to gaurantee demo functionality in case of SAS token failures
+        // This is not viable practice in production environments
         const testData = await MisclassificationApi.getTestResultsData(sasUri);
         if (testData !== undefined) {
           const testDataObj = JSON.parse(testData);

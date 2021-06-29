@@ -11,6 +11,7 @@ export function getMisclassificationSpec(): SampleSpec {
     name: "misclassification-sample",
     label: "Misclassification",
     image: "classification.png",
+    description: "Uses the design #validation api to get and visualize #misclassified elements from a #misclassification test ran in the #machine #learning api.",
     readme: async () => import("!!raw-loader!./readme.md"),
     iTwinViewerReady: true,
     files: () => [
@@ -19,7 +20,7 @@ export function getMisclassificationSpec(): SampleSpec {
       { name: "MisclassificationTableWidget.tsx", import: import("!!raw-loader!./MisclassificationTableWidget.tsx") },
       { name: "MisclassificationsJson.ts", import: import("!!raw-loader!./MisclassificationsJson.ts") },
     ],
-    iModelList: [SampleIModels.BayTown],
+    iModelList: [SampleIModels.RetailBuilding],
     type: "MisclassificationApp.tsx",
   });
 }
