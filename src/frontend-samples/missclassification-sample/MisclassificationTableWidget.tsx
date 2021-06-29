@@ -38,7 +38,7 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
       );
 
       if (testResults) {
-        //download the results        
+        // download the results
         const sasUri = testResults.resultSasUri;
 
         if (sasUri.includes("resanalysis")) {
@@ -47,15 +47,15 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
         }
 
         const testData = await MisclassificationApi.getTestResultsData(sasUri);
-        if (testData != undefined) {
+        if (testData !== undefined) {
           const testDataObj = JSON.parse(testData);
           setMisclassData(testDataObj);
         } else {
-          //use the hardcoded json values
+          // use the hardcoded json values
           setMisclassData(MisclassificationsJson);
         }
       } else {
-        //use the hardcoded json values
+        // use the hardcoded json values
         setMisclassData(MisclassificationsJson);
       }
     }
@@ -69,8 +69,7 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
       // adding columns
       const columns: ColumnDescription[] = [];
 
-      const classSchema = misclassData.classificationFailuresSchema
-      console.log(misclassData);
+      const classSchema = misclassData.classificationFailuresSchema;
 
       columns.push({ key: `${classSchema.ECClassName.stringMap}~${classSchema.ECClassName.index}`, label: classSchema.ECClassName.label });
       columns.push({ key: `${classSchema.UserLabel.stringMap}~${classSchema.UserLabel.index}`, label: classSchema.UserLabel.label });
@@ -80,15 +79,14 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
       columns.push({ key: `${classSchema.MeshId.index}`, label: classSchema.MeshId.label });
       columns.push({ key: `${classSchema.Top1Prediction.stringMap}~${classSchema.Top1Prediction.index}`, label: classSchema.Top1Prediction.label });
 
-
       const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(
         columns
       );
       misclassData.classificationFailures.forEach((row: any) => {
-        //set the ecInstanceId as the key for the row
+        // set the ecInstanceId as the key for the row
         const rowItem: RowItem = { key: row[classSchema.ECInstanceId.index], cells: [] };
         columns.forEach((column: ColumnDescription) => {
-          const rowIndex = parseInt(column.key);
+          const rowIndex = parseInt(column.key, 10);
           let cellValue: string;
           if (isNaN(rowIndex)) {
             const keyParts = column.key.split("~");
@@ -96,7 +94,6 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
           } else {
             cellValue = row[rowIndex].toString();
           }
-          console.log(cellValue);
 
           const value: PropertyValue = {
             valueFormat: PropertyValueFormat.Primitive,
@@ -119,7 +116,7 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
     return new SimpleTableDataProvider([]);
   }, [misclassData]);
 
-  //zoom and highlight element when row is selected.
+  // zoom and highlight element when row is selected.
   const _onRowsSelected = async (
     rowIterator: AsyncIterableIterator<RowItem>
   ): Promise<boolean> => {
@@ -144,7 +141,6 @@ const MisclassificationTableWidget: React.FunctionComponent = () => {
             dataProvider={_getDataProvider()}
             onRowsSelected={_onRowsSelected}
           />
-          <div>{ }</div>
         </div>
       )}
     </>
@@ -166,6 +162,7 @@ export class MisclassificationWidgetProvider implements UiItemsProvider {
         id: "MisclassificationTableWidget",
         label: "Misclassification Table Selector",
         defaultState: WidgetState.Open,
+        // eslint-disable-next-line react/display-name
         getWidgetContent: () => <MisclassificationTableWidget />,
       });
     }

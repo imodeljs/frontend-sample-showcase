@@ -10,7 +10,6 @@ import { ColorDef } from "@bentley/imodeljs-common";
 export default class MisclassificationApi {
   private static _requestContext: AuthorizedClientRequestContext;
 
-
   public static async getTestResults(projectId: string, iModelId: string, resultId: string): Promise<any | undefined> {
     const url = `https://connect-resultsanalysisservice.bentley.com/results/${resultId}`;
     const options = {
@@ -19,7 +18,7 @@ export default class MisclassificationApi {
         Prefer: "return=representation",
         Authorization: (await MisclassificationApi.getAccessToken())?.toTokenString(IncludePrefix.Yes),
         context: projectId,
-        imodelid: iModelId
+        imodelid: iModelId,
       },
     };
     return request(await MisclassificationApi.getRequestContext(), url, options)
@@ -40,7 +39,7 @@ export default class MisclassificationApi {
         Authorization: (await MisclassificationApi.getAccessToken())?.toTokenString(IncludePrefix.Yes),
         context: projectId,
       },
-      body: testBody
+      body: testBody,
     };
     return request(await MisclassificationApi.getRequestContext(), url, options)
       .then((resp: Response): string | undefined => {
@@ -60,7 +59,7 @@ export default class MisclassificationApi {
         Authorization: (await MisclassificationApi.getAccessToken())?.toTokenString(IncludePrefix.Yes),
         context: projectId,
       },
-      body: testBody
+      body: testBody,
     };
     return request(await MisclassificationApi.getRequestContext(), url, options)
       .then((resp: Response): string | undefined => {
@@ -73,11 +72,10 @@ export default class MisclassificationApi {
 
   public static async getTestResultsData(sasURI: string): Promise<any | undefined> {
     const options = {
-      method: "GET"
+      method: "GET",
     };
     return request(await MisclassificationApi.getRequestContext(), sasURI, options)
       .then((resp: Response): string | undefined => {
-        console.log(resp);
         if (resp.text === undefined) return undefined;
         return resp.text;
       }).catch((_reason: any) => {
@@ -123,30 +121,32 @@ export default class MisclassificationApi {
    */
   private static async runClassificationTest(projectId: string, iModelId: string, iModelName: string, changesetId: string, changesetName: string) {
 
-    //Create a new classification test. 
+    // Create a new classification test.
     const sampleTest = [{
-      "name": "ml_classification",
-      "description": "ML classification test",
-      "configType": 5,
-    }]
+      name: "ml_classification",
+      description: "ML classification test",
+      configType: 5,
+    }];
     const testResponse = await MisclassificationApi.createClassificationTest(projectId, sampleTest);
-    if (testResponse == undefined) return;
+    if (testResponse === undefined) return;
 
-    //Trigger a new run classification test run.
+    // Trigger a new run classification test run.
     const sampleTestRun = [{
-      "iModelId": iModelId,
-      "changesetId": changesetId,
-      "iModelName": iModelName,
-      "changesetName": changesetName,
-      "configurationId": testResponse.status[0].id,
-      "configurationName": "ml_classification",
-      "configurationType": 5
-    }]
+      iModelId,
+      changesetId,
+      iModelName,
+      changesetName,
+      configurationId: testResponse.status[0].id,
+      configurationName: "ml_classification",
+      configurationType: 5,
+    }];
 
     const jobResponse = await MisclassificationApi.runClassificationJob(projectId, sampleTestRun);
-    if (jobResponse == undefined) return;
+    if (jobResponse === undefined) return;
 
-    if (jobResponse.status[0].message == 'Success')
-      console.log("Successfully created new test run");
+    if (jobResponse.status[0].message.compareToIgnoreCase("Success") === 0)
+      return "Successfully started classification job";
+    else
+      return "Failed to start job";
   }
 }

@@ -73,7 +73,6 @@ import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-samp
 import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
 import { getMisclassificationSpec } from "frontend-samples/missclassification-sample/sampleSpec";
 
-
 export interface SampleSpecGroup {
   groupName: string;
   samples: SampleSpec[];
@@ -168,7 +167,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getClashReviewSpec(),
     getIssuesSpec(),
     getReadSettingsSpec(),
-    getMisclassificationSpec()
+    getMisclassificationSpec(),
   ],
 
 },

@@ -3,17 +3,17 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 export const MisclassificationsJson = {
-  "numProcessed": 2310,
-  "numElements": 2310,
-  "numIssues": 341,
-  "workerInfo": {
+  numProcessed: 2310,
+  numElements: 2310,
+  numIssues: 341,
+  workerInfo: {
 
   },
-  "processVersion": "",
-  "iModelId": "cf226a09-f06e-4c24-8ea5-5ad71a1d8742",
-  "changesetId": "01cc650b08f82a306dce3326bf16eb04045841c9",
-  "iModelName": "PA-RetailBuildingSample",
-  "eCClassNameStringMap": [
+  processVersion: "",
+  iModelId: "cf226a09-f06e-4c24-8ea5-5ad71a1d8742",
+  changesetId: "01cc650b08f82a306dce3326bf16eb04045841c9",
+  iModelName: "PA-RetailBuildingSample",
+  eCClassNameStringMap: [
     "CurtainWall",
     "Door",
     "Floor",
@@ -25,9 +25,9 @@ export const MisclassificationsJson = {
     "Toilet__x0020__Accessories",
     "Wall",
     "WallLeaf",
-    "Window"
+    "Window",
   ],
-  "sourceModelStringMap": [
+  sourceModelStringMap: [
     "..\\2899_10\\A_Loft Layout B.dgn/A_Loft Layout B",
     "..\\2899_11\\A_Penthouse Core.dgn/A_Penthouse Core",
     "..\\2899_12\\A_Penthouse Exterior.dgn/A_Penthouse Exterior",
@@ -44,9 +44,9 @@ export const MisclassificationsJson = {
     "..\\2899_9\\A_Loft Layout A.dgn/A_Loft Layout A",
     "..\\2899_9\\A_Loft Layout A.dgn/DM-Architectural@2",
     "A_Composition Drawing.dgn/A_Composition Drawing",
-    "C:\\ProgramData\\Bentley\\OrchFwrk\\ABD-BRIDGE_private__powerplatform1\\cd9e8bec-a958-4d64-ae4f-ffc417f505a1\\1\\dms02926\\BB_FloorMaster.dgnlib/3D Model"
+    "C:\\ProgramData\\Bentley\\OrchFwrk\\ABD-BRIDGE_private__powerplatform1\\cd9e8bec-a958-4d64-ae4f-ffc417f505a1\\1\\dms02926\\BB_FloorMaster.dgnlib/3D Model",
   ],
-  "sourceModelIDStringMap": [
+  sourceModelIDStringMap: [
     "0x2000000000e",
     "0x20000000014",
     "0x20000000016",
@@ -63,9 +63,9 @@ export const MisclassificationsJson = {
     "0x2000000002d",
     "0x20000000032",
     "0x20000000043",
-    "0x20000000045"
+    "0x20000000045",
   ],
-  "userLabelStringMap": [
+  userLabelStringMap: [
     "",
     "CurtainWall-*Example | CW-01 Glass-CenterBays",
     "CurtainWall-*Example | CW-02 Glass-Corner",
@@ -85,9 +85,9 @@ export const MisclassificationsJson = {
     "Wall-*Example | CMU",
     "Wall-*Example | Partition_NR",
     "WallLeaf-default",
-    "Window-*Example | Fixed"
+    "Window-*Example | Fixed",
   ],
-  "categoryLabelStringMap": [
+  categoryLabelStringMap: [
     "A-AREA",
     "A-DOOR",
     "A-FLOR-SPCL",
@@ -98,9 +98,9 @@ export const MisclassificationsJson = {
     "G-ANNO-NPLT",
     "S-BEAM",
     "S-COLS",
-    "Uncategorized"
+    "Uncategorized",
   ],
-  "categoryDescriptionStringMap": [
+  categoryDescriptionStringMap: [
     "",
     "Areas",
     "Beams",
@@ -111,9 +111,9 @@ export const MisclassificationsJson = {
     "Glazing",
     "Speciality Interiors",
     "Walls",
-    "Walls: Cavities, Air Space"
+    "Walls: Cavities, Air Space",
   ],
-  "categoryIDStringMap": [
+  categoryIDStringMap: [
     "0x20000000009",
     "0x20000000781",
     "0x20000000783",
@@ -124,9 +124,9 @@ export const MisclassificationsJson = {
     "0x20000000827",
     "0x20000000837",
     "0x2000000088f",
-    "0x200000009eb"
+    "0x200000009eb",
   ],
-  "mlClassStringMap": [
+  mlClassStringMap: [
     "A-AREA",
     "A-DOOR",
     "A-FLOR-SPCL",
@@ -140,163 +140,163 @@ export const MisclassificationsJson = {
     "S-BEAM",
     "S-COLS",
     "S-SLAB",
-    "Uncategorized"
+    "Uncategorized",
   ],
-  "studiedKeyStringMap": [
-    "['category_label']"
+  studiedKeyStringMap: [
+    "['category_label']",
   ],
-  "classificationFailuresSchemaVersion": "1.1",
-  "classificationFailuresSchema": {
-    "ECInstanceId": {
-      "index": 0,
-      "type": "string",
-      "devColumn": true,
-      "display": true,
-      "label": "EC Instance ID",
-      "stringMap": ""
+  classificationFailuresSchemaVersion: "1.1",
+  classificationFailuresSchema: {
+    ECInstanceId: {
+      index: 0,
+      type: "string",
+      devColumn: true,
+      display: true,
+      label: "EC Instance ID",
+      stringMap: "",
     },
-    "ECClassName": {
-      "index": 1,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "EC class name",
-      "stringMap": "eCClassNameStringMap"
+    ECClassName: {
+      index: 1,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "EC class name",
+      stringMap: "eCClassNameStringMap",
     },
-    "SourceModelName": {
-      "index": 2,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Source Model Name",
-      "stringMap": "sourceModelStringMap"
+    SourceModelName: {
+      index: 2,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Source Model Name",
+      stringMap: "sourceModelStringMap",
     },
-    "SourceModelID": {
-      "index": 3,
-      "type": "number",
-      "devColumn": false,
-      "display": false,
-      "label": "Source Model ID",
-      "stringMap": "sourceModelIDStringMap"
+    SourceModelID: {
+      index: 3,
+      type: "number",
+      devColumn: false,
+      display: false,
+      label: "Source Model ID",
+      stringMap: "sourceModelIDStringMap",
     },
-    "UserLabel": {
-      "index": 4,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "User Label",
-      "stringMap": "userLabelStringMap"
+    UserLabel: {
+      index: 4,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "User Label",
+      stringMap: "userLabelStringMap",
     },
-    "CategoryLabel": {
-      "index": 5,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Category Label",
-      "stringMap": "categoryLabelStringMap"
+    CategoryLabel: {
+      index: 5,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Category Label",
+      stringMap: "categoryLabelStringMap",
     },
-    "CategoryDescription": {
-      "index": 6,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Category Description",
-      "stringMap": "categoryDescriptionStringMap"
+    CategoryDescription: {
+      index: 6,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Category Description",
+      stringMap: "categoryDescriptionStringMap",
     },
-    "CategoryID": {
-      "index": 7,
-      "type": "number",
-      "devColumn": false,
-      "display": false,
-      "label": "Category ID",
-      "stringMap": "categoryIDStringMap"
+    CategoryID: {
+      index: 7,
+      type: "number",
+      devColumn: false,
+      display: false,
+      label: "Category ID",
+      stringMap: "categoryIDStringMap",
     },
-    "MeshId": {
-      "index": 8,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Mesh ID",
-      "stringMap": ""
+    MeshId: {
+      index: 8,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Mesh ID",
+      stringMap: "",
     },
-    "TextId": {
-      "index": 9,
-      "type": "number",
-      "devColumn": false,
-      "display": false,
-      "label": "Text ID",
-      "stringMap": ""
+    TextId: {
+      index: 9,
+      type: "number",
+      devColumn: false,
+      display: false,
+      label: "Text ID",
+      stringMap: "",
     },
-    "StudiedKey": {
-      "index": 10,
-      "type": "number",
-      "devColumn": true,
-      "display": true,
-      "label": "Studied Key",
-      "stringMap": "studiedKeyStringMap"
+    StudiedKey: {
+      index: 10,
+      type: "number",
+      devColumn: true,
+      display: true,
+      label: "Studied Key",
+      stringMap: "studiedKeyStringMap",
     },
-    "CurrentClassRank": {
-      "index": 11,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Current Class Rank",
-      "stringMap": ""
+    CurrentClassRank: {
+      index: 11,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Current Class Rank",
+      stringMap: "",
     },
-    "CurrentClassConfidence": {
-      "index": 12,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Current Class Confidence",
-      "stringMap": ""
+    CurrentClassConfidence: {
+      index: 12,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Current Class Confidence",
+      stringMap: "",
     },
-    "Top1Prediction": {
-      "index": 13,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Best Prediction",
-      "stringMap": "mlClassStringMap"
+    Top1Prediction: {
+      index: 13,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Best Prediction",
+      stringMap: "mlClassStringMap",
     },
-    "Top1Confidence": {
-      "index": 14,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Predicted Class Confidence",
-      "stringMap": ""
+    Top1Confidence: {
+      index: 14,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Predicted Class Confidence",
+      stringMap: "",
     },
-    "Confidence": {
-      "index": 15,
-      "type": "number",
-      "devColumn": false,
-      "display": true,
-      "label": "Classification Confidence",
-      "stringMap": ""
+    Confidence: {
+      index: 15,
+      type: "number",
+      devColumn: false,
+      display: true,
+      label: "Classification Confidence",
+      stringMap: "",
     },
-    "boundingSphere": {
-      "radius": {
-        "index": 16,
-        "type": "number"
+    boundingSphere: {
+      radius: {
+        index: 16,
+        type: "number",
       },
-      "center": {
-        "x": {
-          "index": 17,
-          "type": "number"
+      center: {
+        x: {
+          index: 17,
+          type: "number",
         },
-        "y": {
-          "index": 18,
-          "type": "number"
+        y: {
+          index: 18,
+          type: "number",
         },
-        "z": {
-          "index": 19,
-          "type": "number"
-        }
-      }
-    }
+        z: {
+          index: 19,
+          type: "number",
+        },
+      },
+    },
   },
-  "classificationFailures": [
+  classificationFailures: [
     [
       "0x2000000175a",
       4,
@@ -317,7 +317,7 @@ export const MisclassificationsJson = {
       21.9378,
       19.9644,
       6.4008,
-      2.9718
+      2.9718,
     ],
     [
       "0x20000001771",
@@ -339,7 +339,7 @@ export const MisclassificationsJson = {
       6.2506,
       42.5117,
       15.4575,
-      2.9718
+      2.9718,
     ],
     [
       "0x200000016f8",
@@ -361,7 +361,7 @@ export const MisclassificationsJson = {
       3.0694,
       27.3939,
       13.4826,
-      1.1176
+      1.1176,
     ],
     [
       "0x200000016fb",
@@ -383,7 +383,7 @@ export const MisclassificationsJson = {
       3.0694,
       34.8234,
       11.6951,
-      1.1176
+      1.1176,
     ],
     [
       "0x200000016fa",
@@ -405,7 +405,7 @@ export const MisclassificationsJson = {
       3.9349,
       40.6098,
       6.096,
-      1.1176
+      1.1176,
     ],
     [
       "0x20000001715",
@@ -427,7 +427,7 @@ export const MisclassificationsJson = {
       2.8036,
       47.0726,
       16.2853,
-      2.013
+      2.013,
     ],
     [
       "0x2000000172a",
@@ -449,7 +449,7 @@ export const MisclassificationsJson = {
       1.0615,
       -1.6415,
       19.3421,
-      5.6646
+      5.6646,
     ],
     [
       "0x200000016a7",
@@ -471,7 +471,7 @@ export const MisclassificationsJson = {
       0.7403,
       7.3914,
       15.8845,
-      2.1632
+      2.1632,
     ],
     [
       "0x200000016ed",
@@ -493,7 +493,7 @@ export const MisclassificationsJson = {
       0.7403,
       42.3323,
       19.0373,
-      2.1632
+      2.1632,
     ],
     [
       "0x20000001818",
@@ -515,7 +515,7 @@ export const MisclassificationsJson = {
       0.2419,
       34.971,
       13.7612,
-      4.4704
+      4.4704,
     ],
     [
       "0x20000001838",
@@ -537,7 +537,7 @@ export const MisclassificationsJson = {
       0.2419,
       13.797,
       13.7612,
-      4.4704
+      4.4704,
     ],
     [
       "0x2000000181a",
@@ -559,7 +559,7 @@ export const MisclassificationsJson = {
       0.236,
       34.8242,
       13.9001,
-      4.4704
+      4.4704,
     ],
     [
       "0x2000000183a",
@@ -581,7 +581,7 @@ export const MisclassificationsJson = {
       0.236,
       13.9438,
       13.9001,
-      4.4704
+      4.4704,
     ],
     [
       "0x20000001928",
@@ -603,7 +603,7 @@ export const MisclassificationsJson = {
       0.236,
       13.9438,
       13.9001,
-      7.8994
+      7.8994,
     ],
     [
       "0x2000000194e",
@@ -625,7 +625,7 @@ export const MisclassificationsJson = {
       0.236,
       34.8242,
       13.9001,
-      7.8994
+      7.8994,
     ],
     [
       "0x200000019aa",
@@ -647,7 +647,7 @@ export const MisclassificationsJson = {
       0.236,
       13.9438,
       13.9001,
-      11.7094
+      11.7094,
     ],
     [
       "0x200000019d0",
@@ -669,7 +669,7 @@ export const MisclassificationsJson = {
       0.236,
       34.8242,
       13.9001,
-      11.7094
+      11.7094,
     ],
     [
       "0x20000001a2c",
@@ -691,7 +691,7 @@ export const MisclassificationsJson = {
       0.236,
       13.9438,
       13.9001,
-      15.5194
+      15.5194,
     ],
     [
       "0x20000001a52",
@@ -713,7 +713,7 @@ export const MisclassificationsJson = {
       0.236,
       34.8242,
       13.9001,
-      15.5194
+      15.5194,
     ],
     [
       "0x20000001d7f",
@@ -735,7 +735,7 @@ export const MisclassificationsJson = {
       0.236,
       13.9438,
       13.9001,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001daa",
@@ -757,7 +757,7 @@ export const MisclassificationsJson = {
       0.236,
       34.8242,
       13.9001,
-      19.3294
+      19.3294,
     ],
     [
       "0x2000000181f",
@@ -779,7 +779,7 @@ export const MisclassificationsJson = {
       1.3223,
       34.4797,
       13.9001,
-      4.5339
+      4.5339,
     ],
     [
       "0x20000001840",
@@ -801,7 +801,7 @@ export const MisclassificationsJson = {
       1.3223,
       14.2883,
       13.9001,
-      4.5339
+      4.5339,
     ],
     [
       "0x2000000192e",
@@ -823,7 +823,7 @@ export const MisclassificationsJson = {
       1.3223,
       14.2883,
       13.9001,
-      7.9629
+      7.9629,
     ],
     [
       "0x20000001953",
@@ -845,7 +845,7 @@ export const MisclassificationsJson = {
       1.3223,
       34.4797,
       13.9001,
-      7.9629
+      7.9629,
     ],
     [
       "0x200000019b0",
@@ -867,7 +867,7 @@ export const MisclassificationsJson = {
       1.3223,
       14.2883,
       13.9001,
-      11.7729
+      11.7729,
     ],
     [
       "0x200000019d5",
@@ -889,7 +889,7 @@ export const MisclassificationsJson = {
       1.3223,
       34.4797,
       13.9001,
-      11.7729
+      11.7729,
     ],
     [
       "0x20000001a32",
@@ -911,7 +911,7 @@ export const MisclassificationsJson = {
       1.3223,
       14.2883,
       13.9001,
-      15.5829
+      15.5829,
     ],
     [
       "0x20000001a57",
@@ -933,7 +933,7 @@ export const MisclassificationsJson = {
       1.3223,
       34.4797,
       13.9001,
-      15.5829
+      15.5829,
     ],
     [
       "0x20000001d85",
@@ -955,7 +955,7 @@ export const MisclassificationsJson = {
       1.3223,
       14.2883,
       13.9001,
-      19.3929
+      19.3929,
     ],
     [
       "0x20000001daf",
@@ -977,7 +977,7 @@ export const MisclassificationsJson = {
       1.3223,
       34.4797,
       13.9001,
-      19.3929
+      19.3929,
     ],
     [
       "0x20000001926",
@@ -999,7 +999,7 @@ export const MisclassificationsJson = {
       0.242,
       13.7969,
       13.7612,
-      7.8994
+      7.8994,
     ],
     [
       "0x2000000194c",
@@ -1021,7 +1021,7 @@ export const MisclassificationsJson = {
       0.242,
       34.9711,
       13.7612,
-      7.8994
+      7.8994,
     ],
     [
       "0x200000019a8",
@@ -1043,7 +1043,7 @@ export const MisclassificationsJson = {
       0.242,
       13.7969,
       13.7612,
-      11.7094
+      11.7094,
     ],
     [
       "0x200000019ce",
@@ -1065,7 +1065,7 @@ export const MisclassificationsJson = {
       0.242,
       34.9711,
       13.7612,
-      11.7094
+      11.7094,
     ],
     [
       "0x20000001a2a",
@@ -1087,7 +1087,7 @@ export const MisclassificationsJson = {
       0.242,
       13.7969,
       13.7612,
-      15.5194
+      15.5194,
     ],
     [
       "0x20000001a50",
@@ -1109,7 +1109,7 @@ export const MisclassificationsJson = {
       0.242,
       34.9711,
       13.7612,
-      15.5194
+      15.5194,
     ],
     [
       "0x20000001d7d",
@@ -1131,7 +1131,7 @@ export const MisclassificationsJson = {
       0.242,
       13.7969,
       13.7612,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001da8",
@@ -1153,7 +1153,7 @@ export const MisclassificationsJson = {
       0.242,
       34.9711,
       13.7612,
-      19.3294
+      19.3294,
     ],
     [
       "0x2000000170f",
@@ -1175,7 +1175,7 @@ export const MisclassificationsJson = {
       3.4106,
       20.574,
       -0.4826,
-      1.524
+      1.524,
     ],
     [
       "0x20000001710",
@@ -1197,7 +1197,7 @@ export const MisclassificationsJson = {
       3.4106,
       28.194,
       -0.4826,
-      1.524
+      1.524,
     ],
     [
       "0x20000001713",
@@ -1219,7 +1219,7 @@ export const MisclassificationsJson = {
       3.4106,
       12.954,
       -0.4826,
-      1.524
+      1.524,
     ],
     [
       "0x2000000174f",
@@ -1241,7 +1241,7 @@ export const MisclassificationsJson = {
       2.7244,
       -1.3002,
       17.145,
-      4.3561
+      4.3561,
     ],
     [
       "0x200000017e3",
@@ -1263,7 +1263,7 @@ export const MisclassificationsJson = {
       1.1147,
       0.0699,
       0.0698,
-      3.5814
+      3.5814,
     ],
     [
       "0x20000001bb1",
@@ -1285,7 +1285,7 @@ export const MisclassificationsJson = {
       22.5871,
       26.7462,
       21.517,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001bb2",
@@ -1307,7 +1307,7 @@ export const MisclassificationsJson = {
       5.2484,
       44.096,
       3.7814,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001711",
@@ -1329,7 +1329,7 @@ export const MisclassificationsJson = {
       2.2941,
       -0.4397,
       8.5614,
-      2.286
+      2.286,
     ],
     [
       "0x20000001712",
@@ -1351,7 +1351,7 @@ export const MisclassificationsJson = {
       2.2941,
       39.0414,
       -0.4397,
-      2.286
+      2.286,
     ],
     [
       "0x20000001775",
@@ -1373,7 +1373,7 @@ export const MisclassificationsJson = {
       1.5381,
       18.9865,
       15.6988,
-      1.524
+      1.524,
     ],
     [
       "0x20000001776",
@@ -1395,7 +1395,7 @@ export const MisclassificationsJson = {
       1.5381,
       22.1615,
       15.6988,
-      1.524
+      1.524,
     ],
     [
       "0x2000000177d",
@@ -1417,7 +1417,7 @@ export const MisclassificationsJson = {
       2.2915,
       -0.4683,
       8.6312,
-      2.286
+      2.286,
     ],
     [
       "0x200000017a1",
@@ -1439,7 +1439,7 @@ export const MisclassificationsJson = {
       0.5429,
       48.0123,
       1.2128,
-      5.7936
+      5.7936,
     ],
     [
       "0x20000001892",
@@ -1461,7 +1461,7 @@ export const MisclassificationsJson = {
       1.4627,
       18.9865,
       15.6988,
-      4.4958
+      4.4958,
     ],
     [
       "0x20000001898",
@@ -1483,7 +1483,7 @@ export const MisclassificationsJson = {
       1.4627,
       22.1615,
       15.6988,
-      4.4958
+      4.4958,
     ],
     [
       "0x20000001ab6",
@@ -1505,7 +1505,7 @@ export const MisclassificationsJson = {
       10.1,
       1.2129,
       11.1252,
-      8.001
+      8.001,
     ],
     [
       "0x20000001b05",
@@ -1527,7 +1527,7 @@ export const MisclassificationsJson = {
       10.1,
       1.2129,
       11.1252,
-      11.811
+      11.811,
     ],
     [
       "0x20000001b54",
@@ -1549,7 +1549,7 @@ export const MisclassificationsJson = {
       10.1,
       1.2129,
       11.1252,
-      15.621
+      15.621,
     ],
     [
       "0x20000001bce",
@@ -1571,7 +1571,7 @@ export const MisclassificationsJson = {
       2.2974,
       47.244,
       1.3081,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bd2",
@@ -1593,7 +1593,7 @@ export const MisclassificationsJson = {
       2.2974,
       47.0281,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bd6",
@@ -1615,7 +1615,7 @@ export const MisclassificationsJson = {
       2.2974,
       47.244,
       1.7399,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bda",
@@ -1637,7 +1637,7 @@ export const MisclassificationsJson = {
       2.2974,
       47.4599,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bee",
@@ -1659,7 +1659,7 @@ export const MisclassificationsJson = {
       2.2974,
       39.624,
       1.3081,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bf1",
@@ -1681,7 +1681,7 @@ export const MisclassificationsJson = {
       2.2974,
       39.4081,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bf4",
@@ -1703,7 +1703,7 @@ export const MisclassificationsJson = {
       2.2974,
       39.624,
       1.7399,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bf7",
@@ -1725,7 +1725,7 @@ export const MisclassificationsJson = {
       2.2974,
       39.8399,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c0e",
@@ -1747,7 +1747,7 @@ export const MisclassificationsJson = {
       2.2974,
       32.004,
       1.3081,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c11",
@@ -1769,7 +1769,7 @@ export const MisclassificationsJson = {
       2.2974,
       31.7881,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c14",
@@ -1791,7 +1791,7 @@ export const MisclassificationsJson = {
       2.2974,
       32.004,
       1.7399,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c17",
@@ -1813,7 +1813,7 @@ export const MisclassificationsJson = {
       2.2974,
       32.2199,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c2e",
@@ -1835,7 +1835,7 @@ export const MisclassificationsJson = {
       2.2974,
       24.384,
       1.3081,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c31",
@@ -1857,7 +1857,7 @@ export const MisclassificationsJson = {
       2.2974,
       24.1681,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c34",
@@ -1879,7 +1879,7 @@ export const MisclassificationsJson = {
       2.2974,
       24.384,
       1.7399,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c37",
@@ -1901,7 +1901,7 @@ export const MisclassificationsJson = {
       2.2974,
       24.5999,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c4e",
@@ -1923,7 +1923,7 @@ export const MisclassificationsJson = {
       2.2974,
       16.764,
       1.3081,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c51",
@@ -1945,7 +1945,7 @@ export const MisclassificationsJson = {
       2.2974,
       16.5481,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c54",
@@ -1967,7 +1967,7 @@ export const MisclassificationsJson = {
       2.2974,
       16.764,
       1.7399,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c57",
@@ -1989,7 +1989,7 @@ export const MisclassificationsJson = {
       2.2974,
       16.9799,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c6e",
@@ -2011,7 +2011,7 @@ export const MisclassificationsJson = {
       2.2974,
       9.144,
       1.3081,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c71",
@@ -2033,7 +2033,7 @@ export const MisclassificationsJson = {
       2.2974,
       8.9281,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c74",
@@ -2055,7 +2055,7 @@ export const MisclassificationsJson = {
       2.2974,
       9.144,
       1.7399,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c77",
@@ -2077,7 +2077,7 @@ export const MisclassificationsJson = {
       2.2974,
       9.3599,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c8e",
@@ -2099,7 +2099,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.524,
       1.3081,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c91",
@@ -2121,7 +2121,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.3081,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c94",
@@ -2143,7 +2143,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.524,
       1.7399,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c97",
@@ -2165,7 +2165,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.7399,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c9e",
@@ -2187,7 +2187,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.3081,
       19.812,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ca1",
@@ -2209,7 +2209,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.524,
       19.5961,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ca4",
@@ -2231,7 +2231,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.7399,
       19.812,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ca7",
@@ -2253,7 +2253,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.524,
       20.0279,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d1a",
@@ -2275,7 +2275,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.3081,
       10.668,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d1d",
@@ -2297,7 +2297,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.524,
       10.4521,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d20",
@@ -2319,7 +2319,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.7399,
       10.668,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d23",
@@ -2341,7 +2341,7 @@ export const MisclassificationsJson = {
       2.2974,
       1.524,
       10.8839,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bde",
@@ -2363,7 +2363,7 @@ export const MisclassificationsJson = {
       1.2265,
       47.244,
       2.9575,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001be4",
@@ -2385,7 +2385,7 @@ export const MisclassificationsJson = {
       1.2265,
       47.244,
       2.9575,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001bfa",
@@ -2407,7 +2407,7 @@ export const MisclassificationsJson = {
       1.2265,
       39.624,
       2.9575,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001c00",
@@ -2429,7 +2429,7 @@ export const MisclassificationsJson = {
       1.2265,
       39.624,
       2.9575,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001c1a",
@@ -2451,7 +2451,7 @@ export const MisclassificationsJson = {
       1.2265,
       32.004,
       2.9861,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001c20",
@@ -2473,7 +2473,7 @@ export const MisclassificationsJson = {
       1.2265,
       32.004,
       2.9861,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001c3a",
@@ -2495,7 +2495,7 @@ export const MisclassificationsJson = {
       1.2265,
       24.384,
       2.9575,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001c40",
@@ -2517,7 +2517,7 @@ export const MisclassificationsJson = {
       1.2265,
       24.384,
       2.9575,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001c5a",
@@ -2539,7 +2539,7 @@ export const MisclassificationsJson = {
       1.2265,
       16.764,
       2.9575,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001c60",
@@ -2561,7 +2561,7 @@ export const MisclassificationsJson = {
       1.2265,
       16.764,
       2.9575,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001c7a",
@@ -2583,7 +2583,7 @@ export const MisclassificationsJson = {
       1.2265,
       9.144,
       2.9575,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001c80",
@@ -2605,7 +2605,7 @@ export const MisclassificationsJson = {
       1.2265,
       9.144,
       2.9575,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001be0",
@@ -2627,7 +2627,7 @@ export const MisclassificationsJson = {
       1.2162,
       47.0789,
       2.9575,
-      21.4122
+      21.4122,
     ],
     [
       "0x20000001be6",
@@ -2649,7 +2649,7 @@ export const MisclassificationsJson = {
       1.2162,
       47.4091,
       2.9575,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001bfc",
@@ -2671,7 +2671,7 @@ export const MisclassificationsJson = {
       1.2162,
       39.4589,
       2.9575,
-      21.4122
+      21.4122,
     ],
     [
       "0x20000001c02",
@@ -2693,7 +2693,7 @@ export const MisclassificationsJson = {
       1.2162,
       39.7891,
       2.9575,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001c1c",
@@ -2715,7 +2715,7 @@ export const MisclassificationsJson = {
       1.2162,
       31.8389,
       2.9861,
-      21.4122
+      21.4122,
     ],
     [
       "0x20000001c22",
@@ -2737,7 +2737,7 @@ export const MisclassificationsJson = {
       1.2162,
       32.1691,
       2.9861,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001c3c",
@@ -2759,7 +2759,7 @@ export const MisclassificationsJson = {
       1.2162,
       24.2189,
       2.9575,
-      21.4122
+      21.4122,
     ],
     [
       "0x20000001c42",
@@ -2781,7 +2781,7 @@ export const MisclassificationsJson = {
       1.2162,
       24.5491,
       2.9575,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001c5c",
@@ -2803,7 +2803,7 @@ export const MisclassificationsJson = {
       1.2162,
       16.5989,
       2.9575,
-      21.4122
+      21.4122,
     ],
     [
       "0x20000001c62",
@@ -2825,7 +2825,7 @@ export const MisclassificationsJson = {
       1.2162,
       16.9291,
       2.9575,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001c7c",
@@ -2847,7 +2847,7 @@ export const MisclassificationsJson = {
       1.2162,
       8.9789,
       2.9575,
-      21.4122
+      21.4122,
     ],
     [
       "0x20000001c82",
@@ -2869,7 +2869,7 @@ export const MisclassificationsJson = {
       1.2162,
       9.3091,
       2.9575,
-      22.0218
+      22.0218,
     ],
     [
       "0x20000001be1",
@@ -2891,7 +2891,7 @@ export const MisclassificationsJson = {
       1.2405,
       47.0281,
       2.9718,
-      21.717
+      21.717,
     ],
     [
       "0x20000001be3",
@@ -2913,7 +2913,7 @@ export const MisclassificationsJson = {
       1.2162,
       47.244,
       2.9861,
-      21.8567
+      21.8567,
     ],
     [
       "0x20000001be9",
@@ -2935,7 +2935,7 @@ export const MisclassificationsJson = {
       1.2162,
       47.244,
       2.9575,
-      21.5773
+      21.5773,
     ],
     [
       "0x20000001bff",
@@ -2957,7 +2957,7 @@ export const MisclassificationsJson = {
       1.2162,
       39.624,
       2.9575,
-      21.8567
+      21.8567,
     ],
     [
       "0x20000001c05",
@@ -2979,7 +2979,7 @@ export const MisclassificationsJson = {
       1.2162,
       39.624,
       2.9575,
-      21.5773
+      21.5773,
     ],
     [
       "0x20000001c1f",
@@ -3001,7 +3001,7 @@ export const MisclassificationsJson = {
       1.2162,
       32.004,
       2.9861,
-      21.8567
+      21.8567,
     ],
     [
       "0x20000001c25",
@@ -3023,7 +3023,7 @@ export const MisclassificationsJson = {
       1.2162,
       32.004,
       2.9861,
-      21.5773
+      21.5773,
     ],
     [
       "0x20000001c3f",
@@ -3045,7 +3045,7 @@ export const MisclassificationsJson = {
       1.2162,
       24.384,
       2.9575,
-      21.8567
+      21.8567,
     ],
     [
       "0x20000001c45",
@@ -3067,7 +3067,7 @@ export const MisclassificationsJson = {
       1.2162,
       24.384,
       2.9575,
-      21.5773
+      21.5773,
     ],
     [
       "0x20000001c5f",
@@ -3089,7 +3089,7 @@ export const MisclassificationsJson = {
       1.2162,
       16.764,
       2.9575,
-      21.8567
+      21.8567,
     ],
     [
       "0x20000001c65",
@@ -3111,7 +3111,7 @@ export const MisclassificationsJson = {
       1.2162,
       16.764,
       2.9575,
-      21.5773
+      21.5773,
     ],
     [
       "0x20000001c7f",
@@ -3133,7 +3133,7 @@ export const MisclassificationsJson = {
       1.2162,
       9.144,
       2.9575,
-      21.8567
+      21.8567,
     ],
     [
       "0x20000001c85",
@@ -3155,7 +3155,7 @@ export const MisclassificationsJson = {
       1.2162,
       9.144,
       2.9575,
-      21.5773
+      21.5773,
     ],
     [
       "0x20000001be7",
@@ -3177,7 +3177,7 @@ export const MisclassificationsJson = {
       1.2265,
       47.4599,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001bfd",
@@ -3199,7 +3199,7 @@ export const MisclassificationsJson = {
       1.2265,
       39.4081,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c03",
@@ -3221,7 +3221,7 @@ export const MisclassificationsJson = {
       1.2265,
       39.8399,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c1d",
@@ -3243,7 +3243,7 @@ export const MisclassificationsJson = {
       1.2265,
       31.7881,
       2.9861,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c23",
@@ -3265,7 +3265,7 @@ export const MisclassificationsJson = {
       1.2265,
       32.2199,
       2.9861,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c3d",
@@ -3287,7 +3287,7 @@ export const MisclassificationsJson = {
       1.2265,
       24.1681,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c43",
@@ -3309,7 +3309,7 @@ export const MisclassificationsJson = {
       1.2265,
       24.5999,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c5d",
@@ -3331,7 +3331,7 @@ export const MisclassificationsJson = {
       1.2265,
       16.5481,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c63",
@@ -3353,7 +3353,7 @@ export const MisclassificationsJson = {
       1.2265,
       16.9799,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c7d",
@@ -3375,7 +3375,7 @@ export const MisclassificationsJson = {
       1.2265,
       8.9281,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001c83",
@@ -3397,7 +3397,7 @@ export const MisclassificationsJson = {
       1.2265,
       9.3599,
       2.9575,
-      21.717
+      21.717,
     ],
     [
       "0x20000001caa",
@@ -3419,7 +3419,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       19.812,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001cb0",
@@ -3441,7 +3441,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       19.812,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001d14",
@@ -3463,7 +3463,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       10.668,
-      21.9329
+      21.9329,
     ],
     [
       "0x20000001d26",
@@ -3485,7 +3485,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       10.668,
-      21.5011
+      21.5011,
     ],
     [
       "0x20000001cac",
@@ -3507,7 +3507,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       19.6469,
-      21.3868
+      21.3868,
     ],
     [
       "0x20000001cb2",
@@ -3529,7 +3529,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       19.9771,
-      22.0472
+      22.0472,
     ],
     [
       "0x20000001d10",
@@ -3551,7 +3551,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       10.5029,
-      21.3868
+      21.3868,
     ],
     [
       "0x20000001d16",
@@ -3573,7 +3573,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       10.8331,
-      22.0472
+      22.0472,
     ],
     [
       "0x20000001cad",
@@ -3595,7 +3595,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       19.5961,
-      21.717
+      21.717,
     ],
     [
       "0x20000001cb3",
@@ -3617,7 +3617,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       20.0279,
-      21.717
+      21.717,
     ],
     [
       "0x20000001d11",
@@ -3639,7 +3639,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       10.4521,
-      21.717
+      21.717,
     ],
     [
       "0x20000001d17",
@@ -3661,7 +3661,7 @@ export const MisclassificationsJson = {
       1.6024,
       3.3385,
       10.8839,
-      21.717
+      21.717,
     ],
     [
       "0x20000001caf",
@@ -3683,7 +3683,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       19.812,
-      21.8821
+      21.8821,
     ],
     [
       "0x20000001cb5",
@@ -3705,7 +3705,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       19.812,
-      21.5519
+      21.5519,
     ],
     [
       "0x20000001d13",
@@ -3727,7 +3727,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       10.668,
-      21.8821
+      21.8821,
     ],
     [
       "0x20000001d19",
@@ -3749,7 +3749,7 @@ export const MisclassificationsJson = {
       1.5945,
       3.3385,
       10.668,
-      21.5519
+      21.5519,
     ],
     [
       "0x20000001cf6",
@@ -3771,7 +3771,7 @@ export const MisclassificationsJson = {
       8.5211,
       48.3029,
       12.6492,
-      19.7358
+      19.7358,
     ],
     [
       "0x20000001d04",
@@ -3793,7 +3793,7 @@ export const MisclassificationsJson = {
       8.7004,
       5.0228,
       12.6492,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d06",
@@ -3815,7 +3815,7 @@ export const MisclassificationsJson = {
       8.5211,
       5.1895,
       12.6492,
-      19.7358
+      19.7358,
     ],
     [
       "0x2000000177c",
@@ -3837,7 +3837,7 @@ export const MisclassificationsJson = {
       2.2863,
       -0.5652,
       8.5106,
-      2.286
+      2.286,
     ],
     [
       "0x20000001784",
@@ -3859,7 +3859,7 @@ export const MisclassificationsJson = {
       4.827,
       43.2181,
       -0.8112,
-      2.286
+      2.286,
     ],
     [
       "0x20000001788",
@@ -3881,7 +3881,7 @@ export const MisclassificationsJson = {
       6.2113,
       -0.8112,
       14.2621,
-      2.286
+      2.286,
     ],
     [
       "0x2000000178c",
@@ -3903,7 +3903,7 @@ export const MisclassificationsJson = {
       10.464,
       -0.8112,
       9.6012,
-      5.334
+      5.334,
     ],
     [
       "0x20000001790",
@@ -3925,7 +3925,7 @@ export const MisclassificationsJson = {
       24.1643,
       23.3172,
       -0.8112,
-      5.334
+      5.334,
     ],
     [
       "0x200000017a0",
@@ -3947,7 +3947,7 @@ export const MisclassificationsJson = {
       0.5485,
       48.0187,
       1.1874,
-      5.7936
+      5.7936,
     ],
     [
       "0x200000017ac",
@@ -3969,7 +3969,7 @@ export const MisclassificationsJson = {
       24.1581,
       23.3172,
       -0.8112,
-      6.6294
+      6.6294,
     ],
     [
       "0x200000017b4",
@@ -3991,7 +3991,7 @@ export const MisclassificationsJson = {
       24.2003,
       23.3172,
       20.0136,
-      1.524
+      1.524,
     ],
     [
       "0x200000017bf",
@@ -4013,7 +4013,7 @@ export const MisclassificationsJson = {
       10.8722,
       47.4456,
       9.6012,
-      3.048
+      3.048,
     ],
     [
       "0x200000017c6",
@@ -4035,7 +4035,7 @@ export const MisclassificationsJson = {
       24.2003,
       23.3172,
       20.0136,
-      4.572
+      4.572,
     ],
     [
       "0x200000016ff",
@@ -4057,7 +4057,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      0.0
+      0.0,
     ],
     [
       "0x20000001700",
@@ -4079,7 +4079,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      0.0
+      0.0,
     ],
     [
       "0x20000001906",
@@ -4101,7 +4101,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      6.096
+      6.096,
     ],
     [
       "0x20000001907",
@@ -4123,7 +4123,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      6.096
+      6.096,
     ],
     [
       "0x20000001974",
@@ -4145,7 +4145,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      6.096
+      6.096,
     ],
     [
       "0x20000001981",
@@ -4167,7 +4167,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      6.096
+      6.096,
     ],
     [
       "0x20000001982",
@@ -4189,7 +4189,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      6.096
+      6.096,
     ],
     [
       "0x20000001983",
@@ -4211,7 +4211,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      6.096
+      6.096,
     ],
     [
       "0x20000001988",
@@ -4233,7 +4233,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      9.906
+      9.906,
     ],
     [
       "0x20000001989",
@@ -4255,7 +4255,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      9.906
+      9.906,
     ],
     [
       "0x200000019f6",
@@ -4277,7 +4277,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      9.906
+      9.906,
     ],
     [
       "0x20000001a03",
@@ -4299,7 +4299,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      9.906
+      9.906,
     ],
     [
       "0x20000001a04",
@@ -4321,7 +4321,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      9.906
+      9.906,
     ],
     [
       "0x20000001a05",
@@ -4343,7 +4343,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      9.906
+      9.906,
     ],
     [
       "0x20000001a0a",
@@ -4365,7 +4365,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      13.716
+      13.716,
     ],
     [
       "0x20000001a0b",
@@ -4387,7 +4387,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      13.716
+      13.716,
     ],
     [
       "0x20000001a78",
@@ -4409,7 +4409,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      13.716
+      13.716,
     ],
     [
       "0x20000001a85",
@@ -4431,7 +4431,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      13.716
+      13.716,
     ],
     [
       "0x20000001a86",
@@ -4453,7 +4453,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      13.716
+      13.716,
     ],
     [
       "0x20000001a87",
@@ -4475,7 +4475,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      13.716
+      13.716,
     ],
     [
       "0x20000001d86",
@@ -4497,7 +4497,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      17.526
+      17.526,
     ],
     [
       "0x20000001d87",
@@ -4519,7 +4519,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      17.526
+      17.526,
     ],
     [
       "0x20000001dd3",
@@ -4541,7 +4541,7 @@ export const MisclassificationsJson = {
       1.8448,
       18.0435,
       14.1414,
-      22.098
+      22.098,
     ],
     [
       "0x20000001dd4",
@@ -4563,7 +4563,7 @@ export const MisclassificationsJson = {
       1.8448,
       23.1045,
       14.1414,
-      22.098
+      22.098,
     ],
     [
       "0x20000001753",
@@ -4585,7 +4585,7 @@ export const MisclassificationsJson = {
       2.5024,
       46.0629,
       5.3546,
-      2.7432
+      2.7432,
     ],
     [
       "0x20000001754",
@@ -4607,7 +4607,7 @@ export const MisclassificationsJson = {
       2.1471,
       46.0629,
       1.1938,
-      2.7432
+      2.7432,
     ],
     [
       "0x2000000176f",
@@ -4629,7 +4629,7 @@ export const MisclassificationsJson = {
       2.6568,
       46.0629,
       10.0997,
-      2.7432
+      2.7432,
     ],
     [
       "0x20000001866",
@@ -4651,7 +4651,7 @@ export const MisclassificationsJson = {
       11.56,
       13.254,
       16.2385,
-      5.2578
+      5.2578,
     ],
     [
       "0x2000000186d",
@@ -4673,7 +4673,7 @@ export const MisclassificationsJson = {
       2.5143,
       46.0883,
       5.3546,
-      2.7432
+      2.7432,
     ],
     [
       "0x2000000186e",
@@ -4695,7 +4695,7 @@ export const MisclassificationsJson = {
       2.161,
       46.0883,
       1.1938,
-      2.7432
+      2.7432,
     ],
     [
       "0x20000001884",
@@ -4717,7 +4717,7 @@ export const MisclassificationsJson = {
       2.668,
       46.0883,
       10.0997,
-      2.7432
+      2.7432,
     ],
     [
       "0x20000001885",
@@ -4739,7 +4739,7 @@ export const MisclassificationsJson = {
       11.56,
       13.254,
       16.2385,
-      5.2578
+      5.2578,
     ],
     [
       "0x20000001cc0",
@@ -4761,7 +4761,7 @@ export const MisclassificationsJson = {
       4.5735,
       43.434,
       1.2763,
-      21.0407
+      21.0407,
     ],
     [
       "0x20000001bb6",
@@ -4783,7 +4783,7 @@ export const MisclassificationsJson = {
       4.5735,
       43.434,
       1.2763,
-      21.0407
+      21.0407,
     ],
     [
       "0x20000001bb7",
@@ -4805,7 +4805,7 @@ export const MisclassificationsJson = {
       4.5735,
       43.434,
       1.7716,
-      21.0407
+      21.0407,
     ],
     [
       "0x20000001cbf",
@@ -4827,7 +4827,7 @@ export const MisclassificationsJson = {
       4.5735,
       43.434,
       1.7716,
-      21.0407
+      21.0407,
     ],
     [
       "0x20000001cd6",
@@ -4849,7 +4849,7 @@ export const MisclassificationsJson = {
       5.3353,
       1.2764,
       15.24,
-      21.0407
+      21.0407,
     ],
     [
       "0x20000001cd7",
@@ -4871,7 +4871,7 @@ export const MisclassificationsJson = {
       5.3353,
       1.7717,
       15.24,
-      21.0407
+      21.0407,
     ],
     [
       "0x200000021f0",
@@ -4893,7 +4893,7 @@ export const MisclassificationsJson = {
       24.8377,
       24.5815,
       1.524,
-      25.9303
+      25.9303,
     ],
     [
       "0x200000021f1",
@@ -4915,7 +4915,7 @@ export const MisclassificationsJson = {
       24.8377,
       24.5815,
       10.668,
-      25.9303
+      25.9303,
     ],
     [
       "0x200000021f2",
@@ -4937,7 +4937,7 @@ export const MisclassificationsJson = {
       24.8377,
       24.5815,
       19.812,
-      25.9303
+      25.9303,
     ],
     [
       "0x20000001722",
@@ -4959,7 +4959,7 @@ export const MisclassificationsJson = {
       0.4779,
       -1.7621,
       19.024,
-      5.5997
+      5.5997,
     ],
     [
       "0x2000000222c",
@@ -4981,7 +4981,7 @@ export const MisclassificationsJson = {
       35.5455,
       0.0,
       0.0,
-      3.048
+      3.048,
     ],
     [
       "0x2000000222d",
@@ -5003,7 +5003,7 @@ export const MisclassificationsJson = {
       35.5455,
       0.0,
       0.0,
-      0.0
+      0.0,
     ],
     [
       "0x2000000222e",
@@ -5025,7 +5025,7 @@ export const MisclassificationsJson = {
       35.5455,
       0.0,
       0.0,
-      22.098
+      22.098,
     ],
     [
       "0x20000002230",
@@ -5047,7 +5047,7 @@ export const MisclassificationsJson = {
       35.5455,
       0.0,
       0.0,
-      6.096
+      6.096,
     ],
     [
       "0x20000002231",
@@ -5069,7 +5069,7 @@ export const MisclassificationsJson = {
       35.5455,
       0.0,
       0.0,
-      9.906
+      9.906,
     ],
     [
       "0x20000002232",
@@ -5091,7 +5091,7 @@ export const MisclassificationsJson = {
       35.5455,
       0.0,
       0.0,
-      13.716
+      13.716,
     ],
     [
       "0x20000002234",
@@ -5113,7 +5113,7 @@ export const MisclassificationsJson = {
       35.5455,
       0.0,
       0.0,
-      17.526
+      17.526,
     ],
     [
       "0x20000001bd0",
@@ -5135,7 +5135,7 @@ export const MisclassificationsJson = {
       2.292,
       47.244,
       1.3589,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bd8",
@@ -5157,7 +5157,7 @@ export const MisclassificationsJson = {
       2.292,
       47.244,
       1.6891,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bf0",
@@ -5179,7 +5179,7 @@ export const MisclassificationsJson = {
       2.292,
       39.624,
       1.3589,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bf6",
@@ -5201,7 +5201,7 @@ export const MisclassificationsJson = {
       2.292,
       39.624,
       1.6891,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c10",
@@ -5223,7 +5223,7 @@ export const MisclassificationsJson = {
       2.292,
       32.004,
       1.3589,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c16",
@@ -5245,7 +5245,7 @@ export const MisclassificationsJson = {
       2.292,
       32.004,
       1.6891,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c30",
@@ -5267,7 +5267,7 @@ export const MisclassificationsJson = {
       2.292,
       24.384,
       1.3589,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c36",
@@ -5289,7 +5289,7 @@ export const MisclassificationsJson = {
       2.292,
       24.384,
       1.6891,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c50",
@@ -5311,7 +5311,7 @@ export const MisclassificationsJson = {
       2.292,
       16.764,
       1.3589,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c56",
@@ -5333,7 +5333,7 @@ export const MisclassificationsJson = {
       2.292,
       16.764,
       1.6891,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c70",
@@ -5355,7 +5355,7 @@ export const MisclassificationsJson = {
       2.292,
       9.144,
       1.3589,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c76",
@@ -5377,7 +5377,7 @@ export const MisclassificationsJson = {
       2.292,
       9.144,
       1.6891,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c90",
@@ -5399,7 +5399,7 @@ export const MisclassificationsJson = {
       2.292,
       1.524,
       1.3589,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c96",
@@ -5421,7 +5421,7 @@ export const MisclassificationsJson = {
       2.292,
       1.524,
       1.6891,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ca3",
@@ -5443,7 +5443,7 @@ export const MisclassificationsJson = {
       2.292,
       1.524,
       19.6469,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ca9",
@@ -5465,7 +5465,7 @@ export const MisclassificationsJson = {
       2.292,
       1.524,
       19.9771,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d1f",
@@ -5487,7 +5487,7 @@ export const MisclassificationsJson = {
       2.292,
       1.524,
       10.5029,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d25",
@@ -5509,7 +5509,7 @@ export const MisclassificationsJson = {
       2.292,
       1.524,
       10.8331,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ab8",
@@ -5531,7 +5531,7 @@ export const MisclassificationsJson = {
       9.9236,
       1.3795,
       11.1252,
-      7.9248
+      7.9248,
     ],
     [
       "0x20000001b07",
@@ -5553,7 +5553,7 @@ export const MisclassificationsJson = {
       9.9236,
       1.3795,
       11.1252,
-      11.7348
+      11.7348,
     ],
     [
       "0x20000001b56",
@@ -5575,7 +5575,7 @@ export const MisclassificationsJson = {
       9.9236,
       1.3795,
       11.1252,
-      15.5448
+      15.5448,
     ],
     [
       "0x200000017e5",
@@ -5597,7 +5597,7 @@ export const MisclassificationsJson = {
       0.9406,
       1.524,
       -0.4826,
-      3.5814
+      3.5814,
     ],
     [
       "0x200000017e6",
@@ -5619,7 +5619,7 @@ export const MisclassificationsJson = {
       0.9406,
       9.144,
       -0.4826,
-      3.5814
+      3.5814,
     ],
     [
       "0x200000017e7",
@@ -5641,7 +5641,7 @@ export const MisclassificationsJson = {
       0.9406,
       16.764,
       -0.4826,
-      3.5814
+      3.5814,
     ],
     [
       "0x200000017e9",
@@ -5663,7 +5663,7 @@ export const MisclassificationsJson = {
       0.9406,
       24.384,
       -0.4826,
-      3.5814
+      3.5814,
     ],
     [
       "0x200000017eb",
@@ -5685,7 +5685,7 @@ export const MisclassificationsJson = {
       0.9406,
       32.004,
       -0.4826,
-      3.5814
+      3.5814,
     ],
     [
       "0x20000001bd4",
@@ -5707,7 +5707,7 @@ export const MisclassificationsJson = {
       2.292,
       47.0789,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bdc",
@@ -5729,7 +5729,7 @@ export const MisclassificationsJson = {
       2.292,
       47.4091,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bf3",
@@ -5751,7 +5751,7 @@ export const MisclassificationsJson = {
       2.292,
       39.4589,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001bf9",
@@ -5773,7 +5773,7 @@ export const MisclassificationsJson = {
       2.292,
       39.7891,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c13",
@@ -5795,7 +5795,7 @@ export const MisclassificationsJson = {
       2.292,
       31.8389,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c19",
@@ -5817,7 +5817,7 @@ export const MisclassificationsJson = {
       2.292,
       32.1691,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c33",
@@ -5839,7 +5839,7 @@ export const MisclassificationsJson = {
       2.292,
       24.2189,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c39",
@@ -5861,7 +5861,7 @@ export const MisclassificationsJson = {
       2.292,
       24.5491,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c53",
@@ -5883,7 +5883,7 @@ export const MisclassificationsJson = {
       2.292,
       16.5989,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c59",
@@ -5905,7 +5905,7 @@ export const MisclassificationsJson = {
       2.292,
       16.9291,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c73",
@@ -5927,7 +5927,7 @@ export const MisclassificationsJson = {
       2.292,
       8.9789,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c79",
@@ -5949,7 +5949,7 @@ export const MisclassificationsJson = {
       2.292,
       9.3091,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c93",
@@ -5971,7 +5971,7 @@ export const MisclassificationsJson = {
       2.292,
       1.3589,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001c99",
@@ -5993,7 +5993,7 @@ export const MisclassificationsJson = {
       2.292,
       1.6891,
       1.524,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ca0",
@@ -6015,7 +6015,7 @@ export const MisclassificationsJson = {
       2.292,
       1.3589,
       19.812,
-      19.812
+      19.812,
     ],
     [
       "0x20000001ca6",
@@ -6037,7 +6037,7 @@ export const MisclassificationsJson = {
       2.292,
       1.6891,
       19.812,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d1c",
@@ -6059,7 +6059,7 @@ export const MisclassificationsJson = {
       2.292,
       1.3589,
       10.668,
-      19.812
+      19.812,
     ],
     [
       "0x20000001d22",
@@ -6081,7 +6081,7 @@ export const MisclassificationsJson = {
       2.292,
       1.6891,
       10.668,
-      19.812
+      19.812,
     ],
     [
       "0x20000001706",
@@ -6103,7 +6103,7 @@ export const MisclassificationsJson = {
       0.416,
       24.4348,
       12.9953,
-      0.0
+      0.0,
     ],
     [
       "0x200000017f9",
@@ -6125,7 +6125,7 @@ export const MisclassificationsJson = {
       1.082,
       4.0624,
       18.1737,
-      4.826
+      4.826,
     ],
     [
       "0x200000017fc",
@@ -6147,7 +6147,7 @@ export const MisclassificationsJson = {
       1.082,
       21.8456,
       18.1737,
-      4.826
+      4.826,
     ],
     [
       "0x20000001680",
@@ -6169,7 +6169,7 @@ export const MisclassificationsJson = {
       0.5362,
       2.4416,
       12.5587,
-      1.4811
+      1.4811,
     ],
     [
       "0x20000001683",
@@ -6191,7 +6191,7 @@ export const MisclassificationsJson = {
       0.5362,
       2.441,
       13.7986,
-      1.4811
+      1.4811,
     ],
     [
       "0x200000016b5",
@@ -6213,7 +6213,7 @@ export const MisclassificationsJson = {
       0.5362,
       8.9884,
       12.5587,
-      1.4811
+      1.4811,
     ],
     [
       "0x200000016b8",
@@ -6235,7 +6235,7 @@ export const MisclassificationsJson = {
       0.5362,
       8.989,
       13.7985,
-      1.4811
+      1.4811,
     ],
     [
       "0x20000001750",
@@ -6257,7 +6257,7 @@ export const MisclassificationsJson = {
       11.1827,
       20.574,
       20.809,
-      4.3561
+      4.3561,
     ],
     [
       "0x200000018c9",
@@ -6279,7 +6279,7 @@ export const MisclassificationsJson = {
       15.3673,
       24.384,
       13.1096,
-      8.8392
+      8.8392,
     ],
     [
       "0x200000018fc",
@@ -6301,7 +6301,7 @@ export const MisclassificationsJson = {
       15.3673,
       24.384,
       13.1096,
-      12.6492
+      12.6492,
     ],
     [
       "0x2000000170d",
@@ -6323,7 +6323,7 @@ export const MisclassificationsJson = {
       0.9406,
       -0.4826,
       1.524,
-      3.5814
+      3.5814,
     ],
     [
       "0x20000001649",
@@ -6345,7 +6345,7 @@ export const MisclassificationsJson = {
       15.345,
       24.384,
       13.1191,
-      12.6492
+      12.6492,
     ],
     [
       "0x20000001b8b",
@@ -6367,7 +6367,7 @@ export const MisclassificationsJson = {
       15.3632,
       24.384,
       13.135,
-      16.4592
+      16.4592,
     ],
     [
       "0x2000000179b",
@@ -6389,7 +6389,7 @@ export const MisclassificationsJson = {
       0.5818,
       1.1557,
       20.6185,
-      5.7809
+      5.7809,
     ],
     [
       "0x20000001cf4",
@@ -6411,7 +6411,7 @@ export const MisclassificationsJson = {
       8.7004,
       48.4695,
       12.6492,
-      19.812
+      19.812,
     ],
     [
       "0x2000000179d",
@@ -6433,7 +6433,7 @@ export const MisclassificationsJson = {
       0.5508,
       1.2097,
       20.5835,
-      5.7936
+      5.7936,
     ],
     [
       "0x20000001cf2",
@@ -6455,7 +6455,7 @@ export const MisclassificationsJson = {
       8.472,
       48.5267,
       12.6492,
-      21.6154
+      21.6154,
     ],
     [
       "0x20000001d02",
@@ -6477,7 +6477,7 @@ export const MisclassificationsJson = {
       8.472,
       4.9657,
       12.6492,
-      21.6154
+      21.6154,
     ],
     [
       "0x20000001ab4",
@@ -6499,7 +6499,7 @@ export const MisclassificationsJson = {
       9.9827,
       1.1557,
       11.1252,
-      9.8044
+      9.8044,
     ],
     [
       "0x20000001ac4",
@@ -6521,7 +6521,7 @@ export const MisclassificationsJson = {
       9.9827,
       48.5267,
       11.1252,
-      9.8044
+      9.8044,
     ],
     [
       "0x20000001b03",
@@ -6543,7 +6543,7 @@ export const MisclassificationsJson = {
       9.9827,
       1.1557,
       11.1252,
-      13.6144
+      13.6144,
     ],
     [
       "0x20000001b13",
@@ -6565,7 +6565,7 @@ export const MisclassificationsJson = {
       9.9827,
       48.5267,
       11.1252,
-      13.6144
+      13.6144,
     ],
     [
       "0x20000001b52",
@@ -6587,7 +6587,7 @@ export const MisclassificationsJson = {
       9.9827,
       1.1557,
       11.1252,
-      17.4244
+      17.4244,
     ],
     [
       "0x20000001b62",
@@ -6609,7 +6609,7 @@ export const MisclassificationsJson = {
       9.9827,
       48.5267,
       11.1252,
-      17.4244
+      17.4244,
     ],
     [
       "0x20000001d00",
@@ -6631,7 +6631,7 @@ export const MisclassificationsJson = {
       8.4637,
       4.9657,
       12.6492,
-      17.8562
+      17.8562,
     ],
     [
       "0x200000017e2",
@@ -6653,7 +6653,7 @@ export const MisclassificationsJson = {
       1.8113,
       0.0699,
       0.0698,
-      1.524
+      1.524,
     ],
     [
       "0x20000001797",
@@ -6675,7 +6675,7 @@ export const MisclassificationsJson = {
       9.9872,
       48.5267,
       11.1252,
-      5.7809
+      5.7809,
     ],
     [
       "0x20000001793",
@@ -6697,7 +6697,7 @@ export const MisclassificationsJson = {
       23.7003,
       24.8412,
       21.0947,
-      5.7809
+      5.7809,
     ],
     [
       "0x20000001799",
@@ -6719,7 +6719,7 @@ export const MisclassificationsJson = {
       9.917,
       48.4695,
       11.1188,
-      5.7936
+      5.7936,
     ],
     [
       "0x20000001716",
@@ -6741,7 +6741,7 @@ export const MisclassificationsJson = {
       1.9992,
       -1.2605,
       18.1737,
-      1.5176
+      1.5176,
     ],
     [
       "0x20000001795",
@@ -6763,7 +6763,7 @@ export const MisclassificationsJson = {
       23.6366,
       24.8412,
       21.0375,
-      5.7936
+      5.7936,
     ],
     [
       "0x200000017f2",
@@ -6785,7 +6785,7 @@ export const MisclassificationsJson = {
       0.8646,
       0.762,
       10.5807,
-      4.6736
+      4.6736,
     ],
     [
       "0x20000001cf0",
@@ -6807,7 +6807,7 @@ export const MisclassificationsJson = {
       8.4637,
       48.5267,
       12.6492,
-      17.8562
+      17.8562,
     ],
     [
       "0x20000001ab2",
@@ -6829,7 +6829,7 @@ export const MisclassificationsJson = {
       9.9869,
       1.1557,
       11.1252,
-      6.4262
+      6.4262,
     ],
     [
       "0x20000001b01",
@@ -6851,7 +6851,7 @@ export const MisclassificationsJson = {
       9.9869,
       1.1557,
       11.1252,
-      10.2362
+      10.2362,
     ],
     [
       "0x20000001b50",
@@ -6873,7 +6873,7 @@ export const MisclassificationsJson = {
       9.9869,
       1.1557,
       11.1252,
-      14.0462
+      14.0462,
     ],
     [
       "0x200000016ef",
@@ -6895,7 +6895,7 @@ export const MisclassificationsJson = {
       1.4496,
       24.4808,
       12.5333,
-      1.4478
+      1.4478,
     ],
     [
       "0x200000017f3",
@@ -6917,7 +6917,7 @@ export const MisclassificationsJson = {
       0.8646,
       2.2114,
       11.5014,
-      4.6736
+      4.6736,
     ],
     [
       "0x20000001bb0",
@@ -6939,7 +6939,7 @@ export const MisclassificationsJson = {
       6.0086,
       4.5434,
       15.902,
-      22.0218
+      22.0218,
     ],
     [
       "0x200000017db",
@@ -6961,7 +6961,7 @@ export const MisclassificationsJson = {
       1.9324,
       -0.9588,
       3.3035,
-      1.524
+      1.524,
     ],
     [
       "0x200000017dc",
@@ -6983,7 +6983,7 @@ export const MisclassificationsJson = {
       1.9324,
       -0.9588,
       5.334,
-      1.524
+      1.524,
     ],
     [
       "0x200000017dd",
@@ -7005,7 +7005,7 @@ export const MisclassificationsJson = {
       1.9324,
       -0.9588,
       7.366,
-      1.524
+      1.524,
     ],
     [
       "0x20000001756",
@@ -7027,7 +7027,7 @@ export const MisclassificationsJson = {
       11.7816,
       13.254,
       16.1957,
-      2.4384
+      2.4384,
     ],
     [
       "0x20000001abc",
@@ -7049,7 +7049,7 @@ export const MisclassificationsJson = {
       23.6984,
       24.8412,
       21.0947,
-      9.8044
+      9.8044,
     ],
     [
       "0x20000001acc",
@@ -7071,7 +7071,7 @@ export const MisclassificationsJson = {
       23.6984,
       24.8412,
       1.1557,
-      9.8044
+      9.8044,
     ],
     [
       "0x20000001b0b",
@@ -7093,7 +7093,7 @@ export const MisclassificationsJson = {
       23.6984,
       24.8412,
       21.0947,
-      13.6144
+      13.6144,
     ],
     [
       "0x20000001b1b",
@@ -7115,7 +7115,7 @@ export const MisclassificationsJson = {
       23.6984,
       24.8412,
       1.1557,
-      13.6144
+      13.6144,
     ],
     [
       "0x20000001b5a",
@@ -7137,7 +7137,7 @@ export const MisclassificationsJson = {
       23.6984,
       24.8412,
       21.0947,
-      17.4244
+      17.4244,
     ],
     [
       "0x20000001b6a",
@@ -7159,7 +7159,7 @@ export const MisclassificationsJson = {
       23.6984,
       24.8412,
       1.1557,
-      17.4244
+      17.4244,
     ],
     [
       "0x2000000179f",
@@ -7181,7 +7181,7 @@ export const MisclassificationsJson = {
       0.5818,
       48.0504,
       1.1557,
-      5.7809
+      5.7809,
     ],
     [
       "0x20000001b9f",
@@ -7203,7 +7203,7 @@ export const MisclassificationsJson = {
       2.1259,
       33.528,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001ba0",
@@ -7225,7 +7225,7 @@ export const MisclassificationsJson = {
       2.1259,
       35.814,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001ba1",
@@ -7247,7 +7247,7 @@ export const MisclassificationsJson = {
       2.1259,
       38.1,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001ba2",
@@ -7269,7 +7269,7 @@ export const MisclassificationsJson = {
       2.1259,
       7.239,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001baa",
@@ -7291,7 +7291,7 @@ export const MisclassificationsJson = {
       2.1259,
       30.48,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001bab",
@@ -7313,7 +7313,7 @@ export const MisclassificationsJson = {
       2.1259,
       25.908,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001bac",
@@ -7335,7 +7335,7 @@ export const MisclassificationsJson = {
       2.1259,
       22.86,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001bad",
@@ -7357,7 +7357,7 @@ export const MisclassificationsJson = {
       2.1259,
       18.288,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001bae",
@@ -7379,7 +7379,7 @@ export const MisclassificationsJson = {
       2.1259,
       28.194,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001baf",
@@ -7401,7 +7401,7 @@ export const MisclassificationsJson = {
       2.1259,
       20.574,
       3.856,
-      19.3294
+      19.3294,
     ],
     [
       "0x20000001751",
@@ -7423,7 +7423,7 @@ export const MisclassificationsJson = {
       2.4692,
       4.1656,
       13.4287,
-      0.0
+      0.0,
     ],
     [
       "0x20000001cef",
@@ -7445,7 +7445,7 @@ export const MisclassificationsJson = {
       8.4998,
       48.5553,
       12.6492,
-      21.6281
+      21.6281,
     ],
     [
       "0x20000001cf1",
@@ -7467,7 +7467,7 @@ export const MisclassificationsJson = {
       8.5834,
       48.5267,
       12.6492,
-      19.6469
+      19.6469,
     ],
     [
       "0x200000017a4",
@@ -7489,7 +7489,7 @@ export const MisclassificationsJson = {
       10.4499,
       -0.8112,
       9.6012,
-      6.6294
+      6.6294,
     ],
     [
       "0x20000001ab3",
@@ -7511,7 +7511,7 @@ export const MisclassificationsJson = {
       10.0885,
       1.1557,
       11.1252,
-      8.2169
+      8.2169,
     ],
     [
       "0x20000001b02",
@@ -7533,7 +7533,7 @@ export const MisclassificationsJson = {
       10.0885,
       1.1557,
       11.1252,
-      12.0269
+      12.0269,
     ],
     [
       "0x20000001b51",
@@ -7555,7 +7555,7 @@ export const MisclassificationsJson = {
       10.0885,
       1.1557,
       11.1252,
-      15.8369
+      15.8369,
     ],
     [
       "0x20000001d01",
@@ -7577,7 +7577,7 @@ export const MisclassificationsJson = {
       8.5834,
       4.9657,
       12.6492,
-      19.6469
+      19.6469,
     ],
     [
       "0x20000001cfa",
@@ -7599,7 +7599,7 @@ export const MisclassificationsJson = {
       21.7985,
       26.7462,
       4.2037,
-      21.6154
+      21.6154,
     ],
     [
       "0x20000001d0a",
@@ -7621,7 +7621,7 @@ export const MisclassificationsJson = {
       21.7985,
       26.7462,
       21.0947,
-      21.6154
+      21.6154,
     ],
     [
       "0x20000001752",
@@ -7643,7 +7643,7 @@ export const MisclassificationsJson = {
       3.4182,
       5.6594,
       15.8845,
-      0.0
+      0.0,
     ],
     [
       "0x2000000186b",
@@ -7665,7 +7665,7 @@ export const MisclassificationsJson = {
       3.4182,
       5.6594,
       15.8845,
-      3.048
+      3.048,
     ],
     [
       "0x2000000176b",
@@ -7687,7 +7687,7 @@ export const MisclassificationsJson = {
       4.9571,
       42.5117,
       12.5587,
-      1.524
+      1.524,
     ],
     [
       "0x2000000176c",
@@ -7709,7 +7709,7 @@ export const MisclassificationsJson = {
       4.9571,
       42.5117,
       12.5587,
-      1.524
+      1.524,
     ],
     [
       "0x20000001bb3",
@@ -7731,7 +7731,7 @@ export const MisclassificationsJson = {
       9.2569,
       48.949,
       12.6492,
-      22.0218
+      22.0218,
     ],
     [
       "0x200000021db",
@@ -7753,7 +7753,7 @@ export const MisclassificationsJson = {
       0.7875,
       1.524,
       1.524,
-      22.86
+      22.86,
     ],
     [
       "0x200000021dc",
@@ -7775,7 +7775,7 @@ export const MisclassificationsJson = {
       0.7875,
       1.524,
       10.668,
-      22.86
+      22.86,
     ],
     [
       "0x200000021dd",
@@ -7797,7 +7797,7 @@ export const MisclassificationsJson = {
       0.7875,
       1.524,
       19.812,
-      22.86
-    ]
-  ]
-}
+      22.86,
+    ],
+  ],
+};
