@@ -54,7 +54,7 @@ class SamplePinMarker extends Marker {
     // Add an offset so that the pin 'points' at the location, rather than floating in the middle of it
     this.setImage(image);
     this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
-    // START MARKERPINIMAGE
+    // END MARKERPINIMAGE
 
     this._onMouseButtonCallback = onMouseButtonCallback;
 
@@ -265,7 +265,7 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
     if (undefined !== vp)
       vp.invalidateDecorations();
   }
-  // REMOVEMARKER
+  // END REMOVEMARKER
 }
 
 /** A MarkerPinDecorator can be registered with ViewManager.addDecorator.  Once registered, the decorate method will be called

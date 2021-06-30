@@ -2,9 +2,14 @@
 
 This sample implements a [View Decorator](https://www.itwinjs.org/learning/frontend/viewdecorations/) to draw [Markers](https://www.itwinjs.org/learning/frontend/markers/) which are used to call the user's attention to a particular point in space.
 
-The `setupDecorator` is called as the sample is initializing.  It is provided an array of MarkerData //NEEDSWORK link to MARKERDATA which supplies the location and title for each marker.  The method initializes the decorator object with the supplied marker data.
+The `setupDecorator` is called as the sample is initializing.  It is provided an array of [MarkerData](/?step=MARKERDATA) which supplies the location and title for each marker.  The method initializes the decorator object with the supplied marker data.
 
 [_metadata_:annotation]:- "SETUPDECORATOR"
+
+# MarkerData
+
+[_metadata_:annotation]:- "MARKERDATA"
+[_metadata_:minor]:- "true"
 
 # Add Decorator
 
@@ -34,8 +39,8 @@ We do need to implement `MarkerSet.getClusterMarker` which will be called whenev
 
 Also, our custom `SampleMarkerSet` implements its own helper methods to manage its internal marker array.
 
-- setMarkerData - Add a set of markers  // NEEDSWORK LINK to SETMARKERSDATA
-- removeMarker - remove a single marker // NEEDSWORK LINK to REMOVEMARKER
+- [setMarkerData](/?step=SETMARKERSDATA) \- Add a set of markers
+- [removeMarker](/?step=REMOVEMARKER) \- remove a single marker
 
 [_metadata_:annotation]:- "SAMPLEMARKERSET"
 
@@ -53,25 +58,25 @@ The class `SampleClusterMarker` extends the `Marker` base class.  It's job is to
 
 To do this the class overrides the following methods:
 
-- `constructor` - initializes the basic properties such as location, size, and label. // NEEDSWORK LINK TO CLUSTERMARKERCONSTRUCTOR  Also, the constructor constructs a tooltip string by concatenating the tooltips from the markers in the cluster // NEEDSWORK LINK TO CLUSTERMARKERTOOLTIP
-- `onMouseButton` - forwards the mouse button event to the callback.  // NEEDSWORK LINK TO CLUSTERMARKERMOUSEBUTTON
-- `drawFunc` - draws a simple white circle centered on the origin of the marker's local coordinate system.  // NEEDSWORK LINK TO CLUSTERMARKERDRAWFUNC
+- [`constructor`](/?step=CLUSTERMARKERCONSTRUCTOR) \- initializes the basic properties such as location, size, and label. Also, the constructor constructs a tooltip string by concatenating the tooltips from the markers in the [cluster](/?step=CLUSTERMARKERTOOLTIP)
+- [`onMouseButton`](/?step=CLUSTERMARKERMOUSEBUTTON) \- forwards the mouse button event to the callback.
+- [`drawFunc`](/?step=CLUSTERMARKERDRAWFUNC) \- draws a simple white circle centered on the origin of the marker's local coordinate system.
 
 [_metadata_:annotation]:- "SAMPLECLUSTERMARKER"
 
-# constructor
+# Constructor
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERCONSTRUCTOR"
 
-# set up tooltip
+# Setup Tooltip
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERTOOLTIP"
 
-# onMouseButton
+# OnMouseButton
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERMOUSEBUTTON"
 
-# drawFunc
+# DrawFunc
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERDRAWFUNC"
 
@@ -79,15 +84,15 @@ To do this the class overrides the following methods:
 
 The class `SamplePinMarker` also extends the `Marker` base class.  It is similar to the `SampleClusterMarker` with these differences:
 
-- image - this marker uses setImage rather than overriding `drawFunc` like the cluster marker does.  // NEEDSWORK LINK TO MARKERPINIMAGE
-- pick - override `pick` to account for the image offset // LINK TO MARKERPINPICK
+- [image](/?step=MARKERPINIMAGE) \- this marker uses setImage rather than overriding `drawFunc` like the cluster marker does.
+- [pick](/?step=MARKERPINPICK) \- override `pick` to account for the image offset.
 
 [_metadata_:annotation]:- "SAMPLEPINMARKER"
 
-# image
+# Image
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "MARKERPINIMAGE"
 
-# pick
+# Pick
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "MARKERPINPICK"

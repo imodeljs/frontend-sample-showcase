@@ -87,7 +87,7 @@ function processChunk(source, map) {
 }
 
 function sort(a, b) {
-  if (a.index < b.index) {
+  if (parseInt(a.index) < parseInt(b.index)) {
     return -1;
   } else if (a.index > b.index) {
     return 1;
