@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { assert, DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
+import { DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, Viewport } from "@bentley/imodeljs-frontend";
 import { VersionCompareClient } from "./VersionCompareClient";
