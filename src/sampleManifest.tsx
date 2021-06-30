@@ -71,6 +71,8 @@ import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec"
 import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
 import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
 import { getVersionCompareSpec } from "frontend-samples/version-compare-sample/sampleSpec";
+import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
+import { getMisclassificationSpec } from "frontend-samples/missclassification-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -164,6 +166,8 @@ export const sampleManifest: SampleSpecGroup[] = [{
 }, {
   groupName: "iTwin Platform APIs", samples: [
     getClashReviewSpec(),
+    getIssuesSpec(),
+    getMisclassificationSpec(),
     getReadSettingsSpec(),
     getVersionCompareSpec(),
   ],

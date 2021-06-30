@@ -20,4 +20,4 @@ The "Save State" button will allow the user to save the current view to json for
 
 Use the "Show Json" button to show the json of the saved view in a popup window and the "Save View" to save the view. Then use "Load View" with the view selected to reload with its new settings.
 
-The default views for each iModel are located in [SampleViewStates.json](./SampleViewStates.json) and are editable but will require recompiling.
+The default views for each iModel are located in [SampleViewStates.ts](./SampleViewStates.ts) and are editable but will require recompiling.
