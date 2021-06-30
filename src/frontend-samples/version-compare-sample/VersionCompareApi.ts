@@ -106,7 +106,8 @@ export class VersionCompareApi {
   /** Request the Comparison and displays the changes in the Viewport. */
   public static async compareChangesets(start: Id64String, end: Id64String) {
     const vp = IModelApp.viewManager.selectedView;
-    assert(vp !== undefined, "No Selected viewport.");
+    if (vp === undefined)
+      return;
 
     const response = await VersionCompareClient.getChangedElements(start, end);
 

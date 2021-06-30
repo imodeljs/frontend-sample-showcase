@@ -5,7 +5,7 @@
 import { assert } from "@bentley/bentleyjs-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, Select, Spinner, SpinnerSize } from "@bentley/ui-core";
+import { Select, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import "common/samples-common.scss";
 import * as React from "react";
@@ -15,17 +15,23 @@ export const VersionCompareWidget: React.FunctionComponent = () => {
   // State Declarations
   const iModelConnection = useActiveIModelConnection();
   const [isRequest, setIsRequest] = React.useState<boolean>(false);
-  const [selectVersion, setVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[0]);
+  const [selectVersion, setVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[1]);
 
-  const handleCompareButton = async () => {
+  const namedVersionsOptions = VersionCompareApi.namedVersions
+    .map((version, index) => ({ value: index, label: version.displayName }));
+
+  // initialize view with comparison of current and next Named Version
+  React.useEffect(() => {
     assert(iModelConnection?.changeSetId !== undefined);
     setIsRequest(true);
-    await VersionCompareApi.compareChangesets(selectVersion.changeSetId, iModelConnection.changeSetId);
-    setIsRequest(false);
-  };
-  const namedVersionsOptions = VersionCompareApi.namedVersions.map((version, index) => ({ value: index, label: version.displayName }));
+    VersionCompareApi.compareChangesets(selectVersion.changeSetId, iModelConnection.changeSetId)
+      .finally(() => setIsRequest(false));
+  }, [selectVersion, iModelConnection]);
 
-  return (
+  return (<>
+    <span style={{ float: "left", display: "flex", justifyContent: "center", position: "absolute", width: "100%" }}>
+      {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
+    </span>
     <div className="sample-options-2col">
       <label>Select Version</label>
       <Select
@@ -35,12 +41,8 @@ export const VersionCompareWidget: React.FunctionComponent = () => {
         onChange={(event) => {
           setVersion(VersionCompareApi.namedVersions[Number.parseInt(event.target.value, 10)]);
         }} />
-      <span style={{ display: "flex", justifyContent: "center" }}>
-        {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
-      </span>
-      <Button onClick={handleCompareButton} disabled={iModelConnection === undefined || isRequest}>Request Comparison</Button>
     </div>
-  );
+  </>);
 };
 
 export class VersionCompareWidgetProvider implements UiItemsProvider {

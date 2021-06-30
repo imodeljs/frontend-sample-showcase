@@ -5,7 +5,7 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import "common/samples-common.scss";
 import React, { FunctionComponent, useState } from "react";
@@ -31,6 +31,7 @@ const VersionCompareApp: FunctionComponent = () => {
   /** The sample's render method */
   return (
     <>
+      <MessageRenderer />
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
