@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
-import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
+import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskProps, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
@@ -87,8 +87,9 @@ export class ViewSetup {
 			if (imodel.name === "Metrostation2") {
 				const modelIds = await ViewSetup.getModelIds(imodel);
 				const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
+
 				displayStyle.changeBackgroundMapProps({
-					planarClipMask: PlanarClipMaskSettings.createForElementsOrSubCategories(PlanarClipMaskMode.IncludeSubCategories, modelIds, subCategoryIds).toJSON(),
+					planarClipMask: PlanarClipMaskSettings.createForElementsOrSubCategories(PlanarClipMaskMode.IncludeSubCategories, modelIds, subCategoryIds) as PlanarClipMaskProps,
 				});
 			}
 		}
@@ -99,7 +100,7 @@ export class ViewSetup {
 			if (imodel.name === "Stadium") {
 				const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
 				displayStyle.changeBackgroundMapProps({
-					planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
+					planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking) as PlanarClipMaskProps,
 				});
 				const excludedModelIds = await ViewSetup.getModelIds(imodel,
 					"SS_Master",
