@@ -10,15 +10,13 @@ import { useActiveIModelConnection } from "@bentley/ui-framework";
 import "common/samples-common.scss";
 import * as React from "react";
 import { NamedVersion, VersionCompareApi } from "./VersionCompareApi";
+import "./VersionCompare.scss";
 
 export const VersionCompareWidget: React.FunctionComponent = () => {
   // State Declarations
   const iModelConnection = useActiveIModelConnection();
   const [isRequest, setIsRequest] = React.useState<boolean>(false);
   const [selectVersion, setVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[1]);
-
-  const namedVersionsOptions = VersionCompareApi.namedVersions
-    .map((version, index) => ({ value: index, label: version.displayName }));
 
   // initialize view with comparison of current and next Named Version
   React.useEffect(() => {
@@ -28,10 +26,17 @@ export const VersionCompareWidget: React.FunctionComponent = () => {
       .finally(() => setIsRequest(false));
   }, [selectVersion, iModelConnection]);
 
+  const namedVersionsOptions = VersionCompareApi.namedVersions
+    .map((version, index) => ({ value: index, label: version.displayName }));
+
+  const currentVersion = VersionCompareApi.namedVersions.find((version) => version.changeSetId === iModelConnection?.changeSetId)?.displayName ?? "Nope";
+
   return (<>
-    <span style={{ float: "left", display: "flex", justifyContent: "center", position: "absolute", width: "100%" }}>
+    <span className={"sample-spinner"}>
       {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
     </span>
+    <label>Comparing against: {currentVersion}</label>
+    <hr />
     <div className="sample-options-2col">
       <label>Select Version</label>
       <Select
