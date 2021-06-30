@@ -9,7 +9,7 @@ import { SampleSpec } from "SampleSpec";
 export function getVersionCompareSpec(): SampleSpec {
   return ({
     name: "version-review-sample",
-    label: "Version Compare Review",
+    label: "Version Compare",
     image: "versionCompare.png",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
