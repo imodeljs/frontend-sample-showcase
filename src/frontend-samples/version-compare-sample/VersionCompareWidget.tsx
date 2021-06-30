@@ -2,64 +2,43 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
+import { assert } from "@bentley/bentleyjs-core";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "common/samples-common.scss";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, Select, SelectOption, Spinner, SpinnerSize } from "@bentley/ui-core";
-import { NamedVersion, VersionCompareApi } from "./VersionCompareApi";
+import { Button, Select, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { useEffect } from "react";
+import "common/samples-common.scss";
+import * as React from "react";
+import { NamedVersion, VersionCompareApi } from "./VersionCompareApi";
 
 export const VersionCompareWidget: React.FunctionComponent = () => {
   // State Declarations
   const iModelConnection = useActiveIModelConnection();
   const [isRequest, setIsRequest] = React.useState<boolean>(false);
-  const [start, setStartVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[0]);
-  const [end, setEndVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[0]);
+  const [selectVersion, setVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[0]);
 
-  useEffect(() => {
-    console.debug("ChangesetId", iModelConnection?.changeSetId);
-    if (iModelConnection === undefined)
-      return;
-    const current = VersionCompareApi.namedVersions.find((versions) => versions.changeSetId === iModelConnection.changeSetId);
-    if (current === undefined) return;
-    setStartVersion(current);
-    setEndVersion(current);
-  }, [iModelConnection])
-
-  useEffect(() => {
-    // VersionCompareApi.updateChangeSet.raiseEvent(start.changeSetId);
-  }, [start]);
-
-  const lookUpByIndexString = (indexString: string): NamedVersion => {
-    return VersionCompareApi.namedVersions[Number.parseInt(indexString)];
+  const handleCompareButton = async () => {
+    assert(iModelConnection?.changeSetId !== undefined);
+    setIsRequest(true);
+    await VersionCompareApi.compareChangesets(selectVersion.changeSetId, iModelConnection.changeSetId);
+    setIsRequest(false);
   };
+  const namedVersionsOptions = VersionCompareApi.namedVersions.map((version, index) => ({ value: index, label: version.displayName }));
 
   return (
     <div className="sample-options-2col">
-      <label>Start Changeset Id</label>
+      <label>Select Version</label>
       <Select
-        options={VersionCompareApi.namedVersions
-          .map((version, index) => ({ value: index, label: version.displayName, disabled: index < VersionCompareApi.namedVersions.indexOf(end) }))}
-        value={VersionCompareApi.namedVersions.indexOf(start)}
+        options={namedVersionsOptions}
+        value={VersionCompareApi.namedVersions.indexOf(selectVersion)}
+        disabled={isRequest}
         onChange={(event) => {
-          setStartVersion(lookUpByIndexString(event.target.value));
-          VersionCompareApi.updateChangeSet.raiseEvent(start.changeSetId);
+          setVersion(VersionCompareApi.namedVersions[Number.parseInt(event.target.value, 10)]);
         }} />
-      <label>End Changeset Id</label>
-      <Select
-        options={VersionCompareApi.namedVersions
-          .map((version, index) => ({ value: index, label: version.displayName, disabled: index > VersionCompareApi.namedVersions.indexOf(start) }))}
-        value={VersionCompareApi.namedVersions.indexOf(end)}
-        onChange={(event) => setEndVersion(lookUpByIndexString(event.target.value))} />
-      <span>{isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}</span>
-      <Button onClick={async () => {
-        setIsRequest(true);
-        await VersionCompareApi.compareChangesets(start.changeSetId, end.changeSetId);
-        setIsRequest(false);
-      }} disabled={iModelConnection === undefined || isRequest}>Request Comparison</Button>
+      <span style={{ display: "flex", justifyContent: "center" }}>
+        {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
+      </span>
+      <Button onClick={handleCompareButton} disabled={iModelConnection === undefined || isRequest}>Request Comparison</Button>
     </div>
   );
 };

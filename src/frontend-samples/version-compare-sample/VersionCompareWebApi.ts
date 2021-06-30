@@ -2,12 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { assert, Id64Array } from "@bentley/bentleyjs-core";
-import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
-import { IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { assert } from "@bentley/bentleyjs-core";
+import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
-import { NoSignInIAuthClient } from "NoSignInIAuthClient";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { VersionCompareApi } from "./VersionCompareApi";
 
@@ -16,25 +13,6 @@ interface ProjectContext {
   iModelId: string;
   requestContext: AuthorizedFrontendRequestContext;
 }
-
-const latest = "362cc7f145983489c593f7239de4d0d5be538535";
-const middle = "354468b76d1f69da6d3e8f83121c58488a7dd0e3";
-const oldest = "94cd8eac112c9bdd501050bb11b2aeafc984252a";
-
-const mockData = [
-  {
-    changeSetId: latest,
-    displayName: "Mock1",
-  },
-  {
-    changeSetId: middle,
-    displayName: "Mock2",
-  },
-  {
-    changeSetId: oldest,
-    displayName: "Mock3",
-  },
-];
 
 export class VersionCompareWebApi {
 
@@ -45,8 +23,6 @@ export class VersionCompareWebApi {
     requestContext: null as any,
   };
 
-  public static get mockData() { return mockData; }
-
   /** Creates a context with all API request will be made in. */
   public static async populateContext(iModel: IModelConnection) {
     // Check if already populated
@@ -56,7 +32,6 @@ export class VersionCompareWebApi {
     const iModelId = iModel.iModelId;
     assert(projectId !== undefined);
     assert(iModelId !== undefined);
-    console.debug(`ActivityId: "${requestContext.activityId}"`);
     VersionCompareWebApi._projectContext = { projectId, iModelId, requestContext };
   }
 
@@ -67,20 +42,20 @@ export class VersionCompareWebApi {
    * @return A OK response will be formatted as follows:
    * ```
    * {
-    "changedElements": {
+      "changedElements": {
         "elements": ["0x30000000f69"],
         "classIds": ["0x670"],
         "opcodes": [23],
         "modelIds": ["0x20000000002"],
         "type": [1],
         "properties": [
-            ["UserLabel"]
+          ["UserLabel"]
         ],
         "oldChecksums": [
-            [1448094486]
+          [1448094486]
         ],
         "newChecksums": [
-            [362149254]
+          [362149254]
         ],
         "parentIds": ["0"],
         "parentClassIds": ["0"]
@@ -107,90 +82,65 @@ export class VersionCompareWebApi {
         if (resp.body === undefined) return undefined;
         return resp.body;
       }).catch((_reason: any) => {
-        console.debug("Error: ", _reason);
         return undefined;
       });
   }
 
   /** Gets the named versions of an iModel using REST API.
-   * Read more at {@link https://developer.bentley.com/api-groups/data-management/apis/imodels/operations/get-imodel-changeset/|developer.bentley.com}
-   * @return A OK response will be formatted as follows:
+   * Read more at {@link https://developer.bentley.com/api-groups/data-management/apis/imodels/operations/get-imodel-named-versions/|developer.bentley.com}
+   * @return A OK response will be formatted as follows with representation:
    * `````
-   *  "changesets": [{
-            "id": "a1ecbdc8c4f6173004f9f881914a57c5511a362b",
-            "displayName": "1"
-        },
-        {
-            "id": "7caef8ab5afcd99c9e618fb37978c3a03d0409c7",
-            "displayName": "2"
-        },
-        {
-            "id": "a587345859410ce5c2811c7c558d4578938efa00",
-            "displayName": "3"
-        },
-        {
-            "id": "13a61888798b687d41f7c748d7414b428766281f",
-            "displayName": "4"
-        }
-      ]
-    }
-   * `````
-   */
-  public static async getChangesets(): Promise<any | undefined> {
-    const { requestContext, iModelId } = VersionCompareWebApi._projectContext;
-
-    const accessToken = await VersionCompareWebApi.getAccessToken();
-    if (accessToken === undefined)
-      return undefined;
-    const url = ` https://api.bentley.com/imodels/${iModelId}/changesets/`;
-    const options = {
-      method: "GET",
-      headers: {
-        Authorization: accessToken.toTokenString(IncludePrefix.Yes),
-        Accept: "application/vnd.bentley.itwin-platform.v1+json",
-        Prefer: "return=minimal",
-      },
-    };
-    return request(requestContext, url, options)
-      .then((resp: Response): any | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        console.debug("Error: ", _reason);
-        return undefined;
-      });
-  }
-
-  /** Gets the named versions of an iModel using REST API.
- * Read more at {@link https://developer.bentley.com/api-groups/data-management/apis/imodels/operations/get-imodel-named-versions/|developer.bentley.com}
- * @return A OK response will be formatted as follows:
- * `````
- * { 
+   * {
     "namedVersions": [{
         "id": "1083a893-0f60-4918-8fb0-c3feebf84d6a",
-        "displayName": "Solar farm design"
-      },
-      {
-        "id": "3020441b-e179-4334-a59a-4fb8deb93df1",
-        "displayName": "Wind farm design"
+        "displayName": "Solar farm design",
+        "description": "Finalized solar farm design in Sun City",
+        "name": "Solar farm design",
+        "createdDateTime": "2020-10-22T07:46:50.987Z",
+        "state": "visible",
+        "_links": {
+          "creator": {
+              "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/users/64c58b5e-ba12-4e2a-8f0d-5f898009cfe2"
+            },
+            "changeSet": {
+              "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/changesets/9913e22a00eb1086c6be0ed3d09e692738fdfe9d"
+            }
+          }
+        },
+        {
+          "id": "3020441b-e179-4334-a59a-4fb8deb93df1",
+          "displayName": "Wind farm design",
+          "description": "Finalized wind farm design in Sun City",
+          "name": "Wind farm design",
+          "createdDateTime": "2020-10-21T06:42:57.6700000Z",
+          "state": "hidden",
+          "_links": {
+            "creator": {
+                "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/users/64c58b5e-ba12-4e2a-8f0d-5f898009cfe2"
+              },
+              "changeSet": {
+                "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/changesets/1f2e04b666edce395e37a795e2231e995cbf8349"
+              }
+            }
+          }
+        ],
+        ...
       }
-    ]
-  }
- * `````
- */
-  public static async getNamedVersions(): Promise<any | undefined> {
+  * `````
+  */
+  public static async getNamedVersions(top = 100): Promise<any | undefined> {
     const { requestContext, iModelId } = VersionCompareWebApi._projectContext;
 
     const accessToken = await VersionCompareWebApi.getAccessToken();
     if (accessToken === undefined)
       return undefined;
-    const url = ` https://api.bentley.com/imodels/${iModelId}/namedversions/`;
+    const url = ` https://api.bentley.com/imodels/${iModelId}/namedversions?$top=${top}`;
     const options = {
       method: "GET",
       headers: {
         Authorization: accessToken.toTokenString(IncludePrefix.Yes),
         Accept: "application/vnd.bentley.itwin-platform.v1+json",
-        Prefer: "return=minimal",
+        Prefer: "return=representation",
       },
     };
     return request(requestContext, url, options)
@@ -198,7 +148,6 @@ export class VersionCompareWebApi {
         if (resp.body === undefined) return undefined;
         return resp.body;
       }).catch((_reason: any) => {
-        console.debug("Error: ", _reason);
         return undefined;
       });
   }
@@ -209,16 +158,5 @@ export class VersionCompareWebApi {
     } catch (e) {
       return undefined;
     }
-  }
-
-  // This sample test function demonstrates how the above functions can be called in a workflow
-  private async test() {
-    if (VersionCompareWebApi._projectContext.requestContext === null)
-      await VersionCompareWebApi.populateContext(IModelApp.viewManager.selectedView!.iModel);
-    let response;
-    response = VersionCompareWebApi.getVersionCompare(latest, latest);
-    assert(response !== undefined, "Get Version Compare API error");
-    response = VersionCompareWebApi.getChangesets();
-    assert(response !== undefined, "Get Named Versions API error");
   }
 }
