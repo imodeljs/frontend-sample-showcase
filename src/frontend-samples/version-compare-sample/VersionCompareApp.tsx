@@ -10,7 +10,7 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget
 import "common/samples-common.scss";
 import React, { FunctionComponent, useState } from "react";
 import { VersionCompareApi } from "./VersionCompareApi";
-import { VersionCompareWebApi } from "./VersionCompareWebApi";
+import { VersionCompareClient } from "./VersionCompareClient";
 import { VersionCompareWidgetProvider } from "./VersionCompareWidget";
 
 const uiProviders = [new VersionCompareWidgetProvider()];
@@ -21,7 +21,7 @@ const VersionCompareApp: FunctionComponent = () => {
 
   const oniModelReady = async (iModelConnection: IModelConnection) => {
     // Populate the information needed for this sample.
-    await VersionCompareWebApi.populateContext(iModelConnection);
+    await VersionCompareClient.populateContext(iModelConnection);
     await VersionCompareApi.populateVersions();
 
     const viewState = await ViewSetup.getDefaultView(iModelConnection);

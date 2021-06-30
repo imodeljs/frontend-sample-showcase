@@ -5,7 +5,7 @@
 import { assert, DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, Viewport } from "@bentley/imodeljs-frontend";
-import { VersionCompareWebApi } from "./VersionCompareWebApi";
+import { VersionCompareClient } from "./VersionCompareClient";
 
 export interface NamedVersion {
   readonly changeSetId: Id64String;
@@ -77,7 +77,7 @@ export class VersionCompareApi {
     if (this._namedVersions.length > 0) return;
 
     // Make request to IModelHub API for all named versions
-    const resp = await VersionCompareWebApi.getNamedVersions();
+    const resp = await VersionCompareClient.getNamedVersions();
     if (resp === undefined || resp.namedVersions === undefined) {
       const message = "Unexpected response";
       IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Error, message));
@@ -108,7 +108,7 @@ export class VersionCompareApi {
     const vp = IModelApp.viewManager.selectedView;
     assert(vp !== undefined, "No Selected viewport.");
 
-    const response = await VersionCompareWebApi.getVersionCompare(start, end);
+    const response = await VersionCompareClient.getChangedElements(start, end);
 
     VersionCompareApi.visualizeComparison(vp, response);
   }

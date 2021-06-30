@@ -14,7 +14,7 @@ interface ProjectContext {
   requestContext: AuthorizedFrontendRequestContext;
 }
 
-export class VersionCompareWebApi {
+export class VersionCompareClient {
 
   // default initialization, will be replaced when the app loads.
   private static _projectContext: ProjectContext = {
@@ -26,13 +26,13 @@ export class VersionCompareWebApi {
   /** Creates a context with all API request will be made in. */
   public static async populateContext(iModel: IModelConnection) {
     // Check if already populated
-    if (VersionCompareWebApi._projectContext.requestContext !== null) return;
+    if (VersionCompareClient._projectContext.requestContext !== null) return;
     const requestContext = await VersionCompareApi.getRequestContext();
     const projectId = iModel.contextId;
     const iModelId = iModel.iModelId;
     assert(projectId !== undefined);
     assert(iModelId !== undefined);
-    VersionCompareWebApi._projectContext = { projectId, iModelId, requestContext };
+    VersionCompareClient._projectContext = { projectId, iModelId, requestContext };
   }
 
   /** Gets the changes in version using REST API.  Will response with JSON describing changes made between the two changesets.  Pass the same changeset Id as the start and end to view the changes for that changeset.
@@ -63,10 +63,10 @@ export class VersionCompareWebApi {
     }
    * ```
    */
-  public static async getVersionCompare(startChangesetId: string, endChangesetId: string): Promise<any | undefined> {
-    const { requestContext, projectId, iModelId } = VersionCompareWebApi._projectContext;
+  public static async getChangedElements(startChangesetId: string, endChangesetId: string): Promise<any | undefined> {
+    const { requestContext, projectId, iModelId } = VersionCompareClient._projectContext;
 
-    const accessToken = await VersionCompareWebApi.getAccessToken();
+    const accessToken = await VersionCompareClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
     const url = `https://api.bentley.com/changedelements/comparison?iModelId=${iModelId}&contextId=${projectId}&startChangesetId=${startChangesetId}&endChangesetId=${endChangesetId}`;
@@ -129,9 +129,9 @@ export class VersionCompareWebApi {
   * `````
   */
   public static async getNamedVersions(top = 100): Promise<any | undefined> {
-    const { requestContext, iModelId } = VersionCompareWebApi._projectContext;
+    const { requestContext, iModelId } = VersionCompareClient._projectContext;
 
-    const accessToken = await VersionCompareWebApi.getAccessToken();
+    const accessToken = await VersionCompareClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
     const url = ` https://api.bentley.com/imodels/${iModelId}/namedversions?$top=${top}`;
