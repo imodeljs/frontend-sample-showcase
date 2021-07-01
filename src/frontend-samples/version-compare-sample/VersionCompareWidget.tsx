@@ -16,7 +16,8 @@ export const VersionCompareWidget: React.FunctionComponent = () => {
   // State Declarations
   const iModelConnection = useActiveIModelConnection();
   const [isRequest, setIsRequest] = React.useState<boolean>(false);
-  const [selectVersion, setVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[1]);
+  const initialIndex = VersionCompareApi.namedVersions.length >= 2 ? 1 : 0;
+  const [selectVersion, setVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[initialIndex]);
 
   // initialize view with comparison of current and next Named Version
   React.useEffect(() => {
