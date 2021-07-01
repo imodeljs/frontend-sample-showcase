@@ -36,10 +36,10 @@ export class ChangedElementsClient {
     ChangedElementsClient._projectContext = { projectId, iModelId, requestContext };
   }
 
-  /** Uses the IModelClient to the request the Named Version of the IModel. Only selects id, name, and changeset.  Limited to top 10 Named Versions. */
+  /** Uses the IModelClient to the request the Named Version of the IModel. Only selects name and changeset id.  Limited to top 10 Named Versions. */
   public static async getNamedVersions(): Promise<Version[]> {
     const { requestContext, iModelId } = ChangedElementsClient._projectContext;
-    const query = new VersionQuery().notHidden().select("id, name, changeSetId").top(10);
+    const query = new VersionQuery().notHidden().select("name, changeSetId").top(10);
 
     return IModelApp.iModelClient.versions.get(requestContext, iModelId, query);
   }

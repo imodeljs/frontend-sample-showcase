@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { Version } from "@bentley/imodelhub-client";
-import { ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
+import { ChangedElements, ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, Viewport } from "@bentley/imodeljs-frontend";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 
@@ -82,7 +82,7 @@ export class ChangedElementsApi {
     const response = await ChangedElementsClient.getChangedElements(start, end);
 
     // Visualize in the viewport.
-    ChangedElementsApi.visualizeComparison(vp, response);
+    ChangedElementsApi.visualizeComparison(vp, response.changedElements);
   }
 
   /** Returns true only if start and end changeset Ids are real, and the start Id is new or equal to the end Id. */
@@ -93,9 +93,9 @@ export class ChangedElementsApi {
   }
 
   /** Parses the response from the Changed Elements API and displays changes in the Viewport using a FeatureOverridesProvider. */
-  public static visualizeComparison(vp: Viewport, response: any): { elementIds: Id64Array, opcodes: DbOpcode[] } | undefined {
-    const elementIds: string[] = response?.changedElements?.elements;
-    const opcodes: DbOpcode[] = response?.changedElements?.opcodes;
+  public static visualizeComparison(vp: Viewport, changedElements: ChangedElements) {
+    const elementIds = changedElements?.elements;
+    const opcodes = changedElements?.opcodes;
 
     if (
       elementIds === undefined || elementIds.length <= 0 ||
