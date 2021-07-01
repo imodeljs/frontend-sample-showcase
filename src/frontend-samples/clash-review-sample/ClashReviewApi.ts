@@ -72,7 +72,7 @@ export default class ClashReviewApi {
 
   /** The API has been significantly reworked, so for the time being the static jsonData file will be used */
   public static async getClashData(projectId: string, staticData?: boolean): Promise<any> {
-    if(staticData)
+    if (staticData)
       return jsonData;
 
     const context = await ClashReviewApi.getRequestContext();
@@ -111,8 +111,9 @@ export default class ClashReviewApi {
 
   private static async calcClashCenter(imodel: IModelConnection, elementAIds: string[], elementBIds: string[]): Promise<Point3d[]> {
     const allElementIds = [...elementAIds, ...elementBIds];
-
+    console.log(allElementIds)
     const elemProps = (await imodel.elements.getProps(allElementIds)) as GeometricElement3dProps[];
+    console.log(elemProps)
     const intersections: Point3d[] = [];
     if (elemProps.length !== 0) {
 

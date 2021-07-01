@@ -1,0 +1,40 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+.sample-options {
+  color: var(--buic-foreground-body);
+  padding: 8px;
+}
+
+.sample-options-2col {
+  display: grid;
+  row-gap: 8px;
+  column-gap: 8px;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+}
+
+.app-content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.app-content .top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: unset;
+  height: 70%;
+  width: 100%;
+}
+
+.app-content .bottom {
+  position: absolute;
+  right: unset;
+  bottom: 0;
+  left: 0;
+  height: 30%;
+  width: 100%;
+}
