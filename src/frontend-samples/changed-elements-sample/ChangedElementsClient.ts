@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@bentley/bentleyjs-core";
+import { Version, VersionQuery } from "@bentley/imodelhub-client";
 import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { AuthorizationClient } from "@itwinjs-sandbox";
@@ -33,6 +34,14 @@ export class ChangedElementsClient {
     assert(projectId !== undefined);
     assert(iModelId !== undefined);
     ChangedElementsClient._projectContext = { projectId, iModelId, requestContext };
+  }
+
+  /** Uses the IModelClient to the request the Named Version of the IModel. Only selects id, name, and changeset.  Limited to top 10 Named Versions. */
+  public static async getNamedVersions(): Promise<Version[]> {
+    const { requestContext, iModelId } = ChangedElementsClient._projectContext;
+    const query = new VersionQuery().notHidden().select("id, name, changeSetId").top(10);
+
+    return IModelApp.iModelClient.versions.get(requestContext, iModelId, query);
   }
 
   /** Gets the changes in version using REST API.  Will response with JSON describing changes made between the two changesets.  Pass the same changeset Id as the start and end to view the changes for that changeset.
@@ -75,72 +84,6 @@ export class ChangedElementsClient {
       headers: {
         Authorization: accessToken.toTokenString(IncludePrefix.Yes),
         Accept: "application/vnd.bentley.itwin-platform.v1+json",
-      },
-    };
-    return request(requestContext, url, options)
-      .then((resp: Response): any | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
-  }
-
-  /** Gets the named versions of an iModel using REST API.
-   * Read more at {@link https://developer.bentley.com/api-groups/data-management/apis/imodels/operations/get-imodel-named-versions/|developer.bentley.com}
-   * @return A OK response will be formatted as follows with representation:
-   * `````
-   * {
-    "namedVersions": [{
-        "id": "1083a893-0f60-4918-8fb0-c3feebf84d6a",
-        "displayName": "Solar farm design",
-        "description": "Finalized solar farm design in Sun City",
-        "name": "Solar farm design",
-        "createdDateTime": "2020-10-22T07:46:50.987Z",
-        "state": "visible",
-        "_links": {
-          "creator": {
-              "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/users/64c58b5e-ba12-4e2a-8f0d-5f898009cfe2"
-            },
-            "changeSet": {
-              "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/changesets/9913e22a00eb1086c6be0ed3d09e692738fdfe9d"
-            }
-          }
-        },
-        {
-          "id": "3020441b-e179-4334-a59a-4fb8deb93df1",
-          "displayName": "Wind farm design",
-          "description": "Finalized wind farm design in Sun City",
-          "name": "Wind farm design",
-          "createdDateTime": "2020-10-21T06:42:57.6700000Z",
-          "state": "hidden",
-          "_links": {
-            "creator": {
-                "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/users/64c58b5e-ba12-4e2a-8f0d-5f898009cfe2"
-              },
-              "changeSet": {
-                "href": "https://api.bentley.com/imodels/5e19bee0-3aea-4355-a9f0-c6df9989ee7d/changesets/1f2e04b666edce395e37a795e2231e995cbf8349"
-              }
-            }
-          }
-        ],
-        ...
-      }
-  * `````
-  */
-  public static async getNamedVersions(top = 100): Promise<any | undefined> {
-    const { requestContext, iModelId } = ChangedElementsClient._projectContext;
-
-    const accessToken = await ChangedElementsClient.getAccessToken();
-    if (accessToken === undefined)
-      return undefined;
-    const url = ` https://api.bentley.com/imodels/${iModelId}/namedversions?$top=${top}`;
-    const options = {
-      method: "GET",
-      headers: {
-        Authorization: accessToken.toTokenString(IncludePrefix.Yes),
-        Accept: "application/vnd.bentley.itwin-platform.v1+json",
-        Prefer: "return=representation",
       },
     };
     return request(requestContext, url, options)

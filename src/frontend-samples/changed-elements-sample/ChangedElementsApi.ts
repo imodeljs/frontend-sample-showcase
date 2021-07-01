@@ -3,15 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
+import { Version } from "@bentley/imodelhub-client";
 import { ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, Viewport } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, Viewport } from "@bentley/imodeljs-frontend";
 import { ChangedElementsClient } from "./ChangedElementsClient";
-
-export interface NamedVersion {
-  readonly changeSetId: Id64String;
-  readonly displayName: string;
-  readonly versionId: Id64String;
-}
 
 /** This provider will change the color of the elements based on the last operation of the comparison. */
 class ComparisonProvider implements FeatureOverrideProvider {
@@ -65,42 +60,16 @@ export class ChangedElementsApi {
     return ChangedElementsApi._requestContext;
   }
 
-  private static _namedVersions: NamedVersion[] = [];
   /** A list of all the Named Versions and their Changeset Id for the open iModel. */
-  public static get namedVersions(): NamedVersion[] {
-    return ChangedElementsApi._namedVersions;
-  }
+  public static namedVersions: Version[] = [];
 
   /** Request all the named versions of an IModel and populates the "namedVersions" list. */
   public static async populateVersions() {
     // Check if already populated
-    if (this._namedVersions.length > 0) return;
+    if (this.namedVersions.length > 0) return;
 
     // Make request to IModelHub API for all named versions
-    const resp = await ChangedElementsClient.getNamedVersions();
-    if (resp === undefined || resp.namedVersions === undefined) {
-      const message = "Unexpected response";
-      IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Error, message));
-      return;
-    }
-    const versions: Array<any> = resp.namedVersions.filter((entry: any) => entry.state === "visible");
-    if (versions.length <= 1) {
-      const message = "The IModel does not have enough Named Versions to compare.  Minium of 2 required.";
-      IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Warning, message));
-      return;
-    }
-    ChangedElementsApi._namedVersions = versions.map((entry) => ({
-      versionId: entry.id,
-      displayName: entry.displayName,
-      changeSetId: ChangedElementsApi.parseForChangesetId(entry._links.changeSet.href),
-    }));
-  }
-
-  /** Parses the href string for the namedVersion's changeset Id to avoid requesting it from the API. */
-  private static parseForChangesetId(href: string): string {
-    // href formatted as: https://api.bentley.com/imodels/{with 31 characters}/changesets/{changesetId}
-    const rtn = href.substr(80);
-    return rtn;
+    ChangedElementsApi.namedVersions = await ChangedElementsClient.getNamedVersions();
   }
 
   /** Request the Comparison and displays the changes in the Viewport. */
@@ -109,13 +78,15 @@ export class ChangedElementsApi {
     if (vp === undefined)
       return;
 
+    // Request Changed elements
     const response = await ChangedElementsClient.getChangedElements(start, end);
 
+    // Visualize in the viewport.
     ChangedElementsApi.visualizeComparison(vp, response);
   }
 
   /** Returns true only if start and end changeset Ids are real, and the start Id is new or equal to the end Id. */
-  public static validateChangesetIds(start: NamedVersion, end: NamedVersion): boolean {
+  public static validateChangesetIds(start: Version, end: Version): boolean {
     const startIndex = ChangedElementsApi.namedVersions.indexOf(start);
     const endIndex = ChangedElementsApi.namedVersions.indexOf(end);
     return startIndex >= 0 && endIndex >= 0 && startIndex >= endIndex;
