@@ -70,7 +70,7 @@ import { getExplodeSpec } from "frontend-samples/explode-sample/sampleSpec";
 import { getIotAlertSpec } from "./frontend-samples/iot-alert-sample/sampleSpec";
 import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sampleSpec";
 import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
-import { getVersionCompareSpec } from "frontend-samples/version-compare-sample/sampleSpec";
+import { getChangedElementsSpec } from "frontend-samples/changed-elements-sample/sampleSpec";
 import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
 import { getMisclassificationSpec } from "frontend-samples/missclassification-sample/sampleSpec";
 
@@ -165,11 +165,11 @@ export const sampleManifest: SampleSpecGroup[] = [{
   ],
 }, {
   groupName: "iTwin Platform APIs", samples: [
+    getChangedElementsSpec(),
     getClashReviewSpec(),
     getIssuesSpec(),
     getMisclassificationSpec(),
     getReadSettingsSpec(),
-    getVersionCompareSpec(),
   ],
 
 },

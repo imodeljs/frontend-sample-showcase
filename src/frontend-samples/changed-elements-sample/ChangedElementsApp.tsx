@@ -9,20 +9,20 @@ import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-frame
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import "common/samples-common.scss";
 import React, { FunctionComponent, useState } from "react";
-import { VersionCompareApi } from "./VersionCompareApi";
-import { VersionCompareClient } from "./VersionCompareClient";
-import { VersionCompareWidgetProvider } from "./VersionCompareWidget";
+import { ChangedElementsApi } from "./ChangedElementsApi";
+import { ChangedElementsClient } from "./ChangedElementsClient";
+import { ChangedElementsWidgetProvider } from "./ChangedElementsWidget";
 
-const uiProviders = [new VersionCompareWidgetProvider()];
+const uiProviders = [new ChangedElementsWidgetProvider()];
 
-const VersionCompareApp: FunctionComponent = () => {
+const ChangedElementsApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the drop down to select the named version to compare against.", [SampleIModels.Stadium]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const oniModelReady = async (iModelConnection: IModelConnection) => {
     // Populate the information needed for this sample.
-    await VersionCompareClient.populateContext(iModelConnection);
-    await VersionCompareApi.populateVersions();
+    await ChangedElementsClient.populateContext(iModelConnection);
+    await ChangedElementsApi.populateVersions();
 
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     setViewportOptions({ viewState });
@@ -50,4 +50,4 @@ const VersionCompareApp: FunctionComponent = () => {
 
 };
 
-export default VersionCompareApp;
+export default ChangedElementsApp;

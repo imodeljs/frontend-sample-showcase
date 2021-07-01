@@ -6,19 +6,19 @@
 import { SampleIModels } from "@itwinjs-sandbox";
 import { SampleSpec } from "SampleSpec";
 
-export function getVersionCompareSpec(): SampleSpec {
+export function getChangedElementsSpec(): SampleSpec {
   return ({
-    name: "version-review-sample",
-    label: "Version Compare",
-    image: "versionCompare.png",
+    name: "changed-elements-sample",
+    label: "Changed Elements",
+    image: "changedElements.png",
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "VersionCompareApp.tsx", import: import("!!raw-loader!./VersionCompareApp.tsx") },
-      { name: "VersionCompareWidget.tsx", import: import("!!raw-loader!./VersionCompareWidget.tsx") },
-      { name: "VersionCompareApi.ts", import: import("!!raw-loader!./VersionCompareApi.ts"), entry: true },
+      { name: "ChangedElementsApp.tsx", import: import("!!raw-loader!./ChangedElementsApp.tsx") },
+      { name: "ChangedElementsWidget.tsx", import: import("!!raw-loader!./ChangedElementsWidget.tsx") },
+      { name: "ChangedElementsApi.ts", import: import("!!raw-loader!./ChangedElementsApi.ts"), entry: true },
     ],
     iModelList: [SampleIModels.Stadium],
-    type: "VersionCompareApp.tsx",
+    type: "ChangedElementsApp.tsx",
   });
 }

@@ -1,4 +1,4 @@
-# Version Compare Sample
+# Changed Elements Sample
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
@@ -7,12 +7,12 @@ This sample demonstrates calling [Changed Elements APIs](https://developer.bentl
 ## Purpose
 
 - Demonstrate requesting Named Versions and their changeset Ids.
-- Provide [code examples](./VersionCompareWebApi.ts) for calling the Version Compare APIs.
+- Provide [code examples](./ChangedElementsClient.ts) for calling the Version Compare APIs.
 - Colorize elements based on last changes made to it.
 
 ## Description
 
-The Changeset Ids are needed as arguments to request the Version Comparison.  We get an iModel's Named Versions by requesting them using a [Named Versions API](https://developer.bentley.com/api-groups/data-management/apis/imodels/operations/get-imodel-named-versions/) call.  This response does contain the Changeset Id, but it is contained in the href to the Changeset API and must be parsed out.
+The Changeset Ids are needed as arguments to request the Changed Elements.  We get an iModel's Named Versions by requesting them using a [Named Versions API](https://developer.bentley.com/api-groups/data-management/apis/imodels/operations/get-imodel-named-versions/) call.  This response does contain the Changeset Id, but it is contained in the href to the Changeset API and must be parsed out.
 
 While the API allows to compare any two named versions, this sample allows only comparisons against the latest version of the iModel.
 

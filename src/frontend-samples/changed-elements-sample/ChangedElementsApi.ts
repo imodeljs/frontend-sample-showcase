@@ -5,7 +5,7 @@
 import { DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, Viewport } from "@bentley/imodeljs-frontend";
-import { VersionCompareClient } from "./VersionCompareClient";
+import { ChangedElementsClient } from "./ChangedElementsClient";
 
 export interface NamedVersion {
   readonly changeSetId: Id64String;
@@ -55,20 +55,20 @@ class ComparisonProvider implements FeatureOverrideProvider {
   }
 }
 
-export class VersionCompareApi {
+export class ChangedElementsApi {
   private static _requestContext: AuthorizedFrontendRequestContext;
   /** Returns the request context which will be used for all the API calls made by the frontend. */
   public static async getRequestContext() {
-    if (!VersionCompareApi._requestContext) {
-      VersionCompareApi._requestContext = await AuthorizedFrontendRequestContext.create();
+    if (!ChangedElementsApi._requestContext) {
+      ChangedElementsApi._requestContext = await AuthorizedFrontendRequestContext.create();
     }
-    return VersionCompareApi._requestContext;
+    return ChangedElementsApi._requestContext;
   }
 
   private static _namedVersions: NamedVersion[] = [];
   /** A list of all the Named Versions and their Changeset Id for the open iModel. */
   public static get namedVersions(): NamedVersion[] {
-    return VersionCompareApi._namedVersions;
+    return ChangedElementsApi._namedVersions;
   }
 
   /** Request all the named versions of an IModel and populates the "namedVersions" list. */
@@ -77,7 +77,7 @@ export class VersionCompareApi {
     if (this._namedVersions.length > 0) return;
 
     // Make request to IModelHub API for all named versions
-    const resp = await VersionCompareClient.getNamedVersions();
+    const resp = await ChangedElementsClient.getNamedVersions();
     if (resp === undefined || resp.namedVersions === undefined) {
       const message = "Unexpected response";
       IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Error, message));
@@ -89,10 +89,10 @@ export class VersionCompareApi {
       IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Warning, message));
       return;
     }
-    VersionCompareApi._namedVersions = versions.map((entry) => ({
+    ChangedElementsApi._namedVersions = versions.map((entry) => ({
       versionId: entry.id,
       displayName: entry.displayName,
-      changeSetId: VersionCompareApi.parseForChangesetId(entry._links.changeSet.href),
+      changeSetId: ChangedElementsApi.parseForChangesetId(entry._links.changeSet.href),
     }));
   }
 
@@ -109,19 +109,19 @@ export class VersionCompareApi {
     if (vp === undefined)
       return;
 
-    const response = await VersionCompareClient.getChangedElements(start, end);
+    const response = await ChangedElementsClient.getChangedElements(start, end);
 
-    VersionCompareApi.visualizeComparison(vp, response);
+    ChangedElementsApi.visualizeComparison(vp, response);
   }
 
   /** Returns true only if start and end changeset Ids are real, and the start Id is new or equal to the end Id. */
   public static validateChangesetIds(start: NamedVersion, end: NamedVersion): boolean {
-    const startIndex = VersionCompareApi.namedVersions.indexOf(start);
-    const endIndex = VersionCompareApi.namedVersions.indexOf(end);
+    const startIndex = ChangedElementsApi.namedVersions.indexOf(start);
+    const endIndex = ChangedElementsApi.namedVersions.indexOf(end);
     return startIndex >= 0 && endIndex >= 0 && startIndex >= endIndex;
   }
 
-  /** Parses the response from the Version Compare API and displays changes in the Viewport using a FeatureOverridesProvider. */
+  /** Parses the response from the Changed Elements API and displays changes in the Viewport using a FeatureOverridesProvider. */
   public static visualizeComparison(vp: Viewport, response: any): { elementIds: Id64Array, opcodes: DbOpcode[] } | undefined {
     const elementIds: string[] = response?.changedElements?.elements;
     const opcodes: DbOpcode[] = response?.changedElements?.opcodes;

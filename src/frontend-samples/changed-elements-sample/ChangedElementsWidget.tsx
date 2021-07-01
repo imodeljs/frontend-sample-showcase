@@ -9,31 +9,33 @@ import { Select, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import "common/samples-common.scss";
 import * as React from "react";
-import { NamedVersion, VersionCompareApi } from "./VersionCompareApi";
-import "./VersionCompare.scss";
+import "./ChangedElements.scss";
+import { ChangedElementsApi, NamedVersion } from "./ChangedElementsApi";
 
-export const VersionCompareWidget: React.FunctionComponent = () => {
+export const ChangedElementsWidget: React.FunctionComponent = () => {
   // State Declarations
   const iModelConnection = useActiveIModelConnection();
   const [isRequest, setIsRequest] = React.useState<boolean>(false);
-  const initialIndex = VersionCompareApi.namedVersions.length >= 2 ? 1 : 0;
-  const [selectVersion, setVersion] = React.useState<NamedVersion>(VersionCompareApi.namedVersions[initialIndex]);
+  const initialIndex = ChangedElementsApi.namedVersions.length >= 2 ? 1 : 0;
+  const [selectVersion, setVersion] = React.useState<NamedVersion>(ChangedElementsApi.namedVersions[initialIndex]);
 
   // initialize view with comparison of current and next Named Version
   React.useEffect(() => {
     assert(iModelConnection?.changeSetId !== undefined);
     setIsRequest(true);
-    VersionCompareApi.compareChangesets(selectVersion.changeSetId, iModelConnection.changeSetId)
+    ChangedElementsApi.compareChangesets(selectVersion.changeSetId, iModelConnection.changeSetId)
       .finally(() => setIsRequest(false));
   }, [selectVersion, iModelConnection]);
 
-  const namedVersionsOptions = VersionCompareApi.namedVersions
+  const namedVersionsOptions = ChangedElementsApi.namedVersions
     .map((version, index) => ({ value: index, label: version.displayName }));
 
-  const currentVersion = VersionCompareApi.namedVersions.find((version) => version.changeSetId === iModelConnection?.changeSetId)?.displayName ?? "Nope";
+  const currentVersion = ChangedElementsApi.namedVersions
+    .find((version) => version.changeSetId === iModelConnection?.changeSetId)?.displayName
+    ?? "Error: No Named Version found for current changeset";
 
   return (<>
-    <span className={"sample-spinner"}>
+    <span className={"sample-widget-overlay"}>
       {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
     </span>
     <label>Comparing against: {currentVersion}</label>
@@ -42,28 +44,28 @@ export const VersionCompareWidget: React.FunctionComponent = () => {
       <label>Select Version</label>
       <Select
         options={namedVersionsOptions}
-        value={VersionCompareApi.namedVersions.indexOf(selectVersion)}
+        value={ChangedElementsApi.namedVersions.indexOf(selectVersion)}
         disabled={isRequest}
         onChange={(event) => {
-          setVersion(VersionCompareApi.namedVersions[Number.parseInt(event.target.value, 10)]);
+          setVersion(ChangedElementsApi.namedVersions[Number.parseInt(event.target.value, 10)]);
         }} />
     </div>
   </>);
 };
 
-export class VersionCompareWidgetProvider implements UiItemsProvider {
-  public readonly id: string = "VersionCompareWidgetProvider";
+export class ChangedElementsWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ChangedElementsWidgetProvider";
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
     if (location === StagePanelLocation.Right) {
       widgets.push(
         {
-          id: "VersionCompareWidget",
-          label: "Version Compare Controls",
+          id: "ChangedElementsWidget",
+          label: "Changed Elements Controls",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <VersionCompareWidget />,
+          getWidgetContent: () => <ChangedElementsWidget />,
         }
       );
     }
