@@ -191,7 +191,7 @@ const IssuesWidget: React.FunctionComponent = () => {
     metaData?.forEach(async (attachment) => {
       const image = await IssuesClient.getAttachmentById(currentIssue.id!, attachment.id!);
       if (image)
-        setIssueAttachments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: currentIssue.displayName! in prevState ? [...prevState[currentIssue.displayName!], image!] : [image!] }));
+        setIssueAttachments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: currentIssue.displayName! in prevState ? [...prevState[currentIssue.displayName!], image] : [image] }));
     });
   }, [currentIssue, issueAttachmentMetaData, issueAttachments]);
 
