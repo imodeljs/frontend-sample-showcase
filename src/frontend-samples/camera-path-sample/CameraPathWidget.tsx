@@ -20,7 +20,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
   const [currentSpeed, setCurrentSpeed] = useState<number>(1.4);
   const keyDown = useRef<boolean>(false);
 
-  /** Initalize the camera namespace on widget load */
+  /** Initialize the camera namespace on widget load */
   useEffect(() => {
     const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
     CameraPathTool.register(sampleNamespace);
@@ -76,7 +76,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
     }
   }, [viewport, sliderValue, cameraPath, isPaused]);
 
-  /** Turn the camera on, and initalize the tool */
+  /** Turn the camera on, and initialize the tool */
   useEffect(() => {
     if (viewport) {
       CameraPathApi.prepareView(viewport);
@@ -110,7 +110,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
         cancelAnimationFrame(animID);
       }
     };
-    // This effect should NOT be called when the sliderValue is changed because the animate value sets the slider value. It is only needed on inital call.
+    // This effect should NOT be called when the sliderValue is changed because the animate value sets the slider value. It is only needed on initial call.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cameraPath, currentSpeed, isPaused, viewport]);
 
