@@ -10,6 +10,7 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
     name: "custom-webfont-icons-tree-sample",
     label: "Custom Webfont Icons Tree",
     image: "custom-webfont-icons-tree-thumbnail.png",
+    description: "#Tree #sample showing how to display #custom #icons using #iModel #data.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CustomWebfontIconsTreeApp.tsx", import: import("!!raw-loader!./CustomWebfontIconsTreeApp") },

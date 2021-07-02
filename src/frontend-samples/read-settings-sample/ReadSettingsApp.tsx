@@ -2,59 +2,43 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { Viewer } from "@bentley/itwin-viewer-react";
+import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { ReadSettingsWidgetProvider } from "./ReadSettingsWidget";
 
-import "common/samples-common.scss";
-import { AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
-import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
-import { IModelQuery } from "@bentley/imodelhub-client";
+const uiProviders = [new ReadSettingsWidgetProvider()];
 
-interface ProjectContext {
-  projectId: string;
-  imodelId: string;
-  requestContext: AuthorizedFrontendRequestContext;
-}
+const ReadSettingsApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Choose a Setting Name below to read that setting from the ProductSettingsService", [SampleIModels.BayTown]);
+  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-const namespace = "showcase";
+  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({ viewState });
+  };
 
-export default class ReadSettingsApp {
+  return (
+    <>
+      { /* Viewport to display the iModel */}
+      {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
+        <Viewer
+          productId="2686"
+          contextId={sampleIModelInfo.contextId}
+          iModelId={sampleIModelInfo.iModelId}
+          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          viewportOptions={viewportOptions}
+          defaultUiConfig={default2DSandboxUi}
+          onIModelConnected={_oniModelReady}
+          uiProviders={uiProviders}
+          theme="dark"
+        />
+      }
+    </>
+  );
+};
 
-  public static projectContext: ProjectContext;
+export default ReadSettingsApp;
 
-  // This method serves to query projectId of project where iModel is stored in this example,
-  // however in real application you might have it upfront already
-  public static async getIModelInfo(iModelName: string): Promise<ProjectContext> {
-    // In testdrive the projectName matches iModelName.  That's not true in general.
-    const projectName = iModelName;
-    const connectClient = new ContextRegistryClient();
-    let project: Project;
-
-    const context = await AuthorizedFrontendRequestContext.create();
-
-    try {
-      project = await connectClient.getProject(context, { $filter: `Name+eq+'${iModelName}'` });
-    } catch (e) {
-      throw new Error(`Project with name "${projectName}" does not exist`);
-    }
-
-    const imodelQuery = new IModelQuery();
-    imodelQuery.byName(iModelName);
-    const imodels = await IModelApp.iModelClient.iModels.get(context, project.wsgId, imodelQuery);
-    if (imodels.length === 0)
-      throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
-
-    return { projectId: project.wsgId, imodelId: imodels[0].wsgId, requestContext: context };
-  }
-
-  // Read settings from ProductSettingsService
-  public static async readSettings(settingName: string) {
-    const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
-    return IModelApp.settings.getSetting(requestContext, namespace, settingName, true, projectId, imodelId);
-  }
-
-  // The showcase does not have permission to write data, it is expected to fail with 403 Forbidden.
-  // However saveSetting method will work in your project with signed-in user, who has required permissions in the project.
-  public static async saveSettings(settingName: string, settingValue: string) {
-    const { projectId, imodelId, requestContext } = ReadSettingsApp.projectContext;
-    return IModelApp.settings.saveSetting(requestContext, settingValue, namespace, settingName, true, projectId, imodelId);
-  }
-}

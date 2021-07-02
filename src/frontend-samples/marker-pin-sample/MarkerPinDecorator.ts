@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Point2d, Point3d, XAndY, XYAndZ } from "@bentley/geometry-core";
+import { Point2d, Point3d, Range1dProps, XAndY, XYAndZ } from "@bentley/geometry-core";
 import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, Marker, MarkerSet } from "@bentley/imodeljs-frontend";
 import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
 
@@ -42,7 +42,7 @@ class SamplePinMarker extends Marker {
   private _onMouseButtonCallback?: any;
 
   /** Create a new SamplePinMarker */
-  constructor(markerData: MarkerData, title: string, description: string, image: HTMLImageElement, markerSet: SampleMarkerSet, onMouseButtonCallback?: any) {
+  constructor(markerData: MarkerData, title: string, description: string, image: HTMLImageElement, markerSet: SampleMarkerSet, scale: Range1dProps = { low: .75, high: 2.0 }, onMouseButtonCallback?: any) {
     // Use the same height for all the markers, but preserve the aspect ratio from the image
     super(markerData.point, new Point2d(image.width * (SamplePinMarker._height / image.height), SamplePinMarker._height));
     this.setImage(image);
@@ -80,8 +80,8 @@ class SamplePinMarker extends Marker {
     this.title = div;
 
     // The scale factor adjusts the size of the image so it appears larger when close to the camera eye point.
-    // Make size 75% at back of frustum and 200% at front of frustum (if camera is on)
-    this.setScaleFactor({ low: .75, high: 2.0 });
+    // Default: Make size 75% at back of frustum and 200% at front of frustum (if camera is on)
+    this.setScaleFactor(scale);
   }
 
   /** Determine whether the point is within this Marker */
@@ -265,6 +265,16 @@ export class MarkerPinDecorator implements Decorator {
   public addPoint(point: Point3d, pinImage: HTMLImageElement): void {
     const markerData: MarkerData = { point };
     this._manualMarkerSet.markers.add(new SamplePinMarker(markerData, "Manual", "", pinImage, this._manualMarkerSet));
+
+    // When the markers change we notify the viewmanager to remove the existing decorations
+    const vp = IModelApp.viewManager.selectedView;
+    if (undefined !== vp)
+      vp.invalidateDecorations();
+  }
+
+  /* Adds a single new marker to the "manual" markerset */
+  public addMarkerPoint(markerData: MarkerData, pinImage: HTMLImageElement, title?: string, description?: string, scale?: Range1dProps, onMouseButtonCallback?: any): void {
+    this._manualMarkerSet.markers.add(new SamplePinMarker(markerData, title ?? "Manual", description ?? "description test goes here", pinImage, this._manualMarkerSet, scale, onMouseButtonCallback));
 
     // When the markers change we notify the viewmanager to remove the existing decorations
     const vp = IModelApp.viewManager.selectedView;

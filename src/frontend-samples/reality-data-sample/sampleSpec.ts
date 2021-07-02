@@ -12,14 +12,16 @@ export function getRealityDataSpec(): SampleSpec {
     label: "Reality Data",
     image: "reality-data-thumbnail.png",
     iTwinViewerReady: true,
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!raw-loader!./readme.md"),
+    walkthrough: async () => import("!walkthrough-loader!./annotations.md"),
     files: () => [
-      { name: "RealityDataApi.ts", import: import("!!raw-loader!./RealityDataApi") },
-      { name: "RealityDataApp.tsx", import: import("!!raw-loader!./RealityDataApp"), entry: true },
-      { name: "RealityDataWidget.tsx", import: import("!!raw-loader!./RealityDataWidget") },
-      { name: "RealityData.scss", import: import("!!raw-loader!./RealityData.scss") },
+      { name: "RealityDataApi.ts", import: import("!editor-file-loader!./RealityDataApi") },
+      { name: "RealityDataApp.tsx", import: import("!editor-file-loader!./RealityDataApp"), entry: true },
+      { name: "RealityDataWidget.tsx", import: import("!editor-file-loader!./RealityDataWidget") },
+      { name: "RealityData.scss", import: import("!editor-file-loader!./RealityData.scss") },
     ],
     iModelList: [SampleIModels.ExtonCampus, SampleIModels.MetroStation],
     type: "RealityDataApp.tsx",
+    description: "Adding, removing, and modifying the display of #reality data. Discovers available #realitymodel and attaches the first one to the viewport.",
   });
 }

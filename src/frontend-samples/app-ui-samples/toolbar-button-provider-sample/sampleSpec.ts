@@ -11,6 +11,7 @@ export function getToolbarButtonSample(): SampleSpec {
     name: "toolbar-button-sample",
     label: "Add Toolbar Button (Dynamically)",
     image: "toolbar-button-thumbnail.png",
+    description: "How to add a #toolbar #button",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ToolbarButtonProvider.tsx", import: import("!!raw-loader!./ToolbarButtonProvider") },

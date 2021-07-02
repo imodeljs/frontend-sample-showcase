@@ -222,7 +222,7 @@ export class GeometryDecorator implements Decorator {
     overrides.setApplyLighting(true);
     const branch = new GraphicBranch(false);
 
-    branch.setViewFlagOverrides(overrides);
+    branch.viewFlagOverrides.copyFrom(overrides);
 
     context.viewFlags.visibleEdges = true;
     if (!this.graphics)

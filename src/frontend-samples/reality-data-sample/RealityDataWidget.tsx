@@ -13,9 +13,12 @@ import "./RealityData.scss";
 
 const RealityDataWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
+  // START STATE
   const [showRealityDataState, setShowRealityDataState] = React.useState<boolean>(true);
   const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<number>(0);
+  // END STATE
 
+  // START INITIAL_STATE
   // Initalize the widget
   useEffect(() => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
@@ -24,7 +27,9 @@ const RealityDataWidget: React.FunctionComponent = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // END INITIAL_STATE
 
+  // START TRANSPARENCY_HOOK
   // When just the transparency bar is changed, only call update transparency
   useEffect(() => {
     const vp = IModelApp.viewManager.selectedView;
@@ -32,7 +37,9 @@ const RealityDataWidget: React.FunctionComponent = () => {
       RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState);
     }
   }, [realityDataTransparencyState]);
+  // END TRANSPARENCY_HOOK
 
+  // START REALITY_HOOK
   // When the button is toggled, display the realityModel and set its transparency to where the slider is currently at.
   useEffect(() => {
     if (iModelConnection) {
@@ -45,7 +52,9 @@ const RealityDataWidget: React.FunctionComponent = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showRealityDataState]);
+  // END REALITY_HOOK
 
+  // START REALITY_TOGGLE
   // Create the react components for the toggle
   const createToggle = (label: string, info: string) => {
     const element = <Toggle isOn={showRealityDataState} onChange={async (checked: boolean) => setShowRealityDataState(checked)} />;
@@ -56,7 +65,9 @@ const RealityDataWidget: React.FunctionComponent = () => {
       </>
     );
   };
+  // END REALITY_TOGGLE
 
+  // START TRANSPARENCY_SLIDER
   // Create the react component for the transparency slider
   const createTransparencySlider = (label: string, info: string) => {
     const element = <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setRealityDataTransparencyState(Math.abs(Number(event.target.value) / 100))} />;
@@ -67,7 +78,9 @@ const RealityDataWidget: React.FunctionComponent = () => {
       </>
     );
   };
+  // END TRANSPARENCY_SLIDER
 
+  // START WIDGET_UI
   return (
     <>
       <div className="sample-options">
@@ -78,8 +91,10 @@ const RealityDataWidget: React.FunctionComponent = () => {
       </div>
     </>
   );
+  // END WIDGET_UI
 };
 
+// START UI_ITEMS_PROVIDER
 export class RealityDataWidgetProvider implements UiItemsProvider {
   public readonly id: string = "RealityDataWidgetProvider";
 
@@ -99,3 +114,4 @@ export class RealityDataWidgetProvider implements UiItemsProvider {
     return widgets;
   }
 }
+// END UI_ITEMS_PROVIDER

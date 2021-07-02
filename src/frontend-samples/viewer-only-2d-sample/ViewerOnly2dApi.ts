@@ -2,8 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { IModelApp, IModelConnection, ViewCreator2d } from "@bentley/imodeljs-frontend";
 import { ModelProps } from "@bentley/imodeljs-common";
+import {
+  DrawingModelState, IModelApp, IModelConnection, SectionDrawingModelState, SheetModelState,
+  ViewCreator2d,
+} from "@bentley/imodeljs-frontend";
 import { ViewSetup } from "@itwinjs-sandbox";
 
 export interface ModelLists {
@@ -27,9 +30,9 @@ export class ViewerOnly2dApi {
     const drawingViews: ModelProps[] = [];
     const sheetViews: ModelProps[] = [];
     models.forEach((model: ModelProps) => {
-      if (ViewCreator2d.isSheetModelClass(model.classFullName))
+      if (SheetModelState.classFullName === model.classFullName)
         sheetViews.push(model);
-      else if (ViewCreator2d.isDrawingModelClass(model.classFullName))
+      else if ([DrawingModelState.classFullName, SectionDrawingModelState.classFullName].includes(model.classFullName))
         drawingViews.push(model);
     });
     return { drawings: drawingViews, sheets: sheetViews };
@@ -48,7 +51,7 @@ export class ViewerOnly2dApi {
   public static async createDefaultViewFor2dModel(imodel: IModelConnection, newModel: ModelProps) {
     const viewCreator = new ViewCreator2d(imodel);
     const vpAspect = ViewSetup.getAspectRatio();
-    return viewCreator.createViewForModel(newModel.id!, newModel.classFullName, { vpAspect });
+    return viewCreator.createViewForModel(newModel.id!, { vpAspect });
   }
 
 }

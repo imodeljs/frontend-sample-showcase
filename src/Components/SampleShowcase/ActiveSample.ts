@@ -23,14 +23,16 @@ export class ActiveSample {
   public getReadme?: () => Promise<{ default: string }>;
   public getFiles?: () => SampleSpecFile[];
   public type: string;
+  public galleryVisible: boolean = true;
 
   constructor(group?: string | null, name?: string | null, imodel?: SampleIModels | null) {
+    const params = new URLSearchParams(window.location.search);
     if (!group || !name) {
-      const params = new URLSearchParams(window.location.search);
       group = params.get("group");
       name = params.get("sample");
       imodel = params.get("imodel") as SampleIModels;
     }
+    this.galleryVisible = params.get("gallery") !== "false";
     const result = this.resolveSpec(group, name);
     this.group = result.group;
     this.name = result.name;
@@ -68,10 +70,17 @@ const updateURLParams = (group: string, sample: string, imodel?: string) => {
       params.append("imodel", imodel);
     }
 
-    // Detect if editor was enabled in URL params as a semi-backdoor, this
-    // bypasses the ld feature flag
-    const editorEnabled = new URLSearchParams(window.location.search).get("editor");
-    if (editorEnabled) params.append("editor", editorEnabled);
+    const currentParams = new URLSearchParams(window.location.search);
+
+    // Replace these three params
+    currentParams.delete("group");
+    currentParams.delete("sample");
+    currentParams.delete("imodel");
+
+    // Keep other params
+    currentParams.forEach((value, key) => {
+      params.append(key, value);
+    });
 
     window.history.pushState(null, "", `?${params.toString()}`);
 

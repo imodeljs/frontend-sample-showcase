@@ -11,6 +11,7 @@ export function getViewCameraSpec(): SampleSpec {
     label: "Camera Path",
     image: "camera-path-thumbnail.png",
     iTwinViewerReady: true,
+    description: "#Animates the #camera along a path using #setEyePoint.  Also shows a #tool to control the look direction using #setupViewFromFrustum.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "CameraPathApi.ts", import: import("!!raw-loader!./CameraPathApi") },
