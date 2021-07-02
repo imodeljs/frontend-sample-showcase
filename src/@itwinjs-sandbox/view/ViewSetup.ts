@@ -101,7 +101,7 @@ export class ViewSetup {
 			if (imodel.name === "Stadium") {
 				const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
 				displayStyle.changeBackgroundMapProps({
-					planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking) as PlanarClipMaskProps,
+					planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
 				});
 				const excludedModelIds = await ViewSetup.getModelIds(imodel,
 					"SS_Master",
