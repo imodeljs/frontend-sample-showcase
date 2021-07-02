@@ -6,7 +6,7 @@
 import { BeEvent } from "@bentley/bentleyjs-core";
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { EditManipulator, FeatureSymbology, findAvailableUnattachedRealityModels, GraphicBranch, IModelApp, IModelConnection, queryRealityData, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, queryRealityData, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
 
 export enum ComparisonType {
   Wireframe,
@@ -71,7 +71,7 @@ export default class SwipingViewportApp {
   public static getPerpendicularNormal(vp: Viewport, screenPoint: Point3d): Vector3d {
     const point = SwipingViewportApp.getWorldPoint(vp, screenPoint);
 
-    const boresite = EditManipulator.HandleUtils.getBoresite(point, vp);
+    const boresite = AccuDrawHintBuilder.getBoresite(point, vp);
     const viewY = vp.rotation.rowY();
     const normal = viewY.crossProduct(boresite.direction);
     return normal;
@@ -153,7 +153,7 @@ export default class SwipingViewportApp {
   /** Get all available reality models and attach them to displayStyle. */
   public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
     const style = viewport.displayStyle.clone();
-    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId! });
+    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
     for (const crmProp of availableModels) {
       style.attachRealityModel(crmProp);
       viewport.displayStyle = style;
@@ -185,6 +185,9 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   /** Apply the supplied function to each [[TileTreeReference]] to be drawn in the specified [[Viewport]]. */
   public forEachTileTreeRef(viewport: ScreenViewport, func: (ref: TileTreeReference) => void): void {
     viewport.view.forEachTileTreeRef(func);
+
+    // Do not apply the view's clip to this provider's graphics - it applies its own (opposite) clip to its graphics.
+    this.viewFlagOverrides.setShowClipVolume(false);
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
@@ -195,11 +198,11 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     const clip = vp.view.getViewClip();
 
     // Replace the clipping plane with a flipped one.
-    vp.view.setViewClip(this.clipVolume?.clipVector);  // TODO: Have Paul review
+    vp.view.setViewClip(this.clipVolume?.clipVector);
 
     this.prepareNewBranch(vp);
 
-    const context = vp.createSceneContext();
+    const context: SceneContext = new SceneContext(vp);
     vp.view.createScene(context);
 
     // This graphics branch contains the graphics that were excluded by the flipped clipping plane
@@ -213,7 +216,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
         branch.entries.push(gf);
 
       // Overwrites the view flags for this view branch.
-      branch.setViewFlagOverrides(this.viewFlagOverrides);
+      branch.viewFlagOverrides.copyFrom(this.viewFlagOverrides);
       // Draw the graphics to the screen.
       output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
     }
