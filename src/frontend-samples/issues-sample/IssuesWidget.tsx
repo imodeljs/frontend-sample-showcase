@@ -8,7 +8,7 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { HorizontalTabs, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwinui-react";
-import { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueGet } from "./IssuesClient";
+import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
 import IssuesApi from "./IssuesApi";
 import "./Issues.scss";
 
@@ -47,21 +47,20 @@ const IssuesWidget: React.FunctionComponent = () => {
   useEffect(() => {
     (async () => {
       if (iModelConnection && issues && issues.length === 0) {
-        const client = await IssuesApi.getClient();
-        const issuesResp = await client.getProjectIssues({ projectId: iModelConnection.contextId! });
+        const issuesResp = await IssuesClient.getProjectIssues(iModelConnection.contextId!);
 
-        const promises = new Array<Promise<any>>();
-        issuesResp.data.issues?.forEach((issue) => {
+        const promises = new Array<Promise<IssueDetailsGet | undefined>>();
+        issuesResp?.issues?.forEach((issue) => {
           if (issue.id) {
-            const issueDetails = client.id.getIssueDetails(issue.id);
+            const issueDetails = IssuesClient.getIssueDetails(issue.id);
             promises.push(issueDetails);
           }
         });
 
         const issueResponses = await Promise.all(promises);
         const iss = issueResponses
-          .filter((issue) => issue.data?.issue !== undefined)
-          .map((issue) => issue.data.issue as IssueGet);
+          .filter((issue) => issue?.issue !== undefined)
+          .map((issue) => issue?.issue as IssueGet);
 
         setIssues(iss);
       }
@@ -72,18 +71,17 @@ const IssuesWidget: React.FunctionComponent = () => {
   useEffect(() => {
     issues.map(async (issue) => {
       if (issue.id) {
-        const client = await IssuesApi.getClient();
-        const metaData = await client.id.getIssueAttachments(issue.id);
-        const previewAttachmentId = metaData.data.attachments ? metaData.data.attachments[0]?.id : undefined;
+        const metaData = await IssuesClient.getIssueAttachments(issue.id);
+        const previewAttachmentId = metaData?.attachments ? metaData.attachments[0]?.id : undefined;
         if (previewAttachmentId !== undefined && !thumbnails.has(previewAttachmentId)) {
-          const attachmentResp = await client.id.getAttachmentById(issue.id, previewAttachmentId);
-          const binaryImage = attachmentResp.data as unknown as Blob;
-          setPreviewImages((prevState) => ({ ...prevState, [issue.displayName as string]: binaryImage }));
+          const binaryImage = await IssuesClient.getAttachmentById(issue.id, previewAttachmentId);
+          if (binaryImage)
+            setPreviewImages((prevState) => ({ ...prevState, [issue.displayName as string]: binaryImage }));
         }
 
         /** Set the rest of the attachments in the attachmentMetaData */
-        if (metaData.data.attachments) {
-          setIssueAttachmentMetaData((prevState) => ({ ...prevState, [issue.displayName as string]: metaData.data.attachments!.length > 1 ? metaData.data.attachments!.slice(1) : [] }));
+        if (metaData?.attachments) {
+          setIssueAttachmentMetaData((prevState) => ({ ...prevState, [issue.displayName as string]: metaData.attachments!.length > 1 ? metaData.attachments!.slice(1) : [] }));
         }
       }
     });
@@ -188,14 +186,12 @@ const IssuesWidget: React.FunctionComponent = () => {
     if (!currentIssue || (currentIssue.displayName && issueAttachments[currentIssue.displayName]))
       return;
 
-    const client = await IssuesApi.getClient();
-
     /** Grab the attachments */
     const metaData = issueAttachmentMetaData[currentIssue.displayName!];
     metaData?.forEach(async (attachment) => {
-      const attachmentResp = await client.id.getAttachmentById(currentIssue.id!, attachment.id!);
-      const image = attachmentResp.data as unknown as Blob;
-      setIssueAttachments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: currentIssue.displayName! in prevState ? [...prevState[currentIssue.displayName!], image] : [image] }));
+      const image = await IssuesClient.getAttachmentById(currentIssue.id!, attachment.id!);
+      if (image)
+        setIssueAttachments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: currentIssue.displayName! in prevState ? [...prevState[currentIssue.displayName!], image!] : [image!] }));
     });
   }, [currentIssue, issueAttachmentMetaData, issueAttachments]);
 
@@ -206,9 +202,8 @@ const IssuesWidget: React.FunctionComponent = () => {
       return;
 
     /** Grab the comments */
-    const client = await IssuesApi.getClient();
-    const commentsResponse = await client.id.getIssueComments(currentIssue.id!);
-    const comments = commentsResponse.data.comments ? commentsResponse.data.comments : [];
+    const commentsResponse = await IssuesClient.getIssueComments(currentIssue.id!);
+    const comments = commentsResponse?.comments ? commentsResponse?.comments : [];
 
     /** Set the comments */
     setIssueComments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: comments }));
@@ -221,9 +216,8 @@ const IssuesWidget: React.FunctionComponent = () => {
       return;
 
     /** Grab the comments */
-    const client = await IssuesApi.getClient();
-    const auditResponse = await client.id.getIssueAuditTrail(currentIssue.id!);
-    const auditTrail = auditResponse.data.auditTrailEntries ? auditResponse.data.auditTrailEntries : [];
+    const auditResponse = await IssuesClient.getIssueAuditTrail(currentIssue.id!);
+    const auditTrail = auditResponse?.auditTrailEntries ? auditResponse.auditTrailEntries : [];
 
     /** Set the audit trail for the currentIssue */
     setIssueAuditTrails((prevState) => ({ ...prevState, [currentIssue.displayName as string]: auditTrail }));
@@ -298,26 +292,16 @@ const IssuesWidget: React.FunctionComponent = () => {
       return "";
 
     switch (action) {
-      case ("Created"):
-        return "#4585a5";
-      case ("Closed"):
-        return "#f7706c";
-      case ("Opened"):
-        return "#b1c854";
-      case ("File Attached"):
-        return "#73c7c1";
-      case ("File Removed"):
-        return "#f7963e";
-      case ("Modified"):
-        return "#6ab9ec";
-      case ("Assigned"):
-        return "#ffc335";
-      case ("Status"):
-        return "#a3779f";
-      case ("Form Raised"):
-        return "#84a9cf";
-      default:
-        return "#c8c2b4";
+      case ("Created"): return "#4585a5";
+      case ("Closed"): return "#f7706c";
+      case ("Opened"): return "#b1c854";
+      case ("File Attached"): return "#73c7c1";
+      case ("File Removed"): return "#f7963e";
+      case ("Modified"): return "#6ab9ec";
+      case ("Assigned"): return "#ffc335";
+      case ("Status"): return "#a3779f";
+      case ("Form Raised"): return "#84a9cf";
+      default: return "#c8c2b4";
     }
   };
 
@@ -336,23 +320,11 @@ const IssuesWidget: React.FunctionComponent = () => {
       case "Status":
         actionText = (<span>set to {auditTrail.changes![0].newValue}</span>);
         break;
-      case "Closed":
-        break;
       case "Opened":
         actionText = (<span>by&nbsp;{auditTrail.changeBy}</span>);
         break;
-      case "Draft":
-        break;
-      case "Deleted":
-        break;
-      case "Undeleted":
-        break;
       case "File Attached":
         actionText = (<span>&quot;{auditTrail.changes![0].newValue?.substring(0, 25)}{auditTrail.changes![0].newValue!.length > 25 ? "..." : ""}&quot;</span>);
-        break;
-      case "File Removed":
-        break;
-      case "Form Raised":
         break;
     }
     return (<><span className="issue-audit-label">&nbsp;{auditTrail.action}&nbsp;</span>{actionText}</>);
