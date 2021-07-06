@@ -82,14 +82,7 @@ export class ChangedElementsApi {
     const response = await ChangedElementsClient.getChangedElements(start, end);
 
     // Visualize in the viewport.
-    ChangedElementsApi.visualizeComparison(vp, response.changedElements);
-  }
-
-  /** Returns true only if start and end changeset Ids are real, and the start Id is new or equal to the end Id. */
-  public static validateChangesetIds(start: Version, end: Version): boolean {
-    const startIndex = ChangedElementsApi.namedVersions.indexOf(start);
-    const endIndex = ChangedElementsApi.namedVersions.indexOf(end);
-    return startIndex >= 0 && endIndex >= 0 && startIndex >= endIndex;
+    ChangedElementsApi.visualizeComparison(vp, changedElements);
   }
 
   /** Parses the response from the Changed Elements API and displays changes in the Viewport using a FeatureOverridesProvider. */
