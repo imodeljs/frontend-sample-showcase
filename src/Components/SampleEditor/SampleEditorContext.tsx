@@ -46,6 +46,9 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
       .catch(() => {
         setAnnotations(undefined);
       });
+    return () => {
+      setAnnotations(undefined);
+    };
   }, [walkthrough]);
 
   const onSampleClickedPromise = useCallback(async (groupName: string | null, sampleName: string | null, wantScroll: boolean) => {
