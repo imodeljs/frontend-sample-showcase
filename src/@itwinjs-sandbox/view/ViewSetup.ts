@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { CompressedId64Set, Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
-import { BackgroundMapProps, ColorDef, DisplayStylePlanarClipMaskProps, PlanarClipMaskMode, PlanarClipMaskProps, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
+import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
+import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 
