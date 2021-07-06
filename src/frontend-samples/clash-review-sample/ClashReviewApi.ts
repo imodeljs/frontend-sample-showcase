@@ -7,7 +7,7 @@ import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideTyp
 import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
 import { Point3d } from "@bentley/geometry-core";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
-import ClashDetectionApis from "./ClashDetectionApis";
+import ClashDetectionClient from "./ClashDetectionClient";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import { jsonData } from "./ClashDetectionJsonData";
@@ -72,15 +72,15 @@ export default class ClashReviewApi {
 
   /** The API has been significantly reworked, so for the time being the static jsonData file will be used */
   public static async getClashData(projectId: string, staticData?: boolean): Promise<any> {
-    if(staticData)
+    if (staticData)
       return jsonData;
 
     const context = await ClashReviewApi.getRequestContext();
     if (ClashReviewApi._clashData[projectId] === undefined) {
-      const runsResponse = await ClashDetectionApis.getProjectValidationRuns(context, projectId);
+      const runsResponse = await ClashDetectionClient.getProjectValidationRuns(context, projectId);
       if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
         // Get validation result
-        const resultResponse = await ClashDetectionApis.getValidationUrlResponse(context, runsResponse.validationRuns[0]._links.result.href);
+        const resultResponse = await ClashDetectionClient.getValidationUrlResponse(context, runsResponse.validationRuns[0]._links.result.href);
         if (resultResponse !== undefined && resultResponse.clashDetectionResult !== undefined)
           ClashReviewApi._clashData[projectId] = resultResponse;
       }
