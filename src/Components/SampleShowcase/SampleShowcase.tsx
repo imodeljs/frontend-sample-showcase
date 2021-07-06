@@ -31,12 +31,12 @@ export const SampleShowcase: FunctionComponent = () => {
     }
   }, [scrollTo, galleryRef, activeSample]);
 
-  const onGalleryCardClicked = (groupName: string, sampleName: string, wantScroll: boolean) => {
+  const onGalleryCardClicked = (groupName: string | null, sampleName: string | null, wantScroll: boolean) => {
     if (transpileResult && !window.confirm("Changes made to the code will not be saved!")) {
       return;
     }
     setScrollTo(wantScroll);
-    setActiveSample(new ActiveSample(groupName, sampleName));
+    setActiveSample(() => new ActiveSample(groupName, sampleName));
     setTranspileResult(undefined);
   };
 
@@ -62,7 +62,7 @@ export const SampleShowcase: FunctionComponent = () => {
         onSampleClicked={onGalleryCardClicked}
         onTranspiled={(blob) => setTranspileResult(blob)}
         readme={activeSample.getReadme}
-        walkthrough={activeSample.walkthrough}
+        walkthrough={activeSample.getWalkthrough}
       />
     </React.Suspense>
   );

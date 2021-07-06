@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import MonacoEditor, { Annotation, ErrorList, Pane, SplitScreen, useActivityState, useEntryState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
@@ -11,16 +11,14 @@ import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinn
 import { useFeatureToggleClient } from "hooks/useFeatureToggleClient/UseFeatureToggleClient";
 import { FeatureFlags } from "FeatureToggleClient";
 import { ProblemsLabel, WalkthroughLabel } from "./Drawer/DrawerLabels";
-import { createLinkOverride } from "./MarkdownComponents/Link/Link";
-import { WalkthroughLink } from "./MarkdownComponents/Link/WalkthroughLink";
-import { ExternalLink } from "./MarkdownComponents/Link/ExternalLink";
+import { WalkthroughViewer } from "./WalkthroughViewer/WalkthroughViewer";
 import "./SampleEditor.scss";
 
 export interface EditorProps {
   readme?: () => Promise<{ default: string }>;
   walkthrough?: Annotation[];
   onTranspiled: ((blobUrl: string) => void);
-  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => Promise<void>;
+  onSampleClicked: (groupName: string | null, sampleName: string | null, wantScroll: boolean) => Promise<void>;
 }
 
 const drawerMinSize = 35;
@@ -35,7 +33,6 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const [readmeLoading, setReadmeLoading] = React.useState(true);
   const [drawerSize, setDrawerSize] = React.useState<number>(drawerOpenSize);
   const [labels, setLabels] = React.useState<Label[]>([]);
-  const [walkthroughOverride, setWalkthroughOverride] = React.useState<string | undefined>();
   const enableWalkthrough = useFeatureToggleClient(FeatureFlags.EnableWalkthrough, true);
 
   React.useEffect(() => {
@@ -99,34 +96,6 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     }
   }, [_onDrawerClosed, _onDrawerOpened]);
 
-  const markdownOptions = useMemo(() => ({
-    overrides: {
-      a: createLinkOverride({
-        linkTypes: [
-          {
-            filter: (href) => !/^[a-z]+:?/gi.test(href),
-            component: WalkthroughLink,
-            props: {
-              onClick: (step: string, group?: string, sample?: string) => {
-                if (group && sample) {
-                  onSampleClicked(group, sample, true)
-                    .then(() => setWalkthroughOverride(step));
-                } else {
-                  setWalkthroughOverride(step);
-                }
-              },
-            },
-          },
-          {
-            filter: (href) => /^[a-z]+:?/gi.test(href),
-            component: ExternalLink,
-            props: {},
-          },
-        ],
-      }),
-    },
-  }), [onSampleClicked]);
-
   const readmeViewer = () => {
     return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
       <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={onSampleClicked} />;
@@ -149,7 +118,7 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
           :
           <Pane onChange={_onDrawerChange} snapSize={"200px"} minSize={`${drawerMinSize}px`} maxSize={"50%"} size={`${drawerSize}px`}>
             <Drawer open={drawerSize > drawerMinSize} onDrawerClosed={_onDrawerClosed} onDrawerOpen={_onDrawerOpened} labels={labels}>
-              {enableWalkthrough && walkthrough && <Annotations steps={walkthrough} show={drawerSize > drawerMinSize} onOpenClick={_onDrawerOpened} onCloseClick={_onDrawerClosed} markdownOptions={{ options: markdownOptions }} override={walkthroughOverride} />}
+              {enableWalkthrough && walkthrough && <WalkthroughViewer walkthrough={walkthrough} show={drawerSize > drawerMinSize} onOpenClick={_onDrawerOpened} onCloseClick={_onDrawerClosed} onSampleClicked={onSampleClicked} />}
               <div style={{ padding: "8px" }}><ErrorList /></div>
             </Drawer>
           </Pane>}

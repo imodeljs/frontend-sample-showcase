@@ -3,55 +3,30 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React from "react";
-import { findSpecBySampleName } from "sampleManifest";
+import React, { FunctionComponent, useCallback } from "react";
+import { AnchorProps } from "./Link";
 
-export interface SampleLinkProps {
-  href: string;
-  fileClicked: (fileName: string) => void;
-  sampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => Promise<void>;
-  onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+export interface SampleLinkProps extends AnchorProps {
+  onClick: (group: string | null, sample: string | null, file?: { name: string, start: number, end: number }) => Promise<void>;
 }
 
-export class SampleLink extends React.Component<SampleLinkProps> {
-  private onClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const substrings = this.props.href.split("/");
-
-    if (0 >= substrings.length)
-      return; // throw an error?
-
-    if ("." === substrings[0]) {
-      // We are expecting something like: ./filename
-      if (1 >= substrings.length)
-        return; // throw an error?
-
-      const fileName = this.props.href;
-      event.preventDefault();
-      this.props.fileClicked(fileName);
-
-    } else if (".." === substrings[0]) {
-      // We are expecting something like: ../path/sample-name/filename
-      if (2 >= substrings.length)
-        return; // throw an error?
-
-      const fileArg = substrings.length - 1;
-      const sampleArg = substrings.length - 2;
-
-      const fileName = substrings[fileArg];
-      const fromManifest = findSpecBySampleName(substrings[sampleArg]);
-
-      if (undefined === fromManifest)
-        return; // throw an error?
-
-      event.preventDefault();
-      this.props.sampleClicked(fromManifest.group.groupName, fromManifest.spec.name, true).then(() => {
-        this.props.fileClicked(fileName);
-      });
+export const SampleLink: FunctionComponent<SampleLinkProps> = ({ href, children, onClick }) => {
+  const onHrefClick = useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (href) {
+      const normalized = href.replace("/?", "");
+      const urlSearchParams = new URLSearchParams(normalized);
+      const group = urlSearchParams.get("group");
+      const sample = urlSearchParams.get("sample");
+      const file = urlSearchParams.get("file");
+      const start = urlSearchParams.get("start");
+      const end = urlSearchParams.get("end");
+      const fileSelection = file && start && end ? { name: file, start: parseInt(start, 10), end: parseInt(end, 10) } : undefined;
+      onClick(group, sample, fileSelection);
     }
-  };
+  }, [href, onClick]);
 
-  public render() {
-    const anchorProps = { href: this.props.href, onClick: this.onClick, target: "_blank" };
-    return (<a {...anchorProps}>{this.props.children}</a>);
-  }
-}
+  return (<a onClick={onHrefClick}>{children}</a>);
+
+};

@@ -7,7 +7,7 @@ import React, { FunctionComponent, useCallback } from "react";
 import { AnchorProps } from "./Link";
 
 export interface WalkthroughLinkProps extends AnchorProps {
-  onClick: (step: string, group?: string, sample?: string) => void;
+  onClick: (step: string, group: string | null, sample: string | null) => void;
 }
 
 export const WalkthroughLink: FunctionComponent<WalkthroughLinkProps> = ({ href, children, onClick }) => {
@@ -20,8 +20,8 @@ export const WalkthroughLink: FunctionComponent<WalkthroughLinkProps> = ({ href,
       const step = urlSearchParams.get("step");
 
       if (step) {
-        const group = urlSearchParams.get("group") || undefined;
-        const sample = urlSearchParams.get("sample") || undefined;
+        const group = urlSearchParams.get("group");
+        const sample = urlSearchParams.get("sample");
         onClick(step, group, sample);
       }
     }

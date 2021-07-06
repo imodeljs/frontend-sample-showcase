@@ -10,12 +10,13 @@ import { EditorProps, SampleEditor } from "./SampleEditor";
 import modules from "./Modules";
 export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked" | "walkthrough"> {
   files?: () => SampleSpecFile[];
+  onSampleClicked: (groupName: string | null, sampleName: string | null, wantScroll: boolean) => void;
   walkthrough: () => Promise<Annotation[] | undefined>;
 }
 
 const noop = () => { };
 
-export const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props) => {
+const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props) => {
   const { files: getFiles, readme, onTranspiled, onSampleClicked, walkthrough } = props;
   const [defaultFiles, setDefaultFiles] = useState<{ content: string, name: string }[]>([]);
   const [defaultEntry, setdefaultEntry] = useState<string | undefined>();
@@ -47,6 +48,7 @@ export const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = 
       });
   }, [walkthrough]);
 
+  const onSampleClickedPromise = useCallback(async (groupName: string | null, sampleName: string | null, wantScroll: boolean) => {
     return new Promise<void>((res) => {
       resolve.current = res;
       onSampleClicked(groupName, sampleName, wantScroll);
