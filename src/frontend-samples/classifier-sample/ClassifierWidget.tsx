@@ -16,7 +16,7 @@ import "./Classifier.scss";
 
 const ClassifierWidget: React.FunctionComponent = () => {
 	const _insideDisplayEntries: { [key: string]: string } = {};
-	_insideDisplayEntries[SpatialClassifierInsideDisplay.ElementColor] = "ElementColor";
+	_insideDisplayEntries[SpatialClassifierInsideDisplay.ElementColor] = "Element Color";
 	_insideDisplayEntries[SpatialClassifierInsideDisplay.Off] = "Off";
 	_insideDisplayEntries[SpatialClassifierInsideDisplay.On] = "On";
 	_insideDisplayEntries[SpatialClassifierInsideDisplay.Dimmed] = "Dimmed";
@@ -33,8 +33,8 @@ const ClassifierWidget: React.FunctionComponent = () => {
 	const [classifiers, setClassifiers] = React.useState<{ [key: string]: string }>({});
 	const [currentClassifier, setCurrentClassifier] = React.useState<string>();
 	const [expandDistState, setExpandDistState] = React.useState<number>(3);
-	const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<string>(_insideDisplayEntries[SpatialClassifierInsideDisplay.Dimmed]);
-	const [insideDisplayKeyState, setInsideDisplayKeyState] = React.useState<string>(_insideDisplayEntries[SpatialClassifierInsideDisplay.ElementColor]);
+	const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<string>(SpatialClassifierOutsideDisplay[2]);
+	const [insideDisplayKeyState, setInsideDisplayKeyState] = React.useState<string>(SpatialClassifierInsideDisplay[4]);
 	const [keysState, setKeysState] = React.useState<KeySet>(new KeySet());
 
 	/**
