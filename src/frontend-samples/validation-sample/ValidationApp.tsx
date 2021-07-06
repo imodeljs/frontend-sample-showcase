@@ -8,12 +8,12 @@ import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { ValidationWidgetProvider } from "./ValidationWidget";
-import { ClashReviewTableWidgetProvider } from "./ValidationTableWidget";
+import { ValidationTableWidgetProvider } from "./ValidationTableWidget";
 
-const uiProviders = [new ValidationWidgetProvider(), new ClashReviewTableWidgetProvider()];
+const uiProviders = [new ValidationWidgetProvider(), new ValidationTableWidgetProvider()];
 
 const ValidationApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the toggles below to show clash marker pins or zoom to a clash.  Click a marker or table entry to review clashes.", [SampleIModels.MetroStation]);
+  const sampleIModelInfo = useSampleWidget("Use the toggles below to show marker pins or zoom to a validation rule violation.  Click a marker or table entry to review these rule violations.", [SampleIModels.MetroStation]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {

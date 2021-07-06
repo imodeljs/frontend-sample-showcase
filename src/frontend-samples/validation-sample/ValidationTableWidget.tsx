@@ -8,20 +8,20 @@ import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue
 import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
-import ClashReviewApi from "./ValidationApi";
+import ValidationApi from "./ValidationApi";
 
-const ClashReviewTableWidget: React.FunctionComponent = () => {
+const ValidationTableWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [validationData, setValidationData] = React.useState<any>();
 
   useEffect(() => {
-    const removeListener = ClashReviewApi.onValidationDataChanged.addListener((data: any) => {
+    const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
       console.log(data)
       setValidationData(data);
     });
 
     if (iModelConnection) {
-      ClashReviewApi.setValidationData(iModelConnection.contextId!);
+      ValidationApi.setValidationData(iModelConnection.contextId!);
     }
     return () => {
       removeListener();
@@ -30,35 +30,35 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
 
   const _getDataProvider = useCallback((): SimpleTableDataProvider => {
 
-    // Limit the number of clashes in this demo
-    const maxValidations = 70;
+    // Limit the number of violations in this demo
+    const maxViolations = 70;
 
-    // adding columns
+    // Adding columns
     const columns: ColumnDescription[] = [];
 
     columns.push({ key: "elementId", label: "Element ID" });
     columns.push({ key: "elementLabel", label: "Element Label" });
-    columns.push({ key: "badValue", label: "Bad Value" });
-    columns.push({ key: "ruleIndex", label: "Rule Index" });
+    columns.push({ key: "ruleID", label: "Rule ID" });
+    columns.push({ key: "ruleName", label: "Rule Name" });
+    columns.push({ key: "badValue", label: "Invalid Value" });
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 
-    if (validationData !== undefined && validationData.propertyValueResult !== undefined) {
-      // adding rows => cells => property record => value and description.
+    if (validationData !== undefined && validationData.propertyValueResult !== undefined && validationData.ruleList !== undefined) {
+      // Adding rows => cells => property record => value and description.
       let validationIndex: number = 0;
       validationData.propertyValueResult.some((rowData: any) => {
         const rowKey = `${rowData.elementId}`;
         const rowItem: RowItem = { key: rowKey, cells: [] };
         columns.forEach((column: ColumnDescription, i: number) => {
           let cellValue: string = "";
-          if (column.key === "elementACategoryIndex" || column.key === "elementBCategoryIndex") {
-            // Lookup the category name using the index
-            cellValue = validationData.categoryList[rowData[column.key]].displayName.toString();
-          } else if (column.key === "elementAModelIndex" || column.key === "elementBModelIndex") {
-            // Lookup the model name using the index
-            cellValue = validationData.modelList[rowData[column.key]].displayName.toString();
+          if (column.key === "ruleID") {
+            // Lookup the rule ID using the rule index
+            cellValue = validationData.ruleList[rowData['ruleIndex']].id.toString();
+          } else if (column.key === "ruleName") {
+            // Lookup the rule name using the rule index
+            cellValue = validationData.ruleList[rowData['ruleIndex']].displayName.toString();
           } else {
-            console.log(column.key)
             cellValue = rowData[column.key].toString();
           }
           const value: PropertyValue = { valueFormat: PropertyValueFormat.Primitive, value: cellValue };
@@ -67,13 +67,13 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
         });
         dataProvider.addRow(rowItem);
         validationIndex++;
-        return maxValidations < validationIndex;
+        return maxViolations < validationIndex;
       });
     }
     return dataProvider;
   }, [validationData]);
 
-  // bonus: zooming into and highlighting element when row is selected.
+  // Zooming into and highlighting element when row is selected.
   const _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
 
     if (!IModelApp.viewManager.selectedView)
@@ -81,9 +81,7 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
 
     const row = await rowIterator.next();
 
-    // Get the concatenated element ids from the row key  ie. "elementAId-elementBId"
-    console.log(row.value.key)
-    ClashReviewApi.visualizeViolation(row.value.key);
+    ValidationApi.visualizeViolation(row.value.key);
     return true;
   };
 
@@ -98,19 +96,19 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
   );
 };
 
-export class ClashReviewTableWidgetProvider implements UiItemsProvider {
-  public readonly id: string = "ClashReviewTableWidgetProvider";
+export class ValidationTableWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ValidationTableWidgetProvider";
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
     if (location === StagePanelLocation.Bottom) {
       widgets.push(
         {
-          id: "ClashReviewTableWidget",
-          label: "Clash Review Table Selector",
+          id: "ValidationTableWidget",
+          label: "Validation Table Selector",
           defaultState: WidgetState.Open,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <ClashReviewTableWidget />,
+          getWidgetContent: () => <ValidationTableWidget />,
         }
       );
     }

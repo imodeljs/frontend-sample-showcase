@@ -6,7 +6,6 @@ import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ValidationApi from "./ValidationApi";
 import "./ValidationReview.scss";
-import { ElementPicker } from "./ElementSelector";
 
 const ValidationWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
@@ -14,10 +13,9 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [showDecorator, setShowDecorator] = React.useState<boolean>();
   const [validationData, setValidationData] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
-  const [currentElement, setCurrentElement] = React.useState<string[]>([]);
 
   useEffect(() => {
-    /** Create a listener that responds to validationData retrival */
+    /** Create a listener that responds to validation data retrival */
     const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
       setValidationData(data);
     });
@@ -77,19 +75,9 @@ const ValidationWidget: React.FunctionComponent = () => {
     }
   }, [applyZoom]);
 
-  const elementCallback = (elementIds: string[]) => {
-    setCurrentElement(elementIds)
-  }
-
-  const showViolation = (elementIds: string[]) => {
-    ValidationApi.visualizeViolation(elementIds[0]);
-  }
-
   return (
     <>
       <div className="sample-options">
-        <ElementPicker elementCallback={elementCallback}></ElementPicker>
-        <Button onClick={() => { showViolation(currentElement) }}>Show Violation</Button>
         <div className="sample-options-2col">
           <span>Show Markers</span>
           <Toggle isOn={showDecorator} onChange={(checked: boolean) => setShowDecorator(checked)} />
