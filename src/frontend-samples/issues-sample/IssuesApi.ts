@@ -6,29 +6,10 @@ import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { Point3d } from "@bentley/geometry-core";
-import { ApiConfig, IssueGet, IssuesClient } from "./IssuesClient";
-import { AuthorizationClient } from "@itwinjs-sandbox";
-import { AccessToken } from "@bentley/itwin-client";
+import { IssueGet } from "./IssuesClient";
 
 export default class IssuesApi {
-  private static _issueClient: IssuesClient<AccessToken>;
   public static _issuesPinDecorator?: MarkerPinDecorator;
-
-  public static async getClient() {
-    if (!IssuesApi._issueClient) {
-      // Create the config the client uses to authenticate
-      const config: ApiConfig<AccessToken> = {
-        securityWorker: (accessToken: AccessToken | null) => accessToken ? { headers: { ["Authorization"]: accessToken.toTokenString() } } : undefined,
-      };
-
-      /** Create the token, pass in the config and token used to authenticate */
-      const token = await (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
-      IssuesApi._issueClient = new IssuesClient(config);
-      IssuesApi._issueClient.setSecurityData(token);
-    }
-
-    return IssuesApi._issueClient;
-  }
 
   public static decoratorIsSetup() {
     return (null != this._issuesPinDecorator);
