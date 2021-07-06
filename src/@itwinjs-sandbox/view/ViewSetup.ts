@@ -103,13 +103,14 @@ export class ViewSetup {
         displayStyle.changeBackgroundMapProps({
           planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
         });
-        const excludedModelIds = await ViewSetup.getModelIds(imodel,
-                                                             "SS_Master",
-        "SS_Master_Structural.dgn, 3D Metric Design",
-        "LandscapeDetails.dgn, 3D Metric Design",
-        "Stencil Model-4-LandscapeModel, SS_MasterLandscape, SS_MasterLandscape.dgn, Road_Marking",
-                                                            );
-                                                            excludedModelIds.forEach((id) => viewState.modelSelector.dropModels(id));
+        const excludedModelIds = await ViewSetup.getModelIds(
+          imodel,
+          "SS_Master",
+          "SS_Master_Structural.dgn, 3D Metric Design",
+          "LandscapeDetails.dgn, 3D Metric Design",
+          "Stencil Model-4-LandscapeModel, SS_MasterLandscape, SS_MasterLandscape.dgn, Road_Marking",
+        );
+        excludedModelIds.forEach((id) => viewState.modelSelector.dropModels(id));
       }
     }
 
