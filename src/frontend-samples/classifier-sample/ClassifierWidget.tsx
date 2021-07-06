@@ -33,8 +33,8 @@ const ClassifierWidget: React.FunctionComponent = () => {
   const [classifiers, setClassifiers] = React.useState<{ [key: string]: string }>({});
   const [currentClassifier, setCurrentClassifier] = React.useState<string>();
   const [expandDistState, setExpandDistState] = React.useState<number>(3);
-  const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<string>(SpatialClassifierOutsideDisplay.Dimmed.toString());
-  const [insideDisplayKeyState, setInsideDisplayKeyState] = React.useState<string>(SpatialClassifierInsideDisplay.ElementColor.toString());
+  const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<string>(SpatialClassifierOutsideDisplay[SpatialClassifierOutsideDisplay.Dimmed]);
+  const [insideDisplayKeyState, setInsideDisplayKeyState] = React.useState<string>(SpatialClassifierInsideDisplay[SpatialClassifierInsideDisplay.ElementColor]);
   const [keysState, setKeysState] = React.useState<KeySet>(new KeySet());
 
   /**
