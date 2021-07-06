@@ -40,6 +40,12 @@ export class CameraPathTool extends PrimitiveTool {
     return EventHandled.Yes;
   }
 
+  public async onDataButtonUp(_ev: BeWheelEvent): Promise<EventHandled> {
+    this._keyDown = false;
+    this._mouseDataButtonDownCallback(false);
+    return EventHandled.Yes;
+  }
+
   public async onMouseMotion(_ev: BeButtonEvent): Promise<void> {
     if (this._keyDown) {
       if (_ev.viewport === undefined)
