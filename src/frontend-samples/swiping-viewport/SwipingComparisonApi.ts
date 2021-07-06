@@ -13,7 +13,7 @@ export enum ComparisonType {
   RealityData,
 }
 
-export default class SwipingViewportApp {
+export default class SwipingViewportApi {
   private static _provider: SampleTiledGraphicsProvider | undefined;
   private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
@@ -23,16 +23,16 @@ export default class SwipingViewportApp {
 
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
-    if (undefined !== SwipingViewportApp._viewport && undefined !== SwipingViewportApp._provider) {
-      SwipingViewportApp.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider);
-      SwipingViewportApp._provider = undefined;
+    if (undefined !== SwipingViewportApi._viewport && undefined !== SwipingViewportApi._provider) {
+      SwipingViewportApi.disposeProvider(SwipingViewportApi._viewport, SwipingViewportApi._provider);
+      SwipingViewportApi._provider = undefined;
     }
-    if (undefined !== SwipingViewportApp._viewport) {
-      SwipingViewportApp._viewport.view.setViewClip(undefined);
-      SwipingViewportApp._viewport.synchWithView();
-      SwipingViewportApp._viewport = undefined;
+    if (undefined !== SwipingViewportApi._viewport) {
+      SwipingViewportApi._viewport.view.setViewClip(undefined);
+      SwipingViewportApi._viewport.synchWithView();
+      SwipingViewportApi._viewport = undefined;
     }
-    SwipingViewportApp._prevPoint = undefined;
+    SwipingViewportApi._prevPoint = undefined;
   }
 
   /** Gets the selected viewport using the IModelApp API. */
@@ -69,7 +69,7 @@ export default class SwipingViewportApp {
 
   /** Return a vector perpendicular to the view considering the camera's perspective. */
   public static getPerpendicularNormal(vp: Viewport, screenPoint: Point3d): Vector3d {
-    const point = SwipingViewportApp.getWorldPoint(vp, screenPoint);
+    const point = SwipingViewportApi.getWorldPoint(vp, screenPoint);
 
     const boresite = AccuDrawHintBuilder.getBoresite(point, vp);
     const viewY = vp.rotation.rowY();
@@ -79,27 +79,27 @@ export default class SwipingViewportApp {
 
   /** Will create an effect allowing for different views on either side of an arbitrary point in the view space.  This will allows us to compare the effect the views have on the iModel. */
   public static compare(screenPoint: Point3d, viewport: Viewport, comparisonType: ComparisonType) {
-    if (viewport.viewportId !== SwipingViewportApp._viewport?.viewportId)
-      SwipingViewportApp.teardown();
-    SwipingViewportApp._viewport = viewport;
-    const provider = SwipingViewportApp._provider;
+    if (viewport.viewportId !== SwipingViewportApi._viewport?.viewportId)
+      SwipingViewportApi.teardown();
+    SwipingViewportApi._viewport = viewport;
+    const provider = SwipingViewportApi._provider;
     const vp = viewport;
     if (!vp.view.isSpatialView())
       return;
 
     if (undefined !== provider && provider.comparisonType !== comparisonType) {
-      SwipingViewportApp.disposeProvider(SwipingViewportApp._viewport, SwipingViewportApp._provider!);
-      SwipingViewportApp._provider = undefined;
+      SwipingViewportApi.disposeProvider(SwipingViewportApi._viewport, SwipingViewportApi._provider!);
+      SwipingViewportApi._provider = undefined;
     }
 
     let didInit = false;
-    if (undefined === SwipingViewportApp._provider) {
+    if (undefined === SwipingViewportApi._provider) {
       didInit = true;
-      SwipingViewportApp._provider = SwipingViewportApp.createProvider(screenPoint, viewport, comparisonType);
-      vp.addTiledGraphicsProvider(SwipingViewportApp._provider);
+      SwipingViewportApi._provider = SwipingViewportApi.createProvider(screenPoint, viewport, comparisonType);
+      vp.addTiledGraphicsProvider(SwipingViewportApi._provider);
     }
-    if (didInit || !SwipingViewportApp._prevPoint?.isAlmostEqual(screenPoint))
-      SwipingViewportApp.updateProvider(screenPoint, viewport, SwipingViewportApp._provider);
+    if (didInit || !SwipingViewportApi._prevPoint?.isAlmostEqual(screenPoint))
+      SwipingViewportApi.updateProvider(screenPoint, viewport, SwipingViewportApi._provider);
   }
 
   /** Creates a [ClipVector] based on the arguments. */
@@ -113,26 +113,26 @@ export default class SwipingViewportApp {
   private static updateProvider(screenPoint: Point3d, viewport: Viewport, provider: SampleTiledGraphicsProvider) {
     // Update Clipping plane in provider and in the view.
     const vp = viewport;
-    const normal = SwipingViewportApp.getPerpendicularNormal(vp, screenPoint);
-    const worldPoint = SwipingViewportApp.getWorldPoint(vp, screenPoint);
+    const normal = SwipingViewportApi.getPerpendicularNormal(vp, screenPoint);
+    const worldPoint = SwipingViewportApi.getWorldPoint(vp, screenPoint);
 
     // Update in Provider
-    const clip = SwipingViewportApp.createClip(normal.clone().negate(), worldPoint);
+    const clip = SwipingViewportApi.createClip(normal.clone().negate(), worldPoint);
     provider.setClipVector(clip);
 
     // Update in Viewport
-    viewport.view.setViewClip(SwipingViewportApp.createClip(normal.clone(), worldPoint));
+    viewport.view.setViewClip(SwipingViewportApi.createClip(normal.clone(), worldPoint));
     viewport.synchWithView();
   }
 
   /** Creates a [TiledGraphicsProvider] and adds it to the viewport.  This also sets the clipping plane used for the comparison. */
   private static createProvider(screenPoint: Point3d, viewport: Viewport, type: ComparisonType): SampleTiledGraphicsProvider {
-    SwipingViewportApp._prevPoint = screenPoint;
-    const normal = SwipingViewportApp.getPerpendicularNormal(viewport, screenPoint);
+    SwipingViewportApi._prevPoint = screenPoint;
+    const normal = SwipingViewportApi.getPerpendicularNormal(viewport, screenPoint);
     let rtnProvider;
 
     // Note the normal is negated, this is flip the clipping plane created from it.
-    const negatedClip = SwipingViewportApp.createClip(normal.clone().negate(), SwipingViewportApp.getWorldPoint(viewport, screenPoint));
+    const negatedClip = SwipingViewportApi.createClip(normal.clone().negate(), SwipingViewportApi.getWorldPoint(viewport, screenPoint));
     switch (type) {
       case ComparisonType.Wireframe:
       default:
@@ -256,10 +256,10 @@ class ComparisonRealityModelProvider extends SampleTiledGraphicsProvider {
 
   protected prepareNewBranch(vp: Viewport): void {
     // Hides the reality model while rendering the other graphics branch.
-    SwipingViewportApp.setRealityModelTransparent(vp, true);
+    SwipingViewportApi.setRealityModelTransparent(vp, true);
   }
   protected resetOldView(vp: Viewport): void {
     // Makes the reality model visible again in the viewport.
-    SwipingViewportApp.setRealityModelTransparent(vp, false);
+    SwipingViewportApi.setRealityModelTransparent(vp, false);
   }
 }
