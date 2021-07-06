@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@bentley/bentleyjs-core";
 import { Version, VersionQuery } from "@bentley/imodelhub-client";
+import { ChangedElements } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { AuthorizationClient } from "@itwinjs-sandbox";
@@ -72,7 +73,7 @@ export class ChangedElementsClient {
     }
    * ```
    */
-  public static async getChangedElements(startChangesetId: string, endChangesetId: string): Promise<any | undefined> {
+  public static async getChangedElements(startChangesetId: string, endChangesetId: string): Promise<ChangedElements | undefined> {
     const { requestContext, projectId, iModelId } = ChangedElementsClient._projectContext;
 
     const accessToken = await ChangedElementsClient.getAccessToken();
@@ -87,9 +88,8 @@ export class ChangedElementsClient {
       },
     };
     return request(requestContext, url, options)
-      .then((resp: Response): any | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
+      .then((resp: Response): ChangedElements | undefined => {
+        return resp.body?.changedElements;
       }).catch((_reason: any) => {
         return undefined;
       });

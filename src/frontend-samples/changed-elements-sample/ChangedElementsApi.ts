@@ -79,14 +79,14 @@ export class ChangedElementsApi {
       return;
 
     // Request Changed elements
-    const response = await ChangedElementsClient.getChangedElements(start, end);
+    const changedElements = await ChangedElementsClient.getChangedElements(start, end);
 
     // Visualize in the viewport.
     ChangedElementsApi.visualizeComparison(vp, changedElements);
   }
 
   /** Parses the response from the Changed Elements API and displays changes in the Viewport using a FeatureOverridesProvider. */
-  public static visualizeComparison(vp: Viewport, changedElements: ChangedElements) {
+  public static visualizeComparison(vp: Viewport, changedElements: ChangedElements | undefined) {
     const elementIds = changedElements?.elements;
     const opcodes = changedElements?.opcodes;
 
