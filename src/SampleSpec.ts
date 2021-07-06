@@ -18,6 +18,10 @@ export interface SampleSpecFile {
   entry?: boolean;
 }
 
+export interface Walkthrough {
+  annotations: Promise<{ default: Annotation[] }>;
+  prerequisites?: SampleSpec[];
+}
 export interface SampleSpec {
   name: string;
   label: string;
@@ -25,7 +29,7 @@ export interface SampleSpec {
   description?: string;
   readme?: () => Promise<{ default: string }>;
   files?: () => SampleSpecFile[];
-  walkthrough?: Annotation[];
+  walkthrough?: () => Walkthrough;
   iModelList?: SampleIModels[];
   iTwinViewerReady?: boolean;
   type?: string;

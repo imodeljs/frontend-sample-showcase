@@ -4,13 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
-import { EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
+import { Annotation, EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
 import { SampleSpecFile } from "SampleSpec";
 import { EditorProps, SampleEditor } from "./SampleEditor";
 import modules from "./Modules";
-export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked"> {
+export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked" | "walkthrough"> {
   files?: () => SampleSpecFile[];
-  onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
+  walkthrough: () => Promise<Annotation[] | undefined>;
 }
 
 const noop = () => { };
@@ -19,6 +19,7 @@ export const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = 
   const { files: getFiles, readme, onTranspiled, onSampleClicked, walkthrough } = props;
   const [defaultFiles, setDefaultFiles] = useState<{ content: string, name: string }[]>([]);
   const [defaultEntry, setdefaultEntry] = useState<string | undefined>();
+  const [annotations, setAnnotations] = useState<Annotation[] | undefined>();
   const resolve = useRef(noop);
 
   useEffect(() => {
@@ -36,7 +37,16 @@ export const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = 
     }
   }, [getFiles]);
 
-  const onSampleClickedPromise = useCallback(async (groupName: string, sampleName: string, wantScroll: boolean) => {
+  useEffect(() => {
+    walkthrough()
+      .then((result) => {
+        setAnnotations(result);
+      })
+      .catch(() => {
+        setAnnotations(undefined);
+      });
+  }, [walkthrough]);
+
     return new Promise<void>((res) => {
       resolve.current = res;
       onSampleClicked(groupName, sampleName, wantScroll);
@@ -49,12 +59,12 @@ export const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = 
         onSampleClicked={onSampleClickedPromise}
         onTranspiled={onTranspiled}
         readme={readme}
-        walkthrough={walkthrough}
+        walkthrough={annotations}
       />
     </EditorEnvironmentContextProvider>
   );
 };
 
 export default React.memo(SampleEditorContext, (prevProps, nextProps) => {
-  return prevProps.files === nextProps.files && prevProps.readme === nextProps.readme;
+  return prevProps.files === nextProps.files && prevProps.readme === nextProps.readme && prevProps.walkthrough === nextProps.walkthrough;
 });

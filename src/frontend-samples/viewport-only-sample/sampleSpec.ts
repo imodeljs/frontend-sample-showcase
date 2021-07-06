@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import walkthrough from "!walkthrough-loader!./walkthru.md";
 
 export function getViewportOnlySpec(): SampleSpec {
   return ({
@@ -13,7 +12,9 @@ export function getViewportOnlySpec(): SampleSpec {
     image: "viewport-only-thumbnail.png",
     description: "#Basic #sample showing how to use the #iTwin #viewer component.",
     iTwinViewerReady: true,
-    walkthrough,
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./walkthru.md"),
+    }),
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       { name: "ViewportOnlyApp.tsx", import: import("!editor-file-loader!./ViewportOnlyApp"), entry: true },

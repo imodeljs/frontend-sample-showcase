@@ -5,7 +5,6 @@
 
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
-import walkthrough from "!walkthrough-loader!./annotations.md";
 
 export function getRealityDataSpec(): SampleSpec {
   return ({
@@ -13,7 +12,9 @@ export function getRealityDataSpec(): SampleSpec {
     label: "Reality Data",
     image: "reality-data-thumbnail.png",
     iTwinViewerReady: true,
-    walkthrough,
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./annotations.md"),
+    }),
     readme: async () => import("!raw-loader!./readme.md"),
     files: () => [
       { name: "RealityDataApi.ts", import: import("!editor-file-loader!./RealityDataApi") },
