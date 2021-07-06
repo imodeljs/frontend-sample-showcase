@@ -12,7 +12,7 @@ export function getChangedElementsSpec(): SampleSpec {
     label: "Changed Elements",
     image: "changedElements.png",
     iTwinViewerReady: true,
-    readme: async () => import("!!raw-loader!./readme.md"),
+    readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       { name: "ChangedElementsApp.tsx", import: import("!!raw-loader!./ChangedElementsApp.tsx") },
       { name: "ChangedElementsWidget.tsx", import: import("!!raw-loader!./ChangedElementsWidget.tsx") },
