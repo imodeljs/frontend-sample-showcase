@@ -5,6 +5,7 @@
 
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
+import walkthrough from "!walkthrough-loader!./walkthru.md";
 
 export function getValidationSpec(): SampleSpec {
   return ({
@@ -14,6 +15,7 @@ export function getValidationSpec(): SampleSpec {
     description: "Uses the #validation REST api.",
     readme: async () => import("!!raw-loader!./readme.md"),
     iTwinViewerReady: true,
+    //walkthrough,
     files: () => [
       { name: "./ValidationApi.ts", import: import("!!raw-loader!./ValidationApi") },
       { name: "./ValidationApp.tsx", import: import("!!raw-loader!./ValidationApp.tsx"), entry: true },

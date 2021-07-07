@@ -1,21 +1,23 @@
-# Viewer Setup
+# Retrieving Violations
 
-This sample consists of a single [functional REACT component](https://reactjs.org/docs/components-and-props.html) named `ViewportOnlyApp`.  This component uses the hook `useSampleWidget` which is delivered as part of the sample environment.  The hook takes care of adding a widget which shows the sample instructions and also a picker to select among the example iModels.  The hook returns the contextId and iModelId used to identify the iModel.
+After using the Validation API to retrieve the element IDs of all elements in violation of a validation rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of.
 
-[_metadata_:annotation]:- "VIEW_SETUP"
+In addition, an element is able to be selected in the table, which will cause that element to be `emphasized`, which causes all other elements to become partially transparent. The selected element will have it's color overwritten to be red. If the zoom toggle is not disabled, the selected violating element will be zoomed in on.
 
-# Viewer Component
+[_metadata_:annotation]:- "VIOLATION_VISUALIZATION"
 
-The `<Viewer>` component is responsible for creating the viewport, which displays the iModel geometry, and also all the embedded user interface components such as tools and widgets.
+# Violation Table
 
-There are a few required props including `contextId`, `iModelId`, and `authConfig`.  We also supply the following optional props:
+After using the Validation API to retrieve the element IDs of all elements in violation of a validation rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of.
 
-- `viewportOptions` : set up the initial view appearance
-- `defaultUiConfig` : initialize the user interface
-- `theme` : we prefer dark theme
-- `onIModelConnected` : to get a callback as soon as the iModel is ready
+In addition, an element is able to be selected in the table, which will cause that element to be `emphasized`, which causes all other elements to become partially transparent. The selected element will have it's color overwritten to be red. If the zoom toggle is not disabled, the selected violating element will be zoomed in on.
 
-The `<Viewer>` component is only returned if the context and imodel ids are valid.
+[_metadata_:annotation]:- "VIOLATION_TABLE"
 
-[_metadata_:annotation]:- "VIEWER"
-[_metadata_:skip]:- "true"
+# Violation Visualization
+
+After using the Validation API to retrieve the element IDs of all elements in violation of a validation rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of.
+
+In addition, an element is able to be selected in the table, which will cause that element to be `emphasized`, which causes all other elements to become partially transparent. The selected element will have it's color overwritten to be red. If the zoom toggle is not disabled, the selected violating element will be zoomed in on.
+
+[_metadata_:annotation]:- "VIOLATION_VISUALIZATION"

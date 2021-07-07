@@ -42,6 +42,8 @@ const ValidationTableWidget: React.FunctionComponent = () => {
     columns.push({ key: "ruleName", label: "Rule Name" });
     columns.push({ key: "badValue", label: "Invalid Value" });
 
+    // START VIOLATION_TABLE
+
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 
     if (validationData !== undefined && validationData.propertyValueResult !== undefined && validationData.ruleList !== undefined) {
@@ -70,6 +72,8 @@ const ValidationTableWidget: React.FunctionComponent = () => {
         return maxViolations < validationIndex;
       });
     }
+    // END VIOLATION_TABLE
+
     return dataProvider;
   }, [validationData]);
 
