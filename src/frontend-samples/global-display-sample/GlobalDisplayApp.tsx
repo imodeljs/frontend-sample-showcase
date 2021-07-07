@@ -25,6 +25,7 @@ const GlobalDisplayApp: FunctionComponent = () => {
       if (viewport.view.isSpatialView())
         viewport.view.modelSelector.models.clear();
     });
+    await iModelConnection.backgroundMapLocation.initialize(iModelConnection);
     const viewState = await GlobalDisplayApi.getInitialView(iModelConnection);
     setViewportOptions({ viewState });
   };

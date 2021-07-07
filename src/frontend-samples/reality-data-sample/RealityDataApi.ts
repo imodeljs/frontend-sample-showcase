@@ -48,15 +48,15 @@ export default class RealityDataApi {
   // START TRANSPARENCY
   // Modify reality data background transparency using the Viewport API
   public static async setRealityDataTransparency(vp: ScreenViewport, transparency: number) {
-    // For this example we want to affect the appearance of *all* reality models. Therefore, we use -1 as the index.
+    // For this example we want to affect the appearance of *all* reality models.
     // START APPEARANCE
-    const model = vp.displayStyle.settings.contextRealityModels.models[0];
-    if (!model) return false;
+    vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
+      // START OVERRIDES
+      model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone({ transparency }) : FeatureAppearance.fromJSON({ transparency });
+    })
     // END APPEARANCE
-    // START OVERRIDES
-    model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone({ transparency }) : FeatureAppearance.fromJSON({ transparency });
-    return true;
     // END OVERRIDES
+    return true;
   }
   // END TRANSPARENCY
 }
