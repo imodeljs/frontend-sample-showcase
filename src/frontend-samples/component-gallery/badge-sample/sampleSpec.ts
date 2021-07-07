@@ -15,7 +15,7 @@ export function getBadgeSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [
-      { name: "Badge.tsx", import: import("!!raw-loader!./Badge"), entry: true },
+      import("!editor-file-loader!./Badge?entry=true"),
     ],
     type: "Badge.tsx",
   });

@@ -15,8 +15,8 @@ export function getExpandableListSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ExpandableList.tsx", import: import("!!raw-loader!./ExpandableList"), entry: true },
-      { name: "SampleExpandableBlock.tsx", import: import("!!raw-loader!./SampleExpandableBlock") },
+      import("!editor-file-loader!./ExpandableList?entry=true"),
+      import("!editor-file-loader!./SampleExpandableBlock"),
     ],
     type: "ExpandableList.tsx",
   });

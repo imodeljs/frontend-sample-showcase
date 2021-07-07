@@ -15,8 +15,8 @@ export function getInputsSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Inputs.tsx", import: import("!!raw-loader!./Inputs"), entry: true },
-      { name: "SampleImageCheckBox.tsx", import: import("!!raw-loader!./SampleImageCheckBox") },
+      import("!editor-file-loader!./Inputs?entry=true"),
+      import("!editor-file-loader!./SampleImageCheckBox"),
     ],
     type: "Inputs.tsx",
   });

@@ -15,11 +15,11 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "ScreenSpaceEffectsApi.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApi") },
-      { name: "ScreenSpaceEffectsApp.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsApp"), entry: true },
-      { name: "ScreenSpaceEffectsWidget.tsx", import: import("!!raw-loader!./ScreenSpaceEffectsWidget") },
-      { name: "Effects.ts", import: import("!!raw-loader!./Effects") },
-      { name: "ScreenSpaceEffects.scss", import: import("!!raw-loader!./ScreenSpaceEffects.scss") },
+      import("!editor-file-loader!./ScreenSpaceEffectsApi"),
+      import("!editor-file-loader!./ScreenSpaceEffectsApp?entry=true"),
+      import("!editor-file-loader!./ScreenSpaceEffectsWidget"),
+      import("!editor-file-loader!./Effects"),
+      import("!editor-file-loader!./ScreenSpaceEffects.scss"),
     ],
     type: "ScreenSpaceEffectsApp.tsx",
   });

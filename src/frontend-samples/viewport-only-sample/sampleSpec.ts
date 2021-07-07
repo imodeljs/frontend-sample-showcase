@@ -17,7 +17,7 @@ export function getViewportOnlySpec(): SampleSpec {
     }),
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewportOnlyApp.tsx", import: import("!editor-file-loader!./ViewportOnlyApp"), entry: true },
+      import("!editor-file-loader!./ViewportOnlyApp?entry=true"),
     ],
     type: "ViewportOnlyApp.tsx",
   });

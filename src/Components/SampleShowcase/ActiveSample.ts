@@ -23,7 +23,7 @@ export class ActiveSample {
   public imodel: SampleIModels;
   public iTwinViewerReady?: boolean;
   public getReadme?: () => Promise<{ default: string }>;
-  public getFiles?: () => SampleSpecFile[];
+  public getFiles?: () => Promise<SampleSpecFile>[];
   public type: string;
   public galleryVisible: boolean = true;
 

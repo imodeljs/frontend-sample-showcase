@@ -15,7 +15,7 @@ export function getToggleSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Toggle.tsx", import: import("!!raw-loader!./Toggle"), entry: true },
+      import("!editor-file-loader!./Toggle?entry=true"),
     ],
     type: "Toggle.tsx",
   });

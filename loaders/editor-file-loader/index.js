@@ -11,11 +11,27 @@ function processChunk(source) {
 
   const newSource = removeComments(source, options)
 
-  const json = JSON.stringify(newSource)
+  const fileName = this.resourcePath.replace(this.context, "").replace(/^(\/\/?|\\\\?)/, "");
+
+  let entry = false;
+  if (typeof this.resourceQuery === "string" && this.resourceQuery.length) {
+    const params = new URLSearchParams(this.resourceQuery.replace("?", ""));
+    entry = Boolean(params.get("entry"));
+  }
+
+  const sourceJson = JSON.stringify(newSource)
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
 
-  return `export default ${json};`;
+  const sourceName = JSON.stringify(fileName)
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+
+  return [
+    `export const name = ${sourceName};`,
+    `export const entry = ${entry};`,
+    `export const content = ${sourceJson};`,
+  ].join("\n");
 }
 
 module.exports = processChunk

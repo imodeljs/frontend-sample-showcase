@@ -134,6 +134,10 @@
       "import": "@bentley/hypermodeling-frontend"
     },
     {
+      "name": "@itwin/itwinui-react",
+      "import": "@itwin/itwinui-react"
+    },
+    {
       "name": "api/viewSetup",
       "import": "./src/api/viewSetup",
       "typedef": true
