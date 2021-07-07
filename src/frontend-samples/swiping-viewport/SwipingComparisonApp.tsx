@@ -14,7 +14,7 @@ import SwipingComparisonApi from "./SwipingComparisonApi";
 const uiProviders = [new SwipingComparisonWidgetProvider()];
 
 const SwipingComparisonApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.ExtonCampus]);
+  const sampleIModelInfo = useSampleWidget("Drag the divider to compare the two halves of the view. Try rotating the view with the 'Lock Plane' toggle on and off.", [SampleIModels.ExtonCampus]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const [boundsState, setBoundsState] = React.useState<ClientRect>();
@@ -46,7 +46,6 @@ const SwipingComparisonApp: FunctionComponent = () => {
     // leftWidth is relative to the canvas.  We need to track left based on the window
     const sliderWidth = boundsState!.width - (leftWidth + rightWidth);
     const left = leftWidth + (sliderWidth / 2);
-
     const updatedLeft = left + boundsState!.left;
 
     // Raise the event to be sent to the widget

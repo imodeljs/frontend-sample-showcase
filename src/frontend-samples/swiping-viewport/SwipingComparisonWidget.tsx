@@ -37,7 +37,7 @@ const SwipingComparisonWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport && !isInit) {
-      /** Initally the widget is docked to the right of the screen, which is then updated to be floating in the sample showcase.
+      /** Initially the widget is docked to the right of the screen, which is then updated to be floating in the sample showcase.
        * If we don't wait for the widget to be in a floating state, the dimensions of the viewport will be off, and thus the dividerState.
        */
       setTimeout(() => { _initViewport(viewport); }, 200);
