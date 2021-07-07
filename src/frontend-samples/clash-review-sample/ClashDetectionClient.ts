@@ -8,11 +8,11 @@ import { IModelApp } from "@bentley/imodeljs-frontend";
 import { IModelHubClient, VersionQuery } from "@bentley/imodelhub-client";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 
-export default class ClashDetectionApis {
+export default class ClashDetectionClient {
 
   // Retrieves a list of Design Validation tests for the project specified by the project id.
   public static async getProjectValidationTests(requestContext: AuthorizedClientRequestContext, projectId: string): Promise<any | undefined> {
-    const accessToken = await ClashDetectionApis.getAccessToken();
+    const accessToken = await ClashDetectionClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
 
@@ -37,7 +37,7 @@ export default class ClashDetectionApis {
 
   // Retrieves a list of Design Validation runs for the project specified by the project id.
   public static async getProjectValidationRuns(requestContext: AuthorizedClientRequestContext, projectId: string): Promise<any | undefined> {
-    const accessToken = await ClashDetectionApis.getAccessToken();
+    const accessToken = await ClashDetectionClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
 
@@ -63,7 +63,7 @@ export default class ClashDetectionApis {
     if (url === undefined)
       return undefined;
 
-    const accessToken = await ClashDetectionApis.getAccessToken();
+    const accessToken = await ClashDetectionClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
 
@@ -103,7 +103,7 @@ export default class ClashDetectionApis {
   public static async runValidationTest(requestContext: AuthorizedClientRequestContext, iModelId: string, testId: string) {
     if (testId === undefined)
       return undefined;
-    const accessToken = await ClashDetectionApis.getAccessToken();
+    const accessToken = await ClashDetectionClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
 
@@ -142,29 +142,29 @@ export default class ClashDetectionApis {
   // This sample test function demonstrates how the above functions can be called in a workflow
   private async test(requestContext: AuthorizedClientRequestContext, projectId: string, iModelId: string) {
     // Get list of tests for project
-    const testsResponse = await ClashDetectionApis.getProjectValidationTests(requestContext, projectId);
+    const testsResponse = await ClashDetectionClient.getProjectValidationTests(requestContext, projectId);
     if (testsResponse.validationTests !== undefined && testsResponse.validationTests.length !== 0) {
       // Run validation test
-      const testRunResponse = await ClashDetectionApis.runValidationTest(requestContext, iModelId, testsResponse.validationTests[0].id);
+      const testRunResponse = await ClashDetectionClient.runValidationTest(requestContext, iModelId, testsResponse.validationTests[0].id);
       if (testRunResponse !== undefined && testRunResponse.validationRunLink !== undefined) {
         // Get validation run status
-        const runResponse = await ClashDetectionApis.getValidationUrlResponse(requestContext, testRunResponse.validationRunLink._links.run.href);
+        const runResponse = await ClashDetectionClient.getValidationUrlResponse(requestContext, testRunResponse.validationRunLink._links.run.href);
         if (runResponse !== undefined && runResponse.validationRun !== undefined) {
           // Get validation test
-          const testResponse = await ClashDetectionApis.getValidationUrlResponse(requestContext, testsResponse.validationTests[0]._links.test.href);
+          const testResponse = await ClashDetectionClient.getValidationUrlResponse(requestContext, testsResponse.validationTests[0]._links.test.href);
           if (testResponse !== undefined && testResponse.validationTest !== undefined) {
             assert(testsResponse.validationTests[0].id === testResponse.validationTest, "Test ids mismatched");
           }
         }
       }
       // Get list of validation runs for project
-      const runsResponse = await ClashDetectionApis.getProjectValidationRuns(requestContext, projectId);
+      const runsResponse = await ClashDetectionClient.getProjectValidationRuns(requestContext, projectId);
       if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
         // Get validation result
-        const resultResponse = await ClashDetectionApis.getValidationUrlResponse(requestContext, runsResponse.validationRuns[0]._links.result.href);
+        const resultResponse = await ClashDetectionClient.getValidationUrlResponse(requestContext, runsResponse.validationRuns[0]._links.result.href);
         if (resultResponse !== undefined && resultResponse.validationResult !== undefined) {
           // Get validation run test
-          const testResponse = await ClashDetectionApis.getValidationUrlResponse(requestContext, runsResponse.validationRuns[0]._links.test.href);
+          const testResponse = await ClashDetectionClient.getValidationUrlResponse(requestContext, runsResponse.validationRuns[0]._links.test.href);
           if (testResponse !== undefined && testResponse.validationTest !== undefined) {
             assert(testsResponse.validationTests[0].id === testResponse.validationTest, "Test ids mismatched");
           }
