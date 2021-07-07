@@ -290,3 +290,52 @@
           }
       }
 }
+
+.issue-linked-container {
+  margin-top: $uicore-sm;
+  padding-bottom: $uicore-sm;
+
+  .issue-linked-title {
+    color: #fff;
+    margin-bottom: $uicore-xs;
+    display: flex;
+    align-items: center;
+
+    > span:first-child {
+      font-weight: 600;
+      font-size: $uicore-font-size-leading;
+      flex: 1;
+    }
+  }
+
+  > .issue-linked-element {
+    padding-left: $uicore-xs;
+    padding-top: $uicore-xs;
+    padding-bottom: $uicore-xs;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background: $buic-row-hover;
+      cursor: pointer;
+    }
+
+    > .issues-linked-element-label {
+      color: #fff;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: $uicore-xs;
+      margin-right: $uicore-s;
+    }
+
+    > .icon-item {
+      margin-left: 2px;
+      color: #fff;
+      ::before {
+        content: "\f227";
+      }
+    }
+  }
+}

@@ -12,14 +12,17 @@ export function getSwipingComparisonSpec(): SampleSpec {
     label: "Swiping Comparison",
     image: "swiping-viewport-thumbnail.png",
     description: "Compare models and reality data using a #clip and a #TileGraphicsProvider in a single #viewport.",
-    readme: async () => import("!!raw-loader!./README.md"),
     iModelList: [SampleIModels.ExtonCampus],
+    iTwinViewerReady: true,
+    readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      import("!editor-file-loader!./SwipingComparisonApp"),
-      import("!editor-file-loader!./SwipingComparisonUI?entry=true"),
+      import("!editor-file-loader!./SwipingComparisonApi"),
+      import("!editor-file-loader!./SwipingComparisonApp?entry=true"),
+      import("!editor-file-loader!./SwipingComparisonWidget"),
       import("!editor-file-loader!./Divider"),
       import("!editor-file-loader!./Divider.scss"),
+      import("!editor-file-loader!./SwipingComparison.scss"),
     ],
-    type: "SwipingComparisonUI.tsx",
+    type: "SwipingComparisonApp.tsx",
   });
 }
