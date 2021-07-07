@@ -9,6 +9,7 @@ This sample demonstrates calling [Issues APIs](https://developer.bentley.com/api
 - GET all Issues associated with a project.
 - Apply the view of an Issue.
 - Create marker pins for each Issue.
+- Get list of elements linked to an issue, and zoom to location
 
 ## Description
 The Issues REST API contains the ability to attach Issues to each project or context. 

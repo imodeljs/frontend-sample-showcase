@@ -28,7 +28,7 @@ export default class IssuesApi {
   public static async getElementInfo(iModel: IModelConnection, keySet: KeySet): Promise<LabelWithId[]> {
     const instanceKeys: InstanceKey[] = [];
     keySet.instanceKeys.forEach((currentIds: Set<string>, key: string) => {
-      currentIds.forEach ((value: string) => { instanceKeys.push ({className: key, id: value}); });
+      currentIds.forEach((value: string) => { instanceKeys.push ({className: key, id: value}); });
     });
 
     const labels = await Presentation.presentation.getDisplayLabelDefinitions({imodel: iModel, keys: instanceKeys });

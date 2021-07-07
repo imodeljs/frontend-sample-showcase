@@ -192,8 +192,8 @@ const IssuesWidget: React.FunctionComponent = () => {
       return;
     }
 
-    const elementKeySey = await IssuesApi.getElementKeySet(currentIssue.item.id);
-    const elementInfo = await IssuesApi.getElementInfo(iModelConnection, elementKeySey);
+    const elementKeySet = await IssuesApi.getElementKeySet(currentIssue.item.id);
+    const elementInfo = await IssuesApi.getElementInfo(iModelConnection, elementKeySet);
     setLinkedElements(elementInfo);
   }, [currentIssue, currentLinkedElements, iModelConnection]);
 
