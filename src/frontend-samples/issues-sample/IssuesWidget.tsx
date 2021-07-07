@@ -9,7 +9,7 @@ import { HorizontalTabs, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwinui-react";
 import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
-import IssuesApi from "./IssuesApi";
+import IssuesApi, { LabelWithId } from "./IssuesApi";
 import "./Issues.scss";
 
 const thumbnails: Map<string, Blob> = new Map<string, Blob>();
@@ -29,7 +29,9 @@ const IssuesWidget: React.FunctionComponent = () => {
   const [issueAuditTrails, setIssueAuditTrails] = useState<{ [displayName: string]: AuditTrailEntryGet[] }>({});
   /** The Issue to display when the user selects, if undefined, none is shown */
   const [currentIssue, setCurrentIssue] = useState<IssueGet>();
-  /** The active tab when the issue is being shown */
+  /** The Elements linked to the issue */
+  const [currentLinkedElements, setLinkedElements] = useState<LabelWithId[]>();
+  /** The active tab when the issue is being shown, -1 for none */
   const [activeTab, setActiveTab] = useState<number>(0);
 
   /** Initialize Decorator */
@@ -180,6 +182,21 @@ const IssuesWidget: React.FunctionComponent = () => {
     return yiq >= 190 ? "#000000" : "#FFFFFF";
   };
 
+  const getLinkedElements = useCallback(async () => {
+    /** Don't refetch if we have already received the linked elements */
+    if (!iModelConnection || currentLinkedElements || !currentIssue)
+      return;
+
+    if (!currentIssue.item?.id) {
+      setLinkedElements([]);
+      return;
+    }
+
+    const elementKeySet = await IssuesApi.getElementKeySet(currentIssue.item.id);
+    const elementInfo = await IssuesApi.getElementInfo(iModelConnection, elementKeySet);
+    setLinkedElements(elementInfo);
+  }, [currentIssue, currentLinkedElements, iModelConnection]);
+
   /** call the client to get the issue attachments */
   const getIssueAttachments = useCallback(async () => {
     /** If the attachments have already been retrieved don't refetch*/
@@ -224,8 +241,11 @@ const IssuesWidget: React.FunctionComponent = () => {
   }, [currentIssue, issueAuditTrails]);
 
   /** Make the client request when the tab for the issue is selected. */
-  const onTabSelected = (index: number) => {
-    switch (index) {
+  useEffect(() => {
+    switch (activeTab) {
+      case 0:
+        getLinkedElements();
+        break;
       /** Attachments tab */
       case 1:
         getIssueAttachments();
@@ -236,8 +256,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         getIssueAuditTrail();
         break;
     }
-    setActiveTab(index);
-  };
+  }, [activeTab, getIssueAttachments, getIssueAuditTrail, getIssueComments, getLinkedElements]);
 
   const issueSummaryContent = () => {
     const columns = [{
@@ -260,6 +279,24 @@ const IssuesWidget: React.FunctionComponent = () => {
       { prop: "Assignees", val: currentIssue?.assignees?.reduce((currentString, nextAssignee) => `${currentString} ${nextAssignee.displayName},`, "").slice(0, -1) },
     ];
     return (<Table className={"table"} columns={columns} data={data} emptyTableContent='No data.'></Table>);
+  };
+
+  const issueLinkedElements = () => {
+    if (!iModelConnection || !currentLinkedElements)
+      return <></>;
+
+    return (
+      <div className={"issue-linked-container"}>
+        <Subheading className={"issue-linked-title"}>{`Linked Elements`}</Subheading>
+        {currentLinkedElements.map((label) => {
+          // eslint-disable-next-line react/jsx-key
+          return (<div className={"issue-linked-element"} onClick={() => viewport?.zoomToElements(label.id)}>
+            <div className={"icon icon-item"}></div>
+            <div className={"issues-linked-element-label"}>{label.displayValue}</div>
+          </div>);
+        })}
+      </div>
+    );
   };
 
   const issueAttachmentsContent = React.useCallback(() => {
@@ -422,7 +459,7 @@ const IssuesWidget: React.FunctionComponent = () => {
                     }
                     <div className="issue-status" style={{ borderTop: `14px solid ${issueStatusColor(issue)}`, borderLeft: `14px solid transparent` }} />
                   </div>
-                  <div className="issue-info" onClick={() => setCurrentIssue(issue)}>
+                  <div className="issue-info" onClick={() => { setCurrentIssue(issue); setActiveTab(0); }}>
                     <Leading className={"issue-title"}>{`${issue.number} | ${issue.subject}`}</Leading>
                     <div className="issue-subtitle">
                       <span className={"assignee-display-name"}>{issue.assignee?.displayName}</span>
@@ -441,15 +478,16 @@ const IssuesWidget: React.FunctionComponent = () => {
         {currentIssue &&
           <div className={"issue-details"}>
             <div className={"header"}>
-              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setActiveTab(0); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
+              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
               <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`${currentIssue.number} | ${currentIssue.subject}`}</Subheading>
             </div>
 
-            <HorizontalTabs type='default' labels={["Summary", "Attachments", "Audit Trail"]} activeIndex={activeTab} onActivateTab={onTabSelected} />
+            <HorizontalTabs type='default' labels={["Summary", "Attachments", "Audit Trail"]} activeIndex={activeTab} onActivateTab={(index) => setActiveTab(index)} />
             <div className={"issue-tab-content"}>
               {activeTab === 0 &&
                 <div className={"issue-summary"}>
                   {issueSummaryContent()}
+                  {issueLinkedElements()}
                 </div>
               }
               {activeTab === 1 &&

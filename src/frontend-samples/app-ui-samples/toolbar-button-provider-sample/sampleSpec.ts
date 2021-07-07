@@ -14,8 +14,8 @@ export function getToolbarButtonSample(): SampleSpec {
     description: "How to add a #toolbar #button",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ToolbarButtonProvider.tsx", import: import("!!raw-loader!./ToolbarButtonProvider") },
-      { name: "ToolbarButtonApp.tsx", import: import("!!raw-loader!./ToolbarButtonApp"), entry: true },
+      import("!editor-file-loader!./ToolbarButtonProvider"),
+      import("!editor-file-loader!./ToolbarButtonApp?entry=true"),
     ],
     iTwinViewerReady: true,
     iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],

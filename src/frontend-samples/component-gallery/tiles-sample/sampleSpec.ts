@@ -15,7 +15,7 @@ export function getTilesSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Tiles.tsx", import: import("!!raw-loader!./Tiles"), entry: true },
+      import("!editor-file-loader!./Tiles?entry=true"),
     ],
     type: "Tiles.tsx",
   });

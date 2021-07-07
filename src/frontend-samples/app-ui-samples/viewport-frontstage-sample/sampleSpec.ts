@@ -14,7 +14,7 @@ export function getViewportFrontstageSample(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     iTwinViewerReady: true,
     files: () => [
-      { name: "ViewportFrontstageSample.tsx", import: import("!!raw-loader!./ViewportFrontstageApp"), entry: true },
+      import("!editor-file-loader!./ViewportFrontstageApp?entry=true"),
     ],
     iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "ViewportFrontstageApp.tsx",

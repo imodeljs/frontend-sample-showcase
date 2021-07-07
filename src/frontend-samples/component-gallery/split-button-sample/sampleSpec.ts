@@ -15,7 +15,7 @@ export function getSplitButtonSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "SplitButton.tsx", import: import("!!raw-loader!./SplitButton"), entry: true },
+      import("!editor-file-loader!./SplitButton?entry=true"),
     ],
     type: "SplitButton.tsx",
   });

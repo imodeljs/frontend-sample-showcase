@@ -61,6 +61,7 @@ export class ViewSetup {
     const viewFlags = viewState.viewFlags.clone();
     viewFlags.shadows = false;
     viewFlags.grid = false;
+    viewFlags.visibleEdges = false;
     viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
@@ -100,6 +101,7 @@ export class ViewSetup {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
         displayStyle.changeBackgroundMapProps({
           planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
+          transparency: 0.01, // Temporary fix due to how the planar clip and transparency interact.
         });
         const excludedModelIds = await ViewSetup.getModelIds(imodel,
           "SS_Master",
