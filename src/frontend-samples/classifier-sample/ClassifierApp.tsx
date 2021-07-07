@@ -16,7 +16,7 @@ const ClassifierApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [{ context: SampleIModels.MetroStation, imodel: "Philadelphia" }]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  /** Initalizes viewport to set up camera looking at Rittenhouse Square. */
+  /** Initializes viewport to set up camera looking at Rittenhouse Square. */
   const getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
 

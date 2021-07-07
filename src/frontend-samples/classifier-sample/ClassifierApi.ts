@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier } from "@bentley/imodeljs-common";
+import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier, SpatialClassifiers } from "@bentley/imodeljs-common";
 import { ContextRealityModelState, IModelConnection, queryRealityData, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 
@@ -25,6 +25,7 @@ export default class ClassifierApi {
     // Get first available reality models and attach them to displayStyle
     const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
     for (const crmProp of availableModels) {
+      crmProp.classifiers = [];
       style.attachRealityModel(crmProp);
       viewPort.displayStyle = style;
       break;
@@ -72,27 +73,23 @@ export default class ClassifierApi {
   // Update the classifier in the ViewPort
   public static updateRealityDataClassifiers(vp: ScreenViewport, classifier: SpatialClassifier) {
     // Get the first reality model in the view
-    const existingRealityModels: ContextRealityModelState[] = [];
-    vp.displayStyle.forEachRealityModel(
-      (modelState: ContextRealityModelState) =>
-        existingRealityModels.push(modelState),
-    );
-    const realityModel = existingRealityModels[0];
+    const realityModel: ContextRealityModel = vp.displayStyle.settings.contextRealityModels.models[0];
 
     // Loop through all classifiers in the reality model.
-    // If the classifier exists, update it with classifier properties
+    // If the classifier exists (check by name), replace it with classifier argument
     // If the classifier is not found, add it to realityModel.classifiers
-    let existingClassifier: boolean = false;
     if (realityModel && realityModel.classifiers) {
-      Array.from(realityModel.classifiers).forEach((storedClassifier) => {
-        if (classifier.name === storedClassifier.name) {
-          existingClassifier = true;
-          storedClassifier = SpatialClassifier.fromJSON(classifier.toJSON());
+      let existingClassifier: SpatialClassifier | undefined;
+      for (const c of realityModel.classifiers) {
+        if (c.name === classifier.name) {
+          existingClassifier = c;
         }
-      });
+      }
 
       if (!existingClassifier)
         realityModel.classifiers.add(classifier);
+      else
+        realityModel.classifiers.replace(existingClassifier, classifier);
 
       realityModel.classifiers.setActive(classifier);
       vp.invalidateScene();

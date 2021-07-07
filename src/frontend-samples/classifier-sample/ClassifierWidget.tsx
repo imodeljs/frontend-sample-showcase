@@ -29,25 +29,25 @@ const ClassifierWidget: React.FunctionComponent = () => {
 
   const iModelConnection = useActiveIModelConnection();
   const viewport = useActiveViewport();
-  const [initalized, setInitalized] = React.useState<boolean>(false);
+  const [initialized, setInitialized] = React.useState<boolean>(false);
   const [classifiers, setClassifiers] = React.useState<{ [key: string]: string }>({});
   const [currentClassifier, setCurrentClassifier] = React.useState<string>();
   const [expandDistState, setExpandDistState] = React.useState<number>(3);
-  const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<string>(SpatialClassifierOutsideDisplay[SpatialClassifierOutsideDisplay.Dimmed]);
-  const [insideDisplayKeyState, setInsideDisplayKeyState] = React.useState<string>(SpatialClassifierInsideDisplay[SpatialClassifierInsideDisplay.ElementColor]);
+  const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<number>(SpatialClassifierOutsideDisplay.Dimmed);
+  const [insideDisplayKeyState, setInsideDisplayKeyState] = React.useState<number>(SpatialClassifierInsideDisplay.ElementColor);
   const [keysState, setKeysState] = React.useState<KeySet>(new KeySet());
 
   /**
-* This callback will be executed by once the iModel and view has been loaded.
-* The reality model will default to on.
-*/
+  * This callback will be executed by once the iModel and view has been loaded.
+  * The reality model will default to on.
+  */
   useEffect(() => {
     if (iModelConnection) {
       ClassifierApi.addSelectionListener(_onSelectionChanged);
     }
 
-    /** Turn on RealityData and initalize the classifierState */
-    if (!initalized && viewport && iModelConnection) {
+    /** Turn on RealityData and initialize the classifierState */
+    if (!initialized && viewport && iModelConnection) {
       ClassifierApi.turnOnAvailableRealityModel(viewport, iModelConnection).then(() => {
         ClassifierApi.getAvailableClassifierListForViewport(viewport).then((_classifiers) => {
           const commercialModelId = Object.keys(_classifiers)[0];
@@ -56,24 +56,24 @@ const ClassifierWidget: React.FunctionComponent = () => {
         });
       });
 
-      setInitalized(true);
+      setInitialized(true);
     }
 
-    /** On Widget deleteion, remove the selection listener */
+    /** On Widget deletion, remove the selection listener */
     return () => {
       ClassifierApi.removeSelectionListener();
     };
-  }, [iModelConnection, viewport, initalized]);
+  }, [iModelConnection, viewport, initialized]);
 
   /*
-* Get property values for the classifier.
-*/
+  * Get property values for the classifier.
+  */
   const getClassifierValues = useCallback((modelId: string): SpatialClassifier => {
     const flags = new SpatialClassifierFlags(
-      SpatialClassifierInsideDisplay[insideDisplayKeyState as keyof typeof SpatialClassifierInsideDisplay],
-      SpatialClassifierOutsideDisplay[outsideDisplayKeyState as keyof typeof SpatialClassifierOutsideDisplay],
+      insideDisplayKeyState,
+      outsideDisplayKeyState,
       false
-    )
+    );
 
     const classifier: SpatialClassifier = new SpatialClassifier(
       modelId,
@@ -104,24 +104,24 @@ const ClassifierWidget: React.FunctionComponent = () => {
   // Some reasonable defaults depending on what classifier is chosen.
   const _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
     if (classifiers[event.target.value].includes("Buildings")) {
-      setInsideDisplayKeyState("On");
+      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.On);
       setExpandDistState(3.5);
     }
     if (classifiers[event.target.value].includes("Streets")) {
-      setInsideDisplayKeyState("Hilite");
+      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.Hilite);
       setExpandDistState(2);
     }
     if (classifiers[event.target.value].includes("Commercial")) {
-      setInsideDisplayKeyState("ElementColor");
+      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.ElementColor);
       setExpandDistState(1);
     }
     if (classifiers[event.target.value].includes("Street Poles")) {
-      setInsideDisplayKeyState("Hilite");
+      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.Hilite);
       setExpandDistState(1);
     }
 
     setCurrentClassifier(event.target.value);
-    setOutsideDisplayKeyState("Dimmed");
+    setOutsideDisplayKeyState(SpatialClassifierOutsideDisplay.Dimmed);
   };
 
   const _onMarginChange = (event: any) => {
@@ -132,11 +132,11 @@ const ClassifierWidget: React.FunctionComponent = () => {
   };
 
   const _onOutsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setOutsideDisplayKeyState(event.target.value);
+    setOutsideDisplayKeyState(Number(event.target.value));
   };
 
   const _onInsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setInsideDisplayKeyState(event.target.value);
+    setInsideDisplayKeyState(Number(event.target.value));
   };
 
   return (
