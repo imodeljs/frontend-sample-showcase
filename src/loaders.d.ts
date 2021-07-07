@@ -18,7 +18,8 @@ declare module "!walkthrough-loader!*" {
 }
 
 declare module "!editor-file-loader!*" {
-  const contents: string;
+  import type { SampleSpecFile } from "SampleSpec";
+  const contents: SampleSpecFile;
   export = contents;
 }
 

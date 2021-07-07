@@ -15,7 +15,7 @@ export function getSliderSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Slider.tsx", import: import("!!raw-loader!./Slider"), entry: true },
+      import("!editor-file-loader!./Slider?entry=true"),
     ],
     type: "Slider.tsx",
   });

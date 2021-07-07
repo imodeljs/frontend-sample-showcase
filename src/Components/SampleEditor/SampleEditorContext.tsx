@@ -3,24 +3,34 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
 import { SampleSpecFile } from "SampleSpec";
-import { SampleEditor } from "./SampleEditor";
-
-export interface EditorProps {
-  files?: () => SampleSpecFile[];
-  readme?: () => Promise<{ default: string }>;
-  onTranspiled: ((blobUrl: string) => void);
+import { EditorProps, SampleEditor } from "./SampleEditor";
+import modules from "./Modules";
+export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked"> {
+  files?: () => Promise<SampleSpecFile>[];
   onSampleClicked: (groupName: string, sampleName: string, wantScroll: boolean) => void;
 }
 
-export const SampleEditorContext: FunctionComponent<EditorProps> = (props) => {
-  const { files, readme, onTranspiled, onSampleClicked } = props;
+export const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props) => {
+  const { files: getFiles, readme, onTranspiled, onSampleClicked } = props;
+  const [defaultFiles, setDefaultFiles] = useState<{ content: string, name: string }[]>([]);
+  const [defaultEntry, setdefaultEntry] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (getFiles) {
+      Promise.all(getFiles())
+        .then((files) => {
+          setDefaultFiles(files);
+          setdefaultEntry(files.find((file) => file.entry)?.name);
+        });
+    }
+  }, [getFiles]);
+
   return (
-    <EditorEnvironmentContextProvider>
+    <EditorEnvironmentContextProvider defaultModules={modules} defaultFiles={defaultFiles} defaultEntry={defaultEntry}>
       <SampleEditor
-        files={files}
         onSampleClicked={onSampleClicked}
         onTranspiled={onTranspiled}
         readme={readme} />

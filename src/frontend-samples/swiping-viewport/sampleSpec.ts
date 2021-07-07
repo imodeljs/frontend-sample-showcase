@@ -16,12 +16,12 @@ export function getSwipingComparisonSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "SwipingComparisonApi.ts", import: import("!!raw-loader!./SwipingComparisonApi") },
-      { name: "SwipingComparisonApp.tsx", import: import("!!raw-loader!./SwipingComparisonApp"), entry: true },
-      { name: "SwipingComparisonWidget.tsx", import: import("!!raw-loader!./SwipingComparisonWidget") },
-      { name: "Divider.tsx", import: import("!!raw-loader!./Divider") },
-      { name: "Divider.scss", import: import("!!raw-loader!./Divider.scss") },
-      { name: "SwipingComparison.scss", import: import("!!raw-loader!./SwipingComparison.scss") },
+      import("!editor-file-loader!./SwipingComparisonApi"),
+      import("!editor-file-loader!./SwipingComparisonApp?entry=true"),
+      import("!editor-file-loader!./SwipingComparisonWidget"),
+      import("!editor-file-loader!./Divider"),
+      import("!editor-file-loader!./Divider.scss"),
+      import("!editor-file-loader!./SwipingComparison.scss"),
     ],
     type: "SwipingComparisonApp.tsx",
   });
