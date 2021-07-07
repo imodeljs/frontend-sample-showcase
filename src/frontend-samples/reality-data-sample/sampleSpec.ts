@@ -12,8 +12,10 @@ export function getRealityDataSpec(): SampleSpec {
     label: "Reality Data",
     image: "reality-data-thumbnail.png",
     iTwinViewerReady: true,
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./annotations.md"),
+    }),
     readme: async () => import("!raw-loader!./readme.md"),
-    walkthrough: async () => import("!walkthrough-loader!./annotations.md"),
     files: () => [
       { name: "RealityDataApi.ts", import: import("!editor-file-loader!./RealityDataApi") },
       { name: "RealityDataApp.tsx", import: import("!editor-file-loader!./RealityDataApp"), entry: true },

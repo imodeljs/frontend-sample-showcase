@@ -12,9 +12,12 @@ export function getViewportOnlySpec(): SampleSpec {
     image: "viewport-only-thumbnail.png",
     description: "#Basic #sample showing how to use the #iTwin #viewer component.",
     iTwinViewerReady: true,
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./walkthru.md"),
+    }),
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ViewportOnlyApp.tsx", import: import("!!raw-loader!./ViewportOnlyApp"), entry: true },
+      { name: "ViewportOnlyApp.tsx", import: import("!editor-file-loader!./ViewportOnlyApp"), entry: true },
     ],
     type: "ViewportOnlyApp.tsx",
   });

@@ -36,7 +36,8 @@
   }
 
   #sample-editor-pane-drawer {
-    margin: 8px;
+    height: 100%;
+    overflow: hidden;
   }
 
   #sample-editor-pane-nav {
@@ -65,7 +66,7 @@
       overflow-x: auto;
     }
 
-    > .sample-editor-pane-nav-item {
+    >.sample-editor-pane-nav-item {
       padding-right: 10px;
       padding-left: 10px;
       line-height: 35px;
