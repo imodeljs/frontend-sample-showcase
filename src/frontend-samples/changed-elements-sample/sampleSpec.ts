@@ -18,6 +18,8 @@ export function getChangedElementsSpec(): SampleSpec {
       import("!editor-file-loader!./ChangedElementsApp?entry=true"),
       import("!editor-file-loader!./ChangedElementsWidget"),
       import("!editor-file-loader!./ChangedElementsApi"),
+      import("!editor-file-loader!./ChangedElementsClient"),
+      import("!editor-file-loader!./ChangedElements.scss"),
     ],
     iModelList: [SampleIModels.Stadium],
     type: "ChangedElementsApp.tsx",
