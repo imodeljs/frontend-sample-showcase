@@ -7,7 +7,7 @@ import { expect } from "chai";
 import RealityDataApi from "frontend-samples/reality-data-sample/RealityDataApi";
 import * as TypeMoq from "typemoq";
 import { Range3d } from "@bentley/geometry-core";
-import { ContextRealityModelProps, SpatialClassifier, SpatialClassifierFlags, SpatialClassifierFlagsProps, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay, SpatialClassifierProps } from "@bentley/imodeljs-common";
+import { ContextRealityModelProps, SpatialClassifier, SpatialClassifierFlags, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay } from "@bentley/imodeljs-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { EmphasizeElementsApi } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
@@ -200,13 +200,13 @@ describe("Classifers", () => {
       const flags = new SpatialClassifierFlags(
         SpatialClassifierInsideDisplay.On,
         SpatialClassifierOutsideDisplay.Dimmed
-      )
+      );
 
       const testClassifier: SpatialClassifier = new SpatialClassifier(
         "TestId",
         "Test Name",
         flags
-      )
+      );
 
       ClassifierApi.updateRealityDataClassifiers(vp, testClassifier);
       const style = vp.displayStyle.clone();
