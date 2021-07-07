@@ -53,7 +53,7 @@ export default class RealityDataApi {
     vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
       // START OVERRIDES
       model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone({ transparency }) : FeatureAppearance.fromJSON({ transparency });
-    })
+    });
     // END APPEARANCE
     // END OVERRIDES
     return true;
