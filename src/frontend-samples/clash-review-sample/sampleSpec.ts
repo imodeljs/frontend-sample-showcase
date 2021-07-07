@@ -17,7 +17,7 @@ export function getClashReviewSpec(): SampleSpec {
     files: () => [
       { name: "./ClashReviewApi.ts", import: import("!!raw-loader!./ClashReviewApi") },
       { name: "./ClashReviewApp.tsx", import: import("!!raw-loader!./ClashReviewApp.tsx"), entry: true },
-      { name: "./ClashDetectionApis.ts", import: import("!!raw-loader!./ClashDetectionApis.ts") },
+      { name: "./ClashDetectionClient.ts", import: import("!!raw-loader!./ClashDetectionClient.ts") },
       { name: "./ClashReviewWidget.tsx", import: import("!!raw-loader!./ClashReviewWidget.tsx") },
       { name: "./ClashReviewTableWidget.tsx", import: import("!!raw-loader!./ClashReviewTableWidget.tsx") },
       { name: "frontend-samples/marker-pin-sample/MarkerPinDecorator.ts", import: import("!!raw-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts") },

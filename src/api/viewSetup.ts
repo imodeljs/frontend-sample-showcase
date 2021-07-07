@@ -61,6 +61,7 @@ export class ViewSetup {
     const viewFlags = viewState.viewFlags.clone();
     viewFlags.shadows = false;
     viewFlags.grid = false;
+    viewFlags.visibleEdges = false;
     viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
@@ -99,6 +100,7 @@ export class ViewSetup {
       if (imodel.name === "Stadium") {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
         displayStyle.changeBackgroundMapProps({
+          transparency: 0.01, // Temporary fix due to how the planar clip and transparency interact.
           planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.Models, modelsForMasking),
         });
         const excludedModelIds = await ViewSetup.getModelIds(imodel,
@@ -132,7 +134,7 @@ export class ViewSetup {
   public static async getSubCategoryIds(iModel: IModelConnection, ...categoryCodes: string[]): Promise<Id64Set> {
     const subcategoriesIds = new Set<string>();
     if (!iModel.isClosed) {
-      const selectSubCategories =  `SELECT ECInstanceId as id 
+      const selectSubCategories = `SELECT ECInstanceId as id 
                                     FROM BisCore.SubCategory 
                                     WHERE Parent.Id IN (
                                       SELECT ECInstanceId 
