@@ -14,12 +14,12 @@ export function getViewCameraSpec(): SampleSpec {
     description: "#Animates the #camera along a path using #setEyePoint.  Also shows a #tool to control the look direction using #setupViewFromFrustum.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CameraPathApi.ts", import: import("!!raw-loader!./CameraPathApi") },
-      { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp"), entry: true },
-      { name: "CameraPathWidget.tsx", import: import("!!raw-loader!./CameraPathWidget") },
-      { name: "CameraPathTool.ts", import: import("!!raw-loader!./CameraPathTool") },
-      { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
-      { name: "CameraPath.scss", import: import("!!raw-loader!./CameraPath.scss") },
+      import("!editor-file-loader!./CameraPathApi"),
+      import("!editor-file-loader!./CameraPathApp?entry=true"),
+      import("!editor-file-loader!./CameraPathWidget"),
+      import("!editor-file-loader!./CameraPathTool"),
+      import("!editor-file-loader!./Coordinates"),
+      import("!editor-file-loader!./CameraPath.scss"),
     ],
     type: "CameraPathApp.tsx",
   });

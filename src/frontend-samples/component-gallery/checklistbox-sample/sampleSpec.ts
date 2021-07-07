@@ -15,7 +15,7 @@ export function getCheckListBoxSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [
-      { name: "CheckListBox.tsx", import: import("!!raw-loader!./CheckListBox"), entry: true },
+      import("!editor-file-loader!./CheckListBox?entry=true"),
     ],
     type: "CheckListBox.tsx",
   });

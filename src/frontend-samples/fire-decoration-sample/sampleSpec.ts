@@ -16,12 +16,12 @@ export function getParticleFireSampleSpec(): SampleSpec {
     iModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "FireDecorationApi.tsx", import: import("!!raw-loader!./FireDecorationApi") },
-      { name: "FireDecorationApp.tsx", import: import("!!raw-loader!./FireDecorationApp"), entry: true },
-      { name: "FireDecorationWidget.tsx", import: import("!!raw-loader!./FireDecorationWidget") },
-      { name: "FireDecorator.ts", import: import("!!raw-loader!./FireDecorator") },
-      { name: "PlacementTool.ts", import: import("!!raw-loader!./PlacementTool") },
-      { name: "FireDecoration.scss", import: import("!!raw-loader!./FireDecoration.scss") },
+      import("!editor-file-loader!./FireDecorationApi"),
+      import("!editor-file-loader!./FireDecorationApp?entry=true"),
+      import("!editor-file-loader!./FireDecorationWidget"),
+      import("!editor-file-loader!./FireDecorator"),
+      import("!editor-file-loader!./PlacementTool"),
+      import("!editor-file-loader!./FireDecoration.scss"),
     ],
     type: "FireDecorationApp.tsx",
   });

@@ -61,6 +61,7 @@ export class ViewSetup {
     const viewFlags = viewState.viewFlags.clone();
     viewFlags.shadows = false;
     viewFlags.grid = false;
+    viewFlags.visibleEdges = false;
     viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
@@ -99,6 +100,7 @@ export class ViewSetup {
       if (imodel.name === "Stadium") {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
         displayStyle.changeBackgroundMapProps({
+          transparency: 0.01, // Temporary fix due to how the planar clip and transparency interact.
           planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
         });
         const excludedModelIds = await ViewSetup.getModelIds(imodel,
