@@ -26,14 +26,15 @@ const drawerOpenSize = 400;
 
 export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   const { readme, walkthrough, onSampleClicked, onTranspiled } = props;
+  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.EnableWalkthrough);
   const [activityState, activityActions] = useActivityState();
   const [entryState] = useEntryState();
   const [showReadme, setShowReadme] = React.useState<boolean>(true);
   const [readmeContent, setReadmeContent] = React.useState<string>("");
   const [readmeLoading, setReadmeLoading] = React.useState(true);
-  const [drawerSize, setDrawerSize] = React.useState<number>(drawerOpenSize);
+  const [drawerSize, setDrawerSize] = React.useState<number>(drawerMinSize);
   const [labels, setLabels] = React.useState<Label[]>([]);
-  const enableWalkthrough = useFeatureToggleClient(FeatureFlags.EnableWalkthrough);
+  const ignoreSizeChange = React.useRef(false);
 
   React.useEffect(() => {
     if (readme) {
@@ -63,11 +64,23 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   }, [activityActions, entryState, showReadme]);
 
   const _onDrawerOpened = React.useCallback(() => {
-    setDrawerSize(drawerOpenSize);
+    setDrawerSize((prev) => {
+      if (prev !== drawerOpenSize) {
+        ignoreSizeChange.current = true;
+        return drawerOpenSize;
+      }
+      return prev;
+    });
   }, []);
 
   const _onDrawerClosed = React.useCallback(() => {
-    setDrawerSize(drawerMinSize);
+    setDrawerSize((prev) => {
+      if (prev !== drawerMinSize) {
+        ignoreSizeChange.current = true;
+        return drawerMinSize;
+      }
+      return prev;
+    });
   }, []);
 
   useEffect(() => {
@@ -88,7 +101,19 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
     });
   }, [showReadme, enableWalkthrough, walkthrough, _onDrawerOpened]);
 
+  useEffect(() => {
+    if (enableWalkthrough && walkthrough?.length) {
+      _onDrawerOpened();
+    } else {
+      _onDrawerClosed();
+    }
+  }, [_onDrawerClosed, _onDrawerOpened, enableWalkthrough, walkthrough]);
+
   const _onDrawerChange = React.useCallback((size: number) => {
+    if (ignoreSizeChange.current) {
+      ignoreSizeChange.current = false;
+      return;
+    }
     if (size < 200) {
       _onDrawerClosed();
     } else {
