@@ -7,7 +7,7 @@ import { expect } from "chai";
 import RealityDataApi from "frontend-samples/reality-data-sample/RealityDataApi";
 import * as TypeMoq from "typemoq";
 import { Range3d } from "@bentley/geometry-core";
-import { ContextRealityModelProps, SpatialClassificationProps } from "@bentley/imodeljs-common";
+import { ContextRealityModelProps, SpatialClassifier, SpatialClassifierFlags, SpatialClassifierFlagsProps, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay, SpatialClassifierProps } from "@bentley/imodeljs-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { I18NNamespace } from "@bentley/imodeljs-i18n";
 import { EmphasizeElementsApi } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
@@ -197,15 +197,22 @@ describe("Classifers", () => {
     if (vp) {
       const crmProp: ContextRealityModelProps = { tilesetUrl: "FakeURL", name: "FakeName" };
       vp.displayStyle.attachRealityModel(crmProp);
-      const flags = new SpatialClassificationProps.Flags();
-      flags.inside = SpatialClassificationProps.Display.On;
-      flags.outside = SpatialClassificationProps.Display.Dimmed;
-      const testClassifier: SpatialClassificationProps.Properties = { isActive: true, modelId: "TestId", expand: 1, name: "Test Name", flags };
+      const flags = new SpatialClassifierFlags(
+        SpatialClassifierInsideDisplay.On,
+        SpatialClassifierOutsideDisplay.Dimmed
+      )
+
+      const testClassifier: SpatialClassifier = new SpatialClassifier(
+        "TestId",
+        "Test Name",
+        flags
+      )
+
       ClassifierApi.updateRealityDataClassifiers(vp, testClassifier);
       const style = vp.displayStyle.clone();
       style.forEachRealityModel(
         (model) => {
-          expect(model.classifiers?.length).to.equal(1);
+          expect(model.classifiers?.size).to.equal(1);
           expect(model.classifiers?.active?.name).to.equal("Test Name");
           expect(model.classifiers?.active?.modelId).to.equal("TestId");
           expect(model.classifiers?.active?.flags.inside).to.equal(1);
