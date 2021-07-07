@@ -209,14 +209,12 @@ describe("Classifers", () => {
       );
 
       ClassifierApi.updateRealityDataClassifiers(vp, testClassifier);
-      const style = vp.displayStyle.clone();
-      style.forEachRealityModel(
-        (model) => {
-          expect(model.classifiers?.active?.name).to.equal("Test Name");
-          expect(model.classifiers?.active?.modelId).to.equal("TestId");
-          expect(model.classifiers?.active?.flags.inside).to.equal(1);
-        }
-      );
+      vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
+        expect(model.classifiers?.size).to.equal(1);
+        expect(model.classifiers?.active?.name).to.equal("Test Name");
+        expect(model.classifiers?.active?.modelId).to.equal("TestId");
+        expect(model.classifiers?.active?.flags.inside).to.equal(1);
+      })
     }
   });
 });
