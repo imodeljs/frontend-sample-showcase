@@ -15,9 +15,9 @@ export function getChangedElementsSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "ChangedElementsApp.tsx", import: import("!!raw-loader!./ChangedElementsApp.tsx") },
-      { name: "ChangedElementsWidget.tsx", import: import("!!raw-loader!./ChangedElementsWidget.tsx") },
-      { name: "ChangedElementsApi.ts", import: import("!!raw-loader!./ChangedElementsApi.ts"), entry: true },
+      import("!editor-file-loader!./ChangedElementsApp?entry=true"),
+      import("!editor-file-loader!./ChangedElementsWidget"),
+      import("!editor-file-loader!./ChangedElementsApi"),
     ],
     iModelList: [SampleIModels.Stadium],
     type: "ChangedElementsApp.tsx",
