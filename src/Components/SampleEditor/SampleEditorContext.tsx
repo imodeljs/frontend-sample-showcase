@@ -8,7 +8,7 @@ import { SampleSpecFile } from "SampleSpec";
 import { EditorProps, SampleEditor } from "./SampleEditor";
 import modules from "./Modules";
 export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked" | "walkthrough"> {
-  files?: () => SampleSpecFile[];
+  files?: () => Promise<SampleSpecFile>[];
   onSampleClicked: (groupName: string | null, sampleName: string | null, wantScroll: boolean) => void;
   walkthrough: () => Promise<Annotation[] | undefined>;
 }
