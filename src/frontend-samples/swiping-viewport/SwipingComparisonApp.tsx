@@ -159,13 +159,8 @@ export default class SwipingViewportApp {
   /** Set the transparency of the reality models using the Feature Override API. */
   public static setRealityModelTransparent(vp: Viewport, transparency: boolean | undefined): void {
     const override = { transparency: (transparency ?? false) ? 1.0 : 0.0 };
-    const style = vp.displayStyle.clone();
-    let index = 0;
-    style.forEachRealityModel((_model) => {
-      if (_model.appearanceOverrides && _model.modelId)
-        _model.appearanceOverrides = _model.appearanceOverrides ? _model.appearanceOverrides.clone(override) : FeatureAppearance.fromJSON(override);
-
-      index++;
+    vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
+      model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone(override) : FeatureAppearance.fromJSON(override);
     });
   }
 }
