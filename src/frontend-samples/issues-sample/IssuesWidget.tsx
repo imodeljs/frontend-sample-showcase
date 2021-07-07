@@ -183,7 +183,7 @@ const IssuesWidget: React.FunctionComponent = () => {
   };
 
   const getLinkedElements = useCallback(async () => {
-    /** Don't refetch if we have already recieved the linked elements */
+    /** Don't refetch if we have already received the linked elements */
     if (!iModelConnection || currentLinkedElements || !currentIssue)
       return;
 
