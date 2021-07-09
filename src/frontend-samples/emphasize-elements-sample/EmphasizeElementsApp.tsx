@@ -23,6 +23,7 @@ const EmphasizeElementsApp: React.FunctionComponent = () => {
 
   /** The sample's render method */
   return (
+    // START VIEWER
     <>
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
@@ -38,6 +39,7 @@ const EmphasizeElementsApp: React.FunctionComponent = () => {
         />
       }
     </>
+    // END VIEWER
   );
 
 };

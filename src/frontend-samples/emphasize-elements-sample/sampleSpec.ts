@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { getViewportOnlySpec } from "frontend-samples/viewport-only-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
 
 export function getEmphasizeElementsSpec(): SampleSpec {
@@ -12,6 +13,12 @@ export function getEmphasizeElementsSpec(): SampleSpec {
     label: "Emphasize Elements",
     image: "emphasize-elements-thumbnail.png",
     description: "How to #emphasize, #hide, #isolate, and #override the #color of elements using the #EmphasizeElements API.",
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./walkthru.md"),
+      prerequisites: [
+        getViewportOnlySpec(),
+      ],
+    }),
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./EmphasizeElementsApi"),

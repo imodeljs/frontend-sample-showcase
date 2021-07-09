@@ -6,26 +6,53 @@
 .action-item {
   padding: 0 10px;
   cursor: pointer;
+  border-left: 1px solid #1e1e1e;
+
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
-}
 
-.readme-button {
-  display: inline-block;
-  vertical-align: middle;
-  color: var(--background-5);
-}
+  >.readme-button {
+    display: inline-block;
+    color: var(--background-5);
 
-.readme-button-active {
-  color: white;
-}
+    &.readme-button-active {
+      color: white;
+    }
+  }
 
-.run-code-button {
+  &.run-code-button {
+    >* {
+      padding: 0 2px;
+    }
+  }
+
   &:hover {
-    .run-code.codicon-debug-start::before {
-      color: #34e32a;
+    .readme-button {
+      color: white;
+    }
+
+    .readme-button::after {
+      font-family: "Segoe WPC", "Segoe UI", sans-serif !important;
+      content: "Readme";
+      padding-left: 4px;
+    }
+
+    &.run-code-button {
+      .run-code.codicon-debug-start::before {
+        color: #34e32a;
+      }
+
+      .run-code.codicon-debug-start::after {
+        font-family: "Segoe WPC", "Segoe UI", sans-serif !important;
+        content: "Build";
+        padding-left: 2px;
+        line-height: 1;
+        font-size: 14px;
+        vertical-align: text-bottom;
+        color: white;
+      }
     }
   }
 }
