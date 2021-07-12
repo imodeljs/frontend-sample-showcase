@@ -1,8 +1,3 @@
-/*---------------------------------------------------------------------------------------------
-* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
-* See LICENSE.md in the project root for license terms and full copyright notice.
-*--------------------------------------------------------------------------------------------*/
-
 import React, { useEffect } from "react";
 import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
 import { ContextRotationId, IModelApp } from "@bentley/imodeljs-frontend";
@@ -10,6 +5,7 @@ import ViewClipApi from "./ViewClipApi";
 import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, useActiveViewport, WidgetState } from "@bentley/ui-framework";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
 import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
+import "./ViewClip.scss";
 
 export const ViewClipWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();

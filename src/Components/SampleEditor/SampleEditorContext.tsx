@@ -18,7 +18,7 @@ const noop = () => { };
 const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props) => {
   const { files: getFiles, readme, onTranspiled, onSampleClicked, walkthrough } = props;
   const [defaultFiles, setDefaultFiles] = useState<{ content: string, name: string }[]>([]);
-  const [defaultEntry, setdefaultEntry] = useState<string | undefined>();
+  const [defaultEntry, setDefaultEntry] = useState<string | undefined>();
   const [annotations, setAnnotations] = useState<Annotation[] | undefined>();
   const resolve = useRef(noop);
 
@@ -27,7 +27,7 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
       Promise.all(getFiles())
         .then((files) => {
           setDefaultFiles(files);
-          setdefaultEntry(files.find((file) => file.entry)?.name);
+          setDefaultEntry(files.find((file) => file.entry)?.name);
         })
         .then(() => {
           resolve.current();

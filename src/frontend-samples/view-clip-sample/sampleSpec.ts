@@ -16,7 +16,7 @@ export function getViewClipSpec(): SampleSpec {
       import("!editor-file-loader!./ViewClipApi"),
       import("!editor-file-loader!./ViewClipApp?entry=true"),
       import("!editor-file-loader!./ViewClipWidget"),
-      import("!editor-file-loader!./ViewClipWidget"),
+      import("!editor-file-loader!./ViewClip.scss"),
     ],
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     type: "ViewClipApp.tsx",
