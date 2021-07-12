@@ -18,4 +18,4 @@ The Changed Elements API returns an object of [ChangedElements](https://www.itwi
 
 While the API allows the comparison of any two Named Versions, this sample allows only comparisons against the latest version of the iModel.
 
-NOTE: There are prerequisites to use the Version Compare APIs.  The user requires a particular role in the project, the client scope must include 'changedelements:read' and 'iModels:read', and Element Change tacking must be enabled on the iModel.  Please see the [API documentation site](https://developer.bentley.com/api-groups/project-delivery/apis/changed-elements/operations/get-comparison/) for more details on the prerequisites and usage.
+NOTE: There are prerequisites to use the Changed Elements APIs.  The user requires a particular role in the project, the client scope must include 'changedelements:read' and 'iModels:read', and Element Change tacking must be enabled on the iModel.  Please see the [API documentation site](https://developer.bentley.com/api-groups/project-delivery/apis/changed-elements/operations/get-comparison/) for more details on the prerequisites and usage.
