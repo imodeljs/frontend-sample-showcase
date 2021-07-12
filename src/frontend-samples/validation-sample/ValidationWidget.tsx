@@ -11,13 +11,13 @@ const ValidationWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [applyZoom, setApplyZoom] = React.useState<boolean>(true);
   const [showDecorator, setShowDecorator] = React.useState<boolean>();
-  const [validationData, setValidationData] = React.useState<any>();
+  const [validationResults, setValidationResults] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
 
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
     const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
-      setValidationData(data);
+      setValidationResults(data);
     });
 
     if (iModelConnection) {
@@ -39,12 +39,12 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   /** When the validationData comes in, get the marker data */
   useEffect(() => {
-    if (iModelConnection && validationData) {
-      ValidationApi.getValidationMarkersData(iModelConnection, validationData).then((mData) => {
+    if (iModelConnection && validationResults) {
+      ValidationApi.getValidationMarkersData(iModelConnection, validationResults).then((mData) => {
         setMarkersData(mData);
       });
     }
-  }, [iModelConnection, validationData]);
+  }, [iModelConnection, validationResults]);
 
   useEffect(() => {
     if (markersData && ValidationApi.decoratorIsSetup()) {

@@ -13,7 +13,7 @@ import { ValidationTableWidgetProvider } from "./ValidationTableWidget";
 const uiProviders = [new ValidationWidgetProvider(), new ValidationTableWidgetProvider()];
 
 const ValidationApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the toggles below to show marker pins or zoom to a validation rule violation.  Click a marker or table entry to review these rule violations.", [SampleIModels.MetroStation]);
+  const sampleIModelInfo = useSampleWidget("Use the toggles below to show marker pins or zoom to a validation rule violation.  Click a marker or table entry to review these rule violations.", [SampleIModels.BayTown]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {

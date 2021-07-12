@@ -10,6 +10,7 @@ import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export default class ValidationClient {
 
+  //START API_EXAMPLE
   // Retrieves a list of Design Validation tests for the project specified by the project id.
   public static async getProjectValidationTests(requestContext: AuthorizedClientRequestContext, projectId: string): Promise<any | undefined> {
     const accessToken = await ValidationClient.getAccessToken();
@@ -34,6 +35,8 @@ export default class ValidationClient {
         return undefined;
       });
   }
+  //END API_EXAMPLE
+
 
   // Retrieves a list of Design Validation runs for the project specified by the project id.
   public static async getProjectValidationRuns(requestContext: AuthorizedClientRequestContext, projectId: string): Promise<any | undefined> {

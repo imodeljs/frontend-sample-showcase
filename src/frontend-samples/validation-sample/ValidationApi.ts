@@ -7,10 +7,11 @@ import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideTyp
 import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
 import { Point3d } from "@bentley/geometry-core";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
-import ValidationDetectionApis from "./ValidationClient";
+import ValidationClient from "./ValidationClient";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 import { BeEvent } from "@bentley/bentleyjs-core";
 import { jsonResultData } from "./ValidationResultJson";
+import { jsonRuleData } from "./ValidationRuleJson";
 
 export default class ValidationApi {
 
@@ -53,8 +54,10 @@ export default class ValidationApi {
   }
 
   public static disableDecorations() {
-    if (null != this._validationPinDecorator)
+    if (null != this._validationPinDecorator) {
       IModelApp.viewManager.dropDecorator(this._validationPinDecorator);
+      this._validationPinDecorator = undefined;
+    }
   }
 
   public static enableZoom() {
@@ -70,25 +73,35 @@ export default class ValidationApi {
     ValidationApi.onValidationDataChanged.raiseEvent(validationData);
   }
 
+  // START VALIDATION_API
   /** The API has been significantly reworked, so for the time being the static jsonData file will be used */
   public static async getValidationData(projectId: string, staticData?: boolean): Promise<any> {
     if (staticData)
       return jsonResultData;
 
 
-    // TODO: UPDATE THIS FOR VALIDATION SAMPLE
     const context = await ValidationApi.getRequestContext();
     if (ValidationApi._validationData[projectId] === undefined) {
-      const runsResponse = await ValidationDetectionApis.getProjectValidationRuns(context, projectId);
+      const runsResponse = await ValidationClient.getProjectValidationRuns(context, projectId);
       if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
         // Get validation result
-        const resultResponse = await ValidationDetectionApis.getValidationUrlResponse(context, runsResponse.validationRuns[0]._links.result.href);
+        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.validationRuns._links.result.href);
         if (resultResponse !== undefined && resultResponse.validationDetectionResult !== undefined)
           ValidationApi._validationData[projectId] = resultResponse;
       }
     }
 
     return ValidationApi._validationData[projectId] ? ValidationApi._validationData[projectId] : jsonResultData;
+  }
+
+  // END VALIDATION_API
+
+  public static getMatchingRule(ruleID: string, staticData?: boolean) {
+    if (staticData) {
+      console.log(ruleID)
+      return jsonRuleData
+    }
+    return undefined
   }
 
   public static async getValidationMarkersData(imodel: IModelConnection, validationData: any): Promise<MarkerData[]> {
@@ -104,7 +117,9 @@ export default class ValidationApi {
 
     for (let index = 0; index < points.length; index++) {
       const title = "Rule Violation(s) found:";
-      const description = `Element: ${limitedValidationData[index].elementLabel}`;
+      const ruleData = ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index]['ruleIndex']].id.toString(), true)
+      console.log(ruleData)
+      const description = `${ruleData?.propertyValueRule.functionParameters.propertyName} must be within range ${ruleData?.propertyValueRule.functionParameters.lowerBound} and ${ruleData?.propertyValueRule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
       const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
       markersData.push(validationMarkerData);
     }
@@ -135,6 +150,7 @@ export default class ValidationApi {
   }
 
   public static visualizeValidationCallback = (validationData: any) => {
+    console.log('test')
     ValidationApi.visualizeViolation(validationData.elementId);
   };
 

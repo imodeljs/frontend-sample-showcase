@@ -55,7 +55,7 @@ class SamplePinMarker extends Marker {
     this.setImage(image);
     this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
     // END MARKERPINIMAGE
-
+    console.log(onMouseButtonCallback)
     this._onMouseButtonCallback = onMouseButtonCallback;
 
     // Keep a pointer back to the marker set
@@ -110,9 +110,12 @@ class SamplePinMarker extends Marker {
 
   /** This method will be called when the user clicks on a marker */
   public onMouseButton(ev: BeButtonEvent): boolean {
+    console.log('Marker clicked 2')
     if (BeButton.Data !== ev.button || !ev.isDown || !ev.viewport || !ev.viewport.view.isSpatialView())
       return true;
 
+    console.log('Attempting callback')
+    console.log(this._onMouseButtonCallback)
     if (this._onMouseButtonCallback) {
       this._onMouseButtonCallback(this.data);
       return true;
@@ -208,6 +211,7 @@ class SampleClusterMarker extends Marker {
   // START CLUSTERMARKERMOUSEBUTTON
   /** This method will be called when the user clicks on a marker */
   public onMouseButton(ev: BeButtonEvent): boolean {
+    console.log('marker clicked')
     if (BeButton.Data !== ev.button || !ev.isDown || !ev.viewport || !ev.viewport.view.isSpatialView())
       return true;
 
@@ -250,7 +254,7 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
 
     let index = 1;
     for (const markerData of markersData) {
-      this.markers.add(new SamplePinMarker(markerData, `Marker ${index++}`, ``, image, this, onMouseButtonCallback));
+      this.markers.add(new SamplePinMarker(markerData, `Marker ${index++}`, ``, image, this, undefined, onMouseButtonCallback));
     }
   }
   // END SETMARKERSDATA

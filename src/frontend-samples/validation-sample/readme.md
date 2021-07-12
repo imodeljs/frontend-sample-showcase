@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates calling [Validation APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-run/) to retrieve validation rules and elements that violate them and present it for review in a viewer app. 
+This sample demonstrates calling [Validation APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-run/) to retrieve validation rules and the elements that violate them and present it for review in a viewer app. 
 
 ## Purpose
 

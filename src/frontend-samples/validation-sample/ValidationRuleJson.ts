@@ -1,6 +1,7 @@
+// START RULE_DATA
 export const jsonRuleData = {
   "propertyValueRule": {
-    "name": "TestRule1",
+    "name": "Pitch Range",
     "description": "Rule Description",
     "creationDateTime": "2021-06-17T14:45:47.753Z",
     "modificationDateTime": "2021-06-24T14:49:59.399Z",
@@ -23,6 +24,7 @@ export const jsonRuleData = {
       "lastModifiedBy": {
         "href": "https://api.bentley.com/projects/38b7e366-bc20-4bb1-9572-0797cf5221fd/members/fd4c4a79-e24a-4b35-9faf-f4fa6f4fa62b"
       }
-    }
+    },
   }
 }
+//END RULE_DATA

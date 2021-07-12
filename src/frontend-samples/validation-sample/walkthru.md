@@ -1,23 +1,48 @@
-# Retrieving Violations
+# Retrieving Rules and Violations
 
-After using the Validation API to retrieve the element IDs of all elements in violation of a validation rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of.
+In order to retrieve the list of `validation rules`, we need to send a request to the [Validation API](https://developer.bentley.com/api-groups/project-delivery/apis/validation/). The Validation API allows you to create, run, and evaluate the results of validation rules. These rules are applied to each element when a test is run, and any elements found to be in violation of the rules are returned, along with the specific test that the element failed.
 
-In addition, an element is able to be selected in the table, which will cause that element to be `emphasized`, which causes all other elements to become partially transparent. The selected element will have it's color overwritten to be red. If the zoom toggle is not disabled, the selected violating element will be zoomed in on.
+Since the sample showcase is a read only envirornment, the sample itself does not attempt to create a test, instead using hardcoded data that matches the format of a response from the API.
 
-[_metadata_:annotation]:- "VIOLATION_VISUALIZATION"
+[_metadata_:annotation]:- "VALIDATION_API"
+
+# Example API Call
+
+Above is an example of how to make a request from the API. In this case, a request is being made to retrieve a list of the different tests that exist in the current project. The request url is what specifies the request being made, in this case `https://api.bentley.com/projects/${projectId}/validation/tests` is specifying that a list of validation tests should be returned from the current project. Also note that we are attaching an access token to our request options, as we need to have specific priviledges in order to access the test information.
+
+[_metadata_:annotation]:- "API_EXAMPLE"
+
+# Validation Rule Format
+
+Above is the format for an API response to requesting data about a specific test. The `templateId` is the id of the test that we requested information about. The `functionParameters` specifies what the test is evaluating. In this case, we can see that all elements being tested must have a pitch value falling between 1 and 2. `ecSchema`, `ecClass`, and `ecWhere` all specify the attributes of elements that the test will be applied to. In this case, the test is only being run on elements with an ecSchema of ArchitecturalPhysical, a ecClass of Door, and a Roll equal to 10.  
+
+Note again that these values currently do not match the actual element ids being shown from the imodel, they are just being used to demonstrate the format of the API.
+
+[_metadata_:annotation]:- "RULE_DATA"
+
+# Validation Result Format
+
+Above is the format for an API response to requesting data about the result of running a test. The response has two parts, `propertyValueResult` shows the elements in violation of specific rules, and `ruleList` gives the ids of all the rules that are being violated.
+
+Each element of `propertyValueResult` has four parts. First and second are the id and label of the element that violated a rule. Third is the index of the rule in the ruleList, which can be used to get more information about the specific rule that was violated. Fourth is the element's value for the attribute that was being tested.
+
+The `ruleList` has two parts. The first is the id of the rule, which can be used to request additional data about the test from the API. The second is the name of the rule.
+[_metadata_:annotation]:- "RESULT_DATA"
+
 
 # Violation Table
 
-After using the Validation API to retrieve the element IDs of all elements in violation of a validation rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of.
+After using the Validation API to retrieve all of the active rule information and the element IDs of all elements in violation of a rule, the sample combines these two data sources in a table. First, we can consult the list of all elements in violation of a rule, which also provides the id of the rule that was violated by the element. 
 
-In addition, an element is able to be selected in the table, which will cause that element to be `emphasized`, which causes all other elements to become partially transparent. The selected element will have it's color overwritten to be red. If the zoom toggle is not disabled, the selected violating element will be zoomed in on.
+With the rule id, we can make another API call requesting more information about the rule, such as the value or range of values that are acceptable for the rule or the ecClass of elements that the rule is being applied to.
 
 [_metadata_:annotation]:- "VIOLATION_TABLE"
 
 # Violation Visualization
 
-After using the Validation API to retrieve the element IDs of all elements in violation of a validation rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of.
+After the user selects a specific element from the list of elements in violation of a rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of. For more information on marker pins, there is a dedicated `Marker Pin Sample` as part of the sample showcase.
 
-In addition, an element is able to be selected in the table, which will cause that element to be `emphasized`, which causes all other elements to become partially transparent. The selected element will have it's color overwritten to be red. If the zoom toggle is not disabled, the selected violating element will be zoomed in on.
+In addition, an element is able to be selected in the table, which will cause that element to be `emphasized`, which causes all other elements to become partially transparent. The selected element will have it's color overwritten to be red. If the zoom toggle is not disabled, the selected violating element will be zoomed in on. For more information on emphasizing and overwriting element colors, there is a dedicated `Emphasize Element Sample` as part of the sample showcase.
+
 
 [_metadata_:annotation]:- "VIOLATION_VISUALIZATION"
