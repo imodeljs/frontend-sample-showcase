@@ -36,23 +36,25 @@ export const ChangedElementsWidget: React.FunctionComponent = () => {
     .find((version) => version.changeSetId === iModelConnection?.changeSetId)?.name
     ?? "Error: No Named Version found for active changeset";
 
-  return (<>
-    <span className={"sample-widget-overlay"}>
-      {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
-    </span>
-    <label>Comparing against: {currentVersionName}</label>
-    <hr />
-    <div className="sample-options-2col">
-      <label>Select Version</label>
-      <Select
-        options={namedVersionsOptions}
-        value={ChangedElementsApi.namedVersions.indexOf(selectVersion)}
-        disabled={isRequest}
-        onChange={(event) => {
-          setVersion(ChangedElementsApi.namedVersions[Number.parseInt(event.target.value, 10)]);
-        }} />
+  return (
+    <div className={"sample-options"}>
+      <span className={"sample-widget-overlay"}>
+        {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
+      </span>
+      <label>Comparing against: {currentVersionName}</label>
+      <hr />
+      <div className="sample-options-2col">
+        <label>Select Version</label>
+        <Select
+          options={namedVersionsOptions}
+          value={ChangedElementsApi.namedVersions.indexOf(selectVersion)}
+          disabled={isRequest}
+          onChange={(event) => {
+            setVersion(ChangedElementsApi.namedVersions[Number.parseInt(event.target.value, 10)]);
+          }} />
+      </div>
     </div>
-  </>);
+  );
 };
 
 export class ChangedElementsWidgetProvider implements UiItemsProvider {
