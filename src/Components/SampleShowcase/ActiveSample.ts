@@ -3,10 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import type { Annotation } from "@bentley/monaco-editor";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { sampleManifest } from "sampleManifest";
-import { SampleSpec, SampleSpecFile } from "SampleSpec";
+import { SampleSpec, SampleSpecFile, Walkthrough } from "SampleSpec";
 
 interface SpecResolveResult {
   spec: SampleSpec;
@@ -16,6 +17,7 @@ interface SpecResolveResult {
 
 export class ActiveSample {
   private _spec: SampleSpec;
+  private _walkthrough?: () => Walkthrough;
   public group: string;
   public name: string;
   public imodel: SampleIModels;
@@ -27,7 +29,7 @@ export class ActiveSample {
 
   constructor(group?: string | null, name?: string | null, imodel?: SampleIModels | null) {
     const params = new URLSearchParams(window.location.search);
-    if (!group || !name) {
+    if (!group && !name) {
       group = params.get("group");
       name = params.get("sample");
       imodel = params.get("imodel") as SampleIModels;
@@ -41,6 +43,7 @@ export class ActiveSample {
     this.iTwinViewerReady = result.spec.iTwinViewerReady;
     this.getFiles = result.spec.files;
     this.getReadme = result.spec.readme;
+    this._walkthrough = result.spec.walkthrough;
     this.type = result.spec.type || "";
 
     updateURLParams(this.group, this.name, this.imodel);
@@ -51,14 +54,52 @@ export class ActiveSample {
   }
 
   private resolveSpec(group?: string | null, name?: string | null): SpecResolveResult {
-    const foundGroup = sampleManifest.find((v) => v.groupName === group) || sampleManifest.find((v) => v.groupName === sampleManifest[0].groupName);
-    const foundSpec = foundGroup?.samples.find((v) => v.name === name) || foundGroup?.samples.find((v) => v.name === sampleManifest[0].samples[0].name);
+    const foundGroup = (group ? sampleManifest.find((v) => v.groupName === group) : sampleManifest.find((v) => v.samples.some((sample) => sample.name === name))) || sampleManifest[0];
+    const foundSpec = foundGroup.samples.find((v) => v.name === name) || foundGroup.samples[0];
     return {
-      spec: foundSpec!,
-      name: foundSpec!.name,
-      group: foundGroup!.groupName,
+      spec: foundSpec,
+      name: foundSpec.name,
+      group: foundGroup.groupName,
     };
   }
+
+  public getWalkthrough = async () => {
+    if (this._walkthrough) {
+      const walkthrough = this._walkthrough();
+      const annotations = (await walkthrough.annotations).default;
+      const initialStep = this.createInitialStep(this._spec.label, walkthrough.prerequisites);
+
+      return [initialStep, ...annotations];
+    }
+    return undefined;
+  };
+
+  private createInitialStep = (name: string, prerequisites?: SampleSpec[]) => {
+    const markdown = [
+      "**Getting Started**  ",
+      `This panel will give you a guided tour of the ${name.split("-").map((word) => word[0].toUpperCase() + word.substr(1)).join(" ")} code sample.`,
+      "",
+      "Please use the → button below to start the tour. Or you can browse through and jump directly to any step using the control above. During the tour, the ◯ button will recenter the code editor.",
+      "",
+    ];
+
+    if (prerequisites) {
+      markdown.push("**Prerequisites**  ");
+      markdown.push("This walkthrough may cover more advanced concepts. Below is a list of samples that will introduce concepts that you should be familiar with and will not be discussed in this sample.");
+      markdown.push("");
+      prerequisites.forEach((sample) => {
+        markdown.push(`- [${sample.label.split("-").map((word) => word[0].toUpperCase() + word.substr(1)).join(" ")}](/?sample=${sample.name})`);
+      });
+    }
+
+    const initialStep: Annotation = {
+      index: "0",
+      title: "Welcome",
+      markdown: markdown.join("\n"),
+    };
+
+    return initialStep;
+  };
 }
 
 const updateURLParams = (group: string, sample: string, imodel?: string) => {

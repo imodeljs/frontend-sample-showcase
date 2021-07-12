@@ -2,19 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
+import { ErrorIndicator } from "@bentley/monaco-editor";
 import React from "react";
-import MonacoEditor, { useModuleState } from "@bentley/monaco-editor";
-import modules from "./Modules";
+import { Label } from "./Drawer";
 
-const MonacoMemo = () => {
-  const moduleActions = useModuleState()[1];
-
-  React.useEffect(() => {
-    moduleActions.setModules(modules);
-  }, [moduleActions]);
-
-  return <MonacoEditor></MonacoEditor>;
+export const ProblemsLabel: Label = {
+  value: "Problems",
+  component: <>
+    <span>Problems</span>
+    <ErrorIndicator />
+  </>,
 };
 
-export default React.memo(MonacoMemo, () => true);
+export const WalkthroughLabel: Label = {
+  value: "Walkthrough",
+  component: <span>Walkthrough</span>,
+};
