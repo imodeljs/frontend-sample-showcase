@@ -1,3 +1,16 @@
+.sample-widget-ui {
+  padding: 8px;
+  color: var(--buic-foreground-body);
+}
+
+.sample-options-2col {
+  display: grid;
+  row-gap: 8px;
+  column-gap: 8px;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+}
+
 .sample-widget-overlay {
   float: left;
   display: flex;

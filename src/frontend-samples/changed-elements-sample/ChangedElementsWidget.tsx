@@ -8,7 +8,6 @@ import { Version } from "@bentley/imodelhub-client";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { Select, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
-import "common/samples-common.scss";
 import * as React from "react";
 import "./ChangedElements.scss";
 import { ChangedElementsApi } from "./ChangedElementsApi";
@@ -37,20 +36,22 @@ export const ChangedElementsWidget: React.FunctionComponent = () => {
     ?? "Error: No Named Version found for active changeset";
 
   return (<>
-    <span className={"sample-widget-overlay"}>
-      {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
-    </span>
-    <label>Comparing against: {currentVersionName}</label>
-    <hr />
-    <div className="sample-options-2col">
-      <label>Select Version</label>
-      <Select
-        options={namedVersionsOptions}
-        value={ChangedElementsApi.namedVersions.indexOf(selectVersion)}
-        disabled={isRequest}
-        onChange={(event) => {
-          setVersion(ChangedElementsApi.namedVersions[Number.parseInt(event.target.value, 10)]);
-        }} />
+    <div className="sample-widget-ui">
+      <span className={"sample-widget-overlay"}>
+        {isRequest ? <Spinner size={SpinnerSize.Medium} /> : <></>}
+      </span>
+      <label style={{ color: "#fff" }}>Comparing against: {currentVersionName}</label>
+      <hr />
+      <div className="sample-options-2col">
+        <label style={{ color: "#fff" }}>Select Version</label>
+        <Select
+          options={namedVersionsOptions}
+          value={ChangedElementsApi.namedVersions.indexOf(selectVersion)}
+          disabled={isRequest}
+          onChange={(event) => {
+            setVersion(ChangedElementsApi.namedVersions[Number.parseInt(event.target.value, 10)]);
+          }} />
+      </div>
     </div>
   </>);
 };
