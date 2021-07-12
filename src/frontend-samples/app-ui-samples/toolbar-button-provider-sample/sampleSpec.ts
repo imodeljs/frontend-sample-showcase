@@ -17,7 +17,6 @@ export function getToolbarButtonSample(): SampleSpec {
       import("!editor-file-loader!./ToolbarButtonProvider"),
       import("!editor-file-loader!./ToolbarButtonApp?entry=true"),
     ],
-    iTwinViewerReady: true,
     iModelList: [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "ToolbarButtonApp.tsx",
   });

@@ -11,7 +11,6 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     label: "Unified Selection Tree",
     image: "unified-selection-tree-thumbnail.png",
     description: "#Tree #sample showing how to use #events that interact with a #viewport using #useUnifiedSelectionTreeEventHandler.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./UnifiedSelectionTreeWidget"),

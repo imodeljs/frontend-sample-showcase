@@ -11,7 +11,6 @@ export function getViewAttributesSpec(): SampleSpec {
     label: "View Attributes",
     image: "view-attributes-thumbnail.png",
     description: "How to get and set various #ViewFlags and other #view attributes including: #RenderMode, #Skybox, #BackgroundMap, #Grid, #ACS, and others.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./ViewAttributesApi"),

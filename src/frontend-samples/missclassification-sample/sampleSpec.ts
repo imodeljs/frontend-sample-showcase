@@ -13,7 +13,6 @@ export function getMisclassificationSpec(): SampleSpec {
     image: "classification.png",
     description: "Uses the design #validation api to get and visualize #misclassified elements from a #misclassification test ran in the #machine #learning api.",
     readme: async () => import("!!raw-loader!./readme.md"),
-    iTwinViewerReady: true,
     files: () => [
       import("!editor-file-loader!./MisclassificationApi"),
       import("!editor-file-loader!./MisclassificationApp.tsx?entry=true"),

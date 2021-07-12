@@ -18,7 +18,6 @@ export function getViewClipSpec(): SampleSpec {
       import("!editor-file-loader!./ViewClipWidget"),
       import("!editor-file-loader!./ViewClipWidget"),
     ],
-    iTwinViewerReady: true,
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House],
     type: "ViewClipApp.tsx",
     description: "How to add a #ClipVolume, #ClipPlane, and #ViewClipDecorationProvider to a view to #clip the geometry",

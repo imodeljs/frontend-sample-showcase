@@ -12,7 +12,6 @@ export function getThematicDisplaySpec(): SampleSpec {
     label: "Thematic Display",
     image: "thematic-display-thumbnail.png",
     description: "Renders using #thematic display by changing the #styles.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./ThematicDisplayApi"),
