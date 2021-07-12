@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 const TITLE_REGEX = /#\s+(.*)/i;
 const METADATA_REGEX = /(?:\[_metadata_:.*\]:-\s*\".*\")/i;
-const SKIP_REGEX = /\[_metadata_:skip\]:-\s*\"(.*)\"/i
+const INDEX_REGEX = /\[_metadata_:index\]:-\s*\"([0-9]+)\"/i
+const MINOR_REGEX = /\[_metadata_:minor\]:-\s*\"(true|false)\"/i
 const ANNOTATION_REGEX = /\[_metadata_:annotation\]:-\s*\"(.*)\"/i
 
 
@@ -40,27 +41,33 @@ class AnnotationParser {
   }
 
   static deserializeStep(metadata, markdown) {
-    let id, skip, title;
+    let id, index, title, minor;
 
-    for (let index = 0; index < metadata.length; index++) {
-      let match = metadata[index].match(ANNOTATION_REGEX);
+    for (let i = 0; i < metadata.length; i++) {
+      let match = metadata[i].match(ANNOTATION_REGEX);
       if (match && match[1]) {
-        id = match[1].trim();
+        const parsed = match[1].trim();
+        id = parsed !== "NONE" ? parsed : undefined;
       }
-      match = metadata[index].match(SKIP_REGEX);
+      match = metadata[i].match(INDEX_REGEX);
       if (match && match[1]) {
-        skip = Boolean(match[1])
+        index = parseInt(match[1].trim());
       }
-      match = metadata[index].match(TITLE_REGEX);
+      match = metadata[i].match(TITLE_REGEX);
       if (match && match[1]) {
         title = match[1].trim();
+      }
+      match = metadata[i].match(MINOR_REGEX);
+      if (match && match[1]) {
+        minor = Boolean(match[1].trim());
       }
     }
 
     const step = {
       id,
       title,
-      skip,
+      index,
+      minor,
       markdown: markdown.join("\n").trim(),
     }
 

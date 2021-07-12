@@ -8,8 +8,8 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { HorizontalTabs, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwinui-react";
-import { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueGet } from "./IssuesClient";
-import IssuesApi from "./IssuesApi";
+import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
+import IssuesApi, { LabelWithId } from "./IssuesApi";
 import "./Issues.scss";
 
 const thumbnails: Map<string, Blob> = new Map<string, Blob>();
@@ -29,7 +29,9 @@ const IssuesWidget: React.FunctionComponent = () => {
   const [issueAuditTrails, setIssueAuditTrails] = useState<{ [displayName: string]: AuditTrailEntryGet[] }>({});
   /** The Issue to display when the user selects, if undefined, none is shown */
   const [currentIssue, setCurrentIssue] = useState<IssueGet>();
-  /** The active tab when the issue is being shown */
+  /** The Elements linked to the issue */
+  const [currentLinkedElements, setLinkedElements] = useState<LabelWithId[]>();
+  /** The active tab when the issue is being shown, -1 for none */
   const [activeTab, setActiveTab] = useState<number>(0);
 
   /** Initialize Decorator */
@@ -47,21 +49,20 @@ const IssuesWidget: React.FunctionComponent = () => {
   useEffect(() => {
     (async () => {
       if (iModelConnection && issues && issues.length === 0) {
-        const client = await IssuesApi.getClient();
-        const issuesResp = await client.getProjectIssues({ projectId: iModelConnection.contextId! });
+        const issuesResp = await IssuesClient.getProjectIssues(iModelConnection.contextId!);
 
-        const promises = new Array<Promise<any>>();
-        issuesResp.data.issues?.forEach((issue) => {
+        const promises = new Array<Promise<IssueDetailsGet | undefined>>();
+        issuesResp?.issues?.forEach((issue) => {
           if (issue.id) {
-            const issueDetails = client.id.getIssueDetails(issue.id);
+            const issueDetails = IssuesClient.getIssueDetails(issue.id);
             promises.push(issueDetails);
           }
         });
 
         const issueResponses = await Promise.all(promises);
         const iss = issueResponses
-          .filter((issue) => issue.data?.issue !== undefined)
-          .map((issue) => issue.data.issue as IssueGet);
+          .filter((issue) => issue?.issue !== undefined)
+          .map((issue) => issue?.issue as IssueGet);
 
         setIssues(iss);
       }
@@ -72,18 +73,17 @@ const IssuesWidget: React.FunctionComponent = () => {
   useEffect(() => {
     issues.map(async (issue) => {
       if (issue.id) {
-        const client = await IssuesApi.getClient();
-        const metaData = await client.id.getIssueAttachments(issue.id);
-        const previewAttachmentId = metaData.data.attachments ? metaData.data.attachments[0]?.id : undefined;
+        const metaData = await IssuesClient.getIssueAttachments(issue.id);
+        const previewAttachmentId = metaData?.attachments ? metaData.attachments[0]?.id : undefined;
         if (previewAttachmentId !== undefined && !thumbnails.has(previewAttachmentId)) {
-          const attachmentResp = await client.id.getAttachmentById(issue.id, previewAttachmentId);
-          const binaryImage = attachmentResp.data as unknown as Blob;
-          setPreviewImages((prevState) => ({ ...prevState, [issue.displayName as string]: binaryImage }));
+          const binaryImage = await IssuesClient.getAttachmentById(issue.id, previewAttachmentId);
+          if (binaryImage)
+            setPreviewImages((prevState) => ({ ...prevState, [issue.displayName as string]: binaryImage }));
         }
 
         /** Set the rest of the attachments in the attachmentMetaData */
-        if (metaData.data.attachments) {
-          setIssueAttachmentMetaData((prevState) => ({ ...prevState, [issue.displayName as string]: metaData.data.attachments!.length > 1 ? metaData.data.attachments!.slice(1) : [] }));
+        if (metaData?.attachments) {
+          setIssueAttachmentMetaData((prevState) => ({ ...prevState, [issue.displayName as string]: metaData.attachments!.length > 1 ? metaData.attachments!.slice(1) : [] }));
         }
       }
     });
@@ -182,20 +182,33 @@ const IssuesWidget: React.FunctionComponent = () => {
     return yiq >= 190 ? "#000000" : "#FFFFFF";
   };
 
+  const getLinkedElements = useCallback(async () => {
+    /** Don't refetch if we have already received the linked elements */
+    if (!iModelConnection || currentLinkedElements || !currentIssue)
+      return;
+
+    if (!currentIssue.item?.id) {
+      setLinkedElements([]);
+      return;
+    }
+
+    const elementKeySet = await IssuesApi.getElementKeySet(currentIssue.item.id);
+    const elementInfo = await IssuesApi.getElementInfo(iModelConnection, elementKeySet);
+    setLinkedElements(elementInfo);
+  }, [currentIssue, currentLinkedElements, iModelConnection]);
+
   /** call the client to get the issue attachments */
   const getIssueAttachments = useCallback(async () => {
     /** If the attachments have already been retrieved don't refetch*/
     if (!currentIssue || (currentIssue.displayName && issueAttachments[currentIssue.displayName]))
       return;
 
-    const client = await IssuesApi.getClient();
-
     /** Grab the attachments */
     const metaData = issueAttachmentMetaData[currentIssue.displayName!];
     metaData?.forEach(async (attachment) => {
-      const attachmentResp = await client.id.getAttachmentById(currentIssue.id!, attachment.id!);
-      const image = attachmentResp.data as unknown as Blob;
-      setIssueAttachments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: currentIssue.displayName! in prevState ? [...prevState[currentIssue.displayName!], image] : [image] }));
+      const image = await IssuesClient.getAttachmentById(currentIssue.id!, attachment.id!);
+      if (image)
+        setIssueAttachments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: currentIssue.displayName! in prevState ? [...prevState[currentIssue.displayName!], image] : [image] }));
     });
   }, [currentIssue, issueAttachmentMetaData, issueAttachments]);
 
@@ -206,9 +219,8 @@ const IssuesWidget: React.FunctionComponent = () => {
       return;
 
     /** Grab the comments */
-    const client = await IssuesApi.getClient();
-    const commentsResponse = await client.id.getIssueComments(currentIssue.id!);
-    const comments = commentsResponse.data.comments ? commentsResponse.data.comments : [];
+    const commentsResponse = await IssuesClient.getIssueComments(currentIssue.id!);
+    const comments = commentsResponse?.comments ? commentsResponse?.comments : [];
 
     /** Set the comments */
     setIssueComments((prevState) => ({ ...prevState, [currentIssue.displayName as string]: comments }));
@@ -221,17 +233,19 @@ const IssuesWidget: React.FunctionComponent = () => {
       return;
 
     /** Grab the comments */
-    const client = await IssuesApi.getClient();
-    const auditResponse = await client.id.getIssueAuditTrail(currentIssue.id!);
-    const auditTrail = auditResponse.data.auditTrailEntries ? auditResponse.data.auditTrailEntries : [];
+    const auditResponse = await IssuesClient.getIssueAuditTrail(currentIssue.id!);
+    const auditTrail = auditResponse?.auditTrailEntries ? auditResponse.auditTrailEntries : [];
 
     /** Set the audit trail for the currentIssue */
     setIssueAuditTrails((prevState) => ({ ...prevState, [currentIssue.displayName as string]: auditTrail }));
   }, [currentIssue, issueAuditTrails]);
 
   /** Make the client request when the tab for the issue is selected. */
-  const onTabSelected = (index: number) => {
-    switch (index) {
+  useEffect(() => {
+    switch (activeTab) {
+      case 0:
+        getLinkedElements();
+        break;
       /** Attachments tab */
       case 1:
         getIssueAttachments();
@@ -242,8 +256,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         getIssueAuditTrail();
         break;
     }
-    setActiveTab(index);
-  };
+  }, [activeTab, getIssueAttachments, getIssueAuditTrail, getIssueComments, getLinkedElements]);
 
   const issueSummaryContent = () => {
     const columns = [{
@@ -266,6 +279,24 @@ const IssuesWidget: React.FunctionComponent = () => {
       { prop: "Assignees", val: currentIssue?.assignees?.reduce((currentString, nextAssignee) => `${currentString} ${nextAssignee.displayName},`, "").slice(0, -1) },
     ];
     return (<Table className={"table"} columns={columns} data={data} emptyTableContent='No data.'></Table>);
+  };
+
+  const issueLinkedElements = () => {
+    if (!iModelConnection || !currentLinkedElements)
+      return <></>;
+
+    return (
+      <div className={"issue-linked-container"}>
+        <Subheading className={"issue-linked-title"}>{`Linked Elements`}</Subheading>
+        {currentLinkedElements.map((label) => {
+          // eslint-disable-next-line react/jsx-key
+          return (<div className={"issue-linked-element"} onClick={() => viewport?.zoomToElements(label.id)}>
+            <div className={"icon icon-item"}></div>
+            <div className={"issues-linked-element-label"}>{label.displayValue}</div>
+          </div>);
+        })}
+      </div>
+    );
   };
 
   const issueAttachmentsContent = React.useCallback(() => {
@@ -298,26 +329,16 @@ const IssuesWidget: React.FunctionComponent = () => {
       return "";
 
     switch (action) {
-      case ("Created"):
-        return "#4585a5";
-      case ("Closed"):
-        return "#f7706c";
-      case ("Opened"):
-        return "#b1c854";
-      case ("File Attached"):
-        return "#73c7c1";
-      case ("File Removed"):
-        return "#f7963e";
-      case ("Modified"):
-        return "#6ab9ec";
-      case ("Assigned"):
-        return "#ffc335";
-      case ("Status"):
-        return "#a3779f";
-      case ("Form Raised"):
-        return "#84a9cf";
-      default:
-        return "#c8c2b4";
+      case ("Created"): return "#4585a5";
+      case ("Closed"): return "#f7706c";
+      case ("Opened"): return "#b1c854";
+      case ("File Attached"): return "#73c7c1";
+      case ("File Removed"): return "#f7963e";
+      case ("Modified"): return "#6ab9ec";
+      case ("Assigned"): return "#ffc335";
+      case ("Status"): return "#a3779f";
+      case ("Form Raised"): return "#84a9cf";
+      default: return "#c8c2b4";
     }
   };
 
@@ -336,23 +357,11 @@ const IssuesWidget: React.FunctionComponent = () => {
       case "Status":
         actionText = (<span>set to {auditTrail.changes![0].newValue}</span>);
         break;
-      case "Closed":
-        break;
       case "Opened":
         actionText = (<span>by&nbsp;{auditTrail.changeBy}</span>);
         break;
-      case "Draft":
-        break;
-      case "Deleted":
-        break;
-      case "Undeleted":
-        break;
       case "File Attached":
         actionText = (<span>&quot;{auditTrail.changes![0].newValue?.substring(0, 25)}{auditTrail.changes![0].newValue!.length > 25 ? "..." : ""}&quot;</span>);
-        break;
-      case "File Removed":
-        break;
-      case "Form Raised":
         break;
     }
     return (<><span className="issue-audit-label">&nbsp;{auditTrail.action}&nbsp;</span>{actionText}</>);
@@ -450,7 +459,7 @@ const IssuesWidget: React.FunctionComponent = () => {
                     }
                     <div className="issue-status" style={{ borderTop: `14px solid ${issueStatusColor(issue)}`, borderLeft: `14px solid transparent` }} />
                   </div>
-                  <div className="issue-info" onClick={() => setCurrentIssue(issue)}>
+                  <div className="issue-info" onClick={() => { setCurrentIssue(issue); setActiveTab(0); }}>
                     <Leading className={"issue-title"}>{`${issue.number} | ${issue.subject}`}</Leading>
                     <div className="issue-subtitle">
                       <span className={"assignee-display-name"}>{issue.assignee?.displayName}</span>
@@ -469,15 +478,16 @@ const IssuesWidget: React.FunctionComponent = () => {
         {currentIssue &&
           <div className={"issue-details"}>
             <div className={"header"}>
-              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setActiveTab(0); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
+              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
               <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`${currentIssue.number} | ${currentIssue.subject}`}</Subheading>
             </div>
 
-            <HorizontalTabs type='default' labels={["Summary", "Attachments", "Audit Trail"]} activeIndex={activeTab} onActivateTab={onTabSelected} />
+            <HorizontalTabs type='default' labels={["Summary", "Attachments", "Audit Trail"]} activeIndex={activeTab} onActivateTab={(index) => setActiveTab(index)} />
             <div className={"issue-tab-content"}>
               {activeTab === 0 &&
                 <div className={"issue-summary"}>
                   {issueSummaryContent()}
+                  {issueLinkedElements()}
                 </div>
               }
               {activeTab === 1 &&

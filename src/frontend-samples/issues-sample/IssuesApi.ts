@@ -3,31 +3,37 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { Point3d } from "@bentley/geometry-core";
-import { ApiConfig, IssueGet, IssuesClient } from "./IssuesClient";
-import { AuthorizationClient } from "@itwinjs-sandbox";
-import { AccessToken } from "@bentley/itwin-client";
+import { Presentation } from "@bentley/presentation-frontend";
+import { InstanceKey, KeySet, KeySetJSON, LabelDefinition } from "@bentley/presentation-common";
+import { IssueGet } from "./IssuesClient";
+
+export interface LabelWithId extends LabelDefinition {
+  id: string;
+}
 
 export default class IssuesApi {
-  private static _issueClient: IssuesClient<AccessToken>;
   public static _issuesPinDecorator?: MarkerPinDecorator;
 
-  public static async getClient() {
-    if (!IssuesApi._issueClient) {
-      // Create the config the client uses to authenticate
-      const config: ApiConfig<AccessToken> = {
-        securityWorker: (accessToken: AccessToken | null) => accessToken ? { headers: { ["Authorization"]: accessToken.toTokenString() } } : undefined,
-      };
+  public static async getElementKeySet(elementsId: string) {
+    if (!elementsId || elementsId.trim().length === 0)
+      return new KeySet();
 
-      /** Create the token, pass in the config and token used to authenticate */
-      const token = await (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
-      IssuesApi._issueClient = new IssuesClient(config);
-      IssuesApi._issueClient.setSecurityData(token);
-    }
+    const keySetJSON: KeySetJSON = JSON.parse(elementsId);
+    return KeySet.fromJSON(keySetJSON);
+  }
 
-    return IssuesApi._issueClient;
+  public static async getElementInfo(iModel: IModelConnection, keySet: KeySet): Promise<LabelWithId[]> {
+    const instanceKeys: InstanceKey[] = [];
+    keySet.instanceKeys.forEach((currentIds: Set<string>, key: string) => {
+      currentIds.forEach((value: string) => { instanceKeys.push ({className: key, id: value}); });
+    });
+
+    const labels = await Presentation.presentation.getDisplayLabelDefinitions({imodel: iModel, keys: instanceKeys });
+
+    return labels.map((label, index) => ({ ...label, id: instanceKeys[index].id}));
   }
 
   public static decoratorIsSetup() {

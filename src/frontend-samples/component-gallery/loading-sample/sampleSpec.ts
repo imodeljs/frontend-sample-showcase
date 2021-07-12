@@ -15,7 +15,7 @@ export function getLoadingSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Loading.tsx", import: import("!!raw-loader!./Loading"), entry: true },
+      import("!editor-file-loader!./Loading?entry=true"),
     ],
     type: "Loading.tsx",
   });

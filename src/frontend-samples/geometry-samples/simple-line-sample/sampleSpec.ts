@@ -16,12 +16,12 @@ export function getSimpleLineSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "SimpleLineApi.ts", import: import("!!raw-loader!./SimpleLineApi") },
-      { name: "SimpleLineApp.tsx", import: import("!!raw-loader!./SimpleLineApp"), entry: true },
-      { name: "SimpleLineWidget.tsx", import: import("!!raw-loader!./SimpleLineWidget") },
-      { name: "GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
-      { name: "InteractivePointMarker.ts", import: import("!!raw-loader!./InteractivePointMarker") },
-      { name: "SimpleLine.scss", import: import("!!raw-loader!./SimpleLine.scss") },
+      import("!editor-file-loader!./SimpleLineApi"),
+      import("!editor-file-loader!./SimpleLineApp?entry=true"),
+      import("!editor-file-loader!./SimpleLineWidget"),
+      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!./InteractivePointMarker"),
+      import("!editor-file-loader!./SimpleLine.scss"),
     ],
     type: "SimpleLineApp.tsx",
   });

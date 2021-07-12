@@ -16,12 +16,12 @@ export function getSimpleAnimatedSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "SimpleAnimatedApi.ts", import: import("!!raw-loader!./SimpleAnimatedApi") },
-      { name: "SimpleAnimatedApp.tsx", import: import("!!raw-loader!./SimpleAnimatedApp"), entry: true },
-      { name: "ConwaysGameOfLife.ts", import: import("!!raw-loader!./ConwaysGameOfLife") },
-      { name: "SimpleAnimatedWidget.tsx", import: import("!!raw-loader!./SimpleAnimatedWidget") },
-      { name: "GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
-      { name: "SimpleAnimated.scss", import: import("!!raw-loader!./SimpleAnimated.scss") },
+      import("!editor-file-loader!./SimpleAnimatedApi"),
+      import("!editor-file-loader!./SimpleAnimatedApp?entry=true"),
+      import("!editor-file-loader!./ConwaysGameOfLife"),
+      import("!editor-file-loader!./SimpleAnimatedWidget"),
+      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!./SimpleAnimated.scss"),
     ],
     type: "SimpleAnimatedApp.tsx",
   });

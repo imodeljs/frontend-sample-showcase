@@ -16,11 +16,11 @@ export function getExplodeSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "ExplodeApi.ts", import: import("!!raw-loader!./ExplodeApi") },
-      { name: "ExplodeApp.tsx", import: import("!!raw-loader!./ExplodeApp"), entry: true },
-      { name: "ExplodeWidget.tsx", import: import("!!raw-loader!./ExplodeWidget") },
-      { name: "ExplodeTile.ts", import: import("!!raw-loader!./ExplodeTile") },
-      { name: "Explode.scss", import: import("!!raw-loader!./Explode.scss") },
+      import("!editor-file-loader!./ExplodeApi"),
+      import("!editor-file-loader!./ExplodeApp?entry=true"),
+      import("!editor-file-loader!./ExplodeWidget"),
+      import("!editor-file-loader!./ExplodeTile"),
+      import("!editor-file-loader!./Explode.scss"),
     ],
     type: "ExplodeApp.tsx",
   });

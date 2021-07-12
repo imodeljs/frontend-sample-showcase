@@ -10,14 +10,17 @@ export function getViewCameraSpec(): SampleSpec {
     name: "Camera Path Sample",
     label: "Camera Path",
     image: "camera-path-thumbnail.png",
+    iTwinViewerReady: true,
     description: "#Animates the #camera along a path using #setEyePoint.  Also shows a #tool to control the look direction using #setupViewFromFrustum.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CameraPathUI.tsx", import: import("!!raw-loader!./CameraPathUI"), entry: true },
-      { name: "CameraPathApp.tsx", import: import("!!raw-loader!./CameraPathApp") },
-      { name: "CameraPathTool.ts", import: import("!!raw-loader!./CameraPathTool") },
-      { name: "Coordinates.ts", import: import("!!raw-loader!./Coordinates.ts") },
+      import("!editor-file-loader!./CameraPathApi"),
+      import("!editor-file-loader!./CameraPathApp?entry=true"),
+      import("!editor-file-loader!./CameraPathWidget"),
+      import("!editor-file-loader!./CameraPathTool"),
+      import("!editor-file-loader!./Coordinates"),
+      import("!editor-file-loader!./CameraPath.scss"),
     ],
-    type: "CameraPathUI.tsx",
+    type: "CameraPathApp.tsx",
   });
 }
