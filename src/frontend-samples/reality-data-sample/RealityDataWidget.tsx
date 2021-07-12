@@ -22,8 +22,16 @@ const RealityDataWidget: React.FunctionComponent = () => {
   // Initalize the widget
   useEffect(() => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      await RealityDataApi.toggleRealityModel(showRealityDataState, _vp, _vp.iModel);
-      await RealityDataApi.setRealityDataTransparency(_vp, realityDataTransparencyState);
+      await RealityDataApi.toggleRealityModel(showRealityDataState, _vp, _vp.iModel)
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
+      await RealityDataApi.setRealityDataTransparency(_vp, realityDataTransparencyState)
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -34,7 +42,11 @@ const RealityDataWidget: React.FunctionComponent = () => {
   useEffect(() => {
     const vp = IModelApp.viewManager.selectedView;
     if (vp) {
-      RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState);
+      RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState)
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [realityDataTransparencyState]);
   // END TRANSPARENCY_HOOK
@@ -46,8 +58,16 @@ const RealityDataWidget: React.FunctionComponent = () => {
       const vp = IModelApp.viewManager.selectedView;
       if (vp) {
         RealityDataApi.toggleRealityModel(showRealityDataState, vp, iModelConnection).then(() => {
-          RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState);
-        });
+          RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState)
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(error);
+            });
+        })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

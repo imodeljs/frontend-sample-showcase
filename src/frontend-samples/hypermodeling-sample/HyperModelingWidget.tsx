@@ -45,10 +45,18 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
             const view = viewport.view;
             setPrevious({ view, markerId: prevMarker?.state.id });
           }));
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
         });
       return () => {
         removeListeners.forEach((remove) => remove());
-        HyperModelingApi.disableHyperModeling(viewport);
+        HyperModelingApi.disableHyperModeling(viewport)
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
       };
     }
     return;

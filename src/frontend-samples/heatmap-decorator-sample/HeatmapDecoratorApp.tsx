@@ -35,6 +35,10 @@ const HeatmapDecoratorApp: FunctionComponent = () => {
         // The heatmap looks better against a white background.
         viewState.displayStyle.backgroundColor = ColorDef.white;
         setViewportOptions({ viewState });
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
       });
   };
 

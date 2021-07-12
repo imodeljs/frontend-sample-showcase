@@ -82,6 +82,10 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     iModelAppShutdown()
       .then(() => {
         setCleaning(false);
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
       });
   }, [iTwinViewerReady, type, transpileResult, iModelName, iModelSelector]);
 
@@ -91,6 +95,10 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
         .initializeOidc()
         .then(() => {
           setAppReady(true);
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
         });
     }
   }, [sampleUi, cleaning]);
@@ -116,7 +124,11 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
       import( /* webpackIgnore: true */ transpileResult).then((module) => {
         const component = module.default as React.ComponentClass<SampleProps>;
         setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [transpileResult, iModelName, iModelSelector]);
 

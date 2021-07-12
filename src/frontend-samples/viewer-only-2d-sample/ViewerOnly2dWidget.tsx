@@ -39,7 +39,15 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
           return ViewerOnly2dApi.getInitial2DModel(iModelConnection, drawings, sheets);
         })
         .then((initial) => {
-          ViewerOnly2dApi.changeViewportView(iModelConnection, initial);
+          ViewerOnly2dApi.changeViewportView(iModelConnection, initial)
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(error);
+            });
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
         });
     }
   }, [iModelConnection]);
@@ -49,7 +57,11 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
       const index = Number.parseInt(selected, 10);
       const modelList = selected.includes("sheet") ? twoDState.sheets : twoDState.drawings;
       if (iModelConnection) {
-        ViewerOnly2dApi.changeViewportView(iModelConnection, modelList[index]);
+        ViewerOnly2dApi.changeViewportView(iModelConnection, modelList[index])
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
       }
     }
   }, [iModelConnection, selected, twoDState.drawings, twoDState.sheets]);

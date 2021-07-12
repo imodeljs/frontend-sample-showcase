@@ -52,7 +52,11 @@ export default class CrossProbingApi {
         const vp2d = CrossProbingApi._get2DViewport();
         vp2d.onChangeView.addOnce(async () => {
           // when view opens, zoom into target 2D element.
-          vp2d.zoomToElements(targetElement, { animateFrustumChange: true });
+          vp2d.zoomToElements(targetElement, { animateFrustumChange: true })
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(error);
+            });
           ev.set.iModel.hilited.elements.addId(targetElement);
         });
         // if target 2D element found, open its view.

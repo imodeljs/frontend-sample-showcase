@@ -25,7 +25,11 @@ const IotAlertWidget: React.FunctionComponent = () => {
     if (!iModelConnection)
       return;
 
-    init(iModelConnection);
+    init(iModelConnection)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iModelConnection]);
 

@@ -34,7 +34,11 @@ const SwipingComparisonWidget: React.FunctionComponent = () => {
 
   // Should be called when the Viewport is ready.
   const _initViewport = useCallback((vp: ScreenViewport) => {
-    SwipingComparisonApi.attachRealityData(vp, iModelConnection!).then().catch();
+    SwipingComparisonApi.attachRealityData(vp, iModelConnection!)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
     SwipingComparisonApi.setRealityModelTransparent(vp, ComparisonType.RealityData !== comparisonState);
     SwipingComparisonApi.listerForViewportUpdate(vp, onViewUpdate);
     const dividerPos = initPositionDivider(SwipingComparisonApi.getClientRect(vp));

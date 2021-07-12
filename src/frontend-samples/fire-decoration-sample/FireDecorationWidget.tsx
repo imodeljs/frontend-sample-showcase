@@ -55,9 +55,19 @@ const FireDecorationWidget: React.FunctionComponent = () => {
     if (iModelConnection) {
       const vp = IModelApp.viewManager.selectedView;
       if (vp) {
-        initView(vp).then(() => setIsLoadingState(false));
+        initView(vp).then(() => setIsLoadingState(false))
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
       } else {
-        IModelApp.viewManager.onViewOpen.addOnce((viewport: Viewport) => { initView(viewport).then(() => setIsLoadingState(false)); });
+        IModelApp.viewManager.onViewOpen.addOnce((viewport: Viewport) => {
+          initView(viewport).then(() => setIsLoadingState(false))
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(error);
+            });
+        });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,7 +91,11 @@ const FireDecorationWidget: React.FunctionComponent = () => {
     return FireDecorationApi.queryElements(viewport.iModel, _lampElementIds).then(async (results) => {
       const params = FireDecorationApi.predefinedParams.get("Candle") ?? FireDecorationApi.predefinedParams.keys().next().value;
       results.forEach((source, index) => {
-        FireDecorationApi.createFireDecorator(source.origin, params, viewport);
+        FireDecorationApi.createFireDecorator(source.origin, params, viewport)
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
         // If it's the first placed, zoom to it.
         if (index === 0) {
           let volume = source.bBox.clone();

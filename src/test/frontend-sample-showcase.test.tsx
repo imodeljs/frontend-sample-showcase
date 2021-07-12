@@ -169,7 +169,11 @@ describe("Reality Data", () => {
       models = 0;
 
       // Toggle off all reality models
-      RealityDataApi.toggleRealityModel(false, vp, imodelMock.object);
+      RealityDataApi.toggleRealityModel(false, vp, imodelMock.object)
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error.message);
+        });
       style = vp.displayStyle.clone();
       style.forEachRealityModel(
         () => models++,
@@ -214,7 +218,7 @@ describe("Classifers", () => {
         expect(model.classifiers?.active?.name).to.equal("Test Name");
         expect(model.classifiers?.active?.modelId).to.equal("TestId");
         expect(model.classifiers?.active?.flags.inside).to.equal(1);
-      })
+      });
     }
   });
 });

@@ -115,7 +115,11 @@ const DragAndDropNode: React.FC<TreeNodeRendererProps> = (props) => {
   function handleDrop(item: NodeDragObject): void {
     // The main entry point for drop event handling
     const { parentId, index } = getDropLocation(treeModelSource.getModel(), props.node, dropArea);
-    moveNode(treeModelSource, treeNodeLoader, item.id, parentId, index);
+    moveNode(treeModelSource, treeNodeLoader, item.id, parentId, index)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }
 
   const isDropAreaDisplayed = isHovered && canDrop;
