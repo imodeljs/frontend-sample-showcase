@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 import React, { useEffect } from "react";
 import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
 import { ContextRotationId, IModelApp } from "@bentley/imodeljs-frontend";
