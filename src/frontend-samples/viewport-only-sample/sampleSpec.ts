@@ -11,7 +11,6 @@ export function getViewportOnlySpec(): SampleSpec {
     label: "3d",
     image: "viewport-only-thumbnail.png",
     description: "#Basic #sample showing how to use the #iTwin #viewer component.",
-    iTwinViewerReady: true,
     walkthrough: () => ({
       annotations: import("!walkthrough-loader!./walkthru.md"),
     }),

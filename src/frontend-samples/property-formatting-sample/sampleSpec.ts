@@ -13,7 +13,6 @@ export function getPropertyFormattingSpec(): SampleSpec {
     image: "property-formatting-thumbnail.png",
     description: "Uses the #Presentation API to display element #properties.",
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.BayTown],
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./PropertyFormattingApi"),

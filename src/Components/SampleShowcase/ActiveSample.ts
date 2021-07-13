@@ -21,7 +21,6 @@ export class ActiveSample {
   public group: string;
   public name: string;
   public imodel: SampleIModels;
-  public iTwinViewerReady?: boolean;
   public getReadme?: () => Promise<{ default: string }>;
   public getFiles?: () => Promise<SampleSpecFile>[];
   public type: string;
@@ -40,7 +39,6 @@ export class ActiveSample {
     this.name = result.name;
     this._spec = result.spec;
     this.imodel = imodel && this.imodelList.includes(imodel) ? imodel : this.imodelList && this.imodelList.length ? this.imodelList[0] : defaultIModel;
-    this.iTwinViewerReady = result.spec.iTwinViewerReady;
     this.getFiles = result.spec.files;
     this.getReadme = result.spec.readme;
     this._walkthrough = result.spec.walkthrough;

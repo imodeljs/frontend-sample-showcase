@@ -13,7 +13,6 @@ export function getExplodeSpec(): SampleSpec {
     image: "exploded-view-thumbnail.png",
     iModelList: [SampleIModels.House],
     description: "Uses a #TileTree to create an #explode effect in the viewport.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./ExplodeApi"),

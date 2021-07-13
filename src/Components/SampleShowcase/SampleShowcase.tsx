@@ -75,7 +75,6 @@ export const SampleShowcase: FunctionComponent = () => {
             iModelName={activeSample.imodel}
             iModelSelector={getImodelSelector()}
             transpileResult={transpileResult}
-            iTwinViewerReady={activeSample.iTwinViewerReady}
             type={activeSample.type} />
         </ErrorBoundary>
       </React.Suspense>

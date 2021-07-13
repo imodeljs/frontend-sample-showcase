@@ -11,9 +11,7 @@ export function get2dTransformationsSpec(): SampleSpec {
     label: "2d Transformations",
     image: "2d-transformations-thumbnail.png",
     description: "#Geometry #sample showing how to generate, #translate, and #rotate different types of #2d geometry.",
-
     iModelList: [],
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./2dTransformationsApi"),

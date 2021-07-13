@@ -12,7 +12,6 @@ export function getReadSettingsSpec(): SampleSpec {
     label: "Read Settings",
     image: "read-settings-thumbnail.png",
     description: "Reads and writes custom #userSettings associated with an iModel",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./ReadSettingsApi"),
