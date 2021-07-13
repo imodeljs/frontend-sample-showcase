@@ -24,10 +24,18 @@ const HyperModelingApp: FunctionComponent = () => {
   const _onIModelInit = useCallback(() => {
     IModelApp.viewManager.onViewOpen.addOnce((view) => {
       if (HyperModelingApi.ready) {
-        HyperModelingApi.activateMarkerByName(view, "Section-Left");
+        HyperModelingApi.activateMarkerByName(view, "Section-Left")
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
       } else {
         HyperModelingApi.onReady.addOnce(() => {
-          HyperModelingApi.activateMarkerByName(view, "Section-Left");
+          HyperModelingApi.activateMarkerByName(view, "Section-Left")
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(error);
+            });
         });
       }
     });

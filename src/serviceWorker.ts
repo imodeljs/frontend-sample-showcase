@@ -58,7 +58,11 @@ export function register(config?: Config) {
             "This web app is being served cache-first by a service " +
             "worker. To learn more, visit https://bit.ly/CRA-PWA"
           );
-        });
+        })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
       } else {
         // Is not localhost. Just register service worker
         registerValidSW(swUrl, config);
@@ -131,8 +135,16 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
         navigator.serviceWorker.ready.then((registration) => {
           registration.unregister().then(() => {
             window.location.reload();
+          })
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(error);
+            });
+        })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
           });
-        });
       } else {
         // Service worker found. Proceed as normal.
         registerValidSW(swUrl, config);
@@ -150,7 +162,11 @@ export function unregister() {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.ready
       .then((registration) => {
-        registration.unregister();
+        registration.unregister()
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error.message);
+          });
       })
       .catch((error) => {
         // eslint-disable-next-line no-console

@@ -50,7 +50,11 @@ class MarkerHandler extends SectionMarkerHandler {
     if (commandId !== "apply_view") {
       this.onToolbarCommand.raiseEvent(this._activeMarker);
     }
-    super.executeCommand(commandId, marker, decorator);
+    super.executeCommand(commandId, marker, decorator)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }
 }
 
@@ -105,7 +109,11 @@ export default class HyperModelingApi {
     if (activeMarkerId) {
       for (const marker of decorator.markers.markers) {
         if (marker.state.id === activeMarkerId) {
-          decorator.setActiveMarker(marker);
+          decorator.setActiveMarker(marker)
+            .catch((error) => {
+              // eslint-disable-next-line no-console
+              console.error(error);
+            });
           break;
         }
       }
@@ -113,7 +121,11 @@ export default class HyperModelingApi {
   }
 
   public static clearActiveMarker(viewport: ScreenViewport) {
-    this.getDecorator(viewport)?.setActiveMarker(undefined);
+    this.getDecorator(viewport)?.setActiveMarker(undefined)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }
 
   public static async activateMarkerByName(viewport: ScreenViewport, name: string) {
@@ -123,7 +135,11 @@ export default class HyperModelingApi {
 
     for (const marker of decorator.markers.markers) {
       if (marker.state.userLabel === name) {
-        decorator.setActiveMarker(marker);
+        decorator.setActiveMarker(marker)
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
         break;
       }
     }

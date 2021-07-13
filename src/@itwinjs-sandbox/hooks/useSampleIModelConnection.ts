@@ -76,9 +76,13 @@ export const useSampleIModelConnection = (iModelList: (SampleIModels | SampleIMo
       if (!found) {
         setiModel(iModelList[0]);
       } else if (!iModelInfo || (isSampleIModelWithAlternativeName(iModel) ? iModelInfo.iModelName !== iModel.imodel || iModelInfo.contextName !== iModel.context : iModelInfo.iModelName !== iModel)) {
-        getIModelInfo(iModel)
+        void getIModelInfo(iModel)
           .then((info) => {
             setiModelInfo(info);
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error.message);
           });
       }
     }

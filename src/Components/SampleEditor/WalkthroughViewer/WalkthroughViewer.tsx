@@ -36,7 +36,11 @@ export const WalkthroughViewer: React.FunctionComponent<WalkthroughViewerProps> 
               onClick: (step: string, group: string | null, sample: string | null) => {
                 if (group || sample) {
                   onSampleClicked(group, sample, true)
-                    .then(() => setWalkthroughOverride(step));
+                    .then(() => setWalkthroughOverride(step))
+                    .catch((error) => {
+                      // eslint-disable-next-line no-console
+                      console.error(error);
+                    });
                 } else {
                   setWalkthroughOverride(step);
                 }
@@ -49,7 +53,11 @@ export const WalkthroughViewer: React.FunctionComponent<WalkthroughViewerProps> 
             props: {
               onClick: (group: string | null, sample: string | null) => {
                 if (group || sample) {
-                  onSampleClicked(group, sample, true);
+                  onSampleClicked(group, sample, true)
+                    .catch((error) => {
+                      // eslint-disable-next-line no-console
+                      console.error(error);
+                    });
                 }
               },
             },

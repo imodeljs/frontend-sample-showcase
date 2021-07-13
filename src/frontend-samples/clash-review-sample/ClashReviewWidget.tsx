@@ -25,10 +25,18 @@ const ClashReviewWidget: React.FunctionComponent = () => {
       ClashReviewApi._images = new Map();
       imageElementFromUrl(".\\clash_pin.svg").then((image) => {
         ClashReviewApi._images.set("clash_pin.svg", image);
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
 
       /** Will start the clashData retrieval and recieve the data through the listener */
-      ClashReviewApi.setClashData(iModelConnection.contextId!);
+      ClashReviewApi.setClashData(iModelConnection.contextId!)
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
     return () => {
       removeListener();
@@ -42,7 +50,11 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     if (iModelConnection && clashData) {
       ClashReviewApi.getClashMarkersData(iModelConnection, clashData).then((mData) => {
         setMarkersData(mData);
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [iModelConnection, clashData]);
 

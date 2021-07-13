@@ -36,7 +36,11 @@ export class AuthorizationClient implements FrontendAuthorizationClient {
   }
 
   public async signInSilent(requestContext?: ClientRequestContext): Promise<void> {
-    this.signIn(requestContext);
+    this.signIn(requestContext)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error.message);
+      });
   }
 
   public async signIn(requestContext?: ClientRequestContext): Promise<void> {

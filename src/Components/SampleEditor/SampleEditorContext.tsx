@@ -32,6 +32,10 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
         .then(() => {
           resolve.current();
           resolve.current = noop;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
         });
     }
   }, [getFiles]);

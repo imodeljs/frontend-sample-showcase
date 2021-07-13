@@ -23,7 +23,11 @@ export const SampleLink: FunctionComponent<SampleLinkProps> = ({ href, children,
       const start = urlSearchParams.get("start");
       const end = urlSearchParams.get("end");
       const fileSelection = file && start && end ? { name: file, start: parseInt(start, 10), end: parseInt(end, 10) } : undefined;
-      onClick(group, sample, fileSelection);
+      onClick(group, sample, fileSelection)
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [href, onClick]);
 
