@@ -12,7 +12,7 @@ export interface LinkProps {
   onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
-export class Link extends React.Component<LinkProps> {
+export class ReadmeLink extends React.Component<LinkProps> {
   private onClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const substrings = this.props.href.split("/");
 
