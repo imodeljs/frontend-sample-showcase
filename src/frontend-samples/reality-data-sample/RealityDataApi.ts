@@ -48,7 +48,7 @@ export default class RealityDataApi {
   // START TRANSPARENCY
   // Modify reality data background transparency using the Viewport API
   public static async setRealityDataTransparency(vp: ScreenViewport, transparency: number) {
-    // For this example we want to affect the appearance of *all* reality models. huh?
+    // For this example we want to affect the appearance of *all* reality models.
     // START APPEARANCE
     vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
       // START OVERRIDES
