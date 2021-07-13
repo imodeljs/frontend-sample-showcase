@@ -8,7 +8,6 @@ import { Version } from "@bentley/imodelhub-client";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { Select, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
-import "common/samples-common.scss";
 import * as React from "react";
 import "./ChangedElements.scss";
 import { ChangedElementsApi } from "./ChangedElementsApi";
