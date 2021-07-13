@@ -15,7 +15,7 @@ export function getButtonSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [
-      { name: "Button.tsx", import: import("!!raw-loader!./Button"), entry: true },
+      import("!editor-file-loader!./Button?entry=true"),
     ],
     type: "Button.tsx",
   });

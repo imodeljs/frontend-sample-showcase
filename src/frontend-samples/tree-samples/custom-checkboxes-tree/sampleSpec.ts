@@ -14,8 +14,8 @@ export function getCustomCheckboxesTreeSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CustomCheckboxesTreeApp.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeApp") },
-      { name: "CustomCheckboxesTreeUI.tsx", import: import("!!raw-loader!./CustomCheckboxesTreeUI"), entry: true },
+      import("!editor-file-loader!./CustomCheckboxesTreeApp"),
+      import("!editor-file-loader!./CustomCheckboxesTreeUI?entry=true"),
     ],
     type: "CustomCheckboxesTreeUI.tsx",
   });

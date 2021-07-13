@@ -15,11 +15,11 @@ export function getSimple3dSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Simple3dApi.tsx", import: import("!!raw-loader!./Simple3dApi") },
-      { name: "Simple3dApp.tsx", import: import("!!raw-loader!./Simple3dApp"), entry: true },
-      { name: "Simple3dWidget.tsx", import: import("!!raw-loader!./Simple3dWidget") },
-      { name: "GeometryDecorator.ts", import: import("!!raw-loader!./GeometryDecorator") },
-      { name: "Simple3d.scss", import: import("!!raw-loader!./Simple3d.scss") },
+      import("!editor-file-loader!./Simple3dApi"),
+      import("!editor-file-loader!./Simple3dApp?entry=true"),
+      import("!editor-file-loader!./Simple3dWidget"),
+      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!./Simple3d.scss"),
     ],
     type: "Simple3dApp.tsx",
   });

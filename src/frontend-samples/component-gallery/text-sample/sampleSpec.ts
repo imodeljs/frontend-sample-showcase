@@ -15,7 +15,7 @@ export function getTextSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "Text.tsx", import: import("!!raw-loader!./Text"), entry: true },
+      import("!editor-file-loader!./Text?entry=true"),
     ],
     type: "Text.tsx",
   });

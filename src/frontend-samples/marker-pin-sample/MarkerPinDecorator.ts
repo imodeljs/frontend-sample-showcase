@@ -55,6 +55,12 @@ class SamplePinMarker extends Marker {
     this.setImage(image);
     this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
     // END MARKERPINIMAGE
+
+    // START MARKERPINIMAGE
+    // Add an offset so that the pin 'points' at the location, rather than floating in the middle of it
+    this.setImage(image);
+    this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
+    // END MARKERPINIMAGE
     this._onMouseButtonCallback = onMouseButtonCallback;
 
     // Keep a pointer back to the marker set

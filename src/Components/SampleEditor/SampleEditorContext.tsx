@@ -2,14 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
 import { Annotation, EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
 import { SampleSpecFile } from "SampleSpec";
 import { EditorProps, SampleEditor } from "./SampleEditor";
 import modules from "./Modules";
 export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked" | "walkthrough"> {
-  files?: () => SampleSpecFile[];
+  files?: () => Promise<SampleSpecFile>[];
   onSampleClicked: (groupName: string | null, sampleName: string | null, wantScroll: boolean) => void;
   walkthrough: () => Promise<Annotation[] | undefined>;
 }
@@ -25,10 +24,9 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
 
   useEffect(() => {
     if (getFiles) {
-      const files = getFiles() || [];
-      Promise.all(files.map(async (file) => ({ content: (await file.import).default, name: file.name })))
-        .then((mapped) => {
-          setDefaultFiles(mapped);
+      Promise.all(getFiles())
+        .then((files) => {
+          setDefaultFiles(files);
           setdefaultEntry(files.find((file) => file.entry)?.name);
         })
         .then(() => {

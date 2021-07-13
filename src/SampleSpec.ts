@@ -14,7 +14,7 @@ export interface SampleSpecGroup {
 
 export interface SampleSpecFile {
   name: string;
-  import: Promise<{ default: string }>;
+  content: string;
   entry?: boolean;
 }
 
@@ -28,8 +28,8 @@ export interface SampleSpec {
   image: string;
   description?: string;
   readme?: () => Promise<{ default: string }>;
-  files?: () => SampleSpecFile[];
   walkthrough?: () => Walkthrough;
+  files?: () => Promise<SampleSpecFile>[];
   iModelList?: SampleIModels[];
   iTwinViewerReady?: boolean;
   type?: string;

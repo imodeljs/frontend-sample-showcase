@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "@itwinjs-sandbox";
+import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getChangedElementsSpec(): SampleSpec {
@@ -15,9 +15,11 @@ export function getChangedElementsSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "ChangedElementsApp.tsx", import: import("!!raw-loader!./ChangedElementsApp.tsx") },
-      { name: "ChangedElementsWidget.tsx", import: import("!!raw-loader!./ChangedElementsWidget.tsx") },
-      { name: "ChangedElementsApi.ts", import: import("!!raw-loader!./ChangedElementsApi.ts"), entry: true },
+      import("!editor-file-loader!./ChangedElementsApp?entry=true"),
+      import("!editor-file-loader!./ChangedElementsWidget"),
+      import("!editor-file-loader!./ChangedElementsApi"),
+      import("!editor-file-loader!./ChangedElementsClient"),
+      import("!editor-file-loader!./ChangedElements.scss"),
     ],
     iModelList: [SampleIModels.Stadium],
     type: "ChangedElementsApp.tsx",

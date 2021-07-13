@@ -15,7 +15,7 @@ export function getSearchBoxSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "SearchBox.tsx", import: import("!!raw-loader!./SearchBox"), entry: true },
+      import("!editor-file-loader!./SearchBox?entry=true"),
     ],
     type: "SearchBox.tsx",
   });

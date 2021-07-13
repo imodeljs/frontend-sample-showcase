@@ -14,10 +14,10 @@ export function getUnifiedSelectionTreeSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "UnifiedSelectionTreeWidget.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeWidget") },
-      { name: "UnifiedSelectionTreeApp.tsx", import: import("!!raw-loader!./UnifiedSelectionTreeApp"), entry: true },
-      { name: "TreeHierarchy.ts", import: import("!!raw-loader!./TreeHierarchy.ts") },
-      { name: "UnifiedSelectionTree.scss", import: import("!!raw-loader!./UnifiedSelectionTree.scss") },
+      import("!editor-file-loader!./UnifiedSelectionTreeWidget"),
+      import("!editor-file-loader!./UnifiedSelectionTreeApp?entry=true"),
+      import("!editor-file-loader!./TreeHierarchy.ts"),
+      import("!editor-file-loader!./UnifiedSelectionTree.scss"),
     ],
     type: "UnifiedSelectionTreeApp.tsx",
   });

@@ -13,11 +13,11 @@ export function getMultiViewportSpec(): SampleSpec {
     iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      { name: "MultiViewportApi.ts", import: import("!!raw-loader!./MultiViewportApi") },
-      { name: "MultiViewportApp.tsx", import: import("!!raw-loader!./MultiViewportApp"), entry: true },
-      { name: "MultiViewportWidget.tsx", import: import("!!raw-loader!./MultiViewportWidget") },
-      { name: "MultiViewportFrontstageProvider.tsx", import: import("!!raw-loader!./MultiViewportFrontstageProvider") },
-      { name: "multi-view-sample.scss", import: import("!!raw-loader!./multi-view-sample.scss") },
+      import("!editor-file-loader!./MultiViewportApi"),
+      import("!editor-file-loader!./MultiViewportApp?entry=true"),
+      import("!editor-file-loader!./MultiViewportWidget"),
+      import("!editor-file-loader!./MultiViewportFrontstageProvider"),
+      import("!editor-file-loader!./multi-view-sample.scss"),
     ],
     type: "MultiViewportApp.tsx",
   });

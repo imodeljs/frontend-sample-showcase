@@ -14,9 +14,9 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      { name: "CustomTableNodeTreeApp.tsx", import: import("!!raw-loader!./CustomTableNodeTreeApp") },
-      { name: "CustomTableNodeTreeUI.tsx", import: import("!!raw-loader!./CustomTableNodeTreeUI"), entry: true },
-      { name: "TableNodeTree.scss", import: import("!!raw-loader!./TableNodeTree.scss") },
+      import("!editor-file-loader!./CustomTableNodeTreeApp"),
+      import("!editor-file-loader!./CustomTableNodeTreeUI?entry=true"),
+      import("!editor-file-loader!./TableNodeTree.scss"),
     ],
     type: "CustomTableNodeTreeUI.tsx",
   });
