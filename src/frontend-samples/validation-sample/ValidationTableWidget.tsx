@@ -16,7 +16,6 @@ const ValidationTableWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
-      console.log(data)
       setValidationResults(data);
     });
 
@@ -47,13 +46,13 @@ const ValidationTableWidget: React.FunctionComponent = () => {
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 
-    if (validationResults !== undefined && validationResults.propertyValueResult !== undefined && validationResults.ruleList !== undefined) {
+    if (validationResults !== undefined && validationResults.propertyValueResult !== undefined && validationResults.ruleList !== undefined && iModelConnection) {
       // Adding rows => cells => property record => value and description.
       let validationIndex: number = 0;
       validationResults.propertyValueResult.some((rowData: any) => {
         const rowKey = `${rowData.elementId}`;
         const rowItem: RowItem = { key: rowKey, cells: [] };
-        columns.forEach((column: ColumnDescription, i: number) => {
+        columns.forEach(async (column: ColumnDescription, i: number) => {
           let cellValue: string = "";
           if (column.key === "ruleID") {
             // Lookup the rule ID using the rule index
@@ -62,7 +61,7 @@ const ValidationTableWidget: React.FunctionComponent = () => {
             // Lookup the rule name using the rule index
             cellValue = validationResults.ruleList[rowData['ruleIndex']].displayName.toString();
           } else if (column.key === "legalValues") {
-            const ruleData = ValidationApi.getMatchingRule(validationResults.ruleList[rowData['ruleIndex']].id.toString(), true)
+            const ruleData = await ValidationApi.getMatchingRule(validationResults.ruleList[rowData['ruleIndex']].id.toString(), iModelConnection.contextId!, true)
             cellValue = `[${ruleData?.propertyValueRule.functionParameters.lowerBound},${ruleData?.propertyValueRule.functionParameters.upperBound}]`
           } else {
             cellValue = rowData[column.key].toString();

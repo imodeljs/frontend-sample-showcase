@@ -27,7 +27,7 @@ const ValidationWidget: React.FunctionComponent = () => {
         ValidationApi._images.set("clash_pin.svg", image);
       });
 
-      /** Will start the validationData retrieval and recieve the data through the listener */
+      /** Will start the validation data retrieval and recieve the data through the listener */
       ValidationApi.setValidationData(iModelConnection.contextId!);
     }
     return () => {
@@ -37,7 +37,7 @@ const ValidationWidget: React.FunctionComponent = () => {
     };
   }, [iModelConnection]);
 
-  /** When the validationData comes in, get the marker data */
+  /** When the validatio data comes in, get the marker data */
   useEffect(() => {
     if (iModelConnection && validationResults) {
       ValidationApi.getValidationMarkersData(iModelConnection, validationResults).then((mData) => {
@@ -53,7 +53,6 @@ const ValidationWidget: React.FunctionComponent = () => {
       ValidationApi.setupDecorator(markersData);
       // Automatically visualize first violation
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
-        console.log(markersData)
         ValidationApi.visualizeViolation(markersData[0].data.elementId);
       }
       setShowDecorator(true);

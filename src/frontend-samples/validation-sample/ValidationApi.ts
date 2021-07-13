@@ -96,29 +96,36 @@ export default class ValidationApi {
 
   // END VALIDATION_API
 
-  public static getMatchingRule(ruleID: string, staticData?: boolean) {
+  public static async getMatchingRule(ruleID: string, projectId: string, staticData?: boolean) {
     if (staticData) {
-      console.log(ruleID)
       return jsonRuleData
+    } else {
+      if (ValidationApi._validationData[projectId] === undefined) {
+        const context = await ValidationApi.getRequestContext();
+        const ruleData = await ValidationClient.getProjectValidationTests(context, projectId)
+        for (let rule of ruleData) {
+          if (rule.templateId && rule.templateId === ruleID) {
+            return rule
+          }
+        }
+      }
+      return undefined
     }
-    return undefined
   }
 
   public static async getValidationMarkersData(imodel: IModelConnection, validationData: any): Promise<MarkerData[]> {
-    // Limit the number of validationes in this demo
+    // Limit the number of validations in this demo
     const maxValidationes = 70;
     const markersData: MarkerData[] = [];
     const limitedValidationData = validationData.propertyValueResult.slice(0, maxValidationes);
 
     const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
 
-    console.log(elements)
     const points = await this.calcValidationCenter(imodel, elements);
 
     for (let index = 0; index < points.length; index++) {
       const title = "Rule Violation(s) found:";
-      const ruleData = ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index]['ruleIndex']].id.toString(), true)
-      console.log(ruleData)
+      const ruleData = await ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index]['ruleIndex']].id.toString(), imodel.contextId!, true)
       const description = `${ruleData?.propertyValueRule.functionParameters.propertyName} must be within range ${ruleData?.propertyValueRule.functionParameters.lowerBound} and ${ruleData?.propertyValueRule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
       const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
       markersData.push(validationMarkerData);
@@ -131,13 +138,9 @@ export default class ValidationApi {
 
     const elemProps = (await imodel.elements.getProps(allElementIds)) as GeometricElement3dProps[];
     const intersections: Point3d[] = [];
-    console.log(elementIds)
-    console.log(elemProps)
     if (elemProps.length !== 0) {
 
       for (let index = 0; index < elementIds.length; index++) {
-        console.log(elementIds[index])
-        console.log(elemProps)
         const element = elemProps.find((prop) => prop.id === elementIds[index]);
         if (element) {
           const placement = Placement3d.fromJSON(element.placement);
@@ -150,7 +153,6 @@ export default class ValidationApi {
   }
 
   public static visualizeValidationCallback = (validationData: any) => {
-    console.log('test')
     ValidationApi.visualizeViolation(validationData.elementId);
   };
 
