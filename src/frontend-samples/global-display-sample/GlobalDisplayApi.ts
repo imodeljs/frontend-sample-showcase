@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DisplayStyle3dProps, DisplayStyleProps, SpatialViewDefinitionProps, ViewDefinition3dProps, ViewDefinitionProps, ViewStateProps } from "@bentley/imodeljs-common";
+import { DisplayStyle3dProps, SpatialViewDefinitionProps } from "@bentley/imodeljs-common";
 import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
 
 export class GlobalDisplayApi {

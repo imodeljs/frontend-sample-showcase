@@ -62,7 +62,11 @@ const GlobalDisplayWidget: FunctionComponent = () => {
 
   const _onKeyPress = (e: KeyboardEvent) => {
     if (e.key === SpecialKey.Enter || e.key === SpecialKey.Return) {
-      _travelToDestination();
+      _travelToDestination()
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   };
 

@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier, SpatialClassifiers } from "@bentley/imodeljs-common";
-import { ContextRealityModelState, IModelConnection, queryRealityData, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
+import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier } from "@bentley/imodeljs-common";
+import { IModelConnection, queryRealityData, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
 import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
 
 export default class ClassifierApi {

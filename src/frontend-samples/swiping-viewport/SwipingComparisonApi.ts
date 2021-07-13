@@ -15,7 +15,6 @@ export enum ComparisonType {
 
 export default class SwipingComparisonApi {
   private static _provider: SampleTiledGraphicsProvider | undefined;
-  private static _prevPoint?: Point3d;
   private static _viewport?: Viewport;
 
   public static readonly onSwipeEvent = new BeEvent<(dividerLeft: number | undefined) => void>();
@@ -32,7 +31,6 @@ export default class SwipingComparisonApi {
       SwipingComparisonApi._viewport.synchWithView();
       SwipingComparisonApi._viewport = undefined;
     }
-    SwipingComparisonApi._prevPoint = undefined;
   }
 
   /** Gets the selected viewport using the IModelApp API. */
@@ -83,8 +81,7 @@ export default class SwipingComparisonApi {
       SwipingComparisonApi.teardown();
     SwipingComparisonApi._viewport = viewport;
     const provider = SwipingComparisonApi._provider;
-    const vp = viewport;
-    if (!vp.view.isSpatialView())
+    if (!viewport.view.isSpatialView())
       return;
 
     if (undefined !== provider && provider.comparisonType !== comparisonType) {
@@ -92,14 +89,12 @@ export default class SwipingComparisonApi {
       SwipingComparisonApi._provider = undefined;
     }
 
-    let didInit = false;
     if (undefined === SwipingComparisonApi._provider) {
-      didInit = true;
       SwipingComparisonApi._provider = SwipingComparisonApi.createProvider(screenPoint, viewport, comparisonType);
-      vp.addTiledGraphicsProvider(SwipingComparisonApi._provider);
+      viewport.addTiledGraphicsProvider(SwipingComparisonApi._provider);
     }
-    if (didInit || !SwipingComparisonApi._prevPoint?.isAlmostEqual(screenPoint))
-      SwipingComparisonApi.updateProvider(screenPoint, viewport, SwipingComparisonApi._provider);
+
+    SwipingComparisonApi.updateProvider(screenPoint, viewport, SwipingComparisonApi._provider);
   }
 
   /** Creates a [ClipVector] based on the arguments. */
@@ -112,9 +107,8 @@ export default class SwipingComparisonApi {
   /** Updates the location of the clipping plane in both the provider and viewport. */
   private static updateProvider(screenPoint: Point3d, viewport: Viewport, provider: SampleTiledGraphicsProvider) {
     // Update Clipping plane in provider and in the view.
-    const vp = viewport;
-    const normal = SwipingComparisonApi.getPerpendicularNormal(vp, screenPoint);
-    const worldPoint = SwipingComparisonApi.getWorldPoint(vp, screenPoint);
+    const normal = SwipingComparisonApi.getPerpendicularNormal(viewport, screenPoint);
+    const worldPoint = SwipingComparisonApi.getWorldPoint(viewport, screenPoint);
 
     // Update in Provider
     const clip = SwipingComparisonApi.createClip(normal.clone().negate(), worldPoint);
@@ -127,7 +121,6 @@ export default class SwipingComparisonApi {
 
   /** Creates a [TiledGraphicsProvider] and adds it to the viewport.  This also sets the clipping plane used for the comparison. */
   private static createProvider(screenPoint: Point3d, viewport: Viewport, type: ComparisonType): SampleTiledGraphicsProvider {
-    SwipingComparisonApi._prevPoint = screenPoint;
     const normal = SwipingComparisonApi.getPerpendicularNormal(viewport, screenPoint);
     let rtnProvider;
 

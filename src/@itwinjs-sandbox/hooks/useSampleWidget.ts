@@ -33,7 +33,11 @@ export const useSampleWidget = (instructions: string, iModelList: (SampleIModels
         // Presentation not initialized
       }
     };
-    addHiliteRuleset();
+    addHiliteRuleset()
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   });
 
   useEffect(() => {

@@ -53,8 +53,16 @@ const ClassifierWidget: React.FunctionComponent = () => {
           const commercialModelId = Object.keys(_classifiers)[0];
           setClassifiers(_classifiers);
           setCurrentClassifier(commercialModelId);
+        })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
         });
-      });
 
       setInitialized(true);
     }

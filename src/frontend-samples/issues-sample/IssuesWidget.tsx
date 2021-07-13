@@ -66,7 +66,11 @@ const IssuesWidget: React.FunctionComponent = () => {
 
         setIssues(iss);
       }
-    })();
+    })()
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }, [iModelConnection, issues]);
 
   /** Set the preview Images on issue load */
@@ -146,7 +150,11 @@ const IssuesWidget: React.FunctionComponent = () => {
 
       /** Add the point to the decorator */
       IssuesApi.addDecoratorPoint(issue, svg, issue.number, issue.subject, (iss: any) => {
-        applyView(iss);
+        applyView(iss)
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
         setActiveTab(0);
         setCurrentIssue(iss);
       });
@@ -244,16 +252,32 @@ const IssuesWidget: React.FunctionComponent = () => {
   useEffect(() => {
     switch (activeTab) {
       case 0:
-        getLinkedElements();
+        getLinkedElements()
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
         break;
       /** Attachments tab */
       case 1:
-        getIssueAttachments();
+        getIssueAttachments()
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
         break;
       /** Audit trail tab */
       case 2:
-        getIssueComments();
-        getIssueAuditTrail();
+        getIssueComments()
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
+        getIssueAuditTrail()
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error);
+          });
         break;
     }
   }, [activeTab, getIssueAttachments, getIssueAuditTrail, getIssueComments, getLinkedElements]);

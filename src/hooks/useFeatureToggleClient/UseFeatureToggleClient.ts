@@ -13,6 +13,10 @@ export const useFeatureToggleClient = (feature: FeatureFlags, defaultValue: bool
     FeatureToggleClient.isFeatureEnabled(feature, defaultValue)
       .then((result) => {
         setFeaturedEnabled(result);
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error.message);
       });
   }, [defaultValue, feature]);
 

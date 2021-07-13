@@ -53,7 +53,11 @@ const MarkerPinWidget: React.FunctionComponent = () => {
 
     Promise.all([p1, p2, p3]).then(() => {
       setImagesLoadedState(true);
-    });
+    })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
