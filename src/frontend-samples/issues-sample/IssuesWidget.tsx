@@ -289,8 +289,7 @@ const IssuesWidget: React.FunctionComponent = () => {
       <div className={"issue-linked-container"}>
         <Subheading className={"issue-linked-title"}>{`Linked Elements`}</Subheading>
         {currentLinkedElements.map((label) => {
-          // eslint-disable-next-line react/jsx-key
-          return (<div className={"issue-linked-element"} onClick={() => viewport?.zoomToElements(label.id)}>
+          return (<div key={label.id} className={"issue-linked-element"} onClick={() => viewport?.zoomToElements(label.id)}>
             <div className={"icon icon-item"}></div>
             <div className={"issues-linked-element-label"}>{label.displayValue}</div>
           </div>);
@@ -422,8 +421,7 @@ const IssuesWidget: React.FunctionComponent = () => {
 
     /** Loop through the dates and put them together in chunks */
     return combinedByDayOrdered.map((date) => (
-      // eslint-disable-next-line react/jsx-key
-      <div className="date-group">
+      <div key={date.toString()} className="date-group">
         <div className="date">
           <span>{date}</span>
         </div>
@@ -449,8 +447,7 @@ const IssuesWidget: React.FunctionComponent = () => {
               const binaryUrl = issue.displayName && previewImages[issue.displayName] ? URL.createObjectURL(previewImages[issue.displayName]) : undefined;
               const imageStyle = binaryUrl ? { backgroundImage: `url(${binaryUrl})` } : {};
               return (
-                // eslint-disable-next-line react/jsx-key
-                <div className="issue">
+                <div key={issue.id} className="issue">
                   <div className="issue-preview">
                     {issue.modelView &&
                       <div className="thumbnail" style={imageStyle} onClick={async () => applyView(issue)}>

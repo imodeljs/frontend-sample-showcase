@@ -5,8 +5,8 @@
 
 import "common/samples-common.scss";
 import { DisplayStyle3dState, IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewSetup } from "api/viewSetup";
 import { ViewFlags } from "@bentley/imodeljs-common";
+import { ViewSetup } from "@itwinjs-sandbox";
 
 export default class ShadowStudyApp {
 

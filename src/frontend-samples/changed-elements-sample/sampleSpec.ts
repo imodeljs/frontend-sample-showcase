@@ -12,7 +12,6 @@ export function getChangedElementsSpec(): SampleSpec {
     label: "Changed Elements",
     image: "changedElements.png",
     description: "Compare #ChangedElements between #Version and colorizing them by operation.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./ChangedElementsApp?entry=true"),

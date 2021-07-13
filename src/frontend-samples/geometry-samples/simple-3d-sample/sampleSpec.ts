@@ -12,7 +12,6 @@ export function getSimple3dSpec(): SampleSpec {
     image: "simple-3d-thumbnail.png",
     description: "#Geometry #sample showing how to generate #simple types of #3d geometry.",
     iModelList: [],
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./Simple3dApi"),

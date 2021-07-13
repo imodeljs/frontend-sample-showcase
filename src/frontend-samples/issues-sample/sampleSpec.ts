@@ -11,7 +11,6 @@ export function getIssuesSpec(): SampleSpec {
     name: "issue-sample",
     label: "Issues",
     image: "issues-thumbnail.png",
-    iTwinViewerReady: true,
     description: "Uses #issues REST #API to retrieve issues associated with project and display them.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [

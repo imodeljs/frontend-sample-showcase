@@ -72,7 +72,6 @@ import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sam
 import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
 import { getChangedElementsSpec } from "frontend-samples/changed-elements-sample/sampleSpec";
 import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
-import { getMisclassificationSpec } from "frontend-samples/missclassification-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -168,7 +167,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getChangedElementsSpec(),
     getClashReviewSpec(),
     getIssuesSpec(),
-    getMisclassificationSpec(),
     getReadSettingsSpec(),
   ],
 

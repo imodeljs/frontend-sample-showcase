@@ -19,7 +19,6 @@ export function getHeatmapDecoratorSpec(): SampleSpec {
       import("!editor-file-loader!./HeatmapDecorator"),
       import("!editor-file-loader!./HeatmapDecorator.scss"),
     ],
-    iTwinViewerReady: true,
     type: "HeatmapDecoratorApp.tsx",
   });
 }

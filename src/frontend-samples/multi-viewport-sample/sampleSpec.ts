@@ -10,7 +10,6 @@ export function getMultiViewportSpec(): SampleSpec {
     name: "multi-viewport-sample",
     label: "Multiple Viewports",
     image: "multi-viewport-thumbnail.png",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./MultiViewportApi"),

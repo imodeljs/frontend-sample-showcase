@@ -28,8 +28,6 @@ interface SampleSpec {
   files: IInternalFile[];
   /** The list of models this sample can use, in the case that the sample cannot use all available models */
   iModelList?: string[];
-  /** Indicates is the sample is using the iTwin Viewer or the legacy viewer.*/
-  iTwinViewerReady?: boolean;
   /** The class name for the sample */
   type: typeof React.Component;
 ```

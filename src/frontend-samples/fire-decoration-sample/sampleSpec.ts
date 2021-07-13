@@ -12,7 +12,6 @@ export function getParticleFireSampleSpec(): SampleSpec {
     label: "Particle Effect (Fire)",
     image: "fire-decorator-thumbnail.png",
     description: "Creates an #fire effect using #particles #Decorator.",
-    iTwinViewerReady: true,
     iModelList: [SampleIModels.Villa, SampleIModels.BayTown, SampleIModels.House],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
