@@ -199,7 +199,7 @@ describe("Classifers", () => {
     const vp = IModelApp.viewManager.selectedView;
 
     if (vp) {
-      const crmProp: ContextRealityModelProps = { tilesetUrl: "FakeURL", name: "FakeName" };
+      const crmProp: ContextRealityModelProps = { tilesetUrl: "FakeURL", name: "FakeName", classifiers: [] };
       vp.displayStyle.attachRealityModel(crmProp);
       const flags = new SpatialClassifierFlags(
         SpatialClassifierInsideDisplay.On,
@@ -219,6 +219,8 @@ describe("Classifers", () => {
           expect(model.classifiers?.active?.name).to.equal("Test Name");
           expect(model.classifiers?.active?.modelId).to.equal("TestId");
           expect(model.classifiers?.active?.flags.inside).to.equal(1);
+        } else {
+          expect(true).to.be.false;
         }
       });
     }
