@@ -79,7 +79,6 @@ export default class ValidationApi {
     if (staticData)
       return jsonResultData;
 
-
     const context = await ValidationApi.getRequestContext();
     if (ValidationApi._validationData[projectId] === undefined) {
       const runsResponse = await ValidationClient.getProjectValidationRuns(context, projectId);
@@ -98,18 +97,18 @@ export default class ValidationApi {
 
   public static async getMatchingRule(ruleID: string, projectId: string, staticData?: boolean) {
     if (staticData) {
-      return jsonRuleData
+      return jsonRuleData;
     } else {
       if (ValidationApi._validationData[projectId] === undefined) {
         const context = await ValidationApi.getRequestContext();
-        const ruleData = await ValidationClient.getProjectValidationTests(context, projectId)
-        for (let rule of ruleData) {
+        const ruleData = await ValidationClient.getProjectValidationTests(context, projectId);
+        for (const rule of ruleData) {
           if (rule.templateId && rule.templateId === ruleID) {
-            return rule
+            return rule;
           }
         }
       }
-      return undefined
+      return undefined;
     }
   }
 
@@ -125,7 +124,7 @@ export default class ValidationApi {
 
     for (let index = 0; index < points.length; index++) {
       const title = "Rule Violation(s) found:";
-      const ruleData = await ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index]['ruleIndex']].id.toString(), imodel.contextId!, true)
+      const ruleData = await ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString(), imodel.contextId!, true);
       const description = `${ruleData?.propertyValueRule.functionParameters.propertyName} must be within range ${ruleData?.propertyValueRule.functionParameters.lowerBound} and ${ruleData?.propertyValueRule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
       const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
       markersData.push(validationMarkerData);
@@ -140,8 +139,8 @@ export default class ValidationApi {
     const intersections: Point3d[] = [];
     if (elemProps.length !== 0) {
 
-      for (let index = 0; index < elementIds.length; index++) {
-        const element = elemProps.find((prop) => prop.id === elementIds[index]);
+      for (const elementId of elementIds) {
+        const element = elemProps.find((prop) => prop.id === elementId);
         if (element) {
           const placement = Placement3d.fromJSON(element.placement);
           intersections.push(placement.calculateRange().center);

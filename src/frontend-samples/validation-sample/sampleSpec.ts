@@ -13,7 +13,6 @@ export function getValidationSpec(): SampleSpec {
     image: "validation-thumbnail.png",
     description: "Uses the #validation REST api.",
     readme: async () => import("!!raw-loader!./readme.md"),
-    iTwinViewerReady: true,
     walkthrough: () => ({
       annotations: import("!walkthrough-loader!./walkthru.md"),
     }),

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useState } from "react";
-import { AuthorizationClient, default2DSandboxUi, defaultIModelList, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@bentley/itwin-viewer-react";
 import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";

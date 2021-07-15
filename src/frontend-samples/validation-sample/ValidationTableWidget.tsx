@@ -56,13 +56,13 @@ const ValidationTableWidget: React.FunctionComponent = () => {
           let cellValue: string = "";
           if (column.key === "ruleID") {
             // Lookup the rule ID using the rule index
-            cellValue = validationResults.ruleList[rowData['ruleIndex']].id.toString();
+            cellValue = validationResults.ruleList[rowData.ruleIndex].id.toString();
           } else if (column.key === "ruleName") {
             // Lookup the rule name using the rule index
-            cellValue = validationResults.ruleList[rowData['ruleIndex']].displayName.toString();
+            cellValue = validationResults.ruleList[rowData.ruleIndex].displayName.toString();
           } else if (column.key === "legalValues") {
-            const ruleData = await ValidationApi.getMatchingRule(validationResults.ruleList[rowData['ruleIndex']].id.toString(), iModelConnection.contextId!, true)
-            cellValue = `[${ruleData?.propertyValueRule.functionParameters.lowerBound},${ruleData?.propertyValueRule.functionParameters.upperBound}]`
+            const ruleData = await ValidationApi.getMatchingRule(validationResults.ruleList[rowData.ruleIndex].id.toString(), iModelConnection.contextId!, true);
+            cellValue = `[${ruleData?.propertyValueRule.functionParameters.lowerBound},${ruleData?.propertyValueRule.functionParameters.upperBound}]`;
           } else {
             cellValue = rowData[column.key].toString();
           }
@@ -78,7 +78,7 @@ const ValidationTableWidget: React.FunctionComponent = () => {
     // END VIOLATION_TABLE
 
     return dataProvider;
-  }, [validationResults]);
+  }, [validationResults, iModelConnection]);
 
   // Zooming into and highlighting element when row is selected.
   const _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {

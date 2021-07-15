@@ -60,7 +60,7 @@ export default class IssuesApi {
   public static disableDecorations() {
     if (null != this._issuesPinDecorator) {
       IModelApp.viewManager.dropDecorator(this._issuesPinDecorator);
-      this._issuesPinDecorator = undefined
+      this._issuesPinDecorator = undefined;
     }
   }
 }
