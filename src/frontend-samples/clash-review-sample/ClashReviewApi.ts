@@ -53,10 +53,8 @@ export default class ClashReviewApi {
   }
 
   public static disableDecorations() {
-    if (null != this._clashPinDecorator) {
+    if (null != this._clashPinDecorator)
       IModelApp.viewManager.dropDecorator(this._clashPinDecorator);
-      this._clashPinDecorator = undefined;
-    }
   }
 
   public static enableZoom() {
@@ -170,5 +168,6 @@ export default class ClashReviewApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
     emph.clearOverriddenElements(vp);
+    this._clashPinDecorator = undefined;
   }
 }

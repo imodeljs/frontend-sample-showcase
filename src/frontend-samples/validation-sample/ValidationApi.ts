@@ -54,10 +54,8 @@ export default class ValidationApi {
   }
 
   public static disableDecorations() {
-    if (null != this._validationPinDecorator) {
+    if (null != this._validationPinDecorator)
       IModelApp.viewManager.dropDecorator(this._validationPinDecorator);
-      this._validationPinDecorator = undefined;
-    }
   }
 
   public static enableZoom() {
@@ -187,5 +185,7 @@ export default class ValidationApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
     emph.clearOverriddenElements(vp);
+    this._validationPinDecorator = undefined;
+
   }
 }
