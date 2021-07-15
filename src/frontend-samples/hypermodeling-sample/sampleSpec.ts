@@ -10,7 +10,6 @@ export function getHyperModelingSpec(): SampleSpec {
     name: "hypermodeling-sample",
     label: "Hyper-modeling",
     image: "hypermodeling-thumbnail.png",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./HyperModelingApp?entry=true"),

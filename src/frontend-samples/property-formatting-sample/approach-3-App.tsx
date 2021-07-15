@@ -50,14 +50,22 @@ export class Approach3App extends React.Component<PropertyProps, Approach3State>
   }
 
   public componentDidMount() {
-    this.createPropertyRecords();
+    this.createPropertyRecords()
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }
 
   public componentDidUpdate(prevProps: PropertyProps, prevState: Approach3State) {
     if (prevProps.keys === this.props.keys && prevState.showAll === this.state.showAll)
       return;
 
-    this.createPropertyRecords();
+    this.createPropertyRecords()
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }
 
   public render() {

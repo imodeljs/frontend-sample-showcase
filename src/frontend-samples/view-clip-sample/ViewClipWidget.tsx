@@ -10,6 +10,7 @@ import ViewClipApi from "./ViewClipApi";
 import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, useActiveViewport, WidgetState } from "@bentley/ui-framework";
 import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
 import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
+import "./ViewClip.scss";
 
 export const ViewClipWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();

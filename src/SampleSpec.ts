@@ -31,6 +31,5 @@ export interface SampleSpec {
   walkthrough?: () => Walkthrough;
   files?: () => Promise<SampleSpecFile>[];
   iModelList?: SampleIModels[];
-  iTwinViewerReady?: boolean;
   type?: string;
 }

@@ -20,7 +20,6 @@ export function getSerializeViewSpec(): SampleSpec {
       import("!editor-file-loader!./SampleViewStates"),
       import("!editor-file-loader!./SerializeView.scss"),
     ],
-    iTwinViewerReady: true,
     type: "SerializeViewApp.tsx",
     description: "How to #serialize, #deserialize and load a #viewstate from JSON.",
   };

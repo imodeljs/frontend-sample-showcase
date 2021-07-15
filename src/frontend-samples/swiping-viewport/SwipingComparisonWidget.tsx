@@ -8,7 +8,8 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { Select, Toggle } from "@bentley/ui-core";
 import SwipingComparisonApi, { ComparisonType } from "./SwipingComparisonApi";
 import { Point3d } from "@bentley/geometry-core";
-import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
+import { Frustum } from "@bentley/imodeljs-common";
 import "./SwipingComparison.scss";
 
 const SwipingComparisonWidget: React.FunctionComponent = () => {
@@ -16,24 +17,42 @@ const SwipingComparisonWidget: React.FunctionComponent = () => {
   const viewport = IModelApp.viewManager.selectedView;
   const [screenPointState, setScreenPointState] = React.useState<Point3d>();
   const [dividerLeftState, setDividerLeftState] = React.useState<number>();
+  const [frustum, setFrustum] = React.useState<Frustum>();
   const [isLockedState, setIsLockedState] = React.useState<boolean>(false);
   const [isRealityDataState] = React.useState<boolean>(true);
   const [comparisonState, setComparisonState] = React.useState<ComparisonType>(ComparisonType.RealityData);
   const [isInit, setIsInit] = React.useState<boolean>(false);
 
-  // Returns the position the divider will start at based on the bounds of the divider
   const initPositionDivider = (bounds: ClientRect): number => {
     return bounds.left + (bounds.width / 2);
   };
 
+  const onViewUpdate = useCallback((vp: Viewport) => {
+    const newFrustum = SwipingComparisonApi.getFrustum(vp);
+    setFrustum(newFrustum);
+  }, []);
+
   // Should be called when the Viewport is ready.
   const _initViewport = useCallback((vp: ScreenViewport) => {
-    SwipingComparisonApi.attachRealityData(vp, iModelConnection!).then().catch();
+    SwipingComparisonApi.attachRealityData(vp, iModelConnection!)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
     SwipingComparisonApi.setRealityModelTransparent(vp, ComparisonType.RealityData !== comparisonState);
+    SwipingComparisonApi.listerForViewportUpdate(vp, onViewUpdate);
     const dividerPos = initPositionDivider(SwipingComparisonApi.getClientRect(vp));
     setDividerLeftState(dividerPos);
     setIsInit(true);
-  }, [comparisonState, iModelConnection]);
+    return () => {
+      SwipingComparisonApi.teardown();
+    };
+  }, [comparisonState, iModelConnection, onViewUpdate]);
+
+  useEffect(() => {
+    const unSubscribe = SwipingComparisonApi.onSwipeEvent.addListener((num) => setDividerLeftState(num));
+    return () => unSubscribe();
+  }, []);
 
   useEffect(() => {
     if (viewport && !isInit) {
@@ -43,13 +62,6 @@ const SwipingComparisonWidget: React.FunctionComponent = () => {
       setTimeout(() => { _initViewport(viewport); }, 200);
     } else if (!isInit)
       IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => _initViewport(_vp));
-
-    const unsub = SwipingComparisonApi.onSwipeEvent.addListener((num) => setDividerLeftState(num));
-
-    return () => {
-      SwipingComparisonApi.teardown();
-      unsub();
-    };
   }, [_initViewport, isInit, viewport]);
 
   useEffect(() => {
@@ -72,9 +84,9 @@ const SwipingComparisonWidget: React.FunctionComponent = () => {
   }, [dividerLeftState, viewport]);
 
   useEffect(() => {
-    if (viewport && screenPointState)
+    if (viewport && screenPointState && frustum)
       SwipingComparisonApi.compare(screenPointState, viewport, comparisonState);
-  }, [comparisonState, screenPointState, viewport]);
+  }, [comparisonState, frustum, screenPointState, viewport]);
 
   const calculateScreenPoint = (bounds: ClientRect, leftInWindowSpace: number): Point3d => {
     const y = bounds.top + (bounds.height / 2);

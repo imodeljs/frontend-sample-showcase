@@ -65,7 +65,11 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   const handleScrollAnimation = useCallback((eventDeltaY: number) => {
     setIsPaused(true);
-    _handleScrollPath(eventDeltaY);
+    _handleScrollPath(eventDeltaY)
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }, [_handleScrollPath]);
 
   /** When the slider Value is changed, change the view to reflect the position in the path */

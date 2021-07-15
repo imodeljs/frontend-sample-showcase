@@ -12,7 +12,6 @@ export function getViewportFrontstageSample(): SampleSpec {
     label: "Viewport Frontstage",
     image: "viewport-frontstage-thumbnail.png",
     readme: async () => import("!!raw-loader!./readme.md"),
-    iTwinViewerReady: true,
     files: () => [
       import("!editor-file-loader!./ViewportFrontstageApp?entry=true"),
     ],

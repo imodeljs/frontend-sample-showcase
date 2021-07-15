@@ -11,7 +11,6 @@ export function getViewerOnly2dSpec(): SampleSpec {
     name: "viewer-only-2d-sample",
     label: "2d",
     image: "viewer-only-2d-thumbnail.png",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./ViewerOnly2dApi"),

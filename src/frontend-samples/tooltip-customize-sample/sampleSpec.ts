@@ -18,7 +18,6 @@ export function getTooltipCustomizeSpec(): SampleSpec {
       import("!editor-file-loader!./TooltipCustomizeWidget"),
       import("!editor-file-loader!./TooltipCustomize.scss"),
     ],
-    iTwinViewerReady: true,
     type: "TooltipCustomizeApp.tsx",
   });
 }

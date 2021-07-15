@@ -154,7 +154,11 @@ export default class ClashReviewApi {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
       viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
-      vp.zoomToElements([elementAId, elementBId], { ...viewChangeOpts });
+      vp.zoomToElements([elementAId, elementBId], { ...viewChangeOpts })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }
 
