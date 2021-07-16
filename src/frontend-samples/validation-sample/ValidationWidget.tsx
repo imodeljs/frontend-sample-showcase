@@ -25,10 +25,16 @@ const ValidationWidget: React.FunctionComponent = () => {
       ValidationApi._images = new Map();
       imageElementFromUrl(".\\clash_pin.svg").then((image) => {
         ValidationApi._images.set("clash_pin.svg", image);
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
       });
 
       /** Will start the validation data retrieval and recieve the data through the listener */
-      ValidationApi.setValidationData(iModelConnection.contextId!);
+      ValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
     }
     return () => {
       removeListener();
@@ -42,6 +48,9 @@ const ValidationWidget: React.FunctionComponent = () => {
     if (iModelConnection && validationResults) {
       ValidationApi.getValidationMarkersData(iModelConnection, validationResults).then((mData) => {
         setMarkersData(mData);
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
       });
     }
   }, [iModelConnection, validationResults]);

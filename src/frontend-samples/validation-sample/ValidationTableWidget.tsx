@@ -20,7 +20,10 @@ const ValidationTableWidget: React.FunctionComponent = () => {
     });
 
     if (iModelConnection) {
-      ValidationApi.setValidationData(iModelConnection.contextId!);
+      ValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
     }
     return () => {
       removeListener();
