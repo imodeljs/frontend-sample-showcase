@@ -153,8 +153,6 @@ export default class ValidationApi {
     ValidationApi.visualizeViolation(validationData.elementId);
   };
 
-  // START VIOLATION_VISUALIZATION
-
   public static visualizeViolation(elementId: string) {
     if (!IModelApp.viewManager.selectedView)
       return;
@@ -178,8 +176,6 @@ export default class ValidationApi {
         });
     }
   }
-
-  // END VIOLATION_VISUALIZATION
 
   public static resetDisplay() {
     if (!IModelApp.viewManager.selectedView)

@@ -38,11 +38,3 @@ With the rule id, we can make another API call requesting more information about
 
 [_metadata_:annotation]:- "VIOLATION_TABLE"
 
-# Violation Visualization
-
-After the user selects a specific element from the list of elements in violation of a rule, the sample makes use of several different visualization tools. Each element is assigned a `marker pin` with text describing the rule that the element is in violation of. For more information on marker pins, there is a dedicated `Marker Pin Sample` as part of the sample showcase.
-
-In addition, an element is able to be selected in the table or by clicking its marker pin, which will cause that element to be `emphasized`. This causes all other elements to become partially transparent. The selected element will also have it's color overwritten to be red. If the zoom toggle is enabled, the selected violating element will be zoomed in on. For more information on emphasizing and overwriting element colors, there is a dedicated `Emphasize Element Sample` as part of the sample showcase.
-
-
-[_metadata_:annotation]:- "VIOLATION_VISUALIZATION"
