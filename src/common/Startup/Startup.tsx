@@ -56,7 +56,11 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
   public componentDidUpdate(_prevProps: {}, prevState: StartupState) {
     // When the user.authorized goes from false to true, try to open the iModel.
     if (!prevState.user.isAuthorized && this.state.user.isAuthorized) {
-      this.openIModel();
+      this.openIModel()
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
 
     // When the iModel goes from invalid to valid, send the notification

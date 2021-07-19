@@ -29,7 +29,11 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
       setParticleDensity(props.params.particleDensity);
       setWind(props.params.windVelocity);
       setPauseEffect(false);
-    });
+    })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }, [viewport, propsName]);
 
   useEffect(() => {
@@ -61,7 +65,11 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
             // Set new texture
             SnowDecorationApi.allocateTextureFromUrl(url).then((texture) => {
               decorator.changeTexture(texture);
-            });
+            })
+              .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error);
+              });
           }
         }
       }

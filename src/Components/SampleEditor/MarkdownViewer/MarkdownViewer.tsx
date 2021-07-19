@@ -1,10 +1,11 @@
+
 /*---------------------------------------------------------------------------------------------
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import Markdown from "markdown-to-jsx";
-import { SampleLink } from "../MarkdownComponents/Link/SampleLink";
+import { ReadmeLink } from "../MarkdownComponents/Link/ReadmeLink";
 
 export interface MarkdownViewerProps {
   readme: string;
@@ -17,7 +18,7 @@ export default class MarkdownViewer extends React.Component<MarkdownViewerProps>
   public render() {
     const options = {
       overrides: {
-        a: { component: SampleLink, props: { fileClicked: this.props.onFileClicked, sampleClicked: this.props.onSampleClicked } },
+        a: { component: ReadmeLink, props: { fileClicked: this.props.onFileClicked, sampleClicked: this.props.onSampleClicked } },
       },
     };
 
@@ -28,4 +29,3 @@ export default class MarkdownViewer extends React.Component<MarkdownViewerProps>
     );
   }
 }
-

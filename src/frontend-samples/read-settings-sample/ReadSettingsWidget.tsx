@@ -40,7 +40,11 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
         setSettingResult(response);
         setSettingValue(_parseSettingsValue(settingKey, response.setting));
         setReadUpdate(false);
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [_parseSettingsValue, iModelConnection, readUpdate, settingKey]);
 
@@ -51,7 +55,11 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
         setSettingResult(response);
         setSaveInProgress(false);
         setSaveUpdate(false);
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [iModelConnection, saveInProgress, saveUpdate, settingKey, settingValue]);
 

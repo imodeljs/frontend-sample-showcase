@@ -11,11 +11,9 @@ import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { UiFramework } from "@bentley/ui-framework";
 import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
-import { SampleLegacyVisualizer } from "./SampleLegacyVisualizer";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 
 interface SampleVisualizerProps {
-  iTwinViewerReady?: boolean;
   type: string;
   iModelName: string;
   iModelSelector: React.ReactNode;
@@ -71,7 +69,7 @@ const iModelAppShutdown = async (): Promise<void> => {
   }
 };
 
-export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTwinViewerReady, type, transpileResult, iModelName, iModelSelector }) => {
+export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult, iModelName, iModelSelector }) => {
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
   const [appReady, setAppReady] = useState<boolean>(false);
   const [cleaning, setCleaning] = useState<boolean>(false);
@@ -82,8 +80,12 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     iModelAppShutdown()
       .then(() => {
         setCleaning(false);
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
       });
-  }, [iTwinViewerReady, type, transpileResult, iModelName, iModelSelector]);
+  }, [type, transpileResult, iModelName, iModelSelector]);
 
   useEffect(() => {
     if (sampleUi && !cleaning) {
@@ -91,6 +93,10 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
         .initializeOidc()
         .then(() => {
           setAppReady(true);
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
         });
     }
   }, [sampleUi, cleaning]);
@@ -116,7 +122,11 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
       import( /* webpackIgnore: true */ transpileResult).then((module) => {
         const component = module.default as React.ComponentClass<SampleProps>;
         setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [transpileResult, iModelName, iModelSelector]);
 
@@ -124,7 +134,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ iTw
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
   }
 
-  return !iTwinViewerReady ? <SampleLegacyVisualizer sampleUi={sampleUi} /> : <>{sampleUi}</>;
+  return <>{sampleUi}</>;
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {

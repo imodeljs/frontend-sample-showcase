@@ -18,7 +18,6 @@ export function getMarkerPinSpec(): SampleSpec {
       ],
     }),
     description: "Uses a #Decorator and a #MarkerSet to display #markers that indicate important locations in a model.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./MarkerPinApi.ts"),

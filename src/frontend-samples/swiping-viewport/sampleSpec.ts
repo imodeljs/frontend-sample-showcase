@@ -13,7 +13,6 @@ export function getSwipingComparisonSpec(): SampleSpec {
     image: "swiping-viewport-thumbnail.png",
     description: "Compare models and reality data using a #clip and a #TileGraphicsProvider in a single #viewport.",
     iModelList: [SampleIModels.ExtonCampus],
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./SwipingComparisonApi"),

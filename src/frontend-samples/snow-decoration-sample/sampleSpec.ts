@@ -13,7 +13,6 @@ export function getParticleSnowSampleSpec(): SampleSpec {
     image: "snow-decorator-thumbnail.png",
     iModelList: [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium],
     description: "Creates a #snow #overlay using #particles #Decorator.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./SnowDecorationApi?entry=true"),

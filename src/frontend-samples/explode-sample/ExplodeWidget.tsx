@@ -53,7 +53,11 @@ const ExplodeWidget: React.FunctionComponent = () => {
     if (iModelConnection) {
       populateObjects(iModelConnection).then(() => {
         setIsPopulatingObjects(false);
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [iModelConnection]);
 

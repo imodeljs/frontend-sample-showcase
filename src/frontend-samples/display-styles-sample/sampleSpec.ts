@@ -11,7 +11,6 @@ export function getDisplayStylesSpec(): SampleSpec {
     name: "display-styles-sample",
     label: "Display Styles",
     image: "display-styles-thumbnail.png",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./DisplayStylesApi"),

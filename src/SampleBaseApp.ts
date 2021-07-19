@@ -10,12 +10,12 @@ import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface 
 import { MarkupApp } from "@bentley/imodeljs-markup";
 import { PresentationRpcInterface, Ruleset } from "@bentley/presentation-common";
 import { Presentation } from "@bentley/presentation-frontend";
-import { ShowcaseToolAdmin } from "./api/showcasetooladmin";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 import { MovePointTool } from "Components/SampleVisualizer/InteractivePointMarker";
+import { ShowcaseToolAdmin } from "@itwinjs-sandbox/api/ShowcaseToolAdmin";
 
 // Boiler plate code
 export interface SampleContext {

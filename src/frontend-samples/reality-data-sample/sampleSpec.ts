@@ -11,7 +11,6 @@ export function getRealityDataSpec(): SampleSpec {
     name: "reality-data-sample",
     label: "Reality Data",
     image: "reality-data-thumbnail.png",
-    iTwinViewerReady: true,
     walkthrough: () => ({
       annotations: import("!walkthrough-loader!./annotations.md"),
     }),

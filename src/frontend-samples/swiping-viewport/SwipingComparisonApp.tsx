@@ -16,15 +16,14 @@ const uiProviders = [new SwipingComparisonWidgetProvider()];
 const SwipingComparisonApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Drag the divider to compare the two halves of the view. Try rotating the view with the 'Lock Plane' toggle on and off.", [SampleIModels.ExtonCampus]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
-
   const [boundsState, setBoundsState] = React.useState<ClientRect>();
   const [dividerLeftState, setDividerLeftState] = React.useState<number>();
   const [isLockedState, setIsLockedState] = React.useState<boolean>(false);
 
   /** On function component initialization, subscribe to the locked event for when the widget toggles a locked the state is updated */
   useEffect(() => {
-    const unsub = SwipingComparisonApi.onLockEvent.addListener((isLocked) => setIsLockedState(isLocked));
-    return () => { unsub(); };
+    const unSubscribe = SwipingComparisonApi.onLockEvent.addListener((isLocked) => setIsLockedState(isLocked));
+    return () => { unSubscribe(); };
   }, []);
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {

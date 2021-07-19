@@ -14,7 +14,11 @@ export interface SampleLegacyVisualizerProps {
 async function retry<T>(retries: number, executor: Promise<T>) {
   return executor.catch((error) => {
     if (retries > 0 && error !== "Cancelled") {
-      retry(retries - 1, executor);
+      retry(retries - 1, executor)
+        .catch((retryError) => {
+          // eslint-disable-next-line no-console
+          console.error(retryError);
+        });
     } else {
       if (error !== "Cancelled") {
         // eslint-disable-next-line no-console
@@ -29,9 +33,17 @@ export const SampleLegacyVisualizer: FunctionComponent<SampleLegacyVisualizerPro
 
   useEffect(() => {
     SampleBaseApp.cancel();
-    retry(2, SampleBaseApp.startup())
+    retry(2, SampleBaseApp.startup()
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }))
       .then(() => {
         setAppReady(true);
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
       });
     return () => {
       setAppReady(false);

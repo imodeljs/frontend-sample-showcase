@@ -5,8 +5,8 @@
 import * as React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
-import { ViewSetup } from "../../api/viewSetup";
 import { SandboxIModelConnection } from "../SandboxIModelConnection/SandboxIModelConnection";
+import { ViewSetup } from "@itwinjs-sandbox";
 
 export interface SandboxViewportProps {
   iModelName: string;

@@ -26,7 +26,6 @@ export function getEmphasizeElementsSpec(): SampleSpec {
       import("!editor-file-loader!./EmphasizeElementsWidget"),
       import("!editor-file-loader!./EmphasizeElements.scss"),
     ],
-    iTwinViewerReady: true,
     iModelList: [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium],
     type: "EmphasizeElementsApp.tsx",
   });

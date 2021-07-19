@@ -11,7 +11,6 @@ export function getShadowStudySpec(): SampleSpec {
     label: "Shadow Study",
     image: "shadow-study-thumbnail.png",
     description: "#Sample showing how to adjust the #solar #lighting by using #setSunTime.",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./ShadowStudyApi"),

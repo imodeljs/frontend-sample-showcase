@@ -130,22 +130,8 @@
       "import": "@bentley/frontend-application-insights-client"
     },
     {
-      "name": "@bentley/hypermodeling-frontend",
-      "import": "@bentley/hypermodeling-frontend"
-    },
-    {
       "name": "@itwin/itwinui-react",
       "import": "@itwin/itwinui-react"
-    },
-    {
-      "name": "api/viewSetup",
-      "import": "./src/api/viewSetup",
-      "typedef": true
-    },
-    {
-      "name": "api/showcasetooladmin",
-      "import": "./src/api/showcasetooladmin",
-      "typedef": true
     },
     {
       "name": "common/UIComponents/UIComponentContainer",
@@ -242,6 +228,11 @@
     {
       "name": "@itwinjs-sandbox/hooks/useSampleWidget",
       "import": "./src/@itwinjs-sandbox/hooks/useSampleWidget",
+      "typedef": true
+    },
+    {
+      "name": "@itwinjs-sandbox/api/ShowcaseToolAdmin",
+      "import": "./src/@itwinjs-sandbox/api/ShowcaseToolAdmin",
       "typedef": true
     },
     {

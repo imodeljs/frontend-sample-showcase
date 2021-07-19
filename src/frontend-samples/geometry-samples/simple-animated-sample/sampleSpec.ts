@@ -11,9 +11,7 @@ export function getSimpleAnimatedSpec(): SampleSpec {
     label: "Simple Animated",
     image: "simple-animated-thumbnail.png",
     description: "#Geometry #sample showing how to create #animation using multiples #2d shapes",
-
     iModelList: [],
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./SimpleAnimatedApi"),

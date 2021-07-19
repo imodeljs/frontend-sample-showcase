@@ -43,7 +43,11 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
         setReadmeContent(fileData.default);
         setShowReadme(true);
         setReadmeLoading(false);
-      });
+      })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
+        });
     }
   }, [readme, setReadmeContent, setShowReadme]);
 

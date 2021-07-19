@@ -89,7 +89,7 @@ export class ViewSetup {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
         displayStyle.changeBackgroundMapProps({
-          planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.IncludeSubCategories, modelIds, subCategoryIds),
+          planarClipMask: PlanarClipMaskSettings.createForElementsOrSubCategories(PlanarClipMaskMode.IncludeSubCategories, subCategoryIds, modelIds).toJSON(),
         });
       }
     }
@@ -100,8 +100,8 @@ export class ViewSetup {
       if (imodel.name === "Stadium") {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
         displayStyle.changeBackgroundMapProps({
+          planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
           transparency: 0.01, // Temporary fix due to how the planar clip and transparency interact.
-          planarClipMask: PlanarClipMaskSettings.create(PlanarClipMaskMode.Models, modelsForMasking),
         });
         const excludedModelIds = await ViewSetup.getModelIds(imodel,
           "SS_Master",

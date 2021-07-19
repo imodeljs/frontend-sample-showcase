@@ -18,7 +18,6 @@ export function getImageExportSpec(): SampleSpec {
       import("!editor-file-loader!./ImageExportWidget"),
       import("!editor-file-loader!./ImageExport.scss"),
     ],
-    iTwinViewerReady: true,
     type: "ImageExportApp.tsx",
   });
 }

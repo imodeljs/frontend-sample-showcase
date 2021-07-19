@@ -11,7 +11,6 @@ export function getGlobalDisplaySpec(): SampleSpec {
     name: "global-display-sample",
     label: "Global Data",
     image: "global-display-thumbnail.png",
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./GlobalDisplayApi"),

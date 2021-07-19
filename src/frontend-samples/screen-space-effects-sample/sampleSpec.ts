@@ -12,7 +12,6 @@ export function getScreenSpaceEffectsSpec(): SampleSpec {
     label: "Screen-space Effects",
     image: "screen-space-effects-thumbnail.png",
     iModelList: [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House],
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./ScreenSpaceEffectsApi"),

@@ -11,9 +11,7 @@ export function getSimpleLineSpec(): SampleSpec {
     label: "Simple Line",
     image: "simple-line-thumbnail.png",
     description: "#Simple #geometry #sample showing how to create a #line #segment using #LineSegment3d and create #points along it using #fractionToPoint.",
-
     iModelList: [],
-    iTwinViewerReady: true,
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./SimpleLineApi"),
