@@ -2,7 +2,7 @@
 
 In order to retrieve the list of `validation rules`, we need to send a request to the [Validation REST API](https://developer.bentley.com/api-groups/project-delivery/apis/validation/). The Validation API allows you to create, run, and evaluate the results of validation rules. These rules are applied to each element when a test is run, and any elements found to be in violation of the rules are returned, along with the specific test that the element failed.
 
-Since the sample showcase is a read only envirornment, the sample itself does not attempt to create a test, instead using hardcoded data that matches the format of a response from the API.
+Since the sample showcase is a read-only environment, the sample itself does not attempt to create a test, instead using hardcoded data that matches the format of a response from the API.
 
 [_metadata_:annotation]:- "VALIDATION_API"
 
@@ -37,4 +37,3 @@ After using the Validation API to retrieve all of the active rule information an
 With the rule id, we can make another API call requesting more information about the rule, such as the value or range of values that are acceptable for the rule or the ecClass of elements that the rule is being applied to.
 
 [_metadata_:annotation]:- "VIOLATION_TABLE"
-
