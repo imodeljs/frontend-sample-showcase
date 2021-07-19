@@ -114,7 +114,7 @@ export default class ValidationApi {
     // Limit the number of validations in this demo
     const maxValidations = 70;
     const markersData: MarkerData[] = [];
-    const limitedValidationData = validationData.propertyValueResult.slice(0, maxValidationes);
+    const limitedValidationData = validationData.propertyValueResult.slice(0, maxValidations);
 
     const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
 
