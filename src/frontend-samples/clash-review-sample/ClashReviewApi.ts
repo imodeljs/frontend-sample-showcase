@@ -111,7 +111,6 @@ export default class ClashReviewApi {
 
   private static async calcClashCenter(imodel: IModelConnection, elementAIds: string[], elementBIds: string[]): Promise<Point3d[]> {
     const allElementIds = [...elementAIds, ...elementBIds];
-
     const elemProps = (await imodel.elements.getProps(allElementIds)) as GeometricElement3dProps[];
     const intersections: Point3d[] = [];
     if (elemProps.length !== 0) {
@@ -169,5 +168,6 @@ export default class ClashReviewApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
     emph.clearOverriddenElements(vp);
+    this._clashPinDecorator = undefined;
   }
 }

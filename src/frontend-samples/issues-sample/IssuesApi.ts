@@ -28,12 +28,12 @@ export default class IssuesApi {
   public static async getElementInfo(iModel: IModelConnection, keySet: KeySet): Promise<LabelWithId[]> {
     const instanceKeys: InstanceKey[] = [];
     keySet.instanceKeys.forEach((currentIds: Set<string>, key: string) => {
-      currentIds.forEach((value: string) => { instanceKeys.push ({className: key, id: value}); });
+      currentIds.forEach((value: string) => { instanceKeys.push({ className: key, id: value }); });
     });
 
-    const labels = await Presentation.presentation.getDisplayLabelDefinitions({imodel: iModel, keys: instanceKeys });
+    const labels = await Presentation.presentation.getDisplayLabelDefinitions({ imodel: iModel, keys: instanceKeys });
 
-    return labels.map((label, index) => ({ ...label, id: instanceKeys[index].id}));
+    return labels.map((label, index) => ({ ...label, id: instanceKeys[index].id }));
   }
 
   public static decoratorIsSetup() {
@@ -41,7 +41,7 @@ export default class IssuesApi {
   }
 
   public static setupDecorator() {
-    if(undefined === this._issuesPinDecorator)
+    if (undefined === this._issuesPinDecorator)
       this._issuesPinDecorator = new MarkerPinDecorator();
   }
 
@@ -58,7 +58,9 @@ export default class IssuesApi {
   }
 
   public static disableDecorations() {
-    if (null != this._issuesPinDecorator)
+    if (null != this._issuesPinDecorator) {
       IModelApp.viewManager.dropDecorator(this._issuesPinDecorator);
+      this._issuesPinDecorator = undefined;
+    }
   }
 }
