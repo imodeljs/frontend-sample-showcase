@@ -5,7 +5,7 @@
 import { DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
 import { Version } from "@bentley/imodelhub-client";
 import { ChangedElements, ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, Viewport } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@bentley/imodeljs-frontend";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 
 /** This provider will change the color of the elements based on the last operation of the comparison. */
@@ -89,33 +89,39 @@ export class ChangedElementsApi {
   public static visualizeComparison(vp: Viewport, changedElements: ChangedElements | undefined) {
     const elementIds = changedElements?.elements;
     const opcodes = changedElements?.opcodes;
+    const deleteOp: Id64Array = [];
+    const insertOp: Id64Array = [];
+    const updateOp: Id64Array = [];
+    let msgBrief = "";
+    let msgDetail = "";
 
     if (
+      // Tests if response has valid changes
       elementIds === undefined || elementIds.length <= 0 ||
       opcodes === undefined || opcodes.length <= 0 ||
       elementIds.length !== opcodes.length
     ) {
-      ComparisonProvider.dropComparison(vp);
-      return undefined;
-    }
-
-    const deleteOp: Id64Array = [];
-    const insertOp: Id64Array = [];
-    const updateOp: Id64Array = [];
-    for (let i = 0; i < elementIds.length; i += 1) {
-      switch (opcodes[i]) {
-        case DbOpcode.Delete:
-          // Deleted elements will not be represented in this sample.
-          deleteOp.push(elementIds[i]);
-          break;
-        case DbOpcode.Insert:
-          insertOp.push(elementIds[i]);
-          break;
-        case DbOpcode.Update:
-          updateOp.push(elementIds[i]);
-          break;
+      msgBrief = "No elements changed";
+      msgDetail = "There were 0 elements changed between change sets.";
+    } else {
+      msgBrief = `${elementIds.length} elements changed`;
+      msgDetail = `There were ${elementIds.length} elements changed between change sets.`;
+      for (let i = 0; i < elementIds.length; i += 1) {
+        switch (opcodes[i]) {
+          case DbOpcode.Delete:
+            // Deleted elements will not be represented in this sample.
+            deleteOp.push(elementIds[i]);
+            break;
+          case DbOpcode.Insert:
+            insertOp.push(elementIds[i]);
+            break;
+          case DbOpcode.Update:
+            updateOp.push(elementIds[i]);
+            break;
+        }
       }
     }
+    IModelApp.notifications.outputMessage(new NotifyMessageDetails(OutputMessagePriority.Info, msgBrief, msgDetail, OutputMessageType.Toast));
     ComparisonProvider.setComparison(vp, insertOp, updateOp);
 
     return { elementIds, opcodes };
