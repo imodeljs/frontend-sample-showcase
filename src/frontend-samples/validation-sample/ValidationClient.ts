@@ -109,7 +109,7 @@ export default class ValidationClient {
     if (accessToken === undefined)
       return undefined;
 
-    const url = `https://dev-api.bentley.com/validation/runs/test/${testId}`;
+    const url = `https://api.bentley.com/validation/runs/test/${testId}`;
     // Get the latest named version of the iModel
     const hubClient = new IModelHubClient();
     const namedVersions = await hubClient.versions.get(requestContext, iModelId, new VersionQuery().top(1));
