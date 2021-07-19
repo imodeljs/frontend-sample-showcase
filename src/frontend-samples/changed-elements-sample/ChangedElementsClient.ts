@@ -5,7 +5,7 @@
 import { assert } from "@bentley/bentleyjs-core";
 import { Version, VersionQuery } from "@bentley/imodelhub-client";
 import { ChangedElements } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection, IModelHubFrontend } from "@bentley/imodeljs-frontend";
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { ChangedElementsApi } from "./ChangedElementsApi";
@@ -42,7 +42,7 @@ export class ChangedElementsClient {
     const { requestContext, iModelId } = ChangedElementsClient._projectContext;
     const query = new VersionQuery().notHidden().select("name, changeSetId").top(10);
 
-    return IModelApp.iModelClient.versions.get(requestContext, iModelId, query);
+    return IModelHubFrontend.iModelClient.versions.get(requestContext, iModelId, query);
   }
 
   /** Gets the changes in version using REST API.  Will response with JSON describing changes made between the two changesets.  Pass the same changeset Id as the start and end to view the changes for that changeset.

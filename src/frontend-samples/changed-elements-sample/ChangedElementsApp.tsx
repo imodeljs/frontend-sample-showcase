@@ -16,7 +16,7 @@ import { ChangedElementsWidgetProvider } from "./ChangedElementsWidget";
 const uiProviders = [new ChangedElementsWidgetProvider()];
 
 const ChangedElementsApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the drop down to select the named version to compare against.", [SampleIModels.Stadium]);
+  const sampleIModelInfo = useSampleWidget("Use the drop down to select the named version to compare against.  Observe the changed elements are emphasized with color.  Unchanged elements are faded grey.", [SampleIModels.Stadium]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const oniModelReady = async (iModelConnection: IModelConnection) => {
