@@ -8,7 +8,7 @@ Since the sample showcase is a read-only environment, the sample itself does not
 
 # Example API Call
 
-Above is an example of how to make a request from the API. In this case, a request is being made to retrieve a list of the different tests that exist in the current project. The request url is what specifies the request being made, in this case `https://api.bentley.com/projects/${projectId}/validation/tests` is specifying that a list of validation tests should be returned from the current project. Also note that we are attaching an access token to our request options, as we need to have specific priviledges in order to access the test information.
+Above is an example of how to make a request from the API. In this case, a request is being made to retrieve a list of the different tests that exist in the current project. The request url is what specifies the request being made, in this case `https://api.bentley.com/projects/${projectId}/validation/tests` is specifying that a list of validation tests should be returned from the current project. Also note that we are attaching an access token to our request options, as we need to have specific privileges in order to access the test information.
 
 [_metadata_:annotation]:- "API_EXAMPLE"
 
