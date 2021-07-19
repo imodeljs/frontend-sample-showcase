@@ -112,7 +112,7 @@ export default class ValidationApi {
 
   public static async getValidationMarkersData(imodel: IModelConnection, validationData: any): Promise<MarkerData[]> {
     // Limit the number of validations in this demo
-    const maxValidationes = 70;
+    const maxValidations = 70;
     const markersData: MarkerData[] = [];
     const limitedValidationData = validationData.propertyValueResult.slice(0, maxValidationes);
 
