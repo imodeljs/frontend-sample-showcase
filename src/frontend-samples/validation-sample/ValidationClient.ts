@@ -101,7 +101,7 @@ export default class ValidationClient {
   //     }
   // }
   // You can pass the URL returned in the href to the following function:
-  //   const response = ClashDetectionApis.getValidationUrlResponse(body._links.run.href);
+  //   const response = ValidationClient.getValidationUrlResponse(body._links.run.href);
   public static async runValidationTest(requestContext: AuthorizedClientRequestContext, iModelId: string, testId: string) {
     if (testId === undefined)
       return undefined;
