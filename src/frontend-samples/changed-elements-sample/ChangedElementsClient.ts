@@ -79,7 +79,7 @@ export class ChangedElementsClient {
     const accessToken = await ChangedElementsClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
-    const url = `https://api.bentley.com/changedelements/comparison?iModelId=${iModelId}&contextId=${projectId}&startChangesetId=${startChangesetId}&endChangesetId=${endChangesetId}`;
+    const url = `https://api.bentley.com/changedelements/comparison?iModelId=${iModelId}&projectId=${projectId}&startChangesetId=${startChangesetId}&endChangesetId=${endChangesetId}`;
     const options = {
       method: "GET",
       headers: {
