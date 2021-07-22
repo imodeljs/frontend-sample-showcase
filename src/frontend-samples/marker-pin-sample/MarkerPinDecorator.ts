@@ -271,6 +271,11 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
       vp.invalidateDecorations();
   }
   // END REMOVEMARKER
+
+  /** Drop all markers from the set */
+  public clear(){
+    this.markers.clear();
+  }
 }
 
 /** A MarkerPinDecorator can be registered with ViewManager.addDecorator.  Once registered, the decorate method will be called
@@ -307,6 +312,16 @@ export class MarkerPinDecorator implements Decorator {
   /* Adds a single new marker to the "manual" markerset */
   public addMarkerPoint(markerData: MarkerData, pinImage: HTMLImageElement, title?: string, description?: string, scale?: Range1dProps, onMouseButtonCallback?: any): void {
     this._manualMarkerSet.markers.add(new SamplePinMarker(markerData, title ?? "Manual", description ?? "description test goes here", pinImage, this._manualMarkerSet, scale, onMouseButtonCallback));
+
+    // When the markers change we notify the viewmanager to remove the existing decorations
+    const vp = IModelApp.viewManager.selectedView;
+    if (undefined !== vp)
+      vp.invalidateDecorations();
+  }
+
+  /** Clears all the markers and invalidates the current decorations */
+  public clearMarkers() {
+    this._manualMarkerSet.markers.clear();
 
     // When the markers change we notify the viewmanager to remove the existing decorations
     const vp = IModelApp.viewManager.selectedView;
