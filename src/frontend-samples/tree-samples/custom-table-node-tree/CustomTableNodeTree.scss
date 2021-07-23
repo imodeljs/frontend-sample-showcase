@@ -20,8 +20,10 @@
     text-align: center;
     font-weight: bold;
     padding-top: 3px;
-    
-    .col-2, .col-3 {
+    color: white;
+
+    .col-2,
+    .col-3 {
       border-left: grey 1px solid;
     }
   }
@@ -33,7 +35,7 @@
 
   .table-node {
     display: flex;
-    
+
     .node-offset {
       display: flex;
       text-overflow: ellipsis;
@@ -41,7 +43,8 @@
       flex-wrap: nowrap;
     }
 
-    .col-2, .col-3 {
+    .col-2,
+    .col-3 {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -50,7 +53,9 @@
   .col-1 {
     flex: 2 1 0
   }
-  .col-2, .col-3 {
+
+  .col-2,
+  .col-3 {
     flex: 1 1 0
   }
 }
