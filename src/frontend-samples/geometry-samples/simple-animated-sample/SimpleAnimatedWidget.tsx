@@ -11,7 +11,7 @@ import { ColorPickerButton } from "@bentley/ui-components";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import SimpleAnimatedApi from "./SimpleAnimatedApi";
-import { GeometryDecorator } from "./GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import "./SimpleAnimated.scss";
 
 export const SimpleAnimatedWidget: React.FunctionComponent = () => {

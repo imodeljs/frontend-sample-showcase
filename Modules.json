@@ -139,6 +139,11 @@
       "typedef": true
     },
     {
+      "name": "common/Geometry/GeometryDecorator",
+      "import": "./src/common/Geometry/GeometryDecorator",
+      "typedef": true
+    },
+    {
       "name": "common/DataProvider/SampleDataProvider",
       "import": "./src/common/DataProvider/SampleDataProvider",
       "typedef": true
