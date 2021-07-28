@@ -17,7 +17,7 @@ export function getAdvanced3dSpec(): SampleSpec {
       import("!editor-file-loader!./Advanced3dApi"),
       import("!editor-file-loader!./Advanced3dApp?entry=true"),
       import("!editor-file-loader!./Advanced3dWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./Advanced3d.scss"),
     ],
     type: "Advanced3dApp.tsx",

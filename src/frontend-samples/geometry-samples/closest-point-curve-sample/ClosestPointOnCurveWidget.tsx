@@ -11,7 +11,7 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { InteractivePointMarker, MovePointTool } from "./InteractivePointMarker";
 import ClosestPointOnCurveApi from "./ClosestPointOnCurveApi";
-import { GeometryDecorator } from "./GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { SampleCurveFactory } from "./SampleCurveFactory";
 
 export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {

@@ -10,7 +10,7 @@ import { Loop, Point3d } from "@bentley/geometry-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import Transformations2dApi from "./2dTransformationsApi";
-import { GeometryDecorator } from "./GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import "./2dTransformations.scss";
 
 enum Direction {
