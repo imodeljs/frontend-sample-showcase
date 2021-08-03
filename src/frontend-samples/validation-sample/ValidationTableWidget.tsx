@@ -49,10 +49,10 @@ const ValidationTableWidget: React.FunctionComponent = () => {
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 
-    if (validationResults !== undefined && validationResults.propertyValueResult !== undefined && validationResults.ruleList !== undefined && iModelConnection) {
+    if (validationResults !== undefined && validationResults.result !== undefined && validationResults.ruleList !== undefined && iModelConnection) {
       // Adding rows => cells => property record => value and description.
       let validationIndex: number = 0;
-      validationResults.propertyValueResult.some((rowData: any) => {
+      validationResults.result.some((rowData: any) => {
         const rowKey = `${rowData.elementId}`;
         const rowItem: RowItem = { key: rowKey, cells: [] };
         columns.forEach(async (column: ColumnDescription, i: number) => {
@@ -64,8 +64,8 @@ const ValidationTableWidget: React.FunctionComponent = () => {
             // Lookup the rule name using the rule index
             cellValue = validationResults.ruleList[rowData.ruleIndex].displayName.toString();
           } else if (column.key === "legalValues") {
-            const ruleData = await ValidationApi.getMatchingRule(validationResults.ruleList[rowData.ruleIndex].id.toString(), iModelConnection.contextId!, true);
-            cellValue = `[${ruleData?.propertyValueRule.functionParameters.lowerBound},${ruleData?.propertyValueRule.functionParameters.upperBound}]`;
+            const ruleData = await ValidationApi.getMatchingRule(validationResults.ruleList[rowData.ruleIndex].id.toString());
+            cellValue = `[${ruleData?.rule.functionParameters.lowerBound},${ruleData?.rule.functionParameters.upperBound}]`;
           } else {
             cellValue = rowData[column.key].toString();
           }

@@ -1,6 +1,6 @@
 // START RULE_DATA
 export const jsonRuleData = {
-  propertyValueRule: {
+  rule: {
     name: "Pitch Range",
     description: "Rule Description",
     creationDateTime: "2021-06-17T14:45:47.753Z",

@@ -33,9 +33,6 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
 
   const _getDataProvider = useCallback((): SimpleTableDataProvider => {
 
-    // Limit the number of clashes in this demo
-    const maxClashes = 70;
-
     // adding columns
     const columns: ColumnDescription[] = [];
 
@@ -49,10 +46,9 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
 
-    if (clashData !== undefined && clashData.clashDetectionResult !== undefined) {
+    if (clashData !== undefined && clashData.result !== undefined) {
       // adding rows => cells => property record => value and description.
-      let clashIndex: number = 0;
-      clashData.clashDetectionResult.some((rowData: any) => {
+      for (const rowData of clashData.result) {
         // Concatenate the element ids to set the row key  ie. "elementAId-elementBId"
         const rowItemKey = `${rowData.elementAId}-${rowData.elementBId}`;
         const rowItem: RowItem = { key: rowItemKey, cells: [] };
@@ -60,10 +56,10 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
           let cellValue: string = "";
           if (column.key === "elementACategoryIndex" || column.key === "elementBCategoryIndex") {
             // Lookup the category name using the index
-            cellValue = clashData.categoryList[rowData[column.key]].displayName.toString();
+            cellValue = clashData.categoryList[rowData[column.key]] ? clashData.categoryList[rowData[column.key]].displayName.toString() : "";
           } else if (column.key === "elementAModelIndex" || column.key === "elementBModelIndex") {
             // Lookup the model name using the index
-            cellValue = clashData.modelList[rowData[column.key]].displayName.toString();
+            cellValue = clashData.modelList[rowData[column.key]] ? clashData.modelList[rowData[column.key]].displayName.toString() : "";
           } else {
             cellValue = rowData[column.key].toString();
           }
@@ -72,9 +68,7 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
           rowItem.cells.push({ key: columns[i].key, record: new PropertyRecord(value, description) });
         });
         dataProvider.addRow(rowItem);
-        clashIndex++;
-        return maxClashes < clashIndex;
-      });
+      }
     }
     return dataProvider;
   }, [clashData]);

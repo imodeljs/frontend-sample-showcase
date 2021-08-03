@@ -39,6 +39,7 @@ const ValidationWidget: React.FunctionComponent = () => {
     return () => {
       removeListener();
       ValidationApi.disableDecorations();
+      ValidationApi._validationPinDecorator = undefined;
       ValidationApi.resetDisplay();
     };
   }, [iModelConnection]);

@@ -3,9 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
-import { Point3d } from "@bentley/geometry-core";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, imageElementFromUrl, IModelApp, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
+import { ColorDef } from "@bentley/imodeljs-common";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import ClashDetectionClient from "./ClashDetectionClient";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
@@ -30,7 +29,7 @@ export default class ClashReviewApi {
   }
 
   public static decoratorIsSetup() {
-    return (null != this._clashPinDecorator);
+    return (null != ClashReviewApi._clashPinDecorator);
   }
 
   public static setupDecorator(points: MarkerData[]) {
@@ -38,97 +37,67 @@ export default class ClashReviewApi {
     if (!ClashReviewApi._images.has("clash_pin.svg"))
       return;
 
-    this._clashPinDecorator = new MarkerPinDecorator();
-    this.setDecoratorPoints(points);
+    ClashReviewApi._clashPinDecorator = new MarkerPinDecorator();
+    ClashReviewApi.setDecoratorPoints(points);
   }
 
   public static setDecoratorPoints(markersData: MarkerData[]) {
-    if (this._clashPinDecorator)
-      this._clashPinDecorator.setMarkersData(markersData, this._images.get("clash_pin.svg")!, ClashReviewApi.visualizeClashCallback);
+    if (ClashReviewApi._clashPinDecorator)
+      ClashReviewApi._clashPinDecorator.setMarkersData(markersData, ClashReviewApi._images.get("clash_pin.svg")!, ClashReviewApi.visualizeClashCallback);
   }
 
   public static enableDecorations() {
-    if (this._clashPinDecorator)
-      IModelApp.viewManager.addDecorator(this._clashPinDecorator);
+    if (ClashReviewApi._clashPinDecorator)
+      IModelApp.viewManager.addDecorator(ClashReviewApi._clashPinDecorator);
   }
 
   public static disableDecorations() {
-    if (null != this._clashPinDecorator)
-      IModelApp.viewManager.dropDecorator(this._clashPinDecorator);
+    if (null != ClashReviewApi._clashPinDecorator)
+      IModelApp.viewManager.dropDecorator(ClashReviewApi._clashPinDecorator);
   }
 
   public static enableZoom() {
-    this._applyZoom = true;
+    ClashReviewApi._applyZoom = true;
   }
 
   public static disableZoom() {
-    this._applyZoom = false;
+    ClashReviewApi._applyZoom = false;
   }
 
   public static async setClashData(projectId: string): Promise<void> {
-    const clashData = await ClashReviewApi.getClashData(projectId, true);
+    const clashData = await ClashReviewApi.getClashData(projectId);
     ClashReviewApi.onClashDataChanged.raiseEvent(clashData);
   }
 
-  /** The API has been significantly reworked, so for the time being the static jsonData file will be used */
-  public static async getClashData(projectId: string, staticData?: boolean): Promise<any> {
-    if (staticData)
-      return jsonData;
-
+  public static async getClashData(projectId: string): Promise<any> {
     const context = await ClashReviewApi.getRequestContext();
     if (ClashReviewApi._clashData[projectId] === undefined) {
-      const runsResponse = await ClashDetectionClient.getProjectValidationRuns(context, projectId);
-      if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
+      const runsResponse = await ClashDetectionClient.getClashTestRuns(context, projectId);
+      if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ClashDetectionClient.getValidationUrlResponse(context, runsResponse.validationRuns[0]._links.result.href);
-        if (resultResponse !== undefined && resultResponse.clashDetectionResult !== undefined)
+        const resultResponse = await ClashDetectionClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
+        if (resultResponse !== undefined && resultResponse.result !== undefined)
           ClashReviewApi._clashData[projectId] = resultResponse;
       }
-    }
-
-    return ClashReviewApi._clashData[projectId] ? ClashReviewApi._clashData[projectId] : jsonData;
-  }
-
-  public static async getClashMarkersData(imodel: IModelConnection, clashData: any): Promise<MarkerData[]> {
-    // Limit the number of clashes in this demo
-    const maxClashes = 70;
-    const markersData: MarkerData[] = [];
-    const limitedClashData = clashData.clashDetectionResult.slice(0, maxClashes);
-
-    const elementAs: string[] = limitedClashData.map((clash: any) => clash.elementAId);
-    const elementBs: string[] = limitedClashData.map((clash: any) => clash.elementBId);
-
-    const points = await this.calcClashCenter(imodel, elementAs, elementBs);
-
-    for (let index = 0; index < points.length; index++) {
-      const title = "Collision(s) found:";
-      const description = `Element A: ${limitedClashData[index].elementALabel}<br>Element B: ${limitedClashData[index].elementBLabel}`;
-      const clashMarkerData: MarkerData = { point: points[index], data: limitedClashData[index], title, description };
-      markersData.push(clashMarkerData);
-    }
-    return markersData;
-  }
-
-  private static async calcClashCenter(imodel: IModelConnection, elementAIds: string[], elementBIds: string[]): Promise<Point3d[]> {
-    const allElementIds = [...elementAIds, ...elementBIds];
-    const elemProps = (await imodel.elements.getProps(allElementIds)) as GeometricElement3dProps[];
-    const intersections: Point3d[] = [];
-    if (elemProps.length !== 0) {
-
-      for (let index = 0; index < elementAIds.length; index++) {
-        const elemA = elemProps.find((prop) => prop.id === elementAIds[index]);
-        const elemB = elemProps.find((prop) => prop.id === elementBIds[index]);
-        if (elemA && elemB) {
-          const placementA = Placement3d.fromJSON(elemA.placement);
-          const rangeA = placementA.calculateRange();
-          const placementB = Placement3d.fromJSON(elemB.placement);
-          const rangeB = placementB.calculateRange();
-          intersections.push(rangeA.intersect(rangeB).center);
-        }
+      if (ClashReviewApi._clashData[projectId] === undefined) {
+        ClashReviewApi._clashData[projectId] = jsonData;
       }
     }
 
-    return intersections;
+    return ClashReviewApi._clashData[projectId];
+  }
+
+  public static async getClashMarkersData(iModelConnection: any, clashData: any): Promise<MarkerData[]> {
+    const markersData: MarkerData[] = [];
+    if (iModelConnection && clashData) {
+      for (const result of clashData.result) {
+        const title = "Collision(s) found:";
+        const description = `Element A: ${result.elementALabel}<br>Element B: ${result.elementBLabel}`;
+        const clashMarkerData: MarkerData = { point: result.center, data: result, title, description };
+        markersData.push(clashMarkerData);
+      }
+    }
+    return markersData;
   }
 
   public static visualizeClashCallback = (clashData: any) => {
@@ -148,7 +117,7 @@ export default class ClashReviewApi {
     emph.wantEmphasis = true;
     emph.emphasizeElements([elementAId, elementBId], vp, undefined, false);
 
-    if (this._applyZoom) {
+    if (ClashReviewApi._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
       viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
@@ -168,6 +137,5 @@ export default class ClashReviewApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
     emph.clearOverriddenElements(vp);
-    this._clashPinDecorator = undefined;
   }
 }

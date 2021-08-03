@@ -1,6 +1,6 @@
 // START RESULT_DATA
 export const jsonResultData = {
-  propertyValueResult: [
+  result: [
     {
       elementId: "0x40000000516",
       elementLabel: "EX-302",

@@ -31,7 +31,7 @@ export default class ValidationApi {
   }
 
   public static decoratorIsSetup() {
-    return (null != this._validationPinDecorator);
+    return (null != ValidationApi._validationPinDecorator);
   }
 
   public static setupDecorator(points: MarkerData[]) {
@@ -39,93 +39,86 @@ export default class ValidationApi {
     if (!ValidationApi._images.has("clash_pin.svg"))
       return;
 
-    this._validationPinDecorator = new MarkerPinDecorator();
-    this.setDecoratorPoints(points);
+    ValidationApi._validationPinDecorator = new MarkerPinDecorator();
+    ValidationApi.setDecoratorPoints(points);
   }
 
   public static setDecoratorPoints(markersData: MarkerData[]) {
-    if (this._validationPinDecorator)
-      this._validationPinDecorator.setMarkersData(markersData, this._images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
+    if (ValidationApi._validationPinDecorator)
+      ValidationApi._validationPinDecorator.setMarkersData(markersData, ValidationApi._images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
   }
 
   public static enableDecorations() {
-    if (this._validationPinDecorator)
-      IModelApp.viewManager.addDecorator(this._validationPinDecorator);
+    if (ValidationApi._validationPinDecorator)
+      IModelApp.viewManager.addDecorator(ValidationApi._validationPinDecorator);
   }
 
   public static disableDecorations() {
-    if (null != this._validationPinDecorator)
-      IModelApp.viewManager.dropDecorator(this._validationPinDecorator);
+    if (null != ValidationApi._validationPinDecorator)
+      IModelApp.viewManager.dropDecorator(ValidationApi._validationPinDecorator);
   }
 
   public static enableZoom() {
-    this._applyZoom = true;
+    ValidationApi._applyZoom = true;
   }
 
   public static disableZoom() {
-    this._applyZoom = false;
+    ValidationApi._applyZoom = false;
   }
 
   public static async setValidationData(projectId: string): Promise<void> {
-    const validationData = await ValidationApi.getValidationData(projectId, true);
+    const validationData = await ValidationApi.getValidationData(projectId);
     ValidationApi.onValidationDataChanged.raiseEvent(validationData);
   }
 
   // START VALIDATION_API
-  /** The API has been significantly reworked, so for the time being the static jsonData file will be used */
-  public static async getValidationData(projectId: string, staticData?: boolean): Promise<any> {
-    if (staticData)
-      return jsonResultData;
-
+  public static async getValidationData(projectId: string): Promise<any> {
     const context = await ValidationApi.getRequestContext();
     if (ValidationApi._validationData[projectId] === undefined) {
-      const runsResponse = await ValidationClient.getProjectValidationRuns(context, projectId);
-      if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
+      const runsResponse = await ValidationClient.getValidationTestRuns(context, projectId);
+      if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.validationRuns._links.result.href);
-        if (resultResponse !== undefined && resultResponse.validationDetectionResult !== undefined)
+        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.runs._links.result.href);
+        if (resultResponse !== undefined && resultResponse.result !== undefined)
           ValidationApi._validationData[projectId] = resultResponse;
+      }
+      if (ValidationApi._validationData[projectId] === undefined) {
+        ValidationApi._validationData[projectId] = jsonResultData;
       }
     }
 
-    return ValidationApi._validationData[projectId] ? ValidationApi._validationData[projectId] : jsonResultData;
+    return ValidationApi._validationData[projectId];
   }
 
   // END VALIDATION_API
 
-  public static async getMatchingRule(ruleID: string, projectId: string, staticData?: boolean) {
-    if (staticData) {
-      return jsonRuleData;
-    } else {
-      if (ValidationApi._validationData[projectId] === undefined) {
-        const context = await ValidationApi.getRequestContext();
-        const ruleData = await ValidationClient.getProjectValidationTests(context, projectId);
-        for (const rule of ruleData) {
-          if (rule.templateId && rule.templateId === ruleID) {
-            return rule;
-          }
-        }
-      }
-      return undefined;
-    }
+  public static async getMatchingRule(ruleId: string) {
+    const context = await ValidationApi.getRequestContext();
+    const ruleData = await ValidationClient.getValidationRule(context, ruleId);
+    if (ruleData !== undefined)
+      return ruleData;
+
+    return jsonRuleData;
   }
 
   public static async getValidationMarkersData(imodel: IModelConnection, validationData: any): Promise<MarkerData[]> {
     // Limit the number of validations in this demo
     const maxValidations = 70;
     const markersData: MarkerData[] = [];
-    const limitedValidationData = validationData.propertyValueResult.slice(0, maxValidations);
+    if (validationData && validationData.result && validationData.result.length > 0) {
+      const limitedValidationData = validationData.result.slice(0, maxValidations);
 
-    const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
+      const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
 
-    const points = await this.calcValidationCenter(imodel, elements);
+      const points = await ValidationApi.calcValidationCenter(imodel, elements);
 
-    for (let index = 0; index < points.length; index++) {
-      const title = "Rule Violation(s) found:";
-      const ruleData = await ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString(), imodel.contextId!, true);
-      const description = `${ruleData?.propertyValueRule.functionParameters.propertyName} must be within range ${ruleData?.propertyValueRule.functionParameters.lowerBound} and ${ruleData?.propertyValueRule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
-      const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
-      markersData.push(validationMarkerData);
+      for (let index = 0; index < points.length; index++) {
+        const title = "Rule Violation(s) found:";
+        const ruleData = await ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString());
+        const description = `${ruleData?.rule.functionParameters.propertyName} must be within range ${ruleData?.rule.functionParameters.lowerBound} and ${ruleData?.rule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
+        const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
+        markersData.push(validationMarkerData);
+      }
     }
     return markersData;
   }
@@ -165,7 +158,7 @@ export default class ValidationApi {
     emph.wantEmphasis = true;
     emph.emphasizeElements([elementId], vp, undefined, false);
 
-    if (this._applyZoom) {
+    if (ValidationApi._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
       viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
@@ -185,7 +178,5 @@ export default class ValidationApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
     emph.clearOverriddenElements(vp);
-    this._validationPinDecorator = undefined;
-
   }
 }

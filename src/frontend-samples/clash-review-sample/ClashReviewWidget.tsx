@@ -41,6 +41,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     return () => {
       removeListener();
       ClashReviewApi.disableDecorations();
+      ClashReviewApi._clashPinDecorator = undefined;
       ClashReviewApi.resetDisplay();
     };
   }, [iModelConnection]);
