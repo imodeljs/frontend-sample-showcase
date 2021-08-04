@@ -8,7 +8,7 @@ export class FloatingWidgets implements IDisposable {
   private _widgetDoms: WidgetDOMManager;
   private _providerManager: ProviderManager;
   private _uiItemsProviderRegisteredListener: () => void;
-  private _frontstageReadyListener: () => void;
+  private _frontstageActivatedListener: () => void;
   private _resizeObserver: ResizeObserver;
 
   constructor(domId: string) {
@@ -22,7 +22,7 @@ export class FloatingWidgets implements IDisposable {
     this._widgetDoms = new WidgetDOMManager();
     this._providerManager = new ProviderManager();
     this._uiItemsProviderRegisteredListener = UiItemsManager.onUiProviderRegisteredEvent.addListener(this._onUiItemProviderRegister);
-    this._frontstageReadyListener = FrontstageManager.onFrontstageReadyEvent.addListener(this._onFrontstageReady);
+    this._frontstageActivatedListener = FrontstageManager.onFrontstageActivatedEvent.addListener(this._onFrontstageReady);
   }
 
   private _onUiItemProviderRegister = ({ providerId }: UiItemProviderRegisteredEventArgs) => {
@@ -127,7 +127,7 @@ export class FloatingWidgets implements IDisposable {
 
   public dispose = (): void => {
     this._uiItemsProviderRegisteredListener();
-    this._frontstageReadyListener();
+    this._frontstageActivatedListener();
     this._resizeObserver.disconnect();
   };
 }
