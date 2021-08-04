@@ -13,7 +13,7 @@ import "./CameraPath.scss";
 
 const CameraPathWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
-  const [cameraPath, setCameraPath] = useState<CameraPath>(CameraPath.createByLoadingFromJson("TrainPath"));
+  const [cameraPath, setCameraPath] = useState<CameraPath>(CameraPath.createByLoadingFromJson("CommuterPath"));
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [speedLevel, setSpeedLevel] = useState<string>("3 Mph: Walking");
@@ -72,14 +72,6 @@ const CameraPathWidget: React.FunctionComponent = () => {
       });
   }, [_handleScrollPath]);
 
-  /** When the slider Value is changed, change the view to reflect the position in the path */
-  useEffect(() => {
-    if (viewport && cameraPath && isPaused) {
-      const nextPathPoint = cameraPath.getPathPoint(sliderValue);
-      CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport);
-    }
-  }, [viewport, sliderValue, cameraPath, isPaused]);
-
   /** Turn the camera on, and initialize the tool */
   useEffect(() => {
     if (viewport) {
@@ -90,6 +82,16 @@ const CameraPathWidget: React.FunctionComponent = () => {
       setTimeout(() => { IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection); }, 10);
     }
   }, [handleScrollAnimation, viewport]);
+
+  /** When the slider Value is changed, change the view to reflect the position in the path */
+  useEffect(() => {
+    if (viewport && cameraPath && isPaused) {
+      const nextPathPoint = cameraPath.getPathPoint(sliderValue);
+      CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport);
+    }
+  }, [viewport, sliderValue, cameraPath, isPaused]);
+
+
 
   useEffect(() => {
     let animID: number;
@@ -161,7 +163,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   // Create the react components for the  Paths
   const _createRenderPath = (label: string) => {
-    const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" };
+    const options = { CommuterPath: "Commuter View", TrainPath: "Train Path", FlyoverPath: "Fly Over" };
     const element = <Select style={{ width: "fit-content", marginLeft: "12px" }} onChange={_onChangeRenderPath} options={options} />;
     return _createJSXElementForAttribute(label, element);
   };

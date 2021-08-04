@@ -28,7 +28,6 @@ export default class CameraPathApp {
     vp.turnCameraOn();
     vp.synchWithView();
   }
-
 }
 
 // A CameraPath consists of a CurveChain representing the camera location and an array
