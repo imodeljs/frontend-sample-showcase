@@ -7,3 +7,4 @@ import { SampleIModels } from "./SampleIModels";
 
 export const defaultIModelList = [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium, SampleIModels.ExtonCampus];
 export const defaultIModel = SampleIModels.MetroStation;
+export const metroStationImodelName = "DRWR04-S3";
