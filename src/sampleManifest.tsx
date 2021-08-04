@@ -73,6 +73,7 @@ import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-samp
 import { getChangedElementsSpec } from "frontend-samples/changed-elements-sample/sampleSpec";
 import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
 import { getValidationSpec } from "frontend-samples/validation-sample/sampleSpec";
+import { getTransformationsSpec } from "frontend-samples/transformations-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -169,6 +170,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getClashReviewSpec(),
     getIssuesSpec(),
     getReadSettingsSpec(),
+    getTransformationsSpec(),
     getValidationSpec(),
   ],
 
