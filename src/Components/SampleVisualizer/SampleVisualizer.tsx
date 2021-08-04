@@ -11,6 +11,7 @@ import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { UiFramework } from "@bentley/ui-framework";
 import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
+import path from "path";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 
 interface SampleVisualizerProps {
@@ -103,7 +104,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
 
   // Set sample UI
   useEffect(() => {
-    const key = context.keys().find((k: string) => k.includes(type));
+    const key = context.keys().find((k: string) => path.basename(k) === type);
     try {
       if (key) {
         const component = context(key).default as React.ComponentClass<SampleProps>;

@@ -9,6 +9,7 @@ export enum SampleIModels {
   BayTown = "Bay Town Process Plant",
   House = "House Sample",
   Stadium = "Stadium",
+  TransformedStadium = "Stadium Transformation",
   ExtonCampus = "Exton Campus",
   Villa = "Villa",
 }
