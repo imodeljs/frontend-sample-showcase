@@ -18,7 +18,7 @@ export function getSimpleAnimatedSpec(): SampleSpec {
       import("!editor-file-loader!./SimpleAnimatedApp?entry=true"),
       import("!editor-file-loader!./ConwaysGameOfLife"),
       import("!editor-file-loader!./SimpleAnimatedWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./SimpleAnimated.scss"),
     ],
     type: "SimpleAnimatedApp.tsx",

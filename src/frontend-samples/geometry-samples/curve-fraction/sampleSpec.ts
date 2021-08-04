@@ -17,7 +17,7 @@ export function getCurveFractionSpec(): SampleSpec {
       import("!editor-file-loader!./CurveFractionApi"),
       import("!editor-file-loader!./CurveFractionApp?entry=true"),
       import("!editor-file-loader!./CurveFractionWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./SampleCurveFactory"),
       import("!editor-file-loader!./InteractivePointMarker"),
       import("!editor-file-loader!./CurveFraction.scss"),

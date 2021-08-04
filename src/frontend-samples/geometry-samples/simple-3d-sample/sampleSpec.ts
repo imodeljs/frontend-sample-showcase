@@ -17,7 +17,7 @@ export function getSimple3dSpec(): SampleSpec {
       import("!editor-file-loader!./Simple3dApi"),
       import("!editor-file-loader!./Simple3dApp?entry=true"),
       import("!editor-file-loader!./Simple3dWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./Simple3d.scss"),
     ],
     type: "Simple3dApp.tsx",

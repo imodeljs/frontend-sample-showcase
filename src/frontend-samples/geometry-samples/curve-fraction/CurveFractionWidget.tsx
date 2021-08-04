@@ -10,7 +10,7 @@ import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } 
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import CurveFractionApi from "./CurveFractionApi";
-import { GeometryDecorator } from "./GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { SampleCurveFactory } from "./SampleCurveFactory";
 import { InteractivePointMarker, MovePointTool } from "./InteractivePointMarker";
 import "./CurveFraction.scss";
