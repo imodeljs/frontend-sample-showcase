@@ -15,8 +15,7 @@ export default class ClashReviewApi {
 
   public static onClashDataChanged = new BeEvent<any>();
 
-  public static _clashPinDecorator?: MarkerPinDecorator;
-  public static _images: Map<string, HTMLImageElement>;
+  //public static _clashPinDecorator?: MarkerPinDecorator;
   private static _requestContext: AuthorizedClientRequestContext;
   private static _clashData: { [id: string]: any } = {};
   private static _applyZoom: boolean = true;
@@ -28,32 +27,20 @@ export default class ClashReviewApi {
     return ClashReviewApi._requestContext;
   }
 
-  public static decoratorIsSetup() {
-    return (null != ClashReviewApi._clashPinDecorator);
+  public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
+    console.log('adding decorator points')
+    decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ClashReviewApi.visualizeClashCallback);
+    console.log(IModelApp.viewManager.decorators)
   }
 
-  public static setupDecorator(points: MarkerData[]) {
-    // If we failed to load the image, there is no point in registering the decorator
-    if (!ClashReviewApi._images.has("clash_pin.svg"))
-      return;
-
-    ClashReviewApi._clashPinDecorator = new MarkerPinDecorator();
-    ClashReviewApi.setDecoratorPoints(points);
+  public static enableDecorations(decorator: MarkerPinDecorator) {
+    if (!IModelApp.viewManager.decorators.includes(decorator) && IModelApp.viewManager.selectedView)
+      IModelApp.viewManager.addDecorator(decorator);
   }
 
-  public static setDecoratorPoints(markersData: MarkerData[]) {
-    if (ClashReviewApi._clashPinDecorator)
-      ClashReviewApi._clashPinDecorator.setMarkersData(markersData, ClashReviewApi._images.get("clash_pin.svg")!, ClashReviewApi.visualizeClashCallback);
-  }
-
-  public static enableDecorations() {
-    if (ClashReviewApi._clashPinDecorator)
-      IModelApp.viewManager.addDecorator(ClashReviewApi._clashPinDecorator);
-  }
-
-  public static disableDecorations() {
-    if (null != ClashReviewApi._clashPinDecorator)
-      IModelApp.viewManager.dropDecorator(ClashReviewApi._clashPinDecorator);
+  public static disableDecorations(decorator: MarkerPinDecorator) {
+    console.log('disabling decorations')
+    IModelApp.viewManager.dropDecorator(decorator);
   }
 
   public static enableZoom() {

@@ -17,8 +17,6 @@ export default class ValidationApi {
 
   public static onValidationDataChanged = new BeEvent<any>();
 
-  public static _validationPinDecorator?: MarkerPinDecorator;
-  public static _images: Map<string, HTMLImageElement>;
   private static _requestContext: AuthorizedClientRequestContext;
   private static _validationData: { [id: string]: any } = {};
   private static _applyZoom: boolean = true;
@@ -30,32 +28,17 @@ export default class ValidationApi {
     return ValidationApi._requestContext;
   }
 
-  public static decoratorIsSetup() {
-    return (null != ValidationApi._validationPinDecorator);
+  public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
+    decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
   }
 
-  public static setupDecorator(points: MarkerData[]) {
-    // If we failed to load the image, there is no point in registering the decorator
-    if (!ValidationApi._images.has("clash_pin.svg"))
-      return;
-
-    ValidationApi._validationPinDecorator = new MarkerPinDecorator();
-    ValidationApi.setDecoratorPoints(points);
+  public static enableDecorations(decorator: MarkerPinDecorator) {
+    if (!IModelApp.viewManager.decorators.includes(decorator))
+      IModelApp.viewManager.addDecorator(decorator);
   }
 
-  public static setDecoratorPoints(markersData: MarkerData[]) {
-    if (ValidationApi._validationPinDecorator)
-      ValidationApi._validationPinDecorator.setMarkersData(markersData, ValidationApi._images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
-  }
-
-  public static enableDecorations() {
-    if (ValidationApi._validationPinDecorator)
-      IModelApp.viewManager.addDecorator(ValidationApi._validationPinDecorator);
-  }
-
-  public static disableDecorations() {
-    if (null != ValidationApi._validationPinDecorator)
-      IModelApp.viewManager.dropDecorator(ValidationApi._validationPinDecorator);
+  public static disableDecorations(decorator: MarkerPinDecorator) {
+    IModelApp.viewManager.dropDecorator(decorator);
   }
 
   public static enableZoom() {
