@@ -139,6 +139,11 @@
       "typedef": true
     },
     {
+      "name": "common/Geometry/GeometryDecorator",
+      "import": "./src/common/Geometry/GeometryDecorator",
+      "typedef": "./src/common/Geometry/GeometryDecorator"
+    },
+    {
       "name": "@itwinjs-sandbox/data-providers/SampleDataProvider",
       "import": "./src/@itwinjs-sandbox/data-providers/SampleDataProvider",
       "typedef": "./src/@itwinjs-sandbox/data-providers/SampleDataProvider.ts"
