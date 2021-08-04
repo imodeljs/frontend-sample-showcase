@@ -9,7 +9,7 @@ import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
 import { AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
-import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
 import { useSampleIModelParameter } from "./useSampleIModelParameter";
 
 const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWithAlternativeName) => {
@@ -61,56 +61,65 @@ export type SetCurrentSampleIModel = (iModel: SampleIModels) => void;
  * **SANDBOX USE ONLY!** */
 export const useSampleIModelConnection = (iModelList: (SampleIModels | SampleIModelWithAlternativeName)[] = defaultIModelList): [SampleIModelInfo | undefined, SetCurrentSampleIModel] => {
   const [iModelParam, setiModelParam] = useSampleIModelParameter();
-  const [iModel, setiModel] = useState<SampleIModels | SampleIModelWithAlternativeName>(iModelParam || iModelList[0] || defaultIModel);
   const [iModelInfo, setiModelInfo] = useState<SampleIModelInfo>();
 
-  useEffect(() => {
+  const setCurrentSampleIModel = useCallback(async (iModel: SampleIModels | SampleIModelWithAlternativeName) => {
     if (iModelList.length > 0) {
-      let found: boolean = false;
+      let found: SampleIModelWithAlternativeName | SampleIModels | undefined;
       if ((isSampleIModelWithAlternativeNameArray(iModelList) && isSampleIModelWithAlternativeName(iModel))) {
-        found = iModelList.some((imodel) => imodel.context === iModel.context && imodel.imodel === iModel.imodel);
+        found = iModelList.find((imodel) => imodel.context === iModel.context && imodel.imodel === iModel.imodel);
+      } else if ((isSampleIModelWithAlternativeNameArray(iModelList) || isSampleIModelWithAlternativeName(iModel))) {
+        let iModelLookup: SampleIModelWithAlternativeName | undefined = iModel as SampleIModelWithAlternativeName;
+        if (!isSampleIModelWithAlternativeName(iModel)) {
+          iModelLookup = lookupSampleIModelWithContext(iModel);
+        }
+        found = iModelList.find((imodel) => {
+          let listLookup: SampleIModelWithAlternativeName | undefined = imodel as SampleIModelWithAlternativeName;
+          if (!isSampleIModelWithAlternativeName(imodel)) {
+            listLookup = lookupSampleIModelWithContext(imodel);
+          }
+          if (iModelLookup && listLookup) {
+            return listLookup.context === iModelLookup.context && listLookup.imodel === iModelLookup.imodel;
+          }
+          return false;
+        });
       } else {
-        found = iModelList.includes(iModel);
+        found = iModelList.find((listItem) => iModel === listItem);
       }
 
       if (!found) {
-        setiModel(iModelList[0]);
-      } else if (!iModelInfo || (isSampleIModelWithAlternativeName(iModel) ? iModelInfo.iModelName !== iModel.imodel || iModelInfo.contextName !== iModel.context : iModelInfo.iModelName !== iModel)) {
-        void getIModelInfo(iModel)
-          .then((info) => {
-            setiModelInfo(info);
-          })
-          .catch((error) => {
-            // eslint-disable-next-line no-console
-            console.error(error.message);
-          });
+        found = !isSampleIModelWithAlternativeName(iModelList[0]) ? lookupSampleIModelWithContext(iModelList[0]) || iModelList[0] : iModelList[0];
+      }
+
+      const shouldUpdate = isSampleIModelWithAlternativeName(found) ? iModelInfo?.iModelName !== found.imodel || iModelInfo?.contextName !== found.context : found !== iModelInfo?.iModelName;
+      if (shouldUpdate) {
+        const info = await getIModelInfo(found);
+        setiModelInfo(info);
       }
     }
-  }, [iModel, iModelList, iModelInfo]);
+  }, [iModelInfo, iModelList]);
+
+  useEffect(() => {
+    setCurrentSampleIModel(iModelParam || iModelList[0] || defaultIModel).catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (iModelInfo) {
-      if (isSampleIModelWithAlternativeName(iModelParam)) {
-        if ((iModelInfo.iModelName !== iModelParam.imodel || iModelInfo.contextName !== iModelParam.context)) {
-          if ((iModelInfo.contextName !== iModelInfo.iModelName)) {
-            setiModelParam({ context: iModelInfo.contextName, imodel: iModelInfo.iModelName });
-          } else {
-            setiModelParam(iModelInfo.iModelName);
-          }
+      if (iModelParam) {
+        if (
+          (isSampleIModelWithAlternativeName(iModelParam) && (iModelParam.context !== iModelInfo.contextName || iModelParam.imodel !== iModelInfo.iModelName))
+          || iModelParam !== iModelInfo.iModelName
+        ) {
+          setiModelParam(iModelInfo);
         }
       } else {
-        if (iModelInfo.iModelName !== iModelParam || iModelInfo.contextName !== iModelInfo.iModelName) {
-          setiModelParam({ context: iModelInfo.contextName, imodel: iModelInfo.iModelName });
-        } else {
-          setiModelParam(iModelInfo.iModelName);
-        }
+        setiModelParam(iModelInfo);
       }
-    } else if (!iModelInfo && iModelParam && iModelList.length <= 0) {
+    } else {
       setiModelParam(undefined);
     }
   }, [iModelInfo, iModelParam, iModelList.length, setiModelParam]);
-
-  const setCurrentSampleIModel = useCallback((imodel: SampleIModels | SampleIModelWithAlternativeName) => setiModel(imodel), []);
 
   return [iModelInfo, setCurrentSampleIModel];
 
