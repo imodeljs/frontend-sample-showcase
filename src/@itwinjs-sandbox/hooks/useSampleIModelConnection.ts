@@ -100,6 +100,7 @@ export const useSampleIModelConnection = (iModelList: (SampleIModels | SampleIMo
   }, [iModelInfo, iModelList]);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
     setCurrentSampleIModel(iModelParam || iModelList[0] || defaultIModel).catch(console.error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
