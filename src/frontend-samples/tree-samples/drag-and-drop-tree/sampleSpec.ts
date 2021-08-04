@@ -12,10 +12,13 @@ export function getDragAndDropTreeSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
-      import("!editor-file-loader!./DragAndDropTreeApp"),
-      import("!editor-file-loader!./DragAndDropTreeUI?entry=true"),
+      import("!editor-file-loader!./DragAndDropTreeComponent"),
+      import("!editor-file-loader!./DragAndDropTreeProvider"),
+      import("!editor-file-loader!./DragAndDropTreeApp?entry=true"),
+      import("!editor-file-loader!./DragAndDropTreeApi"),
+      import("!editor-file-loader!./DragAndDropTreeWidget"),
       import("!editor-file-loader!./BasicTreeNode"),
     ],
-    type: "DragAndDropTreeUI.tsx",
+    type: "DragAndDropTreeApp.tsx",
   });
 }

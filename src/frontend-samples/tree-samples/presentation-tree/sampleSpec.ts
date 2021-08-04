@@ -13,9 +13,11 @@ export function getPresentationTreeSpec(): SampleSpec {
     description: "#Tree #sample showing how to load data using #presentation #rules.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      import("!editor-file-loader!./PresentationTreeApp"),
-      import("!editor-file-loader!./PresentationTreeUI?entry=true"),
+      import("!editor-file-loader!./PresentationTreeComponent"),
+      import("!editor-file-loader!./PresentationTreeApp?entry=true"),
+      import("!editor-file-loader!./TreeHierarchy"),
+      import("!editor-file-loader!./PresentationTree.scss"),
     ],
-    type: "PresentationTreeUI.tsx",
+    type: "PresentationTreeApp.tsx",
   });
 }
