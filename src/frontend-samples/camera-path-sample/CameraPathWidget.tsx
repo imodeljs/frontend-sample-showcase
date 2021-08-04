@@ -210,8 +210,8 @@ const CameraPathWidget: React.FunctionComponent = () => {
         <div className="sample-options-3col" style={{ maxWidth: "310px" }}>
           {_createSpeedDropDown("Animate")}
           <button style={{ width: "35px", marginLeft: "4px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => _handleCameraPlay()} >
-            {isPaused ? <img src="Play_32.png" style={{ height: "25px" }}></img>
-              : <img src="MediaControlsPause.ico" style={{ height: "25px" }} />}
+            {isPaused ? <span style={{ fontSize: "x-large" }} className="icon icon-media-controls-play"></span>
+              : <span style={{ fontSize: "x-large" }} className="icon icon-media-controls-pause"></span>}
           </button>
         </div>
       </div >
