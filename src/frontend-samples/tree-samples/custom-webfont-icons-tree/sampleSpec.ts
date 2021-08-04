@@ -13,9 +13,11 @@ export function getCustomWebfontIconsTreeSpec(): SampleSpec {
     description: "#Tree #sample showing how to display #custom #icons using #iModel #data.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      import("!editor-file-loader!./CustomWebfontIconsTreeApp"),
-      import("!editor-file-loader!./CustomWebfontIconsTreeUI?entry=true"),
+      import("!editor-file-loader!./CustomWebfontIconsTreeComponent"),
+      import("!editor-file-loader!./CustomWebfontIconsRuleset"),
+      import("!editor-file-loader!./CustomWebfontIconsTreeApp?entry=true"),
+      import("!editor-file-loader!./CustomWebfontIconsTree.scss"),
     ],
-    type: "CustomWebfontIconsTreeUI.tsx",
+    type: "CustomWebfontIconsTreeApp.tsx",
   });
 }

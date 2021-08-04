@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
 import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
 import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core/lib/ui-core/button/Button";
@@ -58,6 +58,8 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
   const [showEditor, setShowEditor] = useState(width >= 1024);
   const [showGallery, setShowGallery] = useState(width >= 576 && !!gallery);
   const [dragging, setDragging] = useState<boolean>(false);
+  const ignoreEditorSize = useRef<boolean>(false);
+  const ignoreGallerySize = useRef<boolean>(false);
 
   useEffect(() => {
     setSizes(calculateSizes(width));
@@ -73,25 +75,35 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
   width < 576 && showGallery && galleryClassName.push("mobile-visible");
 
   const onSampleGallerySizeChange = (size: number) => {
-    if (width >= 576) {
-      const minSize = sizes?.gallerySize || 200;
-      if (size < minSize && showGallery) {
-        setShowGallery(false);
-        document.dispatchEvent(new MouseEvent("mouseup"));
-      } else if (size >= minSize && !showGallery) {
-        setShowGallery(true);
+    if (!ignoreGallerySize.current) {
+      if (width >= 576) {
+        const minSize = sizes?.gallerySize || 200;
+        size = Math.ceil(size);
+        if (size < minSize && showGallery) {
+          setShowGallery(false);
+          ignoreGallerySize.current = true;
+          document.dispatchEvent(new MouseEvent("mouseup"));
+        } else if (size >= minSize && !showGallery) {
+          setShowGallery(true);
+          ignoreGallerySize.current = true;
+        }
       }
     }
   };
 
   const onEditorSizeChange = (size: number) => {
-    if (width >= 576) {
-      const minSize = sizes?.editorSize || 412;
-      if (size < minSize && showEditor) {
-        setShowEditor(false);
-        document.dispatchEvent(new MouseEvent("mouseup"));
-      } else if (size >= minSize && !showEditor) {
-        setShowEditor(true);
+    if (!ignoreEditorSize.current) {
+      if (width >= 576) {
+        const minSize = sizes?.editorSize || 412;
+        size = Math.ceil(size);
+        if (size < minSize && showEditor) {
+          setShowEditor(false);
+          ignoreEditorSize.current = true;
+          document.dispatchEvent(new MouseEvent("mouseup"));
+        } else if (size >= minSize && !showEditor) {
+          setShowEditor(true);
+          ignoreEditorSize.current = true;
+        }
       }
     }
   };
