@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
+import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ClashReviewApi from "./ClashReviewApi";
 import "./ClashReview.scss";
@@ -17,7 +17,6 @@ const ClashReviewWidget: React.FunctionComponent = () => {
 
   const [clashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
     const decorator = new MarkerPinDecorator();
-    console.log(IModelApp.viewManager.decorators)
     return decorator;
   });
 
@@ -25,13 +24,13 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     const newImages = new Map();
     imageElementFromUrl(".\\clash_pin.svg").then((image) => {
       newImages.set("clash_pin.svg", image);
-      setImages(newImages)
+      setImages(newImages);
     })
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [])
+  }, []);
 
   useEffect(() => {
     /** Create a listener that responds to clashData retrival */
@@ -52,7 +51,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
       ClashReviewApi.disableDecorations(clashPinDecorator);
       ClashReviewApi.resetDisplay();
     };
-  }, [iModelConnection]);
+  }, [iModelConnection, clashPinDecorator]);
 
   /** When the clashData comes in, get the marker data */
   useEffect(() => {
@@ -68,10 +67,6 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   }, [iModelConnection, clashData]);
 
   useEffect(() => {
-    console.log(markersData)
-    console.log(images)
-    console.log(clashPinDecorator)
-    console.log(IModelApp.viewManager.decorators)
     if (markersData && images && clashPinDecorator) {
       ClashReviewApi.enableDecorations(clashPinDecorator);
       ClashReviewApi.setDecoratorPoints(markersData, clashPinDecorator, images);
@@ -88,7 +83,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
       ClashReviewApi.enableDecorations(clashPinDecorator);
     else
       ClashReviewApi.disableDecorations(clashPinDecorator);
-  }, [showDecorator]);
+  }, [showDecorator, clashPinDecorator]);
 
   useEffect(() => {
     if (applyZoom) {
