@@ -91,8 +91,6 @@ const CameraPathWidget: React.FunctionComponent = () => {
     }
   }, [viewport, sliderValue, cameraPath, isPaused]);
 
-
-
   useEffect(() => {
     let animID: number;
     if (!isPaused && cameraPath && viewport) {
