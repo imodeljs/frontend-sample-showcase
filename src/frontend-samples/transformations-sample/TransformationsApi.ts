@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { Viewport } from "@bentley/imodeljs-frontend";
-import { TwoWayViewportSync } from "./MyTwoWayViewportSync";
+import { TwoWayViewportSync } from "./TwoWayViewportSync";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class MultiViewportApi {

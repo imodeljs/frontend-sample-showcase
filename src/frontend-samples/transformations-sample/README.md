@@ -2,17 +2,22 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates how to use the Transformations API by displaying the changes in two viewports.
+This sample demonstrates how to use the Transformations API by displaying the changes in two viewports. The result of calling the transformation is being displayed side by side to the original.
 
 ## Purpose
 
 The purpose of this sample is to demonstrate the following:
 
-* How to use the 
+* The usage and result of the Transformation API
 * The logic needed to balance multiple viewports.
 * How to use the Two-way viewport sync feature.
 
 ## Description
 
-When views are synchronized any changes to the properties [ViewState](https://www.imodeljs.org/reference/imodeljs-frontend/views/viewstate/) of either viewport will be immediately applied to the other.  This is done by calling `connect` on [TwoWayViewportSync](https://www.imodeljs.org/reference/imodeljs-frontend/views/twowayviewportsync). One intended use of this feature is for comparing different changesets of the same IModel. Using it that way has the potential for showing the changes over time.
-Note: At the time this sample was written [TwoWayViewportSync](https://www.imodeljs.org/reference/imodeljs-frontend/views/twowayviewportsync) was in beta.
+There are three API's used to create the transformed iModel based on a [View Definition](https://www.itwinjs.org/reference/imodeljs-backend/viewdefinitions/viewdefinition/). The first API and step, [FilterByViewDefinition](https://sbx-developer.bentley.com/api-groups/synchronization/apis/transformations/operations/filterbyviewdefinition/), is to create a transformation configuration which creates an association between source and target iModels with additional metadata to carry out the transformation. It does NOT start the transformation. 
+
+The second API, [Create Transformation](https://sbx-developer.bentley.com/api-groups/synchronization/apis/transformations/operations/create-transformation/) actually starts the transformation process by sending in the configuration id.
+
+The third API, [Get Transformation](https://sbx-developer.bentley.com/api-groups/synchronization/apis/transformations/operations/get-transformation/), gets an updated transformation status as the transformation is occurring
+
+Once the Transformed iModel is created, we can display them side by side using a custom [TwoWayViewportSync.ts](./TwoWayViewportSync.ts). iModelJs currently has a [TwoWayViewportSync](https://www.imodeljs.org/reference/imodeljs-frontend/views/twowayviewportsync), however, there is no correlation between the Ids of categories and models between the two iModels. Therefore, this solution wouldn't work and a custom sync is created to just map the camera's state between the two iModels.

@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, getIModelInfo, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
 import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@bentley/imodeljs-frontend";
@@ -26,9 +26,15 @@ const MultiViewportApp: FunctionComponent = () => {
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
 
-    const connection2 = await CheckpointConnection.openRemote("5eb49cbc-4e3c-41e7-934c-98f07df37f13", "00f2d207-4cc1-44f9-b145-5749ef9adb88");
-    const viewCreator = new ViewCreator3d(connection2);
-    const viewState2 = await viewCreator.createDefaultView({ skyboxOn: true });
+    // Connect to iModel
+    // START TRANSFORMED_IMODEL_CONNECTION
+    const connectionInfo = await getIModelInfo(SampleIModels.TransformedStadium);
+    const connection2 = await CheckpointConnection.openRemote(connectionInfo.contextId, connectionInfo.iModelId);
+    // END TRANSFORMED_IMODEL_CONNECTION
+
+    // Get ViewState
+    const viewCreator2 = new ViewCreator3d(connection2);
+    const viewState2 = await viewCreator2.createDefaultView({ skyboxOn: true });
 
     // Remove the last frontstage, if there was one, to reinject the initalized viewstate on modelchange
     frontStages.pop();

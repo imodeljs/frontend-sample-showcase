@@ -17,6 +17,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
   // Content group for all layouts
   private _contentGroup: ContentGroup;
 
+  // START FRONTSTAGE
   constructor(viewState: ViewState, viewState2: ViewState, connection2: IModelConnection) {
     super();
 
@@ -46,6 +47,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
       ],
     });
   }
+  // END FRONTSTAGE
 
   /** Define the Frontstage properties */
   public get frontstage(): React.ReactElement<FrontstageProps> {

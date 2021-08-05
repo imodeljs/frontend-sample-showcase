@@ -10,13 +10,14 @@ export function getTransformationSpec(): SampleSpec {
   return ({
     name: "transformations-sample",
     label: "Transformation",
-    image: "transformations-thumbnail.png",
+    image: "transformation-thumbnail.png",
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
       import("!editor-file-loader!./TransformationsApi"),
       import("!editor-file-loader!./TransformationsApp?entry=true"),
       import("!editor-file-loader!./TransformationsWidget"),
       import("!editor-file-loader!./TransformationsFrontstageProvider"),
+      import("!editor-file-loader!./TwoWayViewportSync"),
       import("!editor-file-loader!./transformations-sample.scss"),
     ],
     iModelList: [SampleIModels.Stadium, SampleIModels.TransformedStadium],

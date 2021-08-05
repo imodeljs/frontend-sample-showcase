@@ -6,32 +6,44 @@ import React, { useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import MultiViewportApi from "./TransformationsApi";
 import { Toggle } from "@bentley/ui-core";
-import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, ViewManip, Viewport } from "@bentley/imodeljs-frontend";
 import { useActiveViewport } from "@bentley/ui-framework";
 
 const MultiViewportWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
-  const [isSynched, setIsSynched] = React.useState<boolean>();
+  const [isSynched, setIsSynched] = React.useState<boolean>(true);
+  const [initialized, setInitalized] = React.useState<boolean>(false);
 
+  useEffect(() => {
+    if (!initialized && viewport) {
+      IModelApp.viewManager.onSelectedViewportChanged.addOnce(() => {
+        setInitalized(true);
+      });
+      for (const vp of IModelApp.viewManager) {
+        ViewManip.fitView(vp, false, { noSaveInUndo: true });
+      }
+    }
+  }, [initialized, viewport]);
+
+  // START SYNC
   // Handle changes to the UI sync toggle.
   useEffect(() => {
     if (isSynched && viewport !== undefined) {
       let selectedViewport: Viewport | undefined, unselectedViewport: Viewport | undefined;
-      IModelApp.viewManager.forEachViewport((vp) => {
+      for (const vp of IModelApp.viewManager) {
         if (vp.viewportId === viewport.viewportId)
           selectedViewport = vp;
         else
           unselectedViewport = vp;
-      });
+      }
       if (selectedViewport === undefined || unselectedViewport === undefined)
         return;
-      // By passing the selected viewport as the first argument, this will be the view
-      //  used to override the second argument's view.
       MultiViewportApi.connectViewports(selectedViewport, unselectedViewport);
-    } else {
+    } else if (!isSynched) {
       MultiViewportApi.disconnectViewports();
     }
   }, [viewport, isSynched]);
+  // END SYNC
 
   // Display drawing and sheet options in separate sections.
   return (
