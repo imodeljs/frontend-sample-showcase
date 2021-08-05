@@ -13,7 +13,7 @@ import { ViewerOnly2dWidgetProvider } from "./ViewerOnly2dWidget";
 const uiProviders = [new ViewerOnly2dWidgetProvider()];
 
 const ViewportOnly2dApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("The 2D View Selector Widget shows a list of 2D models in this iModel.", [SampleIModels.House, SampleIModels.MetroStation]);
+  const sampleIModelInfo = useSampleWidget("The 2D View Selector Widget shows a list of 2D models in this iModel.", [SampleIModels.House]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {

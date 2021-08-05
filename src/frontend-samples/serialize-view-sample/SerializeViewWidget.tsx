@@ -93,7 +93,7 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
 
       const view = viewsState[currentViewIndexState].view;
 
-      //* * Load the view state. Display error message if there is one */
+      /** Load the view state. Display error message if there is one */
       SerializeViewApi.loadViewState(viewport, view)
         .then(() => {
           if (loadStateError) {
@@ -101,7 +101,7 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
           }
         })
         .catch(() => {
-          setLoadStateError("Error changing view: invalid view state.");
+          setLoadStateError(`Error changing view: invalid view state.`);
         });
     }
   };
