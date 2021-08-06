@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, imageElementFromUrl, IModelApp, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import ClashDetectionClient from "./ClashDetectionClient";
@@ -15,7 +15,6 @@ export default class ClashReviewApi {
 
   public static onClashDataChanged = new BeEvent<any>();
 
-  //public static _clashPinDecorator?: MarkerPinDecorator;
   private static _requestContext: AuthorizedClientRequestContext;
   private static _clashData: { [id: string]: any } = {};
   private static _applyZoom: boolean = true;
@@ -28,9 +27,7 @@ export default class ClashReviewApi {
   }
 
   public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
-    console.log('adding decorator points')
     decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ClashReviewApi.visualizeClashCallback);
-    console.log(IModelApp.viewManager.decorators)
   }
 
   public static enableDecorations(decorator: MarkerPinDecorator) {
@@ -39,7 +36,6 @@ export default class ClashReviewApi {
   }
 
   public static disableDecorations(decorator: MarkerPinDecorator) {
-    console.log('disabling decorations')
     IModelApp.viewManager.dropDecorator(decorator);
   }
 

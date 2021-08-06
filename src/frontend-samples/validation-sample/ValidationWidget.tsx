@@ -23,13 +23,13 @@ const ValidationWidget: React.FunctionComponent = () => {
     const newImages = new Map();
     imageElementFromUrl(".\\clash_pin.svg").then((image) => {
       newImages.set("clash_pin.svg", image);
-      setImages(newImages)
+      setImages(newImages);
     })
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [])
+  }, []);
 
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
@@ -49,7 +49,7 @@ const ValidationWidget: React.FunctionComponent = () => {
       ValidationApi.disableDecorations(validationDecorator);
       ValidationApi.resetDisplay();
     };
-  }, [iModelConnection]);
+  }, [iModelConnection, validationDecorator]);
 
   /** When the validatio data comes in, get the marker data */
   useEffect(() => {
@@ -75,13 +75,12 @@ const ValidationWidget: React.FunctionComponent = () => {
     }
   }, [markersData, images, validationDecorator]);
 
-
   useEffect(() => {
     if (showDecorator)
       ValidationApi.enableDecorations(validationDecorator);
     else
       ValidationApi.disableDecorations(validationDecorator);
-  }, [showDecorator]);
+  }, [showDecorator, validationDecorator]);
 
   useEffect(() => {
     if (applyZoom) {
