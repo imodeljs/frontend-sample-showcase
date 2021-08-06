@@ -12,7 +12,7 @@ import { IssuesWidgetProvider } from "./IssuesWidget";
 const uiProviders = [new IssuesWidgetProvider()];
 
 const IssuesApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the Issue Selector widget to view Issues information", [SampleIModels.MetroStation]);
+  const sampleIModelInfo = useSampleWidget("Use the Issue Selector widget to view Issues information", [SampleIModels.House]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
