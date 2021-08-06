@@ -12,6 +12,7 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [applyZoom, setApplyZoom] = React.useState<boolean>(true);
   const [showDecorator, setShowDecorator] = React.useState<boolean>(true);
   const [validationResults, setValidationResults] = React.useState<any>();
+  const [ruleData, setRuleData] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
   const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
@@ -34,7 +35,8 @@ const ValidationWidget: React.FunctionComponent = () => {
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
     const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
-      setValidationResults(data);
+      setValidationResults(data.validationData);
+      setRuleData(data.ruleData);
     });
 
     if (iModelConnection) {
@@ -53,15 +55,15 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   /** When the validatio data comes in, get the marker data */
   useEffect(() => {
-    if (iModelConnection && validationResults) {
-      ValidationApi.getValidationMarkersData(iModelConnection, validationResults).then((mData) => {
+    if (iModelConnection && validationResults && ruleData) {
+      ValidationApi.getValidationMarkersData(iModelConnection, validationResults, ruleData).then((mData) => {
         setMarkersData(mData);
       }).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
     }
-  }, [iModelConnection, validationResults]);
+  }, [iModelConnection, validationResults, ruleData]);
 
   useEffect(() => {
     if (markersData && images && validationDecorator) {

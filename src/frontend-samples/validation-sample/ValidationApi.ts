@@ -19,6 +19,8 @@ export default class ValidationApi {
 
   private static _requestContext: AuthorizedClientRequestContext;
   private static _validationData: { [id: string]: any } = {};
+  private static _ruleData: { [id: string]: any } = {};
+
   private static _applyZoom: boolean = true;
 
   private static async getRequestContext() {
@@ -70,7 +72,14 @@ export default class ValidationApi {
       }
     }
 
-    return ValidationApi._validationData[projectId];
+    // To avoid unnecessary API calls after setup, we request all the rule information here
+
+    for (const rule of ValidationApi._validationData[projectId].ruleList) {
+      const ruleData = await ValidationApi.getMatchingRule(rule.id.toString());
+      ValidationApi._ruleData[rule.id] = ruleData;
+    }
+
+    return { validationData: ValidationApi._validationData[projectId], ruleData: ValidationApi._ruleData };
   }
 
   // END VALIDATION_API
@@ -84,11 +93,11 @@ export default class ValidationApi {
     return jsonRuleData;
   }
 
-  public static async getValidationMarkersData(imodel: IModelConnection, validationData: any): Promise<MarkerData[]> {
+  public static async getValidationMarkersData(imodel: IModelConnection, validationData: any, ruleData: any): Promise<MarkerData[]> {
     // Limit the number of validations in this demo
     const maxValidations = 70;
     const markersData: MarkerData[] = [];
-    if (validationData && validationData.result && validationData.result.length > 0) {
+    if (validationData && validationData.result && ruleData && validationData.result.length > 0) {
       const limitedValidationData = validationData.result.slice(0, maxValidations);
 
       const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
@@ -97,8 +106,8 @@ export default class ValidationApi {
 
       for (let index = 0; index < points.length; index++) {
         const title = "Rule Violation(s) found:";
-        const ruleData = await ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString());
-        const description = `${ruleData?.rule.functionParameters.propertyName} must be within range ${ruleData?.rule.functionParameters.lowerBound} and ${ruleData?.rule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
+        const currentRuleData = ruleData[validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString()];
+        const description = `${currentRuleData?.rule.functionParameters.propertyName} must be within range ${currentRuleData?.rule.functionParameters.lowerBound} and ${currentRuleData?.rule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
         const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
         markersData.push(validationMarkerData);
       }
