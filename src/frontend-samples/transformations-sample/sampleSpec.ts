@@ -13,6 +13,7 @@ export function getTransformationSpec(): SampleSpec {
     image: "transformation-thumbnail.png",
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [
+      import("!editor-file-loader!./TransformationsClient"),
       import("!editor-file-loader!./TransformationsApi"),
       import("!editor-file-loader!./TransformationsApp?entry=true"),
       import("!editor-file-loader!./TransformationsWidget"),

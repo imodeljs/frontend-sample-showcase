@@ -5,14 +5,23 @@
 import React, { useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import MultiViewportApi from "./TransformationsApi";
-import { Toggle } from "@bentley/ui-core";
+import { Textarea, Toggle } from "@bentley/ui-core";
 import { IModelApp, ViewManip, Viewport } from "@bentley/imodeljs-frontend";
 import { useActiveViewport } from "@bentley/ui-framework";
+import TransformationsClient from "./TransformationsClient";
 
 const MultiViewportWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
   const [isSynched, setIsSynched] = React.useState<boolean>(true);
   const [initialized, setInitalized] = React.useState<boolean>(false);
+  const [transformationResponse, setTransformationResponse] = React.useState<string>("Loading...");
+
+  useEffect(() => {
+    void TransformationsClient.getTransformation("e4744f6d-bb08-4932-20e6-08d952925fd1").then((value) => {
+      if (value !== undefined)
+        setTransformationResponse(JSON.stringify(value, null, 2));
+    });
+  }, []);
 
   useEffect(() => {
     if (!initialized && viewport) {
@@ -51,6 +60,10 @@ const MultiViewportWidget: React.FunctionComponent = () => {
       <div className="sample-options-2col">
         <span>Sync Viewports</span>
         <Toggle disabled={viewport === undefined} isOn={isSynched} onChange={(on) => setIsSynched(on)} />
+      </div>
+      <div style={{ marginTop: "8px" }}>
+        <span>Get Transformation Response:</span>
+        <Textarea spellCheck={"false"} className="uicore-full-width" style={{ overflow: "scroll", height: "12rem", resize: "none" }} value={transformationResponse} />
       </div>
     </div>
   );
