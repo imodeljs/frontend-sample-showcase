@@ -1,0 +1,12 @@
+.sample-options {
+    color: var(--buic-foreground-body);
+    padding: 8px;
+  }
+  
+  .sample-options-2col {
+    display: grid;
+    row-gap: 8px;
+    column-gap: 8px;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+  }
