@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 @import "~@bentley/ui-core/lib/ui-core/index";
 
-// Override the contentRenderer to make the widget contents pretty
-.nz-widget-contentRenderer {
-  //width: 100%;
+.sample-options {
+  color: var(--buic-foreground-body);
+  padding: 8px;
 }
 
 .table {

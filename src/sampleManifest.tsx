@@ -61,7 +61,7 @@ import { getViewportFrontstageSample } from "./frontend-samples/app-ui-samples/v
 import { getClosestPointOnCurveSpec } from "./frontend-samples/geometry-samples/closest-point-curve-sample/sampleSpec";
 import { getCurveFractionSpec } from "frontend-samples/geometry-samples/curve-fraction/sampleSpec";
 import { getSimpleLineSpec } from "./frontend-samples/geometry-samples/simple-line-sample/sampleSpec";
-//import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d-transformations-sample/sampleSpec";
+import { get2dTransformationsSpec } from "./frontend-samples/geometry-samples/2d-transformations-sample/sampleSpec";
 import { getSimple3dSpec } from "./frontend-samples/geometry-samples/simple-3d-sample/sampleSpec";
 import { getAdvanced3dSpec } from "./frontend-samples/geometry-samples/advanced-3d-sample/sampleSpec";
 import { getSimpleAnimatedSpec } from "./frontend-samples/geometry-samples/simple-animated-sample/sampleSpec";
@@ -157,7 +157,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
 {
   groupName: "Geometry Samples", samples: [
     getSimpleLineSpec(),
-    //get2dTransformationsSpec(),
+    get2dTransformationsSpec(),
     getClosestPointOnCurveSpec(),
     getCurveFractionSpec(),
     getSimple3dSpec(),
