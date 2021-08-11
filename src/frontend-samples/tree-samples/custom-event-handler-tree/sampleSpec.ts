@@ -14,9 +14,10 @@ export function getCustomEventHandlerTreeSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      import("!editor-file-loader!./CustomEventHandlerTreeApp"),
-      import("!editor-file-loader!./CustomEventHandlerTreeUI?entry=true"),
+      import("!editor-file-loader!./CustomEventHandlerTreeComponent"),
+      import("!editor-file-loader!./CustomEventHandlerTreeApp?entry=true"),
+      import("!editor-file-loader!./CustomEventHandlerTree.scss"),
     ],
-    type: "CustomEventHandlerTreeUI.tsx",
+    type: "CustomEventHandlerTreeApp.tsx",
   });
 }
