@@ -7,9 +7,9 @@ import React from "react";
 import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
 import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@bentley/ui-framework";
 
-export class MultiViewportFrontstage extends FrontstageProvider {
+export class TransformationsFrontstage extends FrontstageProvider {
   // constants
-  public static MAIN_CONTENT_ID = "MultiViewportFrontstage";
+  public static MAIN_CONTENT_ID = "TransformationsFrontstage";
   public static DEFAULT_NAVIGATION_WIDGET_KEY = "DefaultNavigationWidget";
   public static DEFAULT_MANIPULATION_WIDGET_KEY = "DefaultNavigationWidget";
   // Content layout for content views
@@ -53,7 +53,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
   public get frontstage(): React.ReactElement<FrontstageProps> {
     return (
       <Frontstage
-        id={MultiViewportFrontstage.MAIN_CONTENT_ID}
+        id={TransformationsFrontstage.MAIN_CONTENT_ID}
         defaultTool={CoreTools.selectElementCommand}
         defaultLayout={this._contentLayoutDef}
         contentGroup={this._contentGroup}
@@ -62,7 +62,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
           <Zone
             widgets={[
               <Widget
-                key={MultiViewportFrontstage.DEFAULT_MANIPULATION_WIDGET_KEY}
+                key={TransformationsFrontstage.DEFAULT_MANIPULATION_WIDGET_KEY}
                 isFreeform={true}
                 element={<div />}
               />,
@@ -73,7 +73,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
           <Zone
             widgets={[
               <Widget
-                key={MultiViewportFrontstage.DEFAULT_NAVIGATION_WIDGET_KEY}
+                key={TransformationsFrontstage.DEFAULT_NAVIGATION_WIDGET_KEY}
                 isFreeform={true}
                 element={<BasicNavigationWidget />}
               />,

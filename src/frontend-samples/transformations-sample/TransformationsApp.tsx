@@ -6,15 +6,15 @@ import { AuthorizationClient, default3DSandboxUi, getIModelInfo, SampleIModels, 
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
 import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@bentley/imodeljs-frontend";
-import { MultiViewportWidgetProvider } from "./TransformationsWidget";
-import { MultiViewportFrontstage } from "./TransformationsFrontstageProvider";
+import { TransformationsWidgetProvider } from "./TransformationsWidget";
+import { TransformationsFrontstage } from "./TransformationsFrontstageProvider";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import "./transformations-sample.scss";
 
-const uiProviders = [new MultiViewportWidgetProvider()];
+const uiProviders = [new TransformationsWidgetProvider()];
 let frontStages: ViewerFrontstage[] = [];
 
-const MultiViewportApp: FunctionComponent = () => {
+const TransformationsApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls at the top-right to navigate the model.  Toggle to sync the viewports in the controls below.  Navigating will not change the selected viewport.", [SampleIModels.Stadium]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
@@ -38,7 +38,7 @@ const MultiViewportApp: FunctionComponent = () => {
 
     // Remove the last frontstage, if there was one, to reinject the initalized viewstate on modelchange
     frontStages.pop();
-    frontStages.push({ provider: new MultiViewportFrontstage(viewState, viewState2, connection2), default: true, requiresIModelConnection: true });
+    frontStages.push({ provider: new TransformationsFrontstage(viewState, viewState2, connection2), default: true, requiresIModelConnection: true });
 
     setViewportOptions({ viewState });
   };
@@ -65,4 +65,4 @@ const MultiViewportApp: FunctionComponent = () => {
 
 };
 
-export default MultiViewportApp;
+export default TransformationsApp;

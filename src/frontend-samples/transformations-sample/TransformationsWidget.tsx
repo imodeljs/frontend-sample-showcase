@@ -4,22 +4,24 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import MultiViewportApi from "./TransformationsApi";
+import TransformationsApi from "./TransformationsApi";
 import { Textarea, Toggle } from "@bentley/ui-core";
 import { IModelApp, ViewManip, Viewport } from "@bentley/imodeljs-frontend";
 import { useActiveViewport } from "@bentley/ui-framework";
 import TransformationsClient from "./TransformationsClient";
 
-const MultiViewportWidget: React.FunctionComponent = () => {
+const TransformationsWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
   const [isSynched, setIsSynched] = React.useState<boolean>(true);
   const [initialized, setInitalized] = React.useState<boolean>(false);
   const [transformationResponse, setTransformationResponse] = React.useState<string>("Loading...");
 
   useEffect(() => {
-    void TransformationsClient.getTransformation("e4744f6d-bb08-4932-20e6-08d952925fd1").then((value) => {
+    void TransformationsClient.getTransformation(TransformationsApi.Transformation_Id).then((value) => {
       if (value !== undefined)
         setTransformationResponse(JSON.stringify(value, null, 2));
+      else
+        setTransformationResponse("Invalid Response");
     });
   }, []);
 
@@ -47,9 +49,9 @@ const MultiViewportWidget: React.FunctionComponent = () => {
       }
       if (selectedViewport === undefined || unselectedViewport === undefined)
         return;
-      MultiViewportApi.connectViewports(selectedViewport, unselectedViewport);
+      TransformationsApi.connectViewports(selectedViewport, unselectedViewport);
     } else if (!isSynched) {
-      MultiViewportApi.disconnectViewports();
+      TransformationsApi.disconnectViewports();
     }
   }, [viewport, isSynched]);
   // END SYNC
@@ -69,19 +71,19 @@ const MultiViewportWidget: React.FunctionComponent = () => {
   );
 };
 
-export class MultiViewportWidgetProvider implements UiItemsProvider {
-  public readonly id: string = "MultiViewportWidgetProvider";
+export class TransformationsWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "TransformationsWidgetProvider";
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
     if (location === StagePanelLocation.Right) {
       widgets.push(
         {
-          id: "MultiViewportWidget",
-          label: "Multi Viewport Selector",
+          id: "TransformationsWidget",
+          label: "Transformations Selector",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <MultiViewportWidget />,
+          getWidgetContent: () => <TransformationsWidget />,
         }
       );
     }

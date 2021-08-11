@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizedClientRequestContext, request, Response } from "@bentley/itwin-client";
+import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { AuthorizedFrontendRequestContext,IModelApp } from "@bentley/imodeljs-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { GuidString } from "@bentley/bentleyjs-core";
@@ -23,12 +23,11 @@ export default class TransformationsClient {
   private static _requestContext: AuthorizedClientRequestContext;
 
   public static async getTransformation(transformationId: string): Promise<Transformation | undefined> {
-    //const url = `https://sbx-api.bentley.com/transformations/transformations/${transformationId}`;
-    const url = `https://imodeltransformations-eus.bentley.com/api/v1.0/Transformations/${transformationId}`;
+    const url = `https://sbx-api.bentley.com/transformations/transformations/${transformationId}`;
     const options = {
       method: "GET",
       headers: {
-        //Authorization: (await TransformationsClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: (await TransformationsClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
       },
     };
     return request(await TransformationsClient.getRequestContext(), url, options)
