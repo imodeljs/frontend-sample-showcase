@@ -10,7 +10,7 @@ const uiProviders = [new AnimationWidgetProvider()];
 const connection: BlankConnectionProps = {
   name: "BlankConnection",
   location: Cartographic.fromDegrees(0, 0, 0),
-  extents: new Range3d(-30, -30, -30, 30, 30, 30),
+  extents: new Range3d(-20, -20, -20, 20, 20, 20),
 };
 
 const viewState: BlankConnectionViewState = {

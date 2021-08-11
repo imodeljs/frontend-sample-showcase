@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Select } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp, StandardViewId, ViewState3d } from "@bentley/imodeljs-frontend";
 import "./AnimationWidget.scss";
 import Animation3dApi from "./AnimationApi";
@@ -30,18 +30,10 @@ export const Animation3dWidget: React.FunctionComponent = () => {
       vp.zoomToVolume(vp.iModel.projectExtents);
 
       const viewFlags = vp.viewFlags.clone();
-      viewFlags.renderMode = RenderMode.SolidFill;
       viewFlags.visibleEdges = true;
-
+      viewFlags.hiddenEdges = true;
+      viewFlags.patterns = true;
       vp.viewFlags = viewFlags;
-      // (vp.view as ViewState3d).getDisplayStyle3d().settings.environment = {
-      //   sky: {
-      //     display: true,
-      //     twoColor: true,
-      //     nadirColor: 0xdfefff,
-      //     zenithColor: 0xffefdf,
-      //   },
-      // };
 
       console.log(AnalysisDecorator.decorator.mesh.styles);
 
@@ -90,7 +82,7 @@ export class AnimationWidgetProvider implements UiItemsProvider {
 
           id: "AnimationWidgetProvider",
           label: "Visualization Controls",
-          // defaultState: WidgetState.Floating,
+          defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <Animation3dWidget />,
         }

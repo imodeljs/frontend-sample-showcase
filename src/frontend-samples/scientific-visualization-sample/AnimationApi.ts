@@ -1,7 +1,7 @@
 import { assert } from "@bentley/bentleyjs-core";
 import { Angle, AuxChannel, AuxChannelData, AuxChannelDataType, IModelJson, Point3d, Polyface, PolyfaceAuxData, PolyfaceBuilder, StrokeOptions, Transform } from "@bentley/geometry-core";
 import { AnalysisStyle, AnalysisStyleProps, ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
-import { json } from "./Cantilever";
+import { jsonData } from "./Cantilever";
 
 export type AnalysisMeshType = "Cantilever" | "Flat with waves";
 
@@ -13,7 +13,7 @@ export interface AnalysisMesh {
 
 export default class Animation3dApi {
   public static async createCantilever(): Promise<Polyface> {
-    const polyface = IModelJson.Reader.parse(json) as Polyface;
+    const polyface = IModelJson.Reader.parse(JSON.parse(jsonData)) as Polyface;
     const transform = Transform.createScaleAboutPoint(new Point3d(), 30);
     polyface.tryTransformInPlace(transform);
     return polyface;
