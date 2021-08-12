@@ -170,17 +170,14 @@ const CameraPathWidget: React.FunctionComponent = () => {
   const _onChangeRenderSpeed = (currSpeed: string) => {
     let speedOfMotion: number = 0;
     switch (currSpeed) {
-      case "1 Mph: Slow Walk":
-        speedOfMotion = 0.4; // 1Mph = 0.4 meters/second
-        break;
-      case "3 Mph: Walking":
-        speedOfMotion = 1.4; // 3Mph = 1.4 meters/second
+      case "5 Mph: Walk":
+        speedOfMotion = 2.2352; // 4mph = 1.788 meters/second
         break;
       case "30 Mph: Car":
-        speedOfMotion = 13.4; // 30Mph = 13.4 meters/second
+        speedOfMotion = 13.4112; // 30Mph = 13.4 meters/second
         break;
       case "60 Mph: Fast Car":
-        speedOfMotion = 46.8; // 60Mph = 26.8 meters/second
+        speedOfMotion = 26.8224; // 60Mph = 26.8 meters/second
         break;
       case "150 Mph: Airplane":
         speedOfMotion = 67.05; // 150Mph = 67.05 meters/second
@@ -192,7 +189,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   // Create the react component for the camera speed dropdown
   const _createSpeedDropDown = (label: string) => {
-    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
+    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["5 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
     return _createJSXElementForAttribute(label, element);
   };
 
