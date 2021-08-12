@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 import { assert } from "@bentley/bentleyjs-core";
 import { Angle, AuxChannel, AuxChannelData, AuxChannelDataType, IModelJson, Point3d, Polyface, PolyfaceAuxData, PolyfaceBuilder, StrokeOptions, Transform } from "@bentley/geometry-core";
 import { AnalysisStyle, AnalysisStyleProps, ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
@@ -11,7 +16,7 @@ export interface AnalysisMesh {
   readonly styles: Map<string, AnalysisStyle | undefined>;
 }
 
-export default class Animation3dApi {
+export default class AnimationApi {
   public static async createCantilever(): Promise<Polyface> {
     const polyface = IModelJson.Reader.parse(JSON.parse(jsonData)) as Polyface;
     const transform = Transform.createScaleAboutPoint(new Point3d(), 30);
@@ -151,10 +156,10 @@ export default class Animation3dApi {
   }
 
   public static async createMesh(type: AnalysisMeshType, displacementScale = 1): Promise<AnalysisMesh> {
-    const polyface = "Flat with waves" === type ? Animation3dApi.createFlatMeshWithWaves() : await Animation3dApi.createCantilever();
+    const polyface = "Flat with waves" === type ? AnimationApi.createFlatMeshWithWaves() : await AnimationApi.createCantilever();
     const styles = new Map<string, AnalysisStyle | undefined>();
     const mesh = { type, polyface, styles };
-    Animation3dApi.populateAnalysisStyles(mesh, displacementScale);
+    AnimationApi.populateAnalysisStyles(mesh, displacementScale);
     return mesh;
   }
 }

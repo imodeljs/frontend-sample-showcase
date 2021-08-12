@@ -1,61 +1,66 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 import React, { useEffect } from "react";
 import { Select } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp, StandardViewId, ViewState3d } from "@bentley/imodeljs-frontend";
+import { StandardViewId } from "@bentley/imodeljs-frontend";
 import "./AnimationWidget.scss";
-import Animation3dApi from "./AnimationApi";
+import AnimationApi from "./AnimationApi";
 import { AnalysisDecorator } from "./AnalysisDecorator";
-import { RenderMode } from "@bentley/imodeljs-common";
+import { useActiveViewport } from "@bentley/ui-framework";
 const meshTypes = ["Cantilever", "Flat with waves"];
 
-export const Animation3dWidget: React.FunctionComponent = () => {
-  const [meshType, setMeshType] = React.useState<{ Type: string, Style: string[], DefaultStyle: string }>({ Type: "Cantilever", Style: [], DefaultStyle: "" });
-  const vp = IModelApp.viewManager.selectedView;
+export const AnimationWidget: React.FunctionComponent = () => {
+  const [meshType, setMeshType] = React.useState<{ meshPicker: string, stylePicker: string[], defaultStylePicker: string }>({ meshPicker: "Cantilever", stylePicker: [], defaultStylePicker: "" });
+  const viewport = useActiveViewport();
 
-  const drawAnimation = async (meshingType: string) => {
-    if (vp) {
+  const renderAnimation = async (meshingType: string) => {
+    if (viewport) {
       const meshes = await Promise.all([
-        Animation3dApi.createMesh("Cantilever", 100),
-        Animation3dApi.createMesh("Flat with waves"),
+        AnimationApi.createMesh("Cantilever", 100),
+        AnimationApi.createMesh("Flat with waves"),
       ]);
-      const mesh = meshingType === "Cantilever" ? meshes[0] : meshes[1];
-
       if (AnalysisDecorator.decorator) {
-        vp.displayStyle.settings.analysisStyle = undefined;
+        viewport.displayStyle.settings.analysisStyle = undefined;
         AnalysisDecorator.decorator.dispose();
       }
-      AnalysisDecorator.decorator = new AnalysisDecorator(vp, mesh);
-
-      vp.setStandardRotation(StandardViewId.Iso);
-      vp.zoomToVolume(vp.iModel.projectExtents);
-
-      const viewFlags = vp.viewFlags.clone();
-      viewFlags.visibleEdges = true;
-      viewFlags.hiddenEdges = true;
-      viewFlags.patterns = true;
-      vp.viewFlags = viewFlags;
-
-      console.log(AnalysisDecorator.decorator.mesh.styles);
-
+      const mesh = meshingType === "Cantilever" ? meshes[0] : meshes[1];
+      AnalysisDecorator.decorator = new AnalysisDecorator(viewport, mesh);
       const meshStyle: string[] = [];
       for (const name of AnalysisDecorator.decorator.mesh.styles.keys()) {
         meshStyle.push(name);
       };
-      setMeshType({ Type: meshingType, Style: [...meshStyle], DefaultStyle: meshStyle[0] });
+      setMeshType({ meshPicker: meshingType, stylePicker: [...meshStyle], defaultStylePicker: meshStyle[0] });
     }
   };
 
   useEffect(() => {
-    drawAnimation("Cantilever");
+    if (viewport) {
+      const viewFlags = viewport.viewFlags.clone();
+      viewFlags.visibleEdges = true;
+      viewFlags.hiddenEdges = true;
+      viewport.viewFlags = viewFlags;
+      viewport.setStandardRotation(StandardViewId.Iso);
+      viewport.zoomToVolume(viewport.iModel.projectExtents);
+    }
+  }, [viewport]);
+
+  useEffect(() => {
+    if (!viewport)
+      return;
+    renderAnimation("Cantilever");
   }, []);
 
   const meshTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    drawAnimation(event.target.value);
+    renderAnimation(event.target.value);
   };
 
   const meshStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    vp!.displayStyle.settings.analysisStyle = AnalysisDecorator.decorator.mesh.styles.get(event.target.value);
-    setMeshType({ ...meshType, DefaultStyle: event.target.value });
+    viewport!.displayStyle.settings.analysisStyle = AnalysisDecorator.decorator.mesh.styles.get(event.target.value);
+    setMeshType({ ...meshType, defaultStylePicker: event.target.value });
   };
 
   return (
@@ -63,9 +68,9 @@ export const Animation3dWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         <div className="sample-options-2col">
           <span>Mesh Picker:</span>
-          <Select options={meshTypes} value={meshType.Type} onChange={(event) => meshTypeChange(event)} />
+          <Select options={meshTypes} value={meshType.meshPicker} onChange={(event) => meshTypeChange(event)} />
           <span>Style Picker:</span>
-          <Select options={meshType.Style} value={meshType.DefaultStyle} onChange={(event) => meshStyleChange(event)} />
+          <Select options={meshType.stylePicker} value={meshType.defaultStylePicker} onChange={(event) => meshStyleChange(event)} />
         </div>
       </div>
     </>
@@ -84,7 +89,7 @@ export class AnimationWidgetProvider implements UiItemsProvider {
           label: "Visualization Controls",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <Animation3dWidget />,
+          getWidgetContent: () => <AnimationWidget />,
         }
       );
     }

@@ -1,12 +1,17 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 .sample-options {
-    color: var(--buic-foreground-body);
-    padding: 8px;
-  }
-  
-  .sample-options-2col {
-    display: grid;
-    row-gap: 8px;
-    column-gap: 8px;
-    grid-template-columns: 1fr 2fr;
-    align-items: center;
-  }
+  color: var(--buic-foreground-body);
+  padding: 8px;
+}
+
+.sample-options-2col {
+  display: grid;
+  row-gap: 8px;
+  column-gap: 8px;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+}

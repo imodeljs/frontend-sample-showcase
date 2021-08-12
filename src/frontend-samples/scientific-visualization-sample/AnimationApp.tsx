@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
 import React, { FunctionComponent } from "react";
 import { Range3d } from "@bentley/geometry-core";
 import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
@@ -24,8 +29,8 @@ const viewState: BlankConnectionViewState = {
   setAllow3dManipulations: true,
 };
 
-const Simple3dApp: FunctionComponent = () => {
-  useSampleWidget("An animated scientific visualization.", []);
+const AnimationApp: FunctionComponent = () => {
+  useSampleWidget("An animated scientific visualization. Use the options below to control the meshing.", []);
 
   /** The sample's render method */
   return (
@@ -43,4 +48,4 @@ const Simple3dApp: FunctionComponent = () => {
   );
 };
 
-export default Simple3dApp;
+export default AnimationApp;

@@ -15,7 +15,7 @@ export function getScientificVisualizationSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./AnimationApi"),
-      // import("!editor-file-loader!./Cantilever"),  //importing this file (possibly file size limit) makes web page unresponsive
+      import("!editor-file-loader!./Cantilever"),
       import("!editor-file-loader!./AnimationApp?entry=true"),
       import("!editor-file-loader!./AnimationWidget"),
       import("!editor-file-loader!./AnalysisDecorator"),
