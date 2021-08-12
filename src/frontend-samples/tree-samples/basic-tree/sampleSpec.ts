@@ -14,9 +14,10 @@ export function getBasicTreeSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      import("!editor-file-loader!./BasicTreeApp"),
-      import("!editor-file-loader!./BasicTreeUI?entry=true"),
+      import("!editor-file-loader!./BasicTreeComponent"),
+      import("!editor-file-loader!./BasicTreeApp?entry=true"),
+      import("!editor-file-loader!./BasicTree.scss"),
     ],
-    type: "BasicTreeUI.tsx",
+    type: "BasicTreeApp.tsx",
   });
 }
