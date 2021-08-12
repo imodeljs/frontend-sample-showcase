@@ -184,7 +184,7 @@ export class ViewSetup {
 
     if (imodel.name === "Metrostation2" || imodel.name === metroStationImodelName)
       // There is coincident geometry. Remove the more visible instances.
-      await addIdsByCategory("A-FLOR-OTLN", "A-Reserved Retail Area", "G-ANNO-SYMB", "A-SITE");
+      await addIdsByCategory("A-FLOR-OTLN", "A-Reserved Retail Area", "G-ANNO-SYMB", "A-SITE", "S-BEAM-CONC");
 
     return ids;
   };
