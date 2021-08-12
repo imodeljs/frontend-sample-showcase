@@ -15,7 +15,7 @@ export interface CameraPathPoint {
 export default class CameraPathApp {
 
   public static changeCameraPositionAndTarget(cameraPoint: CameraPathPoint, viewport: Viewport, changeCameraTargetOnly: boolean = false) {
-    if (changeCameraTargetOnly){
+    if (changeCameraTargetOnly) {
       (viewport.view as ViewState3d).setEyePoint(cameraPoint.eyePoint);
     } else {
       (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
@@ -24,7 +24,7 @@ export default class CameraPathApp {
   }
 
   // Turn the viewport camera on
-  public static prepareView( vp: Viewport) {
+  public static prepareView(vp: Viewport) {
     vp.turnCameraOn();
     vp.synchWithView();
   }
@@ -110,7 +110,7 @@ export class CameraPath {
 
     // We are in between two points of the path, interpolate between the two points
     const prevTargetPoint = this._targetPoints[segmentIndex];
-    const nextTargetPoint= this._targetPoints[segmentIndex + 1];
+    const nextTargetPoint = this._targetPoints[segmentIndex + 1];
     return prevTargetPoint.interpolate(segmentFraction, nextTargetPoint);
   }
 
