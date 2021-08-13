@@ -13,10 +13,12 @@ import ValidationApi from "./ValidationApi";
 const ValidationTableWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [validationResults, setValidationResults] = React.useState<any>();
+  const [ruleData, setRuleData] = React.useState<any>();
 
   useEffect(() => {
     const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
-      setValidationResults(data);
+      setValidationResults(data.validationData);
+      setRuleData(data.ruleData);
     });
 
     if (iModelConnection) {
@@ -48,14 +50,14 @@ const ValidationTableWidget: React.FunctionComponent = () => {
     // START VIOLATION_TABLE
 
     const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
-
-    if (validationResults !== undefined && validationResults.propertyValueResult !== undefined && validationResults.ruleList !== undefined && iModelConnection) {
+    if (validationResults !== undefined && validationResults.result !== undefined && validationResults.ruleList !== undefined && ruleData !== undefined && iModelConnection) {
       // Adding rows => cells => property record => value and description.
       let validationIndex: number = 0;
-      validationResults.propertyValueResult.some((rowData: any) => {
+      validationResults.result.some((rowData: any) => {
         const rowKey = `${rowData.elementId}`;
         const rowItem: RowItem = { key: rowKey, cells: [] };
-        columns.forEach(async (column: ColumnDescription, i: number) => {
+
+        columns.forEach((column: ColumnDescription, i: number) => {
           let cellValue: string = "";
           if (column.key === "ruleID") {
             // Lookup the rule ID using the rule index
@@ -64,8 +66,8 @@ const ValidationTableWidget: React.FunctionComponent = () => {
             // Lookup the rule name using the rule index
             cellValue = validationResults.ruleList[rowData.ruleIndex].displayName.toString();
           } else if (column.key === "legalValues") {
-            const ruleData = await ValidationApi.getMatchingRule(validationResults.ruleList[rowData.ruleIndex].id.toString(), iModelConnection.contextId!, true);
-            cellValue = `[${ruleData?.propertyValueRule.functionParameters.lowerBound},${ruleData?.propertyValueRule.functionParameters.upperBound}]`;
+            const currentRuleData = ruleData[validationResults.ruleList[rowData.ruleIndex].id.toString()];
+            cellValue = `[${currentRuleData?.rule.functionParameters.lowerBound},${currentRuleData?.rule.functionParameters.upperBound}]`;
           } else {
             cellValue = rowData[column.key].toString();
           }
@@ -81,7 +83,7 @@ const ValidationTableWidget: React.FunctionComponent = () => {
     // END VIOLATION_TABLE
 
     return dataProvider;
-  }, [validationResults, iModelConnection]);
+  }, [validationResults, ruleData, iModelConnection]);
 
   // Zooming into and highlighting element when row is selected.
   const _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
