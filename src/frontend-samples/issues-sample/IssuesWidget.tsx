@@ -456,7 +456,7 @@ const IssuesWidget: React.FunctionComponent = () => {
 
   return (
     <>
-      <div style={{ height: "300px" }}>
+      <div className={"issues-widget"} style={{ height: "300px" }}>
         {/** When the issues haven't loaded yet, display spinner */}
         {issues.length === 0 &&
           <Spinner size={SpinnerSize.Medium} />
