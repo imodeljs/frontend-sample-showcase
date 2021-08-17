@@ -17,7 +17,7 @@ export function getSimpleLineSpec(): SampleSpec {
       import("!editor-file-loader!./SimpleLineApi"),
       import("!editor-file-loader!./SimpleLineApp?entry=true"),
       import("!editor-file-loader!./SimpleLineWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./InteractivePointMarker"),
       import("!editor-file-loader!./SimpleLine.scss"),
     ],

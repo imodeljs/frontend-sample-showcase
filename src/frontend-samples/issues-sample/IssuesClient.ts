@@ -199,6 +199,28 @@ export interface IssueDetailsGet {
   issue?: IssueGet;
 }
 
+
+/**
+ * Represents an element in an iModel about which an issue was created.
+ */
+export interface IModelElement {
+  /** ID of the iModel containing the element, as it exists in the iModels API. */
+  modelId: string;
+  /** ID of the element. Can be a hexadecimal numeric string (space-separated to include multiple elements) or a presentation key. */
+  elementId: string;
+  /** ID of the changeset where the issue was created. */
+  changeSetId: string;
+  /** Name of the model. */
+  modelName: string;
+}
+
+/**
+ * Origin info. An object linking the issue to an entity outside the Issues service, such as a file in Storage or an element in an iModel, that the issue was created to pertain to.
+ */
+export interface SourceEntity {
+  iModelElement: IModelElement;
+}
+
 /**
  * Contains the full data of this issue. Any property that was never set on the issue will be omitted from the response.
  */
@@ -267,14 +289,8 @@ export interface IssueGet {
   /** The date and time when this issue was most recently edited. Read-only. */
   lastModifiedDateTime?: string;
 
-  /** Origin info. Describes an object, like a model element or a file, that an issue pertains to. */
-  item?: IssueLinkedItem;
-
-  /** Origin info. Describes an object that contains the item, if applicable (like a folder that contains the file, or a model that contains the element). */
-  container?: IssueLinkedItem;
-
-  /** Origin info. In cases where an issue is associated with two items, provides a way to identify the second item. */
-  elementId?: string;
+  /** Origin info. An object linking the issue to an entity outside the Issues service, such as a file in Storage or an element in an iModel, that the issue was created to pertain to. */
+  sourceEntity?: SourceEntity;
 
   /** Origin info. Describes a rectangular-prism-shaped region in a 3D model that the issue pertains to. */
   boundingBox?: BoundingBox;

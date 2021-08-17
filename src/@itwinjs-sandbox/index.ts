@@ -10,3 +10,6 @@ export { default3DSandboxUi, default2DSandboxUi, default3DAppUi } from "./view/D
 export { ViewSetup } from "./view/ViewSetup";
 export { SampleIModels } from "./SampleIModels";
 export { defaultIModel, defaultIModelList } from "./constants";
+export { BlankFrontstage } from "./frontstages/BlankFrontstage";
+export type { IModelConnectionComponent } from "./frontstages/BlankFrontstage";
+export { SampleDataProvider } from "./data-providers/SampleDataProvider";

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
+import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ValidationApi from "./ValidationApi";
@@ -10,26 +10,36 @@ import "./ValidationReview.scss";
 const ValidationWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [applyZoom, setApplyZoom] = React.useState<boolean>(true);
-  const [showDecorator, setShowDecorator] = React.useState<boolean>();
+  const [showDecorator, setShowDecorator] = React.useState<boolean>(true);
   const [validationResults, setValidationResults] = React.useState<any>();
+  const [ruleData, setRuleData] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
+  const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
+  const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
+    const decorator = new MarkerPinDecorator();
+    ValidationApi.enableDecorations(decorator);
+    return decorator;
+  });
+  useEffect(() => {
+    const newImages = new Map();
+    imageElementFromUrl(".\\clash_pin.svg").then((image) => {
+      newImages.set("clash_pin.svg", image);
+      setImages(newImages);
+    })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
+  }, []);
 
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
     const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
-      setValidationResults(data);
+      setValidationResults(data.validationData);
+      setRuleData(data.ruleData);
     });
 
     if (iModelConnection) {
-      /** Initalize the marker pin svg icons on screen */
-      ValidationApi._images = new Map();
-      imageElementFromUrl(".\\clash_pin.svg").then((image) => {
-        ValidationApi._images.set("clash_pin.svg", image);
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
-
       /** Will start the validation data retrieval and recieve the data through the listener */
       ValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
         // eslint-disable-next-line no-console
@@ -38,42 +48,41 @@ const ValidationWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      ValidationApi.disableDecorations();
+      ValidationApi.disableDecorations(validationDecorator);
       ValidationApi.resetDisplay();
     };
-  }, [iModelConnection]);
+  }, [iModelConnection, validationDecorator]);
 
   /** When the validatio data comes in, get the marker data */
   useEffect(() => {
-    if (iModelConnection && validationResults) {
-      ValidationApi.getValidationMarkersData(iModelConnection, validationResults).then((mData) => {
+    if (iModelConnection && validationResults && ruleData) {
+      ValidationApi.getValidationMarkersData(iModelConnection, validationResults, ruleData).then((mData) => {
         setMarkersData(mData);
       }).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
     }
-  }, [iModelConnection, validationResults]);
+  }, [iModelConnection, validationResults, ruleData]);
 
   useEffect(() => {
-    if (markersData && ValidationApi.decoratorIsSetup()) {
-      ValidationApi.setDecoratorPoints(markersData);
-    } else if (markersData) {
-      ValidationApi.setupDecorator(markersData);
-      // Automatically visualize first violation
+    if (markersData && images && validationDecorator) {
+      ValidationApi.enableDecorations(validationDecorator);
+      ValidationApi.setDecoratorPoints(markersData, validationDecorator, images);
+      // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ValidationApi.visualizeViolation(markersData[0].data.elementId);
       }
       setShowDecorator(true);
     }
-  }, [markersData]);
+  }, [markersData, images, validationDecorator]);
 
   useEffect(() => {
     if (showDecorator)
-      ValidationApi.enableDecorations();
+      ValidationApi.enableDecorations(validationDecorator);
     else
-      ValidationApi.disableDecorations();
-  }, [showDecorator]);
+      ValidationApi.disableDecorations(validationDecorator);
+  }, [showDecorator, validationDecorator]);
 
   useEffect(() => {
     if (applyZoom) {

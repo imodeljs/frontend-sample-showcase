@@ -14,10 +14,10 @@ export function getCustomTableNodeTreeSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      import("!editor-file-loader!./CustomTableNodeTreeApp"),
-      import("!editor-file-loader!./CustomTableNodeTreeUI?entry=true"),
-      import("!editor-file-loader!./TableNodeTree.scss"),
+      import("!editor-file-loader!./CustomTableNodeTreeComponent"),
+      import("!editor-file-loader!./CustomTableNodeTreeApp?entry=true"),
+      import("!editor-file-loader!./CustomTableNodeTree.scss"),
     ],
-    type: "CustomTableNodeTreeUI.tsx",
+    type: "CustomTableNodeTreeApp.tsx",
   });
 }

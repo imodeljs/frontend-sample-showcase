@@ -17,7 +17,7 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
       import("!editor-file-loader!./ClosestPointOnCurveApi"),
       import("!editor-file-loader!./ClosestPointOnCurveApp?entry=true"),
       import("!editor-file-loader!./ClosestPointOnCurveWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./SampleCurveFactory"),
       import("!editor-file-loader!./InteractivePointMarker"),
       import("!editor-file-loader!./ClosestPointOnCurve.scss"),

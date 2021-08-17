@@ -22,9 +22,9 @@ Note that these values currently do not match the actual element ids being shown
 
 # Validation Result Format
 
-Above is the format for an API response to requesting data about the result of running a test. The response has two parts, `propertyValueResult` shows the elements in violation of specific rules, and `ruleList` gives the ids of all the rules that are being violated.
+Above is the format for an API response to requesting data about the result of running a test. The response has two parts, `result` shows the elements in violation of specific rules, and `ruleList` gives the ids of all the rules that are being violated.
 
-Each element of `propertyValueResult` has four parts. First and second are the id and label of the element that violated a rule. Third is the index of the rule in the ruleList, which can be used to get more information about the specific rule that was violated. Fourth is the element's invalid value for the attribute that was being tested.
+Each element of `result` has four parts. First and second are the id and label of the element that violated a rule. Third is the index of the rule in the ruleList, which can be used to get more information about the specific rule that was violated. Fourth is the element's invalid value for the attribute that was being tested.
 
 The `ruleList` has two parts. The first is the id of the rule, which can be used to request additional data about the test from the API. The second is the name of the rule.
 [_metadata_:annotation]:- "RESULT_DATA"

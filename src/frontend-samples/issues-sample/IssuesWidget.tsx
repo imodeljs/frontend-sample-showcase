@@ -225,12 +225,12 @@ const IssuesWidget: React.FunctionComponent = () => {
     if (!iModelConnection || currentLinkedElements || !currentIssue)
       return;
 
-    if (!currentIssue.item?.id) {
+    if (!currentIssue.sourceEntity?.iModelElement?.elementId) {
       setLinkedElements([]);
       return;
     }
 
-    const elementKeySet = await IssuesApi.getElementKeySet(currentIssue.item.id);
+    const elementKeySet = await IssuesApi.getElementKeySet(currentIssue.sourceEntity?.iModelElement?.elementId);
     const elementInfo = await IssuesApi.getElementInfo(iModelConnection, elementKeySet);
     setLinkedElements(elementInfo);
   }, [currentIssue, currentLinkedElements, iModelConnection]);

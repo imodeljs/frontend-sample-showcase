@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { useCallback } from "react";
-import { isSampleIModelWithAlternativeName, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModelInfo } from "./useSampleIModelConnection";
 
 const getiModelParam = () => {
   const params = new URLSearchParams(window.location.search);
@@ -40,15 +41,19 @@ const updateiModelParam = (imodel?: string, context?: string) => {
   }
 };
 
-export type setSampleIModelParam = (iModel?: (SampleIModels | SampleIModelWithAlternativeName)) => void;
+export type setSampleIModelParam = (iModel?: SampleIModelInfo) => void;
 
 export const useSampleIModelParameter = (): [(SampleIModels | SampleIModelWithAlternativeName) | undefined, setSampleIModelParam] => {
 
-  const setiModelParam = useCallback((imodel?: (SampleIModels | SampleIModelWithAlternativeName)) => {
-    if (isSampleIModelWithAlternativeName(imodel)) {
-      updateiModelParam(imodel.imodel, imodel.context);
+  const setiModelParam = useCallback((imodel?: SampleIModelInfo) => {
+    if (imodel) {
+      if (imodel.contextName !== imodel.iModelName) {
+        updateiModelParam(imodel.iModelName, imodel.contextName);
+      } else {
+        updateiModelParam(imodel.iModelName);
+      }
     } else {
-      updateiModelParam(imodel);
+      updateiModelParam(undefined);
     }
   }, []);
 
