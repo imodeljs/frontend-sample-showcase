@@ -7,33 +7,34 @@ import React, { useEffect } from "react";
 import { Select } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { StandardViewId } from "@bentley/imodeljs-frontend";
-import "./AnimationWidget.scss";
-import AnimationApi from "./AnimationApi";
-import { AnalysisDecorator } from "./AnalysisDecorator";
+import "./ScientificViz.scss";
+import ScientificVizApi from "./ScientificVizApi";
+import { ScientificVizDecorator } from "./ScientificVizDecorator";
 import { useActiveViewport } from "@bentley/ui-framework";
 const meshTypes = ["Cantilever", "Flat with waves"];
 
-export const AnimationWidget: React.FunctionComponent = () => {
-  const [meshType, setMeshType] = React.useState<{ meshPicker: string, stylePicker: string[], defaultStylePicker: string }>({ meshPicker: "Cantilever", stylePicker: [], defaultStylePicker: "" });
+export const ScientificVizWidget: React.FunctionComponent = () => {
+  const [meshType, setMeshType] = React.useState<{ meshPicker: string, stylePicker: string[], defaultStylePicker: string }>({ meshPicker: "Flat with waves", stylePicker: [], defaultStylePicker: "" });
   const viewport = useActiveViewport();
 
   const renderAnimation = async (meshingType: string) => {
     if (viewport) {
       const meshes = await Promise.all([
-        AnimationApi.createMesh("Cantilever", 100),
-        AnimationApi.createMesh("Flat with waves"),
+        ScientificVizApi.createMesh("Cantilever", 100),
+        ScientificVizApi.createMesh("Flat with waves"),
       ]);
-      if (AnalysisDecorator.decorator) {
+      if (ScientificVizDecorator.decorator) {
         viewport.displayStyle.settings.analysisStyle = undefined;
-        AnalysisDecorator.decorator.dispose();
+        ScientificVizDecorator.decorator.dispose();
       }
-      const mesh = meshingType === "Cantilever" ? meshes[0] : meshes[1];
-      AnalysisDecorator.decorator = new AnalysisDecorator(viewport, mesh);
+      const mesh = (meshingType === "Cantilever") ? meshes[0] : meshes[1];
+      ScientificVizDecorator.decorator = new ScientificVizDecorator(viewport, mesh);
       const meshStyle: string[] = [];
-      for (const name of AnalysisDecorator.decorator.mesh.styles.keys()) {
+      for (const name of ScientificVizDecorator.decorator.mesh.styles.keys()) {
         meshStyle.push(name);
       };
-      setMeshType({ meshPicker: meshingType, stylePicker: [...meshStyle], defaultStylePicker: meshStyle[0] });
+      setMeshType({ meshPicker: meshingType, stylePicker: [...meshStyle], defaultStylePicker: meshStyle[2] });
+      viewport.displayStyle.settings.analysisStyle = (mesh.type === "Flat with waves") ? ScientificVizDecorator.decorator.mesh.styles.get(meshStyle[2]) : undefined;
     }
   };
 
@@ -51,7 +52,7 @@ export const AnimationWidget: React.FunctionComponent = () => {
   useEffect(() => {
     if (!viewport)
       return;
-    renderAnimation("Cantilever");
+    renderAnimation("Flat with waves");
   }, []);
 
   const meshTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -59,7 +60,7 @@ export const AnimationWidget: React.FunctionComponent = () => {
   };
 
   const meshStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    viewport!.displayStyle.settings.analysisStyle = AnalysisDecorator.decorator.mesh.styles.get(event.target.value);
+    viewport!.displayStyle.settings.analysisStyle = ScientificVizDecorator.decorator.mesh.styles.get(event.target.value);
     setMeshType({ ...meshType, defaultStylePicker: event.target.value });
   };
 
@@ -76,8 +77,8 @@ export const AnimationWidget: React.FunctionComponent = () => {
     </>
   );
 };
-export class AnimationWidgetProvider implements UiItemsProvider {
-  public readonly id: string = "AnimationWidgetProvider";
+export class ScientificVizWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "ScientificVizWidgetProvider";
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
@@ -85,11 +86,11 @@ export class AnimationWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
 
-          id: "AnimationWidgetProvider",
+          id: "ScientificVizWidgetProvider",
           label: "Visualization Controls",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <AnimationWidget />,
+          getWidgetContent: () => <ScientificVizWidget />,
         }
       );
     }

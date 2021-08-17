@@ -9,13 +9,13 @@ import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
-import { AnimationWidgetProvider } from "./AnimationWidget";
+import { ScientificVizWidgetProvider } from "./ScientificVizWidget";
 
-const uiProviders = [new AnimationWidgetProvider()];
+const uiProviders = [new ScientificVizWidgetProvider()];
 const connection: BlankConnectionProps = {
   name: "BlankConnection",
   location: Cartographic.fromDegrees(0, 0, 0),
-  extents: new Range3d(-20, -20, -20, 20, 20, 20),
+  extents: new Range3d(0, 0, -100, 50, 50, 50),
 };
 
 const viewState: BlankConnectionViewState = {
@@ -23,13 +23,13 @@ const viewState: BlankConnectionViewState = {
     backgroundColor: ColorDef.white,
   },
   viewFlags: {
-    grid: true,
+    grid: false,
     renderMode: RenderMode.SolidFill,
   },
   setAllow3dManipulations: true,
 };
 
-const AnimationApp: FunctionComponent = () => {
+const ScientificVizApp: FunctionComponent = () => {
   useSampleWidget("An animated scientific visualization. Use the options below to control the meshing.", []);
 
   /** The sample's render method */
@@ -48,4 +48,4 @@ const AnimationApp: FunctionComponent = () => {
   );
 };
 
-export default AnimationApp;
+export default ScientificVizApp;

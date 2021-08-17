@@ -14,13 +14,13 @@ export function getScientificVisualizationSpec(): SampleSpec {
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      import("!editor-file-loader!./AnimationApi"),
+      import("!editor-file-loader!./ScientificVizApp?entry=true"),
+      import("!editor-file-loader!./ScientificVizWidget"),
+      import("!editor-file-loader!./ScientificVizApi"),
+      import("!editor-file-loader!./ScientificVizDecorator"),
       import("!editor-file-loader!./Cantilever"),
-      import("!editor-file-loader!./AnimationApp?entry=true"),
-      import("!editor-file-loader!./AnimationWidget"),
-      import("!editor-file-loader!./AnalysisDecorator"),
-      import("!editor-file-loader!./AnimationWidget.scss"),
+      import("!editor-file-loader!./ScientificViz.scss"),
     ],
-    type: "AnimationApp.tsx",
+    type: "ScientificVizApp.tsx",
   });
 }

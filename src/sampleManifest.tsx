@@ -107,6 +107,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getParticleFireSampleSpec(),
     getParticleSnowSampleSpec(),
     getPropertyFormattingSpec(),
+    getScientificVisualizationSpec(),
     getScreenSpaceEffectsSpec(),
     getSerializeViewSpec(),
     getShadowStudySpec(),

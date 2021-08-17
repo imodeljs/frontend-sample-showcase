@@ -16,7 +16,7 @@ export interface AnalysisMesh {
   readonly styles: Map<string, AnalysisStyle | undefined>;
 }
 
-export default class AnimationApi {
+export default class ScientificVizApi {
   public static async createCantilever(): Promise<Polyface> {
     const polyface = IModelJson.Reader.parse(JSON.parse(jsonData)) as Polyface;
     const transform = Transform.createScaleAboutPoint(new Point3d(), 30);
@@ -156,10 +156,10 @@ export default class AnimationApi {
   }
 
   public static async createMesh(type: AnalysisMeshType, displacementScale = 1): Promise<AnalysisMesh> {
-    const polyface = "Flat with waves" === type ? AnimationApi.createFlatMeshWithWaves() : await AnimationApi.createCantilever();
+    const polyface = "Flat with waves" === type ? ScientificVizApi.createFlatMeshWithWaves() : await ScientificVizApi.createCantilever();
     const styles = new Map<string, AnalysisStyle | undefined>();
     const mesh = { type, polyface, styles };
-    AnimationApi.populateAnalysisStyles(mesh, displacementScale);
+    ScientificVizApi.populateAnalysisStyles(mesh, displacementScale);
     return mesh;
   }
 }

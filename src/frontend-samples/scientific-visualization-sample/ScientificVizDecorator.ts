@@ -6,15 +6,15 @@
 import { assert } from "@bentley/bentleyjs-core";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { DecorateContext, Decorator, GraphicType, IModelApp, RenderGraphicOwner, Viewport } from "@bentley/imodeljs-frontend";
-import { AnalysisMesh } from "./AnimationApi";
+import { AnalysisMesh } from "./ScientificVizApi";
 
-export class AnalysisDecorator implements Decorator {
+export class ScientificVizDecorator implements Decorator {
   public readonly mesh: AnalysisMesh;
   private readonly _viewport: Viewport;
   private readonly _id: string;
   private _graphic?: RenderGraphicOwner;
   private _dispose?: () => void;
-  public static decorator: AnalysisDecorator;
+  public static decorator: ScientificVizDecorator;
 
   public constructor(viewport: Viewport, mesh: AnalysisMesh) {
     this._viewport = viewport;
