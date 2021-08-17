@@ -116,7 +116,8 @@
         }
       ],
       "@typescript-eslint/unbound-method": "off",
-      "deprecation/deprecation": "off"
+      "deprecation/deprecation": "off",
+      "@bentley/no-internal-barrel-imports": "off"
     }
   },
   "browserslist": [
