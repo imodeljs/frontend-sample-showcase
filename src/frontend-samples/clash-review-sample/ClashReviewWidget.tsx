@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { MarkerData } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
+import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ClashReviewApi from "./ClashReviewApi";
@@ -10,9 +10,27 @@ import "./ClashReview.scss";
 const ClashReviewWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [applyZoom, setApplyZoom] = React.useState<boolean>(true);
-  const [showDecorator, setShowDecorator] = React.useState<boolean>();
+  const [showDecorator, setShowDecorator] = React.useState<boolean>(true);
   const [clashData, setClashData] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
+  const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
+
+  const [clashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
+    const decorator = new MarkerPinDecorator();
+    return decorator;
+  });
+
+  useEffect(() => {
+    const newImages = new Map();
+    imageElementFromUrl(".\\clash_pin.svg").then((image) => {
+      newImages.set("clash_pin.svg", image);
+      setImages(newImages);
+    })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
+  }, []);
 
   useEffect(() => {
     /** Create a listener that responds to clashData retrival */
@@ -21,16 +39,6 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     });
 
     if (iModelConnection) {
-      /** Initalize the marker pin svg icons on screen */
-      ClashReviewApi._images = new Map();
-      imageElementFromUrl(".\\clash_pin.svg").then((image) => {
-        ClashReviewApi._images.set("clash_pin.svg", image);
-      })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
-
       /** Will start the clashData retrieval and recieve the data through the listener */
       ClashReviewApi.setClashData(iModelConnection.contextId!)
         .catch((error) => {
@@ -40,10 +48,10 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      ClashReviewApi.disableDecorations();
+      ClashReviewApi.disableDecorations(clashPinDecorator);
       ClashReviewApi.resetDisplay();
     };
-  }, [iModelConnection]);
+  }, [iModelConnection, clashPinDecorator]);
 
   /** When the clashData comes in, get the marker data */
   useEffect(() => {
@@ -59,24 +67,23 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   }, [iModelConnection, clashData]);
 
   useEffect(() => {
-    if (markersData && ClashReviewApi.decoratorIsSetup()) {
-      ClashReviewApi.setDecoratorPoints(markersData);
-    } else if (markersData) {
-      ClashReviewApi.setupDecorator(markersData);
+    if (markersData && images && clashPinDecorator) {
+      ClashReviewApi.enableDecorations(clashPinDecorator);
+      ClashReviewApi.setDecoratorPoints(markersData, clashPinDecorator, images);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ClashReviewApi.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
       }
       setShowDecorator(true);
     }
-  }, [markersData]);
+  }, [markersData, images, clashPinDecorator]);
 
   useEffect(() => {
     if (showDecorator)
-      ClashReviewApi.enableDecorations();
+      ClashReviewApi.enableDecorations(clashPinDecorator);
     else
-      ClashReviewApi.disableDecorations();
-  }, [showDecorator]);
+      ClashReviewApi.disableDecorations(clashPinDecorator);
+  }, [showDecorator, clashPinDecorator]);
 
   useEffect(() => {
     if (applyZoom) {

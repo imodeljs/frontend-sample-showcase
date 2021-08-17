@@ -12,7 +12,7 @@ import { ZoomToElementsWidgetProvider } from "./ZoomToElementsWidget";
 const uiProviders = [new ZoomToElementsWidgetProvider()];
 
 const ZoomToElementsApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the controls below to change the iModel.", [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium]);
+  const sampleIModelInfo = useSampleWidget("Select one or more elements.  Click plus (+) to capture their ids into a list.  Set the options and then click Zoom to Elements.", [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {

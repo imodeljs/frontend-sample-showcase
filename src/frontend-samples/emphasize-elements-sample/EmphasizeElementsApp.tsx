@@ -13,7 +13,7 @@ import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 const uiProviders = [new EmphasizeElementsWidgetProvider()];
 
 const EmphasizeElementsApp: React.FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the toggle below for displaying the reality data in the model.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
+  const sampleIModelInfo = useSampleWidget("Select one or more elements.  Click one of the Apply buttons.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
   const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
