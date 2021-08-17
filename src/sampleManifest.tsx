@@ -117,7 +117,6 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getViewClipSpec(),
     getVolumeQuerySpec(),
     getZoomToElementsSpec(),
-    getScientificVisualizationSpec(),
   ],
 },
 {
