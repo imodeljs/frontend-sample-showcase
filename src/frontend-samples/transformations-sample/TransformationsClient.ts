@@ -7,6 +7,12 @@ import { AuthorizedFrontendRequestContext,IModelApp } from "@bentley/imodeljs-fr
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { GuidString } from "@bentley/bentleyjs-core";
 
+export interface Configuration {
+  href: string;
+}
+export interface Link {
+  configuration: Configuration;
+}
 export interface Transformation {
   id: GuidString;
   status: string;
@@ -15,15 +21,15 @@ export interface Transformation {
   totalElementCount: number;
   startedDateTime: Date;
   finishedDateTime: Date;
-  configurationId: GuidString;
   sourceChangeSetId: string;
+  _links: Link;
 }
 
 export default class TransformationsClient {
   private static _requestContext: AuthorizedClientRequestContext;
 
   public static async getTransformation(transformationId: string): Promise<Transformation | undefined> {
-    const url = `https://sbx-api.bentley.com/transformations/transformations/${transformationId}`;
+    const url = `https://api.bentley.com/transformations/${transformationId}`;
     const options = {
       method: "GET",
       headers: {

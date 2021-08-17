@@ -25,6 +25,7 @@ const TransformationsApp: FunctionComponent = () => {
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    const vf = viewState.viewFlags.clone();
 
     // Connect to iModel
     // START TRANSFORMED_IMODEL_CONNECTION
@@ -35,6 +36,7 @@ const TransformationsApp: FunctionComponent = () => {
     // Get ViewState
     const viewCreator2 = new ViewCreator3d(connection2);
     const viewState2 = await viewCreator2.createDefaultView({ skyboxOn: true });
+    viewState2.viewFlags = vf;
 
     // Remove the last frontstage, if there was one, to reinject the initalized viewstate on modelchange
     frontStages.pop();

@@ -17,12 +17,18 @@ const TransformationsWidget: React.FunctionComponent = () => {
   const [transformationResponse, setTransformationResponse] = React.useState<string>("Loading...");
 
   useEffect(() => {
-    void TransformationsClient.getTransformation(TransformationsApi.Transformation_Id).then((value) => {
-      if (value !== undefined)
-        setTransformationResponse(JSON.stringify(value, null, 2));
+    (async () => {
+      const transformationResp = await TransformationsClient.getTransformation(TransformationsApi.Transformation_Id);
+
+      if (transformationResp !== undefined)
+        setTransformationResponse(JSON.stringify(transformationResp, null, 2));
       else
         setTransformationResponse("Invalid Response");
-    });
+    })()
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
   }, []);
 
   useEffect(() => {

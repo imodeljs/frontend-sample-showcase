@@ -3,13 +3,13 @@ The purpose of this sample is to demonstrate the Transformation API, however, th
 
 The two lines of code shown is how the sample showcase is used to connect to the Transformed Stadium. GetIModelInfo() grabs the contextId and iModelId for the Transformed Stadium, and then we open a remote connection to connect to.
 
-For more information on the three API's used to accomplish this feat, see:
+For more information on the API's used to accomplish this feat, see:
 
-https://sbx-developer.bentley.com/api-groups/synchronization/apis/transformations/operations/filterbyviewdefinition/
+https://developer.bentley.com/apis/transformations/operations/filterbyviewdefinition/
 
-https://sbx-developer.bentley.com/api-groups/synchronization/apis/transformations/operations/create-transformation/
+https://developer.bentley.com/apis/transformations/operations/create-transformation/
 
-https://sbx-developer.bentley.com/api-groups/synchronization/apis/transformations/operations/get-transformation/
+https://developer.bentley.com/apis/transformations/operations/get-transformation/
 
 [_metadata_:annotation]:- "TRANSFORMED_IMODEL_CONNECTION"
 
