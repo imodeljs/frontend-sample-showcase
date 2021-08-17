@@ -484,7 +484,7 @@ const IssuesWidget: React.FunctionComponent = () => {
     ));
   };
 
-  const filterTypes = ["All", "Civil Design", "Clash", "Closeout", "Communication", "Deficiency", "Design", "Field Data", "Issue", "Observation", "Other", "Punchlist", "Risk", "RFI", "Submittal Issue", "Task", "Transmittal Issue"];
+  const filterTypes = ["All", "Clash", "Closeout", "Data Quality", "Field Data"];
 
   return (
     <>
