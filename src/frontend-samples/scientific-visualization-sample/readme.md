@@ -2,15 +2,20 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates animated scientific visualization of a mesh that has been supplemented with PolyfaceAuxData
+This sample demonstrates how to use an animated decorator to visually analyze properties of a physical object.
 
 ## Purpose
 
-Creating a decorator and rendering it in the active view.
+Augmenting a mesh with auxiliary properties used to drive the visualization.
 
-Providing dropdown to select mesh type and mesh style
+Creating an analysis style that applies the visualization to the mesh's graphics.
+
+Using a decorator and timeline scrubber to animate the mesh in a viewport.
 
 ## Description
 
-This sample uses a [BlankConnection](https://www.imodeljs.org/learning/frontend/blankconnection/) to create a viewport without connecting to an iModel.
-As part of a [DisplayStyleSettings](https://www.itwinjs.org/reference/imodeljs-common/displaystyles/displaystylesettings/), [AnalysisStyle](https://www.itwinjs.org/reference/imodeljs-common/displaystyles/analysisstyle/) APIs describe how to animate meshes in the view that have been augmented with [PolyfaceAuxData](https://www.itwinjs.org/reference/geometry-core/polyface/polyfaceauxdata/). The style specifies which channels to use, and can deform the meshes by translating vertices and/or recolor vertices using [ThematicDisplay](https://www.itwinjs.org/reference/imodeljs-common/symbology/thematicdisplay/).
+Scientific visualization requires the object(s) to be represented as a [Polyface](https://www.imodeljs.org/learning/frontend/blankconnection/) augmented with channels of per-vertex properties defined by [PolyfaceAuxData](https://www.itwinjs.org/reference/geometry-core/polyface/polyfaceauxdata/). This sample provides two example meshes:
+- A cantilever, with auxiliary channels reflecting the stress induced by bending the object; and
+- A non-realistic example based on a square mesh, with channels modeling height, slope, and displacement, to demonstrate the basic concepts and APIs.
+
+For each mesh, a set of [AnalysisStyle](https://www.itwinjs.org/reference/imodeljs-common/displaystyles/analysisstyle/)s are produced that use the auxiliary data in different ways to produce static and animated visualizations. The visualizations can deform the mesh by applying per-vertex displacements and/or recolor vertices using [ThematicDisplay](https://www.itwinjs.org/reference/imodeljs-common/symbology/thematicdisplay/). The per-vertex values are smoothly interpolated over the face of each triangle and - for animated styles - over time.
