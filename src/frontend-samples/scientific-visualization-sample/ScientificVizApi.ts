@@ -8,7 +8,6 @@ import { AnalysisStyle, AnalysisStyleProps, ThematicGradientColorScheme, Themati
 import { jsonData } from "./Cantilever";
 
 export type AnalysisMeshType = "Cantilever" | "Flat with waves";
-
 export interface AnalysisMesh {
   readonly type: AnalysisMeshType;
   readonly polyface: Polyface;

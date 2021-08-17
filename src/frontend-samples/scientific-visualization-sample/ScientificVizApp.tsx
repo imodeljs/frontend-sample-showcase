@@ -29,7 +29,7 @@ const viewState: BlankConnectionViewState = {
 };
 
 const ScientificVizApp: FunctionComponent = () => {
-  useSampleWidget("An animated scientific visualization. Use the options below to control the meshing.", []);
+  useSampleWidget("Use the options below to choose a mesh and analysis style.  Note that the 'Static' styles do not animate.", []);
 
   /** The sample's render method */
   return (

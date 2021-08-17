@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Select } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { StandardViewId } from "@bentley/imodeljs-frontend";
@@ -16,7 +16,7 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
   const [meshType, setMeshType] = React.useState<{ meshPicker: string, stylePicker: string[], defaultStylePicker: string }>({ meshPicker: "Flat with waves", stylePicker: [], defaultStylePicker: "" });
   const viewport = useActiveViewport();
 
-  const renderAnimation = async (meshingType: string) => {
+  const renderAnimation = useCallback(async (meshingType: string) => {
     if (viewport) {
       const meshes = await Promise.all([
         ScientificVizApi.createMesh("Cantilever", 100),
@@ -31,11 +31,11 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
       const meshStyle: string[] = [];
       for (const name of ScientificVizDecorator.decorator.mesh.styles.keys()) {
         meshStyle.push(name);
-      };
+      }
       setMeshType({ meshPicker: meshingType, stylePicker: [...meshStyle], defaultStylePicker: meshStyle[2] });
       viewport.displayStyle.settings.analysisStyle = (mesh.type === "Flat with waves") ? ScientificVizDecorator.decorator.mesh.styles.get(meshStyle[2]) : undefined;
     }
-  };
+  }, [viewport]);
 
   useEffect(() => {
     if (viewport) {
@@ -51,11 +51,11 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
   useEffect(() => {
     if (!viewport)
       return;
-    renderAnimation("Flat with waves");
-  }, []);
+    void renderAnimation("Flat with waves");
+  }, [viewport, renderAnimation]);
 
   const meshTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    renderAnimation(event.target.value);
+    void renderAnimation(event.target.value);
   };
 
   const meshStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -67,9 +67,9 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
     <>
       <div className="sample-options">
         <div className="sample-options-2col">
-          <span>Mesh Picker:</span>
+          <span>Mesh:</span>
           <Select options={meshTypes} value={meshType.meshPicker} onChange={(event) => meshTypeChange(event)} />
-          <span>Style Picker:</span>
+          <span>Style:</span>
           <Select options={meshType.stylePicker} value={meshType.defaultStylePicker} onChange={(event) => meshStyleChange(event)} />
         </div>
       </div>
