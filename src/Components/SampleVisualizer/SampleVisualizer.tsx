@@ -15,8 +15,6 @@ const context = (require as any).context("./../../frontend-samples", true, /\.ts
 
 interface SampleVisualizerProps {
   type: string;
-  iModelName: string;
-  iModelSelector: React.ReactNode;
   transpileResult?: string;
 }
 
@@ -135,5 +133,5 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
-  return prevProps.type === nextProps.type && prevProps.iModelName === nextProps.iModelName && prevProps.transpileResult === nextProps.transpileResult;
+  return prevProps.type === nextProps.type && prevProps.transpileResult === nextProps.transpileResult;
 });

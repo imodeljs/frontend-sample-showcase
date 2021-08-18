@@ -72,8 +72,6 @@ export const SampleShowcase: FunctionComponent = () => {
       <React.Suspense fallback={spinner}>
         <ErrorBoundary key={transpileResult + activeSample.type}>
           <Visualizer
-            iModelName={activeSample.imodel}
-            iModelSelector={getImodelSelector()}
             transpileResult={transpileResult}
             type={activeSample.type} />
         </ErrorBoundary>
