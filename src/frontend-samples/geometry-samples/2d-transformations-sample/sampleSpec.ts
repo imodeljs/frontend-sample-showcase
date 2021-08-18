@@ -15,6 +15,7 @@ export function get2dTransformationsSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./2dTransformationsApi"),
+      import("!editor-file-loader!./2dTransformationsWidget"),
       import("!editor-file-loader!./2dTransformationsApp?entry=true"),
       import("!editor-file-loader!./2dTransformationsWidget"),
       import("!editor-file-loader!common/Geometry/GeometryDecorator"),
