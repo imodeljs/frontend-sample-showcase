@@ -50,7 +50,7 @@ The recommended way of writing tests is to use watch scripts for the TypeScript 
 
 ## Contributing
 
- Each sample provided in the frontend sample showcase should be able to run both at runtime and within the online code editor. In order to ensure both instances are possible, there are some considerations take note of. You can learn more on how to contribute to the showcase in the [Contributing Documentation](./Contributing.md).
+ Each sample provided in the frontend sample showcase should be able to run both at runtime and within the online code editor. In order to ensure both instances are possible, there are some considerations take note of. You can learn more on how to contribute to the showcase in the [Contributing Documentation](./CONTRIBUTING.md).
 
 ## Learn More
 
