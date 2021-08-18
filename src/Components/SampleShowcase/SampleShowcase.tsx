@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
-import { IModelSelector } from "@itwinjs-sandbox/components/imodel-selector/IModelSelector";
 import { ActiveSample } from "./ActiveSample";
 import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
@@ -39,19 +38,6 @@ export const SampleShowcase: FunctionComponent = () => {
     setActiveSample(() => new ActiveSample(groupName, sampleName));
     setTranspileResult(undefined);
   };
-
-  const getImodelSelector = useCallback(() => {
-    if (!activeSample.imodelList || !activeSample.imodelList.length || 1 >= activeSample.imodelList.length)
-      return undefined;
-
-    return (
-      <div className="model-selector">
-        <IModelSelector
-          iModelNames={activeSample.imodelList}
-          iModelName={activeSample.imodel}
-          onIModelChange={(imodelName) => setActiveSample(new ActiveSample(activeSample.group, activeSample.name, imodelName))} />
-      </div>);
-  }, [activeSample.imodelList, activeSample.name, activeSample.group, activeSample.imodel]);
 
   const spinner = (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
 
