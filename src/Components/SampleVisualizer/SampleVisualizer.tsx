@@ -69,7 +69,7 @@ const iModelAppShutdown = async (): Promise<void> => {
   }
 };
 
-export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult, iModelName, iModelSelector }) => {
+export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult }) => {
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
   const [appReady, setAppReady] = useState<boolean>(false);
   const [cleaning, setCleaning] = useState<boolean>(false);
@@ -85,7 +85,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [type, transpileResult, iModelName, iModelSelector]);
+  }, [type, transpileResult]);
 
   useEffect(() => {
     if (sampleUi && !cleaning) {
@@ -101,34 +101,31 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
     }
   }, [sampleUi, cleaning]);
 
-  // Set sample UI
-  useEffect(() => {
-    const key = context.keys().find((k: string) => k.includes(type));
-    try {
-      if (key) {
-        const component = context(key).default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector, key: Math.random() * 100 }));
-      } else {
-        setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
-      }
-    } catch (error) {
-      setSampleUi(<DisplayError error={error} />);
-    }
-  }, [type, iModelName, iModelSelector]);
-
   // Refresh sample UI on transpile
   useEffect(() => {
     if (transpileResult) {
       import( /* webpackIgnore: true */ transpileResult).then((module) => {
         const component = module.default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
+        setSampleUi(React.createElement(component));
       })
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
         });
+    } else {
+      const key = context.keys().find((k: string) => k.includes(type));
+      try {
+        if (key) {
+          const component = context(key).default as React.ComponentClass;
+          setSampleUi(React.createElement(component, { key: Math.random() * 100 }));
+        } else {
+          setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
+        }
+      } catch (error) {
+        setSampleUi(<DisplayError error={error} />);
+      }
     }
-  }, [transpileResult, iModelName, iModelSelector]);
+  }, [transpileResult, type]);
 
   if (!appReady || !sampleUi || cleaning) {
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
