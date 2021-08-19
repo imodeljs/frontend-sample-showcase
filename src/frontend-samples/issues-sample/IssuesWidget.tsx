@@ -549,7 +549,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         {currentIssue &&
           <div className={"issue-details"}>
             <div className={"header"}>
-              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
+              <IconButton styleType='borderless' size='small' className="back-button" onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
               <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`${currentIssue.number} | ${currentIssue.subject}`}</Subheading>
             </div>
 

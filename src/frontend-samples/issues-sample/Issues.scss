@@ -141,6 +141,16 @@
   flex: 1;
   overflow-x: hidden;
 
+    .back-button {
+      background: var(--buic-background-2);
+      margin-left: 5px;
+      border-color: white;
+    }
+
+    .back-button:hover {
+      border-color: white !important;
+    }
+
     .header {
         display: inline-flex;
         align-items: center;
