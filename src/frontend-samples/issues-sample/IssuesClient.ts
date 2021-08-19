@@ -454,8 +454,14 @@ export interface Link {
 export default class IssuesClient {
   private static _requestContext: AuthorizedClientRequestContext;
 
-  public static async getProjectIssues(projectId: string): Promise<IssuesList | undefined> {
-    const url = `https://api.bentley.com/issues/?projectId=${projectId}`;
+  public static async getProjectIssues(projectId: string, type?: string, state?: string): Promise<IssuesList | undefined> {
+    var url = `https://api.bentley.com/issues/?projectId=${projectId}`;
+    if(type)
+      url += `&type=${type}`
+    
+    if(state)
+      url += `&state=${state}`
+      
     const options = {
       method: "GET",
       headers: {
