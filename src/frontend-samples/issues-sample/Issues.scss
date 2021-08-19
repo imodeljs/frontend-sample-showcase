@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 @import "~@bentley/ui-core/lib/ui-core/index";
 
-.sample-options {
-    color: var(--buic-foreground-body);
-    padding: 8px;
-  }
+// Override the contentRenderer to make the widget contents pretty
+.nz-widget-contentRenderer {
+  width: 100%;
+}
 
 .table {
   // Color the table heading background to match dark mode
@@ -23,6 +23,20 @@
 .issue-list-header {
     padding: 6px;
     border-bottom: 1px solid $buic-background-divider;
+    display: flex;
+    flex-direction: column;
+
+    .issue-list-filters{
+      display: flex;
+      justify-content: space-evenly;
+      .filter {
+        display: flex;
+        flex-direction: column;
+        > span {
+          color: #fff
+        }
+      }
+    }
 
     > span {
         font-size: $uicore-font-size-leading;
@@ -126,6 +140,16 @@
   @include uicore-scrollbar();
   flex: 1;
   overflow-x: hidden;
+
+    .back-button {
+      background: var(--buic-background-2);
+      margin-left: 5px;
+      border-color: white;
+    }
+
+    .back-button:hover {
+      border-color: white !important;
+    }
 
     .header {
         display: inline-flex;
