@@ -17,7 +17,7 @@ const thumbnails: Map<string, Blob> = new Map<string, Blob>();
 const IssuesWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const viewport = useActiveViewport();
-  const [issues, setIssues] = useState<IssueGet[]>([]);
+  const [issues, setIssues] = useState<IssueGet[]>();
   const [previewImages, setPreviewImages] = useState<{ [displayName: string]: Blob }>({});
   /** The pictures / attachments that are associated with the issue */
   const [issueAttachmentMetaData, setIssueAttachmentMetaData] = useState<{ [displayName: string]: AttachmentMetadataGet[] }>({});
@@ -48,7 +48,7 @@ const IssuesWidget: React.FunctionComponent = () => {
   /** When iModel is loaded, get issue details */
   useEffect(() => {
     (async () => {
-      if (iModelConnection && issues && issues.length === 0) {
+      if (iModelConnection) {
         const issuesResp = await IssuesClient.getProjectIssues(iModelConnection.contextId!);
 
         const promises = new Array<Promise<IssueDetailsGet | undefined>>();
@@ -71,11 +71,11 @@ const IssuesWidget: React.FunctionComponent = () => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [iModelConnection, issues]);
+  }, [iModelConnection]);
 
   /** Set the preview Images on issue load */
   useEffect(() => {
-    issues.map(async (issue) => {
+    issues?.map(async (issue) => {
       if (issue.id) {
         const metaData = await IssuesClient.getIssueAttachments(issue.id);
         const previewAttachmentId = metaData?.attachments ? metaData.attachments[0]?.id : undefined;
@@ -112,6 +112,9 @@ const IssuesWidget: React.FunctionComponent = () => {
 
   /** Create the issue marker icon, then add the pin at the issue location */
   useEffect(() => {
+    if (!issues)
+      return;
+
     const parser = new DOMParser();
     const SVGMAP: { [key: string]: HTMLImageElement } = {};
     const issue_marker: string = `
@@ -456,10 +459,14 @@ const IssuesWidget: React.FunctionComponent = () => {
 
   return (
     <>
-      <div style={{ height: "300px" }}>
+      <div className={"issues-widget"} style={{ height: "300px" }}>
         {/** When the issues haven't loaded yet, display spinner */}
-        {issues.length === 0 &&
+        {issues === undefined &&
           <Spinner size={SpinnerSize.Medium} />
+        }
+
+        {issues?.length === 0 &&
+          <span style={{ color: "#fff", padding: "8px" }}>No Issues Found.</span>
         }
 
         {/** When the issues are loaded, display them in a list */}

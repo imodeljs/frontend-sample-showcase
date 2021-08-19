@@ -11,13 +11,10 @@ import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { UiFramework } from "@bentley/ui-framework";
 import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
-import path from "path";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 
 interface SampleVisualizerProps {
   type: string;
-  iModelName: string;
-  iModelSelector: React.ReactNode;
   transpileResult?: string;
 }
 
@@ -70,7 +67,7 @@ const iModelAppShutdown = async (): Promise<void> => {
   }
 };
 
-export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult, iModelName, iModelSelector }) => {
+export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult }) => {
   const [sampleUi, setSampleUi] = useState<React.ReactNode>();
   const [appReady, setAppReady] = useState<boolean>(false);
   const [cleaning, setCleaning] = useState<boolean>(false);
@@ -86,7 +83,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [type, transpileResult, iModelName, iModelSelector]);
+  }, [type, transpileResult]);
 
   useEffect(() => {
     if (sampleUi && !cleaning) {
@@ -102,34 +99,31 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
     }
   }, [sampleUi, cleaning]);
 
-  // Set sample UI
-  useEffect(() => {
-    const key = context.keys().find((k: string) => path.basename(k) === type);
-    try {
-      if (key) {
-        const component = context(key).default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector, key: Math.random() * 100 }));
-      } else {
-        setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
-      }
-    } catch (error) {
-      setSampleUi(<DisplayError error={error} />);
-    }
-  }, [type, iModelName, iModelSelector]);
-
   // Refresh sample UI on transpile
   useEffect(() => {
     if (transpileResult) {
       import( /* webpackIgnore: true */ transpileResult).then((module) => {
         const component = module.default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
+        setSampleUi(React.createElement(component));
       })
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
         });
+    } else {
+      const key = context.keys().find((k: string) => k.includes(type));
+      try {
+        if (key) {
+          const component = context(key).default as React.ComponentClass;
+          setSampleUi(React.createElement(component, { key: Math.random() * 100 }));
+        } else {
+          setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
+        }
+      } catch (error) {
+        setSampleUi(<DisplayError error={error} />);
+      }
     }
-  }, [transpileResult, iModelName, iModelSelector]);
+  }, [transpileResult, type]);
 
   if (!appReady || !sampleUi || cleaning) {
     return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
@@ -139,5 +133,5 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
-  return prevProps.type === nextProps.type && prevProps.iModelName === nextProps.iModelName && prevProps.transpileResult === nextProps.transpileResult;
+  return prevProps.type === nextProps.type && prevProps.transpileResult === nextProps.transpileResult;
 });

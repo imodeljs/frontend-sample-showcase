@@ -73,6 +73,7 @@ import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-samp
 import { getChangedElementsSpec } from "frontend-samples/changed-elements-sample/sampleSpec";
 import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
 import { getValidationSpec } from "frontend-samples/validation-sample/sampleSpec";
+import { getScientificVisualizationSpec } from "frontend-samples/scientific-visualization-sample/sampleSpec";
 import { getTransformationSpec } from "frontend-samples/transformations-sample/sampleSpec";
 
 export interface SampleSpecGroup {
@@ -107,6 +108,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getParticleFireSampleSpec(),
     getParticleSnowSampleSpec(),
     getPropertyFormattingSpec(),
+    getScientificVisualizationSpec(),
     getScreenSpaceEffectsSpec(),
     getSerializeViewSpec(),
     getShadowStudySpec(),

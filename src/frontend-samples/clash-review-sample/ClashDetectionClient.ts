@@ -58,7 +58,7 @@ export default class ClashDetectionClient {
 
   private static async getAccessToken() {
     try {
-      return (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
+      return await (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
     } catch (e) {
       return undefined;
     }
