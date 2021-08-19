@@ -506,8 +506,12 @@ const IssuesWidget: React.FunctionComponent = () => {
           </div>}
 
         {/** When the issues haven't loaded yet, display spinner */}
-        {allIssues.current.length === 0 &&
+        {allIssues === undefined &&
           <Spinner size={SpinnerSize.Medium} />
+        }
+
+        {allIssues.current.length === 0 &&
+          <span style={{ color: "#fff", padding: "8px" }}>No Issues Found.</span>
         }
 
         {/** When there are no issues retrieved from filter. */}
