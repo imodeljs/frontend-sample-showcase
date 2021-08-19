@@ -488,7 +488,7 @@ const IssuesWidget: React.FunctionComponent = () => {
 
   return (
     <>
-      <div style={{ height: "300px" }}>
+      <div className={"issues-widget"} style={{ height: "300px" }}>
         {/** Only display header when issue isn't selected */}
         {!currentIssue &&
           <div className="issue-list-header">
@@ -506,12 +506,8 @@ const IssuesWidget: React.FunctionComponent = () => {
           </div>}
 
         {/** When the issues haven't loaded yet, display spinner */}
-        {allIssues === undefined &&
-          <Spinner size={SpinnerSize.Medium} />
-        }
-
         {allIssues.current.length === 0 &&
-          <span style={{ color: "#fff", padding: "8px" }}>No Issues Found.</span>
+          <Spinner size={SpinnerSize.Medium} />
         }
 
         {/** When there are no issues retrieved from filter. */}
