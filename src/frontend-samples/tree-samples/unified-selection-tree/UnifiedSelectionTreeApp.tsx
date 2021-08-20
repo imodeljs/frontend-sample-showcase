@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useState } from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { UnifiedSelectionWidgetProvider } from "./UnifiedSelectionTreeWidget";

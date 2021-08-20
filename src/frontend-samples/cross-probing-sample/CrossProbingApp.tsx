@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
+import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import CrossProbingApi from "./CrossProbingApi";
 import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
 

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
+import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
 import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";

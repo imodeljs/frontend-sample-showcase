@@ -122,8 +122,8 @@
       "import": "@bentley/webgl-compatibility"
     },
     {
-      "name": "@bentley/itwin-viewer-react",
-      "import": "@bentley/itwin-viewer-react"
+      "name": "@itwin/web-viewer-react",
+      "import": "@itwin/web-viewer-react"
     },
     {
       "name": "@bentley/frontend-application-insights-client",

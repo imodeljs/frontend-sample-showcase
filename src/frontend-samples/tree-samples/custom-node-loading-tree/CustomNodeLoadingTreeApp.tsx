@@ -5,7 +5,7 @@
 import * as React from "react";
 import { CustomNodeLoadingTree } from "./CustomNodeLoadingTreeComponent";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import "./CustomNodeLoadingTree.scss";
 
 const frontstages = [{ provider: new BlankFrontstage(CustomNodeLoadingTree), default: true, requiresIModelConnection: true }];

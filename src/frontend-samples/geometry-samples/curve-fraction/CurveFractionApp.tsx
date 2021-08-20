@@ -5,7 +5,7 @@
 import React, { FunctionComponent } from "react";
 import { Range3d, Vector3d } from "@bentley/geometry-core";
 import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
-import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { CurveFractionWidgetProvider } from "./CurveFractionWidget";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";

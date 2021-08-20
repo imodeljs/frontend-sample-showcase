@@ -6,7 +6,7 @@ import React, { FunctionComponent } from "react";
 import "@fortawesome/fontawesome-free/css/all.css";
 import { CustomWebfontIconsTree } from "./CustomWebfontIconsTreeComponent";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import "./CustomWebfontIconsTree.scss";
 
 const frontstages = [{ provider: new BlankFrontstage(CustomWebfontIconsTree), default: true, requiresIModelConnection: true }];

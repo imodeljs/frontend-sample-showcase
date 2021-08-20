@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useState } from "react";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { ViewClipWidgetProvider } from "./ViewClipWidget";
 import ViewClipApi from "./ViewClipApi";

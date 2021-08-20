@@ -5,7 +5,7 @@
 import React, { FunctionComponent } from "react";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { PresentationTree } from "./PresentationTreeComponent";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import "./PresentationTree.scss";
 
 const frontstages = [{ provider: new BlankFrontstage(PresentationTree), default: true, requiresIModelConnection: true }];

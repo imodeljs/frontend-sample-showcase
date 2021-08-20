@@ -8,7 +8,7 @@ import { Cartographic } from "@bentley/imodeljs-common";
 import { Range3d } from "@bentley/geometry-core";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { BasicTreeComponent } from "./BasicTreeComponent";
-import { BlankViewer } from "@bentley/itwin-viewer-react";
+import { BlankViewer } from "@itwin/web-viewer-react";
 import "./BasicTree.scss";
 
 const frontstages = [{ provider: new BlankFrontstage(BasicTreeComponent), default: true, requiresIModelConnection: true }];
