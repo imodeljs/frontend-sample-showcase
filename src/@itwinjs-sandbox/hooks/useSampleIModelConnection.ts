@@ -12,7 +12,7 @@ import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
 import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
 import { useSampleIModelParameter } from "./useSampleIModelParameter";
 
-const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWithAlternativeName) => {
+export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWithAlternativeName) => {
   const requestContext: AuthorizedFrontendRequestContext = new AuthorizedFrontendRequestContext(await AuthorizationClient.oidcClient.getAccessToken());
 
   let name: string;

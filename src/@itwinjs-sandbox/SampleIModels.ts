@@ -10,6 +10,7 @@ export enum SampleIModels {
   House = "House Sample",
   Philadelphia = "Philadelphia",
   Stadium = "Stadium",
+  TransformedStadium = "Transformed Stadium",
   ExtonCampus = "Exton Campus",
   Villa = "Villa",
 }

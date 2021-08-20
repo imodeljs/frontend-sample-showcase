@@ -74,6 +74,7 @@ import { getChangedElementsSpec } from "frontend-samples/changed-elements-sample
 import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
 import { getValidationSpec } from "frontend-samples/validation-sample/sampleSpec";
 import { getScientificVisualizationSpec } from "frontend-samples/scientific-visualization-sample/sampleSpec";
+import { getTransformationSpec } from "frontend-samples/transformations-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -171,6 +172,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getClashReviewSpec(),
     getIssuesSpec(),
     getReadSettingsSpec(),
+    getTransformationSpec(),
     getValidationSpec(),
   ],
 
