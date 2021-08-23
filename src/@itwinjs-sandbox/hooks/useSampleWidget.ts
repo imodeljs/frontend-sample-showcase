@@ -17,7 +17,7 @@ export const useSampleWidget = (instructions: string, iModelList: (SampleIModels
   useEffect(() => {
     const floatingWidgets = new FloatingWidgets("sample-container");
     return floatingWidgets.dispose;
-  }, []);
+  }, [sampleIModelInfo]);
 
   useEffect(() => {
     const widgetProvider = new SampleWidgetProvider(instructions, iModelList, sampleIModelInfo, setIModelName);
