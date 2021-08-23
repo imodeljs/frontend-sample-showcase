@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React from "react";
-import { ViewState } from "@bentley/imodeljs-frontend";
 import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@bentley/ui-framework";
+import { ViewStateProp } from "@bentley/ui-components";
 
 export class MultiViewportFrontstage extends FrontstageProvider {
   // constants
@@ -17,7 +17,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
   // Content group for all layouts
   private _contentGroup: ContentGroup;
 
-  constructor(viewState: ViewState) {
+  constructor(viewState?: ViewStateProp) {
     super();
 
     this._contentLayoutDef = new ContentLayoutDef({
@@ -56,17 +56,6 @@ export class MultiViewportFrontstage extends FrontstageProvider {
         defaultLayout={this._contentLayoutDef}
         contentGroup={this._contentGroup}
         isInFooterMode={true}
-        contentManipulationTools={
-          <Zone
-            widgets={[
-              <Widget
-                key={MultiViewportFrontstage.DEFAULT_MANIPULATION_WIDGET_KEY}
-                isFreeform={true}
-                element={<div />}
-              />,
-            ]}
-          />
-        }
         viewNavigationTools={
           <Zone
             widgets={[

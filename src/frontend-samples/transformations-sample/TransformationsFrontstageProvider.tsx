@@ -18,7 +18,7 @@ export class TransformationsFrontstage extends FrontstageProvider {
   private _contentGroup: ContentGroup;
 
   // START FRONTSTAGE
-  constructor(viewState: ViewState, viewState2: ViewState, connection2: IModelConnection) {
+  constructor(viewState?: ViewState, viewState2?: ViewState, connection2?: IModelConnection) {
     super();
 
     this._contentLayoutDef = new ContentLayoutDef({
