@@ -67,8 +67,7 @@ const SwipingComparisonApp: FunctionComponent = () => {
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
             uiProviders={uiProviders}
-          >
-          </Viewer>
+          />
 
           {/** The divider to move left and right. */}
           {boundsState && dividerLeftState && !isLockedState ?
