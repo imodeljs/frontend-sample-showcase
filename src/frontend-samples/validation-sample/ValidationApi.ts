@@ -92,9 +92,9 @@ export default class ValidationApi {
       return ruleData;
 
     // Unable to fetch the rule data from the API, use the hardcoded data instead
-    if (ruleId === "1FapLmZ23ESON8qLonyWkvTrFm7XKN1KtKisuk1_eds") {
+    if (ruleId === "UcJ9slMONkqaOBgvwwm-BxhaAWxdDAZHs6JvnySyITk") {
       return jsonRuleData[0];
-    } else if (ruleId === "1FapLmZ23ESON8qLonyWkts_0vi1uB1GqMcVkFTRino") {
+    } else if (ruleId === "UcJ9slMONkqaOBgvwwm-BwHRtttv0KJLnVI9yt0PGsQ") {
       return jsonRuleData[1];
     } else {
       return jsonRuleData[2];
