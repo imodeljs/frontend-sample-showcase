@@ -66,8 +66,20 @@ const ValidationTableWidget: React.FunctionComponent = () => {
             // Lookup the rule name using the rule index
             cellValue = validationResults.ruleList[rowData.ruleIndex].displayName.toString();
           } else if (column.key === "legalValues") {
+            // Need to handle legal values based on the type of validation rule
             const currentRuleData = ruleData[validationResults.ruleList[rowData.ruleIndex].id.toString()];
-            cellValue = `[${currentRuleData?.rule.functionParameters.lowerBound},${currentRuleData?.rule.functionParameters.upperBound}]`;
+            if (currentRuleData.rule.functionParameters.lowerBound) {
+              if (currentRuleData.rule.functionParameters.upperBound) {
+                // Range of values
+                cellValue = `[${currentRuleData?.rule.functionParameters.lowerBound},${currentRuleData?.rule.functionParameters.upperBound}]`;
+              } else {
+                // Value has a lower bound
+                cellValue = `>${currentRuleData?.rule.functionParameters.lowerBound}`;
+              }
+            } else {
+              // Value needs to be defined
+              cellValue = `Must be Defined`;
+            }
           } else {
             cellValue = rowData[column.key].toString();
           }
