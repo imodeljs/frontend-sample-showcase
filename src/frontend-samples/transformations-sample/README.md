@@ -2,13 +2,13 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates how to use the Transformations API by displaying the changes in two viewports. The result of calling the transformation is being displayed side by side to the original.
+This sample demonstrates how to use the Transformations API by displaying the changes in two viewports. The result of the transformation is being displayed side by side to the original.
 
 ## Purpose
 
 The purpose of this sample is to demonstrate the following:
 
-* The usage and result of the Transformation API
+* The usage and result of the Transformations API
 * The logic needed to balance multiple viewports.
 * How to use the Two-way viewport sync feature.
 

@@ -9,7 +9,7 @@ import { SampleSpec } from "SampleSpec";
 export function getTransformationSpec(): SampleSpec {
   return ({
     name: "transformations-sample",
-    label: "Transformation",
+    label: "Transformations",
     image: "transformation-thumbnail.png",
     readme: async () => import("!!raw-loader!./README.md"),
     files: () => [

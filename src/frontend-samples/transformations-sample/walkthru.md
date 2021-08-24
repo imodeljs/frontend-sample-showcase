@@ -1,5 +1,5 @@
 # Connecting to Transformed iModel
-The purpose of this sample is to demonstrate the Transformation API, however, the sample-showcase is readonly and is unable to create a transformation for the user. Therefore a FilterByViewDefintion Transformation has already been done to the Stadium iModel.
+The purpose of this sample is to demonstrate the Transformations API, however, the sample-showcase is readonly and is unable to create a transformation for the user. Therefore a FilterByViewDefintion Transformation has already been done to the Stadium iModel.
 
 The two lines of code shown is how the sample showcase is used to connect to the Transformed Stadium. GetIModelInfo() grabs the contextId and iModelId for the Transformed Stadium, and then we open a remote connection to connect to.
 
