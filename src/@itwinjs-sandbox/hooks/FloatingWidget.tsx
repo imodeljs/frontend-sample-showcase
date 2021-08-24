@@ -128,7 +128,9 @@ export class FloatingWidgets implements IDisposable {
   public dispose = (): void => {
     this._uiItemsProviderRegisteredListener();
     this._frontstageActivatedListener();
-    this._resizeObserver.disconnect();
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
   };
 }
 
