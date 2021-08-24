@@ -6,6 +6,7 @@
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { getEmphasizeElementsSpec } from "frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getMarkerPinSpec } from "frontend-samples/marker-pin-sample/sampleSpec";
+import { getViewportOnlySpec } from "frontend-samples/viewport-only-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
 
 export function getValidationSpec(): SampleSpec {
@@ -18,6 +19,7 @@ export function getValidationSpec(): SampleSpec {
     walkthrough: () => ({
       annotations: import("!walkthrough-loader!./walkthru.md"),
       prerequisites: [
+        getViewportOnlySpec(),
         getEmphasizeElementsSpec(),
         getMarkerPinSpec(),
       ],

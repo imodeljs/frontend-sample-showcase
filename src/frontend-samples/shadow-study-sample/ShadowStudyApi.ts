@@ -10,6 +10,7 @@ import { ViewSetup } from "@itwinjs-sandbox";
 
 export default class ShadowStudyApp {
 
+  // START SETSUNTIME 
   // updates the sun time for the current model
   public static updateSunTime(time: number): void {
     const vp: ScreenViewport | undefined = IModelApp.viewManager.selectedView;
@@ -18,10 +19,13 @@ export default class ShadowStudyApp {
       const displayStyle: DisplayStyle3dState = vp.view.getDisplayStyle3d();
       displayStyle.setSunTime(time);
       vp.displayStyle = displayStyle;
-      vp.synchWithView();
     }
   }
 
+  // END SETSUNTIME 
+
+
+  // START ENABLESHADOWS
   /**
    * Initialize the data view when a new iModel is loaded
    */
@@ -29,16 +33,14 @@ export default class ShadowStudyApp {
     const viewState: ViewState = await ViewSetup.getDefaultView(imodel);
     const vf: ViewFlags = viewState.viewFlags.clone();
 
-    if (viewState.is3d()) {
-      const viewStyle: DisplayStyle3dState = viewState.getDisplayStyle3d();
-      viewStyle.setSunTime(new Date().getTime());
-      viewState.displayStyle = viewStyle;
-    }
-
     // we always want shadows
     vf.shadows = true;
     viewState.displayStyle.viewFlags = vf;
 
+    ShadowStudyApp.updateSunTime(new Date().getTime())
+
     return viewState;
   };
+  // END ENABLESHADOWS
+
 }

@@ -10,12 +10,15 @@ import ShadowStudyApi from "./ShadowStudyApi";
 import { Input } from "@bentley/ui-core";
 
 const ShadowStudyWidget: React.FunctionComponent = () => {
+  // START GETUNIXTIME 
   const [dateState, setDateState] = React.useState<Date>(new Date());
 
   useEffect(() => {
     // Initialize sun time to current time
     ShadowStudyApi.updateSunTime(dateState.getTime());
   }, [dateState]);
+
+  // END GETUNIXTIME 
 
   // Update the date state with the newly selected minute of the day
   const _updateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
