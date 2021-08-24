@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, ReactNode, useEffect, useRef, useState } from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
@@ -12,6 +12,7 @@ import { UiFramework } from "@bentley/ui-framework";
 import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
 import path from "path";
+import ReactDOM from "react-dom";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 
 interface SampleVisualizerProps {
@@ -69,68 +70,43 @@ const iModelAppShutdown = async (): Promise<void> => {
 };
 
 export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult }) => {
-  const [sampleUi, setSampleUi] = useState<React.ReactNode>();
-  const [appReady, setAppReady] = useState<boolean>(false);
-  const [cleaning, setCleaning] = useState<boolean>(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const currentProps = useRef<SampleVisualizerProps>({ type, transpileResult });
+  const [sampleUi, setSampleUi] = useState<ReactNode>(null);
 
   useEffect(() => {
-    setAppReady(false);
-    setCleaning(true);
-    iModelAppShutdown()
-      .then(() => {
-        setCleaning(false);
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
+    setSampleUi(null);
+
+    setImmediate(async () => {
+      await iModelAppShutdown();
+      let componentElement = <></>;
+      try {
+        if (transpileResult) {
+          const module = await import( /* webpackIgnore: true */ transpileResult);
+          const component = module.default as React.ComponentClass<SampleProps>;
+          componentElement = React.createElement(component);
+        } else {
+          const key = context.keys().find((k: string) => path.basename(k) === type);
+          if (key) {
+            const component = context(key).default as React.ComponentClass;
+            componentElement = React.createElement(component, { key: Math.random() * 100 });
+          } else {
+            componentElement = <div>Failed to resolve sample &quot;{type}&quot;</div>;
+          }
+        }
+        await AuthorizationClient.initializeOidc();
+      } catch (error) {
+        componentElement = <DisplayError error={error} />;
+      }
+
+      if (ref.current && currentProps.current.type === type && currentProps.current.transpileResult === transpileResult) {
+        setSampleUi(componentElement);
+      }
+    });
+
   }, [type, transpileResult]);
 
-  useEffect(() => {
-    if (sampleUi && !cleaning) {
-      AuthorizationClient
-        .initializeOidc()
-        .then(() => {
-          setAppReady(true);
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
-    }
-  }, [sampleUi, cleaning]);
-
-  // Refresh sample UI on transpile
-  useEffect(() => {
-    if (transpileResult) {
-      import( /* webpackIgnore: true */ transpileResult).then((module) => {
-        const component = module.default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component));
-      })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
-    } else {
-      const key = context.keys().find((k: string) => path.basename(k) === type);
-      try {
-        if (key) {
-          const component = context(key).default as React.ComponentClass;
-          setSampleUi(React.createElement(component, { key: Math.random() * 100 }));
-        } else {
-          setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
-        }
-      } catch (error) {
-        setSampleUi(<DisplayError error={error} />);
-      }
-    }
-  }, [transpileResult, type]);
-
-  if (!appReady || !sampleUi || cleaning) {
-    return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
-  }
-
-  return <>{sampleUi}</>;
+  return <div ref={ref} style={{ height: "100%", width: "100%" }}>{sampleUi ? sampleUi : <div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>}</div>;
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
