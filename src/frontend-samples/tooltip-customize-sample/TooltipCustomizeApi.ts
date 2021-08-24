@@ -58,7 +58,7 @@ export class ShowcaseToolAdmin extends ToolAdmin {
     const tip = document.createElement("div");
     let needHR = false;
     if (this.settings.showImage) {
-      const img = await imageElementFromUrl(".\\iModeljs-logo.png");
+      const img = await imageElementFromUrl(".\\itwinjs-logo.svg");
       tip.appendChild(img);
       needHR = true;
     }
