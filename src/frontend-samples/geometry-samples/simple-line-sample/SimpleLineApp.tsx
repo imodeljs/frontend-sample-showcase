@@ -11,12 +11,15 @@ import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { SimpleLineWidgetProvider } from "./SimpleLineWidget";
 
 const uiProviders = [new SimpleLineWidgetProvider()];
-
+// START BLANKCONNECTION
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
   location: Cartographic.fromDegrees(0, 0, 0),
   extents: new Range3d(-35, -35, -35, 35, 35, 35),
 };
+// END BLANKCONNECTION
+
+// START BLANKCONNECTIONVIEWSTATE
 const viewState: BlankConnectionViewState = {
   displayStyle: { backgroundColor: ColorDef.white },
   viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
@@ -26,11 +29,14 @@ const viewState: BlankConnectionViewState = {
     upVector: new Vector3d(0, 0, 1),
   },
 };
+// END BLANKCONNECTIONVIEWSTATE
+
 
 const SimpleLineApp: FunctionComponent = () => {
   useSampleWidget("Creating a line segments and some points along it.", []);
 
   /** The sample's render method */
+  // START BLANKVIEWER
   return (
     <>
       { /** Viewport to display the iModel */}
@@ -42,8 +48,10 @@ const SimpleLineApp: FunctionComponent = () => {
         blankConnection={connection}
         uiProviders={uiProviders}
       />
+
     </>
   );
+  // END BLANKVIEWER
 };
 
 export default SimpleLineApp;

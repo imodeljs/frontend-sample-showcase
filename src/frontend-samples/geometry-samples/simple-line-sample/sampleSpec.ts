@@ -3,6 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { getViewportOnlySpec } from "frontend-samples/viewport-only-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
 
 export function getSimpleLineSpec(): SampleSpec {
@@ -13,11 +14,14 @@ export function getSimpleLineSpec(): SampleSpec {
     description: "#Simple #geometry #sample showing how to create a #line #segment using #LineSegment3d and create #points along it using #fractionToPoint.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./walkthru.md"),
+    }),
     files: () => [
       import("!editor-file-loader!./SimpleLineApi"),
       import("!editor-file-loader!./SimpleLineApp?entry=true"),
       import("!editor-file-loader!./SimpleLineWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./InteractivePointMarker"),
       import("!editor-file-loader!./SimpleLine.scss"),
     ],

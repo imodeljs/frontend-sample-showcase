@@ -10,7 +10,7 @@ import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
 import Simple3dApi from "./Simple3dApi";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "./GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 
 export const Simple3dWidget: React.FunctionComponent = () => {
   const [decoratorState, setDecoratorState] = React.useState<GeometryDecorator>();

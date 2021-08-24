@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
+import { getSimple3dSpec } from "../simple-3d-sample/sampleSpec";
 
 export function getAdvanced3dSpec(): SampleSpec {
   return ({
@@ -13,11 +14,17 @@ export function getAdvanced3dSpec(): SampleSpec {
     description: "#Geometry #sample showing how to generate several #3d pieces of geometry including #mitered #pipes, #rotational, #linear, and #ruled, #sweeps.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./walkthru.md"),
+      prerequisites: [
+        getSimple3dSpec(),
+      ],
+    }),
     files: () => [
       import("!editor-file-loader!./Advanced3dApi"),
       import("!editor-file-loader!./Advanced3dApp?entry=true"),
       import("!editor-file-loader!./Advanced3dWidget"),
-      import("!editor-file-loader!./GeometryDecorator"),
+      import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./Advanced3d.scss"),
     ],
     type: "Advanced3dApp.tsx",

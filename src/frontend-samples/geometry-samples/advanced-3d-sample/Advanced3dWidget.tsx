@@ -8,7 +8,7 @@ import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { Select } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { IModelApp } from "@bentley/imodeljs-frontend";
-import { GeometryDecorator } from "./GeometryDecorator";
+import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import Advanced3dApi from "./Advanced3dApi";
 import "./Advanced3d.scss";
 
