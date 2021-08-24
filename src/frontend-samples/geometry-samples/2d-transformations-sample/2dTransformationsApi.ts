@@ -6,6 +6,7 @@ import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Transform } fr
 
 export default class Transformations2dApi {
 
+  // START TRANSLATION
   public static handleTranslation(geometry: Loop, xTrans: number, yTrans: number): Loop | undefined {
     const newGeometry = geometry;
     if (newGeometry.tryTranslateInPlace(xTrans, yTrans, 0)) {
@@ -13,7 +14,9 @@ export default class Transformations2dApi {
     }
     return undefined;
   }
+  // END TRANSLATION
 
+  // START ROTATION
   public static handleRotation(geometry: Loop, rotationDeg: number): Loop | undefined {
     const newGeometry = geometry;
     const radians = Angle.degreesToRadians(rotationDeg);
@@ -23,32 +26,41 @@ export default class Transformations2dApi {
     }
     return undefined;
   }
+  //END ROTATION
 
+  // START GEOMETRYTYPES
+
+  // START SQUARE
   public static generateSquare(center: Point3d, sideLength: number): Loop {
     const points: Point3d[] = [];
     points.push(Point3d.create(center.x - sideLength / 2, center.y - sideLength / 2));
     points.push(Point3d.create(center.x - sideLength / 2, center.y + sideLength / 2));
     points.push(Point3d.create(center.x + sideLength / 2, center.y + sideLength / 2));
     points.push(Point3d.create(center.x + sideLength / 2, center.y - sideLength / 2));
-    points.push(Point3d.create(center.x - sideLength / 2, center.y - sideLength / 2));
     const linestring = LineString3d.create(points);
     const loop = Loop.create(linestring.clone());
     return loop;
   }
+  // END SQUARE
 
+  // START CIRCLE
   public static generateCircle(center: Point3d, radius: number): Loop {
     const circle = Arc3d.createXY(center, radius);
     const loop = Loop.create(circle.clone());
     return loop;
   }
+  // END CIRCLE
 
+  // START TRIANGLE
   public static generateTriangle(point1: Point3d, point2: Point3d, point3: Point3d): Loop {
     const points: Point3d[] = [point1, point2, point3];
     const linestring = LineString3d.create(points);
     const loop = Loop.create(linestring.clone());
     return loop;
   }
+  // END TRIANGLE
 
+  // START CONVEXHULL
   public static generateConvexHull(points: Point3d[]): Loop {
     const hullPoints: Point3d[] = [];
     const interiorPoints: Point3d[] = [];
@@ -57,5 +69,8 @@ export default class Transformations2dApi {
     const loop = Loop.create(hullGeometry.clone());
     return loop;
   }
+  // END CONVEXHULL
+
+  // END GEOMETRYTYPES
 
 }
