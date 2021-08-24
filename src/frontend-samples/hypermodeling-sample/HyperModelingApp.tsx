@@ -5,7 +5,7 @@
 import React, { FunctionComponent, useCallback, useState } from "react";
 import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { HyperModelingWidgetProvider } from "./HyperModelingWidget";
 import HyperModelingApi from "./HyperModelingApi";
@@ -22,22 +22,12 @@ const HyperModelingApp: FunctionComponent = () => {
   };
 
   const _onIModelInit = useCallback(() => {
-    IModelApp.viewManager.onViewOpen.addOnce((view) => {
-      if (HyperModelingApi.ready) {
-        HyperModelingApi.activateMarkerByName(view, "Section-Left")
-          .catch((error) => {
-            // eslint-disable-next-line no-console
-            console.error(error);
-          });
-      } else {
-        HyperModelingApi.onReady.addOnce(() => {
-          HyperModelingApi.activateMarkerByName(view, "Section-Left")
-            .catch((error) => {
-              // eslint-disable-next-line no-console
-              console.error(error);
-            });
+    HyperModelingApi.onReady.addListener((view: ScreenViewport) => {
+      HyperModelingApi.activateMarkerByName(view, "Section-Left")
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.error(error);
         });
-      }
     });
   }, []);
 
