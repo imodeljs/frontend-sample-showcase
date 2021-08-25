@@ -19,6 +19,7 @@ export class ConwaysHelpers {
     return grid;
   }
 
+  // START CONWAYSGAMEOFLIFE
   public static updateGrid(grid: boolean[][]) {
     const tempGrid: boolean[][] = [];
     // tslint:disable-next-line: prefer-for-of
@@ -43,6 +44,8 @@ export class ConwaysHelpers {
     }
     return tempGrid;
   }
+  // END CONWAYSGAMEOFLIFE
+
 
   public static getNumNeighbors(i: number, j: number, grid: boolean[][]): number {
     let numNeighbors = 0;

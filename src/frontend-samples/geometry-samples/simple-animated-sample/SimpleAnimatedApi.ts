@@ -6,6 +6,7 @@ import { LineString3d, Loop, Point3d } from "@bentley/geometry-core";
 
 export default class SimpleAnimatedApi {
 
+  // START SQUAREGRID
   public static createGridSquares(grid: boolean[][]) {
     const squares: Loop[] = [];
     const squareSize = 20;
@@ -18,7 +19,6 @@ export default class SimpleAnimatedApi {
           corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize, 0));
           corners.push(Point3d.create(i * squareSize + squareSize, j * squareSize + squareSize, 0));
           corners.push(Point3d.create(i * squareSize, j * squareSize + squareSize, 0));
-          corners.push(Point3d.create(i * squareSize, j * squareSize, 0));
           const square = LineString3d.create(corners);
           const loop = Loop.create(square.clone());
           squares.push(loop);
@@ -27,5 +27,6 @@ export default class SimpleAnimatedApi {
     }
     return squares;
   }
+  // END SQUAREGRID
 
 }

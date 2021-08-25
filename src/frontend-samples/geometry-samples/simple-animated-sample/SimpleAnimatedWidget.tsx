@@ -65,6 +65,7 @@ export const SimpleAnimatedWidget: React.FunctionComponent = () => {
     IModelApp.viewManager.invalidateDecorationsAllViews();
   };
 
+  // START TIMERS
   const setNewTimer = (newClockSpeed: number, oldGrid: boolean[][], fillColor: ColorDef, oldTimer: Timer) => {
     oldTimer.stop();
     oldTimer.setOnExecute(() => { });
@@ -85,6 +86,7 @@ export const SimpleAnimatedWidget: React.FunctionComponent = () => {
     oldTimer.start();
     setGrid(newGrid);
   };
+  // END TIMERS
 
   return (
     <>
