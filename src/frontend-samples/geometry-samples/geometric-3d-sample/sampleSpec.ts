@@ -3,16 +3,15 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { getViewportOnlySpec } from "frontend-samples/viewport-only-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
 import { getSimpleLineSpec } from "../simple-line-sample/sampleSpec";
 
-export function getSimple3dSpec(): SampleSpec {
+export function getGeometric3dSpec(): SampleSpec {
   return ({
-    name: "simple-3d-sample",
-    label: "Simple 3d",
-    image: "simple-3d-thumbnail.png",
-    description: "#Geometry #sample showing how to generate #simple types of #3d geometry.",
+    name: "geometric-3d-sample",
+    label: "Geometric 3d",
+    image: "geometric-3d-thumbnail.png",
+    description: "#Geometry #sample showing how to generate #simple types of #3d geometry including #boxes, #spheres, #cones, #torus #pipes, #mitered #pipes, #rotational, #linear, and #ruled, #sweeps.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
     walkthrough: () => ({
@@ -22,12 +21,12 @@ export function getSimple3dSpec(): SampleSpec {
       ],
     }),
     files: () => [
-      import("!editor-file-loader!./Simple3dApi"),
-      import("!editor-file-loader!./Simple3dApp?entry=true"),
-      import("!editor-file-loader!./Simple3dWidget"),
+      import("!editor-file-loader!./Geometric3dApi"),
+      import("!editor-file-loader!./Geometric3dApp?entry=true"),
+      import("!editor-file-loader!./Geometric3dWidget"),
       import("!editor-file-loader!common/Geometry/GeometryDecorator"),
-      import("!editor-file-loader!./Simple3d.scss"),
+      import("!editor-file-loader!./Geometric3d.scss"),
     ],
-    type: "Simple3dApp.tsx",
+    type: "Geometric3dApp.tsx",
   });
 }

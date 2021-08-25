@@ -23,6 +23,6 @@ export default class SimpleLineApi {
     }
     return points;
   }
-  // START POINTSALONGLINE
+  // END POINTSALONGLINE
 
 }

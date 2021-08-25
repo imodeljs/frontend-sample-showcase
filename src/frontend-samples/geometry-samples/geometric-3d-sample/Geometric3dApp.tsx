@@ -7,10 +7,10 @@ import { Range3d } from "@bentley/geometry-core";
 import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
-import { Simple3dWidgetProvider } from "./Simple3dWidget";
+import { Geometric3dWidgetProvider } from "./Geometric3dWidget";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 
-const uiProviders = [new Simple3dWidgetProvider()];
+const uiProviders = [new Geometric3dWidgetProvider()];
 
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
@@ -24,7 +24,7 @@ const viewState: BlankConnectionViewState = {
   lookAt: undefined,
 };
 
-const Simple3dApp: FunctionComponent = () => {
+const Geometric3dApp: FunctionComponent = () => {
   useSampleWidget("Select a shape and adjust.", []);
 
   /** The sample's render method */
@@ -43,4 +43,4 @@ const Simple3dApp: FunctionComponent = () => {
   );
 };
 
-export default Simple3dApp;
+export default Geometric3dApp;

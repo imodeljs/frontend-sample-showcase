@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@bentley/geometry-core";
+import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, SolidPrimitive, Transform } from "@bentley/geometry-core";
 import { DecorateContext, Decorator, GraphicBranch, GraphicBuilder, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
 import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
 
@@ -159,6 +159,7 @@ export class GeometryDecorator implements Decorator {
   }
 
   private createGraphicsForGeometry(geometry: GeometryQuery, wantEdges: boolean, builder: GraphicBuilder) {
+
     if (geometry instanceof LineString3d) {
       builder.addLineString(geometry.points);
     } else if (geometry instanceof Loop) {
@@ -212,6 +213,8 @@ export class GeometryDecorator implements Decorator {
       builder.addArc(geometry, false, false);
     } else if (geometry instanceof CurveChainWithDistanceIndex) {
       this.createGraphicsForGeometry(geometry.path, wantEdges, builder);
+    } else if (geometry instanceof SolidPrimitive) {
+      //builder.addPrimitive(geometry)
     }
   }
 
@@ -225,8 +228,8 @@ export class GeometryDecorator implements Decorator {
     branch.viewFlagOverrides.copyFrom(overrides);
 
     context.viewFlags.visibleEdges = true;
-    if (!this.graphics)
-      this.graphics = this.createGraphics(context);
+    //if (!this.graphics)
+    this.graphics = this.createGraphics(context);
 
     if (this.graphics)
       branch.add(this.graphics);
