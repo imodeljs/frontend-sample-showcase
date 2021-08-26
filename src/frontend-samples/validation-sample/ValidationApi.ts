@@ -63,9 +63,10 @@ export default class ValidationApi {
       const runsResponse = await ValidationClient.getValidationTestRuns(context, projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.runs._links.result.href);
-        if (resultResponse !== undefined && resultResponse.result !== undefined)
+        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
+        if (resultResponse !== undefined && resultResponse.result !== undefined) {
           ValidationApi._validationData[projectId] = resultResponse;
+        }
       }
       if (ValidationApi._validationData[projectId] === undefined) {
         ValidationApi._validationData[projectId] = jsonResultData;
@@ -90,7 +91,14 @@ export default class ValidationApi {
     if (ruleData !== undefined)
       return ruleData;
 
-    return jsonRuleData;
+    // Unable to fetch the rule data from the API, use the hardcoded data instead
+    if (ruleId === "UcJ9slMONkqaOBgvwwm-BxhaAWxdDAZHs6JvnySyITk") {
+      return jsonRuleData[0];
+    } else if (ruleId === "UcJ9slMONkqaOBgvwwm-BwHRtttv0KJLnVI9yt0PGsQ") {
+      return jsonRuleData[1];
+    } else {
+      return jsonRuleData[2];
+    }
   }
 
   public static async getValidationMarkersData(imodel: IModelConnection, validationData: any, ruleData: any): Promise<MarkerData[]> {
@@ -107,7 +115,19 @@ export default class ValidationApi {
       for (let index = 0; index < points.length; index++) {
         const title = "Rule Violation(s) found:";
         const currentRuleData = ruleData[validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString()];
-        const description = `${currentRuleData?.rule.functionParameters.propertyName} must be within range ${currentRuleData?.rule.functionParameters.lowerBound} and ${currentRuleData?.rule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
+        let description;
+        if (currentRuleData.rule.functionParameters.lowerBound) {
+          if (currentRuleData.rule.functionParameters.upperBound) {
+            // Range of values
+            description = `${currentRuleData?.rule.functionParameters.propertyName} must be within range ${currentRuleData?.rule.functionParameters.lowerBound} and ${currentRuleData?.rule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+          } else {
+            // Value has a lower bound
+            description = `${currentRuleData?.rule.functionParameters.propertyName} must be within greater than ${currentRuleData?.rule.functionParameters.lowerBound}. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+          }
+        } else {
+          // Value needs to be defined
+          description = `${currentRuleData?.rule.functionParameters.propertyName} must be defined. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+        }
         const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
         markersData.push(validationMarkerData);
       }
