@@ -31,9 +31,9 @@ const viewState: BlankConnectionViewState = {
 const setupView = (vp: ScreenViewport) => {
   if (vp && vp.view.is3d()) {
     vp.setStandardRotation(StandardViewId.Top);
-    vp.synchWithView()
+    vp.synchWithView();
   }
-}
+};
 
 const CurveFractionApp: FunctionComponent = () => {
   useSampleWidget("Use the slider below or click on one of the green points to adjust the fraction and see how the points move along each path.", []);
@@ -49,7 +49,7 @@ const CurveFractionApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
-        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );

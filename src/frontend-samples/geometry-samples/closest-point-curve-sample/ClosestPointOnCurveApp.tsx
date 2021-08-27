@@ -31,9 +31,9 @@ const viewState: BlankConnectionViewState = {
 const setupView = (vp: ScreenViewport) => {
   if (vp && vp.view.is3d()) {
     vp.setStandardRotation(StandardViewId.Top);
-    vp.synchWithView()
+    vp.synchWithView();
   }
-}
+};
 
 const ClosestPointOnCurveApp: FunctionComponent = () => {
   useSampleWidget("Click on the green space point to move it. The program will calculate the closest point on the curve.", []);
@@ -49,7 +49,7 @@ const ClosestPointOnCurveApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
-        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );

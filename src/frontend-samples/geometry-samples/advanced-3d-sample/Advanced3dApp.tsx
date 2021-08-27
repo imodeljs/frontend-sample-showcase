@@ -26,10 +26,9 @@ const viewState: BlankConnectionViewState = {
 const setupView = (vp: ScreenViewport) => {
   if (vp && vp.view.is3d()) {
     vp.setStandardRotation(StandardViewId.Iso);
-    vp.synchWithView()
+    vp.synchWithView();
   }
-}
-
+};
 
 const Advanced3dApp: FunctionComponent = () => {
   useSampleWidget("Select a shape.", []);
@@ -45,7 +44,7 @@ const Advanced3dApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
-        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );

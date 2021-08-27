@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { Matrix3d, Range3d, Vector3d } from "@bentley/geometry-core";
+import { Range3d } from "@bentley/geometry-core";
 import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
@@ -26,9 +26,9 @@ const viewState: BlankConnectionViewState = {
 const setupView = (vp: ScreenViewport) => {
   if (vp && vp.view.is3d()) {
     vp.setStandardRotation(StandardViewId.Iso);
-    vp.synchWithView()
+    vp.synchWithView();
   }
-}
+};
 
 const Simple3dApp: FunctionComponent = () => {
   useSampleWidget("Select a shape and adjust.", []);
@@ -44,7 +44,7 @@ const Simple3dApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
-        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );

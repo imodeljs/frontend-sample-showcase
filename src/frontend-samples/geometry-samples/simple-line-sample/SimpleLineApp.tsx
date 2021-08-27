@@ -31,9 +31,9 @@ const viewState: BlankConnectionViewState = {
 const setupView = (vp: ScreenViewport) => {
   if (vp && vp.view.is3d()) {
     vp.setStandardRotation(StandardViewId.Top);
-    vp.synchWithView()
+    vp.synchWithView();
   }
-}
+};
 
 const SimpleLineApp: FunctionComponent = () => {
   useSampleWidget("Creating a line segments and some points along it.", []);
@@ -49,7 +49,7 @@ const SimpleLineApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
-        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );
