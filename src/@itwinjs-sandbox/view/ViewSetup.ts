@@ -3,9 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
+import { Matrix3d } from "@bentley/geometry-core";
 import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
 import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
+import { metroStationImodelName } from "@itwinjs-sandbox/constants";
 
 export class ViewSetup {
   /** Queries for and loads the default view for an iModel. */
@@ -85,7 +87,7 @@ export class ViewSetup {
       });
 
       // Enable model masking on the metrostation model.
-      if (imodel.name === "Metrostation2") {
+      if (imodel.name === "Metrostation2" || imodel.name === metroStationImodelName) {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
         displayStyle.changeBackgroundMapProps({
@@ -111,7 +113,25 @@ export class ViewSetup {
         );
         excludedModelIds.forEach((id) => viewState.modelSelector.dropModels(id));
       }
+
+      // Enable most models on DRWR04-S3 model
+      if (imodel.name === metroStationImodelName) {
+        const modelIds = await ViewSetup.getModelIds(imodel);
+        modelIds.forEach((id) => viewState.modelSelector.addModels(id));
+
+        const modelsForDropping = await ViewSetup.getModelIds(imodel, "Geotechnical Investigation, DRWR04-GEO-00-XX-M3-G-00001.dgn, 3d");
+        modelsForDropping.forEach((id) => viewState.modelSelector.dropModels(id));
+
+        // Change camera
+        viewState.setOrigin({ x: 85.69962649857428, y: -73.80364503759616, z: -82.72194576398469 });
+        viewState.setExtents({ x: 144.70409923774804, y: 150.2952419865793, z: 151.43496224165358 });
+        viewState.setRotation(Matrix3d.fromJSON([-0.8568887533689478, 0.5155013718214635, -1.178475644302565e-15, -0.18679591952287192, -0.31050028450708866, 0.9320390859672258, 0.48046742740732745, 0.7986538104655898, 0.36235775447667495]));
+      }
     }
+
+    const shownCategories = await ViewSetup.getShownCategories(imodel);
+    if (shownCategories)
+      viewState.categorySelector.addCategories(shownCategories);
 
     const hiddenCategories = await ViewSetup.getHiddenCategories(imodel);
     if (hiddenCategories)
@@ -162,9 +182,24 @@ export class ViewSetup {
       // The callout graphics in the house model are ugly - don't display them.
       await addIdsByCategory("Callouts");
 
-    if (imodel.name === "Metrostation2")
+    if (imodel.name === "Metrostation2" || imodel.name === metroStationImodelName)
       // There is coincident geometry. Remove the more visible instances.
-      await addIdsByCategory("A-WALL-LINE", "A-FLOR-OTLN");
+      await addIdsByCategory("A-FLOR-OTLN", "A-Reserved Retail Area", "G-ANNO-SYMB", "A-SITE", "S-BEAM-CONC");
+
+    return ids;
+  };
+
+  private static getShownCategories = async (imodel: IModelConnection): Promise<Id64Array | undefined> => {
+    const ids: Id64String[] = [];
+    const addIdsByCategory = async () => {
+      if (!imodel.isClosed) {
+        const selectInCategories = `SELECT ECInstanceId FROM bis.Category`;
+        for await (const row of imodel.query(selectInCategories))
+          ids.push(row.id);
+      }
+    };
+    if (imodel.name === metroStationImodelName)
+      await addIdsByCategory();
 
     return ids;
   };
@@ -173,6 +208,9 @@ export class ViewSetup {
   * groundBias can be stored in Product Settings Service. This method retrieves it.
   */
   public static getGroundBias = async (imodel: IModelConnection): Promise<number | undefined> => {
+    if (imodel.name === metroStationImodelName)
+      return 3;
+
     const requestContext = await AuthorizedFrontendRequestContext.create();
 
     const allSettings: SettingsMapResult = await IModelApp.settings.getSharedSettingsByNamespace(
