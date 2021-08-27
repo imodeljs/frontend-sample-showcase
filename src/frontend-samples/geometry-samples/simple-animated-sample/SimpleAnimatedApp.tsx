@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { Range3d, Vector3d } from "@bentley/geometry-core";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { SimpleAnimatedWidgetProvider } from "./SimpleAnimatedWidget";
@@ -20,12 +20,20 @@ const connection: BlankConnectionProps = {
 const viewState: BlankConnectionViewState = {
   displayStyle: { backgroundColor: ColorDef.white },
   viewFlags: { renderMode: RenderMode.SmoothShade },
+  setAllow3dManipulations: false,
   lookAt: {
     eyePoint: { x: 0, y: 0, z: 25 },
     targetPoint: { x: 0, y: 0, z: 0 },
     upVector: new Vector3d(0, 0, 1),
   },
 };
+
+const setupView = (vp: ScreenViewport) => {
+  if (vp && vp.view.is3d()) {
+    vp.setStandardRotation(StandardViewId.Top);
+    vp.synchWithView()
+  }
+}
 
 const SimpleAnimatedApp: FunctionComponent = () => {
   useSampleWidget("An implementation of Conway's game of life.", []);
@@ -41,6 +49,7 @@ const SimpleAnimatedApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
       />
     </>
   );

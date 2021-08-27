@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { Range3d, Vector3d } from "@bentley/geometry-core";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { CurveFractionWidgetProvider } from "./CurveFractionWidget";
@@ -28,6 +28,13 @@ const viewState: BlankConnectionViewState = {
   },
 };
 
+const setupView = (vp: ScreenViewport) => {
+  if (vp && vp.view.is3d()) {
+    vp.setStandardRotation(StandardViewId.Top);
+    vp.synchWithView()
+  }
+}
+
 const CurveFractionApp: FunctionComponent = () => {
   useSampleWidget("Use the slider below or click on one of the green points to adjust the fraction and see how the points move along each path.", []);
 
@@ -42,6 +49,7 @@ const CurveFractionApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
       />
     </>
   );

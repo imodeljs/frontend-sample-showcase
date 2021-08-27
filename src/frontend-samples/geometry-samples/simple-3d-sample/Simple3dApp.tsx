@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { Range3d } from "@bentley/geometry-core";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { Matrix3d, Range3d, Vector3d } from "@bentley/geometry-core";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { Simple3dWidgetProvider } from "./Simple3dWidget";
@@ -15,14 +15,20 @@ const uiProviders = [new Simple3dWidgetProvider()];
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
   location: Cartographic.fromDegrees(0, 0, 0),
-  extents: new Range3d(-30, -30, -30, 30, 30, 30),
+  extents: new Range3d(-15, -15, -15, 15, 15, 15),
 };
 const viewState: BlankConnectionViewState = {
   displayStyle: { backgroundColor: ColorDef.white },
   viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
   setAllow3dManipulations: true,
-  lookAt: undefined,
 };
+
+const setupView = (vp: ScreenViewport) => {
+  if (vp && vp.view.is3d()) {
+    vp.setStandardRotation(StandardViewId.Iso);
+    vp.synchWithView()
+  }
+}
 
 const Simple3dApp: FunctionComponent = () => {
   useSampleWidget("Select a shape and adjust.", []);
@@ -38,6 +44,7 @@ const Simple3dApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView) }}
       />
     </>
   );
