@@ -6,6 +6,7 @@ import { AngleSweep, Arc3d, CurveChainWithDistanceIndex, CurveFactory, LineStrin
 
 export class SampleCurveFactory {
 
+  // START CURVEFACTORY
   public static createCurvePrimitive(curveType: string, sideLength: number) {
     const lowerLeft = Point3d.create(-0.5 * sideLength, -0.5 * sideLength);
     const upperRight = Point3d.create(lowerLeft.x + 1.00 * sideLength, lowerLeft.y + 1.00 * sideLength);
@@ -31,4 +32,5 @@ export class SampleCurveFactory {
 
     return undefined;
   }
+  // END CURVEFACTORY
 }

@@ -84,11 +84,14 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
   }, []);
 
   useEffect(() => {
+    // START FRACTIONUPDATE
     curvesData.forEach((curveData) => {
       const ray = CurveFractionApi.fractionToPointAndDerivative(curveData.curve, fraction)!;
       curveData.curvePointMarker.worldLocation = ray.origin;
       curveData.derivativeAtPoint = ray.direction;
     });
+    // END FRACTIONUPDATE
+
   }, [fraction, curvesData]);
 
   useEffect(() => {
@@ -98,6 +101,8 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
     // This function updates the decorator which draws the geometry in the view.  We call this when this
     // component is first mounted and then any time component's state is changed.
     decoratorState.clearGeometry();
+
+    // START UPDATEVISUALIZATION
 
     curvesData.forEach((curveData) => {
       const curve = curveData.curve;
@@ -138,6 +143,8 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
       decoratorState.setLineThickness(0);
       decoratorState.addGeometry(loop); // point of the arrow
     });
+    // END UPDATEVISUALIZATION
+
   }, [decoratorState, fraction, curvesData]);
 
   const setCurvePoint = (inPoint: Point3d, index: number, curveData: CurveData[]) => {

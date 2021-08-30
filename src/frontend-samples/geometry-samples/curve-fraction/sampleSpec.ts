@@ -3,7 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { getMarkerPinSpec } from "frontend-samples/marker-pin-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
+import { getSimpleLineSpec } from "../simple-line-sample/sampleSpec";
 
 export function getCurveFractionSpec(): SampleSpec {
   return ({
@@ -13,6 +15,13 @@ export function getCurveFractionSpec(): SampleSpec {
     description: "#Geometry #sample showing how to find a #point along a set #fraction of a #curve using the #fractionToPointAndDerivative method",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./walkthru.md"),
+      prerequisites: [
+        getSimpleLineSpec(),
+        getMarkerPinSpec(),
+      ],
+    }),
     files: () => [
       import("!editor-file-loader!./CurveFractionApi"),
       import("!editor-file-loader!./CurveFractionApp?entry=true"),

@@ -6,6 +6,7 @@ import { AngleSweep, Arc3d, LineSegment3d, LineString3d, Point3d } from "@bentle
 
 export class SampleCurveFactory {
 
+  // START CURVEFACTORY
   public static createCurvePrimitive(curveType: string, sideLength: number) {
     const lowerLeft = Point3d.create(-0.5 * sideLength, -0.5 * sideLength);
 
@@ -32,4 +33,5 @@ export class SampleCurveFactory {
 
     return undefined;
   }
+  //END CURVEFACTORY
 }

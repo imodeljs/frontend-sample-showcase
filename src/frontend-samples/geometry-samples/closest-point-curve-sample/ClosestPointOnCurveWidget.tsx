@@ -70,10 +70,13 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spacePoint]);
 
+  // START SETUPPOINTS
   const createPointMarkers = () => {
     setSpacePointMarker(new InteractivePointMarker(spacePoint, "Space Point", ColorDef.green, (pt: Point3d) => setSpacePoint(pt)));
     setClosePointMarker(new InteractivePointMarker(closePoint, "Close Point", ColorDef.blue, () => { }));
   };
+  // END SETUPPOINTS
+
 
   const calculateSpacePoint = (inPoint: { x?: number, y?: number }) => {
     if (!curve)
@@ -102,6 +105,7 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
     if (!curve)
       return;
 
+    // START UPDATEVISUALIZATION
     // Add the curvePrimitive
     decoratorState.setColor(ColorDef.black);
     decoratorState.setFill(true);
@@ -128,6 +132,8 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
     decoratorState.setLineThickness(2);
     decoratorState.setLinePixels(LinePixels.Code2);
     decoratorState.addLine(LineSegment3d.create(spacePoint, closePoint));
+    // END UPDATEVISUALIZATION
+
   };
 
   return (

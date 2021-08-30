@@ -3,7 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { getMarkerPinSpec } from "frontend-samples/marker-pin-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
+import { getSimpleLineSpec } from "../simple-line-sample/sampleSpec";
 
 export function getClosestPointOnCurveSpec(): SampleSpec {
   return ({
@@ -13,6 +15,13 @@ export function getClosestPointOnCurveSpec(): SampleSpec {
     description: "#Geometry #sample showing how to find the #closest #point on a #curve by using the #closestPoint method.",
     iModelList: [],
     readme: async () => import("!!raw-loader!./readme.md"),
+    walkthrough: () => ({
+      annotations: import("!walkthrough-loader!./walkthru.md"),
+      prerequisites: [
+        getSimpleLineSpec(),
+        getMarkerPinSpec(),
+      ],
+    }),
     files: () => [
       import("!editor-file-loader!./ClosestPointOnCurveApi"),
       import("!editor-file-loader!./ClosestPointOnCurveApp?entry=true"),

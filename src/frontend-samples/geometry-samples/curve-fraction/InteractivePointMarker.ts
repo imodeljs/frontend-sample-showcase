@@ -33,6 +33,7 @@ export class InteractivePointMarker extends Marker {
     return false;
   }
 
+  // START INTERACTIVEPOINTMARKER
   public onMouseButton(ev: BeButtonEvent) {
     if (BeButton.Data === ev.button && ev.isDown) {
       this._canPick = false;
@@ -41,6 +42,8 @@ export class InteractivePointMarker extends Marker {
     }
     return false;
   }
+  // END INTERACTIVEPOINTMARKER
+
 
   /** Show the cluster as a white circle with a thick outline */
   public drawFunc(ctx: CanvasRenderingContext2D) {
@@ -75,6 +78,7 @@ export class MovePointTool extends InputCollector {
     this._toolCompleteFunc = toolComplete;
   }
 
+  // START UPDATINGPOINT  
   public async onMouseMotion(ev: BeButtonEvent) {
     this._setPointFunc(ev.point);
   }
@@ -85,6 +89,7 @@ export class MovePointTool extends InputCollector {
     this.exitTool();
     return EventHandled.Yes;
   }
+  // END UPDATINGPOINT  
 
   public async onResetButtonUp(_ev: BeButtonEvent) {
     this._setPointFunc(this._resetPt);
