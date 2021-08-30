@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { SwipingComparisonWidgetProvider } from "./SwipingComparisonWidget";
@@ -67,8 +67,7 @@ const SwipingComparisonApp: FunctionComponent = () => {
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
             uiProviders={uiProviders}
-          >
-          </Viewer>
+          />
 
           {/** The divider to move left and right. */}
           {boundsState && dividerLeftState && !isLockedState ?

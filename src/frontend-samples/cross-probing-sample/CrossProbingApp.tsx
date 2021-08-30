@@ -2,25 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
+import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import CrossProbingApi from "./CrossProbingApi";
 import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
 
-let frontStages: ViewerFrontstage[] = [];
-
 const CrossProbingApp: React.FunctionComponent = () => {
+  const [frontStages, setFrontstages] = useState<ViewerFrontstage[]>([]);
   const sampleIModelInfo = useSampleWidget("Click on an element in either of the views to zoom to corresponding element in the other view.", [SampleIModels.BayTown]);
-
-  // Cleanup fronstages when we switch samples
-  useEffect(() => {
-    return () => {
-      frontStages = [];
-    };
-  }, []);
 
   // When iModel is ready, initialize element selection listener and assign initial 2D view.
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
@@ -28,7 +20,7 @@ const CrossProbingApp: React.FunctionComponent = () => {
     await CrossProbingApi.loadElementMap(iModelConnection);
     const [viewState2d, viewState3d] = await Promise.all([getFirst2DView(iModelConnection), ViewSetup.getDefaultView(iModelConnection)]);
     if (frontStages.length === 0)
-      frontStages.push({ provider: new CrossProbingFrontstage(viewState3d, viewState2d), default: true });
+      setFrontstages([{ provider: new CrossProbingFrontstage(viewState3d, viewState2d), default: true }]);
   };
 
   // Get first 2D view in iModel.

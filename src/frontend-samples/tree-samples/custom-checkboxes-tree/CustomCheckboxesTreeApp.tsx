@@ -6,7 +6,7 @@ import React, { FunctionComponent } from "react";
 import { Range3d } from "@bentley/geometry-core";
 import { Cartographic } from "@bentley/imodeljs-common";
 import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
-import { BlankViewer } from "@bentley/itwin-viewer-react";
+import { BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { CustomCheckboxesTreeComponent } from "./CustomCheckboxesTreeComponent";
 import "./CustomCheckboxesTree.scss";

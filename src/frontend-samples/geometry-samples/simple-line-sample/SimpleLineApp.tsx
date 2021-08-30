@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { Range3d, Vector3d } from "@bentley/geometry-core";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
-import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
+import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
 import { SimpleLineWidgetProvider } from "./SimpleLineWidget";
@@ -15,16 +15,24 @@ const uiProviders = [new SimpleLineWidgetProvider()];
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
   location: Cartographic.fromDegrees(0, 0, 0),
-  extents: new Range3d(-35, -35, -35, 35, 35, 35),
+  extents: new Range3d(-35, -35, 0, 35, 35, 35),
 };
 const viewState: BlankConnectionViewState = {
   displayStyle: { backgroundColor: ColorDef.white },
   viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
+  setAllow3dManipulations: false,
   lookAt: {
     eyePoint: { x: 0, y: 0, z: 25 },
     targetPoint: { x: 0, y: 0, z: 0 },
     upVector: new Vector3d(0, 0, 1),
   },
+};
+
+const setupView = (vp: ScreenViewport) => {
+  if (vp && vp.view.is3d()) {
+    vp.setStandardRotation(StandardViewId.Top);
+    vp.synchWithView();
+  }
 };
 
 const SimpleLineApp: FunctionComponent = () => {
@@ -41,6 +49,7 @@ const SimpleLineApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );

@@ -26,7 +26,7 @@ export class FloatingWidgets implements IDisposable {
   }
 
   private _onUiItemProviderRegister = ({ providerId }: UiItemProviderRegisteredEventArgs) => {
-    if (!this._providerManager.overrideProviderIds.has(providerId)) {
+    if (!this._providerManager.overrideProviderIds.has(providerId) && !providerId.endsWith(".floating")) {
       const provider = UiItemsManager.getUiItemsProvider(providerId);
       if (provider) {
         this._providerManager.add(provider.id, this._overrideProvider(provider));
@@ -39,7 +39,7 @@ export class FloatingWidgets implements IDisposable {
     }
   };
 
-  private _resetWidgets() {
+  public resetWidgets() {
     const frontstage = FrontstageManager.activeFrontstageDef;
     if (frontstage) {
       frontstage.restoreLayout();
@@ -50,12 +50,12 @@ export class FloatingWidgets implements IDisposable {
   }
 
   private _onFrontstageReady = () => {
-    this._resetWidgets();
+    this.resetWidgets();
     this._handleResize(this._container.getBoundingClientRect());
   };
 
   private _onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
-    this._resetWidgets();
+    this.resetWidgets();
     window.requestAnimationFrame(() => {
       const entry = entries[0];
       if (entry) {
@@ -128,7 +128,9 @@ export class FloatingWidgets implements IDisposable {
   public dispose = (): void => {
     this._uiItemsProviderRegisteredListener();
     this._frontstageActivatedListener();
-    this._resizeObserver.disconnect();
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
   };
 }
 

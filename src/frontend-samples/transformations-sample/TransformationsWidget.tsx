@@ -7,14 +7,15 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import TransformationsApi from "./TransformationsApi";
 import { Textarea, Toggle } from "@bentley/ui-core";
 import { IModelApp, ViewManip, Viewport } from "@bentley/imodeljs-frontend";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { useActiveFrontstageId, useActiveViewport } from "@bentley/ui-framework";
 import TransformationsClient from "./TransformationsClient";
 
 const TransformationsWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
   const [isSynched, setIsSynched] = React.useState<boolean>(true);
-  const [initialized, setInitalized] = React.useState<boolean>(false);
+  // const [initialized, setInitalized] = React.useState<boolean>(false);
   const [transformationResponse, setTransformationResponse] = React.useState<string>("Loading...");
+  const frontstageId = useActiveFrontstageId();
 
   useEffect(() => {
     (async () => {
@@ -32,15 +33,13 @@ const TransformationsWidget: React.FunctionComponent = () => {
   }, []);
 
   useEffect(() => {
-    if (!initialized && viewport) {
-      IModelApp.viewManager.onSelectedViewportChanged.addOnce(() => {
-        setInitalized(true);
-      });
+    if (viewport) {
       for (const vp of IModelApp.viewManager) {
-        ViewManip.fitView(vp, false, { noSaveInUndo: true });
+        if (vp.viewportId % 2 === 0)
+          requestAnimationFrame(() => ViewManip.fitView(vp, false, { noSaveInUndo: true }));
       }
     }
-  }, [initialized, viewport]);
+  }, [viewport, frontstageId]);
 
   // START SYNC
   // Handle changes to the UI sync toggle.

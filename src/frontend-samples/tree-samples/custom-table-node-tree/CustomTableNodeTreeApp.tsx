@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { CustomTableNodeTreeComponent } from "./CustomTableNodeTreeComponent";
-import { BlankViewer } from "@bentley/itwin-viewer-react";
+import { BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
 import { Cartographic } from "@bentley/imodeljs-common";

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useState } from "react";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { HeatmapDecoratorWidgetProvider } from "./HeatmapDecoratorWidget";
 import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { ColorDef } from "@bentley/imodeljs-common";

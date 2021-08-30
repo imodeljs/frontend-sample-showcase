@@ -6,7 +6,7 @@ import React, { FunctionComponent, useState } from "react";
 import { ToolbarButtonProvider } from "./ToolbarButtonProvider";
 import { AuthorizationClient, default3DAppUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 
 const uiProviders = [new ToolbarButtonProvider()];

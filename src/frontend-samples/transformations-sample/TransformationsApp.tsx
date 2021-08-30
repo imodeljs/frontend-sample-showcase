@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, getIModelInfo, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Viewer, ViewerFrontstage } from "@bentley/itwin-viewer-react";
+import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@bentley/imodeljs-frontend";
 import { TransformationsWidgetProvider } from "./TransformationsWidget";
 import { TransformationsFrontstage } from "./TransformationsFrontstageProvider";
@@ -12,16 +12,15 @@ import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import "./transformations-sample.scss";
 
 const uiProviders = [new TransformationsWidgetProvider()];
-let frontStages: ViewerFrontstage[] = [];
 
 const TransformationsApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls at the top-right to navigate the model.  Toggle to sync the viewports in the controls below.  Navigating will not change the selected viewport.", [SampleIModels.Stadium]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
+  const [frontStages, setFrontstages] = useState<ViewerFrontstage[]>([]);
 
-  // Cleanup frontStages
   useEffect(() => {
-    return () => { frontStages = []; };
-  }, []);
+    setFrontstages(() => [{ provider: new TransformationsFrontstage(), default: true, requiresIModelConnection: true }]);
+  }, [sampleIModelInfo]);
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
@@ -38,9 +37,7 @@ const TransformationsApp: FunctionComponent = () => {
     const viewState2 = await viewCreator2.createDefaultView({ skyboxOn: true });
     viewState2.viewFlags = vf;
 
-    // Remove the last frontstage, if there was one, to reinject the initalized viewstate on modelchange
-    frontStages.pop();
-    frontStages.push({ provider: new TransformationsFrontstage(viewState, viewState2, connection2), default: true, requiresIModelConnection: true });
+    setFrontstages([{ provider: new TransformationsFrontstage(viewState, viewState2, connection2), default: true }]);
 
     setViewportOptions({ viewState });
   };
