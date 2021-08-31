@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useState } from "react";
 import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { ReadSettingsWidgetProvider } from "./ReadSettingsWidget";

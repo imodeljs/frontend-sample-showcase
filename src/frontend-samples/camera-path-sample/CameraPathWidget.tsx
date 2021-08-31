@@ -13,7 +13,7 @@ import "./CameraPath.scss";
 
 const CameraPathWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
-  const [cameraPath, setCameraPath] = useState<CameraPath>(CameraPath.createByLoadingFromJson("TrainPath"));
+  const [cameraPath, setCameraPath] = useState<CameraPath>(CameraPath.createByLoadingFromJson("CommuterPath"));
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [sliderValue, setSliderValue] = useState<number>(0);
   const [speedLevel, setSpeedLevel] = useState<string>("3 Mph: Walking");
@@ -72,14 +72,6 @@ const CameraPathWidget: React.FunctionComponent = () => {
       });
   }, [_handleScrollPath]);
 
-  /** When the slider Value is changed, change the view to reflect the position in the path */
-  useEffect(() => {
-    if (viewport && cameraPath && isPaused) {
-      const nextPathPoint = cameraPath.getPathPoint(sliderValue);
-      CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport);
-    }
-  }, [viewport, sliderValue, cameraPath, isPaused]);
-
   /** Turn the camera on, and initialize the tool */
   useEffect(() => {
     if (viewport) {
@@ -90,6 +82,14 @@ const CameraPathWidget: React.FunctionComponent = () => {
       setTimeout(() => { IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection); }, 10);
     }
   }, [handleScrollAnimation, viewport]);
+
+  /** When the slider Value is changed, change the view to reflect the position in the path */
+  useEffect(() => {
+    if (viewport && cameraPath && isPaused) {
+      const nextPathPoint = cameraPath.getPathPoint(sliderValue);
+      CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport);
+    }
+  }, [viewport, sliderValue, cameraPath, isPaused]);
 
   useEffect(() => {
     let animID: number;
@@ -161,7 +161,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   // Create the react components for the  Paths
   const _createRenderPath = (label: string) => {
-    const options = { TrainPath: "Train Path", FlyoverPath: "Fly Over", CommuterPath: "Commuter View" };
+    const options = { CommuterPath: "Commuter View", TrainPath: "Train Path", FlyoverPath: "Fly Over" };
     const element = <Select style={{ width: "fit-content", marginLeft: "12px" }} onChange={_onChangeRenderPath} options={options} />;
     return _createJSXElementForAttribute(label, element);
   };
@@ -170,17 +170,14 @@ const CameraPathWidget: React.FunctionComponent = () => {
   const _onChangeRenderSpeed = (currSpeed: string) => {
     let speedOfMotion: number = 0;
     switch (currSpeed) {
-      case "1 Mph: Slow Walk":
-        speedOfMotion = 0.4; // 1Mph = 0.4 meters/second
-        break;
-      case "3 Mph: Walking":
-        speedOfMotion = 1.4; // 3Mph = 1.4 meters/second
+      case "5 Mph: Walk":
+        speedOfMotion = 2.2352; // 4mph = 1.788 meters/second
         break;
       case "30 Mph: Car":
-        speedOfMotion = 13.4; // 30Mph = 13.4 meters/second
+        speedOfMotion = 13.4112; // 30Mph = 13.4 meters/second
         break;
       case "60 Mph: Fast Car":
-        speedOfMotion = 46.8; // 60Mph = 26.8 meters/second
+        speedOfMotion = 26.8224; // 60Mph = 26.8 meters/second
         break;
       case "150 Mph: Airplane":
         speedOfMotion = 67.05; // 150Mph = 67.05 meters/second
@@ -192,7 +189,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   // Create the react component for the camera speed dropdown
   const _createSpeedDropDown = (label: string) => {
-    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["1 Mph: Slow Walk", "3 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
+    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["5 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
     return _createJSXElementForAttribute(label, element);
   };
 
@@ -208,8 +205,8 @@ const CameraPathWidget: React.FunctionComponent = () => {
         <div className="sample-options-3col" style={{ maxWidth: "310px" }}>
           {_createSpeedDropDown("Animate")}
           <button style={{ width: "35px", marginLeft: "4px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => _handleCameraPlay()} >
-            {isPaused ? <img src="Play_32.png" style={{ height: "25px" }}></img>
-              : <img src="MediaControlsPause.ico" style={{ height: "25px" }} />}
+            {isPaused ? <span style={{ fontSize: "x-large" }} className="icon icon-media-controls-play"></span>
+              : <span style={{ fontSize: "x-large" }} className="icon icon-media-controls-pause"></span>}
           </button>
         </div>
       </div >

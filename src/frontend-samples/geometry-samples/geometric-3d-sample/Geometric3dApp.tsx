@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { Range3d } from "@bentley/geometry-core";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
-import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
+import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { Geometric3dWidgetProvider } from "./Geometric3dWidget";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
@@ -15,13 +15,19 @@ const uiProviders = [new Geometric3dWidgetProvider()];
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
   location: Cartographic.fromDegrees(0, 0, 0),
-  extents: new Range3d(-30, -30, -30, 30, 30, 30),
+  extents: new Range3d(-15, -15, -15, 15, 15, 15),
 };
 const viewState: BlankConnectionViewState = {
   displayStyle: { backgroundColor: ColorDef.white },
   viewFlags: { grid: true, renderMode: RenderMode.SmoothShade },
   setAllow3dManipulations: true,
-  lookAt: undefined,
+};
+
+const setupView = (vp: ScreenViewport) => {
+  if (vp && vp.view.is3d()) {
+    vp.setStandardRotation(StandardViewId.Iso);
+    vp.synchWithView();
+  }
 };
 
 const Geometric3dApp: FunctionComponent = () => {
@@ -38,6 +44,7 @@ const Geometric3dApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );

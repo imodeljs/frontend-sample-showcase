@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { HorizontalTabs, Spinner, SpinnerSize } from "@bentley/ui-core";
+import { HorizontalTabs, Select, Spinner, SpinnerSize } from "@bentley/ui-core";
 import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwinui-react";
 import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
@@ -16,8 +16,12 @@ const thumbnails: Map<string, Blob> = new Map<string, Blob>();
 
 const IssuesWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
+  const [contextId, setContextId] = useState<string>();
   const viewport = useActiveViewport();
-  const [issues, setIssues] = useState<IssueGet[]>([]);
+  /** All issues */
+  const allIssues = useRef<IssueGet[]>([]);
+  /** The issues currently being displayed */
+  const [currentIssues, setCurrentIssues] = useState<IssueGet[]>([]);
   const [previewImages, setPreviewImages] = useState<{ [displayName: string]: Blob }>({});
   /** The pictures / attachments that are associated with the issue */
   const [issueAttachmentMetaData, setIssueAttachmentMetaData] = useState<{ [displayName: string]: AttachmentMetadataGet[] }>({});
@@ -33,6 +37,10 @@ const IssuesWidget: React.FunctionComponent = () => {
   const [currentLinkedElements, setLinkedElements] = useState<LabelWithId[]>();
   /** The active tab when the issue is being shown, -1 for none */
   const [activeTab, setActiveTab] = useState<number>(0);
+  /** The State filter. */
+  const [stateFilter, setStateFilter] = useState<string>("All");
+  /** The type filter. */
+  const [typeFilter, setTypeFilter] = useState<string>("All");
 
   /** Initialize Decorator */
   useEffect(() => {
@@ -45,17 +53,32 @@ const IssuesWidget: React.FunctionComponent = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (iModelConnection && contextId !== iModelConnection.contextId) {
+      setContextId(iModelConnection.contextId);
+    }
+  }, [contextId, iModelConnection]);
+
   /** When iModel is loaded, get issue details */
   useEffect(() => {
     (async () => {
-      if (iModelConnection && issues && issues.length === 0) {
-        const issuesResp = await IssuesClient.getProjectIssues(iModelConnection.contextId!);
+      if (contextId) {
+        const type = typeFilter !== "All" ? typeFilter : undefined;
+        const state = stateFilter !== "All" ? stateFilter : undefined;
+        const issuesResp = await IssuesClient.getProjectIssues(contextId, type, state);
+
+        const oldIssues: IssueGet[] = [];
 
         const promises = new Array<Promise<IssueDetailsGet | undefined>>();
         issuesResp?.issues?.forEach((issue) => {
           if (issue.id) {
-            const issueDetails = IssuesClient.getIssueDetails(issue.id);
-            promises.push(issueDetails);
+            const found = allIssues.current.find((value) => value.id === issue.id);
+            if (found) {
+              oldIssues.push(found);
+            } else {
+              const issueDetails = IssuesClient.getIssueDetails(issue.id);
+              promises.push(issueDetails);
+            }
           }
         });
 
@@ -64,18 +87,22 @@ const IssuesWidget: React.FunctionComponent = () => {
           .filter((issue) => issue?.issue !== undefined)
           .map((issue) => issue?.issue as IssueGet);
 
-        setIssues(iss);
+        const newIssueList = oldIssues.concat(iss);
+
+        setCurrentIssues(newIssueList);
+        if (allIssues.current.length === 0)
+          allIssues.current = newIssueList;
       }
     })()
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [iModelConnection, issues]);
+  }, [contextId, stateFilter, typeFilter]);
 
   /** Set the preview Images on issue load */
   useEffect(() => {
-    issues.map(async (issue) => {
+    currentIssues.map(async (issue) => {
       if (issue.id) {
         const metaData = await IssuesClient.getIssueAttachments(issue.id);
         const previewAttachmentId = metaData?.attachments ? metaData.attachments[0]?.id : undefined;
@@ -91,7 +118,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         }
       }
     });
-  }, [issues]);
+  }, [currentIssues]);
 
   const applyView = useCallback(async (issue: IssueGet) => {
     /** apply the camera position if present */
@@ -120,7 +147,10 @@ const IssuesWidget: React.FunctionComponent = () => {
       <path id="icon" d="m10.8125 5h1.125v18h-1.125zm12.375 6.75h-10.125v-6.75h10.125l-4.5 3.375z" fill="#fff"/>
     </svg>`;
 
-    for (const issue of issues) {
+    IssuesApi.clearDecoratorPoints();
+
+    /** Clear the current points */
+    for (const issue of currentIssues) {
       const fillColor = issueStatusColor(issue);
       let svg = SVGMAP[fillColor];
       if (!svg) {
@@ -159,7 +189,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         setCurrentIssue(iss);
       });
     }
-  }, [applyView, issues]);
+  }, [applyView, currentIssues]);
 
   /** Returns a color corresponding to the status of the issue */
   const issueStatusColor = (issue: IssueGet) => {
@@ -195,12 +225,12 @@ const IssuesWidget: React.FunctionComponent = () => {
     if (!iModelConnection || currentLinkedElements || !currentIssue)
       return;
 
-    if (!currentIssue.item?.id) {
+    if (!currentIssue.sourceEntity?.iModelElement?.elementId) {
       setLinkedElements([]);
       return;
     }
 
-    const elementKeySet = await IssuesApi.getElementKeySet(currentIssue.item.id);
+    const elementKeySet = await IssuesApi.getElementKeySet(currentIssue.sourceEntity?.iModelElement?.elementId);
     const elementInfo = await IssuesApi.getElementInfo(iModelConnection, elementKeySet);
     setLinkedElements(elementInfo);
   }, [currentIssue, currentLinkedElements, iModelConnection]);
@@ -454,19 +484,39 @@ const IssuesWidget: React.FunctionComponent = () => {
     ));
   };
 
+  const filterTypes = ["All", "Clash", "Closeout", "Data Quality", "Field Data"];
+
   return (
     <>
-      <div style={{ height: "300px" }}>
+      <div className={"issues-widget"} style={{ height: "300px" }}>
+        {/** Only display header when issue isn't selected */}
+        {!currentIssue &&
+          <div className="issue-list-header">
+            <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`Issues (${currentIssues.length})`}</Subheading>
+            <div className="issue-list-filters">
+              <div className="filter">
+                <span>State</span>
+                <Select options={["All", "Closed", "Open", "Draft"]} value={stateFilter} onChange={(option) => setStateFilter(option.target.selectedOptions[0].value)} />
+              </div>
+              <div className="filter">
+                <span>Type</span>
+                <Select options={filterTypes} value={typeFilter} onChange={(option) => setTypeFilter(option.target.selectedOptions[0].value)} />
+              </div>
+            </div>
+          </div>}
+
         {/** When the issues haven't loaded yet, display spinner */}
-        {issues.length === 0 &&
+        {allIssues.current.length === 0 &&
           <Spinner size={SpinnerSize.Medium} />
         }
 
+        {/** When there are no issues retrieved from filter. */}
+        {allIssues.current.length !== 0 && currentIssues.length === 0 && <span style={{ color: "#fff", padding: "4px" }}>No Content.</span>}
+
         {/** When the issues are loaded, display them in a list */}
-        {!currentIssue && issues && Object.keys(previewImages).length > 0 && issues.length > 0 &&
+        {!currentIssue && currentIssues && Object.keys(previewImages).length > 0 && currentIssues.length > 0 &&
           <div>
-            <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`Issues (${issues.length})`}</Subheading>
-            {issues.map((issue: IssueGet) => {
+            {currentIssues.map((issue: IssueGet) => {
               const createdDate = issue.createdDateTime ? new Date(issue.createdDateTime).toLocaleDateString() : undefined;
               const binaryUrl = issue.displayName && previewImages[issue.displayName] ? URL.createObjectURL(previewImages[issue.displayName]) : undefined;
               const imageStyle = binaryUrl ? { backgroundImage: `url(${binaryUrl})` } : {};
@@ -499,7 +549,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         {currentIssue &&
           <div className={"issue-details"}>
             <div className={"header"}>
-              <IconButton styleType='borderless' size='small' onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
+              <IconButton styleType='borderless' size='small' className="back-button" onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
               <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`${currentIssue.number} | ${currentIssue.subject}`}</Subheading>
             </div>
 

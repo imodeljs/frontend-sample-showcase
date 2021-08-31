@@ -6,7 +6,7 @@
 import * as React from "react";
 import "common/samples-common.scss";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs-sandbox";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";

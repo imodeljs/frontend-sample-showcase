@@ -6,14 +6,14 @@ import * as React from "react";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
 import { EmphasizeElementsWidgetProvider } from "./EmphasizeElementsWidget";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new EmphasizeElementsWidgetProvider()];
 
 const EmphasizeElementsApp: React.FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the toggle below for displaying the reality data in the model.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
+  const sampleIModelInfo = useSampleWidget("Select one or more elements.  Click one of the Apply buttons.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
   const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {

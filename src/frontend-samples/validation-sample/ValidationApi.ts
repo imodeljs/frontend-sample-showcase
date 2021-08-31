@@ -17,10 +17,10 @@ export default class ValidationApi {
 
   public static onValidationDataChanged = new BeEvent<any>();
 
-  public static _validationPinDecorator?: MarkerPinDecorator;
-  public static _images: Map<string, HTMLImageElement>;
   private static _requestContext: AuthorizedClientRequestContext;
   private static _validationData: { [id: string]: any } = {};
+  private static _ruleData: { [id: string]: any } = {};
+
   private static _applyZoom: boolean = true;
 
   private static async getRequestContext() {
@@ -30,102 +30,107 @@ export default class ValidationApi {
     return ValidationApi._requestContext;
   }
 
-  public static decoratorIsSetup() {
-    return (null != this._validationPinDecorator);
+  public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
+    decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
   }
 
-  public static setupDecorator(points: MarkerData[]) {
-    // If we failed to load the image, there is no point in registering the decorator
-    if (!ValidationApi._images.has("clash_pin.svg"))
-      return;
-
-    this._validationPinDecorator = new MarkerPinDecorator();
-    this.setDecoratorPoints(points);
+  public static enableDecorations(decorator: MarkerPinDecorator) {
+    if (!IModelApp.viewManager.decorators.includes(decorator))
+      IModelApp.viewManager.addDecorator(decorator);
   }
 
-  public static setDecoratorPoints(markersData: MarkerData[]) {
-    if (this._validationPinDecorator)
-      this._validationPinDecorator.setMarkersData(markersData, this._images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
-  }
-
-  public static enableDecorations() {
-    if (this._validationPinDecorator)
-      IModelApp.viewManager.addDecorator(this._validationPinDecorator);
-  }
-
-  public static disableDecorations() {
-    if (null != this._validationPinDecorator)
-      IModelApp.viewManager.dropDecorator(this._validationPinDecorator);
+  public static disableDecorations(decorator: MarkerPinDecorator) {
+    IModelApp.viewManager.dropDecorator(decorator);
   }
 
   public static enableZoom() {
-    this._applyZoom = true;
+    ValidationApi._applyZoom = true;
   }
 
   public static disableZoom() {
-    this._applyZoom = false;
+    ValidationApi._applyZoom = false;
   }
 
   public static async setValidationData(projectId: string): Promise<void> {
-    const validationData = await ValidationApi.getValidationData(projectId, true);
+    const validationData = await ValidationApi.getValidationData(projectId);
     ValidationApi.onValidationDataChanged.raiseEvent(validationData);
   }
 
   // START VALIDATION_API
-  /** The API has been significantly reworked, so for the time being the static jsonData file will be used */
-  public static async getValidationData(projectId: string, staticData?: boolean): Promise<any> {
-    if (staticData)
-      return jsonResultData;
-
+  public static async getValidationData(projectId: string): Promise<any> {
     const context = await ValidationApi.getRequestContext();
     if (ValidationApi._validationData[projectId] === undefined) {
-      const runsResponse = await ValidationClient.getProjectValidationRuns(context, projectId);
-      if (runsResponse !== undefined && runsResponse.validationRuns !== undefined && runsResponse.validationRuns.length !== 0) {
+      const runsResponse = await ValidationClient.getValidationTestRuns(context, projectId);
+      if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.validationRuns._links.result.href);
-        if (resultResponse !== undefined && resultResponse.validationDetectionResult !== undefined)
+        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
+        if (resultResponse !== undefined && resultResponse.result !== undefined) {
           ValidationApi._validationData[projectId] = resultResponse;
+        }
+      }
+      if (ValidationApi._validationData[projectId] === undefined) {
+        ValidationApi._validationData[projectId] = jsonResultData;
       }
     }
 
-    return ValidationApi._validationData[projectId] ? ValidationApi._validationData[projectId] : jsonResultData;
+    // To avoid unnecessary API calls after setup, we request all the rule information here
+
+    for (const rule of ValidationApi._validationData[projectId].ruleList) {
+      const ruleData = await ValidationApi.getMatchingRule(rule.id.toString());
+      ValidationApi._ruleData[rule.id] = ruleData;
+    }
+
+    return { validationData: ValidationApi._validationData[projectId], ruleData: ValidationApi._ruleData };
   }
 
   // END VALIDATION_API
 
-  public static async getMatchingRule(ruleID: string, projectId: string, staticData?: boolean) {
-    if (staticData) {
-      return jsonRuleData;
+  public static async getMatchingRule(ruleId: string) {
+    const context = await ValidationApi.getRequestContext();
+    const ruleData = await ValidationClient.getValidationRule(context, ruleId);
+    if (ruleData !== undefined)
+      return ruleData;
+
+    // Unable to fetch the rule data from the API, use the hardcoded data instead
+    if (ruleId === "UcJ9slMONkqaOBgvwwm-BxhaAWxdDAZHs6JvnySyITk") {
+      return jsonRuleData[0];
+    } else if (ruleId === "UcJ9slMONkqaOBgvwwm-BwHRtttv0KJLnVI9yt0PGsQ") {
+      return jsonRuleData[1];
     } else {
-      if (ValidationApi._validationData[projectId] === undefined) {
-        const context = await ValidationApi.getRequestContext();
-        const ruleData = await ValidationClient.getProjectValidationTests(context, projectId);
-        for (const rule of ruleData) {
-          if (rule.templateId && rule.templateId === ruleID) {
-            return rule;
-          }
-        }
-      }
-      return undefined;
+      return jsonRuleData[2];
     }
   }
 
-  public static async getValidationMarkersData(imodel: IModelConnection, validationData: any): Promise<MarkerData[]> {
+  public static async getValidationMarkersData(imodel: IModelConnection, validationData: any, ruleData: any): Promise<MarkerData[]> {
     // Limit the number of validations in this demo
     const maxValidations = 70;
     const markersData: MarkerData[] = [];
-    const limitedValidationData = validationData.propertyValueResult.slice(0, maxValidations);
+    if (validationData && validationData.result && ruleData && validationData.result.length > 0) {
+      const limitedValidationData = validationData.result.slice(0, maxValidations);
 
-    const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
+      const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
 
-    const points = await this.calcValidationCenter(imodel, elements);
+      const points = await ValidationApi.calcValidationCenter(imodel, elements);
 
-    for (let index = 0; index < points.length; index++) {
-      const title = "Rule Violation(s) found:";
-      const ruleData = await ValidationApi.getMatchingRule(validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString(), imodel.contextId!, true);
-      const description = `${ruleData?.propertyValueRule.functionParameters.propertyName} must be within range ${ruleData?.propertyValueRule.functionParameters.lowerBound} and ${ruleData?.propertyValueRule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a value of ${limitedValidationData[index].badValue}`;
-      const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
-      markersData.push(validationMarkerData);
+      for (let index = 0; index < points.length; index++) {
+        const title = "Rule Violation(s) found:";
+        const currentRuleData = ruleData[validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString()];
+        let description;
+        if (currentRuleData.rule.functionParameters.lowerBound) {
+          if (currentRuleData.rule.functionParameters.upperBound) {
+            // Range of values
+            description = `${currentRuleData?.rule.functionParameters.propertyName} must be within range ${currentRuleData?.rule.functionParameters.lowerBound} and ${currentRuleData?.rule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+          } else {
+            // Value has a lower bound
+            description = `${currentRuleData?.rule.functionParameters.propertyName} must be within greater than ${currentRuleData?.rule.functionParameters.lowerBound}. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+          }
+        } else {
+          // Value needs to be defined
+          description = `${currentRuleData?.rule.functionParameters.propertyName} must be defined. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+        }
+        const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
+        markersData.push(validationMarkerData);
+      }
     }
     return markersData;
   }
@@ -165,7 +170,7 @@ export default class ValidationApi {
     emph.wantEmphasis = true;
     emph.emphasizeElements([elementId], vp, undefined, false);
 
-    if (this._applyZoom) {
+    if (ValidationApi._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
       viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
@@ -185,7 +190,5 @@ export default class ValidationApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
     emph.clearOverriddenElements(vp);
-    this._validationPinDecorator = undefined;
-
   }
 }

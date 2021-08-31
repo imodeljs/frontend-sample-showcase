@@ -13,9 +13,10 @@ export function getCustomNodeLoadingTreeSpec(): SampleSpec {
     description: "#Tree #sample showing how to create two different trees, one that loads data from #memory, and the other using #presentation #rules.",
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
-      import("!editor-file-loader!./CustomNodeLoadingTreeApp"),
-      import("!editor-file-loader!./CustomNodeLoadingTreeUI?entry=true"),
+      import("!editor-file-loader!./CustomNodeLoadingTreeComponent"),
+      import("!editor-file-loader!./CustomNodeLoadingTreeApp?entry=true"),
+      import("!editor-file-loader!./CustomNodeLoadingTree.scss"),
     ],
-    type: "CustomNodeLoadingTreeUI.tsx",
+    type: "CustomNodeLoadingTreeApp.tsx",
   });
 }

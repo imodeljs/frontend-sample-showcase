@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, ReactNode, useEffect, useRef, useState } from "react";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { Presentation } from "@bentley/presentation-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
@@ -11,12 +11,11 @@ import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
 import { UiFramework } from "@bentley/ui-framework";
 import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
 import { UiComponents } from "@bentley/ui-components";
+import path from "path";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 
 interface SampleVisualizerProps {
   type: string;
-  iModelName: string;
-  iModelSelector: React.ReactNode;
   transpileResult?: string;
 }
 
@@ -69,74 +68,46 @@ const iModelAppShutdown = async (): Promise<void> => {
   }
 };
 
-export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult, iModelName, iModelSelector }) => {
-  const [sampleUi, setSampleUi] = useState<React.ReactNode>();
-  const [appReady, setAppReady] = useState<boolean>(false);
-  const [cleaning, setCleaning] = useState<boolean>(false);
+export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const currentProps = useRef<SampleVisualizerProps>({ type, transpileResult });
+  const [sampleUi, setSampleUi] = useState<ReactNode>(null);
 
   useEffect(() => {
-    setAppReady(false);
-    setCleaning(true);
-    iModelAppShutdown()
-      .then(() => {
-        setCleaning(false);
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
-  }, [type, transpileResult, iModelName, iModelSelector]);
+    setSampleUi(null);
 
-  useEffect(() => {
-    if (sampleUi && !cleaning) {
-      AuthorizationClient
-        .initializeOidc()
-        .then(() => {
-          setAppReady(true);
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
-    }
-  }, [sampleUi, cleaning]);
-
-  // Set sample UI
-  useEffect(() => {
-    const key = context.keys().find((k: string) => k.includes(type));
-    try {
-      if (key) {
-        const component = context(key).default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector, key: Math.random() * 100 }));
-      } else {
-        setSampleUi(<div>Failed to resolve sample &quot;{type}&quot;</div>);
+    setImmediate(async () => {
+      await iModelAppShutdown();
+      let componentElement = <></>;
+      try {
+        if (transpileResult) {
+          const module = await import( /* webpackIgnore: true */ transpileResult);
+          const component = module.default as React.ComponentClass<SampleProps>;
+          componentElement = React.createElement(component);
+        } else {
+          const key = context.keys().find((k: string) => path.basename(k) === type);
+          if (key) {
+            const component = context(key).default as React.ComponentClass;
+            componentElement = React.createElement(component, { key: Math.random() * 100 });
+          } else {
+            componentElement = <div>Failed to resolve sample &quot;{type}&quot;</div>;
+          }
+        }
+        await AuthorizationClient.initializeOidc();
+      } catch (error) {
+        componentElement = <DisplayError error={error} />;
       }
-    } catch (error) {
-      setSampleUi(<DisplayError error={error} />);
-    }
-  }, [type, iModelName, iModelSelector]);
 
-  // Refresh sample UI on transpile
-  useEffect(() => {
-    if (transpileResult) {
-      import( /* webpackIgnore: true */ transpileResult).then((module) => {
-        const component = module.default as React.ComponentClass<SampleProps>;
-        setSampleUi(React.createElement(component, { iModelName, iModelSelector }));
-      })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
-    }
-  }, [transpileResult, iModelName, iModelSelector]);
+      if (ref.current && currentProps.current.type === type && currentProps.current.transpileResult === transpileResult) {
+        setSampleUi(componentElement);
+      }
+    });
 
-  if (!appReady || !sampleUi || cleaning) {
-    return (<div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>);
-  }
+  }, [type, transpileResult]);
 
-  return <>{sampleUi}</>;
+  return <div ref={ref} style={{ height: "100%", width: "100%" }}>{sampleUi ? sampleUi : <div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>}</div>;
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
-  return prevProps.type === nextProps.type && prevProps.iModelName === nextProps.iModelName && prevProps.transpileResult === nextProps.transpileResult;
+  return prevProps.type === nextProps.type && prevProps.transpileResult === nextProps.transpileResult;
 });

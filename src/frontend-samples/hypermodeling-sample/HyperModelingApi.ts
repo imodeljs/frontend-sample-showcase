@@ -60,8 +60,7 @@ class MarkerHandler extends SectionMarkerHandler {
 
 export default class HyperModelingApi {
   public static markerHandler = new MarkerHandler();
-  public static onReady = new BeEvent();
-  public static ready = false;
+  public static onReady = new BeEvent<(vp: ScreenViewport) => void>();
 
   /** Turn on hyper-modeling for the viewport. */
   public static async enableHyperModeling(viewport: ScreenViewport) {
@@ -71,8 +70,7 @@ export default class HyperModelingApi {
 
     // Turn on hypermodeling for the viewport.
     await HyperModeling.startOrStop(viewport, true);
-    HyperModelingApi.ready = true;
-    HyperModelingApi.onReady.raiseEvent();
+    HyperModelingApi.onReady.raiseEvent(viewport);
   }
 
   /** Turn off hyper-modeling for the viewport. */

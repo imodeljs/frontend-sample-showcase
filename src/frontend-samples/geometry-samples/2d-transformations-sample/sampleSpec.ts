@@ -22,8 +22,8 @@ export function get2dTransformationsSpec(): SampleSpec {
     }),
     files: () => [
       import("!editor-file-loader!./2dTransformationsApi"),
-      import("!editor-file-loader!./2dTransformationsApp?entry=true"),
       import("!editor-file-loader!./2dTransformationsWidget"),
+      import("!editor-file-loader!./2dTransformationsApp?entry=true"),
       import("!editor-file-loader!common/Geometry/GeometryDecorator"),
       import("!editor-file-loader!./2dTransformations.scss"),
     ],

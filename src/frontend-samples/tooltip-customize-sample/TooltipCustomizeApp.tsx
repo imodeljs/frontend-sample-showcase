@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
 import { ShowcaseToolAdmin } from "./TooltipCustomizeApi";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-sandbox";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { IModelConnection } from "@bentley/imodeljs-frontend";

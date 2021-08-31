@@ -8,7 +8,7 @@ export class FloatingWidgets implements IDisposable {
   private _widgetDoms: WidgetDOMManager;
   private _providerManager: ProviderManager;
   private _uiItemsProviderRegisteredListener: () => void;
-  private _frontstageReadyListener: () => void;
+  private _frontstageActivatedListener: () => void;
   private _resizeObserver: ResizeObserver;
 
   constructor(domId: string) {
@@ -22,11 +22,11 @@ export class FloatingWidgets implements IDisposable {
     this._widgetDoms = new WidgetDOMManager();
     this._providerManager = new ProviderManager();
     this._uiItemsProviderRegisteredListener = UiItemsManager.onUiProviderRegisteredEvent.addListener(this._onUiItemProviderRegister);
-    this._frontstageReadyListener = FrontstageManager.onFrontstageReadyEvent.addListener(this._onFrontstageReady);
+    this._frontstageActivatedListener = FrontstageManager.onFrontstageActivatedEvent.addListener(this._onFrontstageReady);
   }
 
   private _onUiItemProviderRegister = ({ providerId }: UiItemProviderRegisteredEventArgs) => {
-    if (!this._providerManager.overrideProviderIds.has(providerId)) {
+    if (!this._providerManager.overrideProviderIds.has(providerId) && !providerId.endsWith(".floating")) {
       const provider = UiItemsManager.getUiItemsProvider(providerId);
       if (provider) {
         this._providerManager.add(provider.id, this._overrideProvider(provider));
@@ -39,7 +39,7 @@ export class FloatingWidgets implements IDisposable {
     }
   };
 
-  private _resetWidgets() {
+  public resetWidgets() {
     const frontstage = FrontstageManager.activeFrontstageDef;
     if (frontstage) {
       frontstage.restoreLayout();
@@ -50,12 +50,12 @@ export class FloatingWidgets implements IDisposable {
   }
 
   private _onFrontstageReady = () => {
-    this._resetWidgets();
+    this.resetWidgets();
     this._handleResize(this._container.getBoundingClientRect());
   };
 
   private _onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
-    this._resetWidgets();
+    this.resetWidgets();
     window.requestAnimationFrame(() => {
       const entry = entries[0];
       if (entry) {
@@ -127,8 +127,10 @@ export class FloatingWidgets implements IDisposable {
 
   public dispose = (): void => {
     this._uiItemsProviderRegisteredListener();
-    this._frontstageReadyListener();
-    this._resizeObserver.disconnect();
+    this._frontstageActivatedListener();
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
   };
 }
 

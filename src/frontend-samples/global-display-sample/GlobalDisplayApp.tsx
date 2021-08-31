@@ -5,7 +5,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";

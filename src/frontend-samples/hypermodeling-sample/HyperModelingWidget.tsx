@@ -2,14 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { SectionMarker } from "@bentley/hypermodeling-frontend";
 import { Button, Toggle } from "@bentley/ui-core";
-import { IModelApp, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
+import { ViewState } from "@bentley/imodeljs-frontend";
 import HyperModelingApi from "./HyperModelingApi";
 import { assert, Id64String } from "@bentley/bentleyjs-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
+import { useActiveViewport } from "@bentley/ui-framework";
 import "./HyperModeling.scss";
 
 interface Previous {
@@ -20,18 +20,10 @@ interface Previous {
 }
 
 export const HyperModelingWidget: React.FunctionComponent = () => {
-  const iModelConnection = useActiveIModelConnection();
-  const [viewport, setViewport] = useState<ScreenViewport>();
+  const viewport = useActiveViewport();
   const [toggle2dGraphics, setToggle2dGraphics] = React.useState<boolean>(true);
   const [activeMarker, setActiveMarker] = React.useState<SectionMarker>();
   const [previous, setPrevious] = React.useState<Previous>();
-
-  useEffect(() => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp) {
-      setViewport(vp);
-    }
-  }, [iModelConnection]);
 
   useEffect(() => {
     if (viewport) {

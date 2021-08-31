@@ -122,8 +122,8 @@
       "import": "@bentley/webgl-compatibility"
     },
     {
-      "name": "@bentley/itwin-viewer-react",
-      "import": "@bentley/itwin-viewer-react"
+      "name": "@itwin/web-viewer-react",
+      "import": "@itwin/web-viewer-react"
     },
     {
       "name": "@bentley/frontend-application-insights-client",
@@ -139,9 +139,14 @@
       "typedef": true
     },
     {
-      "name": "common/DataProvider/SampleDataProvider",
-      "import": "./src/common/DataProvider/SampleDataProvider",
-      "typedef": true
+      "name": "common/Geometry/GeometryDecorator",
+      "import": "./src/common/Geometry/GeometryDecorator",
+      "typedef": "./src/common/Geometry/GeometryDecorator.ts"
+    },
+    {
+      "name": "@itwinjs-sandbox/data-providers/SampleDataProvider",
+      "import": "./src/@itwinjs-sandbox/data-providers/SampleDataProvider",
+      "typedef": "./src/@itwinjs-sandbox/data-providers/SampleDataProvider.ts"
     },
     {
       "name": "common/PointSelector/PointGenerators",
@@ -186,12 +191,12 @@
     {
       "name": "frontend-samples/marker-pin-sample/RadioCard",
       "import": "./src/frontend-samples/marker-pin-sample/RadioCard",
-      "typedef": true
+      "typedef": "./src/frontend-samples/marker-pin-sample/RadioCard.tsx"
     },
     {
       "name": "frontend-samples/marker-pin-sample/MarkerPinDecorator",
       "import": "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator",
-      "typedef": true
+      "typedef": "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts"
     },
     {
       "name": "common/UIComponents/index.scss",
@@ -213,52 +218,57 @@
     {
       "name": "@itwinjs-sandbox/view/DefaultViewerProps",
       "import": "./src/@itwinjs-sandbox/view/DefaultViewerProps",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/view/DefaultViewerProps.ts"
     },
     {
       "name": "@itwinjs-sandbox/components/imodel-selector/IModelSelector",
       "import": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector.tsx"
     },
     {
       "name": "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
       "import": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider.tsx"
     },
     {
       "name": "@itwinjs-sandbox/hooks/useSampleIModelConnection",
       "import": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection.ts"
     },
     {
       "name": "@itwinjs-sandbox/hooks/useSampleWidget",
       "import": "./src/@itwinjs-sandbox/hooks/useSampleWidget",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/hooks/useSampleWidget.ts"
     },
     {
       "name": "@itwinjs-sandbox/api/ShowcaseToolAdmin",
       "import": "./src/@itwinjs-sandbox/api/ShowcaseToolAdmin",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/api/ShowcaseToolAdmin.ts"
     },
     {
       "name": "@itwinjs-sandbox/view/ViewSetup",
       "import": "./src/@itwinjs-sandbox/view/ViewSetup",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/view/ViewSetup.ts"
     },
     {
       "name": "@itwinjs-sandbox/constants",
       "import": "./src/@itwinjs-sandbox/constants",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/constants.ts"
     },
     {
       "name": "@itwinjs-sandbox/SampleIModels",
       "import": "./src/@itwinjs-sandbox/SampleIModels",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/SampleIModels.ts"
+    },
+    {
+      "name": "@itwinjs-sandbox/frontstages/BlankFrontstage",
+      "import": "./src/@itwinjs-sandbox/frontstages/BlankFrontstage",
+      "typedef": "./src/@itwinjs-sandbox/frontstages/BlankFrontstage.tsx"
     },
     {
       "name": "@itwinjs-sandbox",
       "import": "./src/@itwinjs-sandbox/index",
-      "typedef": true
+      "typedef": "./src/@itwinjs-sandbox/index.ts"
     }
   ]
 }

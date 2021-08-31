@@ -63,4 +63,10 @@ export default class IssuesApi {
       this._issuesPinDecorator = undefined;
     }
   }
+
+  public static clearDecoratorPoints() {
+    if (null != this._issuesPinDecorator) {
+      this._issuesPinDecorator.clearMarkers();
+    }
+  }
 }

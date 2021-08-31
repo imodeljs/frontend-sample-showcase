@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ItwinViewerUi } from "@bentley/itwin-viewer-react";
+import { ItwinViewerUi } from "@itwin/web-viewer-react";
 
 export const default3DSandboxUi: ItwinViewerUi = {
   contentManipulationTools: {

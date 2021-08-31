@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { Range3d, Vector3d } from "@bentley/geometry-core";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
-import { BlankConnectionViewState, BlankViewer } from "@bentley/itwin-viewer-react";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
+import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { ClosestPointOnCurveWidgetProvider } from "./ClosestPointOnCurveWidget";
 import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
@@ -28,6 +28,13 @@ const viewState: BlankConnectionViewState = {
   },
 };
 
+const setupView = (vp: ScreenViewport) => {
+  if (vp && vp.view.is3d()) {
+    vp.setStandardRotation(StandardViewId.Top);
+    vp.synchWithView();
+  }
+};
+
 const ClosestPointOnCurveApp: FunctionComponent = () => {
   useSampleWidget("Click on the green space point to move it. The program will calculate the closest point on the curve.", []);
 
@@ -42,6 +49,7 @@ const ClosestPointOnCurveApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
+        onIModelAppInit={() => { IModelApp.viewManager.onViewOpen.addOnce(setupView); }}
       />
     </>
   );

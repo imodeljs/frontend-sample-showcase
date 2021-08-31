@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useState } from "react";
-import { Viewer } from "@bentley/itwin-viewer-react";
+import { Viewer } from "@itwin/web-viewer-react";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
 import { FireDecorationWidgetProvider } from "./FireDecorationWidget";
 import { IModelConnection } from "@bentley/imodeljs-frontend";
