@@ -12,25 +12,25 @@ import { CameraPathTool } from "./CameraPathTool";
 import "./CameraPath.scss";
 
 export interface Speed {
-  speedText: string;
+  name: string;
   metersPerSecond: number;
 }
 
 const Speeds: Speed[] = [
   {
-    speedText: "5 Mph: Walking",
+    name: "5 Mph: Walking",
     metersPerSecond: 2.2352,
   },
   {
-    speedText: "30 Mph: Car",
+    name: "30 Mph: Car",
     metersPerSecond: 13.4112, // 30Mph = 13.4 meters/second
   },
   {
-    speedText: "60 Mph: Fast Car",
+    name: "60 Mph: Fast Car",
     metersPerSecond: 26.8224, // 60Mph = 26.8 meters/second
   },
   {
-    speedText: "150 Mph: Airplane",
+    name: "150 Mph: Airplane",
     metersPerSecond: 67.05, // 150Mph = 67.05 meters/second
   },
 ];
@@ -191,7 +191,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   // Handle the speed level change
   const _onChangeRenderSpeed = (text: string) => {
-    const newSpeed = Speeds.find((s) => s.speedText === text);
+    const newSpeed = Speeds.find((s) => s.name === text);
 
     if (undefined !== newSpeed)
       setSpeed(newSpeed);
@@ -199,7 +199,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   // Create the react component for the camera speed dropdown
   const _createSpeedDropDown = (label: string) => {
-    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={Speeds.map((s) => s.speedText)} value={speed.speedText} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
+    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={Speeds.map((s) => s.name)} value={speed.name} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
     return _createJSXElementForAttribute(label, element);
   };
 
