@@ -170,8 +170,8 @@ const CameraPathWidget: React.FunctionComponent = () => {
   const _onChangeRenderSpeed = (currSpeed: string) => {
     let speedOfMotion: number = 0;
     switch (currSpeed) {
-      case "5 Mph: Walk":
-        speedOfMotion = 2.2352; // 4mph = 1.788 meters/second
+      case "5 Mph: Walking":
+        speedOfMotion = 2.2352; // 5mph = 2.2352 meters/second
         break;
       case "30 Mph: Car":
         speedOfMotion = 13.4112; // 30Mph = 13.4 meters/second
