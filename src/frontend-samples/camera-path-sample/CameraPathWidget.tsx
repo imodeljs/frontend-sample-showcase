@@ -11,13 +11,36 @@ import CameraPathApi, { CameraPath } from "./CameraPathApi";
 import { CameraPathTool } from "./CameraPathTool";
 import "./CameraPath.scss";
 
+export interface Speed {
+  name: string;
+  metersPerSecond: number;
+}
+
+const Speeds: Speed[] = [
+  {
+    name: "5 Mph: Walking",
+    metersPerSecond: 2.2352,
+  },
+  {
+    name: "30 Mph: Car",
+    metersPerSecond: 13.4112, // 30Mph = 13.4 meters/second
+  },
+  {
+    name: "60 Mph: Fast Car",
+    metersPerSecond: 26.8224, // 60Mph = 26.8 meters/second
+  },
+  {
+    name: "150 Mph: Airplane",
+    metersPerSecond: 67.05, // 150Mph = 67.05 meters/second
+  },
+];
+
 const CameraPathWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
   const [cameraPath, setCameraPath] = useState<CameraPath>(CameraPath.createByLoadingFromJson("CommuterPath"));
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [sliderValue, setSliderValue] = useState<number>(0);
-  const [speedLevel, setSpeedLevel] = useState<string>("3 Mph: Walking");
-  const [currentSpeed, setCurrentSpeed] = useState<number>(1.4);
+  const [speed, setSpeed] = useState<Speed>(Speeds[0]);
   const keyDown = useRef<boolean>(false);
 
   /** Initialize the camera namespace on widget load */
@@ -96,7 +119,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
     if (!isPaused && cameraPath && viewport) {
       const animate = (currentPathFraction: number) => {
         if (currentPathFraction < 1) {
-          const nextPathFraction = cameraPath.advanceAlongPath(currentPathFraction, currentSpeed / 30);
+          const nextPathFraction = cameraPath.advanceAlongPath(currentPathFraction, speed.metersPerSecond / 30);
           const nextPathPoint = cameraPath.getPathPoint(nextPathFraction);
           CameraPathApi.changeCameraPositionAndTarget(nextPathPoint, viewport, keyDown.current);
           setSliderValue(nextPathFraction);
@@ -116,7 +139,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
     };
     // This effect should NOT be called when the sliderValue is changed because the animate value sets the slider value. It is only needed on initial call.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cameraPath, currentSpeed, isPaused, viewport]);
+  }, [cameraPath, speed, isPaused, viewport]);
 
   // This common function is used to create the react components for each row of the UI.
   const _createJSXElementForAttribute = (label: string, element: JSX.Element) => {
@@ -167,29 +190,16 @@ const CameraPathWidget: React.FunctionComponent = () => {
   };
 
   // Handle the speed level change
-  const _onChangeRenderSpeed = (currSpeed: string) => {
-    let speedOfMotion: number = 0;
-    switch (currSpeed) {
-      case "5 Mph: Walk":
-        speedOfMotion = 2.2352; // 4mph = 1.788 meters/second
-        break;
-      case "30 Mph: Car":
-        speedOfMotion = 13.4112; // 30Mph = 13.4 meters/second
-        break;
-      case "60 Mph: Fast Car":
-        speedOfMotion = 26.8224; // 60Mph = 26.8 meters/second
-        break;
-      case "150 Mph: Airplane":
-        speedOfMotion = 67.05; // 150Mph = 67.05 meters/second
-        break;
-    }
-    setCurrentSpeed(speedOfMotion);
-    setSpeedLevel(currSpeed);
+  const _onChangeRenderSpeed = (text: string) => {
+    const newSpeed = Speeds.find((s) => s.name === text);
+
+    if (undefined !== newSpeed)
+      setSpeed(newSpeed);
   };
 
   // Create the react component for the camera speed dropdown
   const _createSpeedDropDown = (label: string) => {
-    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={["5 Mph: Walking", "30 Mph: Car", "60 Mph: Fast Car", "150 Mph: Airplane"]} value={speedLevel} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
+    const element = <Select style={{ width: "140px", marginLeft: "48px" }} options={Speeds.map((s) => s.name)} value={speed.name} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => _onChangeRenderSpeed(event.target.value)} />;
     return _createJSXElementForAttribute(label, element);
   };
 
