@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
+import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ValidationApi from "./ValidationApi";
 import "./ValidationReview.scss";
@@ -15,11 +15,7 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [ruleData, setRuleData] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
-  const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
-    const decorator = new MarkerPinDecorator();
-    ValidationApi.enableDecorations(decorator);
-    return decorator;
-  });
+  const [validationDecorator, setValidationDecorator] = React.useState<MarkerPinDecorator | undefined>();
   useEffect(() => {
     const newImages = new Map();
     imageElementFromUrl(".\\clash_pin.svg").then((image) => {
@@ -48,12 +44,12 @@ const ValidationWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      ValidationApi.disableDecorations(validationDecorator);
-      ValidationApi.resetDisplay();
+      if (validationDecorator)
+        ValidationApi.disableDecorations(validationDecorator);
     };
   }, [iModelConnection, validationDecorator]);
 
-  /** When the validatio data comes in, get the marker data */
+  /** When the validation data comes in, get the marker data */
   useEffect(() => {
     if (iModelConnection && validationResults && ruleData) {
       ValidationApi.getValidationMarkersData(iModelConnection, validationResults, ruleData).then((mData) => {
@@ -66,25 +62,29 @@ const ValidationWidget: React.FunctionComponent = () => {
   }, [iModelConnection, validationResults, ruleData]);
 
   useEffect(() => {
-    if (markersData && images && validationDecorator) {
-      ValidationApi.enableDecorations(validationDecorator);
-      ValidationApi.setDecoratorPoints(markersData, validationDecorator, images);
+    if (markersData && images) {
+      const decorator = new MarkerPinDecorator()
+      ValidationApi.setDecoratorPoints(markersData, decorator, images);
+      ValidationApi.enableDecorations(decorator)
+      setValidationDecorator(decorator)
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ValidationApi.visualizeViolation(markersData[0].data.elementId);
       }
       setShowDecorator(true);
     }
-  }, [markersData, images, validationDecorator]);
+  }, [markersData, images]);
 
   useEffect(() => {
-    if (showDecorator)
-      ValidationApi.enableDecorations(validationDecorator);
-    else
-      ValidationApi.disableDecorations(validationDecorator);
+    if (validationDecorator)
+      if (showDecorator)
+        ValidationApi.enableDecorations(validationDecorator);
+      else
+        ValidationApi.disableDecorations(validationDecorator);
   }, [showDecorator, validationDecorator]);
 
   useEffect(() => {
+    console.log(IModelApp.viewManager.decorators)
     if (applyZoom) {
       ValidationApi.enableZoom();
     } else {
