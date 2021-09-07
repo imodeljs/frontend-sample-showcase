@@ -31,7 +31,7 @@ export default class ClashReviewApi {
   }
 
   public static enableDecorations(decorator: MarkerPinDecorator) {
-    if (!IModelApp.viewManager.decorators.includes(decorator) && IModelApp.viewManager.selectedView)
+    if (!IModelApp.viewManager.decorators.includes(decorator))
       IModelApp.viewManager.addDecorator(decorator);
   }
 
