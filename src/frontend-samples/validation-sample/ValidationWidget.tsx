@@ -76,11 +76,12 @@ const ValidationWidget: React.FunctionComponent = () => {
   }, [markersData, images]);
 
   useEffect(() => {
-    if (validationDecorator)
+    if (validationDecorator) {
       if (showDecorator)
         ValidationApi.enableDecorations(validationDecorator);
       else
         ValidationApi.disableDecorations(validationDecorator);
+    }
   }, [showDecorator, validationDecorator]);
 
   useEffect(() => {

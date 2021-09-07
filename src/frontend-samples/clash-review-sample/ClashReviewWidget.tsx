@@ -78,11 +78,12 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   }, [markersData, images]);
 
   useEffect(() => {
-    if (clashPinDecorator)
+    if (clashPinDecorator) {
       if (showDecorator)
         ClashReviewApi.enableDecorations(clashPinDecorator);
       else
         ClashReviewApi.disableDecorations(clashPinDecorator);
+    }
   }, [showDecorator, clashPinDecorator]);
 
   useEffect(() => {
