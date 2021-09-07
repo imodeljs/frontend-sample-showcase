@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
+import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ClashReviewApi from "./ClashReviewApi";
 import "./ClashReview.scss";

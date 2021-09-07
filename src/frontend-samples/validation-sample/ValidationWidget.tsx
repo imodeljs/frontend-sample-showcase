@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
+import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ValidationApi from "./ValidationApi";
 import "./ValidationReview.scss";
@@ -63,10 +63,10 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (markersData && images) {
-      const decorator = new MarkerPinDecorator()
+      const decorator = new MarkerPinDecorator();
       ValidationApi.setDecoratorPoints(markersData, decorator, images);
-      ValidationApi.enableDecorations(decorator)
-      setValidationDecorator(decorator)
+      ValidationApi.enableDecorations(decorator);
+      setValidationDecorator(decorator);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ValidationApi.visualizeViolation(markersData[0].data.elementId);
@@ -84,7 +84,6 @@ const ValidationWidget: React.FunctionComponent = () => {
   }, [showDecorator, validationDecorator]);
 
   useEffect(() => {
-    console.log(IModelApp.viewManager.decorators)
     if (applyZoom) {
       ValidationApi.enableZoom();
     } else {
