@@ -15,6 +15,7 @@ const ViewportOnlyApp: FunctionComponent = () => {
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    setViewportOptions({});
     setViewportOptions({ viewState });
   };
   // END VIEW_SETUP
