@@ -16,9 +16,10 @@ const RealityDataWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   // START STATE
   const showRealityDataState = React.useRef<Map<string, boolean>>(new Map());
+  const transparencyRealityDataState = React.useRef<Map<string, number>>(new Map());
   const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<Map<string, number>>();
   const [availableRealityModels, setAvailableRealityModels] = React.useState<ContextRealityModelProps[]>();
-  const [updateState, setUpdateState] = React.useState<boolean>(true);
+  const [updateState, setUpdateState] = React.useState<string>("");
 
   // END STATE
 
@@ -98,19 +99,23 @@ const RealityDataWidget: React.FunctionComponent = () => {
     if (iModelConnection && updateState) {
       const vp = IModelApp.viewManager.selectedView;
       if (vp && availableRealityModels && showRealityDataState) {
-        for (const model of availableRealityModels) {
+        const model = availableRealityModels.find(x => x.tilesetUrl === updateState);
+        if (model)
           RealityDataApi.toggleRealityModel(model, vp, showRealityDataState.current.get(model.tilesetUrl));
-        }
       }
-      setUpdateState(false);
     }
+    setUpdateState("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showRealityDataState, updateState]);
   // END REALITY_HOOK
 
   const updateShowRealityDataState = (url: string, checked: boolean) => {
     showRealityDataState.current.set(url, checked);
-    setUpdateState(true);
+    setUpdateState(url);
+  };
+
+  const updateRealityDataTransparencyState = (url: string, val: number) => {
+    transparencyRealityDataState.current.set(url, val);
   };
 
   // START WIDGET_UI
@@ -122,7 +127,9 @@ const RealityDataWidget: React.FunctionComponent = () => {
             return (
               <>
                 <span>{element.name}</span>
-                <Toggle isOn={true} onChange={async (checked: boolean) => updateShowRealityDataState(element.tilesetUrl, checked)} />
+                <Toggle key={element.tilesetUrl} isOn={true} onChange={async (checked: boolean) => updateShowRealityDataState(element.tilesetUrl, checked)} />
+                <span><span style={{ marginRight: "1em" }} className="icon icon-help" title={"Transparency"}></span>{"Adjusting this slider."}</span>
+                <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateRealityDataTransparencyState(element.tilesetUrl, Math.abs(Number(event.target.value) / 100))} />
               </>);
           })
           }

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
+import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps } from "@bentley/imodeljs-common";
 import { IModelConnection, queryRealityData, ScreenViewport } from "@bentley/imodeljs-frontend";
 
 export default class RealityDataApi {
@@ -51,8 +51,10 @@ export default class RealityDataApi {
 
     style.viewFlags.backgroundMap = false;
     const crmName = crmProp.name ? crmProp.name : "";
+
     if (show && !style.hasAttachedRealityModel(crmName, crmProp.tilesetUrl)) {
       console.log(`turning on ${crmProp.name}`);
+      console.log(`${JSON.stringify(crmProp)}`);
       style.attachRealityModel(crmProp);
     } else if (!show) {
       console.log(`turning off ${crmProp.name}`);
