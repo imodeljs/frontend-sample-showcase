@@ -15,7 +15,11 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
 
-  const [clashPinDecorator, setClashPinDecorator] = React.useState<MarkerPinDecorator | undefined>();
+  const [clashPinDecorator, setClashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
+    const decorator = new MarkerPinDecorator();
+    ClashReviewApi.enableDecorations(decorator);
+    return decorator
+  });
 
   useEffect(() => {
     const newImages = new Map();
@@ -45,8 +49,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      if (clashPinDecorator)
-        ClashReviewApi.disableDecorations(clashPinDecorator);
+      ClashReviewApi.disableDecorations(clashPinDecorator);
     };
   }, [iModelConnection, clashPinDecorator]);
 
@@ -65,10 +68,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (markersData && images) {
-      const decorator = new MarkerPinDecorator();
-      setClashPinDecorator(decorator);
-      ClashReviewApi.enableDecorations(decorator);
-      ClashReviewApi.setDecoratorPoints(markersData, decorator, images);
+      ClashReviewApi.setDecoratorPoints(markersData, clashPinDecorator, images);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ClashReviewApi.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
@@ -78,12 +78,10 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   }, [markersData, images]);
 
   useEffect(() => {
-    if (clashPinDecorator) {
-      if (showDecorator)
-        ClashReviewApi.enableDecorations(clashPinDecorator);
-      else
-        ClashReviewApi.disableDecorations(clashPinDecorator);
-    }
+    if (showDecorator)
+      ClashReviewApi.enableDecorations(clashPinDecorator);
+    else
+      ClashReviewApi.disableDecorations(clashPinDecorator);
   }, [showDecorator, clashPinDecorator]);
 
   useEffect(() => {

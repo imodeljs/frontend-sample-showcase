@@ -11,6 +11,7 @@ import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwin
 import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
 import IssuesApi, { LabelWithId } from "./IssuesApi";
 import "./Issues.scss";
+import { MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 
 const thumbnails: Map<string, Blob> = new Map<string, Blob>();
 
@@ -41,15 +42,18 @@ const IssuesWidget: React.FunctionComponent = () => {
   const [stateFilter, setStateFilter] = useState<string>("All");
   /** The type filter. */
   const [typeFilter, setTypeFilter] = useState<string>("All");
+  /** The decorator used for displaying issue markers */
+  const [issueDecorator] = React.useState<MarkerPinDecorator>(() => {
+    const decorator = IssuesApi.setupDecorator();
+    IssuesApi.enableDecorations(decorator);
+    return decorator
+  });
+
 
   /** Initialize Decorator */
   useEffect(() => {
-    IssuesApi.setupDecorator();
-    IssuesApi.enableDecorations();
-
     return () => {
-      IssuesApi.disableDecorations();
-      IssuesApi._issuesPinDecorator = undefined;
+      IssuesApi.disableDecorations(issueDecorator);
     };
   }, []);
 
@@ -147,7 +151,7 @@ const IssuesWidget: React.FunctionComponent = () => {
       <path id="icon" d="m10.8125 5h1.125v18h-1.125zm12.375 6.75h-10.125v-6.75h10.125l-4.5 3.375z" fill="#fff"/>
     </svg>`;
 
-    IssuesApi.clearDecoratorPoints();
+    IssuesApi.clearDecoratorPoints(issueDecorator);
 
     /** Clear the current points */
     for (const issue of currentIssues) {
@@ -179,7 +183,7 @@ const IssuesWidget: React.FunctionComponent = () => {
       }
 
       /** Add the point to the decorator */
-      IssuesApi.addDecoratorPoint(issue, svg, issue.number, issue.subject, (iss: any) => {
+      IssuesApi.addDecoratorPoint(issueDecorator, issue, svg, issue.number, issue.subject, (iss: any) => {
         applyView(iss)
           .catch((error) => {
             // eslint-disable-next-line no-console
@@ -189,7 +193,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         setCurrentIssue(iss);
       });
     }
-  }, [applyView, currentIssues]);
+  }, [applyView, currentIssues, issueDecorator]);
 
   /** Returns a color corresponding to the status of the issue */
   const issueStatusColor = (issue: IssueGet) => {
