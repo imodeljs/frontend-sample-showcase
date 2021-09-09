@@ -19,7 +19,6 @@ export default class MarkerPinApi {
   }
   // END SETUPDECORATOR
 
-
   // START SETMARKERDATA
   public static setMarkersData(decorator: MarkerPinDecorator, markersData: MarkerData[]) {
     if (!MarkerPinApi._images.has("Google_Maps_pin.svg"))
