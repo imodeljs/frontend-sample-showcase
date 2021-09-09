@@ -15,10 +15,10 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
 
-  const [clashPinDecorator, setClashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
+  const [clashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
     const decorator = new MarkerPinDecorator();
     ClashReviewApi.enableDecorations(decorator);
-    return decorator
+    return decorator;
   });
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
       }
       setShowDecorator(true);
     }
-  }, [markersData, images]);
+  }, [markersData, images, clashPinDecorator]);
 
   useEffect(() => {
     if (showDecorator)

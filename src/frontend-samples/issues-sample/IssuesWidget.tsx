@@ -47,16 +47,15 @@ const IssuesWidget: React.FunctionComponent = () => {
   const [issueDecorator] = React.useState<MarkerPinDecorator>(() => {
     const decorator = IssuesApi.setupDecorator();
     IssuesApi.enableDecorations(decorator);
-    return decorator
+    return decorator;
   });
-
 
   /** Initialize Decorator */
   useEffect(() => {
     return () => {
       IssuesApi.disableDecorations(issueDecorator);
     };
-  }, []);
+  }, [issueDecorator]);
 
   useEffect(() => {
     if (iModelConnection && contextId !== iModelConnection.contextId) {
@@ -196,8 +195,8 @@ const IssuesWidget: React.FunctionComponent = () => {
     }
     /** This timer is being used to resolve an async issue that prevents marker pin decorations from being drawn immeditately after changing the current issues */
     const timer = new Timer(250);
-    timer.setOnExecute(() => { if (IModelApp.viewManager) IModelApp.viewManager.invalidateDecorationsAllViews() })
-    timer.start()
+    timer.setOnExecute(() => { if (IModelApp.viewManager) IModelApp.viewManager.invalidateDecorationsAllViews(); });
+    timer.start();
 
   }, [applyView, currentIssues, issueDecorator]);
 

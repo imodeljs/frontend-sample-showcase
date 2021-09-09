@@ -18,7 +18,7 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
     const decorator = new MarkerPinDecorator();
     ValidationApi.enableDecorations(decorator);
-    return decorator
+    return decorator;
   });
   useEffect(() => {
     const newImages = new Map();
