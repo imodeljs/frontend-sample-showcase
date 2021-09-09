@@ -63,6 +63,14 @@ const MarkerPinWidget: React.FunctionComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /** Initialize Decorator */
+  useEffect(() => {
+    MarkerPinApi.enableDecorations(markerPinDecorator);
+    return () => {
+      MarkerPinApi.disableDecorations(markerPinDecorator);
+    };
+  }, [markerPinDecorator]);
+
   /** When the images are loaded, initalize the MarkerPin */
   useEffect(() => {
     if (!imagesLoadedState)
@@ -73,7 +81,6 @@ const MarkerPinWidget: React.FunctionComponent = () => {
     PlaceMarkerTool.register(MarkerPinApi._sampleNamespace);
 
     MarkerPinApi.setMarkersData(markerPinDecorator, markersDataState);
-    MarkerPinApi.enableDecorations(markerPinDecorator);
 
     if (viewport)
       viewInit();
@@ -81,8 +88,6 @@ const MarkerPinWidget: React.FunctionComponent = () => {
       IModelApp.viewManager.onViewOpen.addOnce(() => viewInit());
 
     return () => {
-      MarkerPinApi.disableDecorations(markerPinDecorator);
-
       IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
       IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
     };
