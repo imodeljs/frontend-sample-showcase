@@ -44,13 +44,12 @@ const IssuesWidget: React.FunctionComponent = () => {
   const [typeFilter, setTypeFilter] = useState<string>("All");
   /** The decorator used for displaying issue markers */
   const [issueDecorator] = React.useState<MarkerPinDecorator>(() => {
-    const decorator = IssuesApi.setupDecorator();
-    IssuesApi.enableDecorations(decorator);
-    return decorator;
+    return IssuesApi.setupDecorator();
   });
 
   /** Initialize Decorator */
   useEffect(() => {
+    IssuesApi.enableDecorations(issueDecorator);
     return () => {
       IssuesApi.disableDecorations(issueDecorator);
     };

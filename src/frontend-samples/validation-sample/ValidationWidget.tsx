@@ -16,10 +16,9 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
   const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
-    const decorator = new MarkerPinDecorator();
-    ValidationApi.enableDecorations(decorator);
-    return decorator;
+    return ValidationApi.setupDecorator();
   });
+
   useEffect(() => {
     const newImages = new Map();
     imageElementFromUrl(".\\clash_pin.svg").then((image) => {
@@ -31,6 +30,14 @@ const ValidationWidget: React.FunctionComponent = () => {
         console.error(error);
       });
   }, []);
+
+  /** Initialize Decorator */
+  useEffect(() => {
+    ValidationApi.enableDecorations(validationDecorator);
+    return () => {
+      ValidationApi.disableDecorations(validationDecorator);
+    };
+  }, [validationDecorator]);
 
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
@@ -48,9 +55,8 @@ const ValidationWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      ValidationApi.disableDecorations(validationDecorator);
     };
-  }, [iModelConnection, validationDecorator]);
+  }, [iModelConnection]);
 
   /** When the validation data comes in, get the marker data */
   useEffect(() => {

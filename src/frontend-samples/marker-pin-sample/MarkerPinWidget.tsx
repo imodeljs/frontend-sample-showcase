@@ -12,7 +12,7 @@ import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
 import { Point3d, Range2d } from "@bentley/geometry-core";
 import MarkerPinApi from "./MarkerPinApi";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
-import { MarkerData } from "./MarkerPinDecorator";
+import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";
 import "./MarkerPin.scss";
 
 interface ManualPinSelection {
@@ -37,7 +37,9 @@ const MarkerPinWidget: React.FunctionComponent = () => {
   const [markersDataState, setMarkersDataState] = React.useState<MarkerData[]>([]);
   const [rangeState, setRangeState] = React.useState<Range2d>(Range2d.createNull());
   const [heightState, setHeightState] = React.useState<number>(0);
-
+  const [markerPinDecorator] = React.useState<MarkerPinDecorator>(() => {
+    return MarkerPinApi.setupDecorator();
+  });
   /** Load the images on widget startup */
   useEffect(() => {
     MarkerPinApi._images = new Map();
@@ -70,8 +72,8 @@ const MarkerPinWidget: React.FunctionComponent = () => {
 
     PlaceMarkerTool.register(MarkerPinApi._sampleNamespace);
 
-    MarkerPinApi.setupDecorator(markersDataState);
-    MarkerPinApi.enableDecorations();
+    MarkerPinApi.setMarkersData(markerPinDecorator, markersDataState);
+    MarkerPinApi.enableDecorations(markerPinDecorator);
 
     if (viewport)
       viewInit();
@@ -79,8 +81,7 @@ const MarkerPinWidget: React.FunctionComponent = () => {
       IModelApp.viewManager.onViewOpen.addOnce(() => viewInit());
 
     return () => {
-      MarkerPinApi.disableDecorations();
-      MarkerPinApi._markerDecorator = undefined;
+      MarkerPinApi.disableDecorations(markerPinDecorator);
 
       IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
       IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
@@ -90,14 +91,15 @@ const MarkerPinWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (showDecoratorState)
-      MarkerPinApi.enableDecorations();
+      MarkerPinApi.enableDecorations(markerPinDecorator);
     else
-      MarkerPinApi.disableDecorations();
+      MarkerPinApi.disableDecorations(markerPinDecorator);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDecoratorState]);
 
   useEffect(() => {
-    MarkerPinApi.setMarkersData(markersDataState);
+    MarkerPinApi.setMarkersData(markerPinDecorator, markersDataState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markersDataState]);
 
   const viewInit = () => {
@@ -141,7 +143,7 @@ const MarkerPinWidget: React.FunctionComponent = () => {
 
   /** This callback will be executed by the PlaceMarkerTool when it is time to create a new marker */
   const _manuallyAddMarker = (point: Point3d) => {
-    MarkerPinApi.addMarkerPoint(point, MarkerPinApi._images.get(manualPinState.image)!);
+    MarkerPinApi.addMarkerPoint(markerPinDecorator, point, MarkerPinApi._images.get(manualPinState.image)!);
   };
 
   /** This callback will be executed when the user clicks the UI button.  It will start the tool which

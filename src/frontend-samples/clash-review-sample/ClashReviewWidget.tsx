@@ -16,9 +16,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
 
   const [clashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
-    const decorator = new MarkerPinDecorator();
-    ClashReviewApi.enableDecorations(decorator);
-    return decorator;
+    return ClashReviewApi.setupDecorator();
   });
 
   useEffect(() => {
@@ -32,6 +30,14 @@ const ClashReviewWidget: React.FunctionComponent = () => {
         console.error(error);
       });
   }, []);
+
+  /** Initialize Decorator */
+  useEffect(() => {
+    ClashReviewApi.enableDecorations(clashPinDecorator);
+    return () => {
+      ClashReviewApi.disableDecorations(clashPinDecorator);
+    };
+  }, [clashPinDecorator]);
 
   useEffect(() => {
     /** Create a listener that responds to clashData retrival */
@@ -49,9 +55,8 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      ClashReviewApi.disableDecorations(clashPinDecorator);
     };
-  }, [iModelConnection, clashPinDecorator]);
+  }, [iModelConnection]);
 
   /** When the clashData comes in, get the marker data */
   useEffect(() => {
