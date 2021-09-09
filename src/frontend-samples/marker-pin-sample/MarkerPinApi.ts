@@ -19,12 +19,15 @@ export default class MarkerPinApi {
   }
   // END SETUPDECORATOR
 
+
+  // START SETMARKERDATA
   public static setMarkersData(decorator: MarkerPinDecorator, markersData: MarkerData[]) {
     if (!MarkerPinApi._images.has("Google_Maps_pin.svg"))
       return;
 
     decorator.setMarkersData(markersData, this._images.get("Google_Maps_pin.svg")!);
   }
+  // END SETMARKERDATA
 
   public static addMarkerPoint(decorator: MarkerPinDecorator, point: Point3d, pinImage: HTMLImageElement) {
     decorator.addPoint(point, pinImage);
