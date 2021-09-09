@@ -55,6 +55,5 @@ export default class IssuesApi {
 
   public static clearDecoratorPoints(decorator: MarkerPinDecorator) {
     decorator.clearMarkers();
-
   }
 }
