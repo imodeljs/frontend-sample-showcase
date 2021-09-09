@@ -5,13 +5,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { HorizontalTabs, Select, Spinner, SpinnerSize } from "@bentley/ui-core";
+import { HorizontalTabs, Select, Spinner, SpinnerSize, Timer } from "@bentley/ui-core";
 import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
 import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwinui-react";
 import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
 import IssuesApi, { LabelWithId } from "./IssuesApi";
 import "./Issues.scss";
 import { MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
+import { IModelApp } from "@bentley/imodeljs-frontend";
 
 const thumbnails: Map<string, Blob> = new Map<string, Blob>();
 
@@ -193,6 +194,11 @@ const IssuesWidget: React.FunctionComponent = () => {
         setCurrentIssue(iss);
       });
     }
+    /** This timer is being used to resolve an async issue that prevents marker pin decorations from being drawn immeditately after changing the current issues */
+    const timer = new Timer(250);
+    timer.setOnExecute(() => { if (IModelApp.viewManager) IModelApp.viewManager.invalidateDecorationsAllViews() })
+    timer.start()
+
   }, [applyView, currentIssues, issueDecorator]);
 
   /** Returns a color corresponding to the status of the issue */
