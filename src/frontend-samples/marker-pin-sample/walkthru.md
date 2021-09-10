@@ -6,9 +6,15 @@ The `setupDecorator` method is called as the sample is initializing.  It creates
 
 [_metadata_:annotation]:- "SETUPDECORATOR"
 
+# Add Decorator
+
+Once our Decorator is ready we need to register it with the ViewManager.  After being registered, the viewManager will call our decorator when it needs to draw decorations.
+
+[_metadata_:annotation]:- "ENABLEDECORATIONS"
+
 # Setting Marker Data
 
-The `setMarkersData` method is called after the decorator is initialized, or whenever the point layout of the markers is changed.  It is provided an array of [MarkerData](/?step=MARKERDATA) which supplies the location and title for each marker.  The method provides the decorator object with the supplied marker data.
+The `setMarkersData` method is called after the decorator is initialized, or whenever the layout of the markers is changed.  It is provided an array of [MarkerData](/?step=MARKERDATA) which supplies the location and title for each marker.  The method provides the decorator object with the supplied marker data.
 
 [_metadata_:annotation]:- "SETMARKERDATA"
 
@@ -16,12 +22,6 @@ The `setMarkersData` method is called after the decorator is initialized, or whe
 
 [_metadata_:annotation]:- "MARKERDATA"
 [_metadata_:minor]:- "true"
-
-# Add Decorator
-
-Once our Decorator is ready we need to register it with the ViewManager.  After being registered, the viewManager will call our decorator when it needs to draw decorations.
-
-[_metadata_:annotation]:- "ENABLEDECORATIONS"
 
 # Marker Pin Decorator
 
