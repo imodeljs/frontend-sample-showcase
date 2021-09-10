@@ -15,7 +15,10 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [ruleData, setRuleData] = React.useState<any>();
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
-  const [validationDecorator, setValidationDecorator] = React.useState<MarkerPinDecorator | undefined>();
+  const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
+    return ValidationApi.setupDecorator();
+  });
+
   useEffect(() => {
     const newImages = new Map();
     imageElementFromUrl(".\\clash_pin.svg").then((image) => {
@@ -27,6 +30,14 @@ const ValidationWidget: React.FunctionComponent = () => {
         console.error(error);
       });
   }, []);
+
+  /** Initialize Decorator */
+  useEffect(() => {
+    ValidationApi.enableDecorations(validationDecorator);
+    return () => {
+      ValidationApi.disableDecorations(validationDecorator);
+    };
+  }, [validationDecorator]);
 
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
@@ -44,10 +55,8 @@ const ValidationWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      if (validationDecorator)
-        ValidationApi.disableDecorations(validationDecorator);
     };
-  }, [iModelConnection, validationDecorator]);
+  }, [iModelConnection]);
 
   /** When the validation data comes in, get the marker data */
   useEffect(() => {
@@ -63,25 +72,20 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (markersData && images) {
-      const decorator = new MarkerPinDecorator();
-      ValidationApi.setDecoratorPoints(markersData, decorator, images);
-      ValidationApi.enableDecorations(decorator);
-      setValidationDecorator(decorator);
+      ValidationApi.setDecoratorPoints(markersData, validationDecorator, images);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ValidationApi.visualizeViolation(markersData[0].data.elementId);
       }
       setShowDecorator(true);
     }
-  }, [markersData, images]);
+  }, [markersData, images, validationDecorator]);
 
   useEffect(() => {
-    if (validationDecorator) {
-      if (showDecorator)
-        ValidationApi.enableDecorations(validationDecorator);
-      else
-        ValidationApi.disableDecorations(validationDecorator);
-    }
+    if (showDecorator)
+      ValidationApi.enableDecorations(validationDecorator);
+    else
+      ValidationApi.disableDecorations(validationDecorator);
   }, [showDecorator, validationDecorator]);
 
   useEffect(() => {

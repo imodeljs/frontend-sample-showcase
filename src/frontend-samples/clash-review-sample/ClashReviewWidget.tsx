@@ -15,7 +15,9 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
 
-  const [clashPinDecorator, setClashPinDecorator] = React.useState<MarkerPinDecorator | undefined>();
+  const [clashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
+    return ClashReviewApi.setupDecorator();
+  });
 
   useEffect(() => {
     const newImages = new Map();
@@ -28,6 +30,14 @@ const ClashReviewWidget: React.FunctionComponent = () => {
         console.error(error);
       });
   }, []);
+
+  /** Initialize Decorator */
+  useEffect(() => {
+    ClashReviewApi.enableDecorations(clashPinDecorator);
+    return () => {
+      ClashReviewApi.disableDecorations(clashPinDecorator);
+    };
+  }, [clashPinDecorator]);
 
   useEffect(() => {
     /** Create a listener that responds to clashData retrival */
@@ -45,10 +55,8 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      if (clashPinDecorator)
-        ClashReviewApi.disableDecorations(clashPinDecorator);
     };
-  }, [iModelConnection, clashPinDecorator]);
+  }, [iModelConnection]);
 
   /** When the clashData comes in, get the marker data */
   useEffect(() => {
@@ -65,25 +73,20 @@ const ClashReviewWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (markersData && images) {
-      const decorator = new MarkerPinDecorator();
-      setClashPinDecorator(decorator);
-      ClashReviewApi.enableDecorations(decorator);
-      ClashReviewApi.setDecoratorPoints(markersData, decorator, images);
+      ClashReviewApi.setDecoratorPoints(markersData, clashPinDecorator, images);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ClashReviewApi.visualizeClash(markersData[0].data.elementAId, markersData[0].data.elementBId);
       }
       setShowDecorator(true);
     }
-  }, [markersData, images]);
+  }, [markersData, images, clashPinDecorator]);
 
   useEffect(() => {
-    if (clashPinDecorator) {
-      if (showDecorator)
-        ClashReviewApi.enableDecorations(clashPinDecorator);
-      else
-        ClashReviewApi.disableDecorations(clashPinDecorator);
-    }
+    if (showDecorator)
+      ClashReviewApi.enableDecorations(clashPinDecorator);
+    else
+      ClashReviewApi.disableDecorations(clashPinDecorator);
   }, [showDecorator, clashPinDecorator]);
 
   useEffect(() => {

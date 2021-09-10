@@ -11,6 +11,7 @@ import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwin
 import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
 import IssuesApi, { LabelWithId } from "./IssuesApi";
 import "./Issues.scss";
+import { MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 
 const thumbnails: Map<string, Blob> = new Map<string, Blob>();
 
@@ -41,17 +42,18 @@ const IssuesWidget: React.FunctionComponent = () => {
   const [stateFilter, setStateFilter] = useState<string>("All");
   /** The type filter. */
   const [typeFilter, setTypeFilter] = useState<string>("All");
+  /** The decorator used for displaying issue markers */
+  const [issueDecorator] = React.useState<MarkerPinDecorator>(() => {
+    return IssuesApi.setupDecorator();
+  });
 
   /** Initialize Decorator */
   useEffect(() => {
-    IssuesApi.setupDecorator();
-    IssuesApi.enableDecorations();
-
+    IssuesApi.enableDecorations(issueDecorator);
     return () => {
-      IssuesApi.disableDecorations();
-      IssuesApi._issuesPinDecorator = undefined;
+      IssuesApi.disableDecorations(issueDecorator);
     };
-  }, []);
+  }, [issueDecorator]);
 
   useEffect(() => {
     if (iModelConnection && contextId !== iModelConnection.contextId) {
@@ -139,18 +141,14 @@ const IssuesWidget: React.FunctionComponent = () => {
 
   /** Create the issue marker icon, then add the pin at the issue location */
   useEffect(() => {
-    const parser = new DOMParser();
-    const SVGMAP: { [key: string]: HTMLImageElement } = {};
-    const issue_marker: string = `
-    <svg viewBox="0 0 32 32" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><path d="m25 0h-18a5 5 0 0 0 -5 5v18a5 5 0 0 0 5 5h5v.00177l4 3.99823 4-3.99823v-.00177h5a5 5 0 0 0 5-5v-18a5 5 0 0 0 -5-5z" fill="#fff" fill-rule="evenodd"/>
-      <path id="fill" d="m25 1a4.00453 4.00453 0 0 1 4 4v18a4.00453 4.00453 0 0 1 -4 4h-18a4.00453 4.00453 0 0 1 -4-4v-18a4.00453 4.00453 0 0 1 4-4z" fill="#008be1"/>
-      <path id="icon" d="m10.8125 5h1.125v18h-1.125zm12.375 6.75h-10.125v-6.75h10.125l-4.5 3.375z" fill="#fff"/>
-    </svg>`;
-
-    IssuesApi.clearDecoratorPoints();
-
-    /** Clear the current points */
-    for (const issue of currentIssues) {
+    async function createMarker(issue: IssueGet) {
+      const parser = new DOMParser();
+      const SVGMAP: { [key: string]: HTMLImageElement } = {};
+      const issue_marker: string = `
+      <svg viewBox="0 0 32 32" width="40" height="40" xmlns="http://www.w3.org/2000/svg"><path d="m25 0h-18a5 5 0 0 0 -5 5v18a5 5 0 0 0 5 5h5v.00177l4 3.99823 4-3.99823v-.00177h5a5 5 0 0 0 5-5v-18a5 5 0 0 0 -5-5z" fill="#fff" fill-rule="evenodd"/>
+        <path id="fill" d="m25 1a4.00453 4.00453 0 0 1 4 4v18a4.00453 4.00453 0 0 1 -4 4h-18a4.00453 4.00453 0 0 1 -4-4v-18a4.00453 4.00453 0 0 1 4-4z" fill="#008be1"/>
+        <path id="icon" d="m10.8125 5h1.125v18h-1.125zm12.375 6.75h-10.125v-6.75h10.125l-4.5 3.375z" fill="#fff"/>
+      </svg>`;
       const fillColor = issueStatusColor(issue);
       let svg = SVGMAP[fillColor];
       if (!svg) {
@@ -175,11 +173,12 @@ const IssuesWidget: React.FunctionComponent = () => {
         const blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
         svg = new Image(40, 40);
         svg.src = URL.createObjectURL(blob);
+        await svg.decode();
         SVGMAP[fillColor] = svg;
       }
 
       /** Add the point to the decorator */
-      IssuesApi.addDecoratorPoint(issue, svg, issue.number, issue.subject, (iss: any) => {
+      IssuesApi.addDecoratorPoint(issueDecorator, issue, svg, issue.number, issue.subject, (iss: any) => {
         applyView(iss)
           .catch((error) => {
             // eslint-disable-next-line no-console
@@ -189,7 +188,15 @@ const IssuesWidget: React.FunctionComponent = () => {
         setCurrentIssue(iss);
       });
     }
-  }, [applyView, currentIssues]);
+
+    /** Clear the current points */
+    IssuesApi.clearDecoratorPoints(issueDecorator);
+
+    for (const issue of currentIssues) {
+      void createMarker(issue);
+    }
+
+  }, [applyView, currentIssues, issueDecorator]);
 
   /** Returns a color corresponding to the status of the issue */
   const issueStatusColor = (issue: IssueGet) => {

@@ -30,6 +30,10 @@ export default class ValidationApi {
     return ValidationApi._requestContext;
   }
 
+  public static setupDecorator() {
+    return new MarkerPinDecorator();
+  }
+
   public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
     decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
   }
