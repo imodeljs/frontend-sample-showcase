@@ -126,6 +126,10 @@
       "import": "@itwin/web-viewer-react"
     },
     {
+      "name": "@itwin/viewer-react",
+      "import": "@itwin/viewer-react"
+    },
+    {
       "name": "@bentley/frontend-application-insights-client",
       "import": "@bentley/frontend-application-insights-client"
     },
