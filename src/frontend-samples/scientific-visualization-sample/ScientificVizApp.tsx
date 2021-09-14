@@ -42,6 +42,7 @@ const ScientificVizApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
+        viewportOptions={{ disableDefaultViewOverlay: true }}
       />
     </>
   );

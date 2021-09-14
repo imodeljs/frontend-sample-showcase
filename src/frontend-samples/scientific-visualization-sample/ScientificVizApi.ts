@@ -5,6 +5,8 @@
 import { assert } from "@bentley/bentleyjs-core";
 import { Angle, AuxChannel, AuxChannelData, AuxChannelDataType, IModelJson, Point3d, Polyface, PolyfaceAuxData, PolyfaceBuilder, StrokeOptions, Transform } from "@bentley/geometry-core";
 import { AnalysisStyle, AnalysisStyleProps, ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
+import { Animator, Viewport } from "@bentley/imodeljs-frontend";
+import { ScientificVizDecorator } from "./ScientificVizDecorator";
 import { jsonData } from "./Cantilever";
 
 export type AnalysisMeshType = "Cantilever" | "Flat with waves";
@@ -159,5 +161,64 @@ export default class ScientificVizApi {
     const mesh = { type, polyface, styles };
     ScientificVizApi.populateAnalysisStyles(mesh, displacementScale);
     return mesh;
+  }
+
+  public static currentStyleSupportsAnimation(viewport: Viewport) {
+    const style = viewport.view.analysisStyle;
+    if (!style)
+      return false;
+
+    // The analysis style specifies the channelName
+    const channelName = style.displacement?.channelName;
+
+    // Find that channel in the polyface's auxdata
+    const auxdata = ScientificVizDecorator.decorator.mesh.polyface.data.auxData;
+    const channel = auxdata?.channels.find((c) => c.name === channelName);
+
+    // If the channel has more than one set of data, then the style can be animated by
+    // interpolating between each member of the data array.
+    let isAnimated = false;
+    if (channel)
+      isAnimated = 1 < channel.data.length;
+
+    return isAnimated;
+  }
+
+  public static getAnalysisFraction(vp: Viewport) {
+    // For animated styles, the viewport's analysis fraction controls the interpolation
+    // between the members of the data array.
+    return vp.analysisFraction;
+  }
+
+  public static setAnalysisFraction(vp: Viewport, fraction: number) {
+    // Changing this sets the state of the visualization.
+    vp.analysisFraction = fraction;
+  }
+
+  /** Stops the animator in the viewport. */
+  public static stopAnimation(vp: Viewport) {
+    vp.setAnimator(undefined);
+  }
+
+  /** Creates and starts an animator in the viewport. */
+  public static startAnimation(vp: Viewport, interruptFunc: () => void) {
+    const animator: Animator = {
+      // Will be called before rendering a frame as well as force the viewport to re-render every frame.
+      animate: () => {
+        let newFraction = 0.005 + ScientificVizApi.getAnalysisFraction(vp);
+
+        if (1.0 < newFraction)
+          newFraction = 0.0;
+
+        ScientificVizApi.setAnalysisFraction(vp, newFraction);
+        return false;
+      },
+      // Will be called if the animation is interrupted (e.g. the camera is moved)
+      interrupt: () => {
+        interruptFunc();
+      },
+    };
+
+    vp.setAnimator(animator);
   }
 }
