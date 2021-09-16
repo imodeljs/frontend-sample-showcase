@@ -15,7 +15,7 @@ export default class RealityDataApi {
   }
 
   // START REALITY_TOGGLE_CALLBACK
-  /*public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
+  /* public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
     // START DISPLAY_STYLE
     const style = viewPort.displayStyle.clone();
 
@@ -46,6 +46,7 @@ export default class RealityDataApi {
     }
     // END REALITY_MODEL_OFF
   }*/
+
   public static toggleRealityModel(crmProp: ContextRealityModelProps, viewPort: ScreenViewport, show?: boolean) {
     const style = viewPort.displayStyle.clone();
 
@@ -53,15 +54,40 @@ export default class RealityDataApi {
     const crmName = crmProp.name ? crmProp.name : "";
 
     if (show && !style.hasAttachedRealityModel(crmName, crmProp.tilesetUrl)) {
+
+      // Form orbitGtBlob if realityDataType is OPC
+      let orbitGtBlob: OrbitGtBlobProps | undefined;
+      if (crmProp.orbitGtBlob) {
+        orbitGtBlob = {
+          rdsUrl: crmProp.tilesetUrl,
+          containerName: "",
+          blobFileName: crmProp.orbitGtBlob.blobFileName,
+          sasToken: "",
+          accountName: crmProp.realityDataId ? crmProp.realityDataId : "",
+        };
+      }
+
+      const unattached: ContextRealityModelProps = {
+        tilesetUrl: crmProp.tilesetUrl,
+        name: crmProp.name ? crmProp.name : "Unnamed",
+        description: crmProp.description,
+        realityDataId: crmProp.realityDataId,
+        orbitGtBlob,
+        classifiers: [],
+      };
+
       console.log(`turning on ${crmProp.name}`);
-      console.log(`${JSON.stringify(crmProp)}`);
-      style.attachRealityModel(crmProp);
+      console.log(`${JSON.stringify(unattached)}`);
+      style.attachRealityModel(unattached);
     } else if (!show) {
       console.log(`turning off ${crmProp.name}`);
       style.detachRealityModelByNameAndUrl(crmName, crmProp.tilesetUrl);
     }
 
     viewPort.displayStyle = style;
+
+    const clonedView = viewPort.view.clone();
+    console.log(clonedView.toProps());
   }
   // END REALITY_TOGGLE_CALLBACK
 

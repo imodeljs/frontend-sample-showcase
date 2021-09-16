@@ -17,7 +17,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
   // START STATE
   const showRealityDataState = React.useRef<Map<string, boolean>>(new Map());
   const transparencyRealityDataState = React.useRef<Map<string, number>>(new Map());
-  const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<Map<string, number>>();
+  // const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<Map<string, number>>();
   const [availableRealityModels, setAvailableRealityModels] = React.useState<ContextRealityModelProps[]>();
   const [updateState, setUpdateState] = React.useState<string>("");
 
@@ -36,7 +36,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
         RealityDataApi.toggleRealityModel(model, _vp, true);
         RealityDataApi.setRealityDataTransparency(model, _vp, 0);
       }
-      setRealityDataTransparencyState(initialStateTransparency);
+      // setRealityDataTransparencyState(initialStateTransparency);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -55,8 +55,6 @@ const RealityDataWidget: React.FunctionComponent = () => {
   //  }
   // }, [realityDataTransparencyState]);
   // END TRANSPARENCY_HOOK
-
-
 
   // START REALITY_TOGGLE
   // Create the react components for the toggle
@@ -99,7 +97,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
     if (iModelConnection && updateState) {
       const vp = IModelApp.viewManager.selectedView;
       if (vp && availableRealityModels && showRealityDataState) {
-        const model = availableRealityModels.find(x => x.tilesetUrl === updateState);
+        const model = availableRealityModels.find((x) => x.tilesetUrl === updateState);
         if (model)
           RealityDataApi.toggleRealityModel(model, vp, showRealityDataState.current.get(model.tilesetUrl));
       }
@@ -114,9 +112,9 @@ const RealityDataWidget: React.FunctionComponent = () => {
     setUpdateState(url);
   };
 
-  const updateRealityDataTransparencyState = (url: string, val: number) => {
-    transparencyRealityDataState.current.set(url, val);
-  };
+  // const updateRealityDataTransparencyState = (url: string, val: number) => {
+    // transparencyRealityDataState.current.set(url, val);
+  // };
 
   // START WIDGET_UI
   return (
@@ -129,7 +127,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
                 <span>{element.name}</span>
                 <Toggle key={element.tilesetUrl} isOn={true} onChange={async (checked: boolean) => updateShowRealityDataState(element.tilesetUrl, checked)} />
                 <span><span style={{ marginRight: "1em" }} className="icon icon-help" title={"Transparency"}></span>{"Adjusting this slider."}</span>
-                <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateRealityDataTransparencyState(element.tilesetUrl, Math.abs(Number(event.target.value) / 100))} />
+                {/* <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateRealityDataTransparencyState(element.tilesetUrl, Math.abs(Number(event.target.value) / 100))} /> */}
               </>);
           })
           }
