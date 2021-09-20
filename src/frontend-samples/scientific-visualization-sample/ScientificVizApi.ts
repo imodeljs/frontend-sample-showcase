@@ -17,6 +17,10 @@ export interface AnalysisMesh {
 }
 
 export default class ScientificVizApi {
+
+  /** Reads the cantilever data from the supplied json file.  The json data includes the
+   * definition of the mesh including aux data defining displacement and stress.
+   */
   public static async createCantilever(): Promise<Polyface> {
     const polyface = IModelJson.Reader.parse(JSON.parse(jsonData)) as Polyface;
     const transform = Transform.createScaleAboutPoint(new Point3d(), 30);
@@ -24,23 +28,37 @@ export default class ScientificVizApi {
     return polyface;
   }
 
+  /** For the given mesh, create a set of analysis styles.  The way this is implemented is somewhat arbitrary
+   *  and meant to serve as an example, not a general algorithm.  It is intended to work with the meshes provided
+   *  with this sample (cantilever and flat mesh with waves).
+   *
+   *  An analysis style is created for each scalar channel (ex. stress, radial height, radial slope) which pairs
+   *  that scalar channel with the displacement channel.  The color scheme is arbitrarily defined based on the
+   *  name of the scalar channel.
+   */
   public static populateAnalysisStyles(mesh: AnalysisMesh, displacementScale: number): void {
     const auxdata = mesh.polyface.data.auxData;
     if (!auxdata)
       return;
 
+    // Create an empty entry representing no analysis style.
     mesh.styles.set("None", undefined);
+
+    // Iterate the channels in the auxdata
     for (const channel of auxdata.channels) {
+
+      // Skip unnamed channels and displacement channels
       if (undefined === channel.name || !channel.isScalar)
         continue;
 
-      const displacementChannel = auxdata.channels.find((x) => x.inputName === channel.inputName && x.dataType === AuxChannelDataType.Vector);
+      // Set the color scheme based on the name of the channel
       const thematicSettings: ThematicGradientSettingsProps = {};
       if (channel.name.endsWith("Height")) {
         thematicSettings.colorScheme = ThematicGradientColorScheme.SeaMountain;
         thematicSettings.mode = ThematicGradientMode.SteppedWithDelimiter;
       }
 
+      // Create the analysis style for the channel
       assert(undefined !== channel.scalarRange);
       const props: AnalysisStyleProps = {
         scalar: {
@@ -50,17 +68,34 @@ export default class ScientificVizApi {
         },
       };
 
+      // Check for a displacement style.  If there is one:
+      // - Add it to the analysisStyle.
+      // - Create the style name as scalarName + displacementName + X + scale
       let name = channel.name;
+      const displacementChannel = auxdata.channels.find((x) => x.inputName === channel.inputName && x.dataType === AuxChannelDataType.Vector);
       if (undefined !== displacementChannel?.name) {
         props.displacement = { channelName: displacementChannel.name, scale: displacementScale };
         const exaggeration = 1 !== displacementScale ? "" : ` X ${displacementScale}`;
         name = `${name} and ${displacementChannel.name}${exaggeration}`;
       }
 
+      // Add the new style to the array
       mesh.styles.set(name, AnalysisStyle.fromJSON(props));
     }
   }
 
+  /** This method constructs the mesh called "flat mesh with waves".  It is a non-realistic example intended to illustrate how
+   * to use the API to create auxdata.  The mesh facets are a grid of quads representing a square.
+   *
+   * There are a total of nine channels of auxdata created in three sets:
+   *    Radial: Static: including three channels: Displacement (vector), Height (scalar), and slope (scalar)
+   *    Radial: Time:   including three channels: Displacement (vector), Height (scalar), and slope (scalar)
+   *    Linear: Time:   including three channels: Displacement (vector), Height (scalar), and slope (scalar)
+   *
+   * The "Radial: Static" channels each include only a single set of data, so these cannot be animated.
+   * The "Radial: Time" channels each include three sets of data.  The first and last contain all zero values.
+   * The "Linear: Time" channels each include ten sets of data to represent the waves rolling the length of the square mesh.
+  * */
   public static createFlatMeshWithWaves(): Polyface {
     const options = StrokeOptions.createForFacets();
     options.shouldTriangulate = true;
@@ -163,6 +198,10 @@ export default class ScientificVizApi {
     return mesh;
   }
 
+  /** This method shows how to determine if the current analysis style can be animated.  This information is
+   * known when the style is created so it would be reasonable to determine it then.  Here we check after
+   * the fact just to show that it can be done.
+   */
   public static currentStyleSupportsAnimation(viewport: Viewport) {
     const style = viewport.view.analysisStyle;
     if (!style)
@@ -184,14 +223,14 @@ export default class ScientificVizApi {
     return isAnimated;
   }
 
+  /** For styles that can be animated, the viewport's analysis fraction controls the interpolation
+   * between the members of the data array. */
   public static getAnalysisFraction(vp: Viewport) {
-    // For animated styles, the viewport's analysis fraction controls the interpolation
-    // between the members of the data array.
     return vp.analysisFraction;
   }
 
+  /** Changing this sets the state of the visualization for styles that can be animated. */
   public static setAnalysisFraction(vp: Viewport, fraction: number) {
-    // Changing this sets the state of the visualization.
     vp.analysisFraction = fraction;
   }
 

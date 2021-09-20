@@ -15,6 +15,7 @@ Using a decorator and timeline scrubber to animate the mesh in a viewport.
 ## Description
 
 Scientific visualization requires the object(s) to be represented as a [Polyface](https://www.imodeljs.org/learning/frontend/blankconnection/) augmented with channels of per-vertex properties defined by [PolyfaceAuxData](https://www.itwinjs.org/reference/geometry-core/polyface/polyfaceauxdata/). This sample provides two example meshes:
+
 - A cantilever, with auxiliary channels reflecting the stress induced by bending the object; and
 - A non-realistic example based on a square mesh, with channels modeling height, slope, and displacement, to demonstrate the basic concepts and APIs.
 
