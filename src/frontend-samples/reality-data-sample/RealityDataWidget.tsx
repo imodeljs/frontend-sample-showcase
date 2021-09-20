@@ -7,8 +7,8 @@ import React, { useEffect } from "react";
 import { Toggle } from "@bentley/ui-core";
 import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 import RealityDataApi from "./RealityDataApi";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, WidgetState } from "@bentley/ui-framework";
-import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
+import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@bentley/ui-framework";
+import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import "./RealityData.scss";
 import { ContextRealityModelProps } from "@bentley/imodeljs-common";
 
@@ -20,7 +20,6 @@ const RealityDataWidget: React.FunctionComponent = () => {
   const [availableRealityModels, setAvailableRealityModels] = React.useState<ContextRealityModelProps[]>();
   const [updateAttachedState, setUpdateAttachedState] = React.useState<string>("");
   const [updateTransparencyState, setUpdateTransparencyState] = React.useState<string>("");
-
   // END STATE
 
   // START INITIAL_STATE
@@ -35,7 +34,6 @@ const RealityDataWidget: React.FunctionComponent = () => {
         RealityDataApi.setRealityDataTransparency(model, _vp, 0);
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // END INITIAL_STATE
 
@@ -53,10 +51,10 @@ const RealityDataWidget: React.FunctionComponent = () => {
       }
     }
     setUpdateAttachedState("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showRealityDataState, updateAttachedState]);
+  }, [availableRealityModels, iModelConnection, showRealityDataState, updateAttachedState]);
   // END REALITY_HOOK
 
+  // START TRANSPARENCY_HOOK
   useEffect(() => {
     if (iModelConnection && updateTransparencyState) {
       const vp = IModelApp.viewManager.selectedView;
@@ -67,7 +65,8 @@ const RealityDataWidget: React.FunctionComponent = () => {
       }
     }
     setUpdateTransparencyState("");
-  }, [transparencyRealityDataState, updateTransparencyState]);
+  }, [availableRealityModels, iModelConnection, transparencyRealityDataState, updateTransparencyState]);
+  // END TRANSPARENCY_HOOK
 
   const updateShowRealityDataState = (url: string, checked: boolean) => {
     showRealityDataState.current.set(url, checked);
@@ -90,7 +89,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
                 <span>{element.name}</span>
                 <Toggle key={element.tilesetUrl} isOn={true} onChange={async (checked: boolean) => updateShowRealityDataState(element.tilesetUrl, checked)} />
 
-                {element.orbitGtBlob === undefined &&
+                {element.orbitGtBlob === undefined /** Point Clouds do not have transparency support. */ &&
                   <>
                     <span><span style={{ marginRight: "1em" }} className="icon icon-help" title={"This slider adjusts the transparency of the reality model."}></span>{"Transparency"}</span>
                     <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateRealityDataTransparencyState(element.tilesetUrl, Math.abs(Number(event.target.value) / 100))} />

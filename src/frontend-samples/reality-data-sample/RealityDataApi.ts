@@ -8,20 +8,18 @@ import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps } from "@
 import { IModelConnection, queryRealityData, ScreenViewport } from "@bentley/imodeljs-frontend";
 
 export default class RealityDataApi {
-
   public static async getRealityModels(imodel: IModelConnection): Promise<ContextRealityModelProps[]> {
     const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
     return availableModels;
   }
 
+  // START REALITY_TOGGLE_CALLBACK
   public static toggleRealityModel(crmProp: ContextRealityModelProps, viewPort: ScreenViewport, show?: boolean) {
-    const style = viewPort.displayStyle.clone();
-
-    style.viewFlags.backgroundMap = false;
     const crmName = crmProp.name ? crmProp.name : "";
 
-    if (show && !style.hasAttachedRealityModel(crmName, crmProp.tilesetUrl)) {
-      // Form orbitGtBlob if realityDataType is OPC
+    // START REALITY_MODEL_ON
+    if (show && !viewPort.displayStyle.hasAttachedRealityModel(crmName, crmProp.tilesetUrl)) {
+      // Form orbitGtBlob object if reality data type is Point Cloud (orbitGTBlob is defined)
       let orbitGtBlob: OrbitGtBlobProps | undefined;
       if (crmProp.orbitGtBlob) {
         orbitGtBlob = {
@@ -31,21 +29,16 @@ export default class RealityDataApi {
           sasToken: "",
           accountName: crmProp.realityDataId ? crmProp.realityDataId : "",
         };
+        crmProp.orbitGtBlob = orbitGtBlob;
       }
-      const unattached: ContextRealityModelProps = {
-        tilesetUrl: crmProp.tilesetUrl,
-        name: crmProp.name ? crmProp.name : "Unnamed",
-        description: crmProp.description,
-        realityDataId: crmProp.realityDataId,
-        orbitGtBlob,
-        classifiers: [],
-      };
-      viewPort.displayStyle.attachRealityModel(unattached);
+      viewPort.displayStyle.attachRealityModel(crmProp);
+    // END REALITY_MODEL_ON
     } else if (!show) {
       viewPort.displayStyle.detachRealityModelByNameAndUrl(crmName, crmProp.tilesetUrl);
     }
     viewPort.invalidateScene();
   }
+  // END REALITY_TOGGLE_CALLBACK
 
   // START TRANSPARENCY
   // Modify reality data background transparency using the Viewport API

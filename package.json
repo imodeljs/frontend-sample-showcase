@@ -117,11 +117,7 @@
       ],
       "@typescript-eslint/unbound-method": "off",
       "deprecation/deprecation": "off",
-      "@bentley/no-internal-barrel-imports": "off",
-      "comma-dangle": "off",
-      "react-hooks/exhaustive-deps": "off",
-      "@typescript-eslint/no-unused-var": "off",
-      "no-console": "off"
+      "@bentley/no-internal-barrel-imports": "off"
     }
   },
   "browserslist": [
