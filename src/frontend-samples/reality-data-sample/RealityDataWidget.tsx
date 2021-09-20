@@ -88,10 +88,8 @@ const RealityDataWidget: React.FunctionComponent = () => {
               <>
                 <span>{element.name}</span>
                 <Toggle key={element.tilesetUrl} isOn={true} onChange={async (checked: boolean) => updateShowRealityDataState(element.tilesetUrl, checked)} />
-
-                {element.orbitGtBlob === undefined /** Point Clouds do not have transparency support. */ &&
-                  <>
-                    <span><span style={{ marginRight: "1em" }} className="icon icon-help" title={"This slider adjusts the transparency of the reality model."}></span>{"Transparency"}</span>
+                {element.orbitGtBlob === undefined && /** Point Clouds do not have transparency override support. */
+                  <><span><span style={{ marginRight: "1em" }} className="icon icon-help" title={"Adjusting this slider changes the transparency of the reality data."}></span>{"Transparency"}</span>
                     <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateRealityDataTransparencyState(element.tilesetUrl, Math.abs(Number(event.target.value) / 100))} />
                   </>}
               </>);
