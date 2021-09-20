@@ -87,7 +87,7 @@ export default class ValidationClient {
 
   private static async getAccessToken() {
     try {
-      return await (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
+      return await (IModelApp.authorizationClient as AuthorizationClient).getAccessToken();
     } catch (e) {
       return undefined;
     }

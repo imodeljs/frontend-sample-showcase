@@ -565,7 +565,7 @@ export default class IssuesClient {
 
   private static async getAccessToken() {
     try {
-      return (IModelApp.authorizationClient as AuthorizationClient).getDevAccessToken();
+      return (IModelApp.authorizationClient as AuthorizationClient).getAccessToken();
     } catch (e) {
       return undefined;
     }
