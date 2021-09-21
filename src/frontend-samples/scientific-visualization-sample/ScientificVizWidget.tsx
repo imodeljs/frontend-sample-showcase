@@ -116,6 +116,7 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
     </>
   );
 };
+
 export class ScientificVizWidgetProvider implements UiItemsProvider {
   public readonly id: string = "ScientificVizWidgetProvider";
 

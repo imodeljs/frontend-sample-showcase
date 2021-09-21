@@ -207,20 +207,16 @@ export default class ScientificVizApi {
     if (!style)
       return false;
 
-    // The analysis style specifies the channelName
-    const channelName = style.displacement?.channelName;
+    // The channels array holds all the channels available on the polyface.
+    const channels = ScientificVizDecorator.decorator.mesh.polyface.data.auxData?.channels;
+    if (!channels)
+      return false;
 
-    // Find that channel in the polyface's auxdata
-    const auxdata = ScientificVizDecorator.decorator.mesh.polyface.data.auxData;
-    const channel = auxdata?.channels.find((c) => c.name === channelName);
+    // The analysis style specifies up to three channelNames.
+    const channelNames = [style.displacement?.channelName, style.scalar?.channelName, style.normalChannelName];
 
-    // If the channel has more than one set of data, then the style can be animated by
-    // interpolating between each member of the data array.
-    let isAnimated = false;
-    if (channel)
-      isAnimated = 1 < channel.data.length;
-
-    return isAnimated;
+    // The style can be animated if any of the three channels has more than one set of data.
+    return channels.some((c) => c.data.length > 1 && channelNames.includes(c.name));
   }
 
   /** For styles that can be animated, the viewport's analysis fraction controls the interpolation
