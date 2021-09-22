@@ -3,42 +3,70 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { Select } from "@bentley/ui-core";
+import { Select, Slider } from "@bentley/ui-core";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import { StandardViewId } from "@bentley/imodeljs-frontend";
 import { ScientificVizDecorator } from "./ScientificVizDecorator";
 import { useActiveViewport } from "@bentley/ui-framework";
-import { Slider } from "@bentley/ui-core";
 import ScientificVizApi from "./ScientificVizApi";
 import "./ScientificViz.scss";
+import { AuxChannelDataType, Polyface } from "@bentley/geometry-core";
 
-const meshTypes = ["Cantilever", "Flat with waves"];
+export type SampleMeshName = "Cantilever" | "Flat with waves";
+const sampleMeshNames = ["Cantilever", "Flat with waves"];
 
 export const ScientificVizWidget: React.FunctionComponent = () => {
-  const [meshType, setMeshType] = React.useState<{ meshPicker: string, stylePicker: string[], defaultStylePicker: string }>({ meshPicker: "Flat with waves", stylePicker: [], defaultStylePicker: "" });
+  const [meshData, setMeshData] = React.useState<{ meshName: SampleMeshName, thematicChannelNames: string[], displacementChannelNames: string[] }>({ meshName: "Flat with waves", thematicChannelNames: [], displacementChannelNames: [] });
+  const [thematicChannelName, setThematicChannelName] = React.useState<string>("None");
+  const [displacementChannelName, setDisplacementChannelName] = React.useState<string>("None");
   const [isAnimated, setIsAnimated] = React.useState<boolean>(false);
+  const [canBeAnimated, setCanBeAnimated] = React.useState<boolean>(false);
   const viewport = useActiveViewport();
   const [fraction, setFraction] = React.useState<number>(ScientificVizApi.getAnalysisFraction(viewport!));
 
-  const renderAnimation = useCallback(async (meshingType: string) => {
-    if (viewport) {
-      const meshes = await Promise.all([
-        ScientificVizApi.createMesh("Cantilever", 100),
-        ScientificVizApi.createMesh("Flat with waves"),
-      ]);
-      if (ScientificVizDecorator.decorator) {
-        viewport.displayStyle.settings.analysisStyle = undefined;
-        ScientificVizDecorator.decorator.dispose();
-      }
-      const mesh = (meshingType === "Cantilever") ? meshes[0] : meshes[1];
-      ScientificVizDecorator.decorator = new ScientificVizDecorator(viewport, mesh);
-      const meshStyle: string[] = [];
-      for (const name of ScientificVizDecorator.decorator.mesh.styles.keys()) {
-        meshStyle.push(name);
-      }
-      setMeshType({ meshPicker: meshingType, stylePicker: [...meshStyle], defaultStylePicker: meshStyle[2] });
-      viewport.displayStyle.settings.analysisStyle = (mesh.type === "Flat with waves") ? ScientificVizDecorator.decorator.mesh.styles.get(meshStyle[2]) : undefined;
+  const getChannelsByType = (polyface: Polyface | undefined, ...types: AuxChannelDataType[]) => {
+    const auxData = polyface?.data.auxData;
+    if (!auxData)
+      return [];
+    return auxData.channels.filter((c) => types.includes(c.dataType) && undefined !== c.name);
+  };
+
+  const initializeDecorator = useCallback(async (meshName: SampleMeshName) => {
+    if (!viewport)
+      return;
+
+    // Cleanup the existing decorator, if any
+    if (ScientificVizDecorator.decorator) {
+      ScientificVizApi.setAnalysisStyle(viewport, undefined);
+      ScientificVizDecorator.decorator.dispose();
     }
+
+    // Create the polyface with auxdata channels
+    const polyface = (meshName === "Cantilever") ?
+      await ScientificVizApi.createCantilever() :
+      ScientificVizApi.createFlatMeshWithWaves();
+
+    // Create the new decorator, it will add itself to the viewport
+    ScientificVizDecorator.decorator = new ScientificVizDecorator(viewport, polyface);
+
+    // Populate state with list of channels appropriate for the current mesh
+    const thematicChannelNames = ["None", ...getChannelsByType(polyface, AuxChannelDataType.Scalar, AuxChannelDataType.Distance).map((c) => c.name!)];
+    const displacementChannelNames = ["None", ...getChannelsByType(polyface, AuxChannelDataType.Vector).map((c) => c.name!)];
+    setMeshData({ meshName, thematicChannelNames, displacementChannelNames });
+
+    // Pick the default channels
+    let defaultThematicChannel: string;
+    let defaultDisplacementChannel: string;
+    if ("Cantilever" === meshName) {
+      defaultThematicChannel = "Stress";
+      defaultDisplacementChannel = "Displacement";
+    } else {
+      defaultThematicChannel = "Static Radial Slope";
+      defaultDisplacementChannel = "Static Radial Displacement";
+    }
+
+    setThematicChannelName(defaultThematicChannel);
+    setDisplacementChannelName(defaultDisplacementChannel);
   }, [viewport]);
 
   useEffect(() => {
@@ -50,7 +78,7 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
       viewport.setStandardRotation(StandardViewId.Iso);
       viewport.zoomToVolume(viewport.iModel.projectExtents);
 
-      const dropListener = viewport.onDisplayStyleChanged.addListener((vp) => { setFraction(vp.analysisFraction); });
+      const dropListener = ScientificVizApi.listenForAnalysisFractionChanges(viewport, (vp) => { setFraction(vp.analysisFraction); });
       return (() => { dropListener; });
     }
     return undefined;
@@ -65,20 +93,32 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
   useEffect(() => {
     if (!viewport)
       return;
-    void renderAnimation("Flat with waves");
-  }, [viewport, renderAnimation]);
+    void initializeDecorator("Flat with waves");
+  }, [viewport, initializeDecorator]);
 
-  const meshTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    void renderAnimation(event.target.value);
+  const meshChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    void initializeDecorator(event.target.value as SampleMeshName);
   };
 
-  const meshStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    viewport!.displayStyle.settings.analysisStyle = ScientificVizDecorator.decorator.mesh.styles.get(event.target.value);
-    setMeshType({ ...meshType, defaultStylePicker: event.target.value });
-  };
+  useEffect(() => {
+    if (!viewport || !ScientificVizDecorator.decorator)
+      return;
+
+    const polyface = ScientificVizDecorator.decorator.polyface;
+    const scalarChannel = polyface.data.auxData?.channels.find((c) => thematicChannelName === c.name);
+    const displacementChannel = polyface.data.auxData?.channels.find((c) => displacementChannelName === c.name);
+
+    let displacementScale = 1;
+    if (meshData.meshName === "Cantilever")
+      displacementScale = 100;
+
+    const analysisStyle = ScientificVizApi.createAnalysisStyleForChannels(scalarChannel, displacementChannel, displacementScale);
+    ScientificVizApi.setAnalysisStyle(viewport, analysisStyle);
+    setIsAnimated(false);
+    setCanBeAnimated(ScientificVizApi.styleSupportsAnimation(analysisStyle));
+  }, [viewport, meshData, thematicChannelName, displacementChannelName]);
 
   const animationControls = () => {
-    const canBeAnimated = viewport && ScientificVizApi.currentStyleSupportsAnimation(viewport);
 
     const _handleCameraPlay = () => {
       if (!isAnimated)
@@ -107,9 +147,11 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         <div className="sample-options-2col">
           <span>Mesh:</span>
-          <Select options={meshTypes} value={meshType.meshPicker} onChange={(event) => meshTypeChange(event)} />
-          <span>Style:</span>
-          <Select options={meshType.stylePicker} value={meshType.defaultStylePicker} onChange={(event) => meshStyleChange(event)} />
+          <Select options={sampleMeshNames} value={meshData.meshName} onChange={(event) => meshChange(event)} />
+          <span>Thematic Channel:</span>
+          <Select options={meshData.thematicChannelNames} value={thematicChannelName} onChange={(event) => setThematicChannelName(event.target.value)} />
+          <span>Displacement Channel:</span>
+          <Select options={meshData.displacementChannelNames} value={displacementChannelName} onChange={(event) => setDisplacementChannelName(event.target.value)} />
           {animationControls()}
         </div>
       </div>
