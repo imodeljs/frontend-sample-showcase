@@ -11,14 +11,16 @@ import { useActiveViewport } from "@bentley/ui-framework";
 import ScientificVizApi from "./ScientificVizApi";
 import "./ScientificViz.scss";
 import { AuxChannelDataType, Polyface } from "@bentley/geometry-core";
+import { ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
 
 export type SampleMeshName = "Cantilever" | "Flat with waves";
 const sampleMeshNames = ["Cantilever", "Flat with waves"];
 
 export const ScientificVizWidget: React.FunctionComponent = () => {
-  const [meshData, setMeshData] = React.useState<{ meshName: SampleMeshName, thematicChannelNames: string[], displacementChannelNames: string[] }>({ meshName: "Flat with waves", thematicChannelNames: [], displacementChannelNames: [] });
-  const [thematicChannelName, setThematicChannelName] = React.useState<string>("None");
-  const [displacementChannelName, setDisplacementChannelName] = React.useState<string>("None");
+  const [meshName, setMeshName] = React.useState<SampleMeshName>("Flat with waves");
+  const [thematicChannelData, setThematicChannelData] = React.useState<{ currentChannelName: string, channelNames: string[] }>({ currentChannelName: "None", channelNames: [] });
+  const [displacementChannelData, setDisplacementChannelData] = React.useState<{ currentChannelName: string, channelNames: string[] }>({ currentChannelName: "None", channelNames: [] });
+  const [displacementScale, setDisplacementScale] = React.useState<number>(1);
   const [isAnimated, setIsAnimated] = React.useState<boolean>(false);
   const [canBeAnimated, setCanBeAnimated] = React.useState<boolean>(false);
   const viewport = useActiveViewport();
@@ -31,7 +33,7 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
     return auxData.channels.filter((c) => types.includes(c.dataType) && undefined !== c.name);
   };
 
-  const initializeDecorator = useCallback(async (meshName: SampleMeshName) => {
+  const initializeDecorator = useCallback(async () => {
     if (!viewport)
       return;
 
@@ -52,22 +54,25 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
     // Populate state with list of channels appropriate for the current mesh
     const thematicChannelNames = ["None", ...getChannelsByType(polyface, AuxChannelDataType.Scalar, AuxChannelDataType.Distance).map((c) => c.name!)];
     const displacementChannelNames = ["None", ...getChannelsByType(polyface, AuxChannelDataType.Vector).map((c) => c.name!)];
-    setMeshData({ meshName, thematicChannelNames, displacementChannelNames });
 
-    // Pick the default channels
+    // Pick the defaults for the chosen mesh
     let defaultThematicChannel: string;
     let defaultDisplacementChannel: string;
+    let defaultDisplacementScale: number;
     if ("Cantilever" === meshName) {
       defaultThematicChannel = "Stress";
       defaultDisplacementChannel = "Displacement";
+      defaultDisplacementScale = 100;
     } else {
       defaultThematicChannel = "Static Radial Slope";
       defaultDisplacementChannel = "Static Radial Displacement";
+      defaultDisplacementScale = 1;
     }
 
-    setThematicChannelName(defaultThematicChannel);
-    setDisplacementChannelName(defaultDisplacementChannel);
-  }, [viewport]);
+    setThematicChannelData({ currentChannelName: defaultThematicChannel, channelNames: thematicChannelNames });
+    setDisplacementChannelData({ currentChannelName: defaultDisplacementChannel, channelNames: displacementChannelNames });
+    setDisplacementScale(defaultDisplacementScale);
+  }, [viewport, meshName]);
 
   useEffect(() => {
     if (viewport) {
@@ -93,30 +98,57 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
   useEffect(() => {
     if (!viewport)
       return;
-    void initializeDecorator("Flat with waves");
+    void initializeDecorator();
   }, [viewport, initializeDecorator]);
-
-  const meshChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    void initializeDecorator(event.target.value as SampleMeshName);
-  };
 
   useEffect(() => {
     if (!viewport || !ScientificVizDecorator.decorator)
       return;
 
     const polyface = ScientificVizDecorator.decorator.polyface;
-    const scalarChannel = polyface.data.auxData?.channels.find((c) => thematicChannelName === c.name);
-    const displacementChannel = polyface.data.auxData?.channels.find((c) => displacementChannelName === c.name);
+    const thematicChannel = polyface.data.auxData?.channels.find((c) => thematicChannelData.currentChannelName === c.name);
+    const displacementChannel = polyface.data.auxData?.channels.find((c) => displacementChannelData.currentChannelName === c.name);
 
-    let displacementScale = 1;
-    if (meshData.meshName === "Cantilever")
-      displacementScale = 100;
+    const thematicSettings: ThematicGradientSettingsProps = {};
 
-    const analysisStyle = ScientificVizApi.createAnalysisStyleForChannels(scalarChannel, displacementChannel, displacementScale);
+    if (thematicChannel?.name?.endsWith("Height")) {
+      thematicSettings.colorScheme = ThematicGradientColorScheme.SeaMountain;
+      thematicSettings.mode = ThematicGradientMode.SteppedWithDelimiter;
+    }
+
+    const analysisStyle = ScientificVizApi.createAnalysisStyleForChannels(thematicChannel, thematicSettings, displacementChannel, displacementScale);
     ScientificVizApi.setAnalysisStyle(viewport, analysisStyle);
     setIsAnimated(false);
     setCanBeAnimated(ScientificVizApi.styleSupportsAnimation(analysisStyle));
-  }, [viewport, meshData, thematicChannelName, displacementChannelName]);
+  }, [viewport, meshName, thematicChannelData, displacementChannelData, displacementScale]);
+
+  const handleDisplacementChannelChange = (channelName: string) => {
+    setDisplacementChannelData({ ...displacementChannelData, currentChannelName: channelName });
+  };
+
+  const handleThematicChannelChange = (channelName: string) => {
+    let defaultDisplacementChannelName: string = "";
+
+    switch (channelName) {
+      case "Static Radial Height":
+      case "Static Radial Slope":
+        defaultDisplacementChannelName = "Static Radial Displacement";
+        break;
+      case "Animated Radial Height":
+      case "Animated Radial Slope":
+        defaultDisplacementChannelName = "Animated Radial Displacement";
+        break;
+      case "Linear Height":
+      case "Linear Slope":
+        defaultDisplacementChannelName = "Linear Displacement";
+        break;
+    }
+
+    setThematicChannelData({ ...thematicChannelData, currentChannelName: channelName });
+
+    if (defaultDisplacementChannelName)
+      setDisplacementChannelData({ ...displacementChannelData, currentChannelName: defaultDisplacementChannelName });
+  };
 
   const animationControls = () => {
 
@@ -147,11 +179,11 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         <div className="sample-options-2col">
           <span>Mesh:</span>
-          <Select options={sampleMeshNames} value={meshData.meshName} onChange={(event) => meshChange(event)} />
+          <Select options={sampleMeshNames} value={meshName} onChange={(event) => setMeshName(event.target.value as SampleMeshName)} />
           <span>Thematic Channel:</span>
-          <Select options={meshData.thematicChannelNames} value={thematicChannelName} onChange={(event) => setThematicChannelName(event.target.value)} />
+          <Select options={thematicChannelData.channelNames} value={thematicChannelData.currentChannelName} onChange={(event) => handleThematicChannelChange(event.target.value)} />
           <span>Displacement Channel:</span>
-          <Select options={meshData.displacementChannelNames} value={displacementChannelName} onChange={(event) => setDisplacementChannelName(event.target.value)} />
+          <Select options={displacementChannelData.channelNames} value={displacementChannelData.currentChannelName} onChange={(event) => handleDisplacementChannelChange(event.target.value)} />
           {animationControls()}
         </div>
       </div>

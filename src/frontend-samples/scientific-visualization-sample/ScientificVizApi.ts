@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Angle, AuxChannel, AuxChannelData, AuxChannelDataType, IModelJson, Point3d, Polyface, PolyfaceAuxData, PolyfaceBuilder, StrokeOptions, Transform } from "@bentley/geometry-core";
-import { AnalysisStyle, AnalysisStyleProps } from "@bentley/imodeljs-common";
+import { AnalysisStyle, AnalysisStyleProps, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
 import { Animator, Viewport } from "@bentley/imodeljs-frontend";
 import { ScientificVizDecorator } from "./ScientificVizDecorator";
 import { jsonData } from "./Cantilever";
@@ -20,14 +20,16 @@ export default class ScientificVizApi {
     return polyface;
   }
 
-  public static createAnalysisStyleForChannels(scalarChannel?: AuxChannel, displacementChannel?: AuxChannel, displacementScale?: number) {
+  public static createAnalysisStyleForChannels(thematicChannel?: AuxChannel, thematicSettings?: ThematicGradientSettingsProps, displacementChannel?: AuxChannel, displacementScale?: number) {
     const props: AnalysisStyleProps = {};
 
-    if (scalarChannel && scalarChannel.name && scalarChannel.scalarRange)
+    if (thematicChannel && thematicChannel.name && thematicChannel.scalarRange) {
       props.scalar = {
-        channelName: scalarChannel.name,
-        range: scalarChannel.scalarRange,
+        channelName: thematicChannel.name,
+        range: thematicChannel.scalarRange,
+        thematicSettings,
       };
+    }
 
     if (displacementChannel && displacementChannel.name)
       props.displacement = {
@@ -144,8 +146,7 @@ export default class ScientificVizApi {
     return polyface;
   }
 
-  /** For styles that can be animated, the viewport's analysis fraction controls the interpolation
- * between the members of the data array. */
+  /** The viewport's analysis style controls which channels from the auxdata are used to display the mesh. */
   public static setAnalysisStyle(vp: Viewport, style?: AnalysisStyle) {
     vp.displayStyle.settings.analysisStyle = style;
   }
