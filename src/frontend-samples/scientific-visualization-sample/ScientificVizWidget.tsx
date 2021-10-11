@@ -119,6 +119,7 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
     const analysisStyle = ScientificVizApi.createAnalysisStyleForChannels(thematicChannel, thematicSettings, displacementChannel, displacementScale);
     ScientificVizApi.setAnalysisStyle(viewport, analysisStyle);
     setIsAnimated(false);
+    setFraction(0);
     setCanBeAnimated(ScientificVizApi.styleSupportsAnimation(analysisStyle));
   }, [viewport, meshName, thematicChannelData, displacementChannelData, displacementScale]);
 
