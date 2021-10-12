@@ -2,19 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { assert } from "@bentley/bentleyjs-core";
 import { Angle, AuxChannel, AuxChannelData, AuxChannelDataType, IModelJson, Point3d, Polyface, PolyfaceAuxData, PolyfaceBuilder, StrokeOptions, Transform } from "@bentley/geometry-core";
-import { AnalysisStyle, AnalysisStyleProps, ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
+import { AnalysisStyle, AnalysisStyleProps, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
+import { Animator, Viewport } from "@bentley/imodeljs-frontend";
+import { ScientificVizDecorator } from "./ScientificVizDecorator";
 import { jsonData } from "./Cantilever";
 
-export type AnalysisMeshType = "Cantilever" | "Flat with waves";
-export interface AnalysisMesh {
-  readonly type: AnalysisMeshType;
-  readonly polyface: Polyface;
-  readonly styles: Map<string, AnalysisStyle | undefined>;
-}
-
 export default class ScientificVizApi {
+
+  /** Reads the cantilever data from the supplied json file.  The json data includes the
+   * definition of the mesh including aux data defining displacement and stress.
+   */
   public static async createCantilever(): Promise<Polyface> {
     const polyface = IModelJson.Reader.parse(JSON.parse(jsonData)) as Polyface;
     const transform = Transform.createScaleAboutPoint(new Point3d(), 30);
@@ -22,43 +20,38 @@ export default class ScientificVizApi {
     return polyface;
   }
 
-  public static populateAnalysisStyles(mesh: AnalysisMesh, displacementScale: number): void {
-    const auxdata = mesh.polyface.data.auxData;
-    if (!auxdata)
-      return;
+  public static createAnalysisStyleForChannels(thematicChannel?: AuxChannel, thematicSettings?: ThematicGradientSettingsProps, displacementChannel?: AuxChannel, displacementScale?: number) {
+    const props: AnalysisStyleProps = {};
 
-    mesh.styles.set("None", undefined);
-    for (const channel of auxdata.channels) {
-      if (undefined === channel.name || !channel.isScalar)
-        continue;
+    if (thematicChannel && thematicChannel.name && thematicChannel.scalarRange) {
+      props.scalar = {
+        channelName: thematicChannel.name,
+        range: thematicChannel.scalarRange,
+        thematicSettings,
+      };
+    }
 
-      const displacementChannel = auxdata.channels.find((x) => x.inputName === channel.inputName && x.dataType === AuxChannelDataType.Vector);
-      const thematicSettings: ThematicGradientSettingsProps = {};
-      if (channel.name.endsWith("Height")) {
-        thematicSettings.colorScheme = ThematicGradientColorScheme.SeaMountain;
-        thematicSettings.mode = ThematicGradientMode.SteppedWithDelimiter;
-      }
-
-      assert(undefined !== channel.scalarRange);
-      const props: AnalysisStyleProps = {
-        scalar: {
-          channelName: channel.name,
-          range: channel.scalarRange,
-          thematicSettings,
-        },
+    if (displacementChannel && displacementChannel.name)
+      props.displacement = {
+        channelName: displacementChannel.name,
+        scale: displacementScale,
       };
 
-      let name = channel.name;
-      if (undefined !== displacementChannel?.name) {
-        props.displacement = { channelName: displacementChannel.name, scale: displacementScale };
-        const exaggeration = 1 !== displacementScale ? "" : ` X ${displacementScale}`;
-        name = `${name} and ${displacementChannel.name}${exaggeration}`;
-      }
-
-      mesh.styles.set(name, AnalysisStyle.fromJSON(props));
-    }
+    return AnalysisStyle.fromJSON(props);
   }
 
+  /** This method constructs the mesh called "flat mesh with waves".  It is a non-realistic example intended to illustrate how
+   * to use the API to create auxdata.  The mesh facets are a grid of quads representing a square.
+   *
+   * There are a total of nine channels of auxdata created in three sets:
+   *    Radial: Static: including three channels: Displacement (vector), Height (scalar), and slope (scalar)
+   *    Radial: Time:   including three channels: Displacement (vector), Height (scalar), and slope (scalar)
+   *    Linear: Time:   including three channels: Displacement (vector), Height (scalar), and slope (scalar)
+   *
+   * The "Radial: Static" channels each include only a single set of data, so these cannot be animated.
+   * The "Radial: Time" channels each include three sets of data.  The first and last contain all zero values.
+   * The "Linear: Time" channels each include ten sets of data to represent the waves rolling the length of the square mesh.
+  * */
   public static createFlatMeshWithWaves(): Polyface {
     const options = StrokeOptions.createForFacets();
     options.shouldTriangulate = true;
@@ -153,11 +146,65 @@ export default class ScientificVizApi {
     return polyface;
   }
 
-  public static async createMesh(type: AnalysisMeshType, displacementScale = 1): Promise<AnalysisMesh> {
-    const polyface = "Flat with waves" === type ? ScientificVizApi.createFlatMeshWithWaves() : await ScientificVizApi.createCantilever();
-    const styles = new Map<string, AnalysisStyle | undefined>();
-    const mesh = { type, polyface, styles };
-    ScientificVizApi.populateAnalysisStyles(mesh, displacementScale);
-    return mesh;
+  /** The viewport's analysis style controls which channels from the auxdata are used to display the mesh. */
+  public static setAnalysisStyle(vp: Viewport, style?: AnalysisStyle) {
+    vp.displayStyle.settings.analysisStyle = style;
+  }
+
+  /** This method shows how to determine if an analysis style can be animated. */
+  public static styleSupportsAnimation(style: AnalysisStyle) {
+    // The channels array holds all the channels available on the polyface.
+    const channels = ScientificVizDecorator.decorator.polyface.data.auxData?.channels;
+    if (!channels)
+      return false;
+
+    // The analysis style specifies up to three channelNames.
+    const channelNames = [style.displacement?.channelName, style.scalar?.channelName, style.normalChannelName];
+
+    // The style can be animated if any of the three channels has more than one set of data.
+    return channels.some((c) => c.data.length > 1 && channelNames.includes(c.name));
+  }
+
+  /** For styles that can be animated, the viewport's analysis fraction controls the interpolation
+   * between the members of the data array. */
+  public static getAnalysisFraction(vp: Viewport) {
+    return vp.analysisFraction;
+  }
+
+  /** Changing this sets the state of the visualization for styles that can be animated. */
+  public static setAnalysisFraction(vp: Viewport, fraction: number) {
+    vp.analysisFraction = fraction;
+  }
+
+  /** Stops the animator in the viewport. */
+  public static stopAnimation(vp: Viewport) {
+    vp.setAnimator(undefined);
+  }
+
+  /** Creates and starts an animator in the viewport. */
+  public static startAnimation(vp: Viewport, interruptFunc: () => void) {
+    const animator: Animator = {
+      // Will be called before rendering a frame as well as force the viewport to re-render every frame.
+      animate: () => {
+        let newFraction = 0.005 + ScientificVizApi.getAnalysisFraction(vp);
+
+        if (1.0 < newFraction)
+          newFraction = 0.0;
+
+        ScientificVizApi.setAnalysisFraction(vp, newFraction);
+        return false;
+      },
+      // Will be called if the animation is interrupted (e.g. the camera is moved)
+      interrupt: () => {
+        interruptFunc();
+      },
+    };
+
+    vp.setAnimator(animator);
+  }
+
+  /** Sets up a listener to detect changes to the display style.  This includes changes to the analysisFraction. */
+  public static listenForAnalysisFractionChanges(viewport: Viewport, listenerFunc: (vp: Viewport) => void) {
+    return viewport.onDisplayStyleChanged.addListener((vp) => listenerFunc(vp));
   }
 }
