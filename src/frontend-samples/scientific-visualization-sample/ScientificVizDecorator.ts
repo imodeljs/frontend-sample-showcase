@@ -3,21 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@bentley/bentleyjs-core";
+import { Polyface } from "@bentley/geometry-core";
 import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
 import { DecorateContext, Decorator, GraphicType, IModelApp, RenderGraphicOwner, Viewport } from "@bentley/imodeljs-frontend";
-import { AnalysisMesh } from "./ScientificVizApi";
 
 export class ScientificVizDecorator implements Decorator {
-  public readonly mesh: AnalysisMesh;
+  public readonly polyface: Polyface;
   private readonly _viewport: Viewport;
   private readonly _id: string;
   private _graphic?: RenderGraphicOwner;
   private _dispose?: () => void;
   public static decorator: ScientificVizDecorator;
 
-  public constructor(viewport: Viewport, mesh: AnalysisMesh) {
+  public constructor(viewport: Viewport, polyface: Polyface) {
     this._viewport = viewport;
-    this.mesh = mesh;
+    this.polyface = polyface;
     this._id = viewport.iModel.transientIds.next;
 
     const removeDisposalListener = viewport.onDisposed.addOnce(() => this.dispose());
@@ -55,7 +55,7 @@ export class ScientificVizDecorator implements Decorator {
       const builder = context.createGraphicBuilder(GraphicType.Scene, undefined, this._id);
       const color = ColorDef.fromTbgr(ColorByName.darkSlateBlue);
       builder.setSymbology(color, color, 1);
-      builder.addPolyface(this.mesh.polyface, false);
+      builder.addPolyface(this.polyface, false);
       this._graphic = IModelApp.renderSystem.createGraphicOwner(builder.finish());
     }
 

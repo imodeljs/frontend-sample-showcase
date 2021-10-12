@@ -15,7 +15,6 @@ export interface LabelWithId extends LabelDefinition {
 }
 
 export default class IssuesApi {
-  public static _issuesPinDecorator?: MarkerPinDecorator;
 
   public static async getElementKeySet(elementsId: string) {
     if (!elementsId || elementsId.trim().length === 0)
@@ -36,37 +35,25 @@ export default class IssuesApi {
     return labels.map((label, index) => ({ ...label, id: instanceKeys[index].id }));
   }
 
-  public static decoratorIsSetup() {
-    return (null != this._issuesPinDecorator);
-  }
-
   public static setupDecorator() {
-    if (undefined === this._issuesPinDecorator)
-      this._issuesPinDecorator = new MarkerPinDecorator();
+    return new MarkerPinDecorator();
   }
 
-  public static addDecoratorPoint(issue: IssueGet, pinImage: HTMLImageElement, title?: string, description?: string, onMouseButtonCallback?: any) {
+  public static addDecoratorPoint(decorator: MarkerPinDecorator, issue: IssueGet, pinImage: HTMLImageElement, title?: string, description?: string, onMouseButtonCallback?: any) {
     const markerData: MarkerData = { point: issue.modelPin?.location ?? Point3d.createZero(), title, description, data: issue };
     const scale = { low: .2, high: 1.4 };
-    if (this._issuesPinDecorator)
-      this._issuesPinDecorator.addMarkerPoint(markerData, pinImage, title, description, scale, onMouseButtonCallback);
+    decorator.addMarkerPoint(markerData, pinImage, title, description, scale, onMouseButtonCallback);
   }
 
-  public static enableDecorations() {
-    if (this._issuesPinDecorator)
-      IModelApp.viewManager.addDecorator(this._issuesPinDecorator);
+  public static enableDecorations(decorator: MarkerPinDecorator) {
+    IModelApp.viewManager.addDecorator(decorator);
   }
 
-  public static disableDecorations() {
-    if (null != this._issuesPinDecorator) {
-      IModelApp.viewManager.dropDecorator(this._issuesPinDecorator);
-      this._issuesPinDecorator = undefined;
-    }
+  public static disableDecorations(decorator: MarkerPinDecorator) {
+    IModelApp.viewManager.dropDecorator(decorator);
   }
 
-  public static clearDecoratorPoints() {
-    if (null != this._issuesPinDecorator) {
-      this._issuesPinDecorator.clearMarkers();
-    }
+  public static clearDecoratorPoints(decorator: MarkerPinDecorator) {
+    decorator.clearMarkers();
   }
 }

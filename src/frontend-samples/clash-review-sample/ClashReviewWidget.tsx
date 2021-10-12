@@ -16,8 +16,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
 
   const [clashPinDecorator] = React.useState<MarkerPinDecorator>(() => {
-    const decorator = new MarkerPinDecorator();
-    return decorator;
+    return ClashReviewApi.setupDecorator();
   });
 
   useEffect(() => {
@@ -31,6 +30,14 @@ const ClashReviewWidget: React.FunctionComponent = () => {
         console.error(error);
       });
   }, []);
+
+  /** Initialize Decorator */
+  useEffect(() => {
+    ClashReviewApi.enableDecorations(clashPinDecorator);
+    return () => {
+      ClashReviewApi.disableDecorations(clashPinDecorator);
+    };
+  }, [clashPinDecorator]);
 
   useEffect(() => {
     /** Create a listener that responds to clashData retrival */
@@ -48,10 +55,8 @@ const ClashReviewWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      ClashReviewApi.disableDecorations(clashPinDecorator);
-      ClashReviewApi.resetDisplay();
     };
-  }, [iModelConnection, clashPinDecorator]);
+  }, [iModelConnection]);
 
   /** When the clashData comes in, get the marker data */
   useEffect(() => {
@@ -67,8 +72,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   }, [iModelConnection, clashData]);
 
   useEffect(() => {
-    if (markersData && images && clashPinDecorator) {
-      ClashReviewApi.enableDecorations(clashPinDecorator);
+    if (markersData && images) {
       ClashReviewApi.setDecoratorPoints(markersData, clashPinDecorator, images);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {

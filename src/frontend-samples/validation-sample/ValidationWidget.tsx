@@ -16,10 +16,9 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
   const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
-    const decorator = new MarkerPinDecorator();
-    ValidationApi.enableDecorations(decorator);
-    return decorator;
+    return ValidationApi.setupDecorator();
   });
+
   useEffect(() => {
     const newImages = new Map();
     imageElementFromUrl(".\\clash_pin.svg").then((image) => {
@@ -31,6 +30,14 @@ const ValidationWidget: React.FunctionComponent = () => {
         console.error(error);
       });
   }, []);
+
+  /** Initialize Decorator */
+  useEffect(() => {
+    ValidationApi.enableDecorations(validationDecorator);
+    return () => {
+      ValidationApi.disableDecorations(validationDecorator);
+    };
+  }, [validationDecorator]);
 
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
@@ -48,12 +55,10 @@ const ValidationWidget: React.FunctionComponent = () => {
     }
     return () => {
       removeListener();
-      ValidationApi.disableDecorations(validationDecorator);
-      ValidationApi.resetDisplay();
     };
-  }, [iModelConnection, validationDecorator]);
+  }, [iModelConnection]);
 
-  /** When the validatio data comes in, get the marker data */
+  /** When the validation data comes in, get the marker data */
   useEffect(() => {
     if (iModelConnection && validationResults && ruleData) {
       ValidationApi.getValidationMarkersData(iModelConnection, validationResults, ruleData).then((mData) => {
@@ -66,8 +71,7 @@ const ValidationWidget: React.FunctionComponent = () => {
   }, [iModelConnection, validationResults, ruleData]);
 
   useEffect(() => {
-    if (markersData && images && validationDecorator) {
-      ValidationApi.enableDecorations(validationDecorator);
+    if (markersData && images) {
       ValidationApi.setDecoratorPoints(markersData, validationDecorator, images);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {

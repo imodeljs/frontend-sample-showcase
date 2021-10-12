@@ -26,12 +26,16 @@ export default class ClashReviewApi {
     return ClashReviewApi._requestContext;
   }
 
+  public static setupDecorator() {
+    return new MarkerPinDecorator();
+  }
+
   public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
     decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ClashReviewApi.visualizeClashCallback);
   }
 
   public static enableDecorations(decorator: MarkerPinDecorator) {
-    if (!IModelApp.viewManager.decorators.includes(decorator) && IModelApp.viewManager.selectedView)
+    if (!IModelApp.viewManager.decorators.includes(decorator))
       IModelApp.viewManager.addDecorator(decorator);
   }
 

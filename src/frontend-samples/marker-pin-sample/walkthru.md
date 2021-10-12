@@ -2,20 +2,26 @@
 
 This sample implements a [View Decorator](https://www.itwinjs.org/learning/frontend/viewdecorations/) to draw [Markers](https://www.itwinjs.org/learning/frontend/markers/) which are used to call the user's attention to a particular point in space.
 
-The `setupDecorator` is called as the sample is initializing.  It is provided an array of [MarkerData](/?step=MARKERDATA) which supplies the location and title for each marker.  The method initializes the decorator object with the supplied marker data.
+The `setupDecorator` method is called as the sample is initializing.  It creates and returns an instance of a MarkerPinDecorator, which can be used to create and decorate the viewport with `Markers`.
 
 [_metadata_:annotation]:- "SETUPDECORATOR"
-
-# MarkerData
-
-[_metadata_:annotation]:- "MARKERDATA"
-[_metadata_:minor]:- "true"
 
 # Add Decorator
 
 Once our Decorator is ready we need to register it with the ViewManager.  After being registered, the viewManager will call our decorator when it needs to draw decorations.
 
 [_metadata_:annotation]:- "ENABLEDECORATIONS"
+
+# Setting Marker Data
+
+The `setMarkersData` method is called after the decorator is initialized, or whenever the layout of the markers is changed.  It is provided an array of [MarkerData](/?step=MARKERDATA) which supplies the location and title for each marker.  The method provides the decorator object with the supplied marker data.
+
+[_metadata_:annotation]:- "SETMARKERDATA"
+
+# MarkerData
+
+[_metadata_:annotation]:- "MARKERDATA"
+[_metadata_:minor]:- "true"
 
 # Marker Pin Decorator
 

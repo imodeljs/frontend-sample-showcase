@@ -273,7 +273,7 @@ class SampleMarkerSet extends MarkerSet<SamplePinMarker> {
   // END REMOVEMARKER
 
   /** Drop all markers from the set */
-  public clear(){
+  public clear() {
     this.markers.clear();
   }
 }
@@ -332,7 +332,13 @@ export class MarkerPinDecorator implements Decorator {
   // START DECORATE
   /* Implement this method to add Decorations into the supplied DecorateContext. */
   public decorate(context: DecorateContext): void {
+    if (!this._autoMarkerSet.viewport) {
+      this._autoMarkerSet.changeViewport(context.screenViewport);
+    }
 
+    if (!this._manualMarkerSet.viewport) {
+      this._manualMarkerSet.changeViewport(context.screenViewport);
+    }
     /* This method is called for every rendering frame.  We will reuse our marker sets since the locations and images
        for the markers don't typically change. */
     if (context.viewport.view.isSpatialView()) {
