@@ -14,7 +14,7 @@ const uiProviders = [new RealityDataWidgetProvider()];
 
 const RealityDataApp: FunctionComponent = () => {
   // START VIEW_SETUP
-  const sampleIModelInfo = useSampleWidget("Use the toggle below for displaying the reality data in the model.", [SampleIModels.ExtonCampus, SampleIModels.MetroStation]);
+  const sampleIModelInfo = useSampleWidget("Use the toggles below to adjust the reality models in the viewport.", [SampleIModels.ExtonCampus]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
