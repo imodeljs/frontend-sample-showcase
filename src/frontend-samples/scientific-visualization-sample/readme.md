@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates how to use an animated decorator to visually analyze properties of a physical object.
+This sample demonstrates how to visualize physical and/or simulation data by adding per-vertex data to a mesh.
 
 ## Purpose
 
@@ -10,7 +10,7 @@ Augmenting a mesh with auxiliary properties used to drive the visualization.
 
 Creating an analysis style that applies the visualization to the mesh's graphics.
 
-Using a decorator and timeline scrubber to animate the mesh in a viewport.
+Using a viewport animator and a timeline scrubber to animate the mesh in a viewport.
 
 ## Description
 

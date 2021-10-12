@@ -119,7 +119,6 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
     const analysisStyle = ScientificVizApi.createAnalysisStyleForChannels(thematicChannel, thematicSettings, displacementChannel, displacementScale);
     ScientificVizApi.setAnalysisStyle(viewport, analysisStyle);
     setIsAnimated(false);
-    setFraction(0);
     setCanBeAnimated(ScientificVizApi.styleSupportsAnimation(analysisStyle));
   }, [viewport, meshName, thematicChannelData, displacementChannelData, displacementScale]);
 
@@ -151,20 +150,22 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
       setDisplacementChannelData({ ...displacementChannelData, currentChannelName: defaultDisplacementChannelName });
   };
 
+  useEffect(() => {
+    if (!viewport)
+      return;
+
+    if (isAnimated) {
+      ScientificVizApi.startAnimation(viewport, () => { setIsAnimated(false); });
+      return (() => { ScientificVizApi.stopAnimation(viewport); });
+    }
+
+    return undefined;
+  }, [isAnimated, viewport]);
+
   const animationControls = () => {
-
-    const _handleCameraPlay = () => {
-      if (!isAnimated)
-        ScientificVizApi.startAnimation(viewport!, () => { setIsAnimated(false); });
-      else
-        ScientificVizApi.stopAnimation(viewport!);
-
-      setIsAnimated(!isAnimated);
-    };
-
     return (
       <>
-        <button style={{ width: "35px", marginLeft: "4px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => { _handleCameraPlay(); }} disabled={!canBeAnimated}>
+        <button style={{ width: "35px", marginLeft: "4px", background: "grey", padding: "2px 0px 0px 2px", borderWidth: "1px", borderColor: "black", height: "32px", borderRadius: "50px", outline: "none" }} onClick={() => { setIsAnimated(!isAnimated); }} disabled={!canBeAnimated}>
           {isAnimated ? <span style={{ fontSize: "x-large" }} className="icon icon-media-controls-pause"></span>
             : <span style={{ fontSize: "x-large" }} className="icon icon-media-controls-play"></span>}
         </button>
