@@ -8,21 +8,21 @@ import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue
 import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { useActiveIModelConnection } from "@bentley/ui-framework";
-import ValidationApi from "./ValidationApi";
+import PropertyValidationApi from "./PropertyValidationApi";
 
-const ValidationTableWidget: React.FunctionComponent = () => {
+const PropertyValidationTableWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [validationResults, setValidationResults] = React.useState<any>();
   const [ruleData, setRuleData] = React.useState<any>();
 
   useEffect(() => {
-    const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
+    const removeListener = PropertyValidationApi.onValidationDataChanged.addListener((data: any) => {
       setValidationResults(data.validationData);
       setRuleData(data.ruleData);
     });
 
     if (iModelConnection) {
-      ValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
+      PropertyValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
@@ -105,7 +105,7 @@ const ValidationTableWidget: React.FunctionComponent = () => {
 
     const row = await rowIterator.next();
 
-    ValidationApi.visualizeViolation(row.value.key);
+    PropertyValidationApi.visualizeViolation(row.value.key);
     return true;
   };
 
@@ -120,19 +120,19 @@ const ValidationTableWidget: React.FunctionComponent = () => {
   );
 };
 
-export class ValidationTableWidgetProvider implements UiItemsProvider {
-  public readonly id: string = "ValidationTableWidgetProvider";
+export class PropertyValidationTableWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "PropertyValidationTableWidgetProvider";
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
     if (location === StagePanelLocation.Bottom) {
       widgets.push(
         {
-          id: "ValidationTableWidget",
-          label: "Validation Table Selector",
+          id: "PropertyValidationTableWidget",
+          label: "Validation Results",
           defaultState: WidgetState.Open,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <ValidationTableWidget />,
+          getWidgetContent: () => <PropertyValidationTableWidget />,
         }
       );
     }

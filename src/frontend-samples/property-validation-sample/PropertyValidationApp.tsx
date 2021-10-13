@@ -7,13 +7,13 @@ import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
 import { IModelViewportControlOptions } from "@bentley/ui-framework";
-import { ValidationWidgetProvider } from "./ValidationWidget";
-import { ValidationTableWidgetProvider } from "./ValidationTableWidget";
+import { PropertyValidationWidgetProvider } from "./PropertyValidationWidget";
+import { PropertyValidationTableWidgetProvider } from "./PropertyValidationTableWidget";
 
-const uiProviders = [new ValidationWidgetProvider(), new ValidationTableWidgetProvider()];
+const uiProviders = [new PropertyValidationWidgetProvider(), new PropertyValidationTableWidgetProvider()];
 
-const ValidationApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the toggles below to show marker pins or zoom to a validation rule violation.  Click a marker or table entry to review these rule violations.", [SampleIModels.BayTown]);
+const PropertyValidationApp: FunctionComponent = () => {
+  const sampleIModelInfo = useSampleWidget("Use the toggles below to show marker pins or zoom to a property validation rule violation.  Click a marker or table entry to review these rule violations.", [SampleIModels.BayTown]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
@@ -46,4 +46,4 @@ const ValidationApp: FunctionComponent = () => {
   );
 };
 
-export default ValidationApp;
+export default PropertyValidationApp;

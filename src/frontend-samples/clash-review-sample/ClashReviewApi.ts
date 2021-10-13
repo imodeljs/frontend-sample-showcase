@@ -61,8 +61,8 @@ export default class ClashReviewApi {
     if (ClashReviewApi._clashData[projectId] === undefined) {
       const runsResponse = await ClashDetectionClient.getClashTestRuns(context, projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
-        // Get validation result
-        const resultResponse = await ClashDetectionClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
+        // Get clashdetection result
+        const resultResponse = await ClashDetectionClient.getClashdetectionUrlResponse(context, runsResponse.runs[0]._links.result.href);
         if (resultResponse !== undefined && resultResponse.result !== undefined)
           ClashReviewApi._clashData[projectId] = resultResponse;
       }

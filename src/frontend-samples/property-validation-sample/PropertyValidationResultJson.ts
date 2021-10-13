@@ -1,3 +1,9 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+// Property Validation Result Sample Data
 // START RESULT_DATA
 export const jsonResultData = {
   result: [{

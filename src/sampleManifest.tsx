@@ -72,9 +72,10 @@ import { getGlobalDisplaySpec } from "frontend-samples/global-display-sample/sam
 import { getParticleSnowSampleSpec } from "frontend-samples/snow-decoration-sample/sampleSpec";
 import { getChangedElementsSpec } from "frontend-samples/changed-elements-sample/sampleSpec";
 import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
-import { getValidationSpec } from "frontend-samples/validation-sample/sampleSpec";
+import { getPropertyValidationSpec } from "frontend-samples/property-validation-sample/sampleSpec";
 import { getScientificVisualizationSpec } from "frontend-samples/scientific-visualization-sample/sampleSpec";
 import { getTransformationSpec } from "frontend-samples/transformations-sample/sampleSpec";
+import { getMisclassificationSpec } from "frontend-samples/misclassification-sample/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -171,9 +172,10 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getChangedElementsSpec(),
     getClashReviewSpec(),
     getIssuesSpec(),
+    getMisclassificationSpec(),
     getReadSettingsSpec(),
     getTransformationSpec(),
-    getValidationSpec(),
+    getPropertyValidationSpec(),
   ],
 
 },

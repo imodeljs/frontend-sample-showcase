@@ -8,12 +8,12 @@ import { getEmphasizeElementsSpec } from "frontend-samples/emphasize-elements-sa
 import { getMarkerPinSpec } from "frontend-samples/marker-pin-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
 
-export function getValidationSpec(): SampleSpec {
+export function getPropertyValidationSpec(): SampleSpec {
   return ({
-    name: "validation-sample",
-    label: "Validation",
-    image: "validation-thumbnail.png",
-    description: "Uses the #validation REST api.",
+    name: "property-validation-sample",
+    label: "Property Validation",
+    image: "property-validation-thumbnail.png",
+    description: "Uses the #Property Validation API to get the validation test results and visualize them in the view.",
     readme: async () => import("!!raw-loader!./readme.md"),
     walkthrough: () => ({
       annotations: import("!walkthrough-loader!./walkthru.md"),
@@ -23,17 +23,17 @@ export function getValidationSpec(): SampleSpec {
       ],
     }),
     files: () => [
-      import("!editor-file-loader!./ValidationApi.ts"),
-      import("!editor-file-loader!./ValidationApp.tsx"),
-      import("!editor-file-loader!./ValidationClient.ts"),
-      import("!editor-file-loader!./ValidationWidget.tsx"),
-      import("!editor-file-loader!./ValidationTableWidget.tsx"),
+      import("!editor-file-loader!./PropertyValidationApi.ts"),
+      import("!editor-file-loader!./PropertyValidationApp.tsx"),
+      import("!editor-file-loader!./PropertyValidationClient.ts"),
+      import("!editor-file-loader!./PropertyValidationWidget.tsx"),
+      import("!editor-file-loader!./PropertyValidationTableWidget.tsx"),
       import("!editor-file-loader!frontend-samples/marker-pin-sample/MarkerPinDecorator.ts"),
       import("!editor-file-loader!frontend-samples/marker-pin-sample/PopupMenu.tsx"),
-      import("!editor-file-loader!./ValidationResultJson.ts"),
-      import("!editor-file-loader!./ValidationRuleJson.ts"),
+      import("!editor-file-loader!./PropertyValidationResultJson.ts"),
+      import("!editor-file-loader!./PropertyValidationRuleJson.ts"),
     ],
     iModelList: [SampleIModels.BayTown],
-    type: "ValidationApp.tsx",
+    type: "PropertyValidationApp.tsx",
   });
 }

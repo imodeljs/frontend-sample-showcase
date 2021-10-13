@@ -126,7 +126,7 @@ export class ClashReviewWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "ClashReviewWidget",
-          label: "Clash Review Selector",
+          label: "Settings",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ClashReviewWidget />,

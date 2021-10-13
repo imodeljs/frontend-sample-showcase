@@ -32,8 +32,8 @@ export default class ClashDetectionClient {
       });
   }
 
-  // Gets the response body for the specified validation URL.
-  public static async getValidationUrlResponse(requestContext: AuthorizedClientRequestContext, url: string) {
+  // Gets the response body for the specified clashdetection URL.
+  public static async getClashdetectionUrlResponse(requestContext: AuthorizedClientRequestContext, url: string) {
     if (url === undefined)
       return undefined;
 

@@ -4,10 +4,10 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
 import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
-import ValidationApi from "./ValidationApi";
-import "./ValidationReview.scss";
+import PropertyValidationApi from "./PropertyValidationApi";
+import "./PropertyValidationReview.scss";
 
-const ValidationWidget: React.FunctionComponent = () => {
+const PropertyValidationWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [applyZoom, setApplyZoom] = React.useState<boolean>(true);
   const [showDecorator, setShowDecorator] = React.useState<boolean>(true);
@@ -16,7 +16,7 @@ const ValidationWidget: React.FunctionComponent = () => {
   const [markersData, setMarkersData] = React.useState<MarkerData[]>();
   const [images, setImages] = React.useState<Map<string, HTMLImageElement>>();
   const [validationDecorator] = React.useState<MarkerPinDecorator>(() => {
-    return ValidationApi.setupDecorator();
+    return PropertyValidationApi.setupDecorator();
   });
 
   useEffect(() => {
@@ -33,22 +33,22 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   /** Initialize Decorator */
   useEffect(() => {
-    ValidationApi.enableDecorations(validationDecorator);
+    PropertyValidationApi.enableDecorations(validationDecorator);
     return () => {
-      ValidationApi.disableDecorations(validationDecorator);
+      PropertyValidationApi.disableDecorations(validationDecorator);
     };
   }, [validationDecorator]);
 
   useEffect(() => {
     /** Create a listener that responds to validation data retrival */
-    const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
+    const removeListener = PropertyValidationApi.onValidationDataChanged.addListener((data: any) => {
       setValidationResults(data.validationData);
       setRuleData(data.ruleData);
     });
 
     if (iModelConnection) {
       /** Will start the validation data retrieval and recieve the data through the listener */
-      ValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
+      PropertyValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
@@ -61,7 +61,7 @@ const ValidationWidget: React.FunctionComponent = () => {
   /** When the validation data comes in, get the marker data */
   useEffect(() => {
     if (iModelConnection && validationResults && ruleData) {
-      ValidationApi.getValidationMarkersData(iModelConnection, validationResults, ruleData).then((mData) => {
+      PropertyValidationApi.getValidationMarkersData(iModelConnection, validationResults, ruleData).then((mData) => {
         setMarkersData(mData);
       }).catch((error) => {
         // eslint-disable-next-line no-console
@@ -72,10 +72,10 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (markersData && images) {
-      ValidationApi.setDecoratorPoints(markersData, validationDecorator, images);
-      // Automatically visualize first clash
-      if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
-        ValidationApi.visualizeViolation(markersData[0].data.elementId);
+      PropertyValidationApi.setDecoratorPoints(markersData, validationDecorator, images);
+      // Automatically visualize first property validation failure
+      if (markersData !== undefined && markersData.length > 5 && markersData[5].data !== undefined) {
+        PropertyValidationApi.visualizeViolation(markersData[5].data.elementId);
       }
       setShowDecorator(true);
     }
@@ -83,16 +83,16 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (showDecorator)
-      ValidationApi.enableDecorations(validationDecorator);
+      PropertyValidationApi.enableDecorations(validationDecorator);
     else
-      ValidationApi.disableDecorations(validationDecorator);
+      PropertyValidationApi.disableDecorations(validationDecorator);
   }, [showDecorator, validationDecorator]);
 
   useEffect(() => {
     if (applyZoom) {
-      ValidationApi.enableZoom();
+      PropertyValidationApi.enableZoom();
     } else {
-      ValidationApi.disableZoom();
+      PropertyValidationApi.disableZoom();
     }
   }, [applyZoom]);
 
@@ -109,26 +109,26 @@ const ValidationWidget: React.FunctionComponent = () => {
         </div>
         <div className="sample-options-2col">
           <span>Display</span>
-          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} onClick={ValidationApi.resetDisplay}>Reset</Button>
+          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} onClick={PropertyValidationApi.resetDisplay}>Reset</Button>
         </div>
       </div>
     </>
   );
 };
 
-export class ValidationWidgetProvider implements UiItemsProvider {
-  public readonly id: string = "ValidationReviewWidgetProvider";
+export class PropertyValidationWidgetProvider implements UiItemsProvider {
+  public readonly id: string = "PropertyValidationReviewWidgetProvider";
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
     if (location === StagePanelLocation.Right) {
       widgets.push(
         {
-          id: "ValidationWidget",
-          label: "ValidationWidget",
+          id: "PropertyValidationWidget",
+          label: "Settings",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <ValidationWidget />,
+          getWidgetContent: () => <PropertyValidationWidget />,
         }
       );
     }

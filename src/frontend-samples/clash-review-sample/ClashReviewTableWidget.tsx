@@ -107,7 +107,7 @@ export class ClashReviewTableWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "ClashReviewTableWidget",
-          label: "Clash Review Table Selector",
+          label: "Clashes",
           defaultState: WidgetState.Open,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ClashReviewTableWidget />,

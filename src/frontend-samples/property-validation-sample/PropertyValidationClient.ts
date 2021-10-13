@@ -6,12 +6,12 @@ import { AuthorizedClientRequestContext, IncludePrefix, request, RequestOptions,
 import { IModelApp } from "@bentley/imodeljs-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 
-export default class ValidationClient {
+export default class PropertyValidationClient {
 
   // START API_EXAMPLE
   // Retrieves a list of Property Validation test runs for the project specified by the project id.
   public static async getValidationTestRuns(requestContext: AuthorizedClientRequestContext, projectId: string): Promise<any | undefined> {
-    const accessToken = await ValidationClient.getAccessToken();
+    const accessToken = await PropertyValidationClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
 
@@ -38,7 +38,7 @@ export default class ValidationClient {
   // START API_EXAMPLE
   // Retrieves the Property Validation rule specified by the rule id.
   public static async getValidationRule(requestContext: AuthorizedClientRequestContext, ruleId: string): Promise<any | undefined> {
-    const accessToken = await ValidationClient.getAccessToken();
+    const accessToken = await PropertyValidationClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
 
@@ -66,14 +66,14 @@ export default class ValidationClient {
     if (url === undefined)
       return undefined;
 
-    const accessToken = await ValidationClient.getAccessToken();
+    const accessToken = await PropertyValidationClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
 
     const options = {
       method: "GET",
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: "application/vnd.bentley.itwin-platform.v1+json",
         Authorization: accessToken.toTokenString(IncludePrefix.Yes),
       },
     };

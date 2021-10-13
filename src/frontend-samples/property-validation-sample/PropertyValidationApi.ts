@@ -7,13 +7,13 @@ import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideTyp
 import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
 import { Point3d } from "@bentley/geometry-core";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
-import ValidationClient from "./ValidationClient";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 import { BeEvent } from "@bentley/bentleyjs-core";
-import { jsonResultData } from "./ValidationResultJson";
-import { jsonRuleData } from "./ValidationRuleJson";
+import { jsonResultData } from "./PropertyValidationResultJson";
+import { jsonRuleData } from "./PropertyValidationRuleJson";
+import PropertyValidationClient from "./PropertyValidationClient";
 
-export default class ValidationApi {
+export default class PropertyValidationApi {
 
   public static onValidationDataChanged = new BeEvent<any>();
 
@@ -24,10 +24,10 @@ export default class ValidationApi {
   private static _applyZoom: boolean = true;
 
   private static async getRequestContext() {
-    if (!ValidationApi._requestContext) {
-      ValidationApi._requestContext = await AuthorizedFrontendRequestContext.create();
+    if (!PropertyValidationApi._requestContext) {
+      PropertyValidationApi._requestContext = await AuthorizedFrontendRequestContext.create();
     }
-    return ValidationApi._requestContext;
+    return PropertyValidationApi._requestContext;
   }
 
   public static setupDecorator() {
@@ -35,7 +35,7 @@ export default class ValidationApi {
   }
 
   public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
-    decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
+    decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, PropertyValidationApi.visualizeValidationCallback);
   }
 
   public static enableDecorations(decorator: MarkerPinDecorator) {
@@ -48,50 +48,48 @@ export default class ValidationApi {
   }
 
   public static enableZoom() {
-    ValidationApi._applyZoom = true;
+    PropertyValidationApi._applyZoom = true;
   }
 
   public static disableZoom() {
-    ValidationApi._applyZoom = false;
+    PropertyValidationApi._applyZoom = false;
   }
 
   public static async setValidationData(projectId: string): Promise<void> {
-    const validationData = await ValidationApi.getValidationData(projectId);
-    ValidationApi.onValidationDataChanged.raiseEvent(validationData);
+    const validationData = await PropertyValidationApi.getValidationData(projectId);
+    PropertyValidationApi.onValidationDataChanged.raiseEvent(validationData);
   }
 
-  // START VALIDATION_API
+  // START PROPERTY_VALIDATION_API
   public static async getValidationData(projectId: string): Promise<any> {
-    const context = await ValidationApi.getRequestContext();
-    if (ValidationApi._validationData[projectId] === undefined) {
-      const runsResponse = await ValidationClient.getValidationTestRuns(context, projectId);
+    const context = await PropertyValidationApi.getRequestContext();
+    if (PropertyValidationApi._validationData[projectId] === undefined) {
+      const runsResponse = await PropertyValidationClient.getValidationTestRuns(context, projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
+        const resultResponse = await PropertyValidationClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
         if (resultResponse !== undefined && resultResponse.result !== undefined) {
-          ValidationApi._validationData[projectId] = resultResponse;
+          PropertyValidationApi._validationData[projectId] = resultResponse;
         }
       }
-      if (ValidationApi._validationData[projectId] === undefined) {
-        ValidationApi._validationData[projectId] = jsonResultData;
+      if (PropertyValidationApi._validationData[projectId] === undefined) {
+        PropertyValidationApi._validationData[projectId] = jsonResultData;
       }
     }
 
     // To avoid unnecessary API calls after setup, we request all the rule information here
-
-    for (const rule of ValidationApi._validationData[projectId].ruleList) {
-      const ruleData = await ValidationApi.getMatchingRule(rule.id.toString());
-      ValidationApi._ruleData[rule.id] = ruleData;
+    for (const rule of PropertyValidationApi._validationData[projectId].ruleList) {
+      const ruleData = await PropertyValidationApi.getMatchingRule(rule.id.toString());
+      PropertyValidationApi._ruleData[rule.id] = ruleData;
     }
 
-    return { validationData: ValidationApi._validationData[projectId], ruleData: ValidationApi._ruleData };
+    return { validationData: PropertyValidationApi._validationData[projectId], ruleData: PropertyValidationApi._ruleData };
   }
-
-  // END VALIDATION_API
+  // END PROPERTY_VALIDATION_API
 
   public static async getMatchingRule(ruleId: string) {
-    const context = await ValidationApi.getRequestContext();
-    const ruleData = await ValidationClient.getValidationRule(context, ruleId);
+    const context = await PropertyValidationApi.getRequestContext();
+    const ruleData = await PropertyValidationClient.getValidationRule(context, ruleId);
     if (ruleData !== undefined)
       return ruleData;
 
@@ -114,7 +112,7 @@ export default class ValidationApi {
 
       const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
 
-      const points = await ValidationApi.calcValidationCenter(imodel, elements);
+      const points = await PropertyValidationApi.calcValidationCenter(imodel, elements);
 
       for (let index = 0; index < points.length; index++) {
         const title = "Rule Violation(s) found:";
@@ -159,7 +157,7 @@ export default class ValidationApi {
   }
 
   public static visualizeValidationCallback = (validationData: any) => {
-    ValidationApi.visualizeViolation(validationData.elementId);
+    PropertyValidationApi.visualizeViolation(validationData.elementId);
   };
 
   public static visualizeViolation(elementId: string) {
@@ -174,7 +172,7 @@ export default class ValidationApi {
     emph.wantEmphasis = true;
     emph.emphasizeElements([elementId], vp, undefined, false);
 
-    if (ValidationApi._applyZoom) {
+    if (PropertyValidationApi._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
       viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);

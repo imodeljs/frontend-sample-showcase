@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates calling [Clash Detection APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result) to retrieve clash data and present it for review in a viewer app. 
+This sample demonstrates calling [iTwin Clash Detection APIs](https://developer.bentley.com/apis/clash-detection/) to retrieve clash data and present it for review in a viewer app. 
 
 ## Purpose
 
@@ -10,7 +10,7 @@ This sample demonstrates calling [Clash Detection APIs](https://developer.bentle
 - Populate table of clashes.
 - Visualize clashing element pair using red, blue and gray-out.
 - Zoom to clash on marker click or table selection.
-- Provide [code examples](./ClashDetectionApis.ts) for calling the Clash Detection APIs.
+- Provide [code examples](./ClashDetectionClient.ts) for calling the Clash Detection APIs.
 
 ## Description
 
