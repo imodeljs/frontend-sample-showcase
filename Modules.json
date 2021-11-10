@@ -50,6 +50,10 @@
       "import": "@bentley/frontend-authorization-client"
     },
     {
+      "name": "@bentley/frontend-devtools",
+      "import": "@bentley/frontend-devtools"
+    },
+    {
       "name": "@bentley/geometry-core",
       "import": "@bentley/geometry-core"
     },
