@@ -43,25 +43,19 @@ If an existing override was found, `clone` it and set the transparency to the de
 
 # Show Reality toggle
 
-This method turns on or off the reality model depending on the `showReality` argument.
+This method turns on or off the reality model.
 
 [_metadata_:annotation]:- "REALITY_TOGGLE_CALLBACK"
 
-# Display Style
-
-First `clone` the display style currently on the `ScreenViewport`. Turn off the background map by setting the `backgroundMap` viewFlag to false. This is not strictly necessary, but for this sample the Metrostation iModel looks much better without the background map.
-
-[_metadata_:annotation]:- "DISPLAY_STYLE"
-
 # Turn on a Reality Model
 
-Turning on a reality model. This sample uses [`findAvailableUnattachedRealityModels`](https://github.com/imodeljs/imodeljs/blob/master/core/frontend/src/ContextRealityModelState.ts#L132) from the imodeljs-frontend package to get unattached `ContextRealityModelProps`. If any `ContextRealityModelProps` are returned, this sample finds the first and uses `attachRealtyModel` to attach it to the display style. Then set the displayStyle of the viewport to the cloned and edited `style` variable.
+Turning on a reality model. If `orbitGTBlob` is defined, this reality model is a Point Cloud, and the `orbitGTBlob` object must be re-formed. Next, the `ContextRealityModelProps` is attached to the `viewPort` using `viewPort.displayStyle.attachRealityModel()`.
 
 [_metadata_:annotation]:- "REALITY_MODEL_ON"
 
 # Turn off a Reality Model
 
-Turning off a reality model. Reality models are typically detached using [`DisplayStyleState.detachRealityModelByNameAndUrl`](https://www.itwinjs.org/reference/imodeljs-frontend/views/displaystylestate/detachrealitymodelbynameandurl/). In this example, the name and URL of the attached reality models are not saved. This was done to simplify the sample. Typically, this information is stored in state when the reality model is turned on (attached). So [`DisplayStyleState.forEachRealityModel`](https://www.itwinjs.org/reference/imodeljs-frontend/views/displaystylestate/foreachrealitymodel/) is used to loop through all attached reality models to collect name and URL in `ContextRealityModelState`. In this example, there will only ever be one reality model attached. Then, `DisplayStyleState.detachRealityModelByNameAndUrl` is called. Finally, set the displayStyle of the viewport to the cloned and edited `style` variable. Next, we will cover the controls that call these two methods.
+Turning off a reality model. Reality models are detached using [`DisplayStyleState.detachRealityModelByNameAndUrl`](https://www.itwinjs.org/reference/imodeljs-frontend/views/displaystylestate/detachrealitymodelbynameandurl/).
 
 [_metadata_:annotation]:- "REALITY_MODEL_OFF"
 
@@ -87,18 +81,12 @@ A toggle that sets `showRealityDataState`
 
 # Reality Data Hook
 
-A hook with `showRealityDataState` as a dep. `RealityDataApi.toggleRealityModel` is called, then the transparency is set.
+A hook with `showRealityDataState` and `updateAttachedState` as deps. `RealityDataApi.toggleRealityModel` is called, then the transparency is set.
 
 [_metadata_:annotation]:- "REALITY_HOOK"
 
-# Transparency Slider
-
-A slider that sets `realityDataTransparencyState`
-
-[_metadata_:annotation]:- "TRANSPARENCY_SLIDER"
-
 # Transparency Hook
 
-A hook with `realityDataTransparencyState` as a dep. `RealityDataApi.setRealityDataTransparency` is called with the current state value of the transparency.
+A hook with `transparencyRealityDataState` and `updateTransparencyState` as deps. `RealityDataApi.setRealityDataTransparency` is called with the current state value of the transparency.
 
 [_metadata_:annotation]:- "TRANSPARENCY_HOOK"
