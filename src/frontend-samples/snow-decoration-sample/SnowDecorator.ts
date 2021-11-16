@@ -156,7 +156,7 @@ export class SnowDecorator implements Decorator {
       transparency: randomInteger(this._params.transparencyRange.low, this._params.transparencyRange.high),
       velocity: new Vector2d(
         randomFloat(this._params.velocityRange.low.x, this._params.velocityRange.high.x),
-        randomFloat(this._params.velocityRange.low.y, this._params.velocityRange.high.y)
+        randomFloat(this._params.velocityRange.low.y, this._params.velocityRange.high.y),
       ),
     };
   }

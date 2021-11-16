@@ -4,55 +4,52 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { ContextRealityModelProps, FeatureAppearance } from "@bentley/imodeljs-common";
-import {
-  ContextRealityModelState, IModelConnection, queryRealityData, ScreenViewport,
-} from "@bentley/imodeljs-frontend";
+import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps } from "@bentley/imodeljs-common";
+import { IModelConnection, queryRealityData, ScreenViewport } from "@bentley/imodeljs-frontend";
 
 export default class RealityDataApi {
+  public static async getRealityModels(imodel: IModelConnection): Promise<ContextRealityModelProps[]> {
+    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
+    return availableModels;
+  }
 
   // START REALITY_TOGGLE_CALLBACK
-  public static async toggleRealityModel(showReality: boolean, viewPort: ScreenViewport, imodel: IModelConnection) {
-    // START DISPLAY_STYLE
-    const style = viewPort.displayStyle.clone();
-
-    // Turn off the background
-    style.viewFlags.backgroundMap = false;
-    // END DISPLAY_STYLE
+  public static toggleRealityModel(crmProp: ContextRealityModelProps, viewPort: ScreenViewport, show?: boolean) {
+    const crmName = crmProp.name ? crmProp.name : "";
 
     // START REALITY_MODEL_ON
-    if (showReality) {
-      // Get first available reality model and attach it to displayStyle
-      const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
-      for (const crmProp of availableModels) {
-        style.attachRealityModel(crmProp);
-        viewPort.displayStyle = style;
-        return;
+    if (show && !viewPort.displayStyle.hasAttachedRealityModel(crmName, crmProp.tilesetUrl)) {
+      // Form orbitGtBlob object if reality data type is Point Cloud (orbitGTBlob is defined)
+      let orbitGtBlob: OrbitGtBlobProps | undefined;
+      if (crmProp.orbitGtBlob) {
+        orbitGtBlob = {
+          rdsUrl: crmProp.tilesetUrl,
+          containerName: "",
+          blobFileName: crmProp.orbitGtBlob.blobFileName,
+          sasToken: "",
+          accountName: crmProp.realityDataId ? crmProp.realityDataId : "",
+        };
+        crmProp.orbitGtBlob = orbitGtBlob;
       }
-      // END REALITY_MODEL_ON
-      // START REALITY_MODEL_OFF
-    } else {
-      // Collect reality models on displayStyle and detach
-      const models: ContextRealityModelState[] = [];
-      style.forEachRealityModel(
-        (modelState: ContextRealityModelState) => { models.push(modelState); },
-      );
-      for (const model of models)
-        style.detachRealityModelByNameAndUrl(model.name, model.url);
-      viewPort.displayStyle = style;
+      viewPort.displayStyle.attachRealityModel(crmProp);
+    // END REALITY_MODEL_ON
+    } else if (!show) {
+      viewPort.displayStyle.detachRealityModelByNameAndUrl(crmName, crmProp.tilesetUrl);
     }
-    // END REALITY_MODEL_OFF
+    viewPort.invalidateScene();
   }
   // END REALITY_TOGGLE_CALLBACK
 
   // START TRANSPARENCY
   // Modify reality data background transparency using the Viewport API
-  public static async setRealityDataTransparency(vp: ScreenViewport, transparency: number) {
-    // For this example we want to affect the appearance of *all* reality models.
+  public static setRealityDataTransparency(crmProp: ContextRealityModelProps, vp: ScreenViewport, transparency?: number) {
+    if (transparency === undefined)
+      transparency = 0;
     // START APPEARANCE
     vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
       // START OVERRIDES
-      model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone({ transparency }) : FeatureAppearance.fromJSON({ transparency });
+      if (model.matchesNameAndUrl(crmProp.name!, crmProp.tilesetUrl))
+        model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone({ transparency }) : FeatureAppearance.fromJSON({ transparency });
     });
     // END APPEARANCE
     // END OVERRIDES

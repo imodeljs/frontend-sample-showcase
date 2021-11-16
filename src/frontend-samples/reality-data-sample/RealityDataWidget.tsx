@@ -7,106 +7,95 @@ import React, { useEffect } from "react";
 import { Toggle } from "@bentley/ui-core";
 import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
 import RealityDataApi from "./RealityDataApi";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, WidgetState } from "@bentley/ui-framework";
-import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
+import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@bentley/ui-framework";
+import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
 import "./RealityData.scss";
+import { ContextRealityModelProps } from "@bentley/imodeljs-common";
 
 const RealityDataWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   // START STATE
-  const [showRealityDataState, setShowRealityDataState] = React.useState<boolean>(true);
-  const [realityDataTransparencyState, setRealityDataTransparencyState] = React.useState<number>(0);
+  const showRealityDataState = React.useRef<Map<string, boolean>>(new Map());
+  const transparencyRealityDataState = React.useRef<Map<string, number>>(new Map());
+  const [availableRealityModels, setAvailableRealityModels] = React.useState<ContextRealityModelProps[]>();
+  const [updateAttachedState, setUpdateAttachedState] = React.useState<string>("");
+  const [updateTransparencyState, setUpdateTransparencyState] = React.useState<string>("");
   // END STATE
 
   // START INITIAL_STATE
-  // Initalize the widget
+  // Initialize the widget
   useEffect(() => {
     IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      await RealityDataApi.toggleRealityModel(showRealityDataState, _vp, _vp.iModel)
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
-      await RealityDataApi.setRealityDataTransparency(_vp, realityDataTransparencyState)
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
+      const availRealityModels = await RealityDataApi.getRealityModels(_vp.iModel);
+      setAvailableRealityModels(availRealityModels);
+      for (const model of availRealityModels) {
+        showRealityDataState.current.set(model.tilesetUrl, true);
+        RealityDataApi.toggleRealityModel(model, _vp, true);
+        RealityDataApi.setRealityDataTransparency(model, _vp, 0);
+      }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   // END INITIAL_STATE
 
-  // START TRANSPARENCY_HOOK
-  // When just the transparency bar is changed, only call update transparency
-  useEffect(() => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp) {
-      RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState)
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error);
-        });
-    }
-  }, [realityDataTransparencyState]);
-  // END TRANSPARENCY_HOOK
-
   // START REALITY_HOOK
-  // When the button is toggled, display the realityModel and set its transparency to where the slider is currently at.
+  // When the button is toggled, display the realityModel and set its transparency to where the slider is currently set.
   useEffect(() => {
-    if (iModelConnection) {
+    if (iModelConnection && updateAttachedState) {
       const vp = IModelApp.viewManager.selectedView;
-      if (vp) {
-        RealityDataApi.toggleRealityModel(showRealityDataState, vp, iModelConnection).then(() => {
-          RealityDataApi.setRealityDataTransparency(vp, realityDataTransparencyState)
-            .catch((error) => {
-              // eslint-disable-next-line no-console
-              console.error(error);
-            });
-        })
-          .catch((error) => {
-            // eslint-disable-next-line no-console
-            console.error(error);
-          });
+      if (vp && availableRealityModels && showRealityDataState) {
+        const model = availableRealityModels.find((x) => x.tilesetUrl === updateAttachedState);
+        if (model) {
+          RealityDataApi.toggleRealityModel(model, vp, showRealityDataState.current.get(model.tilesetUrl));
+          RealityDataApi.setRealityDataTransparency(model, vp, transparencyRealityDataState.current.get(model.tilesetUrl));
+        }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showRealityDataState]);
+    setUpdateAttachedState("");
+  }, [availableRealityModels, iModelConnection, showRealityDataState, updateAttachedState]);
   // END REALITY_HOOK
 
-  // START REALITY_TOGGLE
-  // Create the react components for the toggle
-  const createToggle = (label: string, info: string) => {
-    const element = <Toggle isOn={showRealityDataState} onChange={async (checked: boolean) => setShowRealityDataState(checked)} />;
-    return (
-      <>
-        <span><span style={{ marginRight: "1em" }} className="icon icon-help" title={info}></span>{label}</span>
-        {element}
-      </>
-    );
-  };
-  // END REALITY_TOGGLE
+  // START TRANSPARENCY_HOOK
+  useEffect(() => {
+    if (iModelConnection && updateTransparencyState) {
+      const vp = IModelApp.viewManager.selectedView;
+      if (vp && availableRealityModels && showRealityDataState) {
+        const model = availableRealityModels.find((x) => x.tilesetUrl === updateTransparencyState);
+        if (model)
+          RealityDataApi.setRealityDataTransparency(model, vp, transparencyRealityDataState.current.get(model.tilesetUrl));
+      }
+    }
+    setUpdateTransparencyState("");
+  }, [availableRealityModels, iModelConnection, transparencyRealityDataState, updateTransparencyState]);
+  // END TRANSPARENCY_HOOK
 
-  // START TRANSPARENCY_SLIDER
-  // Create the react component for the transparency slider
-  const createTransparencySlider = (label: string, info: string) => {
-    const element = <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setRealityDataTransparencyState(Math.abs(Number(event.target.value) / 100))} />;
-    return (
-      <>
-        <span><span style={{ marginRight: "1em" }} className="icon icon-help" title={info}></span>{label}</span>
-        {element}
-      </>
-    );
+  const updateShowRealityDataState = (url: string, checked: boolean) => {
+    showRealityDataState.current.set(url, checked);
+    setUpdateAttachedState(url);
   };
-  // END TRANSPARENCY_SLIDER
+
+  const updateRealityDataTransparencyState = (url: string, val: number) => {
+    transparencyRealityDataState.current.set(url, val);
+    setUpdateTransparencyState(url);
+  };
 
   // START WIDGET_UI
   return (
     <>
       <div className="sample-options">
-        <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 1fr" }}>
-          {createToggle("Reality Data", "Toggle showing the reality data in the model.")}
-          {createTransparencySlider("Reality Data Transparency", "Adjusting this slider changes the transparency of the reality data. Does not apply if reality data is not currently being displayed.")}
+        <div className="sample-options-2col">
+          {availableRealityModels && availableRealityModels.map((element, index) => {
+            return (
+              <>
+                <span>{element.name}</span>
+                <Toggle key={element.tilesetUrl} isOn={true} onChange={async (checked: boolean) => updateShowRealityDataState(element.tilesetUrl, checked)} />
+                {element.orbitGtBlob === undefined && /** Point Clouds do not have transparency override support in v2.x. This will be available in v3.x. */
+                  <><span><span style={{ marginRight: "1em" }} className="icon icon-help" title={"Adjusting this slider changes the transparency of the reality data."}></span>{"Transparency"}</span>
+                    <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateRealityDataTransparencyState(element.tilesetUrl, Math.abs(Number(event.target.value) / 100))} />
+                  </>}
+                {index + 1 < availableRealityModels.length && <div className="row-break"></div>}
+              </>);
+          })
+          }
         </div>
       </div>
     </>
@@ -124,7 +113,7 @@ export class RealityDataWidgetProvider implements UiItemsProvider {
       widgets.push(
         {
           id: "RealityDataWidget",
-          label: "Reality Data Selector",
+          label: "Reality Data Controls",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <RealityDataWidget />,

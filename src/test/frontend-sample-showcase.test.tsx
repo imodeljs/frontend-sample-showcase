@@ -160,20 +160,14 @@ describe("Reality Data", () => {
       vp.displayStyle.attachRealityModel(crmProp);
       let models: number = 0;
       let style = vp.displayStyle.clone();
-      style.forEachRealityModel(
-        () => models++,
-      );
+      style.forEachRealityModel(() => { models++; },);
 
       // Expect the fake reality model to be added
       expect(models).to.equal(1);
       models = 0;
 
       // Toggle off all reality models
-      RealityDataApi.toggleRealityModel(false, vp, imodelMock.object)
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error(error.message);
-        });
+      RealityDataApi.toggleRealityModel(crmProp, vp, false);
       style = vp.displayStyle.clone();
       style.forEachRealityModel(
         () => models++,
