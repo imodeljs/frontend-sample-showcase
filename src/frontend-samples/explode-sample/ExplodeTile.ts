@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { assert, BeEvent, BeTimePoint, compareStrings, Id64, partitionArray } from "@bentley/bentleyjs-core";
-import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
-import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { GraphicBranch, IModelApp, IModelConnection, readElementGraphics, RenderGraphic, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
+import { assert, BeEvent, BeTimePoint, compareStrings, Id64, partitionArray } from "@itwin/core-bentley";
+import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@itwin/core-geometry";
+import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileVersionInfo, ViewFlagOverrides } from "@itwin/core-common";
+import { GraphicBranch, IModelApp, IModelConnection, readElementGraphics, RenderGraphic, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@itwin/core-frontend";
 import ExplodeApp from "./ExplodeApi";
 
 /** Data describing an element for the exploded effect. */

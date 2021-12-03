@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import type { Annotation } from "@bentley/monaco-editor";
+import { Annotation } from "@bentley/monaco-editor";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import { sampleManifest } from "sampleManifest";

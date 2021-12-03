@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Select, Slider, Toggle } from "@bentley/ui-core";
-import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@bentley/imodeljs-common";
-import { Range1d, Range1dProps } from "@bentley/geometry-core";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Select, Slider, Toggle } from "@itwin/core-react";
+import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
+import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
+import { Range1d, Range1dProps } from "@itwin/core-geometry";
 import ThematicDisplayApi from "./ThematicDisplayApi";
 import "./ThematicDisplay.scss";
 

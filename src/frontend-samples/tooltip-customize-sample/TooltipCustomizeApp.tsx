@@ -6,8 +6,8 @@ import React from "react";
 import { ShowcaseToolAdmin } from "./TooltipCustomizeApi";
 import { Viewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-sandbox";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
+import { IModelConnection } from "@itwin/core-frontend";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { TooltipCustomizeWidgetProvider } from "./TooltipCustomizeWidget";
 

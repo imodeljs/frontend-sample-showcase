@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { SectionMarker } from "@bentley/hypermodeling-frontend";
-import { Button, Toggle } from "@bentley/ui-core";
-import { ViewState } from "@bentley/imodeljs-frontend";
+import { SectionMarker } from "@itwin/hypermodeling-frontend";
+import { Button, Toggle } from "@itwin/core-react";
+import { ViewState } from "@itwin/core-frontend";
 import HyperModelingApi from "./HyperModelingApi";
-import { assert, Id64String } from "@bentley/bentleyjs-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { assert, Id64String } from "@itwin/core-bentley";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { useActiveViewport } from "@itwin/appui-react";
 import "./HyperModeling.scss";
 
 interface Previous {

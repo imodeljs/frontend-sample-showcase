@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { OpenMode } from "@bentley/bentleyjs-core";
+import { OpenMode } from "@itwin/core-bentley";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext, FrontendRequestContext, IModelApp, IModelConnection, RemoteBriefcaseConnection } from "@bentley/imodeljs-frontend";
-import { SignIn } from "@bentley/ui-components";
+import { AuthorizedFrontendRequestContext, CheckpointConnection, FrontendRequestContext, IModelApp, IModelConnection } from "@itwin/core-frontend";
+import "@itwin/components-react";
 import { SampleBaseApp } from "../../SampleBaseApp";
-import { LoadingSpinner, SpinnerSize } from "@bentley/ui-core";
+import { LoadingSpinner, SpinnerSize } from "@itwin/core-react";
 
 /** React state of the StartupComponent */
 export interface StartupProps {
@@ -100,7 +100,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
 
     const imodelQuery = new IModelQuery();
     imodelQuery.byName(iModelName);
-    const imodels = await IModelApp.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
+    const imodels = await IModelHubFrontend.iModelClient.iModels.get(requestContext, project.wsgId, imodelQuery);
     if (imodels.length === 0)
       throw new Error(`iModel with name "${iModelName}" does not exist in project "${projectName}"`);
     return { projectId: project.wsgId, imodelId: imodels[0].wsgId };
@@ -111,7 +111,7 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     try {
       // attempt to open the imodel
       const info = await this.getIModelInfo();
-      imodel = await RemoteBriefcaseConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
+      imodel = await CheckpointConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
     } catch (e) {
       alert(e.message);
     }

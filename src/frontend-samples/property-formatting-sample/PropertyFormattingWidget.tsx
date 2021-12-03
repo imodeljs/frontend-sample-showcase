@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Select } from "@bentley/ui-core";
-import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { KeySet } from "@bentley/presentation-common";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Select } from "@itwin/core-react";
+import { ISelectionProvider, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
+import { KeySet } from "@itwin/presentation-common";
 import { PropertyFormattingApi } from "./PropertyFormattingApi";
 import { Approach1App } from "./approach-1-App";
 import { Approach2App } from "./approach-2-App";

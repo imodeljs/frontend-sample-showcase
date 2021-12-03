@@ -4,13 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { FunctionComponent, ReactNode, useEffect, useRef, useState } from "react";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Presentation } from "@bentley/presentation-frontend";
+import { IModelApp } from "@itwin/core-frontend";
+import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
-import { UiFramework } from "@bentley/ui-framework";
-import { Spinner, SpinnerSize, UiCore } from "@bentley/ui-core";
-import { UiComponents } from "@bentley/ui-components";
+import { UiFramework } from "@itwin/appui-react";
+import { Spinner, SpinnerSize, UiCore } from "@itwin/core-react";
+import { UiComponents } from "@itwin/components-react";
 import path from "path";
 const context = (require as any).context("./../../frontend-samples", true, /\.tsx$/);
 

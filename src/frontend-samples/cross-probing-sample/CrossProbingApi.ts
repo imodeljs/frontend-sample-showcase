@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, ViewCreator2d, Viewport } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, ViewCreator2d, Viewport } from "@itwin/core-frontend";
+import { ColorDef } from "@itwin/core-common";
 
 /** This sample showcases how to implement cross-probing between 3D and 2D elements.
  * At startup, it fetches all 2D/3D connections in the iModel and and maps them into an array.

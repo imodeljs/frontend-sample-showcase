@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, IModelApp, MarginPercent, ViewChangeOptions } from "@itwin/core-frontend";
+import { ColorDef, FeatureOverrideType } from "@itwin/core-common";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import ClashDetectionClient from "./ClashDetectionClient";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
-import { BeEvent } from "@bentley/bentleyjs-core";
+import { BeEvent } from "@itwin/core-bentley";
 import { jsonData } from "./ClashDetectionJsonData";
 
 export default class ClashReviewApi {

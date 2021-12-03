@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Button, Select, Slider, Toggle } from "@itwin/core-react";
+import { useActiveViewport } from "@itwin/appui-react";
 import SnowDecorationApi from "./SnowDecorationApi";
 import { SnowParams } from "./SnowDecorator";
 import "./SnowDecoration.scss";

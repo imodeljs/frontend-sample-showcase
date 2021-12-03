@@ -5,9 +5,9 @@
 
 import * as React from "react";
 import "common/samples-common.scss";
-import { Table } from "@bentley/ui-components";
+import { Table } from "@itwin/components-react";
 import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";
-import { PresentationTableDataProvider } from "@bentley/presentation-components";
+import { PresentationTableDataProvider } from "@itwin/presentation-components";
 
 interface Approach2State {
   dataProvider?: PresentationTableDataProvider;

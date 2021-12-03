@@ -6,10 +6,10 @@
 import { expect } from "chai";
 import RealityDataApi from "frontend-samples/reality-data-sample/RealityDataApi";
 import * as TypeMoq from "typemoq";
-import { Range3d } from "@bentley/geometry-core";
-import { ContextRealityModelProps, SpatialClassifier, SpatialClassifierFlags, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay } from "@bentley/imodeljs-common";
-import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { I18NNamespace } from "@bentley/imodeljs-i18n";
+import { Range3d } from "@itwin/core-geometry";
+import { ContextRealityModelProps, SpatialClassifier, SpatialClassifierFlags, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay } from "@itwin/core-common";
+import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@itwin/core-frontend";
+import { I18NNamespace } from "@itwin/core-i18n";
 import { EmphasizeElementsApi } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApi";
 import ThematicDisplayApi from "../frontend-samples/thematic-display-sample/ThematicDisplayApi";

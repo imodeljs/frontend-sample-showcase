@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import TransformationsApi from "./TransformationsApi";
-import { Textarea, Toggle } from "@bentley/ui-core";
-import { IModelApp, ViewManip, Viewport } from "@bentley/imodeljs-frontend";
-import { useActiveFrontstageId, useActiveViewport } from "@bentley/ui-framework";
+import { Textarea, Toggle } from "@itwin/core-react";
+import { IModelApp, ViewManip, Viewport } from "@itwin/core-frontend";
+import { useActiveFrontstageId, useActiveViewport } from "@itwin/appui-react";
 import TransformationsClient from "./TransformationsClient";
 
 const TransformationsWidget: React.FunctionComponent = () => {

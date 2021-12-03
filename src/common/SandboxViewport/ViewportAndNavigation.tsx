@@ -3,13 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import {
-  FitViewTool, IModelApp, IModelConnection,
-  PanViewTool, RotateViewTool, SelectionTool, ViewState, ZoomViewTool,
-} from "@bentley/imodeljs-frontend";
+import { FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, ViewState, ZoomViewTool } from "@itwin/core-frontend";
 
-import { ViewportComponent } from "@bentley/ui-components";
-import { viewWithUnifiedSelection } from "@bentley/presentation-components";
+import { ViewportComponent } from "@itwin/components-react";
+import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import "./Toolbar.scss";
 
 // create a HOC viewport component that supports unified selection

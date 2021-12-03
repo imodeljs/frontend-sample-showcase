@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, Select, UnderlinedButton } from "@bentley/ui-core";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Button, Select, UnderlinedButton } from "@itwin/core-react";
 import IotAlertApi, { BlinkingEffect } from "./IotAlertApi";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { MessageManager, useActiveIModelConnection } from "@bentley/ui-framework";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { Id64String } from "@itwin/core-bentley";
+import { MessageManager, useActiveIModelConnection } from "@itwin/appui-react";
+import { IModelConnection } from "@itwin/core-frontend";
 import "./IotAlert.scss";
 
 const IotAlertWidget: React.FunctionComponent = () => {

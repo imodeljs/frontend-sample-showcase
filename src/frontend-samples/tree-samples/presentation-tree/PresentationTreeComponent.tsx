@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
-import { usePresentationTreeNodeLoader } from "@bentley/presentation-components";
+import { IModelConnection } from "@itwin/core-frontend";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@itwin/components-react";
+import { usePresentationTreeNodeLoader } from "@itwin/presentation-components";
 import RULESET_TREE_HIERARCHY from "./TreeHierarchy";
 const PAGING_SIZE = 20;
 

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
 import { SampleDataProvider } from "@itwinjs-sandbox";
 
 export const BasicTreeComponent: FunctionComponent = () => {

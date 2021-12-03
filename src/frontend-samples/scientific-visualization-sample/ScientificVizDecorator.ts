@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { assert } from "@bentley/bentleyjs-core";
-import { Polyface } from "@bentley/geometry-core";
-import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { DecorateContext, Decorator, GraphicType, IModelApp, RenderGraphicOwner, Viewport } from "@bentley/imodeljs-frontend";
+import { assert } from "@itwin/core-bentley";
+import { Polyface } from "@itwin/core-geometry";
+import { ColorByName, ColorDef } from "@itwin/core-common";
+import { DecorateContext, Decorator, GraphicType, IModelApp, RenderGraphicOwner, Viewport } from "@itwin/core-frontend";
 
 export class ScientificVizDecorator implements Decorator {
   public readonly polyface: Polyface;

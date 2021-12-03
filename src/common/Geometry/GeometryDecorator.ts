@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@bentley/geometry-core";
-import { DecorateContext, Decorator, GraphicBranch, GraphicBuilder, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
-import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@itwin/core-geometry";
+import { DecorateContext, Decorator, GraphicBranch, GraphicBuilder, GraphicType, IModelApp, Marker, RenderGraphic } from "@itwin/core-frontend";
+import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@itwin/core-common";
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
 interface CustomGeometryQuery {

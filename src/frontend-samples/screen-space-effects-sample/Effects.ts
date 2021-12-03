@@ -2,9 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import {
-  ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams, UniformType, VaryingType,
-} from "@bentley/imodeljs-frontend";
+import { ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams, UniformType, VaryingType } from "@itwin/core-frontend";
 
 /** Settings that control how the saturation effect is applied. */
 export interface SaturationConfig {

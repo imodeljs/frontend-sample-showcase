@@ -3,15 +3,15 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { Select, Slider } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { StandardViewId } from "@bentley/imodeljs-frontend";
+import { Select, Slider } from "@itwin/core-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { StandardViewId } from "@itwin/core-frontend";
 import { ScientificVizDecorator } from "./ScientificVizDecorator";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { useActiveViewport } from "@itwin/appui-react";
 import ScientificVizApi from "./ScientificVizApi";
 import "./ScientificViz.scss";
-import { AuxChannelDataType, Polyface } from "@bentley/geometry-core";
-import { ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
+import { AuxChannelDataType, Polyface } from "@itwin/core-geometry";
+import { ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@itwin/core-common";
 
 export type SampleMeshName = "Cantilever" | "Flat with waves";
 const sampleMeshNames = ["Cantilever", "Flat with waves"];

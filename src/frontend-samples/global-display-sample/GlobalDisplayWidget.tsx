@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { IModelApp, NotifyMessageDetails, OutputMessagePriority } from "@bentley/imodeljs-frontend";
-import { Button, Input, Toggle } from "@bentley/ui-core";
+import { IModelApp, NotifyMessageDetails, OutputMessagePriority } from "@itwin/core-frontend";
+import { Button, Input, Toggle } from "@itwin/core-react";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
-import { AbstractWidgetProps, SpecialKey, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { useActiveViewport } from "@bentley/ui-framework";
-import { BackgroundMapType } from "@bentley/imodeljs-common";
+import { AbstractWidgetProps, SpecialKey, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { useActiveViewport } from "@itwin/appui-react";
+import { BackgroundMapType } from "@itwin/core-common";
 import "./GlobalDisplay.scss";
 
 const GlobalDisplayWidget: FunctionComponent = () => {

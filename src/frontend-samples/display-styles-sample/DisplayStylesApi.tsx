@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { DisplayStyle3dSettingsProps } from "@bentley/imodeljs-common";
-import { Viewport } from "@bentley/imodeljs-frontend";
+import { DisplayStyle3dSettingsProps } from "@itwin/core-common";
+import { Viewport } from "@itwin/core-frontend";
 import "common/samples-common.scss";
 
 export default class DisplayStylesApp {

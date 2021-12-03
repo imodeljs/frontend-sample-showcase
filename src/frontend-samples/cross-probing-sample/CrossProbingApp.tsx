@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useState } from "react";
-import { IModelConnection, ViewCreator2d, ViewState } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { IModelConnection, ViewCreator2d, ViewState } from "@itwin/core-frontend";
+import { ColorDef } from "@itwin/core-common";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import CrossProbingApi from "./CrossProbingApi";

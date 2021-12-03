@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { Slider, Toggle } from "@bentley/ui-core";
+import { Slider, Toggle } from "@itwin/core-react";
 import { cloneEffectsConfig, EffectsConfig, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Angle } from "@bentley/geometry-core";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Angle } from "@itwin/core-geometry";
 import ScreenSpaceEffectsApi from "./ScreenSpaceEffectsApi";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { useActiveViewport } from "@itwin/appui-react";
 
 export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();

@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Button, Select, Slider, Toggle } from "@itwin/core-react";
 import ExplodeApi, { ExplodeObject, ExplodeProvider } from "./ExplodeApi";
-import { Animator, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { Animator, IModelApp, IModelConnection } from "@itwin/core-frontend";
 import "./Explode.scss";
 
 const _objects: ExplodeObject[] = [

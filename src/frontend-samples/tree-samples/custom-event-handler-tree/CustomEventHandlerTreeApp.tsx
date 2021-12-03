@@ -6,9 +6,9 @@ import React, { FunctionComponent } from "react";
 import { CustomEventHandlerTreeComponent } from "./CustomEventHandlerTreeComponent";
 import { BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
-import { Cartographic } from "@bentley/imodeljs-common";
-import { Range3d } from "@bentley/geometry-core";
+import { BlankConnectionProps } from "@itwin/core-frontend";
+import { Cartographic } from "@itwin/core-common";
+import { Range3d } from "@itwin/core-geometry";
 import "./CustomEventHandlerTree.scss";
 
 const frontstages = [{ provider: new BlankFrontstage(CustomEventHandlerTreeComponent), default: true, requiresIModelConnection: true }];

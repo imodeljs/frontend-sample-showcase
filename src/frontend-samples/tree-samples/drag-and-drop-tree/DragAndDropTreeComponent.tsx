@@ -4,11 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { DragObjectWithType, DropTargetMonitor, useDrag, useDrop } from "react-dnd";
-import {
-  ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource,
-  TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModelSource,
-  useTreeNodeLoader, useVisibleTreeNodes,
-} from "@bentley/ui-components";
+import { ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource, TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
 import { BasicTreeNode } from "./BasicTreeNode";
 import * as mergeRefsExports from "react-merge-refs";
 import { SampleDataProvider } from "@itwinjs-sandbox";

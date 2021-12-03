@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
+import { DbOpcode, Id64Array, Id64String } from "@itwin/core-bentley";
 import { Version } from "@bentley/imodelhub-client";
-import { ChangedElements, ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@bentley/imodeljs-frontend";
+import { ChangedElements, ColorDef, FeatureAppearance } from "@itwin/core-common";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@itwin/core-frontend";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 
 /** This provider will change the color of the elements based on the last operation of the comparison. */

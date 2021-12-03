@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { ControlledTree, DelayLoadedTreeNodeItem, ITreeDataProvider, PropertyValueRendererManager, SelectionMode, TreeActions, TreeDataChangesListener, TreeModelNode, TreeNodeItem, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
-import { ExpansionToggle } from "@bentley/ui-core";
-import { PropertyRecord } from "@bentley/ui-abstract";
-import { BeEvent } from "@bentley/bentleyjs-core";
+import { ControlledTree, DelayLoadedTreeNodeItem, ITreeDataProvider, PropertyValueRendererManager, SelectionMode, TreeActions, TreeDataChangesListener, TreeModelNode, TreeNodeItem, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
+import { ExpansionToggle } from "@itwin/core-react";
+import { PropertyRecord } from "@itwin/appui-abstract";
+import { BeEvent } from "@itwin/core-bentley";
 
 /**
  * This component demonstrates use `ControlledTree` with custom nodes rendering. It uses

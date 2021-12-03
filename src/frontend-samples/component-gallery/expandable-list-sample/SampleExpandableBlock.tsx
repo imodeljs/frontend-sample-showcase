@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ExpandableBlock, ExpandableBlockProps } from "@bentley/ui-core";
+import { ExpandableBlock, ExpandableBlockProps } from "@itwin/core-react";
 
 /** Sample component using ExpandableBlock with an expanded state  */
 // eslint-disable-next-line @typescript-eslint/naming-convention

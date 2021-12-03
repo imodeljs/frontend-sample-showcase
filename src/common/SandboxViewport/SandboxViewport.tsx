@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
+import { IModelConnection, ViewState } from "@itwin/core-frontend";
 import { ViewportAndNavigation } from "./ViewportAndNavigation";
 import { SandboxIModelConnection } from "../SandboxIModelConnection/SandboxIModelConnection";
 import { ViewSetup } from "@itwinjs-sandbox";

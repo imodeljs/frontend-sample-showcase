@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
-import { Point3d } from "@bentley/geometry-core";
+import { AuthorizedFrontendRequestContext, EmphasizeElements, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@itwin/core-frontend";
+import { ColorDef, FeatureOverrideType, GeometricElement3dProps, Placement3d } from "@itwin/core-common";
+import { Point3d } from "@itwin/core-geometry";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import ValidationClient from "./ValidationClient";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
-import { BeEvent } from "@bentley/bentleyjs-core";
+import { BeEvent } from "@itwin/core-bentley";
 import { jsonResultData } from "./ValidationResultJson";
 import { jsonRuleData } from "./ValidationRuleJson";
 

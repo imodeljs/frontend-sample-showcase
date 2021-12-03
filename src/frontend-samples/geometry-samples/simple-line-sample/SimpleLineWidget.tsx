@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { NumberInput } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorByName, ColorDef } from "@itwin/core-common";
+import { NumberInput } from "@itwin/core-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { InteractivePointMarker } from "./InteractivePointMarker";
 import SimpleLineApi from "./SimpleLineApi";

@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { NumberInput, Timer } from "@bentley/ui-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { ColorPickerButton } from "@bentley/ui-components";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { ColorDef } from "@itwin/core-common";
+import { NumberInput, Timer } from "@itwin/core-react";
+import { IModelApp } from "@itwin/core-frontend";
+import { ColorPickerButton } from "@itwin/components-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import SimpleAnimatedApi from "./SimpleAnimatedApi";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";

@@ -1,4 +1,4 @@
-import type { Annotation } from "@bentley/monaco-editor";
+import { Annotation } from "@bentley/monaco-editor";
 import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
 import React from "react";
 

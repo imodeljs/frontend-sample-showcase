@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Point3d, Range2d } from "@bentley/geometry-core";
+import { Point3d, Range2d } from "@itwin/core-geometry";
 import { BasePointGenerator, CirclePointGenerator, CrossPointGenerator, RandomPointGenerator } from "./PointGenerators";
-import { Select, Slider } from "@bentley/ui-core";
+import { Select, Slider } from "@itwin/core-react";
 
 export enum PointMode {
   Random = "1",

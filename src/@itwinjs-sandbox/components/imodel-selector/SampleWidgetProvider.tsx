@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { FunctionComponent } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { SampleIModels, SampleIModelWithAlternativeName } from "../../SampleIModels";
 import { IModelSelector } from "../imodel-selector/IModelSelector";
 import { defaultIModelList } from "../../constants";

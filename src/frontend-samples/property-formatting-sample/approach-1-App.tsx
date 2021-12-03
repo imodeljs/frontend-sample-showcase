@@ -5,10 +5,10 @@
 
 import * as React from "react";
 import "common/samples-common.scss";
-import { Toggle } from "@bentley/ui-core";
-import { PropertyGrid } from "@bentley/ui-components";
+import { Toggle } from "@itwin/core-react";
+import { PropertyGrid } from "@itwin/components-react";
 import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";
-import { PresentationPropertyDataProvider } from "@bentley/presentation-components";
+import { PresentationPropertyDataProvider } from "@itwin/presentation-components";
 
 interface Approach1State {
   enableCustomize: boolean;

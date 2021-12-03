@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React from "react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@bentley/ui-framework";
+import { IModelConnection, ViewState } from "@itwin/core-frontend";
+import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
 
 export class TransformationsFrontstage extends FrontstageProvider {
   // constants

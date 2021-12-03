@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React from "react";
-import { Button, ButtonType } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { Button, ButtonType } from "@itwin/core-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ImageExportApi } from "./ImageExportApi";
 import "./ImageExport.scss";
 

@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { NumberInput, Slider } from "@bentley/ui-core";
-import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorDef, LinePixels } from "@itwin/core-common";
+import { NumberInput, Slider } from "@itwin/core-react";
+import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@itwin/core-geometry";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
 import CurveFractionApi from "./CurveFractionApi";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { SampleCurveFactory } from "./SampleCurveFactory";

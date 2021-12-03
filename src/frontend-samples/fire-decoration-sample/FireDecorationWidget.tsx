@@ -4,14 +4,14 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Button, Select, Slider, Toggle } from "@itwin/core-react";
 import FireDecorationApi from "./FireDecorationApi";
 import { FireEmitter } from "./FireDecorator";
-import { Point3d, Range2d, Transform } from "@bentley/geometry-core";
-import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
-import { assert } from "@bentley/bentleyjs-core";
+import { Point3d, Range2d, Transform } from "@itwin/core-geometry";
+import { IModelApp, Viewport } from "@itwin/core-frontend";
+import { assert } from "@itwin/core-bentley";
 import "./FireDecoration.scss";
 
 interface Fire {

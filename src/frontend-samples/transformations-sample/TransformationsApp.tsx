@@ -5,10 +5,10 @@
 import { AuthorizationClient, default3DSandboxUi, getIModelInfo, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
-import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@bentley/imodeljs-frontend";
+import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@itwin/core-frontend";
 import { TransformationsWidgetProvider } from "./TransformationsWidget";
 import { TransformationsFrontstage } from "./TransformationsFrontstageProvider";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import "./transformations-sample.scss";
 
 const uiProviders = [new TransformationsWidgetProvider()];

@@ -5,9 +5,9 @@
 /* eslint-disable */
 /* tslint:disable */
 
-import { Point3d } from "@bentley/geometry-core";
+import { Point3d } from "@itwin/core-geometry";
 import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
-import { AuthorizedFrontendRequestContext,IModelApp } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, IModelApp } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export interface CommentsListPreferReturnMinimal {

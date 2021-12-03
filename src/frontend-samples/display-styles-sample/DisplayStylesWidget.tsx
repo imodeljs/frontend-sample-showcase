@@ -5,10 +5,10 @@
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
 import DisplayStylesApp from "./DisplayStylesApi";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { useActiveViewport } from "@itwin/appui-react";
 import { displayStyles } from "./Styles";
-import { Select, Toggle } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { Select, Toggle } from "@itwin/core-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 
 const CUSTOM_STYLE_INDEX = 0;
 const DEFAULT_STYLE_INDEX = 4;

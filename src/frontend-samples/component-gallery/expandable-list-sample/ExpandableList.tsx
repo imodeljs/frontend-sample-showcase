@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
-import { ExpandableBlock, ExpandableList } from "@bentley/ui-core";
+import { ExpandableBlock, ExpandableList } from "@itwin/core-react";
 import { SampleExpandableBlock } from "./SampleExpandableBlock";
 import { ControlPane } from "common/ControlPane/ControlPane";
 

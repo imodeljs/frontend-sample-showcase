@@ -5,8 +5,8 @@
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection, StandardViewId, ViewState } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection, StandardViewId, ViewState } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { MarkerPinWidgetProvider } from "./MarkerPinWidget";
 
 const uiProviders = [new MarkerPinWidgetProvider()];

@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { ChangeEvent, useCallback, useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@itwin/core-react";
 import { SettingsResult, SettingsStatus } from "@bentley/product-settings-client";
 import ReadSettingsApi from "./ReadSettingsApi";
 import "./ReadSettings.scss";

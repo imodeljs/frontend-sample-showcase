@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ColorDef } from "@bentley/imodeljs-common";
-import { BeButton, BeButtonEvent, EventHandled, IModelApp, InputCollector, Marker } from "@bentley/imodeljs-frontend";
-import { Point3d, XAndY } from "@bentley/geometry-core";
+import { ColorDef } from "@itwin/core-common";
+import { BeButton, BeButtonEvent, EventHandled, IModelApp, InputCollector, Marker } from "@itwin/core-frontend";
+import { Point3d, XAndY } from "@itwin/core-geometry";
 
 export class InteractivePointMarker extends Marker {
   private _color: ColorDef;

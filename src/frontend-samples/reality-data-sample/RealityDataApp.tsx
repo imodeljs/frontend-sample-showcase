@@ -6,8 +6,8 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } fro
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { RealityDataWidgetProvider } from "./RealityDataWidget";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new RealityDataWidgetProvider()];

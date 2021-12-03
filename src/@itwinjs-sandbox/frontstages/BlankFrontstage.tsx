@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { ComponentType } from "react";
-import { ConfigurableCreateInfo, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, useActiveIModelConnection, ViewportContentControl } from "@bentley/ui-framework";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { ConfigurableCreateInfo, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, useActiveIModelConnection, ViewportContentControl } from "@itwin/appui-react";
+import { IModelConnection } from "@itwin/core-frontend";
 
 export type IModelConnectionComponent = ComponentType<{ imodel: IModelConnection }>;
 

@@ -5,10 +5,10 @@
 import { assert } from "chai";
 import * as TypeMoq from "typemoq";
 
-import { Guid, GuidString } from "@bentley/bentleyjs-core";
-import { Point3d, Range3d, Vector3d } from "@bentley/geometry-core";
-import { Cartographic } from "@bentley/imodeljs-common";
-import { BlankConnection, IModelConnection, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
+import { Guid, GuidString } from "@itwin/core-bentley";
+import { Point3d, Range3d, Vector3d } from "@itwin/core-geometry";
+import { Cartographic } from "@itwin/core-common";
+import { BlankConnection, IModelConnection, ScreenViewport, SpatialViewState } from "@itwin/core-frontend";
 
 function createViewDiv() {
   const div = document.createElement("div");

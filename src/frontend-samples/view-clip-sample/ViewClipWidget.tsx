@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { Button, ButtonType, Select, Toggle } from "@bentley/ui-core";
-import { ContextRotationId, IModelApp } from "@bentley/imodeljs-frontend";
+import { Button, ButtonType, Select, Toggle } from "@itwin/core-react";
+import { ContextRotationId, IModelApp } from "@itwin/core-frontend";
 import ViewClipApi from "./ViewClipApi";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, useActiveViewport, WidgetState } from "@bentley/ui-framework";
-import { ClipShape, ConvexClipPlaneSet } from "@bentley/geometry-core";
-import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
+import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { ClipShape, ConvexClipPlaneSet } from "@itwin/core-geometry";
+import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import "./ViewClip.scss";
 
 export const ViewClipWidget: React.FunctionComponent = () => {

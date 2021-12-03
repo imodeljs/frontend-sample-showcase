@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelTileRpcInterface, TileVersionInfo } from "@itwin/core-common";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@itwin/core-frontend";
 import { ExplodeTreeReference, TreeDataListener } from "./ExplodeTile";
 
 export interface ExplodeObject {

@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
-import { ColorPickerButton } from "@bentley/ui-components";
+import { ColorDef } from "@itwin/core-common";
+import { Button, ButtonType, Toggle } from "@itwin/core-react";
+import { ColorPickerButton } from "@itwin/components-react";
 import { EmphasizeElementsApi } from "./EmphasizeElementsApi";
-import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { EmphasizeElements, IModelApp } from "@bentley/imodeljs-frontend";
+import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { EmphasizeElements, IModelApp } from "@itwin/core-frontend";
 
 enum ActionType {
   Emphasize = "Emphasize",

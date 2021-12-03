@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps } from "@bentley/imodeljs-common";
-import { IModelConnection, queryRealityData, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps } from "@itwin/core-common";
+import { IModelConnection, queryRealityData, ScreenViewport } from "@itwin/core-frontend";
 
 export default class RealityDataApi {
   public static async getRealityModels(imodel: IModelConnection): Promise<ContextRealityModelProps[]> {

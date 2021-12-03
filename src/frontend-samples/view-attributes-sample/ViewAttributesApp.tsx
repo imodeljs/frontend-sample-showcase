@@ -6,9 +6,9 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { ViewAttributesWidgetProvider } from "./ViewAttributesWidget";
-import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { ViewAttributesApi } from "./ViewAttributesApi";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 
 const uiProviders = [new ViewAttributesWidgetProvider()];
 

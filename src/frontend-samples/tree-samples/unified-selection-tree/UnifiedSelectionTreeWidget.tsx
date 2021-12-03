@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@bentley/ui-components";
-import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@bentley/presentation-components";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@itwin/components-react";
+import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";
+import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import RULESET_TREE_HIERARCHY from "./TreeHierarchy";
 import "./UnifiedSelectionTree.scss";
 const PAGING_SIZE = 20;

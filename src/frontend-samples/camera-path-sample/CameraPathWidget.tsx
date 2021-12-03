@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useActiveViewport } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Select } from "@bentley/ui-core";
+import { useActiveViewport } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
+import { Select } from "@itwin/core-react";
 import CameraPathApi, { CameraPath } from "./CameraPathApi";
 import { CameraPathTool } from "./CameraPathTool";
 import "./CameraPath.scss";

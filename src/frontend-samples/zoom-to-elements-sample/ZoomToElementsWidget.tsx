@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import ZoomToElementsApi, { ZoomOptions } from "./ZoomToElementsApi";
-import { StandardViewId } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType, Input, Select, Toggle } from "@bentley/ui-core";
-import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
+import { StandardViewId } from "@itwin/core-frontend";
+import { Button, ButtonType, Input, Select, Toggle } from "@itwin/core-react";
+import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
 import "./ZoomToElements.scss";
 
 const ZoomToElementsWidget: React.FunctionComponent = () => {

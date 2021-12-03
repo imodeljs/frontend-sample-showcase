@@ -2,12 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { assert } from "@bentley/bentleyjs-core";
+import { assert } from "@itwin/core-bentley";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Version } from "@bentley/imodelhub-client";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Select, Spinner, SpinnerSize } from "@bentley/ui-core";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Select, Spinner, SpinnerSize } from "@itwin/core-react";
+import { useActiveIModelConnection } from "@itwin/appui-react";
 import * as React from "react";
 import "./ChangedElements.scss";
 import { ChangedElementsApi } from "./ChangedElementsApi";

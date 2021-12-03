@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { NumberInput, Select } from "@bentley/ui-core";
-import { PolyfaceBuilder, StrokeOptions } from "@bentley/geometry-core";
+import { ColorByName, ColorDef } from "@itwin/core-common";
+import { NumberInput, Select } from "@itwin/core-react";
+import { PolyfaceBuilder, StrokeOptions } from "@itwin/core-geometry";
 import Simple3dApi from "./Simple3dApi";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 
 export const Simple3dWidget: React.FunctionComponent = () => {

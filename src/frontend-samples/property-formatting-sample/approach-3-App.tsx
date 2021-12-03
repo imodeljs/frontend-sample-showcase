@@ -5,9 +5,9 @@
 
 import * as React from "react";
 import "common/samples-common.scss";
-import { Toggle } from "@bentley/ui-core";
-import { SelectionMode, SimpleTableDataProvider, Table } from "@bentley/ui-components";
-import { PropertyRecord } from "@bentley/ui-abstract";
+import { Toggle } from "@itwin/core-react";
+import { SelectionMode, SimpleTableDataProvider, Table } from "@itwin/components-react";
+import { PropertyRecord } from "@itwin/appui-abstract";
 import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";
 
 export interface OverlySimplePropertyRecord {

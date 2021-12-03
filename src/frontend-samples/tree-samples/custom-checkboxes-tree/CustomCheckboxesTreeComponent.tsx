@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
+import { ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
 import { SampleDataProvider } from "@itwinjs-sandbox";
-import { ImageCheckBox, NodeCheckboxRenderProps } from "@bentley/ui-core";
+import { ImageCheckBox, NodeCheckboxRenderProps } from "@itwin/core-react";
 
 /**
  * This component demonstrates how use `ControlledTree` with custom checkbox rendering.

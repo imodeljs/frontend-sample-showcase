@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DelayLoadedTreeNodeItem, ITreeDataProvider, TreeDataChangesListener, TreeNodeItem } from "@bentley/ui-components";
-import { PropertyRecord } from "@bentley/ui-abstract";
-import { BeEvent } from "@bentley/bentleyjs-core";
+import { DelayLoadedTreeNodeItem, ITreeDataProvider, TreeDataChangesListener, TreeNodeItem } from "@itwin/components-react";
+import { PropertyRecord } from "@itwin/appui-abstract";
+import { BeEvent } from "@itwin/core-bentley";
 
 /**
  * Data provider that returns some fake nodes to show in tree.

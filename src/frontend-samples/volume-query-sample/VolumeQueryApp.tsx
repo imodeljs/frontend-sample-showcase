@@ -6,8 +6,8 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { VolumeQueryWidgetProvider } from "./VolumeQueryWidget";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { VolumeQueryApi } from "./VolumeQueryApi";
 
 const uiProviders = [new VolumeQueryWidgetProvider()];

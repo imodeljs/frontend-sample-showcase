@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Point3d, Range2d } from "@bentley/geometry-core";
+import { IModelApp } from "@itwin/core-frontend";
+import { Point3d, Range2d } from "@itwin/core-geometry";
 import HeatmapDecorator from "./HeatmapDecorator";
 
 export default class HeatmapDecoratorApi {

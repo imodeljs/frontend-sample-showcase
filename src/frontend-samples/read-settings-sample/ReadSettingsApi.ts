@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { AuthorizedFrontendRequestContext, IModelApp } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, IModelApp } from "@itwin/core-frontend";
 import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 
 const namespace = "showcase";

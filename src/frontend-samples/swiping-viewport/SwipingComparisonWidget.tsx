@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Select, Toggle } from "@bentley/ui-core";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Select, Toggle } from "@itwin/core-react";
 import SwipingComparisonApi, { ComparisonType } from "./SwipingComparisonApi";
-import { Point3d } from "@bentley/geometry-core";
-import { IModelApp, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
-import { Frustum } from "@bentley/imodeljs-common";
+import { Point3d } from "@itwin/core-geometry";
+import { IModelApp, ScreenViewport, Viewport } from "@itwin/core-frontend";
+import { Frustum } from "@itwin/core-common";
 import "./SwipingComparison.scss";
 
 const SwipingComparisonWidget: React.FunctionComponent = () => {

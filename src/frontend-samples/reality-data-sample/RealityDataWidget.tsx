@@ -4,13 +4,13 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { Toggle } from "@bentley/ui-core";
-import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { Toggle } from "@itwin/core-react";
+import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
 import RealityDataApi from "./RealityDataApi";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import "./RealityData.scss";
-import { ContextRealityModelProps } from "@bentley/imodeljs-common";
+import { ContextRealityModelProps } from "@itwin/core-common";
 
 const RealityDataWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();

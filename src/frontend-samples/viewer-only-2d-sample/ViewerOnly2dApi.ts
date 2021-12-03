@@ -2,11 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ModelProps } from "@bentley/imodeljs-common";
-import {
-  DrawingModelState, IModelApp, IModelConnection, SectionDrawingModelState, SheetModelState,
-  ViewCreator2d,
-} from "@bentley/imodeljs-frontend";
+import { ModelProps } from "@itwin/core-common";
+import { DrawingModelState, IModelApp, IModelConnection, SectionDrawingModelState, SheetModelState, ViewCreator2d } from "@itwin/core-frontend";
 import { ViewSetup } from "@itwinjs-sandbox";
 
 export interface ModelLists {

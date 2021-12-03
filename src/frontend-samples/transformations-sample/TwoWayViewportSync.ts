@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Vector3d } from "@bentley/geometry-core";
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { Vector3d } from "@itwin/core-geometry";
+import { Viewport, ViewState3d } from "@itwin/core-frontend";
 
 /**
  * iModeljs contains a TwoWayViewportSync that works well when the iModel id's of the elements align. Because

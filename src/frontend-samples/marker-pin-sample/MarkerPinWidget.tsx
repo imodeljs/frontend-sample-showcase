@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { PopupMenu } from "./PopupMenu";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
+import { Button, ButtonType, Toggle } from "@itwin/core-react";
 import { PointSelector } from "common/PointSelector/PointSelector";
 import { RadioCard, RadioCardEntry } from "./RadioCard";
-import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
-import { Point3d, Range2d } from "@bentley/geometry-core";
+import { imageElementFromUrl, IModelApp } from "@itwin/core-frontend";
+import { Point3d, Range2d } from "@itwin/core-geometry";
 import MarkerPinApi from "./MarkerPinApi";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";

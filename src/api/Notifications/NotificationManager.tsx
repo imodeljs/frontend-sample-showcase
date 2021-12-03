@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ToolTipOptions } from "@bentley/imodeljs-frontend";
-import { XAndY } from "@bentley/geometry-core";
-import { AppNotificationManager } from "@bentley/ui-framework";
+import { ToolTipOptions } from "@itwin/core-frontend";
+import { XAndY } from "@itwin/core-geometry";
+import { AppNotificationManager } from "@itwin/appui-react";
 
 // NEEDSWORK: move this to Tooltip.tsx
 import ToolTip from "tooltip.js";

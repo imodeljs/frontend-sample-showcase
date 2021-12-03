@@ -1,6 +1,6 @@
-import { IDisposable } from "@bentley/bentleyjs-core";
-import { StagePanelLocation, StagePanelSection, UiItemProviderRegisteredEventArgs, UiItemsManager, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { FrontstageManager } from "@bentley/ui-framework";
+import { IDisposable } from "@itwin/core-bentley";
+import { StagePanelLocation, StagePanelSection, UiItemProviderRegisteredEventArgs, UiItemsManager, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { FrontstageManager } from "@itwin/appui-react";
 import React, { createElement } from "react";
 
 export class FloatingWidgets implements IDisposable {

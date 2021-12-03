@@ -2,16 +2,16 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Id64String } from "@bentley/bentleyjs-core";
-import { /* BrowserAuthorizationCallbackHandler */ BrowserAuthorizationClient /* BrowserAuthorizationClientConfiguration */ } from "@bentley/frontend-authorization-client";
+import { Id64String } from "@itwin/core-bentley";
+import { BrowserAuthorizationClient } from "@itwin/browser-authorization";
 import { UrlDiscoveryClient } from "@bentley/itwin-client";
-import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection } from "@bentley/imodeljs-frontend";
-import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface } from "@bentley/imodeljs-common";
-import { MarkupApp } from "@bentley/imodeljs-markup";
-import { PresentationRpcInterface, Ruleset } from "@bentley/presentation-common";
-import { Presentation } from "@bentley/presentation-frontend";
+import { FrontendRequestContext, IModelApp, IModelAppOptions, IModelConnection } from "@itwin/core-frontend";
+import { BentleyCloudRpcManager, IModelReadRpcInterface, IModelTileRpcInterface } from "@itwin/core-common";
+import { MarkupApp } from "@itwin/core-markup";
+import { PresentationRpcInterface, Ruleset } from "@itwin/presentation-common";
+import { Presentation } from "@itwin/presentation-frontend";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
-import { FrameworkReducer, StateManager, UiFramework } from "@bentley/ui-framework";
+import { FrameworkReducer, StateManager, UiFramework } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
 import { MovePointTool } from "Components/SampleVisualizer/InteractivePointMarker";

@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Point2d, Range1d, Range2d } from "@bentley/geometry-core";
+import { Point2d, Range1d, Range2d } from "@itwin/core-geometry";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { DisplayStyle3dSettingsProps, RenderTexture, SkyBoxProps } from "@bentley/imodeljs-common";
-import { imageElementFromUrl, IModelApp, Viewport } from "@bentley/imodeljs-frontend";
+import { DisplayStyle3dSettingsProps, RenderTexture, SkyBoxProps } from "@itwin/core-common";
+import { imageElementFromUrl, IModelApp, Viewport } from "@itwin/core-frontend";
 import "common/samples-common.scss";
 import { SnowDecorator, SnowParams } from "./SnowDecorator";
 

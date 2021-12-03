@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
-import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumericInput, Radio, Select, Textarea } from "@bentley/ui-core";
+import { Checkbox, Icon, IconInput, Input, LabeledInput, LabeledSelect, LabeledTextarea, NumberInput, Radio, Select, Textarea } from "@itwin/core-react";
 import { SampleImageCheckBox } from "./SampleImageCheckBox";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
@@ -36,7 +36,7 @@ export default class InputsList extends React.Component<{}> {
       createComponentExample("Basic Textarea", "Textarea with placeholder", <Textarea placeholder="Basic Textarea" />),
       createComponentExample("Disabled Textarea", "Textarea with disabled prop", <Textarea placeholder="Disabled Textarea" disabled />),
 
-      createComponentExample("Numeric Input", "Numeric Input component", <NumericInput value={50} min={1} max={100} step={2.5} precision={1} className="uicore-full-width" />),
+      createComponentExample("Numeric Input", "Numeric Input component", <NumberInput value={50} min={1} max={100} step={2.5} precision={1} className="uicore-full-width" />),
       createComponentExample("Icon Input", "Icon Input component", <IconInput placeholder="Icon Input" icon={<Icon iconSpec="icon-placeholder" />} containerClassName="uicore-full-width" />),
       createComponentExample("Labeled Input", "Labeled Input component", <LabeledInput label="Labeled Input" placeholder="Labeled Input" className="uicore-full-width" />),
       createComponentExample("Labeled Textarea", "Labeled Textarea component", <LabeledTextarea label="Labeled Textarea" placeholder="Labeled Textarea" className="uicore-full-width" />),

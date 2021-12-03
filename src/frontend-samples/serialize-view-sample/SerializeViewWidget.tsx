@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { Button, Dialog, Select, SelectOption, SmallText } from "@bentley/ui-core";
-import { ModalDialogManager, StagePanelLocation, StagePanelSection, WidgetState } from "@bentley/ui-framework";
-import { AbstractWidgetProps, UiItemsProvider } from "@bentley/ui-abstract";
-import { ViewStateProps } from "@bentley/imodeljs-common";
-import { IModelApp, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { Button, Dialog, Select, SelectOption, SmallText } from "@itwin/core-react";
+import { ModalDialogManager, StagePanelLocation, StagePanelSection } from "@itwin/appui-react";
+import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { ViewStateProps } from "@itwin/core-common";
+import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
 import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";
 import { JsonViewerWidget } from "./JsonViewerWidget";
 import SerializeViewApi from "./SerializeViewApi";

@@ -2,12 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Id64String } from "@bentley/bentleyjs-core";
-import { Point3d, Range1d, Range2d, Range3d, Vector3d, XYAndZ } from "@bentley/geometry-core";
+import { Id64String } from "@itwin/core-bentley";
+import { Point3d, Range1d, Range2d, Range3d, Vector3d, XYAndZ } from "@itwin/core-geometry";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { Placement3d, RenderTexture } from "@bentley/imodeljs-common";
-import { Decorator, imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
-import { I18NNamespace } from "@bentley/imodeljs-i18n";
+import { Placement3d, RenderTexture } from "@itwin/core-common";
+import { Decorator, imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, Viewport } from "@itwin/core-frontend";
+import { I18NNamespace } from "@itwin/core-i18n";
 import "common/samples-common.scss";
 import { EmitterHighlighter, FireEmitter, FireParams } from "./FireDecorator";
 import { PlacementTool } from "./PlacementTool";

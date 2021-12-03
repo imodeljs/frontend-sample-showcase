@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
+import { IModelViewportControlOptions, MessageRenderer } from "@itwin/appui-react";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import "common/samples-common.scss";
 import React, { FunctionComponent, useState } from "react";

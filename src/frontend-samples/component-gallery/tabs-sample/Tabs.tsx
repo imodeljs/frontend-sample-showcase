@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
-import { HorizontalTabs, VerticalTabs } from "@bentley/ui-core";
+import { HorizontalTabs, VerticalTabs } from "@itwin/core-react";
 import { ControlPane } from "common/ControlPane/ControlPane";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer

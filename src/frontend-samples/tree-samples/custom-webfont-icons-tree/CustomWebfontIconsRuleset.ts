@@ -1,4 +1,4 @@
-import { ChildNodeSpecificationTypes, RelationshipDirection, Ruleset, RuleTypes } from "@bentley/presentation-common";
+import { ChildNodeSpecificationTypes, RelationshipDirection, Ruleset, RuleTypes } from "@itwin/presentation-common";
 
 const ruleset: Ruleset = {
   id: "TreeWithIcons",

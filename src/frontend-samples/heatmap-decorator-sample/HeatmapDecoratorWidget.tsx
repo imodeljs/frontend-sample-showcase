@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { Slider, Toggle } from "@bentley/ui-core";
-import { Point3d, Range2d } from "@bentley/geometry-core";
+import { Slider, Toggle } from "@itwin/core-react";
+import { Point3d, Range2d } from "@itwin/core-geometry";
 import { PointSelector } from "common/PointSelector/PointSelector";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import HeatmapDecoratorApi from "./HeatmapDecoratorApi";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { useActiveViewport } from "@itwin/appui-react";
 import "./HeatmapDecorator.scss";
 
 export const HeatmapDecoratorWidget: React.FunctionComponent = () => {

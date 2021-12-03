@@ -6,9 +6,9 @@ import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-san
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { HeatmapDecoratorWidgetProvider } from "./HeatmapDecoratorWidget";
-import { IModelConnection, StandardViewId } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection, StandardViewId } from "@itwin/core-frontend";
+import { ColorDef } from "@itwin/core-common";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new HeatmapDecoratorWidgetProvider()];

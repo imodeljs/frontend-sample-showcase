@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { FitViewTool, IModelApp, PanViewTool, RotateViewTool, SelectionTool, ZoomViewTool } from "@bentley/imodeljs-frontend";
+import { FitViewTool, IModelApp, PanViewTool, RotateViewTool, SelectionTool, ZoomViewTool } from "@itwin/core-frontend";
 import "./Toolbar.scss";
 
 export interface ToolbarProps {

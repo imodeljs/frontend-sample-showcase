@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { Point3d } from "@bentley/geometry-core";
-import { Presentation } from "@bentley/presentation-frontend";
-import { InstanceKey, KeySet, KeySetJSON, LabelDefinition } from "@bentley/presentation-common";
+import { Point3d } from "@itwin/core-geometry";
+import { Presentation } from "@itwin/presentation-frontend";
+import { InstanceKey, KeySet, KeySetJSON, LabelDefinition } from "@itwin/presentation-common";
 import { IssueGet } from "./IssuesClient";
 
 export interface LabelWithId extends LabelDefinition {

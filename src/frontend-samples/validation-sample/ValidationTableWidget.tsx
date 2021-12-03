@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { Spinner, SpinnerSize } from "@bentley/ui-core";
-import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@bentley/ui-components";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
+import { Spinner, SpinnerSize } from "@itwin/core-react";
+import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@itwin/components-react";
+import { IModelApp } from "@itwin/core-frontend";
+import { useActiveIModelConnection } from "@itwin/appui-react";
 import ValidationApi from "./ValidationApi";
 
 const ValidationTableWidget: React.FunctionComponent = () => {

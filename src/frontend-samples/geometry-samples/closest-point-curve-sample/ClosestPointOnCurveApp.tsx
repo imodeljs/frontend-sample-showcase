@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { Range3d, Vector3d } from "@bentley/geometry-core";
-import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
+import { Range3d, Vector3d } from "@itwin/core-geometry";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@itwin/core-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
 import { ClosestPointOnCurveWidgetProvider } from "./ClosestPointOnCurveWidget";
-import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
+import { Cartographic, ColorDef, RenderMode } from "@itwin/core-common";
 
 const uiProviders = [new ClosestPointOnCurveWidgetProvider()];
 

@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { HorizontalTabs, Select, Spinner, SpinnerSize } from "@bentley/ui-core";
-import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { HorizontalTabs, Select, Spinner, SpinnerSize } from "@itwin/core-react";
+import { Angle, Point3d, Vector3d } from "@itwin/core-geometry";
 import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwinui-react";
 import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
 import IssuesApi, { LabelWithId } from "./IssuesApi";

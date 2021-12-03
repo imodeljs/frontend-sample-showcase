@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Environment, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import { RenderMode } from "@bentley/imodeljs-common";
+import { Viewport, ViewState3d } from "@itwin/core-frontend";
+import { Environment, RenderMode } from "@itwin/core-common";
 
 // cSpell:ignore imodels
 

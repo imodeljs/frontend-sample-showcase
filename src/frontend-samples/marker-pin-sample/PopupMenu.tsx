@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ContextMenuItem, GlobalContextMenu, UiEvent } from "@bentley/ui-core";
+import { ContextMenuItem, GlobalContextMenu, UiEvent } from "@itwin/core-react";
 
 export interface PopupMenuProps {
   canvas: HTMLCanvasElement | undefined;

@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { assert } from "@bentley/bentleyjs-core";
+import { assert } from "@itwin/core-bentley";
 import { Version, VersionQuery } from "@bentley/imodelhub-client";
-import { ChangedElements } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection, IModelHubFrontend } from "@bentley/imodeljs-frontend";
+import { ChangedElements } from "@itwin/core-common";
+import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection, IModelHubFrontend } from "@itwin/core-frontend";
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { ChangedElementsApi } from "./ChangedElementsApi";

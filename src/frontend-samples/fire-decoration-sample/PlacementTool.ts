@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Point3d } from "@bentley/geometry-core";
-import { BeButtonEvent, EventHandled, IModelApp, PrimitiveTool, Viewport } from "@bentley/imodeljs-frontend";
+import { Point3d } from "@itwin/core-geometry";
+import { BeButtonEvent, EventHandled, IModelApp, PrimitiveTool, Viewport } from "@itwin/core-frontend";
 
 /** This class defines the user's interaction while interacting with the model and fire emitter.
  *  While it is active, the tool handles events from the user, notably mouse clicks in the viewport.

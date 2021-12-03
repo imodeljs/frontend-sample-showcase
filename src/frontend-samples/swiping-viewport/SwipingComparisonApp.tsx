@@ -5,8 +5,8 @@
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { SwipingComparisonWidgetProvider } from "./SwipingComparisonWidget";
 import { DividerComponent } from "./Divider";
 import SwipingComparisonApi from "./SwipingComparisonApi";

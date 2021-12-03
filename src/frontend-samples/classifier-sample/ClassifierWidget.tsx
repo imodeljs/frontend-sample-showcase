@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
-import { SpatialClassifier, SpatialClassifierFlags, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay } from "@bentley/imodeljs-common";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { KeySet } from "@bentley/presentation-common";
-import { Input, Select } from "@bentley/ui-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { SpatialClassifier, SpatialClassifierFlags, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay } from "@itwin/core-common";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { KeySet } from "@itwin/presentation-common";
+import { Input, Select } from "@itwin/core-react";
+import { IModelApp } from "@itwin/core-frontend";
+import { ISelectionProvider, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
 import ClassifierApi from "./ClassifierApi";
 import { ClassifierProperties } from "./ClassifierProperties";
 import "./Classifier.scss";

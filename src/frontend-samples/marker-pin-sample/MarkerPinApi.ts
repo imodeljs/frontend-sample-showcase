@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { Point3d } from "@bentley/geometry-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { I18NNamespace } from "@bentley/imodeljs-i18n";
+import { Point3d } from "@itwin/core-geometry";
+import { IModelApp } from "@itwin/core-frontend";
+import { I18NNamespace } from "@itwin/core-i18n";
 import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";
 
 export default class MarkerPinApi {

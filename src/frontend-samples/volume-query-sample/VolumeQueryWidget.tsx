@@ -3,13 +3,13 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { ColorPickerButton } from "@bentley/ui-components";
-import { Button, ButtonType, LoadingPrompt, Toggle } from "@bentley/ui-core";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { ColorDef } from "@itwin/core-common";
+import { ColorPickerButton } from "@itwin/components-react";
+import { Button, ButtonType, LoadingPrompt, Toggle } from "@itwin/core-react";
 import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApi } from "./VolumeQueryApi";
-import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { IModelApp } from "@itwin/core-frontend";
 import "./VolumeQuery.scss";
 
 interface CancelToken {

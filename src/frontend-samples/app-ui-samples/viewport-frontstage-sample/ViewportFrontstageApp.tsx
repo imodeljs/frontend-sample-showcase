@@ -5,8 +5,8 @@
 import React, { FunctionComponent, useState } from "react";
 import { AuthorizationClient, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 
 const ViewportFronstageApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toolbar at the top-right to navigate the model.");

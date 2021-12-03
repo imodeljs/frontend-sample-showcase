@@ -5,8 +5,8 @@
 import React, { FunctionComponent, useState } from "react";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { ImageExportWidgetProvider } from "./ImageExportWidget";
 
 const uiProviders = [new ImageExportWidgetProvider()];

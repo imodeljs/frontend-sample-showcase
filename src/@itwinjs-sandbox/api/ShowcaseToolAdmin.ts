@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { HitDetail, ToolAdmin } from "@bentley/imodeljs-frontend";
+import { HitDetail, ToolAdmin } from "@itwin/core-frontend";
 
 export class ProxyToolAdmin {
   public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {

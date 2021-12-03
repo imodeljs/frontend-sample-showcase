@@ -5,10 +5,10 @@
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@itwin/core-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
 import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import "./multi-view-sample.scss";
 
 const uiProviders = [new MultiViewportWidgetProvider()];

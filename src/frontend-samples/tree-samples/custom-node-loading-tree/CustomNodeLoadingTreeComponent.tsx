@@ -3,13 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions, SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode, TreeModelSource, TreeNodeItem, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
-import { IPresentationTreeDataProvider, PresentationTreeDataProvider } from "@bentley/presentation-components";
-import { Ruleset } from "@bentley/presentation-common";
-import { useDisposable } from "@bentley/ui-core";
-import { PropertyRecord } from "@bentley/ui-abstract";
-import { isIDisposable } from "@bentley/bentleyjs-core";
+import { IModelConnection } from "@itwin/core-frontend";
+import { ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions, SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode, TreeModelSource, TreeNodeItem, useTreeEventsHandler, useVisibleTreeNodes } from "@itwin/components-react";
+import { IPresentationTreeDataProvider, PresentationTreeDataProvider } from "@itwin/presentation-components";
+import { Ruleset } from "@itwin/presentation-common";
+import { useDisposable } from "@itwin/core-react";
+import { PropertyRecord } from "@itwin/appui-abstract";
+import { isIDisposable } from "@itwin/core-bentley";
 import { SampleDataProvider } from "@itwinjs-sandbox";
 
 export interface CustomNodeLoadingTreeProps {

@@ -3,19 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Range1dProps, Vector3d } from "@bentley/geometry-core";
-import {
-  BackgroundMapSettings,
-  GlobeMode,
-  TerrainHeightOriginMode,
-  TerrainSettings,
-  ThematicDisplay,
-  ThematicDisplayMode,
-  ThematicDisplayProps,
-  ThematicGradientColorScheme,
-  ThematicGradientMode,
-} from "@bentley/imodeljs-common";
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { Range1dProps, Vector3d } from "@itwin/core-geometry";
+import { BackgroundMapSettings, GlobeMode, TerrainHeightOriginMode, TerrainSettings, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
+import { Viewport, ViewState3d } from "@itwin/core-frontend";
 
 // cSpell:ignore imodels
 

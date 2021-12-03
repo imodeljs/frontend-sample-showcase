@@ -5,10 +5,10 @@
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection, ViewState } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { ClassifierWidgetProvider } from "./ClassifierWidget";
-import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@bentley/geometry-core";
+import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@itwin/core-geometry";
 
 const uiProviders = [new ClassifierWidgetProvider()];
 

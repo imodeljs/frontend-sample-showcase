@@ -5,10 +5,10 @@
 
 import * as React from "react";
 import "common/samples-common.scss";
-import { PropertyCategory, PropertyGrid } from "@bentley/ui-components";
-import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@bentley/presentation-components";
-import { KeySet } from "@bentley/presentation-common";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { PropertyCategory, PropertyGrid } from "@itwin/components-react";
+import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@itwin/presentation-components";
+import { KeySet } from "@itwin/presentation-common";
+import { IModelConnection } from "@itwin/core-frontend";
 
 interface ClassifierPropertiesState {
   dataProvider?: PresentationPropertyDataProvider;

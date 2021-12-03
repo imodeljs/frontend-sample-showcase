@@ -3,7 +3,7 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 declare module "!editor-file-loader!*" {
-  import type { SampleSpecFile } from "SampleSpec";
+  import { SampleSpecFile } from "SampleSpec";
   const contents: SampleSpecFile;
   export = contents;
 }

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { HitDetail, imageElementFromUrl, ToolAdmin } from "@bentley/imodeljs-frontend";
+import { HitDetail, imageElementFromUrl, ToolAdmin } from "@itwin/core-frontend";
 
 export enum ElemProperty {
   Origin = "Origin",

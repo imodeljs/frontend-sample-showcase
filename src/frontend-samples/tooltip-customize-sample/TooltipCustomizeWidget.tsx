@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Input, Select, Toggle } from "@bentley/ui-core";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Input, Select, Toggle } from "@itwin/core-react";
 import React, { useEffect } from "react";
 import { ElemProperty, ShowcaseToolAdmin, TooltipCustomizeSettings } from "./TooltipCustomizeApi";
 

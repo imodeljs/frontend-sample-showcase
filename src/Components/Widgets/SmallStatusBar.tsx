@@ -3,12 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { StatusBarSection } from "@bentley/ui-abstract";
-import {
-  ActivityCenterField, ConfigurableUiManager, FooterModeField, MessageCenterField, SnapModeField, StatusBarComposer, StatusBarItem,
-  StatusBarItemUtilities, StatusBarWidgetControl, StatusBarWidgetControlArgs, ToolAssistanceField, withMessageCenterFieldProps, withStatusFieldProps,
-} from "@bentley/ui-framework";
-import { FooterSeparator } from "@bentley/ui-ninezone";
+import { StatusBarSection } from "@itwin/appui-abstract";
+import { ActivityCenterField, ConfigurableUiManager, FooterModeField, MessageCenterField, SnapModeField, StatusBarComposer, StatusBarItem, StatusBarItemUtilities, StatusBarWidgetControl, StatusBarWidgetControlArgs, ToolAssistanceField, withMessageCenterFieldProps, withStatusFieldProps } from "@itwin/appui-react";
+import { FooterSeparator } from "@itwin/appui-layout-react";
 
 export class SmallStatusBarWidgetControl extends StatusBarWidgetControl {
   private _statusBarItems: StatusBarItem[] | undefined;

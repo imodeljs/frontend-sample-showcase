@@ -3,11 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import {
-  BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, ContentLayoutDef, ContentLayoutProps,
-  CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone,
-} from "@bentley/ui-framework";
-import { StageUsage } from "@bentley/ui-abstract";
+import { BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone } from "@itwin/appui-react";
+import { ContentLayoutProps, StageUsage } from "@itwin/appui-abstract";
 import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
 
 /* eslint-disable react/jsx-key */

@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useState } from "react";
-import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
+import { IModelViewportControlOptions, MessageRenderer } from "@itwin/appui-react";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
 

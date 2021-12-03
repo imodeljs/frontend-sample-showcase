@@ -2,14 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { UiItemsManager } from "@bentley/ui-abstract";
+import { UiItemsManager } from "@itwin/appui-abstract";
 import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
 import { defaultIModelList } from "@itwinjs-sandbox/constants";
 import { SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
 import { FloatingWidgets } from "@itwinjs-sandbox/hooks/FloatingWidget";
 import { useEffect, useRef } from "react";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
-import { UiFramework } from "@bentley/ui-framework";
+import { UiFramework } from "@itwin/appui-react";
 
 export const useSampleWidget = (instructions: string, iModelList: (SampleIModels | SampleIModelWithAlternativeName)[] = defaultIModelList): SampleIModelInfo | undefined => {
   const [sampleIModelInfo, setIModelName] = useSampleIModelConnection(iModelList);

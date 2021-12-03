@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
-import { EmphasizeElements, FeatureOverrideType, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { EmphasizeElements, ScreenViewport } from "@itwin/core-frontend";
+import { ColorDef, FeatureOverrideType } from "@itwin/core-common";
 
 // START API
 export class EmphasizeElementsApi {

@@ -5,11 +5,11 @@
 import * as React from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import "common/samples-common.scss";
-import { EmphasizeElements, FeatureOverrideType, IModelApp, OutputMessagePriority, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { ReactMessage, UnderlinedButton } from "@bentley/ui-core";
-import { Id64String } from "@bentley/bentleyjs-core";
-import { MessageManager, ReactNotifyMessageDetails } from "@bentley/ui-framework";
+import { EmphasizeElements, IModelApp, OutputMessagePriority, ViewChangeOptions } from "@itwin/core-frontend";
+import { ColorDef, FeatureOverrideType } from "@itwin/core-common";
+import { ReactMessage, UnderlinedButton } from "@itwin/core-react";
+import { Id64String } from "@itwin/core-bentley";
+import { MessageManager, ReactNotifyMessageDetails } from "@itwin/appui-react";
 
 export default class IotAlertApi {
   public static showAlertNotification(selectedElement: string, elementNameIdMap: Map<string, string>) {

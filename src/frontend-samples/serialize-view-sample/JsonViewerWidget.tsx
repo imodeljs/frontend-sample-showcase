@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React from "react";
-import { Button, SmallText, Textarea } from "@bentley/ui-core";
+import { Button, SmallText, Textarea } from "@itwin/core-react";
 
 export interface JsonViewerWidgetProps {
   json: string;

@@ -3,12 +3,12 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import { EmphasizeElements, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, ViewState } from "@bentley/imodeljs-frontend";
-import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@bentley/geometry-core";
-import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
-import { BentleyStatus, Id64Array } from "@bentley/bentleyjs-core";
-import { PresentationLabelsProvider } from "@bentley/presentation-components";
-import { InstanceKey } from "@bentley/presentation-common";
+import { EmphasizeElements, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, ViewState } from "@itwin/core-frontend";
+import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@itwin/core-geometry";
+import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@itwin/core-common";
+import { BentleyStatus, Id64Array } from "@itwin/core-bentley";
+import { PresentationLabelsProvider } from "@itwin/presentation-components";
+import { InstanceKey } from "@itwin/presentation-common";
 import { ViewSetup } from "@itwinjs-sandbox";
 
 /* Going to color elements from three different sections of volume box */

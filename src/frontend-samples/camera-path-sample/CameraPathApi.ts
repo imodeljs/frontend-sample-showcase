@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
+import { Viewport, ViewState3d } from "@itwin/core-frontend";
+import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@itwin/core-geometry";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
 export interface CameraPathPoint {

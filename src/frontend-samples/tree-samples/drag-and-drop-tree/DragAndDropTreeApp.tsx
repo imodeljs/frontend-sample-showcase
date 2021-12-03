@@ -5,9 +5,9 @@
 import * as React from "react";
 import { BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
-import { Range3d } from "@bentley/geometry-core";
-import { Cartographic } from "@bentley/imodeljs-common";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { Range3d } from "@itwin/core-geometry";
+import { Cartographic } from "@itwin/core-common";
+import { BlankConnectionProps } from "@itwin/core-frontend";
 import { DragAndDropTreeProvider } from "./DragAndDropTreeProvider";
 import { DragAndDropTreeWidgetProvider } from "./DragAndDropTreeWidget";
 

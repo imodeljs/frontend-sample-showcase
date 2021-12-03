@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
-import { AuthorizedFrontendRequestContext,IModelApp } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext, IModelApp } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
-import { GuidString } from "@bentley/bentleyjs-core";
+import { GuidString } from "@itwin/core-bentley";
 
 export interface Configuration {
   href: string;

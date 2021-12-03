@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
-import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
+import { imageElementFromUrl } from "@itwin/core-frontend";
+import { Button, ButtonSize, ButtonType, Toggle } from "@itwin/core-react";
 import ValidationApi from "./ValidationApi";
 import "./ValidationReview.scss";
 

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Spinner, SpinnerSize } from "@bentley/ui-core";
+import { Spinner, SpinnerSize } from "@itwin/core-react";
 import React, { FunctionComponent, ReactNode, useEffect, useState } from "react";
 import { SampleBaseApp } from "SampleBaseApp";
 

@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { assert } from "@bentley/bentleyjs-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { assert } from "@itwin/core-bentley";
+import { IModelApp } from "@itwin/core-frontend";
 import "common/samples-common.scss";
 import { effects } from "./Effects";
 

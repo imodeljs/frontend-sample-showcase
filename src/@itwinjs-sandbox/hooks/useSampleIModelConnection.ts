@@ -6,7 +6,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
+import { AuthorizedFrontendRequestContext } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
 import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";

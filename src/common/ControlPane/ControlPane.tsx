@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { Button, ButtonSize, ButtonType } from "@bentley/ui-core";
+import { Button, ButtonSize, ButtonType } from "@itwin/core-react";
 import "./ControlPane.scss";
 
 export class ControlPane extends React.Component<{ instructions: string, controls?: React.ReactNode, iModelSelector?: React.ReactNode }, { collapsed: boolean }> {

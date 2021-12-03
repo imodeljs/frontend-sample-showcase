@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 
-import { AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider, TreeEventHandler, TreeNodeItem, TreeSelectionModificationEventArgs, TreeSelectionReplacementEventArgs, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
+import { AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider, TreeEventHandler, TreeNodeItem, TreeSelectionModificationEventArgs, TreeSelectionReplacementEventArgs, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
 
-import { CheckBoxState, useDisposable } from "@bentley/ui-core";
+import { CheckBoxState, useDisposable } from "@itwin/core-react";
 import { SampleDataProvider } from "@itwinjs-sandbox";
 
 /**

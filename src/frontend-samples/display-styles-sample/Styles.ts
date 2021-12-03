@@ -2,15 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import {
-  DisplayStyle3dSettingsProps,
-  RenderMode,
-  SkyBoxProps,
-  ThematicDisplayMode,
-  ThematicGradientColorScheme,
-  ThematicGradientMode,
-  ViewFlagProps,
-} from "@bentley/imodeljs-common";
+import { DisplayStyle3dSettingsProps, RenderMode, SkyBoxProps, ThematicDisplayMode, ThematicGradientColorScheme, ThematicGradientMode, ViewFlagProps } from "@itwin/core-common";
 
 const renderingStyleViewFlags: ViewFlagProps = {
   noConstruct: true,

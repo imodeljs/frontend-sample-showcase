@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
-import { Matrix3d } from "@bentley/geometry-core";
-import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
+import { Id64, Id64Array, Id64Set, Id64String } from "@itwin/core-bentley";
+import { Matrix3d } from "@itwin/core-geometry";
+import { BackgroundMapProps, ColorDef, Environment, PlanarClipMaskMode, PlanarClipMaskSettings } from "@itwin/core-common";
+import { AuthorizedFrontendRequestContext, DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 import { metroStationImodelName } from "@itwinjs-sandbox/constants";
 

@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import MultiViewportApi from "./MultiViewportApi";
-import { Toggle } from "@bentley/ui-core";
-import { IModelApp, Viewport } from "@bentley/imodeljs-frontend";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { Toggle } from "@itwin/core-react";
+import { IModelApp, Viewport } from "@itwin/core-frontend";
+import { useActiveViewport } from "@itwin/appui-react";
 
 const MultiViewportWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
