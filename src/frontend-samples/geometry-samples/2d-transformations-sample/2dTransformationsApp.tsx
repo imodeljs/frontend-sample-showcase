@@ -14,7 +14,7 @@ const uiProviders = [new Transformations2dWidgetProvider()];
 
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
-  location: Cartographic.fromDegrees(0, 0, 0),
+  location: Cartographic.fromDegrees({ longitude: 0, latitude: 0, height: 0 }),
   extents: new Range3d(-10, -10, 0, 10, 10, 10),
 };
 const viewState: BlankConnectionViewState = {

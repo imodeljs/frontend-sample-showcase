@@ -7,11 +7,13 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
 import { ActiveSample } from "./ActiveSample";
-import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+//import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { SampleShowcaseViewHandler } from "./SampleShowcaseViewHandler";
+import { ProgressRadial } from "@itwin/itwinui-react";
 
 const Editor = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleEditor/SampleEditorContext"));
 const Visualizer = React.lazy(async () => import(/* webpackMode: "lazy" */ "../SampleVisualizer/SampleVisualizer"));
@@ -39,7 +41,7 @@ export const SampleShowcase: FunctionComponent = () => {
     setTranspileResult(undefined);
   };
 
-  const spinner = (<div className="uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div>);
+  const spinner = (<div className="uicore-fill-centered" ><ProgressRadial indeterminate size="large" /></div>);
 
   const editor = (
     <React.Suspense fallback={spinner}>

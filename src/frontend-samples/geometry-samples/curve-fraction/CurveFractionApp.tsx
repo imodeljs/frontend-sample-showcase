@@ -14,7 +14,7 @@ const uiProviders = [new CurveFractionWidgetProvider()];
 
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
-  location: Cartographic.fromDegrees(0, 0, 0),
+  location: Cartographic.fromDegrees({ longitude: 0, latitude: 0, height: 0 }),
   extents: new Range3d(-35, -35, -35, 35, 35, 35),
 };
 const viewState: BlankConnectionViewState = {

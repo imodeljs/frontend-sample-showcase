@@ -6,9 +6,9 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
 import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
 import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
-import { Button, ButtonSize, ButtonType } from "@bentley/ui-core/lib/ui-core/button/Button";
 import { SampleShowcaseViewHandlerProps } from "./SampleShowcaseViewHandler";
 import "./SampleShowcaseSplitPane.scss";
+import { Button } from "@itwin/itwinui-react";
 
 export interface SampleShowcaseSplitPaneProps extends SampleShowcaseViewHandlerProps {
   width: number;
@@ -129,8 +129,8 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
           {editor}
         </Pane>
         <Pane className={"preview"} minSize={`${sizes?.minPreviewSize}px`}>
-          {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
-          {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+          {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+          {showEditor && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
           {visualizer}
         </Pane>
       </SplitScreen >
@@ -142,11 +142,11 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
         {editor}
       </Pane>
       <Pane className={"preview"} minSize={`${sizes?.minPreviewSize}px`}>
-        {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
-        {showEditor && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+        {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+        {showEditor && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
         {visualizer}
-        {((width < 576 && !showEditor) || width >= 576) && !showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-panel show-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
-        {showGallery && <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="hide-panel hide-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+        {((width < 576 && !showEditor) || width >= 576) && !showGallery && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+        {showGallery && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-right"></span></Button>}
       </Pane>
       <Pane className={galleryClassName.join(" ")} maxSize={`${sizes?.maxGallerySize}%`} disabled={!showGallery} size={showGallery ? `${sizes?.gallerySize}px` : "0"} onChange={onSampleGallerySizeChange}>
         {gallery}

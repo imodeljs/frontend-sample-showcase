@@ -57,7 +57,7 @@ const iModelAppShutdown = async (): Promise<void> => {
     // Do nothing
   }
   try {
-    IModelApp.i18n.languageList().forEach((ns) => IModelApp.i18n.unregisterNamespace(ns));
+    IModelApp.localization.getLanguageList().forEach((ns) => IModelApp.localization.unregisterNamespace(ns));
   } catch (err) {
     // Do nothing
   }
@@ -94,7 +94,7 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
           }
         }
         await AuthorizationClient.initializeOidc();
-      } catch (error) {
+      } catch (error: any) {
         componentElement = <DisplayError error={error} />;
       }
 

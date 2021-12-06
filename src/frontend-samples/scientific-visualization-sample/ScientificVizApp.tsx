@@ -13,7 +13,7 @@ import { ScientificVizWidgetProvider } from "./ScientificVizWidget";
 const uiProviders = [new ScientificVizWidgetProvider()];
 const connection: BlankConnectionProps = {
   name: "BlankConnection",
-  location: Cartographic.fromDegrees(0, 0, 0),
+  location: Cartographic.fromDegrees({ longitude: 0, latitude: 0, height: 0 }),
   extents: new Range3d(0, 0, -100, 50, 50, 50),
 };
 

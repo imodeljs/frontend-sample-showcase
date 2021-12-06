@@ -5,9 +5,9 @@
 import React from "react";
 import "./SampleGallery.scss";
 import { SampleSpecGroup } from "../../sampleManifest";
-import { MyExpandableList } from "Components/MyExpandableList/ExpandableList";
 import { SampleSpec } from "SampleSpec";
-import { ExpandableBlock } from "@bentley/ui-core/lib/ui-core/expandable/ExpandableBlock";
+import { ExpandableList } from "@itwin/core-react";
+import { ExpandableBlock } from "@itwin/itwinui-react";
 
 interface SampleGalleryProps {
   samples: SampleSpecGroup[];
@@ -134,7 +134,7 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     const onClick = () => { this._toggleGroupIsExpanded(group.groupName); };
 
     return (
-      <ExpandableBlock className="gallery-card-block" title={group.groupName} key={group.groupName} isExpanded={isExpanded} onClick={onClick}>
+      <ExpandableBlock className="gallery-card-block" title={group.groupName} key={group.groupName} isExpanded={isExpanded} onToggle={onClick}>
         {group.samples.map((sample: SampleSpec, index: number) => this.createElementsForSample(sample, group.groupName, index))}
       </ExpandableBlock>
     );
@@ -144,9 +144,9 @@ export class SampleGallery extends React.Component<SampleGalleryProps, SampleGal
     const expandedIndex = this.props.samples.findIndex((entry) => this.props.group === entry.groupName);
     return (
       <div className="gallery">
-        <MyExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
+        <ExpandableList className="gallery-card-radio" singleExpandOnly={true} singleIsCollapsible={true} defaultActiveBlock={expandedIndex}>
           {this.props.samples.map((group: SampleSpecGroup) => this.createElementsForGroup(group))}
-        </MyExpandableList>
+        </ExpandableList>
       </div>
     );
   }
