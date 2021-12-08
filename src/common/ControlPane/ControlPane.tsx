@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+import { Button } from "@itwin/itwinui-react";
 import * as React from "react";
-import { Button, ButtonSize, ButtonType } from "@itwin/core-react";
 import "./ControlPane.scss";
 
 export class ControlPane extends React.Component<{ instructions: string, controls?: React.ReactNode, iModelSelector?: React.ReactNode }, { collapsed: boolean }> {
@@ -21,7 +21,7 @@ export class ControlPane extends React.Component<{ instructions: string, control
     if (this.state && this.state.collapsed) {
       return (
         <>
-          <Button size={ButtonSize.Large} buttonType={ButtonType.Blue} className="show-control-pane-button" onClick={this.switchCollapse.bind(this)}>Show Control Pane</Button>
+          <Button size={"large"} styleType={"high-visibility"} className="show-control-pane-button" onClick={this.switchCollapse.bind(this)}>Show Control Pane</Button>
         </>
       );
     }

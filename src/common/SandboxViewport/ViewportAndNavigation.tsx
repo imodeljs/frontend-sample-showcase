@@ -5,7 +5,7 @@
 import * as React from "react";
 import { FitViewTool, IModelApp, IModelConnection, PanViewTool, RotateViewTool, SelectionTool, ViewState, ZoomViewTool } from "@itwin/core-frontend";
 
-import { ViewportComponent } from "@itwin/components-react";
+import { ViewportComponent } from "@itwin/imodel-components-react";
 import { viewWithUnifiedSelection } from "@itwin/presentation-components";
 import "./Toolbar.scss";
 
@@ -33,7 +33,7 @@ export class ViewportAndNavigation extends React.PureComponent<ViewportAndNaviga
           imodel={this.props.imodel}
           viewState={this.props.viewState}
         />
-        { (this.props.isNavigationToolInvisible === undefined) && toolbar()}
+        {(this.props.isNavigationToolInvisible === undefined) && toolbar()}
       </>
     );
   }

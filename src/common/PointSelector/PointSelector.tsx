@@ -5,7 +5,7 @@
 import * as React from "react";
 import { Point3d, Range2d } from "@itwin/core-geometry";
 import { BasePointGenerator, CirclePointGenerator, CrossPointGenerator, RandomPointGenerator } from "./PointGenerators";
-import { Select, Slider } from "@itwin/core-react";
+import { Select, Slider } from "@itwin/itwinui-react";
 
 export enum PointMode {
   Random = "1",
@@ -85,7 +85,7 @@ export class PointSelector extends React.Component<PointSelectorProps, PointSele
     return (
       <>
         <span>Points</span>
-        <Select onChange={this._onChangePointMode} options={{ [PointMode.Random]: "Random", [PointMode.Circle]: "Circle", [PointMode.Cross]: "Cross" }} />
+        <Select<any> onChange={this._onChangePointMode} options={[{ value: [PointMode.Random], label: "Random" }, { value: [PointMode.Circle], label: "Circle" }, { value: [PointMode.Cross], label: "Cross" }]} />
         <span>Point Count</span>
         <Slider min={0} max={500} values={[this.state.pointCount]} step={1} onUpdate={this._onChangePointCount} />
       </>

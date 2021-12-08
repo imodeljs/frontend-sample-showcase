@@ -33,6 +33,7 @@
     "@itwin/appui-react": "rc",
     "@itwin/appui-layout-react": "rc",
     "@itwin/webgl-compatibility": "rc",
+    "@itwin/imodel-components-react": "rc",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@itwin/itwinui-react": "^1.2.0",
     "@itwin/web-viewer-react": "^1.1.5",
