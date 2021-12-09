@@ -5,8 +5,9 @@
 import { DbOpcode, Id64Array, Id64String } from "@itwin/core-bentley";
 import { Version } from "@bentley/imodelhub-client";
 import { ChangedElements, ColorDef, FeatureAppearance } from "@itwin/core-common";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@itwin/core-frontend";
+import { EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@itwin/core-frontend";
 import { ChangedElementsClient } from "./ChangedElementsClient";
+import { AuthorizationClient } from "@itwinjs-sandbox";
 
 /** This provider will change the color of the elements based on the last operation of the comparison. */
 class ComparisonProvider implements FeatureOverrideProvider {
@@ -51,13 +52,14 @@ class ComparisonProvider implements FeatureOverrideProvider {
 }
 
 export class ChangedElementsApi {
-  private static _requestContext: AuthorizedFrontendRequestContext;
+  private static _accessToken: string;
   /** Returns the request context which will be used for all the API calls made by the frontend. */
   public static async getRequestContext() {
-    if (!ChangedElementsApi._requestContext) {
-      ChangedElementsApi._requestContext = await AuthorizedFrontendRequestContext.create();
+    if (!ChangedElementsApi._accessToken) {
+      const authClient = new AuthorizationClient()
+      ChangedElementsApi._accessToken = await authClient.getAccessToken();
     }
-    return ChangedElementsApi._requestContext;
+    return ChangedElementsApi._accessToken;
   }
 
   /** A list of all the Named Versions and their Changeset Id for the open iModel. */

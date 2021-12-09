@@ -2,99 +2,97 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthStatus, BeEvent, BentleyError, ClientRequestContext, Config } from "@itwin/core-bentley";
-import { AccessToken } from "@bentley/itwin-client";
-import { FrontendAuthorizationClient } from "@itwin/browser-authorization";
 
-export class AuthorizationClient implements FrontendAuthorizationClient {
-  public readonly onUserStateChanged: BeEvent<(token: AccessToken | undefined) => void>;
-  protected _accessToken?: AccessToken;
+import { BrowserAuthorizationClient } from "@itwin/browser-authorization";
+import { AccessToken, AuthStatus, BeEvent, BentleyError } from "@itwin/core-bentley";
+import { AuthorizationClient } from "@itwin/core-common";
 
-  private static _oidcClient: FrontendAuthorizationClient;
+interface AccessTokenObject {
+  startsAt: Date,
+  expiresAt: Date,
+  tokenString: string,
+}
 
-  public static get oidcClient(): FrontendAuthorizationClient {
-    return this._oidcClient;
-  }
+export default class ShowcaseAuthorizationClient implements AuthorizationClient {
+  private _accessToken?: AccessTokenObject;
+  private static _userUrl = "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser";
+  private static _oidcClient: AuthorizationClient
 
-  private static _initialized: boolean = false;
-
-  constructor() {
-    this.onUserStateChanged = new BeEvent();
-  }
-
-  public static async initializeOidc(): Promise<void> {
-    if (!AuthorizationClient._initialized) {
-      const authClient = new AuthorizationClient();
-      const userURL = Config.App.get("imjs_sample_showcase_user", "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser");
-      await authClient.generateTokenString(userURL, new ClientRequestContext());
-      await authClient.signInSilent(new ClientRequestContext());
-
-      AuthorizationClient._oidcClient = authClient;
-    }
-    AuthorizationClient._initialized = true;
-  }
-
-  public async signInSilent(requestContext?: ClientRequestContext): Promise<void> {
-    this.signIn(requestContext)
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error.message);
-      });
-  }
-
-  public async signIn(requestContext?: ClientRequestContext): Promise<void> {
-    if (requestContext) {
-      requestContext.enter();
-    }
-    await this.getAccessToken();
-  }
-
-  public async signOut(requestContext?: ClientRequestContext): Promise<void> {
-    if (requestContext) {
-      requestContext.enter();
-    }
-    this._accessToken = undefined;
+  public static get oidcClient(): BrowserAuthorizationClient {
+    return this._oidcClient as BrowserAuthorizationClient;
   }
 
   public get isAuthorized(): boolean {
-    return this.hasSignedIn;
-  }
-
-  public get hasExpired(): boolean {
-    return !this._accessToken;
-  }
-
-  public get hasSignedIn(): boolean {
     return !!this._accessToken;
   }
 
-  public async generateTokenString(userURL: string, requestContext?: ClientRequestContext) {
-    if (requestContext) {
-      requestContext.enter();
-    }
+  public get hasExpired(): boolean {
+    return !!this._accessToken && this._accessToken.expiresAt < new Date(Date.now());
+  }
+
+  public get hasSignedIn(): boolean {
+    return !!this._accessToken
+  }
+
+  private async generateTokenString(userURL: string) {
 
     const response = await fetch(userURL);
     const body = await response.json();
     const tokenJson = {
-      startsAt: body._startsAt,
-      expiresAt: body._expiresAt,
+      startsAt: new Date(body._startsAt),
+      expiresAt: new Date(body._expiresAt),
       tokenString: body._jwt,
     };
-    this._accessToken = AccessToken.fromJson(tokenJson);
+
+    this._accessToken = tokenJson;
+
+    this.onAccessTokenChanged.raiseEvent(body._jwt)
 
     // Automatically renew if session exceeds 55 minutes.
     setTimeout(() => {
       this.generateTokenString(userURL)
         .catch((error) => {
+          this.onAccessTokenChanged.raiseEvent(undefined)
           throw new BentleyError(AuthStatus.Error, error);
         });
     }, (1000 * 60 * 55));
   }
 
-  public async getAccessToken(): Promise<AccessToken> {
-    if (!this._accessToken)
-      throw new BentleyError(AuthStatus.Error, "Cannot get access token");
+  /** initialize from existing user */
+  public static initializeOidc = async () => {
+    const authClient = new ShowcaseAuthorizationClient();
+    await authClient.generateTokenString(ShowcaseAuthorizationClient._userUrl)
+    ShowcaseAuthorizationClient._oidcClient = authClient;
+  };
 
-    return this._accessToken;
-  }
+  /** Returns a promise that resolves to the AccessToken of the currently authorized user*/
+  getAccessToken = async (): Promise<string> => {
+    // if not currently authorized, attempt a silent signin
+    if (!this.isAuthorized || this.hasExpired) {
+      await this.generateTokenString(ShowcaseAuthorizationClient._userUrl)
+    }
+    if (this._accessToken) {
+      return `Bearer ${this._accessToken.tokenString}`;
+    }
+    return "";
+  };
+
+  /**
+   * required by BrowserAuthorizationClient
+   */
+  signIn = (): Promise<void> => {
+    return this.generateTokenString(ShowcaseAuthorizationClient._userUrl)
+  };
+
+  /**
+   * required by BrowserAuthorizationClient
+   */
+  signOut = (): Promise<void> => {
+    return Promise.resolve();
+  };
+
+  /**
+   * required by BrowserAuthorizationClient
+   */
+  readonly onAccessTokenChanged = new BeEvent<(token: AccessToken | undefined) => void>();
 }

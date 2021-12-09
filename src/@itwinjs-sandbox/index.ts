@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-export { AuthorizationClient } from "./authentication/AuthorizationClient";
+export { default as AuthorizationClient } from "./authentication/AuthorizationClient";
 export { IModelSelector } from "./components/imodel-selector/IModelSelector";
 export { getIModelInfo, useSampleIModelConnection } from "./hooks/useSampleIModelConnection";
 export { useSampleWidget } from "./hooks/useSampleWidget";

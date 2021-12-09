@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { ComponentType } from "react";
-import { ConfigurableCreateInfo, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, useActiveIModelConnection, ViewportContentControl } from "@itwin/appui-react";
+import { ConfigurableCreateInfo, ContentGroup, ContentGroupProps, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, useActiveIModelConnection, ViewportContentControl } from "@itwin/appui-react";
 import { IModelConnection } from "@itwin/core-frontend";
 
 export type IModelConnectionComponent = ComponentType<{ imodel: IModelConnection }>;
@@ -34,32 +34,39 @@ class BlankContent extends ViewportContentControl {
 }
 
 export class BlankFrontstage extends FrontstageProvider {
+  public id = "BlankFrontstage"
   // constants
   public static MAIN_CONTENT_ID = "BlankFrontstage";
   public static DEFAULT_NAVIGATION_WIDGET_KEY = "DefaultNavigationWidget";
   public static DEFAULT_MANIPULATION_WIDGET_KEY = "DefaultNavigationWidget";
-  // Content layout for content views
-  private _contentLayoutDef: ContentLayoutDef;
+
   // Content group for all layouts
   private _contentGroup: ContentGroup;
 
   constructor(...components: IModelConnectionComponent[]) {
     super();
 
-    this._contentLayoutDef = new ContentLayoutDef({});
 
-    // Create the content group.
-    this._contentGroup = new ContentGroup({
+    const sampleViewportGroupProps: ContentGroupProps = {
+      id: "BlankFrontstageContentGroup",
+      layout: {
+        id: "BlankFrontstageContentLayout"
+      },
       contents: [
         {
           classId: BlankContent,
+          id: "BlankFrontstageContents",
           applicationData: {
             components,
           },
         },
       ],
-    });
+    };
+    this._contentGroup = new ContentGroup(sampleViewportGroupProps);
+
   }
+
+
 
   /** Define the Frontstage properties */
   public get frontstage(): React.ReactElement<FrontstageProps> {
@@ -67,7 +74,6 @@ export class BlankFrontstage extends FrontstageProvider {
       <Frontstage
         id={BlankFrontstage.MAIN_CONTENT_ID}
         defaultTool={CoreTools.selectElementCommand}
-        defaultLayout={this._contentLayoutDef}
         contentGroup={this._contentGroup}
         isInFooterMode={true}
       />

@@ -6,14 +6,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext } from "@itwin/core-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
+import { AuthorizationClient } from "@itwinjs-sandbox";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
 import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
 import { useSampleIModelParameter } from "./useSampleIModelParameter";
 
 export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWithAlternativeName) => {
-  const requestContext: AuthorizedFrontendRequestContext = new AuthorizedFrontendRequestContext(await AuthorizationClient.oidcClient.getAccessToken());
+  const accessToken = await AuthorizationClient.oidcClient.getAccessToken()
 
   let name: string;
   let context: SampleIModels;
@@ -29,7 +28,7 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
   const connectClient = new ContextRegistryClient();
   let project: Project;
   try {
-    project = await connectClient.getProject(requestContext as any, { $filter: `Name+eq+'${context}'` });
+    project = await connectClient.getProject(accessToken as any, { $filter: `Name+eq+'${context}'` });
   } catch (e) {
     throw new Error(`Project with name "${context}" does not exist`);
   }
@@ -38,7 +37,7 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
   imodelQuery.byName(name);
 
   const hubClient = new IModelHubClient();
-  const imodels = await hubClient.iModels.get(requestContext as any, project.wsgId, imodelQuery);
+  const imodels = await hubClient.iModels.get(accessToken as any, project.wsgId, imodelQuery);
 
   if (imodels.length === 0)
     throw new Error(`iModel with name "${iModelName}" does not exist in project "${name}"`);
