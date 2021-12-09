@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { Range3d, Vector3d } from "@itwin/core-geometry";
+import { Range3d } from "@itwin/core-geometry";
 import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@itwin/core-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
@@ -21,11 +21,6 @@ const viewState: BlankConnectionViewState = {
   displayStyle: { backgroundColor: ColorDef.white },
   viewFlags: { renderMode: RenderMode.SmoothShade },
   setAllow3dManipulations: false,
-  lookAt: {
-    eyePoint: { x: 0, y: 0, z: 25 },
-    targetPoint: { x: 0, y: 0, z: 0 },
-    upVector: new Vector3d(0, 0, 1),
-  },
 };
 
 const setupView = (vp: ScreenViewport) => {
