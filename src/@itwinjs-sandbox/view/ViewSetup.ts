@@ -5,9 +5,10 @@
 import { Id64, Id64Array, Id64Set, Id64String } from "@itwin/core-bentley";
 import { Matrix3d } from "@itwin/core-geometry";
 import { BackgroundMapProps, ColorDef, Environment, PlanarClipMaskMode, PlanarClipMaskSettings } from "@itwin/core-common";
-import { AuthorizedFrontendRequestContext, DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
+import { DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
 import { metroStationImodelName } from "@itwinjs-sandbox/constants";
+import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export class ViewSetup {
   /** Queries for and loads the default view for an iModel. */
@@ -60,11 +61,8 @@ export class ViewSetup {
       viewState.adjustAspectRatio(aspect);
     }
 
-    const viewFlags = viewState.viewFlags.clone();
-    viewFlags.shadows = false;
-    viewFlags.grid = false;
-    viewFlags.visibleEdges = false;
-    viewState.displayStyle.viewFlags = viewFlags;
+    viewState.viewFlags = viewState.viewFlags.copy({ shadows: false, grid: false, visibleEdges: false });
+
 
     if (viewState.is3d()) {
       const viewState3d = viewState;
@@ -77,7 +75,7 @@ export class ViewSetup {
       }
 
       // Enable the sky-box, but override to old sky box.
-      displayStyle.environment = new Environment({
+      displayStyle.environment = Environment.fromJSON({
         sky: {
           display: true,
           twoColor: true,
@@ -90,8 +88,10 @@ export class ViewSetup {
       if (imodel.name === "Metrostation2" || imodel.name === metroStationImodelName) {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
+        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds })
+        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories })
         displayStyle.changeBackgroundMapProps({
-          planarClipMask: PlanarClipMaskSettings.createForElementsOrSubCategories(PlanarClipMaskMode.IncludeSubCategories, subCategoryIds, modelIds).toJSON(),
+          planarClipMask: planarClipMaskSettings.toJSON(),
         });
       }
     }
@@ -101,8 +101,10 @@ export class ViewSetup {
       // Enable model masking on the Stadium model.
       if (imodel.name === "Stadium") {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
+
+
         displayStyle.changeBackgroundMapProps({
-          planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
+          planarClipMask: PlanarClipMaskSettings.create({ modelIds: modelsForMasking }).toJSON(),
           transparency: 0.01, // Temporary fix due to how the planar clip and transparency interact.
         });
         const excludedModelIds = await ViewSetup.getModelIds(imodel,
@@ -211,14 +213,10 @@ export class ViewSetup {
     if (imodel.name === metroStationImodelName)
       return 3;
 
-    const requestContext = await AuthorizedFrontendRequestContext.create();
+    const accessToken = await AuthorizationClient.oidcClient.getAccessToken();
 
-    const allSettings: SettingsMapResult = await IModelApp.settings.getSharedSettingsByNamespace(
-      requestContext,
-      "bingMapSettings",
-      true,
-      imodel.contextId!,
-      imodel.iModelId,
+    const allSettings: SettingsMapResult = await IModelApp.userPreferences!.get(
+      { key: "bingMapSettings", iTwinId: imodel.iTwinId!, iModelId: imodel.iModelId, accessToken: accessToken.toTokenString() }
     );
     if (
       allSettings.status === SettingsStatus.Success &&
