@@ -7,7 +7,7 @@ import React, { useEffect } from "react";
 import { ColorDef } from "@itwin/core-common";
 import { NumberInput, Timer } from "@itwin/core-react";
 import { IModelApp } from "@itwin/core-frontend";
-import { ColorPickerButton } from "@itwin/components-react";
+import { ColorPickerButton } from "@itwin/imodel-components-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ConwaysHelpers } from "./ConwaysGameOfLife";
 import SimpleAnimatedApi from "./SimpleAnimatedApi";

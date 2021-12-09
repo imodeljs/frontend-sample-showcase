@@ -13,8 +13,7 @@ import { Presentation } from "@itwin/presentation-frontend";
 import { ShowcaseNotificationManager } from "./api/Notifications/NotificationManager";
 import { FrameworkReducer, StateManager, UiFramework } from "@itwin/appui-react";
 import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
-import * as HILITE_RULESET from "@bentley/presentation-frontend/lib/presentation-frontend/selection/HiliteRules.json";
-import { MovePointTool } from "Components/SampleVisualizer/InteractivePointMarker";
+import { HILITE_RULESET } from "@itwin/presentation-frontend";
 import { ShowcaseToolAdmin } from "@itwinjs-sandbox/api/ShowcaseToolAdmin";
 
 // Boiler plate code
@@ -66,7 +65,9 @@ export class SampleBaseApp {
 
         // initialize Presentation
         initPromises.push(Presentation.initialize({
-          activeLocale: IModelApp.i18n.languageList()[0],
+          presentation: {
+            activeLocale: IModelApp.localization.getLanguageList()[0],
+          }
         }));
 
         // initialize Markup
@@ -75,8 +76,7 @@ export class SampleBaseApp {
         // the app is ready when all initialization promises are fulfilled
         await Promise.all(initPromises);
 
-        const namespace = IModelApp.i18n.registerNamespace(i18nNamespace);
-        MovePointTool.register(namespace);
+        await IModelApp.localization.registerNamespace(i18nNamespace);
 
         await Presentation.presentation.rulesets().add((HILITE_RULESET as any).default as Ruleset);
         resolve();

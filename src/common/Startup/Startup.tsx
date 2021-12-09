@@ -111,8 +111,8 @@ export class StartupComponent extends React.Component<StartupProps, StartupState
     try {
       // attempt to open the imodel
       const info = await this.getIModelInfo();
-      imodel = await CheckpointConnection.open(info.projectId, info.imodelId, OpenMode.Readonly);
-    } catch (e) {
+      imodel = await CheckpointConnection.openRemote(info.projectId, info.imodelId);
+    } catch (e: any) {
       alert(e.message);
     }
 

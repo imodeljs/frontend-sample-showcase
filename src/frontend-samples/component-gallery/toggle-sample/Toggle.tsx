@@ -8,6 +8,7 @@ import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { LabeledToggle, Toggle, ToggleButtonType } from "@itwin/core-react";
 import { ControlPane } from "common/ControlPane/ControlPane";
+import { ToggleSwitch } from "@itwin/itwinui-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -24,7 +25,7 @@ export default class ToggleList extends React.Component<{}> {
       createComponentExample("Large Toggle", "Toggle with large={true}", <Toggle isOn={true} large={true} />),
       createComponentExample("Square Toggle", "Toggle with rounded={false}", <Toggle isOn={true} rounded={false} />),
       createComponentExample("Toggle with Checkmark", "Toggle with showCheckmark prop", <Toggle isOn={true} showCheckmark={true} />),
-      createComponentExample("LabeledToggle", undefined, <LabeledToggle isOn={true} label="Toggle label" />),
+      createComponentExample("LabeledToggle", undefined, <ToggleSwitch labelPosition={"right"} label="Toggle label" />),
     ];
   }
 

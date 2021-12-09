@@ -23,13 +23,13 @@ export class TestUtilities {
   public viewDiv = createViewDiv();
 
   public static getBlankConnection(): BlankConnection {
-    const exton = Cartographic.fromDegrees(-75.686694, 40.065757, 0);
+    const exton = Cartographic.fromDegrees({ longitude: -75.686694, latitude: 40.065757, height: 0 });
     const contextId: GuidString = Guid.createValue();
     const blankConnection: BlankConnection = BlankConnection.create({
       name: "test",
       location: exton,
       extents: new Range3d(-1000, -1000, -100, 1000, 1000, 100),
-      contextId,
+      iTwinId: contextId,
     });
     return blankConnection;
   }
