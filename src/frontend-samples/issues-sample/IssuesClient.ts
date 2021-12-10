@@ -7,7 +7,7 @@
 
 import { Point3d } from "@itwin/core-geometry";
 import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
-import { AuthorizedFrontendRequestContext, IModelApp } from "@itwin/core-frontend";
+import { IModelApp } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export interface CommentsListPreferReturnMinimal {
@@ -456,19 +456,19 @@ export default class IssuesClient {
 
   public static async getProjectIssues(projectId: string, type?: string, state?: string): Promise<IssuesList | undefined> {
     var url = `https://api.bentley.com/issues/?projectId=${projectId}`;
-    if(type)
+    if (type)
       url += `&type=${type}`
-    
-    if(state)
+
+    if (state)
       url += `&state=${state}`
-      
+
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: (await IssuesClient.getAccessToken())
       },
     };
-    return request(await IssuesClient.getRequestContext(), url, options)
+    return request(await IssuesClient.getAccessToken() as any, url, options)
       .then((resp: Response): IssuesList | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -482,10 +482,10 @@ export default class IssuesClient {
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: (await IssuesClient.getAccessToken()),
       },
     };
-    return request(await IssuesClient.getRequestContext(), url, options)
+    return request(await IssuesClient.getAccessToken() as any, url, options)
       .then((resp: Response): IssueDetailsGet | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -499,10 +499,10 @@ export default class IssuesClient {
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: (await IssuesClient.getAccessToken())
       },
     };
-    return request(await IssuesClient.getRequestContext(), url, options)
+    return request(await IssuesClient.getAccessToken() as any, url, options)
       .then((resp: Response): AttachmentMetadataList | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -516,9 +516,9 @@ export default class IssuesClient {
     return fetch(url, {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())?.toTokenString(IncludePrefix.Yes)!,
+        Authorization: (await IssuesClient.getAccessToken())!
       },
-    }).then(async (response) => { 
+    }).then(async (response) => {
       return await response.blob().then((data) => {
         if (response.ok) {
           return data
@@ -534,10 +534,10 @@ export default class IssuesClient {
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: (await IssuesClient.getAccessToken()),
       },
     };
-    return request(await IssuesClient.getRequestContext(), url, options)
+    return request(await IssuesClient.getAccessToken() as any, url, options)
       .then((resp: Response): CommentsListPreferReturnMinimal | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -551,10 +551,10 @@ export default class IssuesClient {
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: (await IssuesClient.getAccessToken()),
       },
     };
-    return request(await IssuesClient.getRequestContext(), url, options)
+    return request(await IssuesClient.getAccessToken() as any, url, options)
       .then((resp: Response): AuditTrail | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -569,12 +569,5 @@ export default class IssuesClient {
     } catch (e) {
       return undefined;
     }
-  }
-
-  private static async getRequestContext() {
-    if (!IssuesClient._requestContext) {
-      IssuesClient._requestContext = await AuthorizedFrontendRequestContext.create();
-    }
-    return IssuesClient._requestContext;
   }
 }

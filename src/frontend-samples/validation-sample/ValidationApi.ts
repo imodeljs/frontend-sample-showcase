@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@itwin/core-frontend";
+import { EmphasizeElements, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@itwin/core-frontend";
 import { ColorDef, FeatureOverrideType, GeometricElement3dProps, Placement3d } from "@itwin/core-common";
 import { Point3d } from "@itwin/core-geometry";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
@@ -17,17 +17,17 @@ export default class ValidationApi {
 
   public static onValidationDataChanged = new BeEvent<any>();
 
-  private static _requestContext: AuthorizedClientRequestContext;
+  private static _accessToken: string;
   private static _validationData: { [id: string]: any } = {};
   private static _ruleData: { [id: string]: any } = {};
 
   private static _applyZoom: boolean = true;
 
   private static async getRequestContext() {
-    if (!ValidationApi._requestContext) {
-      ValidationApi._requestContext = await AuthorizedFrontendRequestContext.create();
+    if (!ValidationApi._accessToken) {
+      ValidationApi._accessToken = await IModelApp.authorizationClient!.getAccessToken();
     }
-    return ValidationApi._requestContext;
+    return ValidationApi._accessToken;
   }
 
   public static setupDecorator() {
@@ -64,10 +64,10 @@ export default class ValidationApi {
   public static async getValidationData(projectId: string): Promise<any> {
     const context = await ValidationApi.getRequestContext();
     if (ValidationApi._validationData[projectId] === undefined) {
-      const runsResponse = await ValidationClient.getValidationTestRuns(context, projectId);
+      const runsResponse = await ValidationClient.getValidationTestRuns(projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
+        const resultResponse = await ValidationClient.getValidationUrlResponse(runsResponse.runs[0]._links.result.href);
         if (resultResponse !== undefined && resultResponse.result !== undefined) {
           ValidationApi._validationData[projectId] = resultResponse;
         }
@@ -91,7 +91,7 @@ export default class ValidationApi {
 
   public static async getMatchingRule(ruleId: string) {
     const context = await ValidationApi.getRequestContext();
-    const ruleData = await ValidationClient.getValidationRule(context, ruleId);
+    const ruleData = await ValidationClient.getValidationRule(ruleId);
     if (ruleData !== undefined)
       return ruleData;
 
@@ -177,7 +177,6 @@ export default class ValidationApi {
     if (ValidationApi._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
-      viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
       vp.zoomToElements([elementId], { ...viewChangeOpts })
         .catch((error) => {
           // eslint-disable-next-line no-console

@@ -36,7 +36,7 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
   /** iModelConnection react state is very sensitive and updates constantly, so readUpdate flag is introduced to only call the API once */
   useEffect(() => {
     if (iModelConnection && settingKey && readUpdate) {
-      ReadSettingsApi.readSettings(iModelConnection.iModelId!, iModelConnection.contextId!, settingKey).then((response) => {
+      ReadSettingsApi.readSettings(iModelConnection.iModelId!, iModelConnection.iTwinId!, settingKey).then((response) => {
         setSettingResult(response);
         setSettingValue(_parseSettingsValue(settingKey, response.setting));
         setReadUpdate(false);
@@ -51,8 +51,7 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
   /** The showcase does not have permission to write data, it is expected to fail with 403 Forbidden. */
   useEffect(() => {
     if (iModelConnection && saveInProgress && settingValue && saveUpdate) {
-      ReadSettingsApi.saveSettings(iModelConnection.iModelId!, iModelConnection.contextId!, settingKey, settingValue).then((response) => {
-        setSettingResult(response);
+      ReadSettingsApi.saveSettings(iModelConnection.iModelId!, iModelConnection.iTwinId!, settingKey, settingValue).then(() => {
         setSaveInProgress(false);
         setSaveUpdate(false);
       })

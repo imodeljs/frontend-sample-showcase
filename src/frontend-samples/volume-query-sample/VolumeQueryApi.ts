@@ -56,7 +56,7 @@ export class VolumeQueryApi {
     // Call enableClipVolume to ensure all clip flags are properly set
     ViewClipTool.enableClipVolume(vp);
     // Turning off the clipping feature.
-    vp.view.viewFlags.clipVolume = isClippingOn === undefined ? false : isClippingOn;
+    vp.view.viewFlags = vp.view.viewFlags.with("clipVolume", isClippingOn === undefined ? false : isClippingOn)
     vp.view.setViewClip(clip);
     VolumeQueryApi.addDecorators(vp);
   };

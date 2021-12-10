@@ -5,7 +5,7 @@
 import React, { useCallback, useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ColorDef } from "@itwin/core-common";
-import { ColorPickerButton } from "@itwin/components-react";
+import { ColorPickerButton } from "@itwin/imodel-components-react";
 import { Button, ButtonType, LoadingPrompt, Toggle } from "@itwin/core-react";
 import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApi } from "./VolumeQueryApi";
 import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";

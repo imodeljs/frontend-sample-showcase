@@ -56,8 +56,8 @@ const IssuesWidget: React.FunctionComponent = () => {
   }, [issueDecorator]);
 
   useEffect(() => {
-    if (iModelConnection && contextId !== iModelConnection.contextId) {
-      setContextId(iModelConnection.contextId);
+    if (iModelConnection && contextId !== iModelConnection.iTwinId) {
+      setContextId(iModelConnection.iTwinId);
     }
   }, [contextId, iModelConnection]);
 
@@ -133,7 +133,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         const directionVector = Point3d.fromJSON(cameraView.direction);
         const fov = Angle.degreesToRadians(cameraView.fieldOfView!);
         const targetPoint = eyePoint.plus(directionVector);
-        view3d.lookAtUsingLensAngle(eyePoint, targetPoint, upVector, Angle.createRadians(fov));
+        view3d.lookAt({ eyePoint, targetPoint, upVector, lensAngle: Angle.createRadians(fov) });
         viewport.synchWithView();
       }
     }

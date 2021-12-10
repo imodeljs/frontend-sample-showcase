@@ -9,8 +9,6 @@ import { IModelApp, MarginPercent, StandardViewId, ViewChangeOptions, ZoomToOpti
 export interface ZoomOptions {
   animateEnable: boolean;
   animateVal: boolean;
-  marginEnable: boolean;
-  marginVal: number;
   relativeViewEnable: boolean;
   relativeViewVal: StandardViewId;
   standardViewEnable: boolean;
@@ -23,8 +21,6 @@ export default class ZoomToElementsApi {
     const viewChangeOpts: ViewChangeOptions = {};
     if (options.animateEnable)
       viewChangeOpts.animateFrustumChange = options.animateVal;
-    if (options.marginEnable)
-      viewChangeOpts.marginPercent = new MarginPercent(options.marginVal, options.marginVal, options.marginVal, options.marginVal);
     const zoomToOpts: ZoomToOptions = {};
     if (options.relativeViewEnable)
       zoomToOpts.placementRelativeId = options.relativeViewVal;

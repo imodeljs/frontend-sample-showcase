@@ -47,7 +47,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
 
     if (iModelConnection) {
       /** Will start the clashData retrieval and recieve the data through the listener */
-      ClashReviewApi.setClashData(iModelConnection.contextId!)
+      ClashReviewApi.setClashData(iModelConnection.iTwinId!)
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
