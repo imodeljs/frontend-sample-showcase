@@ -7,9 +7,9 @@ import React, { useEffect } from "react";
 import { Button, ButtonType, Select, Toggle } from "@itwin/core-react";
 import { ContextRotationId, IModelApp } from "@itwin/core-frontend";
 import ViewClipApi from "./ViewClipApi";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
 import { ClipShape, ConvexClipPlaneSet } from "@itwin/core-geometry";
-import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import "./ViewClip.scss";
 
 export const ViewClipWidget: React.FunctionComponent = () => {

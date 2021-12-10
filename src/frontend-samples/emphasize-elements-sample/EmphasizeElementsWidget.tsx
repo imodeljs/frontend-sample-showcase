@@ -5,7 +5,7 @@
 import React, { useEffect } from "react";
 import { ColorDef } from "@itwin/core-common";
 import { Button, ButtonType, Toggle } from "@itwin/core-react";
-import { ColorPickerButton } from "@itwin/components-react";
+import { ColorPickerButton } from "@itwin/imodel-components-react";
 import { EmphasizeElementsApi } from "./EmphasizeElementsApi";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";

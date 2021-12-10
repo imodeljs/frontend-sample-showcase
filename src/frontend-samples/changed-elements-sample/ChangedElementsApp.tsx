@@ -5,13 +5,14 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions, MessageRenderer } from "@itwin/appui-react";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import "common/samples-common.scss";
 import React, { FunctionComponent, useState } from "react";
 import { ChangedElementsApi } from "./ChangedElementsApi";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 import { ChangedElementsWidgetProvider } from "./ChangedElementsWidget";
+import { MessageRenderer } from "@itwin/core-react";
 
 const uiProviders = [new ChangedElementsWidgetProvider()];
 
@@ -31,7 +32,7 @@ const ChangedElementsApp: FunctionComponent = () => {
   /** The sample's render method */
   return (
     <>
-      <MessageRenderer />
+      <MessageRenderer message={""} />
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer

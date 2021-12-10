@@ -5,8 +5,8 @@
 
 import React, { useEffect } from "react";
 import { Button, Dialog, Select, SelectOption, SmallText } from "@itwin/core-react";
-import { ModalDialogManager, StagePanelLocation, StagePanelSection } from "@itwin/appui-react";
-import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { ModalDialogManager } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ViewStateProps } from "@itwin/core-common";
 import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
 import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewStates";

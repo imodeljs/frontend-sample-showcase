@@ -7,8 +7,8 @@ import React, { useEffect } from "react";
 import { Toggle } from "@itwin/core-react";
 import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
 import RealityDataApi from "./RealityDataApi";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@itwin/appui-react";
-import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import "./RealityData.scss";
 import { ContextRealityModelProps } from "@itwin/core-common";
 

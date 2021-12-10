@@ -40,10 +40,10 @@ const ExplodeWidget: React.FunctionComponent = () => {
     ExplodeApi.cleanUpCallbacks = [];
 
     return () => {
-      IModelApp.viewManager.forEachViewport((vp) => {
+      for (const vp of IModelApp.viewManager) {
         ExplodeApi.clearIsolate(vp);
         ExplodeProvider.getOrCreate(vp).drop();
-      });
+      };
       ExplodeApi.cleanUpCallbacks.forEach((func) => func());
     };
   }, []);

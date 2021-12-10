@@ -45,11 +45,11 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   /** Initialize the camera namespace on widget load */
   useEffect(() => {
-    const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
-    CameraPathTool.register(sampleNamespace);
+    IModelApp.localization.registerNamespace("camera-i18n-namespace");
+    CameraPathTool.register();
 
     return () => {
-      IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
+      IModelApp.localization.unregisterNamespace("camera-i18n-namespace");
       IModelApp.tools.unRegister(CameraPathTool.toolId);
     };
   }, []);

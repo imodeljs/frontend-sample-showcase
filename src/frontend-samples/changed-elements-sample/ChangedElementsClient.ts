@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@itwin/core-bentley";
-import { Version, VersionQuery } from "@bentley/imodelhub-client";
+import { IModelHubClient, Version, VersionQuery } from "@bentley/imodelhub-client";
 import { ChangedElements } from "@itwin/core-common";
-import { AuthorizedFrontendRequestContext, IModelApp, IModelConnection, IModelHubFrontend } from "@itwin/core-frontend";
+import { IModelApp, IModelConnection } from "@itwin/core-frontend";
 import { IncludePrefix, request, Response } from "@bentley/itwin-client";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { ChangedElementsApi } from "./ChangedElementsApi";
@@ -13,7 +13,7 @@ import { ChangedElementsApi } from "./ChangedElementsApi";
 interface ProjectContext {
   projectId: string;
   iModelId: string;
-  requestContext: AuthorizedFrontendRequestContext;
+  accessToken: string;
 }
 
 export class ChangedElementsClient {
@@ -22,27 +22,27 @@ export class ChangedElementsClient {
   private static _projectContext: ProjectContext = {
     projectId: "",
     iModelId: "",
-    requestContext: null as any,
+    accessToken: "" as any,
   };
 
   /** Creates a context with all API request will be made in. */
   public static async populateContext(iModel: IModelConnection) {
     // Check if already populated
-    if (ChangedElementsClient._projectContext.requestContext !== null) return;
-    const requestContext = await ChangedElementsApi.getRequestContext();
-    const projectId = iModel.contextId;
+    if (ChangedElementsClient._projectContext.accessToken !== null) return;
+    const accessToken = await ChangedElementsApi.getRequestContext();
+    const projectId = iModel.iTwinId;
     const iModelId = iModel.iModelId;
     assert(projectId !== undefined);
     assert(iModelId !== undefined);
-    ChangedElementsClient._projectContext = { projectId, iModelId, requestContext };
+    ChangedElementsClient._projectContext = { projectId, iModelId, accessToken };
   }
 
   /** Uses the IModelClient to the request the Named Version of the IModel. Only selects name and changeset id.  Limited to top 10 Named Versions. */
   public static async getNamedVersions(): Promise<Version[]> {
-    const { requestContext, iModelId } = ChangedElementsClient._projectContext;
+    const { accessToken, iModelId } = ChangedElementsClient._projectContext;
     const query = new VersionQuery().notHidden().select("name, changeSetId").top(10);
-
-    return IModelHubFrontend.iModelClient.versions.get(requestContext, iModelId, query);
+    const client = new IModelHubClient()
+    return client.versions.get(accessToken as any, iModelId, query);
   }
 
   /** Gets the changes in version using REST API.  Will response with JSON describing changes made between the two changesets.  Pass the same changeset Id as the start and end to view the changes for that changeset.
@@ -74,32 +74,23 @@ export class ChangedElementsClient {
    * ```
    */
   public static async getChangedElements(startChangesetId: string, endChangesetId: string): Promise<ChangedElements | undefined> {
-    const { requestContext, projectId, iModelId } = ChangedElementsClient._projectContext;
+    const { accessToken, projectId, iModelId } = ChangedElementsClient._projectContext;
 
-    const accessToken = await ChangedElementsClient.getAccessToken();
     if (accessToken === undefined)
       return undefined;
     const url = `https://api.bentley.com/changedelements/comparison?iModelId=${iModelId}&projectId=${projectId}&startChangesetId=${startChangesetId}&endChangesetId=${endChangesetId}`;
     const options = {
       method: "GET",
       headers: {
-        Authorization: accessToken.toTokenString(IncludePrefix.Yes),
+        Authorization: accessToken,
         Accept: "application/vnd.bentley.itwin-platform.v1+json",
       },
     };
-    return request(requestContext, url, options)
+    return request(accessToken as any, url, options)
       .then((resp: Response): ChangedElements | undefined => {
         return resp.body?.changedElements;
       }).catch((_reason: any) => {
         return undefined;
       });
-  }
-
-  private static async getAccessToken() {
-    try {
-      return await (IModelApp.authorizationClient as AuthorizationClient).getAccessToken();
-    } catch (e) {
-      return undefined;
-    }
   }
 }

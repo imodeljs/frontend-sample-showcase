@@ -5,8 +5,8 @@
 import React, { FunctionComponent } from "react";
 import { ControlledTree, SelectionMode, useVisibleTreeNodes } from "@itwin/components-react";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";
-import { StagePanelLocation, StagePanelSection, useActiveIModelConnection } from "@itwin/appui-react";
-import { AbstractWidgetProps, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import RULESET_TREE_HIERARCHY from "./TreeHierarchy";
 import "./UnifiedSelectionTree.scss";
 const PAGING_SIZE = 20;

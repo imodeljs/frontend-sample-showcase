@@ -5,7 +5,7 @@
 
 import { BeEvent } from "@itwin/core-bentley";
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
-import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@itwin/core-common";
+import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode } from "@itwin/core-common";
 import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, queryRealityData, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
 
 export enum ComparisonType {

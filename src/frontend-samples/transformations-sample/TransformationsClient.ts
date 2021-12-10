@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
-import { AuthorizedFrontendRequestContext, IModelApp } from "@itwin/core-frontend";
+import { IModelApp } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { GuidString } from "@itwin/core-bentley";
 
@@ -33,10 +33,10 @@ export default class TransformationsClient {
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await TransformationsClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: (await TransformationsClient.getAccessToken()),
       },
     };
-    return request(await TransformationsClient.getRequestContext(), url, options)
+    return request(await TransformationsClient.getAccessToken() as any, url, options)
       .then((resp: Response): Transformation | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -51,12 +51,5 @@ export default class TransformationsClient {
     } catch (e) {
       return undefined;
     }
-  }
-
-  private static async getRequestContext() {
-    if (!TransformationsClient._requestContext) {
-      TransformationsClient._requestContext = await AuthorizedFrontendRequestContext.create();
-    }
-    return TransformationsClient._requestContext;
   }
 }

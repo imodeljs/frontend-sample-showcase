@@ -6,8 +6,9 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget
 import React, { FunctionComponent, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { IModelViewportControlOptions, MessageRenderer } from "@itwin/appui-react";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { IotAlertWidgetProvider } from "./IotAlertWidget";
+import { MessageRenderer } from "@itwin/core-react";
 
 const uiProviders = [new IotAlertWidgetProvider()];
 
@@ -23,7 +24,7 @@ const IotAlertApp: FunctionComponent = () => {
   /** The sample's render method */
   return (
     <>
-      <MessageRenderer />
+      <MessageRenderer message={""} />
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer

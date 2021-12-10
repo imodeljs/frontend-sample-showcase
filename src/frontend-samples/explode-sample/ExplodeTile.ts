@@ -5,7 +5,7 @@
 
 import { assert, BeEvent, BeTimePoint, compareStrings, Id64, partitionArray } from "@itwin/core-bentley";
 import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@itwin/core-geometry";
-import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileVersionInfo, ViewFlagOverrides } from "@itwin/core-common";
+import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileVersionInfo } from "@itwin/core-common";
 import { GraphicBranch, IModelApp, IModelConnection, readElementGraphics, RenderGraphic, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@itwin/core-frontend";
 import ExplodeApp from "./ExplodeApi";
 
@@ -254,8 +254,8 @@ class ExplodeTileTree extends TileTree {
     return 3; // Expected hierarchy: RootTile -> Element Tile -> Graphics Tile
   }
   /** The overrides that should be applied to the view's [ViewFlags]($common) when this tile tree is drawn. Can be overridden by individual [[TileTreeReference]]s. */
-  public get viewFlagOverrides(): ViewFlagOverrides {
-    return new ViewFlagOverrides();
+  public get viewFlagOverrides(): {} {
+    return {};
   }
   /** True if this tile tree has no bounds - e.g., a tile tree representing a globe is unbounded. */
   public get isContentUnbounded(): boolean {
