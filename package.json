@@ -38,7 +38,7 @@
     "@itwin/presentation-components": "rc",
     "@itwin/presentation-frontend": "rc",
     "@itwin/reality-data-client": "^0.2.4",
-    "@itwin/web-viewer-react": "^1.1.5",
+    "@itwin/web-viewer-react": "next",
     "@itwin/webgl-compatibility": "rc",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",

@@ -50,80 +50,80 @@
       "import": "@bentley/frontend-authorization-client"
     },
     {
-      "name": "@bentley/frontend-devtools",
-      "import": "@bentley/frontend-devtools"
+      "name": "@itwin/frontend-devtools",
+      "import": "@itwin/frontend-devtools"
     },
     {
-      "name": "@bentley/geometry-core",
-      "import": "@bentley/geometry-core"
+      "name": "@itwin/core-geometry",
+      "import": "@itwin/core-geometry"
     },
     {
-      "name": "@bentley/hypermodeling-frontend",
-      "import": "@bentley/hypermodeling-frontend"
+      "name": "@itwin/hypermodeling-frontend",
+      "import": "@itwin/hypermodeling-frontend"
     },
     {
       "name": "@bentley/imodelhub-client",
       "import": "@bentley/imodelhub-client"
     },
     {
-      "name": "@bentley/imodeljs-common",
-      "import": "@bentley/imodeljs-common"
+      "name": "@itwin/core-common",
+      "import": "@itwin/core-common"
     },
     {
-      "name": "@bentley/imodeljs-frontend",
-      "import": "@bentley/imodeljs-frontend"
+      "name": "@itwin/core-frontend",
+      "import": "@itwin/core-frontend"
     },
     {
-      "name": "@bentley/imodeljs-i18n",
-      "import": "@bentley/imodeljs-i18n"
+      "name": "@itwin/core-i18n",
+      "import": "@itwin/core-i18n"
     },
     {
-      "name": "@bentley/imodeljs-quantity",
-      "import": "@bentley/imodeljs-quantity"
+      "name": "@itwin/core-quantity",
+      "import": "@itwin/core-quantity"
     },
     {
       "name": "@bentley/itwin-client",
       "import": "@bentley/itwin-client"
     },
     {
-      "name": "@bentley/ui-abstract",
-      "import": "@bentley/ui-abstract"
+      "name": "@itwin/appui-abstract",
+      "import": "@itwin/appui-abstract"
     },
     {
-      "name": "@bentley/ui-components",
-      "import": "@bentley/ui-components"
+      "name": "@itwin/components-react",
+      "import": "@itwin/components-react"
     },
     {
-      "name": "@bentley/ui-core",
-      "import": "@bentley/ui-core"
+      "name": "@itwin/core-react",
+      "import": "@itwin/core-react"
     },
     {
-      "name": "@bentley/ui-framework",
-      "import": "@bentley/ui-framework"
+      "name": "@itwin/appui-react",
+      "import": "@itwin/appui-react"
     },
     {
-      "name": "@bentley/presentation-frontend",
-      "import": "@bentley/presentation-frontend"
+      "name": "@itwin/presentation-frontend",
+      "import": "@itwin/presentation-frontend"
     },
     {
-      "name": "@bentley/presentation-common",
-      "import": "@bentley/presentation-common"
+      "name": "@itwin/presentation-common",
+      "import": "@itwin/presentation-common"
     },
     {
-      "name": "@bentley/presentation-components",
-      "import": "@bentley/presentation-components"
+      "name": "@itwin/presentation-components",
+      "import": "@itwin/presentation-components"
     },
     {
       "name": "@bentley/product-settings-client",
       "import": "@bentley/product-settings-client"
     },
     {
-      "name": "@bentley/orbitgt-core",
-      "import": "@bentley/orbitgt-core"
+      "name": "@itwin/core-orbitgt",
+      "import": "@itwin/core-orbitgt"
     },
     {
-      "name": "@bentley/webgl-compatibility",
-      "import": "@bentley/webgl-compatibility"
+      "name": "@itwin/webgl-compatibility",
+      "import": "@itwin/webgl-compatibility"
     },
     {
       "name": "@itwin/web-viewer-react",
