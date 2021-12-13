@@ -24,14 +24,20 @@ export class TransformationsFrontstage extends FrontstageProvider {
 
     this._contentLayoutDef = new ContentLayoutDef({
       id: "TwoHalvesHorizontal",
-      horizontalSplit: { percentage: 0.50, top: 0, bottom: 1 },
+      horizontalSplit: { id: "TwoHalvesHorizontal", percentage: 0.50, top: 0, bottom: 1 },
     });
     const connection = UiFramework.getIModelConnection();
 
     // Create the content group.
     this._contentGroup = new ContentGroup({
+      id: "TransformationsContentGroup",
+      layout: {
+        id: "TwoHalvesHorizontal",
+        horizontalSplit: { id: "TwoHalvesHorizontal", percentage: 0.50, top: 0, bottom: 1 },
+      },
       contents: [
         {
+          id: "TransformationsContents1",
           classId: IModelViewportControl,
           applicationData: {
             viewState,
@@ -39,6 +45,7 @@ export class TransformationsFrontstage extends FrontstageProvider {
           },
         },
         {
+          id: "TransformationsContents2",
           classId: IModelViewportControl,
           applicationData: {
             viewState: viewState2,
@@ -56,7 +63,6 @@ export class TransformationsFrontstage extends FrontstageProvider {
       <Frontstage
         id={TransformationsFrontstage.MAIN_CONTENT_ID}
         defaultTool={CoreTools.selectElementCommand}
-        defaultLayout={this._contentLayoutDef}
         contentGroup={this._contentGroup}
         isInFooterMode={true}
         contentManipulationTools={

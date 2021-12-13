@@ -9,29 +9,28 @@ import React from "react";
 
 export class CrossProbingFrontstage extends FrontstageProvider {
   // constants
+  public id = "CrossProbingFrontstage";
   public static MAIN_CONTENT_ID = "CrossProbingFrontstage";
   public static DEFAULT_NAVIGATION_WIDGET_KEY = "DefaultNavigationWidget";
   public static DEFAULT_MANIPULATION_WIDGET_KEY = "DefaultNavigationWidget";
-  // Content layout for content views
-  private _contentLayoutDef: ContentLayoutDef;
   // Content group for all layouts
   private _contentGroup: ContentGroup;
 
   constructor(viewState3d: ViewState, viewState2d: ViewState) {
     super();
 
-    this._contentLayoutDef = new ContentLayoutDef({
-      id: "TwoHalvesHorizontal",
-      priority: 60,
-      horizontalSplit: { percentage: 0.50, top: 0, bottom: 1 },
-    });
-
     const connection = UiFramework.getIModelConnection();
 
     // Create the content group.
     this._contentGroup = new ContentGroup({
+      id: "CrossProbingContentGroup",
+      layout: {
+        id: "TwoHalvesHorizontal",
+        horizontalSplit: { id: "TwoHalvesHorizontalSplit", percentage: 0.50, top: 0, bottom: 1 },
+      },
       contents: [
         {
+          id: "3dViewportControl",
           classId: IModelViewportControl,
           applicationData: {
             viewState: viewState3d,
@@ -39,6 +38,7 @@ export class CrossProbingFrontstage extends FrontstageProvider {
           },
         },
         {
+          id: "2dViewportControl",
           classId: IModelViewportControl,
           applicationData: {
             viewState: viewState2d,
@@ -55,7 +55,6 @@ export class CrossProbingFrontstage extends FrontstageProvider {
       <Frontstage
         id={CrossProbingFrontstage.MAIN_CONTENT_ID}
         defaultTool={CoreTools.selectElementCommand}
-        defaultLayout={this._contentLayoutDef}
         contentGroup={this._contentGroup}
         contentManipulationTools={
           <Zone

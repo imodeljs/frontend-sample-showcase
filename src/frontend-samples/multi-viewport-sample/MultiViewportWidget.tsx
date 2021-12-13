@@ -17,12 +17,12 @@ const MultiViewportWidget: React.FunctionComponent = () => {
   useEffect(() => {
     if (isSynched && viewport !== undefined) {
       let selectedViewport: Viewport | undefined, unselectedViewport: Viewport | undefined;
-      IModelApp.viewManager.forEachViewport((vp) => {
+      for (const vp of IModelApp.viewManager) {
         if (vp.viewportId === viewport.viewportId)
           selectedViewport = vp;
         else
           unselectedViewport = vp;
-      });
+      };
       if (selectedViewport === undefined || unselectedViewport === undefined)
         return;
       // By passing the selected viewport as the first argument, this will be the view

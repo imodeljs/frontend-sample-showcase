@@ -5,31 +5,31 @@
 
 import React from "react";
 import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
-import { ViewStateProp } from "@itwin/components-react";
+import { ViewStateProp } from "@itwin/imodel-components-react";
 
 export class MultiViewportFrontstage extends FrontstageProvider {
   // constants
+  public id = "MultiViewportFrontstage";
   public static MAIN_CONTENT_ID = "MultiViewportFrontstage";
   public static DEFAULT_NAVIGATION_WIDGET_KEY = "DefaultNavigationWidget";
   public static DEFAULT_MANIPULATION_WIDGET_KEY = "DefaultNavigationWidget";
-  // Content layout for content views
-  private _contentLayoutDef: ContentLayoutDef;
   // Content group for all layouts
   private _contentGroup: ContentGroup;
 
   constructor(viewState?: ViewStateProp) {
     super();
-
-    this._contentLayoutDef = new ContentLayoutDef({
-      id: "TwoHalvesHorizontal",
-      horizontalSplit: { percentage: 0.50, top: 0, bottom: 1 },
-    });
     const connection = UiFramework.getIModelConnection();
 
     // Create the content group.
     this._contentGroup = new ContentGroup({
+      id: "MultiViewportContentGroup",
+      layout: {
+        id: "TwoHalvesHorizontal",
+        horizontalSplit: { id: "TwoHalvesHorizontalSplit", percentage: 0.50, top: 0, bottom: 1 },
+      },
       contents: [
         {
+          id: "MultiViewport1",
           classId: IModelViewportControl,
           applicationData: {
             viewState,
@@ -37,6 +37,7 @@ export class MultiViewportFrontstage extends FrontstageProvider {
           },
         },
         {
+          id: "MultiViewport2",
           classId: IModelViewportControl,
           applicationData: {
             viewState,
@@ -53,7 +54,6 @@ export class MultiViewportFrontstage extends FrontstageProvider {
       <Frontstage
         id={MultiViewportFrontstage.MAIN_CONTENT_ID}
         defaultTool={CoreTools.selectElementCommand}
-        defaultLayout={this._contentLayoutDef}
         contentGroup={this._contentGroup}
         isInFooterMode={true}
         viewNavigationTools={
