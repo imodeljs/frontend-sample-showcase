@@ -76,9 +76,9 @@ const MarkerPinWidget: React.FunctionComponent = () => {
     if (!imagesLoadedState)
       return;
 
-    MarkerPinApi._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
+    IModelApp.localization.registerNamespace("marker-pin-i18n-namespace");
 
-    PlaceMarkerTool.register(MarkerPinApi._sampleNamespace);
+    PlaceMarkerTool.register("marker-pin-i18n-namespace");
 
     MarkerPinApi.setMarkersData(markerPinDecorator, markersDataState);
 
@@ -88,7 +88,7 @@ const MarkerPinWidget: React.FunctionComponent = () => {
       IModelApp.viewManager.onViewOpen.addOnce(() => viewInit());
 
     return () => {
-      IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
+      IModelApp.localization.unregisterNamespace("marker-pin-i18n-namespace");
       IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

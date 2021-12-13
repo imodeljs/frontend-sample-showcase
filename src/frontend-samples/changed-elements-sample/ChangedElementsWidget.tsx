@@ -21,10 +21,10 @@ export const ChangedElementsWidget: React.FunctionComponent = () => {
 
   // initialize view with comparison of current and next Named Version
   React.useEffect(() => {
-    assert(iModelConnection?.changeSetId !== undefined);
+    assert(iModelConnection?.changeset.id !== undefined);
     assert(selectVersion?.changeSetId !== undefined);
     setIsRequest(true);
-    ChangedElementsApi.compareChangesets(selectVersion.changeSetId, iModelConnection.changeSetId)
+    ChangedElementsApi.compareChangesets(selectVersion.changeSetId, iModelConnection.changeset.id)
       .finally(() => setIsRequest(false));
   }, [selectVersion, iModelConnection]);
 
@@ -32,7 +32,7 @@ export const ChangedElementsWidget: React.FunctionComponent = () => {
     .map((version, index) => ({ value: index, label: version.name ?? "Error" }));
 
   const currentVersionName = ChangedElementsApi.namedVersions
-    .find((version) => version.changeSetId === iModelConnection?.changeSetId)?.name
+    .find((version) => version.changeSetId === iModelConnection?.changeset.id)?.name
     ?? "Error: No Named Version found for active changeset";
 
   return (

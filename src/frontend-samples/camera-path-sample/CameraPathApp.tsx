@@ -18,7 +18,7 @@ const CameraPathApp: FunctionComponent = () => {
 
   const getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
-    viewState.viewFlags.renderMode = RenderMode.SmoothShade;
+    viewState.viewFlags = viewState.viewFlags.withRenderMode(RenderMode.SmoothShade);
     return viewState;
   };
 

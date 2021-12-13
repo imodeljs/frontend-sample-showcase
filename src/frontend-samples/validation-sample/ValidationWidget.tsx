@@ -48,7 +48,7 @@ const ValidationWidget: React.FunctionComponent = () => {
 
     if (iModelConnection) {
       /** Will start the validation data retrieval and recieve the data through the listener */
-      ValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
+      ValidationApi.setValidationData(iModelConnection.iTwinId!).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });

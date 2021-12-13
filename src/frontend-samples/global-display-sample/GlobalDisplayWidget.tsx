@@ -27,11 +27,9 @@ const GlobalDisplayWidget: FunctionComponent = () => {
   useEffect(() => {
     if (viewport) {
       viewport.changeBackgroundMapProps({
-        applyTerrain: terrain,
-        providerData: {
-          mapType: mapLabels ? BackgroundMapType.Hybrid : BackgroundMapType.Aerial,
-        },
+        applyTerrain: terrain
       });
+      viewport.changeBackgroundMapProvider({ type: mapLabels ? BackgroundMapType.Hybrid : BackgroundMapType.Aerial });
     }
   }, [viewport, terrain, mapLabels]);
 
@@ -43,9 +41,7 @@ const GlobalDisplayWidget: FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport) {
-      const viewFlags = viewport.viewFlags.clone();
-      viewFlags.visibleEdges = buildingEdges;
-      viewport.viewFlags = viewFlags;
+      const viewFlags = viewport.viewFlags.with("visibleEdges", buildingEdges);
     }
   }, [viewport, buildingEdges]);
 

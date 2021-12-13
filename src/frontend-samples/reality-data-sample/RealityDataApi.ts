@@ -9,7 +9,7 @@ import { IModelConnection, queryRealityData, ScreenViewport } from "@itwin/core-
 
 export default class RealityDataApi {
   public static async getRealityModels(imodel: IModelConnection): Promise<ContextRealityModelProps[]> {
-    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
+    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.iTwinId!, filterIModel: imodel });
     return availableModels;
   }
 
@@ -32,7 +32,7 @@ export default class RealityDataApi {
         crmProp.orbitGtBlob = orbitGtBlob;
       }
       viewPort.displayStyle.attachRealityModel(crmProp);
-    // END REALITY_MODEL_ON
+      // END REALITY_MODEL_ON
     } else if (!show) {
       viewPort.displayStyle.detachRealityModelByNameAndUrl(crmName, crmProp.tilesetUrl);
     }

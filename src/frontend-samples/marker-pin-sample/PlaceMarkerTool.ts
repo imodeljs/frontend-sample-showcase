@@ -22,8 +22,8 @@ export class PlaceMarkerTool extends PrimitiveTool {
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp && vp.view.isSpatialView()); }
   public isValidLocation(_ev: BeButtonEvent, _isButtonEvent: boolean): boolean { return true; } // Allow snapping to terrain, etc. outside project extents.
   public requireWriteableTarget(): boolean { return false; } // Tool doesn't modify the imodel.
-  public onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
-  public onRestartTool(): void { this.exitTool(); }
+  public async onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
+  public async onRestartTool(): Promise<void> { this.exitTool(); }
 
   protected setupAndPromptForNextAction(): void {
     // Accusnap adjusts the effective cursor location to 'snap' to geometry in the view

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions, SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode, TreeModelSource, TreeNodeItem, useTreeEventsHandler, useVisibleTreeNodes } from "@itwin/components-react";
+import { ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions, SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode, TreeModelSource, TreeNodeItem, useTreeEventsHandler, useTreeModel } from "@itwin/components-react";
 import { IPresentationTreeDataProvider, PresentationTreeDataProvider } from "@itwin/presentation-components";
 import { Ruleset } from "@itwin/presentation-common";
 import { useDisposable } from "@itwin/core-react";
@@ -72,15 +72,17 @@ export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
+  const model = useTreeModel(nodeLoader.modelSource)
 
   return <>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.None}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={100}
+        height={100}
       />
     </div>
   </>;

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
+import { ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { SampleDataProvider } from "@itwinjs-sandbox";
 import { ImageCheckBox, NodeCheckboxRenderProps } from "@itwin/core-react";
 
@@ -43,15 +43,18 @@ export const CustomCheckboxesTreeComponent: FunctionComponent = () => {
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
+
+  const model = useTreeModel(modelSource)
 
   return <>
     <div className="tree tree-with-eye-checkboxes">
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.None}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={100}
+        height={100}
         // custom tree renderer to override default rendering. It is default 'TreeRenderer' with overridden
         // node renderer
         treeRenderer={nodeWithEyeCheckboxTreeRenderer}

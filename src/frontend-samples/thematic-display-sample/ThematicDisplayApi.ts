@@ -62,16 +62,12 @@ export default class ThematicDisplayApi {
       terrainSettings: TerrainSettings.fromJSON({ heightOriginMode: TerrainHeightOriginMode.Geoid }),
     });
     vp.synchWithView();
-    const vf = vp.viewFlags.clone();
-    vf.backgroundMap = on;
-    vp.viewFlags = vf;
+    vp.viewFlags = vp.viewFlags.with("backgroundMap", on);
   }
 
   /** Modify the thematic display view flag using the Viewport API. */
   public static setThematicDisplayOnOff(vp: Viewport, on: boolean) {
-    const vf = vp.viewFlags.clone();
-    vf.thematicDisplay = on;
-    vp.viewFlags = vf;
+    vp.viewFlags = vp.viewFlags.with("thematicDisplay", on);
   }
 
   /** Overwrite the settings using the Viewport API.  Any props not set will be set to default value by iModel.js.

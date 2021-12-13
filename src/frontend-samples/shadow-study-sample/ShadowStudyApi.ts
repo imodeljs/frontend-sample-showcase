@@ -27,7 +27,7 @@ export default class ShadowStudyApp {
    */
   public static getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState: ViewState = await ViewSetup.getDefaultView(imodel);
-    const vf: ViewFlags = viewState.viewFlags.clone();
+    const vf: ViewFlags = viewState.viewFlags.override({ shadows: true });
 
     if (viewState.is3d()) {
       const viewStyle: DisplayStyle3dState = viewState.getDisplayStyle3d();
@@ -35,8 +35,6 @@ export default class ShadowStudyApp {
       viewState.displayStyle = viewStyle;
     }
 
-    // we always want shadows
-    vf.shadows = true;
     viewState.displayStyle.viewFlags = vf;
 
     return viewState;

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { ControlledTree, DelayLoadedTreeNodeItem, ITreeDataProvider, PropertyValueRendererManager, SelectionMode, TreeActions, TreeDataChangesListener, TreeModelNode, TreeNodeItem, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
+import { ControlledTree, DelayLoadedTreeNodeItem, ITreeDataProvider, PropertyValueRendererManager, SelectionMode, TreeActions, TreeDataChangesListener, TreeModelNode, TreeNodeItem, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { ExpansionToggle } from "@itwin/core-react";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { BeEvent } from "@itwin/core-bentley";
@@ -45,7 +45,8 @@ export const CustomTableNodeTreeComponent: FunctionComponent = () => {
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
+
+  const model = useTreeModel(modelSource)
 
   return <>
     <div className="custom-tree">
@@ -58,15 +59,17 @@ export const CustomTableNodeTreeComponent: FunctionComponent = () => {
         <ControlledTree
           nodeLoader={nodeLoader}
           selectionMode={SelectionMode.None}
-          treeEvents={eventHandler}
-          visibleNodes={visibleNodes}
-          // pass custom tree renderer that will render each node in three columns
+          eventsHandler={eventHandler}
+          model={model}
+          width={100}
+          height={100}
           treeRenderer={nodeTableTreeRenderer}
         />
       </div>
     </div>
   </>;
-};
+
+}
 
 /** Custom tree renderer that overrides default node renderer to render node as table row */
 const nodeTableTreeRenderer = (props: TreeRendererProps) => (

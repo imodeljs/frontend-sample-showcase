@@ -6,11 +6,9 @@
 import "common/samples-common.scss";
 import { Point3d } from "@itwin/core-geometry";
 import { IModelApp } from "@itwin/core-frontend";
-import { I18NNamespace } from "@itwin/core-i18n";
 import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";
 
 export default class MarkerPinApi {
-  public static _sampleNamespace: I18NNamespace;
   public static _images: Map<string, HTMLImageElement>;
 
   // START SETUPDECORATOR

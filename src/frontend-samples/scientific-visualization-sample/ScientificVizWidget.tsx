@@ -76,9 +76,7 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport) {
-      const viewFlags = viewport.viewFlags.clone();
-      viewFlags.visibleEdges = true;
-      viewFlags.hiddenEdges = true;
+      const viewFlags = viewport.viewFlags.copy({ visibleEdges: true, hiddenEdges: true });
       viewport.viewFlags = viewFlags;
       viewport.setStandardRotation(StandardViewId.Iso);
       viewport.zoomToVolume(viewport.iModel.projectExtents);

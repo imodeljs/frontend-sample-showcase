@@ -81,7 +81,9 @@ export default class CrossProbingApi {
   // helper function to get 3D viewport.
   private static _get3DViewport(): Viewport {
     let vp3d;
-    IModelApp.viewManager.forEachViewport((vp) => (vp.view.is3d()) ? vp3d = vp : null);
+    for (const vp of IModelApp.viewManager) {
+      vp.view.is3d() ? vp3d = vp : null;
+    }
     if (!vp3d) throw new Error("No viewport with 3D model found!");
     return vp3d;
   }
@@ -89,7 +91,9 @@ export default class CrossProbingApi {
   // helper function to get 2D viewport.
   private static _get2DViewport(): Viewport {
     let vp2d;
-    IModelApp.viewManager.forEachViewport((vp) => (vp.view.is2d()) ? vp2d = vp : null);
+    for (const vp of IModelApp.viewManager) {
+      vp.view.is2d() ? vp2d = vp : null;
+    }
     if (!vp2d) throw new Error("No viewport with 2D model found!");
     return vp2d;
   }

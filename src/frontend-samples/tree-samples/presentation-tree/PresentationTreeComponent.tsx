@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { ControlledTree, SelectionMode, useTreeEventsHandler, useVisibleTreeNodes } from "@itwin/components-react";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel } from "@itwin/components-react";
 import { usePresentationTreeNodeLoader } from "@itwin/presentation-components";
 import RULESET_TREE_HIERARCHY from "./TreeHierarchy";
 const PAGING_SIZE = 20;
@@ -44,15 +44,17 @@ export const PresentationTree: FunctionComponent<PresentationTreeProps> = (props
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
+  const model = useTreeModel(nodeLoader.modelSource)
 
   return <>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.None}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={100}
+        height={100}
       />
     </div>
   </>;

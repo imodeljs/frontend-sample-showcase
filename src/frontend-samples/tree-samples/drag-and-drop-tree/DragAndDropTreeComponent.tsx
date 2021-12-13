@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { DragObjectWithType, DropTargetMonitor, useDrag, useDrop } from "react-dnd";
-import { ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource, TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@itwin/components-react";
+import { ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource, TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { BasicTreeNode } from "./BasicTreeNode";
 import * as mergeRefsExports from "react-merge-refs";
 import { SampleDataProvider } from "@itwinjs-sandbox";
@@ -19,7 +19,7 @@ export const DragAndDropTreeComponent: React.FC = () => {
   const nodeLoader = useTreeNodeLoader(treeDataProvider, modelSource);
   const eventHandlerParams = React.useMemo(() => ({ nodeLoader, modelSource }), [nodeLoader, modelSource]);
   const eventHandler = useTreeEventsHandler(eventHandlerParams);
-  const visibleNodes = useVisibleTreeNodes(modelSource);
+  const model = useTreeModel(modelSource)
 
   React.useEffect(() => {
     const subscriber = DragAndDropTreeApi.on(() => setTreeDataProvider(new SampleDataProvider()));
@@ -42,8 +42,10 @@ export const DragAndDropTreeComponent: React.FC = () => {
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.None}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={100}
+        height={100}
         treeRenderer={(treeProps) => (
           <TreeRenderer {...treeProps} nodeRenderer={(nodeProps) => <DragAndDropNode {...nodeProps} />} />
         )}

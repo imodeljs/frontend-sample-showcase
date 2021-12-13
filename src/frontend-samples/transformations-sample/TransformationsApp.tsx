@@ -24,7 +24,7 @@ const TransformationsApp: FunctionComponent = () => {
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    const vf = viewState.viewFlags.clone();
+    const vf = viewState.viewFlags.copy({});
 
     // Connect to iModel
     // START TRANSFORMED_IMODEL_CONNECTION

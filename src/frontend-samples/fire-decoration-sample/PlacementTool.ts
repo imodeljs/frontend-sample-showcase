@@ -22,8 +22,8 @@ export class PlacementTool extends PrimitiveTool {
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp && vp.view.isSpatialView()); }
   public isValidLocation(_ev: BeButtonEvent, _isButtonEvent: boolean): boolean { return true; } // Allow snapping to terrain, etc. outside project extents.
   public requireWriteableTarget(): boolean { return false; } // Tool doesn't modify the imodel.
-  public onPostInstall() { super.onPostInstall(); IModelApp.accuSnap.enableSnap(true); }
-  public onRestartTool(): void { this.exitTool(); }
+  public async onPostInstall() { super.onPostInstall(); IModelApp.accuSnap.enableSnap(true); }
+  public async onRestartTool(): Promise<void> { this.exitTool(); }
 
   // A reset button is the secondary action button, ex. right mouse button.
   public async onResetButtonUp(_ev: BeButtonEvent): Promise<EventHandled> {

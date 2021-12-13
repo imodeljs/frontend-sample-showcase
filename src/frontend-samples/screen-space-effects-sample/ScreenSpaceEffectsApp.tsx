@@ -18,7 +18,7 @@ const ScreenSpaceEffectsApp: FunctionComponent = () => {
 
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
-      viewport.viewFlags.grid = false;
+      viewport.viewFlags = viewport.viewFlags.with("grid", false);
     });
 
     const viewState = await ViewSetup.getDefaultView(iModelConnection);

@@ -32,7 +32,7 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
 
     // The lens distortion effect requires the camera to be enabled. Turn it on if it's not already.
     let lensAngle = lensAngleState;
-    if (!viewport.view.isCameraEnabled())
+    if (!(viewport.view.is3d() && viewport.isCameraOn))
       viewport.turnCameraOn(Angle.createDegrees(lensAngle));
     else
       lensAngle = viewport.view.camera.getLensAngle().degrees;

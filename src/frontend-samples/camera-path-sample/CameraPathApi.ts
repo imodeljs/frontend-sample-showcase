@@ -18,7 +18,7 @@ export default class CameraPathApp {
     if (changeCameraTargetOnly) {
       (viewport.view as ViewState3d).setEyePoint(cameraPoint.eyePoint);
     } else {
-      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+      (viewport.view as ViewState3d).lookAt({ eyePoint: cameraPoint.eyePoint, targetPoint: cameraPoint.targetPoint, upVector: new Vector3d(0, 0, 1), lensAngle: (viewport.view as ViewState3d).camera.lens });
     }
     viewport.synchWithView();
   }
