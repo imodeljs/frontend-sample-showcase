@@ -7,7 +7,7 @@ import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
 import MonacoEditor, { Annotation, ErrorList, Pane, SplitScreen, useActivityState, useEntryState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
 import { Drawer, Label } from "./Drawer/Drawer";
-import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
+import { Spinner, SpinnerSize, UiCore } from "@itwin/core-react";
 import { useFeatureToggleClient } from "hooks/useFeatureToggleClient/UseFeatureToggleClient";
 import { FeatureFlags } from "FeatureToggleClient";
 import { ProblemsLabel, WalkthroughLabel } from "./Drawer/DrawerLabels";

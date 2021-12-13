@@ -7,7 +7,6 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { SampleGallery } from "Components/SampleGallery/SampleGallery";
 import { sampleManifest } from "../../sampleManifest";
 import { ActiveSample } from "./ActiveSample";
-//import { Spinner, SpinnerSize } from "@bentley/ui-core/lib/ui-core/loading/Spinner";
 
 import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import "./SampleShowcase.scss";

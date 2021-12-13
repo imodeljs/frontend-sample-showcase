@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { RealityDataAccessClient } from "@bentley/reality-data-client";
 import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier } from "@itwin/core-common";
-import { IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@itwin/core-frontend";
+import { IModelApp, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@itwin/core-frontend";
 import { Presentation, SelectionChangesListener } from "@itwin/presentation-frontend";
-import { queryRealityData } from "@itwin/reality-data-client"
 
 export default class ClassifierApi {
   private static _selectionListener: SelectionChangesListener;
@@ -24,7 +24,8 @@ export default class ClassifierApi {
     const style = viewPort.displayStyle.clone();
 
     // Get first available reality models and attach them to displayStyle
-    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.iTwinId!, filterIModel: imodel });
+    const RealityDataClient = new RealityDataAccessClient()
+    const availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel });
     for (const crmProp of availableModels) {
       crmProp.classifiers = [];
       style.attachRealityModel(crmProp);
