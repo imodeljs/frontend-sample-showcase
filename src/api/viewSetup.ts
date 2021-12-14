@@ -3,9 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64Set, Id64String } from "@bentley/bentleyjs-core";
-import { BackgroundMapProps, ColorDef, PlanarClipMaskMode, PlanarClipMaskSettings } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, DrawingViewState, Environment, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@bentley/imodeljs-frontend";
+import { BackgroundMapProps, ColorDef, Environment, PlanarClipMaskMode, PlanarClipMaskSettings } from "@itwin/core-common";
+import { DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
+import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export class ViewSetup {
   /** Queries for and loads the default view for an iModel. */
@@ -58,10 +59,7 @@ export class ViewSetup {
       viewState.adjustAspectRatio(aspect);
     }
 
-    const viewFlags = viewState.viewFlags.clone();
-    viewFlags.shadows = false;
-    viewFlags.grid = false;
-    viewFlags.visibleEdges = false;
+    const viewFlags = viewState.viewFlags.copy({ shadows: false, grid: false, visibleEdges: false });
     viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
@@ -75,7 +73,7 @@ export class ViewSetup {
       }
 
       // Enable the sky-box, but override to old sky box.
-      displayStyle.environment = new Environment({
+      displayStyle.environment = Environment.fromJSON({
         sky: {
           display: true,
           twoColor: true,
@@ -88,8 +86,10 @@ export class ViewSetup {
       if (imodel.name === "Metrostation2") {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
+        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds })
+        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories })
         displayStyle.changeBackgroundMapProps({
-          planarClipMask: PlanarClipMaskSettings.createForElementsOrSubCategories(PlanarClipMaskMode.IncludeSubCategories, subCategoryIds, modelIds).toJSON(),
+          planarClipMask: planarClipMaskSettings.toJSON(),
         });
       }
     }
@@ -100,7 +100,7 @@ export class ViewSetup {
       if (imodel.name === "Stadium") {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
         displayStyle.changeBackgroundMapProps({
-          planarClipMask: PlanarClipMaskSettings.createForModels(modelsForMasking).toJSON(),
+          planarClipMask: PlanarClipMaskSettings.create({ modelIds: modelsForMasking }).toJSON(),
           transparency: 0.01, // Temporary fix due to how the planar clip and transparency interact.
         });
         const excludedModelIds = await ViewSetup.getModelIds(imodel,
@@ -173,15 +173,14 @@ export class ViewSetup {
   * groundBias can be stored in Product Settings Service. This method retrieves it.
   */
   public static getGroundBias = async (imodel: IModelConnection): Promise<number | undefined> => {
-    const requestContext = await AuthorizedFrontendRequestContext.create();
+    const accessToken = await AuthorizationClient.oidcClient.getAccessToken()
 
-    const allSettings: SettingsMapResult = await IModelApp.settings.getSharedSettingsByNamespace(
-      requestContext,
-      "bingMapSettings",
-      true,
-      imodel.contextId!,
-      imodel.iModelId,
-    );
+    const allSettings: SettingsMapResult = await IModelApp.userPreferences!.get({
+      accessToken,
+      key: "bingMapSettings",
+      iTwinId: imodel.iTwinId!,
+      iModelId: imodel.iModelId,
+    });
     if (
       allSettings.status === SettingsStatus.Success &&
       allSettings.settingsMap &&

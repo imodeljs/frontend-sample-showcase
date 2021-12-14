@@ -8,7 +8,6 @@ import { ColorDef, FeatureOverrideType, GeometricElement3dProps, Placement3d } f
 import { Point3d } from "@itwin/core-geometry";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import ValidationClient from "./ValidationClient";
-import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 import { BeEvent } from "@itwin/core-bentley";
 import { jsonResultData } from "./ValidationResultJson";
 import { jsonRuleData } from "./ValidationRuleJson";

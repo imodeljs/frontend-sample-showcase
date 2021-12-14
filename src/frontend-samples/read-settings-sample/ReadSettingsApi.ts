@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { IModelApp } from "@itwin/core-frontend";
-import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
 
 const namespace = "showcase";
 

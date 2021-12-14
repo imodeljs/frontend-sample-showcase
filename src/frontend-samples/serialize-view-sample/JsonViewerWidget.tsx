@@ -22,9 +22,11 @@ export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = 
       JSON.parse(event.target.value);
       setJsonValueState(event.target.value);
       setJsonErrorState("");
-    } catch (error: any) {
+    } catch (error) {
       setJsonValueState(event.target.value);
-      setJsonErrorState(error.toString());
+      if (error instanceof Error) {
+        setJsonErrorState(error.toString());
+      }
     }
   };
 

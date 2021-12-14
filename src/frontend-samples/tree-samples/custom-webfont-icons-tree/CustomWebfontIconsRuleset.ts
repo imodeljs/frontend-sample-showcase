@@ -2,11 +2,10 @@ import { ChildNodeSpecificationTypes, RelationshipDirection, Ruleset, RuleTypes 
 
 const ruleset: Ruleset = {
   id: "TreeWithIcons",
-  supportedSchemas: {
-    schemaNames: [
-      "BisCore",
+  requiredSchemas:
+    [
+      { name: "BisCore" },
     ],
-  },
   rules: [
     {
       ruleType: RuleTypes.RootNodes, // "RootNodes"

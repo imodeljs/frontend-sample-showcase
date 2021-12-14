@@ -5,9 +5,8 @@
 import { assert } from "@itwin/core-bentley";
 import { IModelHubClient, Version, VersionQuery } from "@bentley/imodelhub-client";
 import { ChangedElements } from "@itwin/core-common";
-import { IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { IncludePrefix, request, Response } from "@bentley/itwin-client";
-import { AuthorizationClient } from "@itwinjs-sandbox";
+import { IModelConnection } from "@itwin/core-frontend";
+import { request, Response } from "@bentley/itwin-client";
 import { ChangedElementsApi } from "./ChangedElementsApi";
 
 interface ProjectContext {
@@ -86,7 +85,7 @@ export class ChangedElementsClient {
         Accept: "application/vnd.bentley.itwin-platform.v1+json",
       },
     };
-    return request(accessToken as any, url, options)
+    return request(url, options)
       .then((resp: Response): ChangedElements | undefined => {
         return resp.body?.changedElements;
       }).catch((_reason: any) => {

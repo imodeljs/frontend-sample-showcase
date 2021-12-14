@@ -26,7 +26,7 @@ const ReadSettingsApp: FunctionComponent = () => {
       {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
           productId="2686"
-          contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
           viewportOptions={viewportOptions}

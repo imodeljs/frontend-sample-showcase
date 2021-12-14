@@ -258,7 +258,7 @@ export const effects: Effect[] = [{
       type: UniformType.Float,
       bind: (uniform, context) => {
         let height = 0;
-        if (context.viewport.view.isCameraEnabled()) {
+        if (context.viewport.view.is3d() && context.viewport.view.isCameraOn) {
           const fov = context.viewport.view.camera.lens.radians;
           height = Math.tan(fov / 2) / context.viewport.viewRect.aspect;
         }

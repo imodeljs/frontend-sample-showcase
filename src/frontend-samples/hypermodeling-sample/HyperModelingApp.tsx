@@ -37,7 +37,7 @@ const HyperModelingApp: FunctionComponent = () => {
       {sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
           onIModelAppInit={_onIModelInit}
-          contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
           viewportOptions={viewportOptions}

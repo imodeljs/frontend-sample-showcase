@@ -24,7 +24,7 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
     name = iModelName;
     context = iModelName;
   }
-
+  console.log("About to make context registry client")
   const connectClient = new ContextRegistryClient();
   let project: Project;
   try {
@@ -37,12 +37,12 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
   imodelQuery.byName(name);
 
   const hubClient = new IModelHubClient();
-  const imodels = await hubClient.iModels.get(accessToken as any, project.wsgId, imodelQuery);
+  const imodels = await hubClient.iModels.get(accessToken as any, project.assetId!, imodelQuery);
 
   if (imodels.length === 0)
     throw new Error(`iModel with name "${iModelName}" does not exist in project "${name}"`);
 
-  const result = { contextName: context, iModelName: name, contextId: project.wsgId, iModelId: imodels[0].wsgId };
+  const result = { contextName: context, iModelName: name, contextId: project.assetId!, iModelId: imodels[0].wsgId };
   return result;
 };
 

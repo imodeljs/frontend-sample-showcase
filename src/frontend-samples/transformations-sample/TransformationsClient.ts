@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
+import { request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { GuidString } from "@itwin/core-bentley";
@@ -26,8 +26,6 @@ export interface Transformation {
 }
 
 export default class TransformationsClient {
-  private static _requestContext: AuthorizedClientRequestContext;
-
   public static async getTransformation(transformationId: string): Promise<Transformation | undefined> {
     const url = `https://api.bentley.com/transformations/${transformationId}`;
     const options = {
@@ -36,7 +34,7 @@ export default class TransformationsClient {
         Authorization: (await TransformationsClient.getAccessToken()),
       },
     };
-    return request(await TransformationsClient.getAccessToken() as any, url, options)
+    return request(url, options)
       .then((resp: Response): Transformation | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;

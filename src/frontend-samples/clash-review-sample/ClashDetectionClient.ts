@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizedClientRequestContext, IncludePrefix, request, RequestOptions, Response } from "@bentley/itwin-client";
+import { request, RequestOptions, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 
@@ -23,7 +23,7 @@ export default class ClashDetectionClient {
         Authorization: accessToken,
       },
     };
-    return request(accessToken as any, url, options)
+    return request(url, options)
       .then((resp: Response): string | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -48,7 +48,7 @@ export default class ClashDetectionClient {
         Authorization: accessToken,
       },
     };
-    return request(accessToken as any, url, options)
+    return request(url, options)
       .then((resp: Response): any | undefined => {
         return resp.body;
       }).catch((_reason: any) => {

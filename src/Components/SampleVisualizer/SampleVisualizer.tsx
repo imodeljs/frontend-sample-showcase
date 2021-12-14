@@ -94,8 +94,10 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
           }
         }
         await AuthorizationClient.initializeOidc();
-      } catch (error: any) {
-        componentElement = <DisplayError error={error} />;
+      } catch (error) {
+        if (error instanceof Error) {
+          componentElement = <DisplayError error={error} />;
+        }
       }
 
       if (ref.current && currentProps.current.type === type && currentProps.current.transpileResult === transpileResult) {

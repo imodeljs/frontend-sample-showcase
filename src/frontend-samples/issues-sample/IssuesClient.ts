@@ -6,7 +6,7 @@
 /* tslint:disable */
 
 import { Point3d } from "@itwin/core-geometry";
-import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
+import { request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 
@@ -452,7 +452,6 @@ export interface Link {
 }
 
 export default class IssuesClient {
-  private static _requestContext: AuthorizedClientRequestContext;
 
   public static async getProjectIssues(projectId: string, type?: string, state?: string): Promise<IssuesList | undefined> {
     var url = `https://api.bentley.com/issues/?projectId=${projectId}`;
@@ -468,7 +467,7 @@ export default class IssuesClient {
         Authorization: (await IssuesClient.getAccessToken())
       },
     };
-    return request(await IssuesClient.getAccessToken() as any, url, options)
+    return request(url, options)
       .then((resp: Response): IssuesList | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -485,7 +484,7 @@ export default class IssuesClient {
         Authorization: (await IssuesClient.getAccessToken()),
       },
     };
-    return request(await IssuesClient.getAccessToken() as any, url, options)
+    return request(url, options)
       .then((resp: Response): IssueDetailsGet | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -502,7 +501,7 @@ export default class IssuesClient {
         Authorization: (await IssuesClient.getAccessToken())
       },
     };
-    return request(await IssuesClient.getAccessToken() as any, url, options)
+    return request(url, options)
       .then((resp: Response): AttachmentMetadataList | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -537,7 +536,7 @@ export default class IssuesClient {
         Authorization: (await IssuesClient.getAccessToken()),
       },
     };
-    return request(await IssuesClient.getAccessToken() as any, url, options)
+    return request(url, options)
       .then((resp: Response): CommentsListPreferReturnMinimal | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;
@@ -554,7 +553,7 @@ export default class IssuesClient {
         Authorization: (await IssuesClient.getAccessToken()),
       },
     };
-    return request(await IssuesClient.getAccessToken() as any, url, options)
+    return request(url, options)
       .then((resp: Response): AuditTrail | undefined => {
         if (resp.body === undefined) return undefined;
         return resp.body;

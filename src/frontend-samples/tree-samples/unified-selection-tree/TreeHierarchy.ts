@@ -7,11 +7,10 @@ import { ChildNodeSpecificationTypes, RelationshipDirection, Ruleset, RuleTypes 
 
 const TreeHierarchy: Ruleset = {
   id: "TreeHierarchy",
-  supportedSchemas: {
-    schemaNames: [
-      "BisCore",
+  requiredSchemas:
+    [
+      { name: "BisCore" },
     ],
-  },
   rules: [
     {
       ruleType: RuleTypes.RootNodes,
