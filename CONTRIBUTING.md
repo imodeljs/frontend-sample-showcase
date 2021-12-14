@@ -67,7 +67,7 @@ export const MySampleApp: FunctionComponent = () => {
   public render() {
     return (
       <Viewer
-        contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
         iModelId={sampleIModelInfo.iModelId}
         authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
         defaultUiConfig={default3DSandboxUi}

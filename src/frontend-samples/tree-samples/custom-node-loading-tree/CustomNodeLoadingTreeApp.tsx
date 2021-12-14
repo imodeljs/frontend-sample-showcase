@@ -16,7 +16,7 @@ const CustomNodeLoadingTreeApp: React.FunctionComponent = () => {
   return (<>
     {sampleIModelInfo?.iModelName && sampleIModelInfo.contextId && sampleIModelInfo.iModelId &&
       <Viewer
-        contextId={sampleIModelInfo.contextId}
+        iTwinId={sampleIModelInfo.contextId}
         iModelId={sampleIModelInfo.iModelId}
         authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
         frontstages={frontstages}
