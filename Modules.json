@@ -172,16 +172,6 @@
       "typedef": true
     },
     {
-      "name": "common/SandboxViewport/SandboxViewport",
-      "import": "./src/common/SandboxViewport/SandboxViewport",
-      "typedef": true
-    },
-    {
-      "name": "common/SandboxIModelConnection/SandboxIModelConnection",
-      "import": "./src/common/SandboxIModelConnection/SandboxIModelConnection",
-      "typedef": true
-    },
-    {
       "name": "Components/Widgets/SmallStatusBar",
       "import": "./src/Components/Widgets/SmallStatusBar",
       "typedef": true
