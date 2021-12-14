@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@bentley/context-registry-client": "rc",
     "@bentley/frontend-application-insights-client": "rc",
     "@bentley/frontend-authorization-client": "rc",
     "@bentley/icons-generic-webfont": "^1.0.15",
@@ -37,6 +36,7 @@
     "@itwin/presentation-common": "rc",
     "@itwin/presentation-components": "rc",
     "@itwin/presentation-frontend": "rc",
+    "@itwin/projects-client": "^0.2.0",
     "@itwin/reality-data-client": "^0.2.4",
     "@itwin/web-viewer-react": "next",
     "@itwin/webgl-compatibility": "rc",

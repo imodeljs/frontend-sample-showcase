@@ -42,10 +42,6 @@
       "import": "@bentley/bentleyjs-core"
     },
     {
-      "name": "@bentley/context-registry-client",
-      "import": "@bentley/context-registry-client"
-    },
-    {
       "name": "@bentley/frontend-authorization-client",
       "import": "@bentley/frontend-authorization-client"
     },

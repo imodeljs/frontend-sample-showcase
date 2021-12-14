@@ -4,7 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { useCallback, useEffect, useState } from "react";
-import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
+import { ProjectsAccessClient, Project, ProjectsSearchableProperty } from "@itwin/projects-client";
+
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
 import { AuthorizationClient } from "@itwinjs-sandbox";
 import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
@@ -25,10 +26,10 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
     context = iModelName;
   }
   console.log("About to make context registry client")
-  const connectClient = new ContextRegistryClient();
+  const connectClient = new ProjectsAccessClient();
   let project: Project;
   try {
-    project = await connectClient.getProject(accessToken as any, { $filter: `Name+eq+'${context}'` });
+    project = (await connectClient.getAll(accessToken, { search: { searchString: context, propertyName: ProjectsSearchableProperty.Name, exactMatch: true } }))[0];
   } catch (e) {
     throw new Error(`Project with name "${context}" does not exist`);
   }
@@ -37,12 +38,12 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
   imodelQuery.byName(name);
 
   const hubClient = new IModelHubClient();
-  const imodels = await hubClient.iModels.get(accessToken as any, project.assetId!, imodelQuery);
+  const imodels = await hubClient.iModels.get(accessToken as any, project.id, imodelQuery);
 
   if (imodels.length === 0)
     throw new Error(`iModel with name "${iModelName}" does not exist in project "${name}"`);
 
-  const result = { contextName: context, iModelName: name, contextId: project.assetId!, iModelId: imodels[0].wsgId };
+  const result = { contextName: context, iModelName: name, contextId: project.id!, iModelId: imodels[0].wsgId };
   return result;
 };
 
