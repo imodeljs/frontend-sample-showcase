@@ -30,7 +30,7 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
       setDecoratorState(decorator);
 
       IModelApp.localization.registerNamespace("camera-i18n-namespace");
-      MovePointTool.register();
+      MovePointTool.register("camera-i18n-namespace");
     }
 
     calculateSpacePoint({ x: -10, y: 10 });

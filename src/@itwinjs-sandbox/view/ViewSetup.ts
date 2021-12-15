@@ -146,7 +146,7 @@ export class ViewSetup {
     if (!iModel.isClosed) {
       const query = `SELECT ECInstanceId FROM Bis:PhysicalPartition${modelNames.length > 0 ? ` WHERE codeValue IN ('${modelNames.join("','")}')` : ""}`;
       for await (const row of iModel.query(query)) {
-        ids.add(row.id);
+        ids.add(row[0]);
       }
     }
     return ids;
@@ -164,7 +164,7 @@ export class ViewSetup {
                                       ${categoryCodes.length > 0 ? `WHERE CodeValue IN ('${categoryCodes.join("','")}')` : ""})`;
 
       for await (const row of iModel.query(selectSubCategories)) {
-        subcategoriesIds.add(row.id);
+        subcategoriesIds.add(row[0]);
       }
     }
     return subcategoriesIds;

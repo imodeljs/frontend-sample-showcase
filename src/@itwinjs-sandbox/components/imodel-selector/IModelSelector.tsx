@@ -18,9 +18,8 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
   const iModelList = iModelNames || [];
   const currentiModel = iModelName;
 
-  const _handleSelection = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = Number.parseInt(event.target.selectedOptions[0].value, 10);
-    const imodel = iModelList[index];
+  const _handleSelection = async (value: SampleIModelWithAlternativeName | SampleIModels) => {
+    const imodel = value;
 
     let name: SampleIModels;
     if ((imodel as SampleIModelWithAlternativeName).context)
@@ -39,22 +38,25 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
   });
 
   const _getOptions = () => {
-    return Object.fromEntries(iModelList.map((v) => {
+    const options: { value: SampleIModelWithAlternativeName | SampleIModels, label: string }[] = [];
+    for (const model of iModelList) {
+      console.log(model)
       let name: SampleIModels;
-      if ((v as SampleIModelWithAlternativeName).context)
-        name = (v as SampleIModelWithAlternativeName).context;
+      if ((model as SampleIModelWithAlternativeName).context)
+        name = (model as SampleIModelWithAlternativeName).context;
       else
-        name = (v as SampleIModels);
-      return [{ value: v, label: name }];
-    }));
+        name = (model as SampleIModels);
+      options.push({ value: model, label: name });
+    }
+    return options;
   };
 
   return (
     <div>
       <span>Select iModel: </span>
-      <Select<any>
+      <Select<SampleIModelWithAlternativeName | SampleIModels>
         className="imodel-list"
-        value={value.toString()}
+        value={iModelList[value]}
         onChange={_handleSelection}
         options={_getOptions()} />
     </div>

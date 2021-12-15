@@ -71,7 +71,7 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
       setDecoratorState(decorator);
 
       IModelApp.localization.registerNamespace("camera-i18n-namespace");
-      MovePointTool.register();
+      MovePointTool.register("camera-i18n-namespace");
     }
 
     return (() => {
