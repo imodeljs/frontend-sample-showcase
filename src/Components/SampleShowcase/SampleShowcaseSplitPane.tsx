@@ -142,11 +142,11 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
         {editor}
       </Pane>
       <Pane className={"preview"} minSize={`${sizes?.minPreviewSize}px`}>
-        {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
-        {showEditor && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+        {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+        {showEditor && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
         {visualizer}
-        {((width < 576 && !showEditor) || width >= 576) && !showGallery && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
-        {showGallery && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+        {((width < 576 && !showEditor) || width >= 576) && !showGallery && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="show-panel show-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+        {showGallery && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="hide-panel hide-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-right"></span></Button>}
       </Pane>
       <Pane className={galleryClassName.join(" ")} maxSize={`${sizes?.maxGallerySize}%`} disabled={!showGallery} size={showGallery ? `${sizes?.gallerySize}px` : "0"} onChange={onSampleGallerySizeChange}>
         {gallery}
