@@ -159,7 +159,7 @@ describe("Reality Data", () => {
       vp.displayStyle.attachRealityModel(crmProp);
       let models: number = 0;
       let style = vp.displayStyle.clone();
-      style.forEachRealityModel(() => { models++; },);
+      style.forEachRealityModel(() => { models++; });
 
       // Expect the fake reality model to be added
       expect(models).to.equal(1);
@@ -196,13 +196,13 @@ describe("Classifers", () => {
       vp.displayStyle.attachRealityModel(crmProp);
       const flags = new SpatialClassifierFlags(
         SpatialClassifierInsideDisplay.On,
-        SpatialClassifierOutsideDisplay.Dimmed
+        SpatialClassifierOutsideDisplay.Dimmed,
       );
 
       const testClassifier: SpatialClassifier = new SpatialClassifier(
         "TestId",
         "Test Name",
-        flags
+        flags,
       );
 
       ClassifierApi.updateRealityDataClassifiers(vp, testClassifier);

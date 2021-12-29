@@ -61,7 +61,7 @@ export const Drawer: React.FunctionComponent<DrawerProps> = ({ labels, open, onD
       {React.Children.toArray(children).map((child, index) =>
         <div key={index} id="sample-editor-pane-drawer" style={activeIndex !== index ? { display: "none" } : undefined}>
           {child}
-        </div>
+        </div>,
       )
       }
     </div >

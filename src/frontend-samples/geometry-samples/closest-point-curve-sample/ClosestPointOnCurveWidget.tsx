@@ -166,7 +166,7 @@ export class ClosestPointOnCurveWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ClosestPointOnCurveWidget />,
-        }
+        },
       );
     }
     return widgets;

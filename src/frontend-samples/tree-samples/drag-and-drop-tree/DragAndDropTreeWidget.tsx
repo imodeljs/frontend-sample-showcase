@@ -33,7 +33,7 @@ export class DragAndDropTreeWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <DragAndDropTreeWidget />,
-        }
+        },
       );
     }
     return widgets;

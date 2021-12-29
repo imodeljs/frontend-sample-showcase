@@ -159,7 +159,7 @@ export class Transformations2dWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <Transformations2dWidget />,
-        }
+        },
       );
     }
     return widgets;

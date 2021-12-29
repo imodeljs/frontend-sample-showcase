@@ -198,7 +198,7 @@ export class FireDecorationWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <FireDecorationWidget />,
-        }
+        },
       );
     }
     return widgets;

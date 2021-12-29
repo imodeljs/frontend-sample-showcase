@@ -298,7 +298,7 @@ export class ThematicDisplayWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ThematicDisplayWidget />,
-        }
+        },
       );
     }
     return widgets;

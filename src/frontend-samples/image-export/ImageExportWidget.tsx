@@ -33,7 +33,7 @@ export class ImageExportWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ImageExportWidget />,
-        }
+        },
       );
     }
     return widgets;

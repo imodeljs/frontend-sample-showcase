@@ -201,7 +201,7 @@ export class MarkerPinWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <MarkerPinWidget />,
-        }
+        },
       );
     }
     return widgets;

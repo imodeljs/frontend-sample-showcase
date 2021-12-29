@@ -180,7 +180,7 @@ export class ViewAttributesWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ViewAttributesWidget />,
-        }
+        },
       );
     }
     return widgets;

@@ -184,7 +184,7 @@ export class ZoomToElementsWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ZoomToElementsWidget />,
-        }
+        },
       );
     }
     return widgets;

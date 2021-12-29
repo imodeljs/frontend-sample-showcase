@@ -287,7 +287,7 @@ export class VolumeQueryWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <VolumeQueryWidget />,
-        }
+        },
       );
     }
     return widgets;

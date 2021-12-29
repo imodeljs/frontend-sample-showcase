@@ -178,7 +178,7 @@ export class CurveFractionWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <CurveFractionWidget />,
-        }
+        },
       );
     }
     return widgets;

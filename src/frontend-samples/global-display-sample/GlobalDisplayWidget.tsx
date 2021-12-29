@@ -94,7 +94,7 @@ export class GlobalDisplayWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <GlobalDisplayWidget />,
-        }
+        },
       );
     }
     return widgets;

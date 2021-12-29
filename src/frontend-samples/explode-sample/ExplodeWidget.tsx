@@ -193,7 +193,7 @@ export class ExplodeWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ExplodeWidget />,
-        }
+        },
       );
     }
     return widgets;

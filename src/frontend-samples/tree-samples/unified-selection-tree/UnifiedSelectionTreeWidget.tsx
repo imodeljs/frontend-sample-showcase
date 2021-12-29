@@ -71,7 +71,7 @@ export class UnifiedSelectionWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <UnifiedSelectionWidget />,
-        }
+        },
       );
     }
     return widgets;

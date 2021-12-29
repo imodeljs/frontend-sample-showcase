@@ -111,7 +111,7 @@ export class ClashReviewTableWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Open,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ClashReviewTableWidget />,
-        }
+        },
       );
     }
     return widgets;

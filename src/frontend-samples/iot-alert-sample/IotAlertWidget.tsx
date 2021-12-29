@@ -195,7 +195,7 @@ export class IotAlertWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <IotAlertWidget />,
-        }
+        },
       );
     }
     return widgets;

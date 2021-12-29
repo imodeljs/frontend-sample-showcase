@@ -214,7 +214,7 @@ export class ViewSetup {
     const accessToken = await AuthorizationClient.oidcClient.getAccessToken();
 
     const allSettings: SettingsMapResult = await IModelApp.userPreferences!.get(
-      { key: "bingMapSettings", iTwinId: imodel.iTwinId!, iModelId: imodel.iModelId, accessToken }
+      { key: "bingMapSettings", iTwinId: imodel.iTwinId!, iModelId: imodel.iModelId, accessToken },
     );
     if (
       allSettings.status === SettingsStatus.Success &&

@@ -73,7 +73,7 @@ export class DisplayStylesWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <DisplayStylesWidget />,
-        }
+        },
       );
     }
     return widgets;
