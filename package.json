@@ -82,6 +82,7 @@
     "null-loader": "^4.0.0",
     "raw-loader": "^4.0.1",
     "react-app-rewired": "^2.1.6",
+    "react-error-overlay": "6.0.9",
     "rimraf": "^2.7.1",
     "sass": "^1.29.0",
     "ts-jest": "^24.3.0",
