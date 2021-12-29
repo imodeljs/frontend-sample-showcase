@@ -4,15 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
-import MonacoEditor, { Annotation, ErrorList, Pane, SplitScreen, useActivityState, useEntryState } from "@bentley/monaco-editor";
+import MonacoEditor, { Annotation, ErrorList, useActivityState, useEntryState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
 import { Drawer, Label } from "./Drawer/Drawer";
-import { Spinner, SpinnerSize, UiCore } from "@itwin/core-react";
 import { useFeatureToggleClient } from "hooks/useFeatureToggleClient/UseFeatureToggleClient";
 import { FeatureFlags } from "FeatureToggleClient";
 import { ProblemsLabel, WalkthroughLabel } from "./Drawer/DrawerLabels";
 import { WalkthroughViewer } from "./WalkthroughViewer/WalkthroughViewer";
 import "./SampleEditor.scss";
+import { ReflexContainer, ReflexElement } from "react-reflex";
+import { ProgressRadial } from "@itwin/itwinui-react";
 
 export interface EditorProps {
   readme?: () => Promise<{ default: string }>;
@@ -126,14 +127,14 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
   }, [_onDrawerClosed, _onDrawerOpened]);
 
   const readmeViewer = () => {
-    return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
+    return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><ProgressRadial size="large" indeterminate /></div> :
       <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={onSampleClicked} />;
   };
 
   return (
     <div className="sample-editor-container">
-      <SplitScreen split="horizontal">
-        <Pane className="sample-editor">
+      <ReflexContainer orientation="horizontal">
+        <ReflexElement className="sample-editor">
           <TabNavigation onRunCompleted={onTranspiled} showReadme={showReadme} onShowReadme={onShowReadme} />
           <div style={{ height: "100%", overflow: "hidden", display: showReadme ? "block" : "none" }}>
             {showReadme && readmeViewer()}
@@ -141,17 +142,17 @@ export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
           <div style={{ height: "100%", overflow: "hidden", display: !showReadme ? "block" : "none" }}>
             <MonacoEditor />
           </div>
-        </Pane>
+        </ReflexElement>
         {showReadme && !(enableWalkthrough && walkthrough) ?
-          <Pane disabled defaultSize="0" />
+          <ReflexElement />
           :
-          <Pane onChange={_onDrawerChange} snapSize={"200px"} minSize={`${drawerMinSize}px`} maxSize={"50%"} size={`${drawerSize}px`}>
+          <ReflexElement>
             <Drawer open={drawerSize > drawerMinSize} onDrawerClosed={_onDrawerClosed} onDrawerOpen={_onDrawerOpened} labels={labels}>
               {enableWalkthrough && walkthrough && <WalkthroughViewer walkthrough={walkthrough} show={drawerSize > drawerMinSize} onOpenClick={_onDrawerOpened} onCloseClick={_onDrawerClosed} onSampleClicked={onSampleClicked} />}
               <div style={{ padding: "8px" }}><ErrorList /></div>
             </Drawer>
-          </Pane>}
-      </SplitScreen>
+          </ReflexElement>}
+      </ReflexContainer>
     </div >
   );
 };

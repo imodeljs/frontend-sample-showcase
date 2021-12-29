@@ -3,11 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useCallback } from "react";
-import { RunCodeButton, TabNavigation as TabNav } from "@bentley/monaco-editor";
+import { TabNavigation as TabNav } from "@bentley/monaco-editor";
 import { FeatureFlags } from "../../../FeatureToggleClient";
 import classNames from "classnames";
 import "./TabNavigation.scss";
 import { useFeatureToggleClient } from "hooks/useFeatureToggleClient/UseFeatureToggleClient";
+import { Button } from "@itwin/itwinui-react";
 
 export interface TabNavigationProps {
   showReadme: boolean;
@@ -28,7 +29,7 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
         <div className={classNames("icon icon-info readme-button", { "readme-button-active": showReadme })}></div>
       </div>
       <div className="action-item run-code-button">
-        {executable && <RunCodeButton onRunStarted={() => { }} onBundleError={() => { }} onRunCompleted={_onRunCompleted} buildOnRender={false} />}
+        {executable && <Button styleType={"borderless"} />}
       </div>
     </TabNav>
   );

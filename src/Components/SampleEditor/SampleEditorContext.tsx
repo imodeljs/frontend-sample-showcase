@@ -2,11 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
-import { Annotation, EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Annotation, EditorDefaults, EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
 import { SampleSpecFile } from "SampleSpec";
 import { EditorProps, SampleEditor } from "./SampleEditor";
-import modules from "./Modules";
 export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked" | "walkthrough"> {
   files?: () => Promise<SampleSpecFile>[];
   onSampleClicked: (groupName: string | null, sampleName: string | null, wantScroll: boolean) => void;
@@ -60,8 +59,18 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
     });
   }, [onSampleClicked]);
 
+  const defaults: EditorDefaults | undefined = useMemo(() => {
+    if (defaultFiles && defaultEntry) {
+      return {
+        defaultEntry,
+        defaultFiles,
+      };
+    }
+    return undefined;
+  }, [defaultEntry, defaultFiles]);
+
   return (
-    <EditorEnvironmentContextProvider defaultModules={modules} defaultFiles={defaultFiles} defaultEntry={defaultEntry}>
+    <EditorEnvironmentContextProvider defaults={defaults}>
       <SampleEditor
         onSampleClicked={onSampleClickedPromise}
         onTranspiled={onTranspiled}

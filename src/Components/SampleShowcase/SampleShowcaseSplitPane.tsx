@@ -3,20 +3,19 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
-import { SplitScreen } from "@bentley/monaco-editor/lib/components/split-screen/SplitScreen";
-import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
+import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { SampleShowcaseViewHandlerProps } from "./SampleShowcaseViewHandler";
 import "./SampleShowcaseSplitPane.scss";
 import { Button } from "@itwin/itwinui-react";
+import { HandlerProps, ReflexContainer, ReflexElement, ReflexSplitter } from "react-reflex";
+import "react-reflex/styles.css";
 
 export interface SampleShowcaseSplitPaneProps extends SampleShowcaseViewHandlerProps {
   width: number;
 }
 
 interface Sizes {
-  editorSize: number;
-  gallerySize: number;
+  minEditorSize: number;
   minPreviewSize: number;
   maxGallerySize: number;
 }
@@ -24,31 +23,27 @@ interface Sizes {
 const calculateSizes = (width: number) => {
   if (width >= 1024) {
     return {
-      editorSize: Math.floor(width * 0.33),
-      gallerySize: 200,
+      minEditorSize: Math.floor(width * 0.25),
       minPreviewSize: 400,
-      maxGallerySize: 20,
+      maxGallerySize: 250,
     };
   } else if (width < 1024 && width >= 768) {
     return {
-      editorSize: Math.floor(width * 0.5),
-      gallerySize: Math.floor(width * 0.2),
+      minEditorSize: Math.floor(width * 0.33),
       minPreviewSize: Math.floor(width * 0.33),
-      maxGallerySize: 30,
+      maxGallerySize: Math.floor(width * 0.25),
     };
   } else if (width < 768 && width >= 576) {
     return {
-      editorSize: Math.floor(width * 0.5),
-      gallerySize: 150,
+      minEditorSize: Math.floor(width * 0.33),
       minPreviewSize: Math.floor(width * 0.33),
-      maxGallerySize: 30,
+      maxGallerySize: Math.floor(width * 0.25),
     };
   } else {
     return {
-      editorSize: width,
-      gallerySize: width,
+      minEditorSize: width,
       minPreviewSize: width,
-      maxGallerySize: 100,
+      maxGallerySize: width,
     };
   }
 };
@@ -57,9 +52,6 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
   const [sizes, setSizes] = useState<Sizes>(calculateSizes(width));
   const [showEditor, setShowEditor] = useState(width >= 1024);
   const [showGallery, setShowGallery] = useState(width >= 576 && !!gallery);
-  const [dragging, setDragging] = useState<boolean>(false);
-  const ignoreEditorSize = useRef<boolean>(false);
-  const ignoreGallerySize = useRef<boolean>(false);
 
   useEffect(() => {
     setSizes(calculateSizes(width));
@@ -68,52 +60,44 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
   const editorClassName = ["editor-pane"];
   const galleryClassName = ["gallery-pane"];
 
-  dragging && editorClassName.push("dragging");
-  dragging && galleryClassName.push("dragging");
-
   width < 576 && showEditor && editorClassName.push("mobile-visible");
   width < 576 && showGallery && galleryClassName.push("mobile-visible");
+  !showEditor && editorClassName.push("hidden");
+  !showGallery && galleryClassName.push("hidden");
 
-  const onSampleGallerySizeChange = (size: number) => {
-    if (!ignoreGallerySize.current) {
-      if (width >= 576) {
-        const minSize = sizes?.gallerySize || 200;
-        size = Math.ceil(size);
-        if (size < minSize && showGallery) {
-          setShowGallery(false);
-          ignoreGallerySize.current = true;
-          document.dispatchEvent(new MouseEvent("mouseup"));
-        } else if (size >= minSize && !showGallery) {
-          setShowGallery(true);
-          ignoreGallerySize.current = true;
-        }
+  const onSampleGallerySizeChange = useCallback(({ domElement }: HandlerProps) => {
+
+    if (width >= 576) {
+      const minSize = 150;
+      const size = Math.ceil((domElement as HTMLElement).offsetWidth);
+      if (size < minSize && showGallery) {
+        setShowGallery(false);
+      } else if (size >= minSize && !showGallery) {
+        setShowGallery(true);
       }
     }
-  };
+  }, [showGallery, width]);
 
-  const onEditorSizeChange = (size: number) => {
-    if (!ignoreEditorSize.current) {
-      if (width >= 576) {
-        const minSize = sizes?.editorSize || 412;
-        size = Math.ceil(size);
-        if (size < minSize && showEditor) {
-          setShowEditor(false);
-          ignoreEditorSize.current = true;
-          document.dispatchEvent(new MouseEvent("mouseup"));
-        } else if (size >= minSize && !showEditor) {
-          setShowEditor(true);
-          ignoreEditorSize.current = true;
-        }
+  const onEditorSizeChange = useCallback(({ domElement }: HandlerProps) => {
+
+    if (width >= 576) {
+      const minSize = sizes.minEditorSize;
+      const size = Math.ceil((domElement as HTMLElement).offsetWidth);
+      if (size < minSize && showEditor) {
+        setShowEditor(false);
+      } else if (size >= minSize && !showEditor) {
+        setShowEditor(true);
       }
     }
-  };
+
+  }, [showEditor, sizes.minEditorSize, width]);
 
   const onGalleryButtonClick = useCallback(() => {
     if (width < 1024 && !showGallery && showEditor) {
       setShowEditor(false);
     }
     setShowGallery(!showGallery);
-  }, [showGallery, showEditor, width]);
+  }, [showEditor, showGallery, width]);
 
   const onEditorButtonClick = useCallback(() => {
     if (width < 1024 && !showEditor && showGallery) {
@@ -122,35 +106,38 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
     setShowEditor(!showEditor);
   }, [showEditor, showGallery, width]);
 
-  if (!gallery)
-    return (
-      <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)}>
-        <Pane className={editorClassName.join(" ")} disabled={!showEditor} size={showEditor ? `${sizes?.editorSize}px` : "0"} onChange={onEditorSizeChange}>
-          {editor}
-        </Pane>
-        <Pane className={"preview"} minSize={`${sizes?.minPreviewSize}px`}>
-          {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
-          {showEditor && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
-          {visualizer}
-        </Pane>
-      </SplitScreen >
-    );
+  // if (!gallery)
+  //   return (
+  //     <ReflexContainer orientation="vertical">
+  //       <ReflexElement className={editorClassName.join(" ")} size={showEditor ? sizes.editorSize : 0.1} onResize={onEditorSizeChange}>
+  //         {editor}
+  //       </ReflexElement>
+  //       <ReflexSplitter propagate />
+  //       <ReflexElement className={"preview"} minSize={sizes.minPreviewSize}>
+  //         {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+  //         {showEditor && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+  //         {visualizer}
+  //       </ReflexElement>
+  //     </ReflexContainer >
+  //   );
 
   return (
-    <SplitScreen split="vertical" onResizeStart={() => setDragging(true)} onResizeEnd={() => setDragging(false)}>
-      <Pane className={editorClassName.join(" ")} disabled={!showEditor} size={showEditor ? `${sizes?.editorSize}px` : "0"} onChange={onEditorSizeChange}>
+    <ReflexContainer orientation="vertical">
+      <ReflexElement className={editorClassName.join(" ")} flex={!showEditor ? 0.0001 : undefined} onResize={onEditorSizeChange} direction={1}>
         {editor}
-      </Pane>
-      <Pane className={"preview"} minSize={`${sizes?.minPreviewSize}px`}>
+      </ReflexElement>
+      <ReflexSplitter propagate />
+      <ReflexElement className={"preview"} minSize={sizes.minPreviewSize}>
         {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
         {showEditor && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
         {visualizer}
-        {((width < 576 && !showEditor) || width >= 576) && !showGallery && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="show-panel show-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
-        {showGallery && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="hide-panel hide-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-right"></span></Button>}
-      </Pane>
-      <Pane className={galleryClassName.join(" ")} maxSize={`${sizes?.maxGallerySize}%`} disabled={!showGallery} size={showGallery ? `${sizes?.gallerySize}px` : "0"} onChange={onSampleGallerySizeChange}>
+        {gallery && ((width < 576 && !showEditor) || width >= 576) && !showGallery && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="show-panel show-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-left"></span></Button>}
+        {gallery && showGallery && <Button style={{ position: "absolute" }} size={"large"} styleType={"high-visibility"} className="hide-panel hide-gallery-button" onClick={onGalleryButtonClick}><span className="icon icon-chevron-right"></span></Button>}
+      </ReflexElement>
+      {gallery && <ReflexSplitter />}
+      {gallery && <ReflexElement className={galleryClassName.join(" ")} flex={!showGallery ? 0.0001 : undefined} maxSize={sizes.maxGallerySize} onResize={onSampleGallerySizeChange} direction={-1}>
         {gallery}
-      </Pane>
-    </SplitScreen >
+      </ReflexElement>}
+    </ReflexContainer >
   );
 };
