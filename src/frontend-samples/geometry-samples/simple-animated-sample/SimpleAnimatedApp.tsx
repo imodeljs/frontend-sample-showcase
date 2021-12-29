@@ -38,7 +38,7 @@ const SimpleAnimatedApp: FunctionComponent = () => {
     <>
       { /** Viewport to display the iModel */}
       <BlankViewer
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
         theme={"dark"}
         defaultUiConfig={default3DSandboxUi}
         viewStateOptions={viewState}

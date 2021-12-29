@@ -32,6 +32,7 @@
     "@itwin/frontend-devtools": "rc",
     "@itwin/hypermodeling-frontend": "rc",
     "@itwin/imodel-components-react": "rc",
+    "@itwin/imodels-access-frontend": "^0.2.1",
     "@itwin/itwinui-react": "^1.2.0",
     "@itwin/presentation-common": "rc",
     "@itwin/presentation-components": "rc",

@@ -27,7 +27,7 @@ const ViewportOnlyApp: FunctionComponent = () => {
         <Viewer
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
           viewportOptions={viewportOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

@@ -19,7 +19,7 @@ const CustomWebfontIconsTreeApp: FunctionComponent = () => {
       <Viewer
         iTwinId={sampleIModelInfo.contextId}
         iModelId={sampleIModelInfo.iModelId}
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
         frontstages={frontstages}
         defaultUiConfig={default3DSandboxUi}
         theme="dark"
