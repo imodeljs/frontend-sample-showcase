@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { ChangeEvent, useCallback, useEffect } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useMemo } from "react";
 import { useActiveIModelConnection } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@itwin/core-react";
@@ -11,7 +11,7 @@ import ReadSettingsApi from "./ReadSettingsApi";
 import "./ReadSettings.scss";
 
 const ReadSettingsWidget: React.FunctionComponent = () => {
-  const settingsKeys = ["Json_Data", "Arbitrary_Text", "CSV_Data"];
+  const settingsKeys = useMemo(() => ["Json_Data", "Arbitrary_Text", "CSV_Data"], []);
 
   const iModelConnection = useActiveIModelConnection();
   const [settingKey, setSettingKey] = React.useState<string>(settingsKeys[0]);

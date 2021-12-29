@@ -86,8 +86,8 @@ export class ViewSetup {
       if (imodel.name === "Metrostation2") {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
-        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds })
-        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories })
+        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds });
+        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories });
         displayStyle.changeBackgroundMapProps({
           planarClipMask: planarClipMaskSettings.toJSON(),
         });
@@ -173,7 +173,7 @@ export class ViewSetup {
   * groundBias can be stored in Product Settings Service. This method retrieves it.
   */
   public static getGroundBias = async (imodel: IModelConnection): Promise<number | undefined> => {
-    const accessToken = await AuthorizationClient.oidcClient.getAccessToken()
+    const accessToken = await AuthorizationClient.oidcClient.getAccessToken();
 
     const allSettings: SettingsMapResult = await IModelApp.userPreferences!.get({
       accessToken,

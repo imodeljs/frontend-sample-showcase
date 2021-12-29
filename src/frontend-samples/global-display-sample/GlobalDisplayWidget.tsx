@@ -27,7 +27,7 @@ const GlobalDisplayWidget: FunctionComponent = () => {
   useEffect(() => {
     if (viewport) {
       viewport.changeBackgroundMapProps({
-        applyTerrain: terrain
+        applyTerrain: terrain,
       });
       viewport.changeBackgroundMapProvider({ type: mapLabels ? BackgroundMapType.Hybrid : BackgroundMapType.Aerial });
     }
@@ -38,12 +38,6 @@ const GlobalDisplayWidget: FunctionComponent = () => {
       viewport.displayStyle.setOSMBuildingDisplay({ onOff: buildings });
     }
   }, [viewport, buildings]);
-
-  useEffect(() => {
-    if (viewport) {
-      const viewFlags = viewport.viewFlags.with("visibleEdges", buildingEdges);
-    }
-  }, [viewport, buildingEdges]);
 
   const _travelToDestination = async () => {
     if (!viewport)

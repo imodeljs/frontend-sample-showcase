@@ -44,7 +44,7 @@ export const CustomCheckboxesTreeComponent: FunctionComponent = () => {
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
 
-  const model = useTreeModel(modelSource)
+  const model = useTreeModel(modelSource);
 
   return <>
     <div className="tree tree-with-eye-checkboxes">

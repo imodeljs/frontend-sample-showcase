@@ -19,7 +19,7 @@ export const DragAndDropTreeComponent: React.FC = () => {
   const nodeLoader = useTreeNodeLoader(treeDataProvider, modelSource);
   const eventHandlerParams = React.useMemo(() => ({ nodeLoader, modelSource }), [nodeLoader, modelSource]);
   const eventHandler = useTreeEventsHandler(eventHandlerParams);
-  const model = useTreeModel(modelSource)
+  const model = useTreeModel(modelSource);
 
   React.useEffect(() => {
     const subscriber = DragAndDropTreeApi.on(() => setTreeDataProvider(new SampleDataProvider()));

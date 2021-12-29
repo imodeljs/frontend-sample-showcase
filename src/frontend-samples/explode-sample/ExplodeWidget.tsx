@@ -43,7 +43,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
       for (const vp of IModelApp.viewManager) {
         ExplodeApi.clearIsolate(vp);
         ExplodeProvider.getOrCreate(vp).drop();
-      };
+      }
       ExplodeApi.cleanUpCallbacks.forEach((func) => func());
     };
   }, []);

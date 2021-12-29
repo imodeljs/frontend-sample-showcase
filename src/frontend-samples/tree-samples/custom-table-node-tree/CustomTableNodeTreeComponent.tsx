@@ -46,7 +46,7 @@ export const CustomTableNodeTreeComponent: FunctionComponent = () => {
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
 
-  const model = useTreeModel(modelSource)
+  const model = useTreeModel(modelSource);
 
   return <>
     <div className="custom-tree">
@@ -69,7 +69,7 @@ export const CustomTableNodeTreeComponent: FunctionComponent = () => {
     </div>
   </>;
 
-}
+};
 
 /** Custom tree renderer that overrides default node renderer to render node as table row */
 const nodeTableTreeRenderer = (props: TreeRendererProps) => (

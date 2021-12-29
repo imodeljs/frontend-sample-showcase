@@ -19,7 +19,7 @@ export class CameraPathTool extends PrimitiveTool {
 
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp); }
   public requireWriteableTarget(): boolean { return false; } // Tool doesn't modify the imodel.
-  public async onRestartTool(): Promise<void> { this.exitTool(); }
+  public async onRestartTool(): Promise<void> { return this.exitTool(); }
 
   public async onMiddleButtonDown(_ev: BeButtonEvent): Promise<EventHandled> {
     return EventHandled.Yes;

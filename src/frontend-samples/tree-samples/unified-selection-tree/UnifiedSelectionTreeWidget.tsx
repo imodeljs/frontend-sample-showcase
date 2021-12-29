@@ -42,7 +42,7 @@ const UnifiedSelectionWidget: FunctionComponent = () => {
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const model = useTreeModel(nodeLoader.modelSource)
+  const model = useTreeModel(nodeLoader.modelSource);
 
   return <>
     <div className="tree">

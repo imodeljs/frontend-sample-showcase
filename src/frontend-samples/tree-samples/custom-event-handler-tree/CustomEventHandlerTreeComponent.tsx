@@ -42,7 +42,7 @@ export const CustomEventHandlerTreeComponent: FunctionComponent = () => {
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const model = useTreeModel(modelSource)
+  const model = useTreeModel(modelSource);
 
   return <>
     <div className="tree">

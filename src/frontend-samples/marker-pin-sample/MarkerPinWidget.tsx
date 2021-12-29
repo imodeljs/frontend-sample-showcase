@@ -76,7 +76,7 @@ const MarkerPinWidget: React.FunctionComponent = () => {
     if (!imagesLoadedState)
       return;
 
-    IModelApp.localization.registerNamespace("marker-pin-i18n-namespace");
+    void IModelApp.localization.registerNamespace("marker-pin-i18n-namespace");
 
     PlaceMarkerTool.register("marker-pin-i18n-namespace");
 
@@ -155,7 +155,7 @@ const MarkerPinWidget: React.FunctionComponent = () => {
    * handles further user input.
    */
   const _onStartPlaceMarkerTool = () => {
-    IModelApp.tools.run(PlaceMarkerTool.toolId, _manuallyAddMarker);
+    void IModelApp.tools.run(PlaceMarkerTool.toolId, _manuallyAddMarker);
   };
 
   // Display drawing and sheet options in separate sections.

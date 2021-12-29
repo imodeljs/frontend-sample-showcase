@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { computeVisibleNodes, ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { SampleDataProvider } from "@itwinjs-sandbox";
 
 export const BasicTreeComponent: FunctionComponent = () => {
@@ -35,7 +35,7 @@ export const BasicTreeComponent: FunctionComponent = () => {
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
 
-  const model = useTreeModel(modelSource)
+  const model = useTreeModel(modelSource);
 
   return <>
     <div className="tree">

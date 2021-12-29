@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import "common/samples-common.scss";
-import { IModelApp, MarginPercent, StandardViewId, ViewChangeOptions, ZoomToOptions } from "@itwin/core-frontend";
+import { IModelApp, StandardViewId, ViewChangeOptions, ZoomToOptions } from "@itwin/core-frontend";
 
 export interface ZoomOptions {
   animateEnable: boolean;

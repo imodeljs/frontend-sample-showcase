@@ -8,7 +8,7 @@ import { useActiveIModelConnection } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import ZoomToElementsApi, { ZoomOptions } from "./ZoomToElementsApi";
 import { StandardViewId } from "@itwin/core-frontend";
-import { Button, ButtonType, Input, Select, Toggle } from "@itwin/core-react";
+import { Button, ButtonType, Select, Toggle } from "@itwin/core-react";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
 import "./ZoomToElements.scss";
 

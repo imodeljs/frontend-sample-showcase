@@ -30,7 +30,7 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
     onIModelChange(name);
   };
 
-  const value = iModelList.findIndex((v) => {
+  const curValue = iModelList.findIndex((v) => {
     if ((v as SampleIModelWithAlternativeName).context)
       return (v as SampleIModelWithAlternativeName).context === currentiModel;
     else
@@ -40,7 +40,6 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
   const _getOptions = () => {
     const options: { value: SampleIModelWithAlternativeName | SampleIModels, label: string }[] = [];
     for (const model of iModelList) {
-      console.log(model)
       let name: SampleIModels;
       if ((model as SampleIModelWithAlternativeName).context)
         name = (model as SampleIModelWithAlternativeName).context;
@@ -56,7 +55,7 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
       <span>Select iModel: </span>
       <Select<SampleIModelWithAlternativeName | SampleIModels>
         className="imodel-list"
-        value={iModelList[value]}
+        value={iModelList[curValue]}
         onChange={_handleSelection}
         options={_getOptions()} />
     </div>

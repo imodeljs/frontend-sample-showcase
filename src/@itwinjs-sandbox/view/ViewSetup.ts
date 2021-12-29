@@ -63,7 +63,6 @@ export class ViewSetup {
 
     viewState.viewFlags = viewState.viewFlags.copy({ shadows: false, grid: false, visibleEdges: false });
 
-
     if (viewState.is3d()) {
       const viewState3d = viewState;
       const displayStyle = viewState3d.getDisplayStyle3d();
@@ -88,8 +87,8 @@ export class ViewSetup {
       if (imodel.name === "Metrostation2" || imodel.name === metroStationImodelName) {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
-        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds })
-        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories })
+        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds });
+        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories });
         displayStyle.changeBackgroundMapProps({
           planarClipMask: planarClipMaskSettings.toJSON(),
         });
@@ -101,7 +100,6 @@ export class ViewSetup {
       // Enable model masking on the Stadium model.
       if (imodel.name === "Stadium") {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
-
 
         displayStyle.changeBackgroundMapProps({
           planarClipMask: PlanarClipMaskSettings.create({ modelIds: modelsForMasking }).toJSON(),
@@ -216,7 +214,7 @@ export class ViewSetup {
     const accessToken = await AuthorizationClient.oidcClient.getAccessToken();
 
     const allSettings: SettingsMapResult = await IModelApp.userPreferences!.get(
-      { key: "bingMapSettings", iTwinId: imodel.iTwinId!, iModelId: imodel.iModelId, accessToken: accessToken }
+      { key: "bingMapSettings", iTwinId: imodel.iTwinId!, iModelId: imodel.iModelId, accessToken }
     );
     if (
       allSettings.status === SettingsStatus.Success &&

@@ -29,7 +29,7 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
       IModelApp.viewManager.addDecorator(decorator);
       setDecoratorState(decorator);
 
-      IModelApp.localization.registerNamespace("camera-i18n-namespace");
+      void IModelApp.localization.registerNamespace("camera-i18n-namespace");
       MovePointTool.register("camera-i18n-namespace");
     }
 

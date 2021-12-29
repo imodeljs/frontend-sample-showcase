@@ -6,11 +6,11 @@
 import "common/samples-common.scss";
 import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps } from "@itwin/core-common";
 import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
-import { RealityDataAccessClient } from "@bentley/reality-data-client"
+import { RealityDataAccessClient } from "@bentley/reality-data-client";
 
 export default class RealityDataApi {
   public static async getRealityModels(imodel: IModelConnection): Promise<ContextRealityModelProps[]> {
-    const RealityDataClient = new RealityDataAccessClient()
+    const RealityDataClient = new RealityDataAccessClient();
     const availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel });
     return availableModels;
   }
