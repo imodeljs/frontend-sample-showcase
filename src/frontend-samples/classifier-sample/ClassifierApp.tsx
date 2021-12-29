@@ -13,7 +13,7 @@ import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@itwin/core-geomet
 const uiProviders = [new ClassifierWidgetProvider()];
 
 const ClassifierApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [{ context: SampleIModels.MetroStation, imodel: "Philadelphia" }]);
+  const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [SampleIModels.MetroStation]);
   const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   /** Initializes viewport to set up camera looking at Rittenhouse Square. */
@@ -46,7 +46,7 @@ const ClassifierApp: FunctionComponent = () => {
         <Viewer
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
           viewportOptions={viewportOptions}
           onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}

@@ -41,7 +41,7 @@ const CrossProbingApp: React.FunctionComponent = () => {
         <Viewer
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+          authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
           frontstages={frontStages}
           onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}

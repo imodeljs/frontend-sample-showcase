@@ -25,7 +25,7 @@ const CustomEventHandlerTreeApp: FunctionComponent = () => {
   return (
     <>
       <BlankViewer
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
         defaultUiConfig={default3DSandboxUi}
         blankConnection={connection}
         frontstages={frontstages}
