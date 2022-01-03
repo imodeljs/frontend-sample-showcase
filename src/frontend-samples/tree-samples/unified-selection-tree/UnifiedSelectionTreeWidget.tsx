@@ -51,8 +51,8 @@ const UnifiedSelectionWidget: FunctionComponent = () => {
         selectionMode={SelectionMode.Extended}
         eventsHandler={eventHandler}
         model={model}
-        width={100}
-        height={100}
+        width={1000}
+        height={1000}
       />
     </div>
   </>;

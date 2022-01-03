@@ -56,8 +56,8 @@ export const CustomWebfontIconsTree: FunctionComponent<CustomWebfontIconsTreePro
         eventsHandler={eventHandler}
         iconsEnabled={true}
         model={model}
-        width={100}
-        height={100}
+        width={1000}
+        height={1000}
       />
     </div>
   </>;
