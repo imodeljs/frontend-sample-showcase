@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions, SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode, TreeModelSource, TreeNodeItem, useTreeEventsHandler, useTreeModel } from "@itwin/components-react";
 import { IPresentationTreeDataProvider, PresentationTreeDataProvider } from "@itwin/presentation-components";
@@ -45,6 +45,9 @@ const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json
  *     - Child node 1   [from inMemoryDataProvider]
  */
 export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps> = (props) => {
+  const [width, setWidth] = useState<number>(1000)
+  const [height, setHeight] = useState<number>(1000)
+
   // create data provider to load nodes from iModel using presentation rules
   // `React.useMemo' is used avoid creating new object on each render cycle
   const presentationDataProvider = React.useMemo(() => new PresentationProvider(props.imodel), [props.imodel]);
@@ -74,6 +77,26 @@ export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps
   // re-render component with updated nodes list
   const model = useTreeModel(nodeLoader.modelSource)
 
+  useEffect(() => {
+    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth)
+      setHeight(viewerContainer.clientHeight)
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (let entry of entries) {
+          setWidth(entry.contentRect.width)
+          setHeight(entry.contentRect.height)
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer)
+      }
+    }
+    return () => { }
+  }, [])
+
   return <>
     <div className="tree">
       <ControlledTree
@@ -81,8 +104,8 @@ export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps
         selectionMode={SelectionMode.None}
         eventsHandler={eventHandler}
         model={model}
-        width={1000}
-        height={1000}
+        width={width}
+        height={height}
       />
     </div>
   </>;
