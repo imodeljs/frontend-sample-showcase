@@ -25,7 +25,6 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
     name = iModelName;
     context = iModelName;
   }
-  console.log("About to make context registry client")
   const connectClient = new ProjectsAccessClient();
   let project: Project;
   try {

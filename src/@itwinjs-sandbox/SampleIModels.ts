@@ -45,3 +45,7 @@ export function isSampleIModelWithAlternativeName(sampleIModel?: SampleIModels |
 export function isSampleIModelWithAlternativeNameArray(sampleIModels: (SampleIModels | SampleIModelWithAlternativeName)[]): sampleIModels is SampleIModelWithAlternativeName[] {
   return sampleIModels.every(isSampleIModelWithAlternativeName);
 }
+
+export const defaultIModelList = [SampleIModels.MetroStation, SampleIModels.RetailBuilding, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium, SampleIModels.ExtonCampus];
+export const defaultIModel = SampleIModels.MetroStation;
+export const metroStationImodelName = "DRWR04-S3";
