@@ -3,19 +3,17 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, StandardViewId, ViewState } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { MarkerPinWidgetProvider } from "./MarkerPinWidget";
 
 const uiProviders = [new MarkerPinWidgetProvider()];
 
 const MarkerPinApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.");
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  /** Get a top-down view from the defualt viewstate of the model */
+  /** Get a top-down view from the default viewstate of the model */
   const getTopView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
 
@@ -30,9 +28,8 @@ const MarkerPinApp: FunctionComponent = () => {
     return viewState;
   };
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await getTopView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return getTopView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -44,8 +41,7 @@ const MarkerPinApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}
