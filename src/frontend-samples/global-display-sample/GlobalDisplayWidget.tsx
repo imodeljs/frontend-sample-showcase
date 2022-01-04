@@ -41,7 +41,7 @@ const GlobalDisplayWidget: FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport) {
-      const viewFlags = viewport.viewFlags.with("visibleEdges", buildingEdges);
+      viewport.viewFlags = viewport.viewFlags.with("visibleEdges", buildingEdges);
     }
   }, [viewport, buildingEdges]);
 

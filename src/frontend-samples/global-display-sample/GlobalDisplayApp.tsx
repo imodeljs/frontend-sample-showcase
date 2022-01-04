@@ -20,7 +20,7 @@ const GlobalDisplayApp: FunctionComponent = () => {
   const _oniModelReady = async (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       // The grid just gets in the way - turn it off.
-      viewport.view.viewFlags.with("grid", false);
+      viewport.viewFlags = viewport.view.viewFlags.with("grid", false);
 
       // We're not interested in seeing the contents of the iModel, only the global data.
       if (viewport.view.isSpatialView())
