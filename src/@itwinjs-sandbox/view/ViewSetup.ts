@@ -26,9 +26,7 @@ export class ViewSetup {
   /** Pick the first available spatial view definition in the imodel */
   private static async getFirstViewDefinitionId(imodel: IModelConnection): Promise<Id64String> {
     // Return default view definition (if any)
-    console.log(imodel)
     const defaultViewId = await imodel.views.queryDefaultViewId();
-    console.log(defaultViewId)
     if (Id64.isValid(defaultViewId))
       return defaultViewId;
 
