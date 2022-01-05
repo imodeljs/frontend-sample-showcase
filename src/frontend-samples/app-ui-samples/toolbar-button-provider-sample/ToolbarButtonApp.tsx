@@ -13,12 +13,11 @@ const uiProviders = [new ToolbarButtonProvider()];
 
 const ToolbarButtonApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Press the Lightbulb button tool at the top of the screen.");
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
+
 
   return (
     <>
@@ -28,8 +27,7 @@ const ToolbarButtonApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DAppUi}
           theme="dark"
           uiProviders={uiProviders}

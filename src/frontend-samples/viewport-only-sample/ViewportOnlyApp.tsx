@@ -12,7 +12,7 @@ const ViewportOnlyApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toolbar at the top-right to navigate the model.");
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return ViewSetup.getDefaultView(iModelConnection);
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
   // END VIEW_SETUP
 

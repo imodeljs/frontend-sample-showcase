@@ -29,7 +29,7 @@ const MarkerPinApp: FunctionComponent = () => {
   };
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return getTopView(iModelConnection);
+    return await getTopView(iModelConnection);
   };
 
   /** The sample's render method */

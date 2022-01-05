@@ -14,11 +14,9 @@ const uiProviders = [new HyperModelingWidgetProvider()];
 
 const HyperModelingApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Using the Hyper-Modeling controls, enable or disable 2D graphics. Use the buttons to view a 2D sheet or drawing, or select a new marker to view a new section.", [SampleIModels.House]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
 
   const _onIModelInit = useCallback(() => {
@@ -40,9 +38,8 @@ const HyperModelingApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default2DSandboxUi}
-          onIModelConnected={_oniModelReady}
           uiProviders={uiProviders}
           theme="dark"
         />

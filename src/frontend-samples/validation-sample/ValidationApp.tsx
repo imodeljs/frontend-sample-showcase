@@ -14,9 +14,9 @@ const uiProviders = [new ValidationWidgetProvider(), new ValidationTableWidgetPr
 
 const ValidationApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toggles below to show marker pins or zoom to a validation rule violation.  Click a marker or table entry to review these rule violations.", [SampleIModels.BayTown]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     viewState.setStandardRotation(StandardViewId.Iso);
 
@@ -24,8 +24,9 @@ const ValidationApp: FunctionComponent = () => {
     const aspect = viewState.getAspectRatio();
 
     viewState.lookAtVolume(range, aspect);
-    setViewportOptions({ viewState });
+    return viewState
   };
+
 
   return (
     <>
@@ -35,9 +36,8 @@ const ValidationApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default2DSandboxUi}
-          onIModelConnected={_oniModelReady}
           uiProviders={uiProviders}
           theme="dark"
         />

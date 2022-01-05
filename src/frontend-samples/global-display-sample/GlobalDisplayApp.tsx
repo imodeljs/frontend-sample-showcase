@@ -15,9 +15,8 @@ const uiProviders = [new GlobalDisplayWidgetProvider()];
 
 const GlobalDisplayApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Using the Global Display Controls Widget, type in the name of a location (e.g., \"Mount Everest\", \"White House\", your own address, etc), then click the button to travel there.", [SampleIModels.MetroStation]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
     IModelApp.viewManager.onViewOpen.addOnce((viewport: ScreenViewport) => {
       // The grid just gets in the way - turn it off.
       viewport.viewFlags = viewport.view.viewFlags.with("grid", false);
@@ -26,8 +25,8 @@ const GlobalDisplayApp: FunctionComponent = () => {
       if (viewport.view.isSpatialView())
         viewport.view.modelSelector.models.clear();
     });
-    const viewState = await GlobalDisplayApi.getInitialView(iModelConnection);
-    setViewportOptions({ viewState });
+
+    return await GlobalDisplayApi.getInitialView(iModelConnection);
   };
 
   return (
@@ -39,11 +38,10 @@ const GlobalDisplayApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"
-          onIModelConnected={_oniModelReady}
         />
       }
     </>

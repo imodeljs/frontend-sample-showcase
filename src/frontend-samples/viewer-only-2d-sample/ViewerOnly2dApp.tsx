@@ -14,12 +14,11 @@ const uiProviders = [new ViewerOnly2dWidgetProvider()];
 
 const ViewportOnly2dApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("The 2D View Selector Widget shows a list of 2D models in this iModel.", [SampleIModels.House]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
     const result = await ViewerOnly2dApi.getInitial2DModel(iModelConnection);
     const viewState = await ViewerOnly2dApi.createDefaultViewFor2dModel(iModelConnection, result);
-    setViewportOptions({ viewState });
+    return viewState;
   };
 
   return (
@@ -30,9 +29,8 @@ const ViewportOnly2dApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default2DSandboxUi}
-          onIModelConnected={_oniModelReady}
           uiProviders={uiProviders}
           theme="dark"
         />

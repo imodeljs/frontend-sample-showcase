@@ -14,7 +14,6 @@ const uiProviders = [new ClassifierWidgetProvider()];
 
 const ClassifierApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [SampleIModels.MetroStation]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   /** Initializes viewport to set up camera looking at Rittenhouse Square. */
   const getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
@@ -33,10 +32,10 @@ const ClassifierApp: FunctionComponent = () => {
     return viewState;
   };
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await getClassifierView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await getClassifierView(iModelConnection);
   };
+
 
   /** The sample's render method */
   return (
@@ -47,8 +46,7 @@ const ClassifierApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}
