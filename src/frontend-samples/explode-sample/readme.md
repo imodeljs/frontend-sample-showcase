@@ -30,6 +30,6 @@ To create the exploded view effect, we request specific element graphics from th
 
 Notes:
 
-* Many of the APIs used in this sample are still in beta and alpha, especially those related to the tiles.  Please check the latest documentation for changes before adapting for your own purposes.
-* Much of this logic is based on the [DynamicIModelTile](https://github.com/imodeljs/imodeljs/blob/master/core/frontend/src/tile/DynamicIModelTile.ts) of iModel.js.
+* Some of the APIs related to the tiles are marked as Internal.  Please check the latest documentation for changes before adapting for your purposes.
+* Much of this logic is based on the [DynamicIModelTile](https://github.com/imodeljs/imodeljs/blob/master/core/frontend/src/tile/DynamicIModelTile.ts) of iTwinjs core.
 * The workflow used in this sample does not scale.  While doing this with a low number of elements works well, the performance can quickly fall off when affecting hundreds of elements.
