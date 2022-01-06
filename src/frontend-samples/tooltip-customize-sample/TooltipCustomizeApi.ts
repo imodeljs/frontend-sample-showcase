@@ -5,6 +5,7 @@
 
 import "common/samples-common.scss";
 import { HitDetail, imageElementFromUrl, ToolAdmin } from "@itwin/core-frontend";
+import { removeWidgetTab } from "@itwin/appui-layout-react";
 
 export enum ElemProperty {
   Origin = "Origin",
@@ -35,7 +36,7 @@ export class ShowcaseToolAdmin extends ToolAdmin {
   private static _singleton: ShowcaseToolAdmin;
 
   public static initialize(): ShowcaseToolAdmin {
-    if(!ShowcaseToolAdmin._singleton)
+    if (!ShowcaseToolAdmin._singleton)
       ShowcaseToolAdmin._singleton = new ShowcaseToolAdmin();
     return ShowcaseToolAdmin._singleton;
   }
@@ -87,17 +88,17 @@ export class ShowcaseToolAdmin extends ToolAdmin {
         for await (const row of rows) {
           switch (this.settings.elemProperty) {
             default:
-              msg += row.val;
+              msg += row[0];
               break;
             case ElemProperty.LastModified:
-              const date = new Date(row.val);
+              const date = new Date(row[0]);
               msg += date.toLocaleString();
               break;
             case ElemProperty.Origin:
               msg += "<ul>";
-              msg += `<li><b>x:</b> ${row.val.x}</li>`;
-              msg += `<li><b>y:</b> ${row.val.y}</li>`;
-              msg += `<li><b>z:</b> ${row.val.z}</li>`;
+              msg += `<li><b>x:</b> ${row[0].X}</li>`;
+              msg += `<li><b>y:</b> ${row[0].Y}</li>`;
+              msg += `<li><b>z:</b> ${row[0].Z}</li>`;
               msg += "</ul>";
               break;
           }
@@ -121,7 +122,6 @@ export class ShowcaseToolAdmin extends ToolAdmin {
       }
       tip.appendChild(defaultTip);
     }
-
     return tip;
   }
 }
