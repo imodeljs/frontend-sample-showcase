@@ -16,6 +16,7 @@ import { Button, Select } from "@itwin/itwinui-react";
 const IotAlertWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [wantEmphasisState, setWantEmphasisState] = React.useState<boolean>(false);
+  const [categoryState, setCategoryState] = React.useState<string>("")
   const [elementsMapState, setElementsMapState] = React.useState<Map<string, []>>(new Map());
   const [elementNameIdMapState, setElementNameIdMapState] = React.useState<Map<string, string>>(new Map());
   const [elementsState, setElementsState] = React.useState<{ label: string, value: string }[]>([]);
@@ -35,20 +36,16 @@ const IotAlertWidget: React.FunctionComponent = () => {
   }, [iModelConnection]);
 
   const createBlinkingElementIdSet = (blinkingElements: { value: string, label: string }[]) => {
-    console.log(blinkingElements)
     const ids = new Set<Id64String>();
     for (const element of blinkingElements) {
       ids.add(element.value);
     }
-    console.log(ids)
     return ids;
   };
 
   const _getElementsFromClass = (className: string, elementsMap: Map<string, []>) => {
     const classElements: any = elementsMap.get(className);
     const elementNames: any = [];
-    console.log(classElements)
-    console.log(className)
     if (classElements === undefined) {
       return elementNames;
     }
@@ -97,13 +94,13 @@ const IotAlertWidget: React.FunctionComponent = () => {
     const elementNames = _getElementsFromClass(_classList[0].value, classElementsMap);
     const nameIdMap = _populateNameIdMap(classElementsMap);
     setSelectedElementState(elementNames[0]);
+    setCategoryState(_classList[0].value)
     setElementsState(elementNames);
     setElementNameIdMapState(nameIdMap);
     setElementsMapState(classElementsMap);
   };
 
   const _populateNameIdMap = (elementsMap: Map<string, []>) => {
-    console.log(elementsMap)
     const nameIdMap = new Map();
     for (const className of _classList) {
       const classElements: any = elementsMap.get(className.value);
@@ -120,14 +117,18 @@ const IotAlertWidget: React.FunctionComponent = () => {
   const _onClassChange = (className: string) => {
     const elementNames = _getElementsFromClass(className, elementsMapState);
     setElementsState(elementNames);
+    setCategoryState(className)
     setSelectedElementState(elementNames[0]);
   };
 
   const _onElementChange = (pickedElement: string) => {
-    const id = elementNameIdMapState.get(pickedElement)
-    console.log(id)
-    if (id)
-      setSelectedElementState({ label: pickedElement, value: id });
+    for (let [key, id] of elementNameIdMapState.entries()) {
+      if (id === pickedElement) {
+        setSelectedElementState({ label: key, value: id });
+        break;
+      }
+    }
+
   };
 
   const _removeTag = (i: any) => {
@@ -146,7 +147,6 @@ const IotAlertWidget: React.FunctionComponent = () => {
     if (!blinkingElementsState)
       return "";
 
-    console.log(blinkingElementsState)
     return blinkingElementsState.map((tag, i) => (
       <li key={tag.label}>
         <UnderlinedButton onClick={async () => IotAlertApi._zoomToElements(tag.label, elementNameIdMapState)}>{tag.label}</UnderlinedButton>
@@ -163,7 +163,7 @@ const IotAlertWidget: React.FunctionComponent = () => {
       <hr></hr>
       <div className="sample-options-2col">
         <span>Pick class</span>
-        <Select options={_classList} onChange={_onClassChange} disabled={!iModelConnection} />
+        <Select<string> value={categoryState} options={_classList} onChange={_onClassChange} disabled={!iModelConnection} />
         <span>Pick element</span>
         <Select<string> value={selectedElementState.value} options={elementsState} onChange={_onElementChange} disabled={!iModelConnection} />
         <span>Alert</span>
