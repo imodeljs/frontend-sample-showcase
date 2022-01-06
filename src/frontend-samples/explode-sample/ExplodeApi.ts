@@ -28,7 +28,7 @@ export default class ExplodeApi {
 
     const elementIds: string[] = [];
     for await (const row of iModel.query(selectElementsInCategories))
-      elementIds.push(row.id);
+      elementIds.push(row[0]);
 
     return elementIds;
   }
@@ -47,7 +47,7 @@ export default class ExplodeApi {
   /** Uses the  EmphasizeElements API to isolate the elements related to the ids given. */
   public static isolateElements(vp: Viewport, elementIds: string[]) {
     const emph = EmphasizeElements.getOrCreate(vp);
-    emph.isolateElements(elementIds, vp);
+    emph.isolateElements(elementIds, vp, true);
   }
   /** Uses the  EmphasizeElements API to clear all isolated and emphasized. */
   public static clearIsolate(vp: Viewport) {
