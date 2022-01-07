@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels, SampleIModelWithAlternativeName } from "../../SampleIModels";
 import { Select } from "@itwin/itwinui-react";
 
 // The Props and State for this sample component

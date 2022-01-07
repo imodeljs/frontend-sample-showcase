@@ -7,8 +7,8 @@ import { Matrix3d } from "@itwin/core-geometry";
 import { BackgroundMapProps, ColorDef, Environment, PlanarClipMaskMode, PlanarClipMaskSettings } from "@itwin/core-common";
 import { DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
 import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
-import { metroStationImodelName } from "@itwinjs-sandbox/constants";
-import { AuthorizationClient } from "@itwinjs-sandbox";
+import { metroStationImodelName } from "../constants";
+import AuthorizationClient from "../authentication/AuthorizationClient";
 
 export class ViewSetup {
   /** Queries for and loads the default view for an iModel. */

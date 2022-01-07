@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { UiItemsManager } from "@itwin/appui-abstract";
-import { SampleWidgetProvider } from "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider";
-import { defaultIModelList } from "@itwinjs-sandbox/constants";
-import { SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
-import { FloatingWidgets } from "@itwinjs-sandbox/hooks/FloatingWidget";
+import { SampleWidgetProvider } from "../components/imodel-selector/SampleWidgetProvider";
+import { defaultIModelList } from "../constants";
+import { SampleIModels, SampleIModelWithAlternativeName } from "../SampleIModels";
+import { FloatingWidgets } from "../hooks/FloatingWidget";
 import { useEffect, useRef } from "react";
 import { SampleIModelInfo, useSampleIModelConnection } from "./useSampleIModelConnection";
 import { UiFramework } from "@itwin/appui-react";

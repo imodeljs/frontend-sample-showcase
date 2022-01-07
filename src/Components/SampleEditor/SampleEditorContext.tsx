@@ -6,16 +6,20 @@ import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useS
 import { Annotation, EditorDefaults, EditorEnvironmentContextProvider } from "@bentley/monaco-editor";
 import { SampleSpecFile } from "SampleSpec";
 import { EditorProps, SampleEditor } from "./SampleEditor";
+import modules from "./Modules.json";
+import { ModuleManager } from "./ModuleManager";
 export interface SampleEditorContextProps extends Omit<EditorProps, "onSampleClicked" | "walkthrough"> {
   files?: () => Promise<SampleSpecFile>[];
   onSampleClicked: (groupName: string | null, sampleName: string | null, wantScroll: boolean) => void;
   walkthrough: () => Promise<Annotation[] | undefined>;
 }
 
+const defaultModules = modules.map((mod) => ModuleManager.formatModule(mod.dependency, mod.version, { types: mod.types, lib: mod.lib, global: mod.global }));
+
 const noop = () => { };
 
 const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props) => {
-  const { files: getFiles, readme, onTranspiled, onSampleClicked, walkthrough } = props;
+  const { files: getFiles, readme, iframeRef, onRunClick, onSampleClicked, walkthrough } = props;
   const [defaultFiles, setDefaultFiles] = useState<{ content: string, name: string }[]>([]);
   const [defaultEntry, setDefaultEntry] = useState<string | undefined>();
   const [annotations, setAnnotations] = useState<Annotation[] | undefined>();
@@ -64,6 +68,7 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
       return {
         defaultEntry,
         defaultFiles,
+        defaultModules,
       };
     }
     return undefined;
@@ -72,8 +77,9 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
   return (
     <EditorEnvironmentContextProvider defaults={defaults}>
       <SampleEditor
+        iframeRef={iframeRef}
         onSampleClicked={onSampleClickedPromise}
-        onTranspiled={onTranspiled}
+        onRunClick={onRunClick}
         readme={readme}
         walkthrough={annotations}
       />

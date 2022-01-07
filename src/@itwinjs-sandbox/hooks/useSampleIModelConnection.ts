@@ -7,9 +7,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Project, ProjectsAccessClient, ProjectsSearchableProperty } from "@itwin/projects-client";
 
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizationClient } from "@itwinjs-sandbox";
-import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
-import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import AuthorizationClient from "../authentication/AuthorizationClient";
+import { defaultIModel, defaultIModelList } from "../constants";
+import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "../SampleIModels";
 import { useSampleIModelParameter } from "./useSampleIModelParameter";
 
 export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWithAlternativeName) => {

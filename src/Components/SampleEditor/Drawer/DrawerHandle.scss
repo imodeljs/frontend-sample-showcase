@@ -1,0 +1,50 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+
+#drawer-nav {
+  display: flex;
+  background-color: #252526;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-width: thin;
+  height: 35px;
+  flex-shrink: 0;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    height: 7px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &:hover {
+    overflow-x: auto;
+  }
+
+  >.drawer-nav-item {
+    padding-right: 10px;
+    padding-left: 10px;
+    line-height: 35px;
+    color: #969696;
+    display: inline-block;
+    cursor: pointer;
+
+    &:hover {
+      color: #cccccc;
+    }
+
+    &.active {
+      background-color: #1e1e1e;
+      color: #ffffff;
+    }
+  }
+}

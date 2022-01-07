@@ -8,7 +8,6 @@ import { SampleShowcaseViewHandlerProps } from "./SampleShowcaseViewHandler";
 import "./SampleShowcaseSplitPane.scss";
 import { Button } from "@itwin/itwinui-react";
 import { HandlerProps, ReflexContainer, ReflexElement, ReflexSplitter } from "react-reflex";
-import "react-reflex/styles.css";
 
 export interface SampleShowcaseSplitPaneProps extends SampleShowcaseViewHandlerProps {
   width: number;
@@ -70,11 +69,7 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
     if (width >= 576) {
       const minSize = 150;
       const size = Math.ceil((domElement as HTMLElement).offsetWidth);
-      if (size < minSize && showGallery) {
-        setShowGallery(false);
-      } else if (size >= minSize && !showGallery) {
-        setShowGallery(true);
-      }
+      setShowGallery(size >= minSize || !showGallery);
     }
   }, [showGallery, width]);
 
@@ -83,11 +78,7 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
     if (width >= 576) {
       const minSize = sizes.minEditorSize;
       const size = Math.ceil((domElement as HTMLElement).offsetWidth);
-      if (size < minSize && showEditor) {
-        setShowEditor(false);
-      } else if (size >= minSize && !showEditor) {
-        setShowEditor(true);
-      }
+      setShowEditor(size >= minSize || !showEditor);
     }
 
   }, [showEditor, sizes.minEditorSize, width]);

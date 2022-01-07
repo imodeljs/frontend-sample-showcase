@@ -9,7 +9,7 @@ import { SampleIModels, SampleIModelWithAlternativeName } from "../../SampleIMod
 import { IModelSelector } from "../imodel-selector/IModelSelector";
 import { defaultIModelList } from "../../constants";
 import "./SampleWidgetProvider.scss";
-import { SampleIModelInfo } from "@itwinjs-sandbox/hooks/useSampleIModelConnection";
+import { SampleIModelInfo } from "../../hooks/useSampleIModelConnection";
 
 interface IModelSelectorWidgetProps {
   iModel?: SampleIModelInfo;
