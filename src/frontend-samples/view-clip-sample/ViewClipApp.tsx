@@ -3,12 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ViewClipWidgetProvider } from "./ViewClipWidget";
 import ViewClipApi from "./ViewClipApi";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new ViewClipWidgetProvider()];
@@ -17,7 +16,7 @@ const ViewClipApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the options below to control the view clip.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewClipApi.getIsoView(iModelConnection);
+    return ViewClipApi.getIsoView(iModelConnection);
   };
 
   /** The sample's render method */

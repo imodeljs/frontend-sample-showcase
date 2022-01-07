@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { computeVisibleNodes, ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { SampleDataProvider } from "@itwinjs-sandbox";
 
 export const BasicTreeComponent: FunctionComponent = () => {
-  const [width, setWidth] = useState<number>(1000)
-  const [height, setHeight] = useState<number>(1000)
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render
   const dataProvider = React.useMemo(() => new SampleDataProvider(), []);
@@ -40,24 +40,24 @@ export const BasicTreeComponent: FunctionComponent = () => {
   const model = useTreeModel(modelSource);
 
   useEffect(() => {
-    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
     if (viewerContainer) {
-      setWidth(viewerContainer.clientWidth)
-      setHeight(viewerContainer.clientHeight)
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
       const resizeObserver = new ResizeObserver((entries: any) => {
-        for (let entry of entries) {
-          setWidth(entry.contentRect.width)
-          setHeight(entry.contentRect.height)
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
         }
       });
 
       resizeObserver.observe(viewerContainer);
       return () => {
-        resizeObserver.unobserve(viewerContainer)
-      }
+        resizeObserver.unobserve(viewerContainer);
+      };
     }
-    return () => { }
-  }, [])
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">

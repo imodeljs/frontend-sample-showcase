@@ -3,12 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { ViewAttributesWidgetProvider } from "./ViewAttributesWidget";
 import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { ViewAttributesApi } from "./ViewAttributesApi";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 
 const uiProviders = [new ViewAttributesWidgetProvider()];
 
@@ -21,7 +20,7 @@ const ViewAttributesApp: FunctionComponent = () => {
     });
 
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    return viewState
+    return viewState;
   };
 
   /** The sample's render method */

@@ -21,8 +21,8 @@ export interface CustomWebfontIconsTreeProps {
  * which icons should be shown for different nodes.
  */
 export const CustomWebfontIconsTree: FunctionComponent<CustomWebfontIconsTreeProps> = (props) => {
-  const [width, setWidth] = useState<number>(1000)
-  const [height, setHeight] = useState<number>(1000)
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
   // create tree node loader to load data using presentation rules. It loads nodes to tree model
   // in pages using supplied iModel and presentation ruleset.
   // 'usePresentationTreeNodeLoader' creates tree model source and paged tree node loader.
@@ -51,24 +51,24 @@ export const CustomWebfontIconsTree: FunctionComponent<CustomWebfontIconsTreePro
   const model = useTreeModel(nodeLoader.modelSource);
 
   useEffect(() => {
-    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
     if (viewerContainer) {
-      setWidth(viewerContainer.clientWidth)
-      setHeight(viewerContainer.clientHeight)
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
       const resizeObserver = new ResizeObserver((entries: any) => {
-        for (let entry of entries) {
-          setWidth(entry.contentRect.width)
-          setHeight(entry.contentRect.height)
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
         }
       });
 
       resizeObserver.observe(viewerContainer);
       return () => {
-        resizeObserver.unobserve(viewerContainer)
-      }
+        resizeObserver.unobserve(viewerContainer);
+      };
     }
-    return () => { }
-  }, [])
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">

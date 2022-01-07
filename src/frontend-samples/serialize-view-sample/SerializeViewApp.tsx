@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { SerializeViewWidgetProvider } from "./SerializeViewWidget";
 import { IModelViews, sampleViewStates } from "./SampleViewStates";
 import SerializeViewApi from "./SerializeViewApi";
@@ -23,15 +22,16 @@ const SerializeViewApp: FunctionComponent = () => {
       return iModelViews.iModelId === iModelConnection.iModelId;
     });
 
+    let viewState;
     /** Grab the views of the iModel just loaded and load the first view state in the SampleViewStates.ts */
     if (iModelWithViews.length > 0) {
       const views = iModelWithViews[0].views;
-      const viewState = await SerializeViewApi.deserializeViewState(iModelConnection, views[0].view);
+      viewState = await SerializeViewApi.deserializeViewState(iModelConnection, views[0].view);
       if (viewState)
-        return viewState
+        return viewState;
     }
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    return viewState
+    viewState = await ViewSetup.getDefaultView(iModelConnection);
+    return viewState;
   };
 
   /** The sample's render method */

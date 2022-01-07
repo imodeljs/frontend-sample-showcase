@@ -5,7 +5,6 @@
 
 import "common/samples-common.scss";
 import { HitDetail, imageElementFromUrl, ToolAdmin } from "@itwin/core-frontend";
-import { removeWidgetTab } from "@itwin/appui-layout-react";
 
 export enum ElemProperty {
   Origin = "Origin",

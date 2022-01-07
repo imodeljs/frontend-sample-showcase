@@ -13,8 +13,8 @@ const mergeRefs = mergeRefsExports.default;
 
 /** Our custom tree component */
 export const DragAndDropTreeComponent: React.FC = () => {
-  const [width, setWidth] = React.useState<number>(1000)
-  const [height, setHeight] = React.useState<number>(1000)
+  const [width, setWidth] = React.useState<number>(1000);
+  const [height, setHeight] = React.useState<number>(1000);
   // Standard tree rendering procedure. Check out Basic Tree sample for more details.
   const [treeDataProvider, setTreeDataProvider] = React.useState(new SampleDataProvider());
   const modelSource = useTreeModelSource(treeDataProvider);
@@ -40,24 +40,24 @@ export const DragAndDropTreeComponent: React.FC = () => {
   );
 
   React.useEffect(() => {
-    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
     if (viewerContainer) {
-      setWidth(viewerContainer.clientWidth)
-      setHeight(viewerContainer.clientHeight)
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
       const resizeObserver = new ResizeObserver((entries: any) => {
-        for (let entry of entries) {
-          setWidth(entry.contentRect.width)
-          setHeight(entry.contentRect.height)
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
         }
       });
 
       resizeObserver.observe(viewerContainer);
       return () => {
-        resizeObserver.unobserve(viewerContainer)
-      }
+        resizeObserver.unobserve(viewerContainer);
+      };
     }
-    return () => { }
-  }, [])
+    return () => { };
+  }, []);
 
   return <>
     <dragDropContext.Provider value={dragDropContextValue}>

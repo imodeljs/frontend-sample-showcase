@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelApp, IModelConnection } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
+import { IModelConnection } from "@itwin/core-frontend";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { ScreenSpaceEffectsWidgetProvider } from "./ScreenSpaceEffectsWidget";
 
@@ -17,10 +16,9 @@ const ScreenSpaceEffectsApp: FunctionComponent = () => {
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    viewState.viewFlags = viewState.viewFlags.with("grid", false)
+    viewState.viewFlags = viewState.viewFlags.with("grid", false);
     return viewState;
   };
-
 
   /** The sample's render method */
   return (

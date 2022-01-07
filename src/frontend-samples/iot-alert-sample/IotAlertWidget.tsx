@@ -16,7 +16,7 @@ import { Button, Select } from "@itwin/itwinui-react";
 const IotAlertWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [wantEmphasisState, setWantEmphasisState] = React.useState<boolean>(false);
-  const [categoryState, setCategoryState] = React.useState<string>("")
+  const [categoryState, setCategoryState] = React.useState<string>("");
   const [elementsMapState, setElementsMapState] = React.useState<Map<string, []>>(new Map());
   const [elementNameIdMapState, setElementNameIdMapState] = React.useState<Map<string, string>>(new Map());
   const [elementsState, setElementsState] = React.useState<{ label: string, value: string }[]>([]);
@@ -94,7 +94,7 @@ const IotAlertWidget: React.FunctionComponent = () => {
     const elementNames = _getElementsFromClass(_classList[0].value, classElementsMap);
     const nameIdMap = _populateNameIdMap(classElementsMap);
     setSelectedElementState(elementNames[0]);
-    setCategoryState(_classList[0].value)
+    setCategoryState(_classList[0].value);
     setElementsState(elementNames);
     setElementNameIdMapState(nameIdMap);
     setElementsMapState(classElementsMap);
@@ -117,12 +117,12 @@ const IotAlertWidget: React.FunctionComponent = () => {
   const _onClassChange = (className: string) => {
     const elementNames = _getElementsFromClass(className, elementsMapState);
     setElementsState(elementNames);
-    setCategoryState(className)
+    setCategoryState(className);
     setSelectedElementState(elementNames[0]);
   };
 
   const _onElementChange = (pickedElement: string) => {
-    for (let [key, id] of elementNameIdMapState.entries()) {
+    for (const [key, id] of elementNameIdMapState.entries()) {
       if (id === pickedElement) {
         setSelectedElementState({ label: key, value: id });
         break;

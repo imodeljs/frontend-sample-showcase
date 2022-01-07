@@ -64,7 +64,7 @@ export class ViewSetup {
       shadows: false,
       grid: false,
       visibleEdges: false,
-    })
+    });
     viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
@@ -83,9 +83,9 @@ export class ViewSetup {
             twoColor: true,
             zenithColor: ColorDef.fromString("#DEF2FF"),
             nadirColor: ColorDef.fromString("#F0ECE8"),
-          })
-        )
-      })
+          }),
+        ),
+      });
 
       // Enable the sky-box, but override to old sky box.
       displayStyle.environment = displayStyle.environment.withDisplay({

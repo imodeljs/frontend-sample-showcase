@@ -2,11 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, StandardViewId } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { ClashReviewWidgetProvider } from "./ClashReviewWidget";
 import { ClashReviewTableWidgetProvider } from "./ClashReviewTableWidget";
 
@@ -23,7 +22,7 @@ const ClashReviewApp: FunctionComponent = () => {
     const aspect = viewState.getAspectRatio();
 
     viewState.lookAtVolume(range, aspect);
-    return viewState
+    return viewState;
   };
 
   return (

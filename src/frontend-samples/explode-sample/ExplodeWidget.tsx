@@ -73,7 +73,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
       ExplodeApi.refSetData(viewport, object.name, object.elementIds, explodeFactor);
     }
   }, [explodeFactor, object, viewport]);
-  // 
+  //
   useEffect(() => {
     if (viewport) {
       if (isolate) {

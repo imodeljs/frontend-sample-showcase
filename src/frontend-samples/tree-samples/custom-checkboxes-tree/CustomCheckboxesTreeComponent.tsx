@@ -16,8 +16,8 @@ import { ImageCheckBox, NodeCheckboxRenderProps } from "@itwin/core-react";
  * `TreeRenderer` with overridden node renderer.
  */
 export const CustomCheckboxesTreeComponent: FunctionComponent = () => {
-  const [width, setWidth] = useState<number>(1000)
-  const [height, setHeight] = useState<number>(1000)
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
 
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render cycle
@@ -50,25 +50,24 @@ export const CustomCheckboxesTreeComponent: FunctionComponent = () => {
   const model = useTreeModel(modelSource);
 
   useEffect(() => {
-    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
     if (viewerContainer) {
-      setWidth(viewerContainer.clientWidth)
-      setHeight(viewerContainer.clientHeight)
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
       const resizeObserver = new ResizeObserver((entries: any) => {
-        for (let entry of entries) {
-          setWidth(entry.contentRect.width)
-          setHeight(entry.contentRect.height)
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
         }
       });
 
       resizeObserver.observe(viewerContainer);
       return () => {
-        resizeObserver.unobserve(viewerContainer)
-      }
+        resizeObserver.unobserve(viewerContainer);
+      };
     }
-    return () => { }
-  }, [])
-
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree tree-with-eye-checkboxes">
