@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { ControlledTree, SelectionMode, useTreeModel } from "@itwin/components-react";
 import { usePresentationTreeNodeLoader, useUnifiedSelectionTreeEventHandler } from "@itwin/presentation-components";
 import { useActiveIModelConnection } from "@itwin/appui-react";
@@ -20,6 +20,8 @@ const PAGING_SIZE = 20;
  * when nodes are selected/deselected and changes tree selection to match Unified Selection.
  */
 const UnifiedSelectionWidget: FunctionComponent = () => {
+  const [width, setWidth] = useState<number>(1000)
+  const [height, setHeight] = useState<number>(1000)
   const iModelConnection = useActiveIModelConnection();
 
   // create tree node loader to load nodes using presentation rules. It loads nodes to tree model
@@ -44,6 +46,26 @@ const UnifiedSelectionWidget: FunctionComponent = () => {
   // re-render component with updated nodes list
   const model = useTreeModel(nodeLoader.modelSource);
 
+  useEffect(() => {
+    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth)
+      setHeight(viewerContainer.clientHeight)
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (let entry of entries) {
+          setWidth(entry.contentRect.width)
+          setHeight(entry.contentRect.height)
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer)
+      }
+    }
+    return () => { }
+  }, [])
+
   return <>
     <div className="tree">
       <ControlledTree
@@ -51,8 +73,8 @@ const UnifiedSelectionWidget: FunctionComponent = () => {
         selectionMode={SelectionMode.Extended}
         eventsHandler={eventHandler}
         model={model}
-        width={100}
-        height={100}
+        width={width}
+        height={height}
       />
     </div>
   </>;

@@ -14,11 +14,9 @@ const uiProviders = [new EmphasizeElementsWidgetProvider()];
 
 const EmphasizeElementsApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select one or more elements.  Click one of the Apply buttons.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
-  const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -31,8 +29,7 @@ const EmphasizeElementsApp: React.FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

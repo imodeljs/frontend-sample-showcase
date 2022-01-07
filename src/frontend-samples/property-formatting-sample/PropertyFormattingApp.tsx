@@ -13,11 +13,9 @@ const uiProviders = [new PropertyFormattingWidgetProvider()];
 
 const PropertyFormattingApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select an element in the view and choose an approach to display its properties.", [SampleIModels.RetailBuilding, SampleIModels.BayTown]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -29,8 +27,7 @@ const PropertyFormattingApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

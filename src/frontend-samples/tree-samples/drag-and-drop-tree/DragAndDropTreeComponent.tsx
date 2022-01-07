@@ -13,6 +13,8 @@ const mergeRefs = mergeRefsExports.default;
 
 /** Our custom tree component */
 export const DragAndDropTreeComponent: React.FC = () => {
+  const [width, setWidth] = React.useState<number>(1000)
+  const [height, setHeight] = React.useState<number>(1000)
   // Standard tree rendering procedure. Check out Basic Tree sample for more details.
   const [treeDataProvider, setTreeDataProvider] = React.useState(new SampleDataProvider());
   const modelSource = useTreeModelSource(treeDataProvider);
@@ -37,6 +39,26 @@ export const DragAndDropTreeComponent: React.FC = () => {
     [modelSource, nodeLoader, isDragging],
   );
 
+  React.useEffect(() => {
+    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth)
+      setHeight(viewerContainer.clientHeight)
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (let entry of entries) {
+          setWidth(entry.contentRect.width)
+          setHeight(entry.contentRect.height)
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer)
+      }
+    }
+    return () => { }
+  }, [])
+
   return <>
     <dragDropContext.Provider value={dragDropContextValue}>
       <ControlledTree
@@ -44,8 +66,8 @@ export const DragAndDropTreeComponent: React.FC = () => {
         selectionMode={SelectionMode.None}
         eventsHandler={eventHandler}
         model={model}
-        width={100}
-        height={100}
+        width={width}
+        height={height}
         treeRenderer={(treeProps) => (
           <TreeRenderer {...treeProps} nodeRenderer={(nodeProps) => <DragAndDropNode {...nodeProps} />} />
         )}

@@ -2,10 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
+import { Select, SelectOption } from "@itwin/itwinui-react";
+import React, { FunctionComponent, useCallback, useMemo } from "react";
 import { SampleIModels, SampleIModelWithAlternativeName } from "../../SampleIModels";
-import { Select } from "@itwin/itwinui-react";
 
 // The Props and State for this sample component
 interface IModelSelectorProps {
@@ -14,12 +13,10 @@ interface IModelSelectorProps {
   onIModelChange: (iModelName: SampleIModels) => void;
 }
 
-export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelNames, iModelName, onIModelChange }) => {
-  const iModelList = iModelNames || [];
-  const currentiModel = iModelName;
+export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelNames = [], iModelName, onIModelChange }) => {
 
-  const _handleSelection = async (value: SampleIModelWithAlternativeName | SampleIModels) => {
-    const imodel = value;
+  const _handleSelection = useCallback(async (index: number) => {
+    const imodel = iModelNames[index];
 
     let name: SampleIModels;
     if ((imodel as SampleIModelWithAlternativeName).context)
@@ -28,36 +25,43 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
       name = (imodel as SampleIModels);
 
     onIModelChange(name);
-  };
+  }, [onIModelChange, iModelNames]);
 
-  const curValue = iModelList.findIndex((v) => {
-    if ((v as SampleIModelWithAlternativeName).context)
-      return (v as SampleIModelWithAlternativeName).context === currentiModel;
-    else
-      return (v as SampleIModels) === currentiModel;
-  });
-
-  const _getOptions = () => {
-    const options: { value: SampleIModelWithAlternativeName | SampleIModels, label: string }[] = [];
-    for (const model of iModelList) {
-      let name: SampleIModels;
-      if ((model as SampleIModelWithAlternativeName).context)
-        name = (model as SampleIModelWithAlternativeName).context;
-      else
-        name = (model as SampleIModels);
-      options.push({ value: model, label: name });
+  const value = useMemo(() => {
+    if (!iModelNames.length) {
+      return undefined;
     }
-    return options;
-  };
+    if (iModelName) {
+      return iModelNames.findIndex((v) => {
+        if ((v as SampleIModelWithAlternativeName).context)
+          return (v as SampleIModelWithAlternativeName).context === iModelName;
+        else
+          return (v as SampleIModels) === iModelName;
+      });
+    }
+    return 0;
+  }, [iModelNames, iModelName]);
+
+  const options: SelectOption<number>[] = useMemo(() => {
+    return iModelNames.map((v, index) => {
+      let name: SampleIModels;
+      if ((v as SampleIModelWithAlternativeName).context)
+        name = (v as SampleIModelWithAlternativeName).context;
+      else
+        name = (v as SampleIModels);
+      return { value: index, label: name };
+    })
+  }, [iModelNames]);
 
   return (
     <div>
       <span>Select iModel: </span>
-      <Select<SampleIModelWithAlternativeName | SampleIModels>
+      <Select<number>
+        size="small"
         className="imodel-list"
-        value={iModelList[curValue]}
+        value={value}
         onChange={_handleSelection}
-        options={_getOptions()} />
+        options={options} />
     </div>
   );
 };

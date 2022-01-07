@@ -15,31 +15,24 @@ const uiProviders = [new HeatmapDecoratorWidgetProvider()];
 
 const HeatmapDecoratorApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the options below to control the heatmap visualization.");
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = (iModelConnection: IModelConnection) => {
-    ViewSetup.getDefaultView(iModelConnection)
-      .then((viewState) => {
-        if (viewState.is3d()) {
-          // To make the heatmap look better, lock the view to a top orientation with camera turned off.
-          viewState.setAllow3dManipulations(false);
-          viewState.turnCameraOff();
-          viewState.setStandardRotation(StandardViewId.Top);
-        }
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection)
+    if (viewState.is3d()) {
+      // To make the heatmap look better, lock the view to a top orientation with camera turned off.
+      viewState.setAllow3dManipulations(false);
+      viewState.turnCameraOff();
+      viewState.setStandardRotation(StandardViewId.Top);
+    }
 
-        const range = viewState.computeFitRange();
-        const aspect = ViewSetup.getAspectRatio();
+    const range = viewState.computeFitRange();
+    const aspect = ViewSetup.getAspectRatio();
 
-        viewState.lookAtVolume(range, aspect);
+    viewState.lookAtVolume(range, aspect);
 
-        // The heatmap looks better against a white background.
-        viewState.displayStyle.backgroundColor = ColorDef.white;
-        setViewportOptions({ viewState });
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
+    // The heatmap looks better against a white background.
+    viewState.displayStyle.backgroundColor = ColorDef.white;
+    return viewState
   };
 
   /** The sample's render method */
@@ -51,8 +44,7 @@ const HeatmapDecoratorApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

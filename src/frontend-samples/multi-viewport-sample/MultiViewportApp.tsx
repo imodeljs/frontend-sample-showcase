@@ -15,19 +15,17 @@ const uiProviders = [new MultiViewportWidgetProvider()];
 
 const MultiViewportApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls at the top-right to navigate the model.  Toggle to sync the viewports in the controls below.  Navigating will not change the selected viewport.");
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
   const [frontStages, setFrontstages] = useState<ViewerFrontstage[]>([]);
 
   useEffect(() => {
     setFrontstages(() => [{ provider: new MultiViewportFrontstage(), default: true, requiresIModelConnection: true }]);
   }, [sampleIModelInfo]);
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
 
     setFrontstages(() => [{ provider: new MultiViewportFrontstage(viewState), default: true }]);
-
-    setViewportOptions({ viewState });
+    return viewState
   };
 
   /** The sample's render method */
@@ -39,9 +37,8 @@ const MultiViewportApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
+          viewportOptions={{ viewState: _initialViewstate }}
           frontstages={frontStages}
-          onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

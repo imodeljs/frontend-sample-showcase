@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 
 import { AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider, TreeEventHandler, TreeNodeItem, TreeSelectionModificationEventArgs, TreeSelectionReplacementEventArgs, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 
@@ -20,6 +20,8 @@ import { SampleDataProvider } from "@itwinjs-sandbox";
  * synchronization with selection.
  */
 export const CustomEventHandlerTreeComponent: FunctionComponent = () => {
+  const [width, setWidth] = useState<number>(1000)
+  const [height, setHeight] = useState<number>(1000)
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render
   const dataProvider = React.useMemo(() => new NodesWithCheckboxProvider(), []);
@@ -44,6 +46,26 @@ export const CustomEventHandlerTreeComponent: FunctionComponent = () => {
   // re-render component with updated nodes list
   const model = useTreeModel(modelSource);
 
+  useEffect(() => {
+    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth)
+      setHeight(viewerContainer.clientHeight)
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (let entry of entries) {
+          setWidth(entry.contentRect.width)
+          setHeight(entry.contentRect.height)
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer)
+      }
+    }
+    return () => { }
+  }, [])
+
   return <>
     <div className="tree">
       <ControlledTree
@@ -51,8 +73,8 @@ export const CustomEventHandlerTreeComponent: FunctionComponent = () => {
         selectionMode={SelectionMode.Extended}
         eventsHandler={eventHandler}
         model={model}
-        width={100}
-        height={100}
+        width={width}
+        height={height}
       />
     </div>
   </>;

@@ -14,7 +14,6 @@ const uiProviders = [new CameraPathWidgetProvider()];
 
 const CameraPathApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the mouse wheel to scroll the camera along the predefined path. Click in the view to look around.", [SampleIModels.MetroStation]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
@@ -22,9 +21,8 @@ const CameraPathApp: FunctionComponent = () => {
     return viewState;
   };
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await getInitialView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await getInitialView(iModelConnection);
   };
 
   /** Remove unnecessary tools  */
@@ -45,8 +43,7 @@ const CameraPathApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={uiConfig}
           theme="dark"
           uiProviders={uiProviders}

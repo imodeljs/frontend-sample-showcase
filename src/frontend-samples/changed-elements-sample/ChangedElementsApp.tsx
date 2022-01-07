@@ -18,16 +18,16 @@ const uiProviders = [new ChangedElementsWidgetProvider()];
 
 const ChangedElementsApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the drop down to select the named version to compare against.  Observe the changed elements are emphasized with color.  Unchanged elements are faded grey.", [SampleIModels.Stadium]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const oniModelReady = async (iModelConnection: IModelConnection) => {
+
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
     // Populate the information needed for this sample.
     await ChangedElementsClient.populateContext(iModelConnection);
     await ChangedElementsApi.populateVersions();
 
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
+
 
   /** The sample's render method */
   return (
@@ -39,8 +39,7 @@ const ChangedElementsApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

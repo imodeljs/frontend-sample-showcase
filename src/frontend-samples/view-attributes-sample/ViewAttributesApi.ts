@@ -71,13 +71,13 @@ export class ViewAttributesApi {
       ViewAttributesApi.setSkyboxOnOff(vp, attrValues.skybox);
 
     // Update viewflags
-    vp.viewFlags.with("acsTriad", attrValues.acs);
-    vp.viewFlags.with("backgroundMap", attrValues.backgroundMap);
-    vp.viewFlags.with("grid", attrValues.grid);
-    vp.viewFlags.with("hiddenEdges", attrValues.hiddenEdges);
-    vp.viewFlags.with("monochrome", attrValues.monochrome);
-    vp.viewFlags.with("shadows", attrValues.shadows);
-    vp.viewFlags.with("visibleEdges", attrValues.visibleEdges);
+    vp.viewFlags = vp.viewFlags.with("acsTriad", attrValues.acs);
+    vp.viewFlags = vp.viewFlags.with("backgroundMap", attrValues.backgroundMap);
+    vp.viewFlags = vp.viewFlags.with("grid", attrValues.grid);
+    vp.viewFlags = vp.viewFlags.with("hiddenEdges", attrValues.hiddenEdges);
+    vp.viewFlags = vp.viewFlags.with("monochrome", attrValues.monochrome);
+    vp.viewFlags = vp.viewFlags.with("shadows", attrValues.shadows);
+    vp.viewFlags = vp.viewFlags.with("visibleEdges", attrValues.visibleEdges);
 
     vp.synchWithView();
   }
@@ -99,25 +99,25 @@ export class ViewAttributesApi {
   public static setViewFlag(vp: Viewport, flag: ViewFlag, on: boolean) {
     switch (flag) {
       case ViewFlag.ACS:
-        vp.viewFlags.with("acsTriad", on);
+        vp.viewFlags = vp.viewFlags.with("acsTriad", on);
         break;
       case ViewFlag.BackgroundMap:
-        vp.viewFlags.with("backgroundMap", on);
+        vp.viewFlags = vp.viewFlags.with("backgroundMap", on);
         break;
       case ViewFlag.Grid:
-        vp.viewFlags.with("grid", on);
+        vp.viewFlags = vp.viewFlags.with("grid", on);
         break;
       case ViewFlag.HiddenEdges:
-        vp.viewFlags.with("hiddenEdges", on);
+        vp.viewFlags = vp.viewFlags.with("hiddenEdges", on);
         break;
       case ViewFlag.Monochrome:
-        vp.viewFlags.with("monochrome", on);
+        vp.viewFlags = vp.viewFlags.with("monochrome", on);
         break;
       case ViewFlag.Shadows:
-        vp.viewFlags.with("shadows", on);
+        vp.viewFlags = vp.viewFlags.with("shadows", on);
         break;
       case ViewFlag.VisibleEdges:
-        vp.viewFlags.with("visibleEdges", on);
+        vp.viewFlags = vp.viewFlags.with("visibleEdges", on);
         break;
     }
     vp.synchWithView();

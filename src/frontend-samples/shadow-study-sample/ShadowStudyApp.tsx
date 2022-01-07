@@ -8,7 +8,7 @@ import "common/samples-common.scss";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelViewportControlOptions } from "@itwin/appui-react";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { ShadowStudyWidgetProvider } from "./ShadowStudyWidget";
 import ShadowStudyApi from "./ShadowStudyApi";
@@ -17,12 +17,11 @@ const uiProviders = [new ShadowStudyWidgetProvider()];
 
 const ShadowStudyApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select iModel to change.", [SampleIModels.House, SampleIModels.MetroStation]);
-  const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ShadowStudyApi.getInitialView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await ShadowStudyApi.getInitialView(iModelConnection);
   };
+
 
   /** The sample's render method */
   return (
@@ -33,8 +32,7 @@ const ShadowStudyApp: React.FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

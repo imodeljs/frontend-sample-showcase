@@ -4,10 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64Set, Id64String } from "@itwin/core-bentley";
 import { Matrix3d } from "@itwin/core-geometry";
-import { BackgroundMapProps, ColorDef, Environment, PlanarClipMaskMode, PlanarClipMaskSettings } from "@itwin/core-common";
+import { ColorDef, PlanarClipMaskSettings, SkyBox, SkyGradient } from "@itwin/core-common";
 import { DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
-import { SettingsMapResult, SettingsStatus } from "@bentley/product-settings-client";
-import { metroStationImodelName } from "../constants";
+import { metroStationImodelName } from "../SampleIModels";
 import AuthorizationClient from "../authentication/AuthorizationClient";
 
 export class ViewSetup {
@@ -61,7 +60,12 @@ export class ViewSetup {
       viewState.adjustAspectRatio(aspect);
     }
 
-    viewState.viewFlags = viewState.viewFlags.copy({ shadows: false, grid: false, visibleEdges: false });
+    const viewFlags = viewState.viewFlags.copy({
+      shadows: false,
+      grid: false,
+      visibleEdges: false,
+    })
+    viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
       const viewState3d = viewState;
@@ -73,24 +77,27 @@ export class ViewSetup {
         displayStyle.changeBackgroundMapProps({ groundBias });
       }
 
+      displayStyle.environment.clone({
+        sky: SkyBox.createGradient(
+          SkyGradient.create({
+            twoColor: true,
+            zenithColor: ColorDef.fromString("#DEF2FF"),
+            nadirColor: ColorDef.fromString("#F0ECE8"),
+          })
+        )
+      })
+
       // Enable the sky-box, but override to old sky box.
-      displayStyle.environment = Environment.fromJSON({
-        sky: {
-          display: true,
-          twoColor: true,
-          zenithColor: ColorDef.computeTbgrFromString("#DEF2FF"),
-          nadirColor: ColorDef.computeTbgrFromString("#F0ECE8"),
-        },
+      displayStyle.environment = displayStyle.environment.withDisplay({
+        sky: true,
       });
 
       // Enable model masking on the metrostation model.
       if (imodel.name === "Metrostation2" || imodel.name === metroStationImodelName) {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
-        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds });
-        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories });
         displayStyle.changeBackgroundMapProps({
-          planarClipMask: planarClipMaskSettings.toJSON(),
+          planarClipMask: PlanarClipMaskSettings.create({ subCategoryIds, modelIds }).toJSON(),
         });
       }
     }
@@ -100,7 +107,6 @@ export class ViewSetup {
       // Enable model masking on the Stadium model.
       if (imodel.name === "Stadium") {
         const modelsForMasking = await ViewSetup.getModelIds(imodel, "SS_MasterLandscape.dgn, LandscapeModel");
-
         displayStyle.changeBackgroundMapProps({
           planarClipMask: PlanarClipMaskSettings.create({ modelIds: modelsForMasking }).toJSON(),
           transparency: 0.01, // Temporary fix due to how the planar clip and transparency interact.
@@ -211,22 +217,18 @@ export class ViewSetup {
     if (imodel.name === metroStationImodelName)
       return 3;
 
-    const accessToken = await AuthorizationClient.oidcClient.getAccessToken();
+    if (IModelApp.userPreferences) {
+      const groundBiasSetting = await IModelApp.userPreferences.get({
+        accessToken: await AuthorizationClient.oidcClient.getAccessToken(),
+        namespace: "bingMapSettings",
+        key: "backgroundMapSetting",
+        iTwinId: imodel.iTwinId!,
+        iModelId: imodel.iModelId,
+      });
 
-    const allSettings: SettingsMapResult = await IModelApp.userPreferences!.get(
-      { key: "bingMapSettings", iTwinId: imodel.iTwinId!, iModelId: imodel.iModelId, accessToken },
-    );
-    if (
-      allSettings.status === SettingsStatus.Success &&
-      allSettings.settingsMap &&
-      allSettings.settingsMap.has("backgroundMapSetting")
-    ) {
-      const bgMapSettings = allSettings.settingsMap.get(
-        "backgroundMapSetting",
-      ) as BackgroundMapProps;
-
-      if (undefined !== bgMapSettings.groundBias)
-        return bgMapSettings.groundBias;
+      if (groundBiasSetting) {
+        return groundBiasSetting;
+      }
     }
 
     return undefined;

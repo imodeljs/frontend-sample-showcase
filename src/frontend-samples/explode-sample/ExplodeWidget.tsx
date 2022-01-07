@@ -10,6 +10,7 @@ import ExplodeApi, { ExplodeObject, ExplodeProvider } from "./ExplodeApi";
 import { Animator, IModelApp, IModelConnection } from "@itwin/core-frontend";
 import "./Explode.scss";
 
+/** List of objects that can be exploded.  The 'elementIds' will be populate during start up. */
 const _objects: ExplodeObject[] = [
   {
     name: "Exterior",
@@ -61,23 +62,28 @@ const ExplodeWidget: React.FunctionComponent = () => {
     }
   }, [iModelConnection]);
 
+  // useEffect(() => { console.debug("hook2"); }, [explodeFactor]);
+
   /** Causes the exploded view */
   useEffect(() => {
     if (viewport) {
+      // The API has a 'current' state because this animate function cannot be tied to a useState variable or it will become stale.
+      // The simplest solution was to introduce a static variable in the API but this could be kept in an object instead.
       ExplodeApi.explodeAttributes.current = explodeFactor;
       ExplodeApi.refSetData(viewport, object.name, object.elementIds, explodeFactor);
     }
-  }, [explodeFactor, object.elementIds, object.name, viewport]);
-
+  }, [explodeFactor, object, viewport]);
+  // 
   useEffect(() => {
     if (viewport) {
-      ExplodeApi.clearIsolate(viewport);
       if (isolate) {
         ExplodeApi.isolateElements(viewport, object.elementIds);
         ExplodeApi.zoomToObject(viewport, object.name);
+      } else {
+        ExplodeApi.clearIsolate(viewport);
       }
     }
-  }, [object.name, isolate, viewport, object.elementIds]);
+  }, [object, isolate, viewport]);
 
   /** Populates the element ids of objects defined by category codes. */
   const populateObjects = async (iModel: IModelConnection): Promise<void> => {
@@ -112,9 +118,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
 
-        // The API has a 'current' state because this animate function cannot be tied to a useState variable or it will become stale.
-        // The simplest solution was to introduce a static variable in the API but this could be kept in an object instead.
-        ExplodeApi.explodeAttributes.current = newFactor;
+        // Update the Explode Factor
         setExplodeFactor(newFactor);
 
         return false;
@@ -167,7 +171,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
         <label>Animate</label>
         <Button onClick={onAnimateButton}>{animationText}</Button>
         <label>Explode Scaling</label>
-        <Slider min={min} max={max} values={[explodeFactor]} step={step} showMinMax={true} onUpdate={(values) => setExplodeFactor(values[0])} disabled={isAnimated} />
+        <Slider min={min} max={max} values={[explodeFactor]} step={step} showMinMax={true} onChange={(values) => setExplodeFactor(values[0])} onUpdate={(values) => setExplodeFactor(values[0])} disabled={isAnimated} />
         <label>Object</label>
         <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Select value={object.name} options={objectEntries} onChange={onObjectChanged} style={{ width: "fit-content" }} disabled={isAnimated || isPopulatingObjects} />

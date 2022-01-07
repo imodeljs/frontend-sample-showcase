@@ -8,7 +8,6 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { DisplayStylesWidgetProvider } from "./DisplayStylesWidget";
 import { IModelConnection } from "@itwin/core-frontend";
 import "./DisplayStyles.scss";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new DisplayStylesWidgetProvider()];
@@ -16,11 +15,9 @@ const uiProviders = [new DisplayStylesWidgetProvider()];
 const DisplayStylesApp: FunctionComponent = () => {
 
   const sampleIModelInfo = useSampleWidget("Use the drop down below to change the display style. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.", [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -32,8 +29,7 @@ const DisplayStylesApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

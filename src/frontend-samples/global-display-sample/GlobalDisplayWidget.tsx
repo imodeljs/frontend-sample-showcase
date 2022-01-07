@@ -39,6 +39,12 @@ const GlobalDisplayWidget: FunctionComponent = () => {
     }
   }, [viewport, buildings]);
 
+  useEffect(() => {
+    if (viewport) {
+      viewport.viewFlags = viewport.viewFlags.with("visibleEdges", buildingEdges);
+    }
+  }, [viewport, buildingEdges]);
+
   const _travelToDestination = async () => {
     if (!viewport)
       return;

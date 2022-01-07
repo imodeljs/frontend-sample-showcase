@@ -14,16 +14,13 @@ const uiProviders = [new ScreenSpaceEffectsWidgetProvider()];
 
 const ScreenSpaceEffectsApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toggles below to select which effects are applied to the viewport.", [SampleIModels.Villa, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    IModelApp.viewManager.onViewOpen.addOnce((viewport) => {
-      viewport.viewFlags = viewport.viewFlags.with("grid", false);
-    });
-
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+    viewState.viewFlags = viewState.viewFlags.with("grid", false)
+    return viewState;
   };
+
 
   /** The sample's render method */
   return (
@@ -34,8 +31,7 @@ const ScreenSpaceEffectsApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

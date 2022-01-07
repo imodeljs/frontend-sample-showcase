@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { ControlledTree, DelayLoadedTreeNodeItem, ITreeDataProvider, PropertyValueRendererManager, SelectionMode, TreeActions, TreeDataChangesListener, TreeModelNode, TreeNodeItem, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { ExpansionToggle } from "@itwin/core-react";
 import { PropertyRecord } from "@itwin/appui-abstract";
@@ -18,6 +18,9 @@ import { BeEvent } from "@itwin/core-bentley";
  * `TreeRenderer` with overridden node renderer.
  */
 export const CustomTableNodeTreeComponent: FunctionComponent = () => {
+  const [width, setWidth] = useState<number>(1000)
+  const [height, setHeight] = useState<number>(1000)
+
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render cycle
   const dataProvider = React.useMemo(() => new DataProvider(), []);
@@ -48,6 +51,26 @@ export const CustomTableNodeTreeComponent: FunctionComponent = () => {
 
   const model = useTreeModel(modelSource);
 
+  useEffect(() => {
+    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth)
+      setHeight(viewerContainer.clientHeight)
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (let entry of entries) {
+          setWidth(entry.contentRect.width)
+          setHeight(entry.contentRect.height)
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer)
+      }
+    }
+    return () => { }
+  }, [])
+
   return <>
     <div className="custom-tree">
       <div className="tree-header">
@@ -61,8 +84,8 @@ export const CustomTableNodeTreeComponent: FunctionComponent = () => {
           selectionMode={SelectionMode.None}
           eventsHandler={eventHandler}
           model={model}
-          width={100}
-          height={100}
+          width={width}
+          height={height}
           treeRenderer={nodeTableTreeRenderer}
         />
       </div>

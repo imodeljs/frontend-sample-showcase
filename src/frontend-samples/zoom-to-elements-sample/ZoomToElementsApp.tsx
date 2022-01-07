@@ -13,11 +13,9 @@ const uiProviders = [new ZoomToElementsWidgetProvider()];
 
 const ZoomToElementsApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select one or more elements.  Click plus (+) to capture their ids into a list.  Set the options and then click Zoom to Elements.", [SampleIModels.BayTown, SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.House, SampleIModels.Stadium]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return await ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -29,8 +27,7 @@ const ZoomToElementsApp: FunctionComponent = () => {
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}
