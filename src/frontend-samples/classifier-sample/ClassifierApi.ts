@@ -24,7 +24,7 @@ export default class ClassifierApi {
     const style = viewPort.displayStyle.clone();
 
     // Get first available reality models and attach them to displayStyle
-    const RealityDataClient = new RealityDataAccessClient()
+    const RealityDataClient = new RealityDataAccessClient();
     const availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel });
     for (const crmProp of availableModels) {
       crmProp.classifiers = [];

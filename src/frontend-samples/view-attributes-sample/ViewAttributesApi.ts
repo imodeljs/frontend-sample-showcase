@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Viewport, ViewState3d } from "@itwin/core-frontend";
-import { Environment, RenderMode } from "@itwin/core-common";
+import { RenderMode } from "@itwin/core-common";
 
 // cSpell:ignore imodels
 

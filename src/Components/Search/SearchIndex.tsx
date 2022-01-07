@@ -18,7 +18,7 @@ function SearchIndex() {
             description: sample.description ? sample.description : "",
             tags: sample.description ? sample.description.match(/#[a-z0-9]+/gi) : [],
             // readme: sample.readme ? (await sample.readme()).default : ""
-          }
+          },
         );
 
         setSampleIndex([].concat.apply([], index));

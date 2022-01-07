@@ -112,7 +112,7 @@ export class ViewClipWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ViewClipWidget />,
-        }
+        },
       );
     }
     return widgets;

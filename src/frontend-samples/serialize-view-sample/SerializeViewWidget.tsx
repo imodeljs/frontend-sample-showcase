@@ -211,7 +211,7 @@ export class SerializeViewWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SerializeViewWidget />,
-        }
+        },
       );
     }
     return widgets;

@@ -11,8 +11,8 @@ export default class ViewClipApi {
   /* Method for clearing all clips in the viewport */
   public static clearClips(vp: ScreenViewport) {
     // Run the ViewClipClearTool and hide the decorators
-    IModelApp.tools.run(ViewClipClearTool.toolId);
-    ViewClipDecorationProvider.create().toggleDecoration(vp);
+    void IModelApp.tools.run(ViewClipClearTool.toolId);
+    void ViewClipDecorationProvider.create().toggleDecoration(vp);
   }
 
   /* Method for adding decorators to the viewport */
@@ -23,7 +23,7 @@ export default class ViewClipApi {
     vcdp.clearDecorationOnDeselect = false;
     vcdp.showDecoration(vp);
     // The decorators require the SelectTool being active.
-    IModelApp.toolAdmin.startDefaultTool();
+    void IModelApp.toolAdmin.startDefaultTool();
   }
 
   /* Method for adding a new clip range around the model's extents */

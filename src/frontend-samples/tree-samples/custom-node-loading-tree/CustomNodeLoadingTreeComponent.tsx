@@ -45,8 +45,8 @@ const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json
  *     - Child node 1   [from inMemoryDataProvider]
  */
 export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps> = (props) => {
-  const [width, setWidth] = useState<number>(1000)
-  const [height, setHeight] = useState<number>(1000)
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
 
   // create data provider to load nodes from iModel using presentation rules
   // `React.useMemo' is used avoid creating new object on each render cycle
@@ -75,27 +75,27 @@ export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const model = useTreeModel(nodeLoader.modelSource)
+  const model = useTreeModel(nodeLoader.modelSource);
 
   useEffect(() => {
-    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
     if (viewerContainer) {
-      setWidth(viewerContainer.clientWidth)
-      setHeight(viewerContainer.clientHeight)
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
       const resizeObserver = new ResizeObserver((entries: any) => {
-        for (let entry of entries) {
-          setWidth(entry.contentRect.width)
-          setHeight(entry.contentRect.height)
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
         }
       });
 
       resizeObserver.observe(viewerContainer);
       return () => {
-        resizeObserver.unobserve(viewerContainer)
-      }
+        resizeObserver.unobserve(viewerContainer);
+      };
     }
-    return () => { }
-  }, [])
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">

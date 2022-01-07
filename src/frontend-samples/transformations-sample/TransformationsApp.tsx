@@ -8,7 +8,6 @@ import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@itwin/core-frontend";
 import { TransformationsWidgetProvider } from "./TransformationsWidget";
 import { TransformationsFrontstage } from "./TransformationsFrontstageProvider";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import "./transformations-sample.scss";
 
 const uiProviders = [new TransformationsWidgetProvider()];
@@ -38,7 +37,7 @@ const TransformationsApp: FunctionComponent = () => {
 
     setFrontstages([{ provider: new TransformationsFrontstage(viewState, viewState2, connection2), default: true }]);
 
-    return viewState
+    return viewState;
   };
 
   /** The sample's render method */

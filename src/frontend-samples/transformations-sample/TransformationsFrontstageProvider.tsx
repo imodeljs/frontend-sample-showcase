@@ -9,7 +9,7 @@ import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Front
 
 export class TransformationsFrontstage extends FrontstageProvider {
   // constants
-  public id = "TransformationsFrontstage"
+  public id = "TransformationsFrontstage";
   public static MAIN_CONTENT_ID = "TransformationsFrontstage";
   public static DEFAULT_NAVIGATION_WIDGET_KEY = "DefaultNavigationWidget";
   public static DEFAULT_MANIPULATION_WIDGET_KEY = "DefaultNavigationWidget";

@@ -63,7 +63,7 @@ export default class ExplodeApi {
     };
 
     // Move the view into a good viewing angle.
-    IModelApp.tools.run("View.Standard", vp, 7 /* isoRight */);
+    void IModelApp.tools.run("View.Standard", vp, 7 /* isoRight */);
 
     // Gets the volume from the tile tree once it has been calculated.
     let volume = ExplodeTreeReference.getTreeRange(objectName);

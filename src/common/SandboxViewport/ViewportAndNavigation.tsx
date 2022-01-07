@@ -60,21 +60,21 @@ const toolbar = () => {
  */
 
 const select = () => {
-  IModelApp.tools.run(SelectionTool.toolId);
+  void IModelApp.tools.run(SelectionTool.toolId);
 };
 
 const fitView = () => {
-  IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
+  void IModelApp.tools.run(FitViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 
 const rotate = () => {
-  IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
+  void IModelApp.tools.run(RotateViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 
 const pan = () => {
-  IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
+  void IModelApp.tools.run(PanViewTool.toolId, IModelApp.viewManager.selectedView);
 };
 
 const zoom = () => {
-  IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
+  void IModelApp.tools.run(ZoomViewTool.toolId, IModelApp.viewManager.selectedView);
 };

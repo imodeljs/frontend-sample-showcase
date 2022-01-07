@@ -56,7 +56,7 @@ export class ChangedElementsApi {
   /** Returns the request context which will be used for all the API calls made by the frontend. */
   public static async getRequestContext() {
     if (!ChangedElementsApi._accessToken) {
-      const authClient = new AuthorizationClient()
+      const authClient = new AuthorizationClient();
       ChangedElementsApi._accessToken = await authClient.getAccessToken();
     }
     return ChangedElementsApi._accessToken;

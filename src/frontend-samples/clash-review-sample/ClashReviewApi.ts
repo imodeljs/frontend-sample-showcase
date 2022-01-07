@@ -3,28 +3,19 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { EmphasizeElements, IModelApp, MarginPercent, ViewChangeOptions } from "@itwin/core-frontend";
+import { EmphasizeElements, IModelApp, ViewChangeOptions } from "@itwin/core-frontend";
 import { ColorDef, FeatureOverrideType } from "@itwin/core-common";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
 import ClashDetectionClient from "./ClashDetectionClient";
 import { BeEvent } from "@itwin/core-bentley";
 import { jsonData } from "./ClashDetectionJsonData";
-import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export default class ClashReviewApi {
 
   public static onClashDataChanged = new BeEvent<any>();
 
-  private static _accessToken: string;
   private static _clashData: { [id: string]: any } = {};
   private static _applyZoom: boolean = true;
-
-  private static async getRequestContext() {
-    if (!ClashReviewApi._accessToken) {
-      ClashReviewApi._accessToken = await IModelApp.authorizationClient!.getAccessToken();
-    }
-    return ClashReviewApi._accessToken;
-  }
 
   public static setupDecorator() {
     return new MarkerPinDecorator();
@@ -57,7 +48,6 @@ export default class ClashReviewApi {
   }
 
   public static async getClashData(projectId: string): Promise<any> {
-    const context = await ClashReviewApi.getRequestContext();
     if (ClashReviewApi._clashData[projectId] === undefined) {
       const runsResponse = await ClashDetectionClient.getClashTestRuns(projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {

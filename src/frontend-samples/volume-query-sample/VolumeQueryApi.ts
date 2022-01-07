@@ -35,8 +35,8 @@ export class VolumeQueryApi {
   /* Method for clearing all clips in the viewport */
   public static clearClips(vp: ScreenViewport) {
     // Run the ViewClipClearTool and hide the decorators
-    IModelApp.tools.run(ViewClipClearTool.toolId);
-    ViewClipDecorationProvider.create().toggleDecoration(vp);
+    void IModelApp.tools.run(ViewClipClearTool.toolId);
+    void ViewClipDecorationProvider.create().toggleDecoration(vp);
   }
 
   /* Method for adding a new box range around the model's extents */
@@ -56,7 +56,7 @@ export class VolumeQueryApi {
     // Call enableClipVolume to ensure all clip flags are properly set
     ViewClipTool.enableClipVolume(vp);
     // Turning off the clipping feature.
-    vp.view.viewFlags = vp.view.viewFlags.with("clipVolume", isClippingOn === undefined ? false : isClippingOn)
+    vp.view.viewFlags = vp.view.viewFlags.with("clipVolume", isClippingOn === undefined ? false : isClippingOn);
     vp.view.setViewClip(clip);
     VolumeQueryApi.addDecorators(vp);
   };
@@ -69,7 +69,7 @@ export class VolumeQueryApi {
     vcdp.clearDecorationOnDeselect = false;
     vcdp.showDecoration(vp);
     // The decorators require the SelectTool being active.
-    IModelApp.toolAdmin.startDefaultTool();
+    void IModelApp.toolAdmin.startDefaultTool();
   }
 
   /* Clear color from colored elements */

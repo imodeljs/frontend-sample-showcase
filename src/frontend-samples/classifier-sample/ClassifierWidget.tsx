@@ -80,14 +80,14 @@ const ClassifierWidget: React.FunctionComponent = () => {
     const flags = new SpatialClassifierFlags(
       insideDisplayKeyState,
       outsideDisplayKeyState,
-      false
+      false,
     );
 
     const classifier: SpatialClassifier = new SpatialClassifier(
       modelId,
       `${modelId}`,
       flags,
-      expandDistState
+      expandDistState,
     );
 
     return classifier;
@@ -178,7 +178,7 @@ export class ClassifierWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ClassifierWidget />,
-        }
+        },
       );
     }
     return widgets;

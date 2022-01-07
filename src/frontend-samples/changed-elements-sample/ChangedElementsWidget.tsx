@@ -69,7 +69,7 @@ export class ChangedElementsWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ChangedElementsWidget />,
-        }
+        },
       );
     }
     return widgets;

@@ -5,10 +5,8 @@
 import * as React from "react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { EmphasizeElementsWidgetProvider } from "./EmphasizeElementsWidget";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
-import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new EmphasizeElementsWidgetProvider()];
 
@@ -16,7 +14,7 @@ const EmphasizeElementsApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select one or more elements.  Click one of the Apply buttons.", [SampleIModels.RetailBuilding, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.House, SampleIModels.Stadium]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */

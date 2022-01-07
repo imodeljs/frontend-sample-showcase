@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { EmphasizeElements, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@itwin/core-frontend";
+import { EmphasizeElements, IModelApp, IModelConnection, ViewChangeOptions } from "@itwin/core-frontend";
 import { ColorDef, FeatureOverrideType, GeometricElement3dProps, Placement3d } from "@itwin/core-common";
 import { Point3d } from "@itwin/core-geometry";
 import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
@@ -16,18 +16,10 @@ export default class ValidationApi {
 
   public static onValidationDataChanged = new BeEvent<any>();
 
-  private static _accessToken: string;
   private static _validationData: { [id: string]: any } = {};
   private static _ruleData: { [id: string]: any } = {};
 
   private static _applyZoom: boolean = true;
-
-  private static async getRequestContext() {
-    if (!ValidationApi._accessToken) {
-      ValidationApi._accessToken = await IModelApp.authorizationClient!.getAccessToken();
-    }
-    return ValidationApi._accessToken;
-  }
 
   public static setupDecorator() {
     return new MarkerPinDecorator();
@@ -61,7 +53,6 @@ export default class ValidationApi {
 
   // START VALIDATION_API
   public static async getValidationData(projectId: string): Promise<any> {
-    const context = await ValidationApi.getRequestContext();
     if (ValidationApi._validationData[projectId] === undefined) {
       const runsResponse = await ValidationClient.getValidationTestRuns(projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
@@ -89,7 +80,6 @@ export default class ValidationApi {
   // END VALIDATION_API
 
   public static async getMatchingRule(ruleId: string) {
-    const context = await ValidationApi.getRequestContext();
     const ruleData = await ValidationClient.getValidationRule(ruleId);
     if (ruleData !== undefined)
       return ruleData;

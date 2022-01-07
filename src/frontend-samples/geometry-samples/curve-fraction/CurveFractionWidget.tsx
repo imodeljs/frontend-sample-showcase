@@ -70,7 +70,7 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
       IModelApp.viewManager.addDecorator(decorator);
       setDecoratorState(decorator);
 
-      IModelApp.localization.registerNamespace("camera-i18n-namespace");
+      void IModelApp.localization.registerNamespace("camera-i18n-namespace");
       MovePointTool.register("camera-i18n-namespace");
     }
 
@@ -178,7 +178,7 @@ export class CurveFractionWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <CurveFractionWidget />,
-        }
+        },
       );
     }
     return widgets;

@@ -26,7 +26,7 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
       sheetElements: [],
       sheets: [],
       drawings: [],
-    }
+    },
   );
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export class ViewerOnly2dWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ViewerOnly2dWidget />,
-        }
+        },
       );
     }
     return widgets;

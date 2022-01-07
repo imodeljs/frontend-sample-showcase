@@ -133,7 +133,7 @@ export class ValidationTableWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Open,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ValidationTableWidget />,
-        }
+        },
       );
     }
     return widgets;

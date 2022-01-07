@@ -186,7 +186,7 @@ export class SnowDecorator implements Decorator {
       const particle = this._particles[i];
       acceleration.set(
         randomFloat(this._params.accelerationRange.low.x, this._params.accelerationRange.high.x),
-        randomFloat(this._params.accelerationRange.low.y, this._params.accelerationRange.high.y)
+        randomFloat(this._params.accelerationRange.low.y, this._params.accelerationRange.high.y),
       );
 
       acceleration.scale(elapsedSeconds, acceleration);

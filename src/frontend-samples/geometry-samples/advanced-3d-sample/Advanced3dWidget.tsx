@@ -70,7 +70,7 @@ export class Advanced3dWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <Advanced3dWidget />,
-        }
+        },
       );
     }
     return widgets;
