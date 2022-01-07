@@ -3,25 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-.action-item {
-  border-radius: 0;
-  height: 100% !important;
-
-  &#readme {
-    &:hover {
-      &::after {
-        content: "Readme";
-        padding-right: 0.5em;
-      }
-    }
-  }
-
-  &#build {
-    &:hover {
-      &::after {
-        content: "Build";
-        padding-right: 0.5em;
-      }
-    }
-  }
+.drawer-content {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }

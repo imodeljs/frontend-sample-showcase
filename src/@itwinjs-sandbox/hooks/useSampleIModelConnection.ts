@@ -6,10 +6,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { ContextRegistryClient, Project } from "@bentley/context-registry-client";
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizedFrontendRequestContext } from "@bentley/imodeljs-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox/authentication/AuthorizationClient";
-import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
-import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import AuthorizationClient from "../authentication/AuthorizationClient";
+import { defaultIModel, defaultIModelList } from "../constants";
+import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "../SampleIModels";
 import { useSampleIModelParameter } from "./useSampleIModelParameter";
 
 export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWithAlternativeName) => {

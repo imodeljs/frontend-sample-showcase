@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
+import { assert } from "@itwin/core-bentley/lib/cjs/Assert";
+import { Guid } from "@itwin/core-bentley/lib/cjs/Id";
 import { initialize, LDClient, LDFlagValue } from "launchdarkly-js-client-sdk";
-import { assert } from "@bentley/bentleyjs-core/lib/Assert";
-import { Guid } from "@bentley/bentleyjs-core/lib/Id";
 
 /** Lists all feature flags used including the LaunchDarkly key name.
  *  This simplifies maintenance consistency between flags defined in LaunchDarkly

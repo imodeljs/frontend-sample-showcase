@@ -9,6 +9,8 @@ import Pane from "@bentley/monaco-editor/lib/components/split-screen/Pane";
 import { Button, ButtonSize, ButtonType } from "@bentley/ui-core/lib/ui-core/button/Button";
 import { SampleShowcaseViewHandlerProps } from "./SampleShowcaseViewHandler";
 import "./SampleShowcaseSplitPane.scss";
+import { Button } from "@itwin/itwinui-react";
+import { HandlerProps, ReflexContainer, ReflexElement, ReflexSplitter } from "react-reflex";
 
 export interface SampleShowcaseSplitPaneProps extends SampleShowcaseViewHandlerProps {
   width: number;
@@ -74,37 +76,21 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
   width < 576 && showEditor && editorClassName.push("mobile-visible");
   width < 576 && showGallery && galleryClassName.push("mobile-visible");
 
-  const onSampleGallerySizeChange = (size: number) => {
-    if (!ignoreGallerySize.current) {
-      if (width >= 576) {
-        const minSize = sizes?.gallerySize || 200;
-        size = Math.ceil(size);
-        if (size < minSize && showGallery) {
-          setShowGallery(false);
-          ignoreGallerySize.current = true;
-          document.dispatchEvent(new MouseEvent("mouseup"));
-        } else if (size >= minSize && !showGallery) {
-          setShowGallery(true);
-          ignoreGallerySize.current = true;
-        }
-      }
+  const onSampleGallerySizeChange = useCallback(({ domElement }: HandlerProps) => {
+
+    if (width >= 576) {
+      const minSize = 150;
+      const size = Math.ceil((domElement as HTMLElement).offsetWidth);
+      setShowGallery(size >= minSize || !showGallery);
     }
   };
 
-  const onEditorSizeChange = (size: number) => {
-    if (!ignoreEditorSize.current) {
-      if (width >= 576) {
-        const minSize = sizes?.editorSize || 412;
-        size = Math.ceil(size);
-        if (size < minSize && showEditor) {
-          setShowEditor(false);
-          ignoreEditorSize.current = true;
-          document.dispatchEvent(new MouseEvent("mouseup"));
-        } else if (size >= minSize && !showEditor) {
-          setShowEditor(true);
-          ignoreEditorSize.current = true;
-        }
-      }
+  const onEditorSizeChange = useCallback(({ domElement }: HandlerProps) => {
+
+    if (width >= 576) {
+      const minSize = sizes.minEditorSize;
+      const size = Math.ceil((domElement as HTMLElement).offsetWidth);
+      setShowEditor(size >= minSize || !showEditor);
     }
   };
 
