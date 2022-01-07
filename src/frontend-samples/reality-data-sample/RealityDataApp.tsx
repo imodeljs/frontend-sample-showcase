@@ -3,11 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { RealityDataWidgetProvider } from "./RealityDataWidget";
 import { IModelConnection } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new RealityDataWidgetProvider()];
@@ -17,7 +16,7 @@ const RealityDataApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toggles below to adjust the reality models in the viewport.", [SampleIModels.ExtonCampus]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
   // END VIEW_SETUP
   /** The sample's render method */

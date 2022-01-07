@@ -2,11 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, StandardViewId } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { ValidationWidgetProvider } from "./ValidationWidget";
 import { ValidationTableWidgetProvider } from "./ValidationTableWidget";
 
@@ -14,7 +13,6 @@ const uiProviders = [new ValidationWidgetProvider(), new ValidationTableWidgetPr
 
 const ValidationApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toggles below to show marker pins or zoom to a validation rule violation.  Click a marker or table entry to review these rule violations.", [SampleIModels.BayTown]);
-
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
@@ -24,9 +22,8 @@ const ValidationApp: FunctionComponent = () => {
     const aspect = viewState.getAspectRatio();
 
     viewState.lookAtVolume(range, aspect);
-    return viewState
+    return viewState;
   };
-
 
   return (
     <>

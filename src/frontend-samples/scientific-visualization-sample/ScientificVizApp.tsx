@@ -42,7 +42,7 @@ const ScientificVizApp: FunctionComponent = () => {
         viewStateOptions={viewState}
         blankConnection={connection}
         uiProviders={uiProviders}
-        viewportOptions={{ supplyViewOverlay: () => { return <></> } }}
+        viewportOptions={{ supplyViewOverlay: function Noop() { return <></>; } }}
       />
     </>
   );

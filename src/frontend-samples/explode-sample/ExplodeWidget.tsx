@@ -44,7 +44,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
       for (const vp of IModelApp.viewManager) {
         ExplodeApi.clearIsolate(vp);
         ExplodeProvider.getOrCreate(vp).drop();
-      };
+      }
       ExplodeApi.cleanUpCallbacks.forEach((func) => func());
     };
   }, []);
@@ -73,7 +73,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
       ExplodeApi.refSetData(viewport, object.name, object.elementIds, explodeFactor);
     }
   }, [explodeFactor, object, viewport]);
-  // 
+  //
   useEffect(() => {
     if (viewport) {
       if (isolate) {
@@ -197,7 +197,7 @@ export class ExplodeWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ExplodeWidget />,
-        }
+        },
       );
     }
     return widgets;

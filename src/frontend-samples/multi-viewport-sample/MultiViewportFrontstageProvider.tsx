@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React from "react";
-import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
+import { BasicNavigationWidget, ContentGroup, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
 import { ViewStateProp } from "@itwin/imodel-components-react";
 
 export class MultiViewportFrontstage extends FrontstageProvider {

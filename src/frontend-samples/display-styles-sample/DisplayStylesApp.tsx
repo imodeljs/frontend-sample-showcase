@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { DisplayStylesWidgetProvider } from "./DisplayStylesWidget";
 import { IModelConnection } from "@itwin/core-frontend";
@@ -17,7 +17,7 @@ const DisplayStylesApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the drop down below to change the display style. Edit the \"Custom\" style in \"Style.ts\" and re-run the sample to see the changes.", [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */

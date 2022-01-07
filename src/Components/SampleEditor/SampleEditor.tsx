@@ -2,156 +2,123 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react";
 import MarkdownViewer from "./MarkdownViewer/MarkdownViewer";
-import MonacoEditor, { Annotation, ErrorList, Pane, SplitScreen, useActivityState, useEntryState } from "@bentley/monaco-editor";
+import MonacoEditor, { Annotation, ErrorList, useActivityState, useEntryState } from "@bentley/monaco-editor";
 import { TabNavigation } from "./TabNavigation/TabNavigation";
-import { Drawer, Label } from "./Drawer/Drawer";
-import { Spinner, SpinnerSize, UiCore } from "@itwin/core-react";
 import { useFeatureToggleClient } from "hooks/useFeatureToggleClient/UseFeatureToggleClient";
 import { FeatureFlags } from "FeatureToggleClient";
 import { ProblemsLabel, WalkthroughLabel } from "./Drawer/DrawerLabels";
 import { WalkthroughViewer } from "./WalkthroughViewer/WalkthroughViewer";
+import { HandlerProps, ReflexContainer, ReflexElement, ReflexSplitter } from "react-reflex";
+import { ProgressRadial } from "@itwin/itwinui-react";
+import { DrawerItem, DrawerReflexElement } from "./Drawer/DrawerReflexElement";
+import { useWalkthrough } from "./WalkthroughViewer/UseWalkthrough";
 import "./SampleEditor.scss";
 
 export interface EditorProps {
-  readme?: () => Promise<{ default: string }>;
   walkthrough?: Annotation[];
-  onTranspiled: ((blobUrl: string) => void);
+  iframeRef: React.MutableRefObject<HTMLIFrameElement | null>;
+  readme?: () => Promise<{ default: string }>;
+  onRunClick: (() => void);
   onSampleClicked: (groupName: string | null, sampleName: string | null, wantScroll: boolean) => Promise<void>;
 }
 
-const drawerMinSize = 35;
-const drawerOpenSize = 400;
-
-export const SampleEditor: React.FunctionComponent<EditorProps> = (props) => {
-  const { readme, walkthrough, onSampleClicked, onTranspiled } = props;
+export const SampleEditor: FunctionComponent<EditorProps> = ({ readme, walkthrough, iframeRef, onSampleClicked, onRunClick }) => {
   const enableWalkthrough = useFeatureToggleClient(FeatureFlags.EnableWalkthrough);
   const [activityState, activityActions] = useActivityState();
   const [entryState] = useEntryState();
-  const [showReadme, setShowReadme] = React.useState<boolean>(true);
-  const [readmeContent, setReadmeContent] = React.useState<string>("");
-  const [readmeLoading, setReadmeLoading] = React.useState(true);
-  const [drawerSize, setDrawerSize] = React.useState<number>(drawerMinSize);
-  const [labels, setLabels] = React.useState<Label[]>([]);
-  const ignoreSizeChange = React.useRef(false);
+  const [readmeStatus, setReadmeStatus] = useState<{ show: boolean, content?: string }>({ show: false });
+  const walkthroughProps = useWalkthrough(walkthrough, onSampleClicked);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (walkthrough && enableWalkthrough) {
+      setDrawerOpen(true);
+    }
+    return () => {
+      setDrawerOpen(false);
+    };
+  }, [enableWalkthrough, walkthrough]);
+
+  useEffect(() => {
     if (readme) {
-      setReadmeLoading(true);
-      readme().then((fileData) => {
-        setReadmeContent(fileData.default);
-        setShowReadme(true);
-        setReadmeLoading(false);
-      })
+      readme()
+        .then((fileData) => {
+          setReadmeStatus({ show: true, content: fileData.default });
+        })
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
         });
+      return () => {
+        setReadmeStatus({ show: false });
+      };
     }
-  }, [readme, setReadmeContent, setShowReadme]);
+    return;
+  }, [activityActions, readme]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (activityState.active) {
-      setShowReadme(false);
+      setReadmeStatus((prev) => ({ ...prev, show: false }));
     } else {
-      setShowReadme(true);
+      setReadmeStatus((prev) => ({ ...prev, show: true }));
     }
   }, [activityState.active]);
 
-  const onShowReadme = React.useCallback(() => {
-    if (showReadme) {
+  const onShowReadme = useCallback(() => {
+    if (readmeStatus.show) {
       activityActions.setActive(entryState || undefined);
     } else {
       activityActions.clearActive();
     }
-  }, [activityActions, entryState, showReadme]);
+  }, [activityActions, entryState, readmeStatus.show]);
 
-  const _onDrawerOpened = React.useCallback(() => {
-    setDrawerSize((prev) => {
-      if (prev !== drawerOpenSize) {
-        ignoreSizeChange.current = true;
-        return drawerOpenSize;
-      }
-      return prev;
-    });
-  }, []);
-
-  const _onDrawerClosed = React.useCallback(() => {
-    setDrawerSize((prev) => {
-      if (prev !== drawerMinSize) {
-        ignoreSizeChange.current = true;
-        return drawerMinSize;
-      }
-      return prev;
-    });
-  }, []);
-
-  useEffect(() => {
-    setLabels((prev) => {
-      let newLabels = prev;
-      if (showReadme) {
-        newLabels = newLabels.filter((label) => label.value !== ProblemsLabel.value);
-      } else if (!newLabels.some((label) => label.value === ProblemsLabel.value)) {
-        newLabels.push(ProblemsLabel);
-      }
-
-      if (!enableWalkthrough || !walkthrough) {
-        newLabels = newLabels.filter((label) => label.value !== WalkthroughLabel.value);
-      } else if (!newLabels.some((label) => label.value === WalkthroughLabel.value)) {
-        newLabels.unshift(WalkthroughLabel);
-      }
-      return [...newLabels];
-    });
-  }, [showReadme, enableWalkthrough, walkthrough, _onDrawerOpened]);
-
-  useEffect(() => {
-    if (enableWalkthrough && walkthrough?.length) {
-      _onDrawerOpened();
-    } else {
-      _onDrawerClosed();
+  const drawerItems = useMemo(() => {
+    const value: DrawerItem[] = [];
+    if (enableWalkthrough && walkthroughProps) {
+      value.push({
+        ...WalkthroughLabel,
+        component: <WalkthroughViewer walkthrough={walkthroughProps} onSampleClicked={onSampleClicked} />,
+      });
     }
-  }, [_onDrawerClosed, _onDrawerOpened, enableWalkthrough, walkthrough]);
 
-  const _onDrawerChange = React.useCallback((size: number) => {
-    if (ignoreSizeChange.current) {
-      ignoreSizeChange.current = false;
-      return;
+    if (!readmeStatus.show) {
+      value.push({
+        ...ProblemsLabel,
+        component: <div style={{ padding: "8px" }}><ErrorList /></div>,
+      });
     }
-    if (size < 200) {
-      _onDrawerClosed();
-    } else {
-      _onDrawerOpened();
-    }
-  }, [_onDrawerClosed, _onDrawerOpened]);
 
-  const readmeViewer = () => {
-    return readmeLoading ? <div className="sample-editor-readme uicore-fill-centered" ><Spinner size={SpinnerSize.XLarge} /></div> :
-      <MarkdownViewer readme={readmeContent} onFileClicked={activityActions.setActive} onSampleClicked={onSampleClicked} />;
-  };
+    return value;
+  }, [enableWalkthrough, onSampleClicked, readmeStatus.show, walkthroughProps]);
+
+  const onResizeDrawer = useCallback(({ domElement }: HandlerProps) => {
+    const minSize = 200;
+    const size = Math.ceil((domElement as HTMLElement).offsetHeight);
+    setDrawerOpen(size >= minSize || !drawerOpen);
+  }, [drawerOpen]);
 
   return (
     <div className="sample-editor-container">
-      <SplitScreen split="horizontal">
-        <Pane className="sample-editor">
-          <TabNavigation onRunCompleted={onTranspiled} showReadme={showReadme} onShowReadme={onShowReadme} />
-          <div style={{ height: "100%", overflow: "hidden", display: showReadme ? "block" : "none" }}>
-            {showReadme && readmeViewer()}
+      <ReflexContainer orientation="horizontal">
+        <ReflexElement className="sample-editor" minSize={35}>
+          <TabNavigation iframeRef={iframeRef} onRunClick={onRunClick} showReadme={readmeStatus.show} onShowReadme={onShowReadme} />
+          <div style={{ height: "100%", overflow: "hidden", display: readmeStatus.show ? "block" : "none" }}>
+            {!readmeStatus.content ?
+              <div className="sample-editor-readme uicore-fill-centered" >
+                <ProgressRadial size="large" indeterminate />
+              </div>
+              : <MarkdownViewer readme={readmeStatus.content} onFileClicked={activityActions.setActive} onSampleClicked={onSampleClicked} />}
           </div>
-          <div style={{ height: "100%", overflow: "hidden", display: !showReadme ? "block" : "none" }}>
-            <MonacoEditor />
+          <div style={{ height: "100%", overflow: "hidden", display: !readmeStatus.show ? "block" : "none" }}>
+            {<MonacoEditor />}
           </div>
-        </Pane>
-        {showReadme && !(enableWalkthrough && walkthrough) ?
-          <Pane disabled defaultSize="0" />
-          :
-          <Pane onChange={_onDrawerChange} snapSize={"200px"} minSize={`${drawerMinSize}px`} maxSize={"50%"} size={`${drawerSize}px`}>
-            <Drawer open={drawerSize > drawerMinSize} onDrawerClosed={_onDrawerClosed} onDrawerOpen={_onDrawerOpened} labels={labels}>
-              {enableWalkthrough && walkthrough && <WalkthroughViewer walkthrough={walkthrough} show={drawerSize > drawerMinSize} onOpenClick={_onDrawerOpened} onCloseClick={_onDrawerClosed} onSampleClicked={onSampleClicked} />}
-              <div style={{ padding: "8px" }}><ErrorList /></div>
-            </Drawer>
-          </Pane>}
-      </SplitScreen>
+        </ReflexElement>
+        {(!readmeStatus.show || Boolean(walkthrough && enableWalkthrough)) && <ReflexSplitter />}
+        {(!readmeStatus.show || Boolean(walkthrough && enableWalkthrough)) &&
+          <DrawerReflexElement open={drawerOpen} items={drawerItems} minSize={35} flex={drawerOpen ? 0.4 : 0.0001} onResize={onResizeDrawer} onOpenDrawer={setDrawerOpen} maxSize={drawerOpen ? undefined : 35} direction={-1} />}
+      </ReflexContainer>
     </div >
   );
 };

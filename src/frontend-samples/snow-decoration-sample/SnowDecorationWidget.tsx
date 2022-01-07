@@ -114,7 +114,7 @@ export class SnowDecorationWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SnowDecorationWidget />,
-        }
+        },
       );
     }
     return widgets;

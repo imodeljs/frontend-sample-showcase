@@ -9,7 +9,6 @@ import * as TypeMoq from "typemoq";
 import { Range3d } from "@itwin/core-geometry";
 import { ContextRealityModelProps, SpatialClassifier, SpatialClassifierFlags, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay } from "@itwin/core-common";
 import { EmphasizeElements, IModelApp, IModelAppOptions, IModelConnection, MockRender, ScreenViewport } from "@itwin/core-frontend";
-import { I18NNamespace } from "@itwin/core-i18n";
 import { EmphasizeElementsApi } from "../frontend-samples/emphasize-elements-sample/EmphasizeElementsApi";
 import ShadowStudyApp from "../frontend-samples/shadow-study-sample/ShadowStudyApi";
 import ThematicDisplayApi from "../frontend-samples/thematic-display-sample/ThematicDisplayApi";
@@ -80,9 +79,9 @@ describe("Shadow Study", () => {
 
   after(async () => TestApp.shutdown());
 
-  it("Sets sun time", () => {
+  it("Sets sun time", async () => {
     const time: number = 123;
-    IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
+    await IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
 
     const vp = IModelApp.viewManager.selectedView;
     if (vp && vp.view.is3d()) {
@@ -117,8 +116,8 @@ describe("Emphasize Elements", () => {
 
   after(async () => TestApp.shutdown());
 
-  it("Emphasizes some elements", () => {
-    IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
+  it("Emphasizes some elements", async () => {
+    await IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
     const vp = IModelApp.viewManager.selectedView;
 
     if (vp) {
@@ -151,8 +150,8 @@ describe("Reality Data", () => {
 
   after(async () => TestApp.shutdown());
 
-  it("Removes reality data models", () => {
-    IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
+  it("Removes reality data models", async () => {
+    await IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
     const vp = IModelApp.viewManager.selectedView;
 
     if (vp) {
@@ -160,7 +159,7 @@ describe("Reality Data", () => {
       vp.displayStyle.attachRealityModel(crmProp);
       let models: number = 0;
       let style = vp.displayStyle.clone();
-      style.forEachRealityModel(() => { models++; },);
+      style.forEachRealityModel(() => { models++; });
 
       // Expect the fake reality model to be added
       expect(models).to.equal(1);
@@ -189,7 +188,7 @@ describe("Classifers", () => {
   after(async () => TestApp.shutdown());
 
   it("Updates classifiers", async () => {
-    IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
+    await IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
     const vp = IModelApp.viewManager.selectedView;
 
     if (vp) {
@@ -197,13 +196,13 @@ describe("Classifers", () => {
       vp.displayStyle.attachRealityModel(crmProp);
       const flags = new SpatialClassifierFlags(
         SpatialClassifierInsideDisplay.On,
-        SpatialClassifierOutsideDisplay.Dimmed
+        SpatialClassifierOutsideDisplay.Dimmed,
       );
 
       const testClassifier: SpatialClassifier = new SpatialClassifier(
         "TestId",
         "Test Name",
-        flags
+        flags,
       );
 
       ClassifierApi.updateRealityDataClassifiers(vp, testClassifier);
@@ -221,16 +220,17 @@ describe("Classifers", () => {
   });
 });
 
+// TODO: Investigate what has changed. Commented out lines are from 2.19.
 class TestApp extends MockRender.App {
-  public static testNamespace?: I18NNamespace;
+  // public static testNamespace?: I18NNamespace;
 
   public static async startup(opts?: IModelAppOptions): Promise<void> {
     opts = opts ? opts : {};
-    opts.i18n = this.supplyI18NOptions();
+    // opts.i18n = this.supplyI18NOptions();
     await IModelApp.startup(
       opts,
     );
-    this.testNamespace = IModelApp.i18n.registerNamespace("TestApp");
+    // this.testNamespace = IModelApp.i18n.registerNamespace("TestApp");
     IModelApp.toolAdmin.onInitialized();
   }
 

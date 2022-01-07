@@ -18,7 +18,7 @@ export default class FireDecorationApi {
 
   /** Registers tools used by sample. */
   public static initTools() {
-    IModelApp.localization.registerNamespace("fire-i18n-namespace");
+    void IModelApp.localization.registerNamespace("fire-i18n-namespace");
     PlacementTool.register("fire-i18n-namespace");
   }
 
@@ -54,7 +54,7 @@ export default class FireDecorationApi {
 
   /** Runs the Placement Tool which will run the callback function passing the point the user confirms. */
   public static startPlacementTool(confirmedPointCallBack: (point: Point3d, viewport: Viewport) => void) {
-    IModelApp.tools.run(PlacementTool.toolId, confirmedPointCallBack);
+    void IModelApp.tools.run(PlacementTool.toolId, confirmedPointCallBack);
   }
 
   /** Returns the next available transient id using the IModelConnection API. */

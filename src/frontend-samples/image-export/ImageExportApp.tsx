@@ -2,11 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { ImageExportWidgetProvider } from "./ImageExportWidget";
 
 const uiProviders = [new ImageExportWidgetProvider()];
@@ -15,7 +14,7 @@ const ImageExportApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use Image Export Controls Widget to export current viewport as an image.", [SampleIModels.House, SampleIModels.MetroStation]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */

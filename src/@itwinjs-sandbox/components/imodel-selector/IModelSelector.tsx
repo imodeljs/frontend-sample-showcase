@@ -50,7 +50,7 @@ export const IModelSelector: FunctionComponent<IModelSelectorProps> = ({ iModelN
       else
         name = (v as SampleIModels);
       return { value: index, label: name };
-    })
+    });
   }, [iModelNames]);
 
   return (

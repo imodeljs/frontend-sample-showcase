@@ -5,10 +5,9 @@
 import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import "common/samples-common.scss";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { ChangedElementsApi } from "./ChangedElementsApi";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 import { ChangedElementsWidgetProvider } from "./ChangedElementsWidget";
@@ -19,15 +18,13 @@ const uiProviders = [new ChangedElementsWidgetProvider()];
 const ChangedElementsApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the drop down to select the named version to compare against.  Observe the changed elements are emphasized with color.  Unchanged elements are faded grey.", [SampleIModels.Stadium]);
 
-
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
     // Populate the information needed for this sample.
     await ChangedElementsClient.populateContext(iModelConnection);
     await ChangedElementsApi.populateVersions();
 
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
-
 
   /** The sample's render method */
   return (

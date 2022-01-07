@@ -45,7 +45,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   /** Initialize the camera namespace on widget load */
   useEffect(() => {
-    IModelApp.localization.registerNamespace("camera-i18n-namespace");
+    void IModelApp.localization.registerNamespace("camera-i18n-namespace");
     CameraPathTool.register("camera-i18n-namespace");
 
     return () => {
@@ -102,7 +102,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
       // We will use this method to activate the CameraPathTool
       // The CameraPathTool will prevent the view tool and standard mouse events
-      setTimeout(() => { IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection); }, 10);
+      setTimeout(() => { void IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection); }, 10);
     }
   }, [handleScrollAnimation, viewport]);
 
@@ -237,7 +237,7 @@ export class CameraPathWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <CameraPathWidget />,
-        }
+        },
       );
     }
     return widgets;

@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, ViewState } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { CameraPathWidgetProvider } from "./CameraPathWidget";
 import { RenderMode } from "@itwin/core-common";
 
@@ -22,7 +21,7 @@ const CameraPathApp: FunctionComponent = () => {
   };
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await getInitialView(iModelConnection);
+    return getInitialView(iModelConnection);
   };
 
   /** Remove unnecessary tools  */

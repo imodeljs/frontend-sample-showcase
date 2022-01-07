@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { useCallback } from "react";
-import { SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels, SampleIModelWithAlternativeName } from "../SampleIModels";
 import { SampleIModelInfo } from "./useSampleIModelConnection";
 
 const getiModelParam = () => {

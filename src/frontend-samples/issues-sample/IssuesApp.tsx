@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { IssuesWidgetProvider } from "./IssuesWidget";
 
 const uiProviders = [new IssuesWidgetProvider()];
@@ -15,7 +14,7 @@ const IssuesApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the Issue Selector widget to view Issues information", [SampleIModels.MetroStation]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */

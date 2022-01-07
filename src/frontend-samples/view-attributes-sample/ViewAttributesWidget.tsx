@@ -185,7 +185,7 @@ export class ViewAttributesWidgetProvider implements UiItemsProvider {
           },
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ViewAttributesWidget />,
-        }
+        },
       );
     }
     return widgets;

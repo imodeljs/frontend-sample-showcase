@@ -8,15 +8,15 @@ import { AccessToken, AuthStatus, BeEvent, BentleyError } from "@itwin/core-bent
 import { AuthorizationClient } from "@itwin/core-common";
 
 interface AccessTokenObject {
-  startsAt: Date,
-  expiresAt: Date,
-  tokenString: string,
+  startsAt: Date;
+  expiresAt: Date;
+  tokenString: string;
 }
 
 export default class ShowcaseAuthorizationClient implements AuthorizationClient {
   private _accessToken?: AccessTokenObject;
   private static _userUrl = "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser";
-  private static _oidcClient: AuthorizationClient
+  private static _oidcClient: AuthorizationClient;
 
   public static get oidcClient(): BrowserAuthorizationClient {
     return this._oidcClient as BrowserAuthorizationClient;
@@ -31,7 +31,7 @@ export default class ShowcaseAuthorizationClient implements AuthorizationClient 
   }
 
   public get hasSignedIn(): boolean {
-    return !!this._accessToken
+    return !!this._accessToken;
   }
 
   private async generateTokenString(userURL: string) {
@@ -46,13 +46,13 @@ export default class ShowcaseAuthorizationClient implements AuthorizationClient 
 
     this._accessToken = tokenJson;
 
-    this.onAccessTokenChanged.raiseEvent(body._jwt)
+    this.onAccessTokenChanged.raiseEvent(body._jwt);
 
     // Automatically renew if session exceeds 55 minutes.
     setTimeout(() => {
       this.generateTokenString(userURL)
         .catch((error) => {
-          this.onAccessTokenChanged.raiseEvent(undefined)
+          this.onAccessTokenChanged.raiseEvent(undefined);
           throw new BentleyError(AuthStatus.Error, error);
         });
     }, (1000 * 60 * 55));
@@ -61,15 +61,15 @@ export default class ShowcaseAuthorizationClient implements AuthorizationClient 
   /** initialize from existing user */
   public static initializeOidc = async () => {
     const authClient = new ShowcaseAuthorizationClient();
-    await authClient.generateTokenString(ShowcaseAuthorizationClient._userUrl)
+    await authClient.generateTokenString(ShowcaseAuthorizationClient._userUrl);
     ShowcaseAuthorizationClient._oidcClient = authClient;
   };
 
   /** Returns a promise that resolves to the AccessToken of the currently authorized user*/
-  getAccessToken = async (): Promise<string> => {
+  public getAccessToken = async (): Promise<string> => {
     // if not currently authorized, attempt a silent signin
     if (!this.isAuthorized || this.hasExpired) {
-      await this.generateTokenString(ShowcaseAuthorizationClient._userUrl)
+      await this.generateTokenString(ShowcaseAuthorizationClient._userUrl);
     }
     if (this._accessToken) {
       return `Bearer ${this._accessToken.tokenString}`;
@@ -80,19 +80,19 @@ export default class ShowcaseAuthorizationClient implements AuthorizationClient 
   /**
    * required by BrowserAuthorizationClient
    */
-  signIn = (): Promise<void> => {
-    return this.generateTokenString(ShowcaseAuthorizationClient._userUrl)
+  public signIn = async (): Promise<void> => {
+    return this.generateTokenString(ShowcaseAuthorizationClient._userUrl);
   };
 
   /**
    * required by BrowserAuthorizationClient
    */
-  signOut = (): Promise<void> => {
+  public signOut = async (): Promise<void> => {
     return Promise.resolve();
   };
 
   /**
    * required by BrowserAuthorizationClient
    */
-  readonly onAccessTokenChanged = new BeEvent<(token: AccessToken | undefined) => void>();
+  public readonly onAccessTokenChanged = new BeEvent<(token: AccessToken | undefined) => void>();
 }

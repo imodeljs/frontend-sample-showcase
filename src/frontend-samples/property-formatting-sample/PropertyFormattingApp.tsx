@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { PropertyFormattingWidgetProvider } from "./PropertyFormattingWidget";
 
 const uiProviders = [new PropertyFormattingWidgetProvider()];
@@ -15,7 +14,7 @@ const PropertyFormattingApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select an element in the view and choose an approach to display its properties.", [SampleIModels.RetailBuilding, SampleIModels.BayTown]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */

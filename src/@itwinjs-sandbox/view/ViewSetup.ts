@@ -7,7 +7,7 @@ import { Matrix3d } from "@itwin/core-geometry";
 import { ColorDef, PlanarClipMaskSettings, SkyBox, SkyGradient } from "@itwin/core-common";
 import { DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
 import { metroStationImodelName } from "../SampleIModels";
-import AuthorizationClient from "../authentication/AuthorizationClient"
+import AuthorizationClient from "../authentication/AuthorizationClient";
 
 export class ViewSetup {
   /** Queries for and loads the default view for an iModel. */
@@ -64,7 +64,7 @@ export class ViewSetup {
       shadows: false,
       grid: false,
       visibleEdges: false,
-    })
+    });
     viewState.displayStyle.viewFlags = viewFlags;
 
     if (viewState.is3d()) {
@@ -83,9 +83,9 @@ export class ViewSetup {
             twoColor: true,
             zenithColor: ColorDef.fromString("#DEF2FF"),
             nadirColor: ColorDef.fromString("#F0ECE8"),
-          })
-        )
-      })
+          }),
+        ),
+      });
 
       // Enable the sky-box, but override to old sky box.
       displayStyle.environment = displayStyle.environment.withDisplay({

@@ -4,16 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { useCallback, useEffect, useState } from "react";
-import { ProjectsAccessClient, Project, ProjectsSearchableProperty } from "@itwin/projects-client";
+import { Project, ProjectsAccessClient, ProjectsSearchableProperty } from "@itwin/projects-client";
 
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
-import { AuthorizationClient } from "@itwinjs-sandbox";
-import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
-import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "@itwinjs-sandbox/SampleIModels";
+import AuthorizationClient from "../authentication/AuthorizationClient";
+import { defaultIModel, defaultIModelList } from "../constants";
+import { isSampleIModelWithAlternativeName, isSampleIModelWithAlternativeNameArray, lookupSampleIModelWithContext, SampleIModels, SampleIModelWithAlternativeName } from "../SampleIModels";
 import { useSampleIModelParameter } from "./useSampleIModelParameter";
 
 export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWithAlternativeName) => {
-  const accessToken = await AuthorizationClient.oidcClient.getAccessToken()
+  const accessToken = await AuthorizationClient.oidcClient.getAccessToken();
 
   let name: string;
   let context: SampleIModels;
@@ -42,7 +42,7 @@ export const getIModelInfo = async (iModelName: SampleIModels | SampleIModelWith
   if (imodels.length === 0)
     throw new Error(`iModel with name "${iModelName}" does not exist in project "${name}"`);
 
-  const result = { contextName: context, iModelName: name, contextId: project.id!, iModelId: imodels[0].wsgId };
+  const result = { contextName: context, iModelName: name, contextId: project.id, iModelId: imodels[0].wsgId };
   return result;
 };
 

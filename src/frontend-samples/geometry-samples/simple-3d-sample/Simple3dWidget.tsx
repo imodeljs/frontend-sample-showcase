@@ -128,7 +128,7 @@ export class Simple3dWidgetProvider implements UiItemsProvider {
           getWidgetContent: () => {
             return <Simple3dWidget />;
           },
-        }
+        },
       );
     }
     return widgets;

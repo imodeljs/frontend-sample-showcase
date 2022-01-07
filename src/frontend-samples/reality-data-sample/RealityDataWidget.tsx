@@ -117,7 +117,7 @@ export class RealityDataWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <RealityDataWidget />,
-        }
+        },
       );
     }
     return widgets;

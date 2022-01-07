@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useState, useEffect } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel } from "@itwin/components-react";
 import { usePresentationTreeNodeLoader } from "@itwin/presentation-components";
@@ -19,8 +19,8 @@ export interface PresentationTreeProps {
  * data from supplied iModel.
  */
 export const PresentationTree: FunctionComponent<PresentationTreeProps> = (props) => {
-  const [width, setWidth] = useState<number>(1000)
-  const [height, setHeight] = useState<number>(1000)
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
 
   // create tree node loader to load data using presentation rules. It loads nodes to tree model
   // in pages using supplied iModel and presentation ruleset.
@@ -47,28 +47,27 @@ export const PresentationTree: FunctionComponent<PresentationTreeProps> = (props
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const model = useTreeModel(nodeLoader.modelSource)
+  const model = useTreeModel(nodeLoader.modelSource);
 
   useEffect(() => {
-    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
     if (viewerContainer) {
-      setWidth(viewerContainer.clientWidth)
-      setHeight(viewerContainer.clientHeight)
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
       const resizeObserver = new ResizeObserver((entries: any) => {
-        for (let entry of entries) {
-          setWidth(entry.contentRect.width)
-          setHeight(entry.contentRect.height)
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
         }
       });
 
       resizeObserver.observe(viewerContainer);
       return () => {
-        resizeObserver.unobserve(viewerContainer)
-      }
+        resizeObserver.unobserve(viewerContainer);
+      };
     }
-    return () => { }
-  }, [])
-
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">
