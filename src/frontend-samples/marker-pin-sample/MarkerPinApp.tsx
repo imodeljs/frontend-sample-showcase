@@ -32,6 +32,9 @@ const MarkerPinApp: FunctionComponent = () => {
     return getTopView(iModelConnection);
   };
 
+  if (sampleIModelInfo)
+    // eslint-disable-next-line no-console
+    console.log(`About to pass iModelId: ${sampleIModelInfo.iModelId} into Viewer Component for Marker Pin Sample`);
   /** The sample's render method */
   return (
     <>

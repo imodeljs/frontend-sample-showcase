@@ -14,6 +14,7 @@ import MarkerPinApi from "./MarkerPinApi";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";
 import "./MarkerPin.scss";
+import { useActiveViewport } from "@itwin/appui-react";
 
 interface ManualPinSelection {
   name: string;
@@ -30,7 +31,7 @@ const MarkerPinWidget: React.FunctionComponent = () => {
       { image: "pin_poloblue.svg", name: "Polo blue Pin" }]);
   };
 
-  const viewport = IModelApp.viewManager.selectedView;
+  const viewport = useActiveViewport();
   const [imagesLoadedState, setImagesLoadedState] = React.useState<boolean>(false);
   const [showDecoratorState, setShowDecoratorState] = React.useState<boolean>(true);
   const [manualPinState, setManualPinState] = React.useState<ManualPinSelection>(getManualPinSelections()[0]);
@@ -42,6 +43,10 @@ const MarkerPinWidget: React.FunctionComponent = () => {
   });
   /** Load the images on widget startup */
   useEffect(() => {
+
+    if (viewport && viewport.iModel.iModelId)
+      // eslint-disable-next-line no-console
+      console.log(`Setting up Marker Pin Sample using Viewport with iModelId: ${viewport.iModel.iModelId}`);
     MarkerPinApi._images = new Map();
     const p1 = imageElementFromUrl(".\\Google_Maps_pin.svg").then((image) => {
       MarkerPinApi._images.set("Google_Maps_pin.svg", image);
