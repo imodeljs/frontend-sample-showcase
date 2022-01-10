@@ -7,7 +7,9 @@ import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { ViewAttributesWidgetProvider } from "./ViewAttributesWidget";
 import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
+import { UiFramework } from "@itwin/appui-react";
 import { ViewAttributesApi } from "./ViewAttributesApi";
+import { DisableUiStateStorage } from "./DisableUiStateStorage";
 
 const uiProviders = [new ViewAttributesWidgetProvider()];
 
@@ -23,6 +25,10 @@ const ViewAttributesApp: FunctionComponent = () => {
     return viewState;
   };
 
+  const _onIModelAppInit = async () => {
+    await UiFramework.setUiStateStorage(new DisableUiStateStorage());
+  };
+
   /** The sample's render method */
   return (
     <>
@@ -31,6 +37,7 @@ const ViewAttributesApp: FunctionComponent = () => {
         <Viewer
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
+          onIModelAppInit={_onIModelAppInit}
           authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
           viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
