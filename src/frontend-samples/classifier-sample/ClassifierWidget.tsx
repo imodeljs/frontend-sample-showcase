@@ -7,30 +7,33 @@ import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react
 import { SpatialClassifier, SpatialClassifierFlags, SpatialClassifierInsideDisplay, SpatialClassifierOutsideDisplay } from "@itwin/core-common";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { KeySet } from "@itwin/presentation-common";
-import { Input, Select } from "@itwin/core-react";
+import { Input, Select, SelectOption } from "@itwin/itwinui-react";
 import { IModelApp } from "@itwin/core-frontend";
 import { ISelectionProvider, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
 import ClassifierApi from "./ClassifierApi";
 import { ClassifierProperties } from "./ClassifierProperties";
 import "./Classifier.scss";
+import { Id64String } from "@itwin/core-bentley";
 
 const ClassifierWidget: React.FunctionComponent = () => {
-  const _insideDisplayEntries: { [key: string]: string } = {};
-  _insideDisplayEntries[SpatialClassifierInsideDisplay.ElementColor] = "Element Color";
-  _insideDisplayEntries[SpatialClassifierInsideDisplay.Off] = "Off";
-  _insideDisplayEntries[SpatialClassifierInsideDisplay.On] = "On";
-  _insideDisplayEntries[SpatialClassifierInsideDisplay.Dimmed] = "Dimmed";
-  _insideDisplayEntries[SpatialClassifierInsideDisplay.Hilite] = "Hilite";
+  const _insideDisplayEntries: SelectOption<number>[] = [
+    { value: SpatialClassifierInsideDisplay.ElementColor, label: "Element Color" },
+    { value: SpatialClassifierInsideDisplay.Off, label: "Off" },
+    { value: SpatialClassifierInsideDisplay.On, label: "On" },
+    { value: SpatialClassifierInsideDisplay.Dimmed, label: "Dimmed" },
+    { value: SpatialClassifierInsideDisplay.Hilite, label: "Hilite" },
+  ];
 
-  const _outsideDisplayEntries: { [key: string]: string } = {};
-  _outsideDisplayEntries[SpatialClassifierOutsideDisplay.Off] = "Off";
-  _outsideDisplayEntries[SpatialClassifierOutsideDisplay.On] = "On";
-  _outsideDisplayEntries[SpatialClassifierOutsideDisplay.Dimmed] = "Dimmed";
+  const _outsideDisplayEntries: SelectOption<number>[] = [
+    { value: SpatialClassifierOutsideDisplay.Off, label: "Off" },
+    { value: SpatialClassifierOutsideDisplay.On, label: "On" },
+    { value: SpatialClassifierOutsideDisplay.Dimmed, label: "Dimmed" },
+  ];
 
   const iModelConnection = useActiveIModelConnection();
   const viewport = useActiveViewport();
   const [initialized, setInitialized] = React.useState<boolean>(false);
-  const [classifiers, setClassifiers] = React.useState<{ [key: string]: string }>({});
+  const [classifiers, setClassifiers] = React.useState<SelectOption<Id64String>[]>([]);
   const [currentClassifier, setCurrentClassifier] = React.useState<string>();
   const [expandDistState, setExpandDistState] = React.useState<number>(3);
   const [outsideDisplayKeyState, setOutsideDisplayKeyState] = React.useState<number>(SpatialClassifierOutsideDisplay.Dimmed);
@@ -50,7 +53,7 @@ const ClassifierWidget: React.FunctionComponent = () => {
     if (!initialized && viewport && iModelConnection) {
       ClassifierApi.turnOnAvailableRealityModel(viewport, iModelConnection).then(() => {
         ClassifierApi.getAvailableClassifierListForViewport(viewport).then((_classifiers) => {
-          const commercialModelId = Object.keys(_classifiers)[0];
+          const commercialModelId = _classifiers[0].value;
           setClassifiers(_classifiers);
           setCurrentClassifier(commercialModelId);
         })
@@ -110,26 +113,29 @@ const ClassifierWidget: React.FunctionComponent = () => {
   };
 
   // Some reasonable defaults depending on what classifier is chosen.
-  const _onClassifierChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    if (classifiers[event.target.value].includes("Buildings")) {
-      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.On);
-      setExpandDistState(3.5);
-    }
-    if (classifiers[event.target.value].includes("Streets")) {
-      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.Hilite);
-      setExpandDistState(2);
-    }
-    if (classifiers[event.target.value].includes("Commercial")) {
-      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.ElementColor);
-      setExpandDistState(1);
-    }
-    if (classifiers[event.target.value].includes("Street Poles")) {
-      setInsideDisplayKeyState(SpatialClassifierInsideDisplay.Hilite);
-      setExpandDistState(1);
-    }
+  const _onClassifierChange = (value: string): void => {
+    const selectedOption: SelectOption<string> | undefined = classifiers.find((x) => x.value === value);
+    if (selectedOption) {
+      if (selectedOption.label.includes("Buildings")) {
+        setInsideDisplayKeyState(SpatialClassifierInsideDisplay.On);
+        setExpandDistState(3.5);
+      }
+      if (selectedOption.label.includes("Streets")) {
+        setInsideDisplayKeyState(SpatialClassifierInsideDisplay.Hilite);
+        setExpandDistState(2);
+      }
+      if (selectedOption.label.includes("Commercial")) {
+        setInsideDisplayKeyState(SpatialClassifierInsideDisplay.ElementColor);
+        setExpandDistState(1);
+      }
+      if (selectedOption.label.includes("Street Poles")) {
+        setInsideDisplayKeyState(SpatialClassifierInsideDisplay.Hilite);
+        setExpandDistState(1);
+      }
 
-    setCurrentClassifier(event.target.value);
-    setOutsideDisplayKeyState(SpatialClassifierOutsideDisplay.Dimmed);
+      setCurrentClassifier(value);
+      setOutsideDisplayKeyState(SpatialClassifierOutsideDisplay.Dimmed);
+    }
   };
 
   const _onMarginChange = (event: any) => {
@@ -139,25 +145,25 @@ const ClassifierWidget: React.FunctionComponent = () => {
     } catch { }
   };
 
-  const _onOutsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setOutsideDisplayKeyState(Number(event.target.value));
+  const _onOutsideDisplayChange = (value: number): void => {
+    setOutsideDisplayKeyState(value);
   };
 
-  const _onInsideDisplayChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
-    setInsideDisplayKeyState(Number(event.target.value));
+  const _onInsideDisplayChange = (value: number): void => {
+    setInsideDisplayKeyState(value);
   };
 
   return (
     <div className="sample-options">
       <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 2fr" }}>
         <span>Select classifier:</span>
-        <Select className="classification-dialog-select" options={classifiers} onChange={_onClassifierChange} />
+        <Select<string> className="classification-dialog-select" value={currentClassifier} options={classifiers} onChange={_onClassifierChange} />
         <span>Margin:</span>
         <Input type="number" min="0" max="100" value={expandDistState} onChange={_onMarginChange} />
         <span>Outside Display:</span>
-        <Select options={_outsideDisplayEntries} value={outsideDisplayKeyState} onChange={_onOutsideDisplayChange} />
+        <Select<number> options={_outsideDisplayEntries} value={outsideDisplayKeyState} onChange={_onOutsideDisplayChange} />
         <span>Inside Display:</span>
-        <Select options={_insideDisplayEntries} value={insideDisplayKeyState} onChange={_onInsideDisplayChange} />
+        <Select<number> options={_insideDisplayEntries} value={insideDisplayKeyState} onChange={_onInsideDisplayChange} />
         <span></span>
         <ClassifierProperties keys={keysState} imodel={iModelConnection} />
       </div>
