@@ -165,7 +165,7 @@ export class ScreenSpaceEffectsWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ScreenSpaceEffectsWidget />,
-        }
+        },
       );
     }
     return widgets;

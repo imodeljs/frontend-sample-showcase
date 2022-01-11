@@ -36,7 +36,7 @@ export class InteractivePointMarker extends Marker {
   public onMouseButton(ev: BeButtonEvent) {
     if (BeButton.Data === ev.button && ev.isDown) {
       this._canPick = false;
-      IModelApp.tools.run(MovePointTool.toolId, this.worldLocation, this._setPointFunc, () => { this._canPick = true; });
+      void IModelApp.tools.run(MovePointTool.toolId, this.worldLocation, this._setPointFunc, () => { this._canPick = true; });
       return true;
     }
     return false;
@@ -82,7 +82,7 @@ export class MovePointTool extends InputCollector {
   public async onDataButtonDown(ev: BeButtonEvent) {
     this._setPointFunc(ev.point);
     this._toolCompleteFunc();
-    this.exitTool();
+    void this.exitTool();
     return EventHandled.Yes;
   }
 

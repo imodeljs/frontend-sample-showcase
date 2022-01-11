@@ -20,8 +20,8 @@ const PAGING_SIZE = 20;
  * when nodes are selected/deselected and changes tree selection to match Unified Selection.
  */
 const UnifiedSelectionWidget: FunctionComponent = () => {
-  const [width, setWidth] = useState<number>(1000)
-  const [height, setHeight] = useState<number>(1000)
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
   const iModelConnection = useActiveIModelConnection();
 
   // create tree node loader to load nodes using presentation rules. It loads nodes to tree model
@@ -44,27 +44,27 @@ const UnifiedSelectionWidget: FunctionComponent = () => {
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const model = useTreeModel(nodeLoader.modelSource)
+  const model = useTreeModel(nodeLoader.modelSource);
 
   useEffect(() => {
-    const viewerContainer = document.querySelector('.itwin-viewer-container');
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
     if (viewerContainer) {
-      setWidth(viewerContainer.clientWidth)
-      setHeight(viewerContainer.clientHeight)
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
       const resizeObserver = new ResizeObserver((entries: any) => {
-        for (let entry of entries) {
-          setWidth(entry.contentRect.width)
-          setHeight(entry.contentRect.height)
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
         }
       });
 
       resizeObserver.observe(viewerContainer);
       return () => {
-        resizeObserver.unobserve(viewerContainer)
-      }
+        resizeObserver.unobserve(viewerContainer);
+      };
     }
-    return () => { }
-  }, [])
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">
@@ -93,7 +93,7 @@ export class UnifiedSelectionWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <UnifiedSelectionWidget />,
-        }
+        },
       );
     }
     return widgets;

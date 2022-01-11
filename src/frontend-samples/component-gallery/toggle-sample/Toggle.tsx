@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
-import { LabeledToggle, Toggle, ToggleButtonType } from "@itwin/core-react";
+import { Toggle, ToggleButtonType } from "@itwin/core-react";
 import { ControlPane } from "common/ControlPane/ControlPane";
 import { ToggleSwitch } from "@itwin/itwinui-react";
 

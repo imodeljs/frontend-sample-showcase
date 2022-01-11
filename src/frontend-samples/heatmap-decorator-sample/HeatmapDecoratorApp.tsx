@@ -3,12 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { HeatmapDecoratorWidgetProvider } from "./HeatmapDecoratorWidget";
 import { IModelConnection, StandardViewId } from "@itwin/core-frontend";
 import { ColorDef } from "@itwin/core-common";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 
 const uiProviders = [new HeatmapDecoratorWidgetProvider()];
@@ -17,7 +16,7 @@ const HeatmapDecoratorApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the options below to control the heatmap visualization.");
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection)
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
     if (viewState.is3d()) {
       // To make the heatmap look better, lock the view to a top orientation with camera turned off.
       viewState.setAllow3dManipulations(false);
@@ -32,7 +31,7 @@ const HeatmapDecoratorApp: FunctionComponent = () => {
 
     // The heatmap looks better against a white background.
     viewState.displayStyle.backgroundColor = ColorDef.white;
-    return viewState
+    return viewState;
   };
 
   /** The sample's render method */

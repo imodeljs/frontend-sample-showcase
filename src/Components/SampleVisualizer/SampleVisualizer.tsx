@@ -16,12 +16,6 @@ const context = (require as any).context("./../../frontend-samples", true, /\.ts
 
 interface SampleVisualizerProps {
   type: string;
-  transpileResult?: string;
-}
-
-interface SampleProps {
-  iModelName: string;
-  iModelSelector: React.ReactNode;
 }
 
 const iModelAppShutdown = async (): Promise<void> => {
@@ -68,9 +62,8 @@ const iModelAppShutdown = async (): Promise<void> => {
   }
 };
 
-export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type, transpileResult }) => {
+export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ type }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const currentProps = useRef<SampleVisualizerProps>({ type, transpileResult });
   const [sampleUi, setSampleUi] = useState<ReactNode>(null);
 
   useEffect(() => {
@@ -80,18 +73,12 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
       await iModelAppShutdown();
       let componentElement = <></>;
       try {
-        if (transpileResult) {
-          const module = await import( /* webpackIgnore: true */ transpileResult);
-          const component = module.default as React.ComponentClass<SampleProps>;
-          componentElement = React.createElement(component);
+        const key = context.keys().find((k: string) => path.basename(k) === type);
+        if (key) {
+          const component = context(key).default as React.ComponentClass;
+          componentElement = React.createElement(component, { key: Math.random() * 100 });
         } else {
-          const key = context.keys().find((k: string) => path.basename(k) === type);
-          if (key) {
-            const component = context(key).default as React.ComponentClass;
-            componentElement = React.createElement(component, { key: Math.random() * 100 });
-          } else {
-            componentElement = <div>Failed to resolve sample &quot;{type}&quot;</div>;
-          }
+          componentElement = <div>Failed to resolve sample &quot;{type}&quot;</div>;
         }
         await AuthorizationClient.initializeOidc();
       } catch (error) {
@@ -100,16 +87,14 @@ export const SampleVisualizer: FunctionComponent<SampleVisualizerProps> = ({ typ
         }
       }
 
-      if (ref.current && currentProps.current.type === type && currentProps.current.transpileResult === transpileResult) {
-        setSampleUi(componentElement);
-      }
+      setSampleUi(componentElement);
     });
 
-  }, [type, transpileResult]);
+  }, [type]);
 
   return <div ref={ref} style={{ height: "100%", width: "100%" }}>{sampleUi ? sampleUi : <div className="uicore-fill-centered"><Spinner size={SpinnerSize.XLarge} /></div>}</div>;
 };
 
 export default React.memo(SampleVisualizer, (prevProps, nextProps) => {
-  return prevProps.type === nextProps.type && prevProps.transpileResult === nextProps.transpileResult;
+  return prevProps.type === nextProps.type;
 });

@@ -7,7 +7,6 @@ import * as React from "react";
 import "common/samples-common.scss";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { SnowDecorationWidgetProvider } from "./SnowDecorationWidget";
@@ -18,9 +17,8 @@ const SnowDecorationApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select iModel to change.", [SampleIModels.Villa, SampleIModels.House, SampleIModels.MetroStation, SampleIModels.BayTown, SampleIModels.Stadium]);
 
   const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return await ViewSetup.getDefaultView(iModelConnection);
+    return ViewSetup.getDefaultView(iModelConnection);
   };
-
 
   /** The sample's render method */
   return (

@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@itwin/core-geometry";
 import { DecorateContext, Decorator, GraphicBranch, GraphicBuilder, GraphicType, IModelApp, Marker, RenderGraphic } from "@itwin/core-frontend";
-import { ColorDef, GraphicParams, LinePixels, TextString, ViewFlagOverrides } from "@itwin/core-common";
+import { ColorDef, LinePixels, TextString } from "@itwin/core-common";
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
 interface CustomGeometryQuery {
@@ -141,7 +141,7 @@ export class GeometryDecorator implements Decorator {
   // Adding them to the graphic builder which then creates new graphics
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
     // Specifying an Id for the graphics tells the display system that all of the geometry belongs to the same entity, so that it knows to make sure the edges draw on top of the surfaces.
-    const builder = context.createGraphic({ wantNormals: true, type: GraphicType.WorldDecoration })
+    const builder = context.createGraphic({ wantNormals: true, type: GraphicType.WorldDecoration });
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
       const point = styledPoint.point;

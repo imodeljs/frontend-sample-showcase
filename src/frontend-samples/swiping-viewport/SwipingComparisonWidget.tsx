@@ -126,7 +126,7 @@ export class SwipingComparisonWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SwipingComparisonWidget />,
-        }
+        },
       );
     }
     return widgets;

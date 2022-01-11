@@ -178,9 +178,14 @@ export class ViewAttributesWidgetProvider implements UiItemsProvider {
           id: "ViewAttributesWidget",
           label: "View Attributes Controls",
           defaultState: WidgetState.Floating,
+          isFloatingStateSupported: true,
+          defaultFloatingPosition: {
+            x: 100,
+            y: 100,
+          },
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ViewAttributesWidget />,
-        }
+        },
       );
     }
     return widgets;

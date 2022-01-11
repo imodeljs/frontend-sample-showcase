@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone } from "@itwin/appui-react";
+import { BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone } from "@itwin/appui-react";
 import { StageUsage } from "@itwin/appui-abstract";
 import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
 
@@ -13,7 +13,7 @@ import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
 const sampleViewportGroupProps: ContentGroupProps = {
   id: "sampleViewportGroup",
   layout: {
-    id: "SampleContentLayout"
+    id: "SampleContentLayout",
   },
   contents: [
     {
@@ -28,7 +28,7 @@ const sampleViewportGroup: ContentGroup = new ContentGroup(sampleViewportGroupPr
  * Viewport Frontstage for AppUi samples
  */
 export class ViewportFrontstage extends FrontstageProvider {
-  public id = "ViewportFrontstageProvider"
+  public id = "ViewportFrontstageProvider";
   /** Define the Frontstage properties */
   public get frontstage(): React.ReactElement<FrontstageProps> {
 

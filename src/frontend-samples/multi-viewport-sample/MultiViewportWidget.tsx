@@ -22,7 +22,7 @@ const MultiViewportWidget: React.FunctionComponent = () => {
           selectedViewport = vp;
         else
           unselectedViewport = vp;
-      };
+      }
       if (selectedViewport === undefined || unselectedViewport === undefined)
         return;
       // By passing the selected viewport as the first argument, this will be the view
@@ -57,7 +57,7 @@ export class MultiViewportWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <MultiViewportWidget />,
-        }
+        },
       );
     }
     return widgets;

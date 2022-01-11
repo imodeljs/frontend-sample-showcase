@@ -27,7 +27,7 @@ const GlobalDisplayWidget: FunctionComponent = () => {
   useEffect(() => {
     if (viewport) {
       viewport.changeBackgroundMapProps({
-        applyTerrain: terrain
+        applyTerrain: terrain,
       });
       viewport.changeBackgroundMapProvider({ type: mapLabels ? BackgroundMapType.Hybrid : BackgroundMapType.Aerial });
     }
@@ -100,7 +100,7 @@ export class GlobalDisplayWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <GlobalDisplayWidget />,
-        }
+        },
       );
     }
     return widgets;

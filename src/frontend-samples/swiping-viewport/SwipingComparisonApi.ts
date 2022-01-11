@@ -147,7 +147,7 @@ export default class SwipingComparisonApi {
   /** Get all available reality models and attach them to displayStyle. */
   public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
     const style = viewport.displayStyle.clone();
-    const RealityDataClient = new RealityDataAccessClient()
+    const RealityDataClient = new RealityDataAccessClient();
     const availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel }); for (const crmProp of availableModels) {
       style.attachRealityModel(crmProp);
       viewport.displayStyle = style;

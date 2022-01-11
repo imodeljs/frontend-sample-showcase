@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { ViewState } from "@itwin/core-frontend";
-import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
+import { BasicNavigationWidget, ContentGroup, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
 import React from "react";
 
 export class CrossProbingFrontstage extends FrontstageProvider {

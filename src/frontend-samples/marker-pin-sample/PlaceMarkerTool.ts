@@ -22,8 +22,8 @@ export class PlaceMarkerTool extends PrimitiveTool {
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp && vp.view.isSpatialView()); }
   public isValidLocation(_ev: BeButtonEvent, _isButtonEvent: boolean): boolean { return true; } // Allow snapping to terrain, etc. outside project extents.
   public requireWriteableTarget(): boolean { return false; } // Tool doesn't modify the imodel.
-  public async onPostInstall() { super.onPostInstall(); this.setupAndPromptForNextAction(); }
-  public async onRestartTool(): Promise<void> { this.exitTool(); }
+  public async onPostInstall() { await super.onPostInstall(); this.setupAndPromptForNextAction(); }
+  public async onRestartTool(): Promise<void> { return this.exitTool(); }
 
   protected setupAndPromptForNextAction(): void {
     // Accusnap adjusts the effective cursor location to 'snap' to geometry in the view
@@ -32,7 +32,7 @@ export class PlaceMarkerTool extends PrimitiveTool {
 
   // A reset button is the secondary action button, ex. right mouse button.
   public async onResetButtonUp(_ev: BeButtonEvent): Promise<EventHandled> {
-    this.onReinitialize(); // Calls onRestartTool to exit
+    void this.onReinitialize(); // Calls onRestartTool to exit
     return EventHandled.No;
   }
 
@@ -44,7 +44,7 @@ export class PlaceMarkerTool extends PrimitiveTool {
     // ev.point is the current world coordinate point adjusted for snap and locks
     this._createMarkerCallback(ev.point);
 
-    this.onReinitialize(); // Calls onRestartTool to exit
+    void this.onReinitialize(); // Calls onRestartTool to exit
     return EventHandled.No;
   }
 }

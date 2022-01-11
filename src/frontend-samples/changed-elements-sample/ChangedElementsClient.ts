@@ -40,7 +40,7 @@ export class ChangedElementsClient {
   public static async getNamedVersions(): Promise<Version[]> {
     const { accessToken, iModelId } = ChangedElementsClient._projectContext;
     const query = new VersionQuery().notHidden().select("name, changeSetId").top(10);
-    const client = new IModelHubClient()
+    const client = new IModelHubClient();
     return client.versions.get(accessToken as any, iModelId, query);
   }
 

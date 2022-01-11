@@ -12,7 +12,7 @@ import { SmallStatusBarWidgetControl } from "../Widgets/SmallStatusBar";
 const StartupComponentGroupProps: ContentGroupProps = {
   id: "StartupComponentGroup",
   layout: {
-    id: "SingleContent"
+    id: "SingleContent",
   },
   contents: [
     {
@@ -28,7 +28,7 @@ const startupComponentGroup: ContentGroup = new ContentGroup(StartupComponentGro
  * Startup Component Stage for AppUi samples
  */
 export class StartupComponentFrontstage extends FrontstageProvider {
-  public id = "StartupComponentFrontstageProvider"
+  public id = "StartupComponentFrontstageProvider";
   /** Define the Frontstage properties */
   public get frontstage(): React.ReactElement<FrontstageProps> {
 

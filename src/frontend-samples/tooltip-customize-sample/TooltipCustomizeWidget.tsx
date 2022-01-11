@@ -57,7 +57,7 @@ export class TooltipCustomizeWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <TooltipCustomizeWidget />,
-        }
+        },
       );
     }
     return widgets;

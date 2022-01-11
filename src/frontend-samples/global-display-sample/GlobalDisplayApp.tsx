@@ -2,11 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import { MessageRenderer } from "@itwin/core-react";

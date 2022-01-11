@@ -114,7 +114,7 @@ export class SimpleAnimatedWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SimpleAnimatedWidget />,
-        }
+        },
       );
     }
     return widgets;

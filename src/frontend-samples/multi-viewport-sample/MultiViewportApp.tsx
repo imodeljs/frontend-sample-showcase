@@ -8,7 +8,6 @@ import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
 import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";
-import { IModelViewportControlOptions } from "@itwin/appui-react";
 import "./multi-view-sample.scss";
 
 const uiProviders = [new MultiViewportWidgetProvider()];
@@ -25,7 +24,7 @@ const MultiViewportApp: FunctionComponent = () => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
 
     setFrontstages(() => [{ provider: new MultiViewportFrontstage(viewState), default: true }]);
-    return viewState
+    return viewState;
   };
 
   /** The sample's render method */
