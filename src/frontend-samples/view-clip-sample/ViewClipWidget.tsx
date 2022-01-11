@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { Button, ButtonType, Select, Toggle } from "@itwin/core-react";
+import { Button, Select, ToggleSwitch } from "@itwin/itwinui-react";
 import { ContextRotationId, IModelApp } from "@itwin/core-frontend";
 import ViewClipApi from "./ViewClipApi";
 import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
@@ -29,10 +29,7 @@ export const ViewClipWidget: React.FunctionComponent = () => {
     }
 
     if (showClipBlockState) {
-      // Clear any other clips before adding the clip range
-      ViewClipApi.clearClips(viewport);
-      if (!viewport.view.getViewClip())
-        ViewClipApi.addExtentsClipRange(viewport);
+      ViewClipApi.addExtentsClipRange(viewport);
       return;
     }
 
@@ -40,14 +37,14 @@ export const ViewClipWidget: React.FunctionComponent = () => {
   }, [showClipBlockState, clipPlaneState, iModelConnection, viewport]);
 
   /* Handler for plane select */
-  const _onPlaneSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const _onPlaneSelectChange = (selectedPlane: string) => {
     setShowClipBlockState(false);
-    setClipPlaneState(event.target.value);
+    setClipPlaneState(selectedPlane);
   };
 
   /* Turn on/off the clip range */
-  const _onToggleRangeClip = async (showClipRange: boolean) => {
-    setShowClipBlockState(showClipRange);
+  const _onToggleRangeClip = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setShowClipBlockState(e.target.checked);
     setClipPlaneState("None");
   };
 
@@ -76,23 +73,23 @@ export const ViewClipWidget: React.FunctionComponent = () => {
     return true;
   };
 
-  const options = {
-    None: "None",
-    [ContextRotationId.Left]: "X",
-    [ContextRotationId.Front]: "Y",
-    [ContextRotationId.Top]: "Z",
-  };
+  const options = [
+    { value: "None", label: "None" },
+    { value: [ContextRotationId.Left].toString(), label: "X" },
+    { value: [ContextRotationId.Front].toString(), label: "Y" },
+    { value: [ContextRotationId.Top].toString(), label: "Z" },
+  ];
 
   return (
     <>
       <div className="sample-options">
         <div className="sample-options-3col even-3col">
           <span>Clip Range</span>
-          <Toggle isOn={showClipBlockState} onChange={_onToggleRangeClip} />
+          <ToggleSwitch checked={showClipBlockState} onChange={_onToggleRangeClip} />
           <span />
           <span>Clip Plane</span>
-          <Select onChange={_onPlaneSelectChange} value={clipPlaneState} options={options} />
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleFlipButton()} disabled={clipPlaneState === "None"}>Flip</Button>
+          <Select<string> onChange={_onPlaneSelectChange} value={clipPlaneState} options={options} />
+          <Button onClick={() => _handleFlipButton()} disabled={clipPlaneState === "None"} styleType='cta'>Flip</Button>
         </div>
       </div>
     </>
