@@ -12,7 +12,7 @@ import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@itwin/core-geomet
 const uiProviders = [new ClassifierWidgetProvider()];
 
 const ClassifierApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [SampleIModels.MetroStation]);
+  const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [SampleIModels.Philadelphia]);
 
   /** Initializes viewport to set up camera looking at Rittenhouse Square. */
   const getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {

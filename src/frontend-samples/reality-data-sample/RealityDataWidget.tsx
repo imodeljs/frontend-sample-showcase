@@ -4,17 +4,20 @@
 *--------------------------------------------------------------------------------------------*/
 import "common/samples-common.scss";
 import React, { useEffect } from "react";
-import { Toggle } from "@itwin/core-react";
-import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
+import { Slider, ToggleSwitch } from "@itwin/itwinui-react";
+import { IModelApp } from "@itwin/core-frontend";
 import RealityDataApi from "./RealityDataApi";
-import { useActiveIModelConnection } from "@itwin/appui-react";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import "./RealityData.scss";
 import { ContextRealityModelProps } from "@itwin/core-common";
 
 const RealityDataWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
+  const viewport = useActiveViewport();
+
   // START STATE
+  const [initialized, setInitialized] = React.useState<boolean>(false);
   const showRealityDataState = React.useRef<Map<string, boolean>>(new Map());
   const transparencyRealityDataState = React.useRef<Map<string, number>>(new Map());
   const [availableRealityModels, setAvailableRealityModels] = React.useState<ContextRealityModelProps[]>();
@@ -25,16 +28,23 @@ const RealityDataWidget: React.FunctionComponent = () => {
   // START INITIAL_STATE
   // Initialize the widget
   useEffect(() => {
-    IModelApp.viewManager.onViewOpen.addOnce(async (_vp: ScreenViewport) => {
-      const availRealityModels = await RealityDataApi.getRealityModels(_vp.iModel);
-      setAvailableRealityModels(availRealityModels);
-      for (const model of availRealityModels) {
-        showRealityDataState.current.set(model.tilesetUrl, true);
-        RealityDataApi.toggleRealityModel(model, _vp, true);
-        RealityDataApi.setRealityDataTransparency(model, _vp, 0);
+    const asyncInitialize = async () => {
+      if (viewport) {
+        const availRealityModels = await RealityDataApi.getRealityModels(viewport.iModel);
+        setAvailableRealityModels(availRealityModels);
+        for (const model of availRealityModels) {
+          showRealityDataState.current.set(model.tilesetUrl, true);
+          RealityDataApi.toggleRealityModel(model, viewport, true);
+          RealityDataApi.setRealityDataTransparency(model, viewport, 0);
+        }
       }
-    });
-  }, []);
+    };
+    if (!initialized) {
+      void asyncInitialize().then(() => {
+        setInitialized(true);
+      });
+    }
+  }, [iModelConnection, viewport, initialized]);
   // END INITIAL_STATE
 
   // START REALITY_HOOK
@@ -46,7 +56,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
         const model = availableRealityModels.find((x) => x.tilesetUrl === updateAttachedState);
         if (model) {
           RealityDataApi.toggleRealityModel(model, vp, showRealityDataState.current.get(model.tilesetUrl));
-          RealityDataApi.setRealityDataTransparency(model, vp, transparencyRealityDataState.current.get(model.tilesetUrl));
+          RealityDataApi.setRealityDataTransparency(model, vp, (transparencyRealityDataState.current.get(model.tilesetUrl)! / 100));
         }
       }
     }
@@ -61,7 +71,7 @@ const RealityDataWidget: React.FunctionComponent = () => {
       if (vp && availableRealityModels && showRealityDataState) {
         const model = availableRealityModels.find((x) => x.tilesetUrl === updateTransparencyState);
         if (model)
-          RealityDataApi.setRealityDataTransparency(model, vp, transparencyRealityDataState.current.get(model.tilesetUrl));
+          RealityDataApi.setRealityDataTransparency(model, vp, transparencyRealityDataState.current.get(model.tilesetUrl)! / 100);
       }
     }
     setUpdateTransparencyState("");
@@ -82,16 +92,19 @@ const RealityDataWidget: React.FunctionComponent = () => {
   return (
     <>
       <div className="sample-options">
-        <div className="sample-options-2col">
+        <div className="reality-data-sample-options-1col">
           {availableRealityModels && availableRealityModels.map((element, index) => {
             return (
               <>
-                <span>{element.name}</span>
-                <Toggle key={element.tilesetUrl} isOn={true} onChange={async (checked: boolean) => updateShowRealityDataState(element.tilesetUrl, checked)} />
-                {element.orbitGtBlob === undefined && /** Point Clouds do not have transparency override support in v2.x. This will be available in v3.x. */
-                  <><span><span style={{ marginRight: "1em" }} className="icon icon-help" title={"Adjusting this slider changes the transparency of the reality data."}></span>{"Transparency"}</span>
-                    <input type={"range"} min={0} max={99} defaultValue={0} onChange={(event: React.ChangeEvent<HTMLInputElement>) => updateRealityDataTransparencyState(element.tilesetUrl, Math.abs(Number(event.target.value) / 100))} />
-                  </>}
+                <ToggleSwitch defaultChecked label={element.name} labelPosition={"left"} key={element.tilesetUrl} onChange={async (e: React.ChangeEvent<HTMLInputElement>) => updateShowRealityDataState(element.tilesetUrl, e.target.checked)} />
+                <span></span>
+                <>
+                  <span>
+                    <span style={{ marginRight: "1em" }} className="icon icon-help" title={"Adjusting this slider changes the transparency of the reality data."}></span>
+                    {"Transparency"}
+                    <Slider min={0} max={99} values={[transparencyRealityDataState.current.get(element.tilesetUrl) ?? 0]} onChange={(values: readonly number[]) => updateRealityDataTransparencyState(element.tilesetUrl, values[0])} />
+                  </span>
+                </>
                 {index + 1 < availableRealityModels.length && <div className="row-break"></div>}
               </>);
           })

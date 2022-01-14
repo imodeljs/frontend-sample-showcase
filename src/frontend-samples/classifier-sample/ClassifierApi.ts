@@ -4,8 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { RealityDataAccessClient } from "@bentley/reality-data-client";
+import { Id64String } from "@itwin/core-bentley";
 import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier } from "@itwin/core-common";
 import { IModelApp, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@itwin/core-frontend";
+import { SelectOption } from "@itwin/itwinui-react";
 import { Presentation, SelectionChangesListener } from "@itwin/presentation-frontend";
 
 export default class ClassifierApi {
@@ -38,8 +40,8 @@ export default class ClassifierApi {
    * Query the iModel to get available spatial classifiers.
    * Also do a custom sort and filtering for the purposes of this sample.
    */
-  public static async getAvailableClassifierListForViewport(vp?: Viewport): Promise<{ [key: string]: string }> {
-    const models: { [key: string]: string } = {};
+  public static async getAvailableClassifierListForViewport(vp?: Viewport): Promise<SelectOption<Id64String>[]> {
+    const models: SelectOption<string>[] = [];
     if (!vp || !(vp.view instanceof SpatialViewState))
       return Promise.resolve(models);
 
@@ -65,7 +67,7 @@ export default class ClassifierApi {
       if (modelProps.id && modelProps.name !== "PhiladelphiaClassification" && modelProps.name !== "Philadelphia_Pictometry") {
         const modelId = modelProps.id;
         const name = modelProps.name ? modelProps.name : modelId;
-        models[modelId] = name.substring(0, name.indexOf(","));
+        models.push({ value: modelId, label: name.substring(0, name.indexOf(",")) });
       }
     }
 
