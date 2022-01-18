@@ -61,7 +61,8 @@ const SwipingComparisonApp: FunctionComponent = () => {
           <Viewer
             iTwinId={sampleIModelInfo.contextId}
             iModelId={sampleIModelInfo.iModelId}
-            authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
+            authClient={AuthorizationClient.oidcClient}
+            enablePerformanceMonitors={true}
             viewportOptions={viewportOptions}
             onIModelConnected={_oniModelReady}
             defaultUiConfig={default3DSandboxUi}

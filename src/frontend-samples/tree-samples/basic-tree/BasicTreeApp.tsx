@@ -25,8 +25,8 @@ const BasicTreeApp: FunctionComponent = () => {
   return (
     <>
       <BlankViewer
-        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-        defaultUiConfig={default3DSandboxUi}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true} defaultUiConfig={default3DSandboxUi}
         blankConnection={connection}
         frontstages={frontstages}
         theme={"dark"}

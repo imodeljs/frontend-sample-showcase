@@ -27,8 +27,8 @@ const ViewportOnly2dApp: FunctionComponent = () => {
         <Viewer
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-          viewportOptions={{ viewState: _initialViewstate }}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true} viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

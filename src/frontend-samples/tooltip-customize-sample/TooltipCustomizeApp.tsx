@@ -27,7 +27,8 @@ const TooltipCustomizeApp: React.FunctionComponent = () => {
         <Viewer
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
 
           /** Pass the toolAdmin override directly into the viewer */

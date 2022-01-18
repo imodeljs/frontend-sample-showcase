@@ -67,9 +67,10 @@ export const MySampleApp: FunctionComponent = () => {
   public render() {
     return (
       <Viewer
-          iTwinId={sampleIModelInfo.contextId}
+        iTwinId={sampleIModelInfo.contextId}
         iModelId={sampleIModelInfo.iModelId}
-        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true}
         defaultUiConfig={default3DSandboxUi}
         theme="dark"
       />
