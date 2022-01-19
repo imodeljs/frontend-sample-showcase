@@ -28,7 +28,8 @@ const App: React.FC = () => {
     <>
       <BlankViewer
         authClient={AuthorizationClient.oidcClient}
-        enablePerformanceMonitors={true} defaultUiConfig={default3DSandboxUi}
+        enablePerformanceMonitors={true}
+        defaultUiConfig={default3DSandboxUi}
         blankConnection={connection}
         frontstages={frontstages}
         uiProviders={uiProviders}
