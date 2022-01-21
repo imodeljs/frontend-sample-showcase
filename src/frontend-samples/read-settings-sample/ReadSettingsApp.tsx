@@ -25,7 +25,8 @@ const ReadSettingsApp: FunctionComponent = () => {
           productId="2686"
           iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}

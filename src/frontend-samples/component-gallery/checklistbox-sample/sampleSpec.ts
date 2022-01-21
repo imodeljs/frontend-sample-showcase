@@ -8,10 +8,10 @@ import { SampleSpec } from "SampleSpec";
 // Provides the information about the sample, passing no iModels since this sample does not utilize any
 export function getCheckListBoxSpec(): SampleSpec {
   return ({
-    name: "checklistbox-sample",
-    label: "UI-CheckListBoxes",
+    name: "checkbox-sample",
+    label: "UI-CheckBoxes",
     image: "ui-checklistbox-thumbnail.png",
-    description: "#Component #sample showing different #styles of #checklistboxes.",
+    description: "#Component #sample showing different #styles of #checkboxes.",
     readme: async () => import("!!raw-loader!./readme.md"),
     iModelList: [],
     files: () => [
