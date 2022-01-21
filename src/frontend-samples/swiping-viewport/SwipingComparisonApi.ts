@@ -5,9 +5,9 @@
 
 import { BeEvent } from "@itwin/core-bentley";
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
-import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode } from "@itwin/core-common";
+import { ContextRealityModelProps, FeatureAppearance, Frustum, RealityDataFormat, RealityDataProvider, RenderMode } from "@itwin/core-common";
 import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
-import { RealityDataAccessClient } from "@bentley/reality-data-client";
+import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
 
 export enum ComparisonType {
   Wireframe,
@@ -144,11 +144,37 @@ export default class SwipingComparisonApi {
     viewport.dropTiledGraphicsProvider(provider);
   }
 
-  /** Get all available reality models and attach them to displayStyle. */
+  /** Get first available reality models and attach it to displayStyle. */
   public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
     const style = viewport.displayStyle.clone();
     const RealityDataClient = new RealityDataAccessClient();
-    const availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel }); for (const crmProp of availableModels) {
+    const available: RealityDataResponse = await RealityDataClient.getRealityDatas(await IModelApp.authorizationClient!.getAccessToken(), imodel.iTwinId, undefined);
+
+    const availableModels: ContextRealityModelProps[] = [];
+
+    for (const rdEntry of available.realityDatas) {
+      const name = undefined !== rdEntry.displayName ? rdEntry.displayName : rdEntry.id;
+      const rdSourceKey = {
+        provider: RealityDataProvider.ContextShare,
+        format: rdEntry.type === "OPC" ? RealityDataFormat.OPC : RealityDataFormat.ThreeDTile,
+        id: rdEntry.id,
+      };
+      const tilesetUrl = await IModelApp.realityDataAccess?.getRealityDataUrl(imodel.iTwinId, rdSourceKey.id);
+      if (tilesetUrl) {
+        const entry: ContextRealityModelProps = {
+          rdSourceKey,
+          tilesetUrl,
+          name,
+          description: rdEntry?.description,
+          realityDataId: rdSourceKey.id,
+        };
+
+        availableModels.push(entry);
+        break;
+      }
+    }
+
+    for (const crmProp of availableModels) {
       style.attachRealityModel(crmProp);
       viewport.displayStyle = style;
     }

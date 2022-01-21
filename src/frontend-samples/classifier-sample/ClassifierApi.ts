@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { RealityDataAccessClient } from "@bentley/reality-data-client";
+import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
 import { Id64String } from "@itwin/core-bentley";
-import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier } from "@itwin/core-common";
+import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, RealityDataFormat, RealityDataProvider, SpatialClassifier } from "@itwin/core-common";
 import { IModelApp, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@itwin/core-frontend";
 import { SelectOption } from "@itwin/itwinui-react";
 import { Presentation, SelectionChangesListener } from "@itwin/presentation-frontend";
@@ -27,11 +27,27 @@ export default class ClassifierApi {
 
     // Get first available reality models and attach them to displayStyle
     const RealityDataClient = new RealityDataAccessClient();
-    const availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel });
-    for (const crmProp of availableModels) {
-      crmProp.classifiers = [];
-      style.attachRealityModel(crmProp);
-      viewPort.displayStyle = style;
+    const availableModels: RealityDataResponse = await RealityDataClient.getRealityDatas(await IModelApp.authorizationClient!.getAccessToken(), imodel.iTwinId, undefined);
+
+    for (const rdEntry of availableModels.realityDatas) {
+      const name = undefined !== rdEntry.displayName ? rdEntry.displayName : rdEntry.id;
+      const rdSourceKey = {
+        provider: RealityDataProvider.ContextShare,
+        format: rdEntry.type === "OPC" ? RealityDataFormat.OPC : RealityDataFormat.ThreeDTile,
+        id: rdEntry.id,
+      };
+      const tilesetUrl = await IModelApp.realityDataAccess?.getRealityDataUrl(imodel.iTwinId, rdSourceKey.id);
+      if (tilesetUrl) {
+        const entry: ContextRealityModelProps = {
+          classifiers: [],
+          rdSourceKey,
+          tilesetUrl,
+          name,
+          realityDataId: rdSourceKey.id,
+        };
+        style.attachRealityModel(entry);
+        viewPort.displayStyle = style;
+      }
       break;
     }
   }
