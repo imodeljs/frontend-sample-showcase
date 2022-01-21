@@ -163,7 +163,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     viewport.view.forEachTileTreeRef(func);
 
     // Do not apply the view's clip to this provider's graphics - it applies its own (opposite) clip to its graphics.
-    this.viewFlagOverrides.showClipVolume = true;
+    this.viewFlagOverrides.showClipVolume = false;
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
