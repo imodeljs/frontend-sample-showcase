@@ -2,11 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
-import { BeEvent } from "@itwin/core-bentley";
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode } from "@itwin/core-common";
-import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
+import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
 import { RealityDataAccessClient } from "@bentley/reality-data-client";
 
 export enum ComparisonType {
@@ -18,30 +16,12 @@ export default class SwipingComparisonApi {
   private static _provider: SampleTiledGraphicsProvider | undefined;
   private static _viewport?: Viewport;
 
-  public static readonly onSwipeEvent = new BeEvent<(dividerLeft: number | undefined) => void>();
-  public static readonly onLockEvent = new BeEvent<(isLocked: boolean) => void>();
-
   /** Called by the showcase before swapping to another sample. */
   public static teardown(): void {
     if (undefined !== SwipingComparisonApi._viewport && undefined !== SwipingComparisonApi._provider) {
       SwipingComparisonApi.disposeProvider(SwipingComparisonApi._viewport, SwipingComparisonApi._provider);
       SwipingComparisonApi._provider = undefined;
     }
-    if (undefined !== SwipingComparisonApi._viewport) {
-      SwipingComparisonApi._viewport.view.setViewClip(undefined);
-      SwipingComparisonApi._viewport.synchWithView();
-      SwipingComparisonApi._viewport = undefined;
-    }
-  }
-
-  /** Gets the selected viewport using the IModelApp API. */
-  public static getSelectedViewport(): ScreenViewport | undefined {
-    return IModelApp.viewManager.selectedView;
-  }
-
-  /** Adds a listener that will be triggered only once for the next opened view.  Returns a functions to remove that listener. */
-  public static listenOnceForViewOpen(onOpen: (viewport: ScreenViewport) => void): () => void {
-    return IModelApp.viewManager.onViewOpen.addOnce(onOpen);
   }
 
   /** Adds a listener that will be triggered when the viewport is updated. Returns a functions to remove that listener. */
@@ -57,8 +37,9 @@ export default class SwipingComparisonApi {
   }
 
   /** Get the rectangle defining the area of the HTML canvas using the viewport API. */
-  public static getClientRect(vp: ScreenViewport): ClientRect {
-    return vp.getClientRect();
+  public static getRect(vp: ScreenViewport): DOMRect {
+    // Calling DOMRect.fromRect to clone the rect so the state in the App will update properly.
+    return DOMRect.fromRect(vp.getClientRect());
   }
 
   /** Convert a point in the view space to the world space using the viewport API. */
@@ -86,7 +67,7 @@ export default class SwipingComparisonApi {
       return;
 
     if (undefined !== provider && provider.comparisonType !== comparisonType) {
-      SwipingComparisonApi.disposeProvider(SwipingComparisonApi._viewport, SwipingComparisonApi._provider!);
+      SwipingComparisonApi.disposeProvider(viewport, SwipingComparisonApi._provider!);
       SwipingComparisonApi._provider = undefined;
     }
 
@@ -145,18 +126,23 @@ export default class SwipingComparisonApi {
   }
 
   /** Get all available reality models and attach them to displayStyle. */
-  public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
+  public static async attachRealityData(viewport: Viewport) {
+    const imodel = viewport.iModel;
     const style = viewport.displayStyle.clone();
     const RealityDataClient = new RealityDataAccessClient();
-    const availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel }); for (const crmProp of availableModels) {
+    let availableModels: ContextRealityModelProps[] = await RealityDataClient.queryRealityData(await IModelApp.authorizationClient!.getAccessToken(), { iTwinId: imodel.iTwinId!, filterIModel: imodel });
+    // Don't want the point cloud of the Exton Campus.  Makes the view look busy for this use case.
+    if (imodel.name === "Exton Campus v2")
+      availableModels = availableModels.filter((model) => model.orbitGtBlob === undefined);
+    for (const crmProp of availableModels) {
       style.attachRealityModel(crmProp);
       viewport.displayStyle = style;
     }
   }
 
   /** Set the transparency of the reality models using the Feature Override API. */
-  public static setRealityModelTransparent(vp: Viewport, transparency: boolean | undefined): void {
-    const override = { transparency: (transparency ?? false) ? 1.0 : 0.0 };
+  public static setRealityModelTransparent(vp: Viewport, transparent: boolean): void {
+    const override = { transparency: (transparent ?? false) ? 1.0 : 0.0 };
     vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
       model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone(override) : FeatureAppearance.fromJSON(override);
     });
@@ -177,7 +163,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     viewport.view.forEachTileTreeRef(func);
 
     // Do not apply the view's clip to this provider's graphics - it applies its own (opposite) clip to its graphics.
-    this.viewFlagOverrides.showClipVolume = false;
+    this.viewFlagOverrides.showClipVolume = true;
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */

@@ -10,7 +10,7 @@ export interface DividerComponentState {
 }
 
 export interface DividerComponentProps {
-  bounds: ClientRect;
+  bounds: DOMRect;
   menuChildren?: React.ReactNode;
   leftChildren?: React.ReactNode;
   rightChildren?: React.ReactNode;
