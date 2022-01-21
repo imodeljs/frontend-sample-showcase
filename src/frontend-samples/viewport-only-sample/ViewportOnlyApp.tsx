@@ -6,6 +6,7 @@ import React, { FunctionComponent } from "react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
+import { getMapLayerKeys } from "Components/MapLayerKeys/MapLayerKeys";
 
 // START VIEW_SETUP
 const ViewportOnlyApp: FunctionComponent = () => {
@@ -27,6 +28,7 @@ const ViewportOnlyApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
         />
