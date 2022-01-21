@@ -7,6 +7,7 @@ import { ToolbarButtonProvider } from "./ToolbarButtonProvider";
 import { AuthorizationClient, default3DAppUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ToolbarButtonProvider()];
 
@@ -27,6 +28,7 @@ const ToolbarButtonApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DAppUi}
           theme="dark"
           uiProviders={uiProviders}

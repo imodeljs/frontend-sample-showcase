@@ -10,6 +10,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, ViewSetup } from "@itwinjs-sandbox";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { SnowDecorationWidgetProvider } from "./SnowDecorationWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new SnowDecorationWidgetProvider()];
 
@@ -30,6 +31,7 @@ const SnowDecorationApp: React.FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
+          mapLayerOptions={getMapLayerKeys()}
           viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

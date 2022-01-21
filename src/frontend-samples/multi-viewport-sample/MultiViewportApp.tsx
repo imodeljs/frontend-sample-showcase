@@ -9,6 +9,7 @@ import { IModelConnection } from "@itwin/core-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
 import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";
 import "./multi-view-sample.scss";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new MultiViewportWidgetProvider()];
 
@@ -38,6 +39,7 @@ const MultiViewportApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           frontstages={frontStages}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

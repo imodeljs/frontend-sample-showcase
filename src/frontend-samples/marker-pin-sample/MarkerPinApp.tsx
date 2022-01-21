@@ -7,6 +7,7 @@ import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, StandardViewId, ViewState } from "@itwin/core-frontend";
 import { MarkerPinWidgetProvider } from "./MarkerPinWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new MarkerPinWidgetProvider()];
 
@@ -46,6 +47,7 @@ const MarkerPinApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

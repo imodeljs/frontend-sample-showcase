@@ -7,6 +7,7 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ImageExportWidgetProvider } from "./ImageExportWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ImageExportWidgetProvider()];
 
@@ -28,6 +29,7 @@ const ImageExportApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

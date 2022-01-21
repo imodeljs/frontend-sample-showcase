@@ -8,6 +8,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { HyperModelingWidgetProvider } from "./HyperModelingWidget";
 import HyperModelingApi from "./HyperModelingApi";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new HyperModelingWidgetProvider()];
 
@@ -39,6 +40,7 @@ const HyperModelingApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

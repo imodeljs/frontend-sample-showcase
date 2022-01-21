@@ -8,6 +8,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { ViewAttributesWidgetProvider } from "./ViewAttributesWidget";
 import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { ViewAttributesApi } from "./ViewAttributesApi";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ViewAttributesWidgetProvider()];
 
@@ -34,6 +35,7 @@ const ViewAttributesApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

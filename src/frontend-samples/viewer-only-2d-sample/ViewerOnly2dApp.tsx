@@ -8,6 +8,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ViewerOnly2dApi } from "./ViewerOnly2dApi";
 import { ViewerOnly2dWidgetProvider } from "./ViewerOnly2dWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ViewerOnly2dWidgetProvider()];
 
@@ -29,6 +30,7 @@ const ViewportOnly2dApp: FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true} viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

@@ -9,6 +9,7 @@ import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-san
 import { IModelConnection } from "@itwin/core-frontend";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { TooltipCustomizeWidgetProvider } from "./TooltipCustomizeWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new TooltipCustomizeWidgetProvider()];
 
@@ -29,6 +30,7 @@ const TooltipCustomizeApp: React.FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
+          mapLayerOptions={getMapLayerKeys()}
           viewportOptions={{ viewState: _initialViewstate }}
 
           /** Pass the toolAdmin override directly into the viewer */

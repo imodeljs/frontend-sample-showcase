@@ -10,6 +10,7 @@ import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { SwipingComparisonWidgetProvider } from "./SwipingComparisonWidget";
 import { DividerComponent } from "./Divider";
 import SwipingComparisonApi from "./SwipingComparisonApi";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new SwipingComparisonWidgetProvider()];
 
@@ -64,6 +65,7 @@ const SwipingComparisonApp: FunctionComponent = () => {
             authClient={AuthorizationClient.oidcClient}
             enablePerformanceMonitors={true}
             viewportOptions={viewportOptions}
+            mapLayerOptions={getMapLayerKeys()}
             onIModelConnected={_oniModelReady}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"

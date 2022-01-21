@@ -8,6 +8,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { VolumeQueryWidgetProvider } from "./VolumeQueryWidget";
 import { IModelConnection } from "@itwin/core-frontend";
 import { VolumeQueryApi } from "./VolumeQueryApi";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new VolumeQueryWidgetProvider()];
 
@@ -29,6 +30,7 @@ const VolumeQueryApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

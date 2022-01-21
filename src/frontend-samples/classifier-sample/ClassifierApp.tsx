@@ -8,6 +8,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, ViewState } from "@itwin/core-frontend";
 import { ClassifierWidgetProvider } from "./ClassifierWidget";
 import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@itwin/core-geometry";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ClassifierWidgetProvider()];
 
@@ -46,6 +47,7 @@ const ClassifierApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

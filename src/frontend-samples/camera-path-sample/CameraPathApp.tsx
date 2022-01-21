@@ -8,6 +8,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, ViewState } from "@itwin/core-frontend";
 import { CameraPathWidgetProvider } from "./CameraPathWidget";
 import { RenderMode } from "@itwin/core-common";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new CameraPathWidgetProvider()];
 
@@ -44,6 +45,7 @@ const CameraPathApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={uiConfig}
           theme="dark"
           uiProviders={uiProviders}

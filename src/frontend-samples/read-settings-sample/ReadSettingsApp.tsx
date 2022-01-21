@@ -7,6 +7,7 @@ import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ReadSettingsWidgetProvider } from "./ReadSettingsWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ReadSettingsWidgetProvider()];
 
@@ -28,6 +29,7 @@ const ReadSettingsApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

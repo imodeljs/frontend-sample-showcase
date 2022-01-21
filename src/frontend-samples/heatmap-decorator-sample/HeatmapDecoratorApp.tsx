@@ -9,6 +9,7 @@ import { HeatmapDecoratorWidgetProvider } from "./HeatmapDecoratorWidget";
 import { IModelConnection, StandardViewId } from "@itwin/core-frontend";
 import { ColorDef } from "@itwin/core-common";
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new HeatmapDecoratorWidgetProvider()];
 
@@ -45,6 +46,7 @@ const HeatmapDecoratorApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

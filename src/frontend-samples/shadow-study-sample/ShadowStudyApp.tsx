@@ -11,6 +11,7 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs
 import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { ShadowStudyWidgetProvider } from "./ShadowStudyWidget";
 import ShadowStudyApi from "./ShadowStudyApi";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ShadowStudyWidgetProvider()];
 
@@ -32,6 +33,7 @@ const ShadowStudyApp: React.FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

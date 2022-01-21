@@ -7,6 +7,7 @@ import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { FireDecorationWidgetProvider } from "./FireDecorationWidget";
 import { IModelConnection } from "@itwin/core-frontend";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new FireDecorationWidgetProvider()];
 
@@ -28,6 +29,7 @@ const FireDecorationApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

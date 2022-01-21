@@ -12,6 +12,7 @@ import { ChangedElementsApi } from "./ChangedElementsApi";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 import { ChangedElementsWidgetProvider } from "./ChangedElementsWidget";
 import { MessageRenderer } from "@itwin/core-react";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ChangedElementsWidgetProvider()];
 
@@ -38,6 +39,7 @@ const ChangedElementsApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

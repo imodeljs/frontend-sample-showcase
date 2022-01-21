@@ -7,6 +7,7 @@ import { IModelConnection } from "@itwin/core-frontend";
 import { EmphasizeElementsWidgetProvider } from "./EmphasizeElementsWidget";
 import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new EmphasizeElementsWidgetProvider()];
 
@@ -29,6 +30,7 @@ const EmphasizeElementsApp: React.FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

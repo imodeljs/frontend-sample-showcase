@@ -8,6 +8,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
 import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { UnifiedSelectionWidgetProvider } from "./UnifiedSelectionTreeWidget";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new UnifiedSelectionWidgetProvider()];
 
@@ -30,6 +31,7 @@ const UnifiedSelectionApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={viewportOptions}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

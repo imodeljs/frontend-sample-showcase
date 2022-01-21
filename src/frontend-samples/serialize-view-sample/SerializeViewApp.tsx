@@ -9,6 +9,7 @@ import { IModelConnection } from "@itwin/core-frontend";
 import { SerializeViewWidgetProvider } from "./SerializeViewWidget";
 import { IModelViews, sampleViewStates } from "./SampleViewStates";
 import SerializeViewApi from "./SerializeViewApi";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new SerializeViewWidgetProvider()];
 
@@ -45,6 +46,7 @@ const SerializeViewApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

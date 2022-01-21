@@ -9,6 +9,7 @@ import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@itwin/co
 import { TransformationsWidgetProvider } from "./TransformationsWidget";
 import { TransformationsFrontstage } from "./TransformationsFrontstageProvider";
 import "./transformations-sample.scss";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new TransformationsWidgetProvider()];
 
@@ -51,6 +52,7 @@ const TransformationsApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={getMapLayerKeys()}
           frontstages={frontStages}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

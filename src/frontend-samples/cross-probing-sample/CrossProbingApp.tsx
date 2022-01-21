@@ -9,6 +9,7 @@ import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import CrossProbingApi from "./CrossProbingApi";
 import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const CrossProbingApp: React.FunctionComponent = () => {
   const [frontStages, setFrontstages] = useState<ViewerFrontstage[]>([]);
@@ -44,6 +45,7 @@ const CrossProbingApp: React.FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           frontstages={frontStages}
+          mapLayerOptions={getMapLayerKeys()}
           onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

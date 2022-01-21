@@ -9,6 +9,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import { MessageRenderer } from "@itwin/core-react";
+import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new GlobalDisplayWidgetProvider()];
 
@@ -40,6 +41,7 @@ const GlobalDisplayApp: FunctionComponent = () => {
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
+          mapLayerOptions={getMapLayerKeys()}
           uiProviders={uiProviders}
           theme="dark"
         />
