@@ -43,8 +43,8 @@ const Simple3dApp: FunctionComponent = () => {
     <>
       { /** Viewport to display the iModel */}
       <BlankViewer
-        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-        theme={"dark"}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true} theme={"dark"}
         defaultUiConfig={default3DSandboxUi}
         viewStateOptions={viewState}
         blankConnection={connection}

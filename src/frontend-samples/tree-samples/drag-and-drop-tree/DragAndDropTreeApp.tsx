@@ -27,7 +27,8 @@ const App: React.FC = () => {
   return (
     <>
       <BlankViewer
-        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true}
         defaultUiConfig={default3DSandboxUi}
         blankConnection={connection}
         frontstages={frontstages}

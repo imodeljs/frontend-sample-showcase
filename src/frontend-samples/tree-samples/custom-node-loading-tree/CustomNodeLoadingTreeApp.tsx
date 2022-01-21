@@ -18,8 +18,8 @@ const CustomNodeLoadingTreeApp: React.FunctionComponent = () => {
       <Viewer
         iTwinId={sampleIModelInfo.contextId}
         iModelId={sampleIModelInfo.iModelId}
-        authConfig={{ getAccessToken: AuthorizationClient.oidcClient.getAccessToken, onAccessTokenChanged: AuthorizationClient.oidcClient.onAccessTokenChanged }}
-        frontstages={frontstages}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true} frontstages={frontstages}
         defaultUiConfig={default3DSandboxUi}
         theme="dark"
       />}
