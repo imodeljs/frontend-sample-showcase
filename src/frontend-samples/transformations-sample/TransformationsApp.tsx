@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { AuthorizationClient, default3DSandboxUi, getIModelInfo, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@itwin/core-frontend";
 import { TransformationsWidgetProvider } from "./TransformationsWidget";
@@ -21,7 +21,7 @@ const TransformationsApp: FunctionComponent = () => {
     setFrontstages(() => [{ provider: new TransformationsFrontstage(), default: true, requiresIModelConnection: true }]);
   }, [sampleIModelInfo]);
 
-  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+  const _initialViewstate = useCallback(async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
     const vf = viewState.viewFlags.copy({});
 
@@ -39,7 +39,9 @@ const TransformationsApp: FunctionComponent = () => {
     setFrontstages([{ provider: new TransformationsFrontstage(viewState, viewState2, connection2), default: true }]);
 
     return viewState;
-  };
+  }, []);
+
+  const vpOptions = useMemo(() => ({ viewState: _initialViewstate }), [_initialViewstate]);
 
   /** The sample's render method */
   return (
@@ -51,7 +53,7 @@ const TransformationsApp: FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
-          viewportOptions={{ viewState: _initialViewstate }}
+          viewportOptions={vpOptions}
           mapLayerOptions={getMapLayerKeys()}
           frontstages={frontStages}
           defaultUiConfig={default3DSandboxUi}
