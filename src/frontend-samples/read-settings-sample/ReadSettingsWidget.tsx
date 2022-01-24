@@ -6,7 +6,6 @@ import React, { ChangeEvent, useCallback, useEffect, useMemo } from "react";
 import { useActiveIModelConnection } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@itwin/core-react";
-import { SettingsResult, SettingsStatus } from "@bentley/product-settings-client";
 import ReadSettingsApi from "./ReadSettingsApi";
 import "./ReadSettings.scss";
 
@@ -16,7 +15,7 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [settingKey, setSettingKey] = React.useState<string>(settingsKeys[0]);
   const [settingValue, setSettingValue] = React.useState<string>();
-  const [settingResult, setSettingResult] = React.useState<SettingsResult>();
+  const [settingResult, setSettingResult] = React.useState<any>();
   const [saveInProgress, setSaveInProgress] = React.useState<boolean>(false);
   const [readUpdate, setReadUpdate] = React.useState<boolean>(true);
   const [saveUpdate, setSaveUpdate] = React.useState<boolean>(false);
@@ -79,7 +78,7 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
 
   // Helper method to show status get/write operations with external setting in the dialog
   const _showStatus = useCallback(() => {
-    if (!settingResult || settingResult.status === SettingsStatus.Success) {
+    if (!settingResult) {
       return (<div></div>);
     }
 
