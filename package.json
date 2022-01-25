@@ -34,7 +34,7 @@
     "@itwin/presentation-components": "3.0.0",
     "@itwin/presentation-frontend": "3.0.0",
     "@itwin/projects-client": "^0.2.0",
-    "@itwin/web-viewer-react": "next",
+    "@itwin/web-viewer-react": "2.0.0-dev.23",
     "@itwin/webgl-compatibility": "3.0.0",
     "launchdarkly-js-client-sdk": "^2.17.5",
     "markdown-to-jsx": "^7.0.1",
