@@ -10,7 +10,7 @@ The main purpose is to demonstrate how to serialize a viewstate and reload that 
 
 - Utilizing a call to toProps of the ViewState object, serializes the ViewState into properties.
 - Recreating the ViewState by a call to [ViewState.createFromProps](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/viewstate/createfrompropsstatic/).
-- Reloading the ViewState by calling [ViewPort.changeView](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/viewport/changeview/?term=changeview).
+- Reloading the ViewState by calling [ViewPort.changeView](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/viewport/changeview/).
 
 ## Description
 

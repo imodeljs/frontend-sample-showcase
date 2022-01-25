@@ -23,7 +23,7 @@ First the reality model must be attached to the viewport. There is more info abo
 
 Next the list of available classifiers are queried in `getAvailableClassifierListForViewport`. This is done querying for available [SpatialModelState](https://www.itwinjs.org/v2/reference/imodeljs-frontend/modelstate/spatialmodelstate/)s in the iModel. The results are then sorted and filtered for demonstration purposes.
 
-Finally, the classifier needs to be formed and attached to the view. The classifier needs to be formed as a [SpatialClassifier](https://www.itwinjs.org/v2/reference/imodeljs-common/displaystyles/spatialclassifier/?term=spatialclassifier) object. It can then be added to [ContextRealityModelProps.classifiers](https://www.itwinjs.org/v2/reference/imodeljs-common/displaystyles/contextrealitymodelprops/#classifiers) and reattached to the viewport.
+Finally, the classifier needs to be formed and attached to the view. The classifier needs to be formed as a [SpatialClassifier](https://www.itwinjs.org/v2/reference/imodeljs-common/displaystyles/spatialclassifier/) object. It can then be added to [ContextRealityModelProps.classifiers](https://www.itwinjs.org/v2/reference/imodeljs-common/displaystyles/contextrealitymodelprops/#classifiers) and reattached to the viewport.
 
 
 Additionally, this sample features a property data provider. This shows basic properties of selected elements. For more info on property data providers and property formatting see [property formatting sample](../property-formatting-sample/readme.md).

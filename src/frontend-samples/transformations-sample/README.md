@@ -14,7 +14,7 @@ The purpose of this sample is to demonstrate the following:
 
 ## Description
 
-There are three steps to create the transformed iModel based on a [View Definition](https://www.itwinjs.org/v2/reference/imodeljs-backend/viewdefinitions/viewdefinition/?term=viewdefinition). The first step is to create a transformation configuration, in this example a [FilterByViewDefinition](https://developer.bentley.com/apis/transformations/operations/filterbyviewdefinition/), which creates an association between source and target iModels with additional metadata to carry out the transformation. It does NOT start the transformation. 
+There are three steps to create the transformed iModel based on a [View Definition](https://www.itwinjs.org/v2/reference/imodeljs-backend/viewdefinitions/viewdefinition/). The first step is to create a transformation configuration, in this example a [FilterByViewDefinition](https://developer.bentley.com/apis/transformations/operations/filterbyviewdefinition/), which creates an association between source and target iModels with additional metadata to carry out the transformation. It does NOT start the transformation. 
 
 The second API, [Create Transformation](https://developer.bentley.com/apis/transformations/operations/create-transformation/) actually starts the transformation process by sending in the configuration id.
 
