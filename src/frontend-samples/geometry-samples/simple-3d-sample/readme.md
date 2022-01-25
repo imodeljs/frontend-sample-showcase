@@ -12,6 +12,6 @@ The purpose of this sample is to demonstrate the following:
 
 ## Description
 
-This sample demonstrates how to create 3d primitives using [Box](https://www.imodeljs.org/reference/geometry-core/solid/box/), [Cone](https://www.imodeljs.org/reference/geometry-core/solid/cone/), [Sphere](https://www.imodeljs.org/reference/geometry-core/solid/sphere/), and [TorusPipe](https://www.imodeljs.org/reference/geometry-core/solid/toruspipe/).
+This sample demonstrates how to create 3d primitives using [Box](https://www.itwinjs.org/v2/reference/geometry-core/solid/box/), [Cone](https://www.itwinjs.org/v2/reference/geometry-core/solid/cone/), [Sphere](https://www.itwinjs.org/v2/reference/geometry-core/solid/sphere/), and [TorusPipe](https://www.itwinjs.org/v2/reference/geometry-core/solid/toruspipe/).
 
-This geometry sample, like the others, uses a [BlankConnection](https://www.imodeljs.org/learning/frontend/blankconnection/) to create a viewport without connecting to an iModel.  It displays geometry in the viewport using [view decorations](https://www.imodeljs.org/learning/frontend/viewdecorations/).
+This geometry sample, like the others, uses a [BlankConnection](https://www.itwinjs.org/v2/learning/frontend/blankconnection/) to create a viewport without connecting to an iModel.  It displays geometry in the viewport using [view decorations](https://www.itwinjs.org/v2/learning/frontend/viewdecorations/).

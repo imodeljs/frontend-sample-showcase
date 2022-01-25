@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates how to use the [UiItemsProvider](https://www.imodeljs.org/reference/ui-abstract/uiitemsprovider/) API.  This API allows an AppUI interface to be altered when a package or extension is loaded.
+This sample demonstrates how to use the [UiItemsProvider](https://www.itwinjs.org/v2/reference/ui-abstract/uiitemsprovider/) API.  This API allows an AppUI interface to be altered when a package or extension is loaded.
 
 ## Purpose
 

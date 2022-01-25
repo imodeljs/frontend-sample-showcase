@@ -1,6 +1,6 @@
 # Setup
 
-This sample implements a [View Decorator](https://www.itwinjs.org/learning/frontend/viewdecorations/) to draw [Markers](https://www.itwinjs.org/learning/frontend/markers/) which are used to call the user's attention to a particular point in space.
+This sample implements a [View Decorator](https://www.itwinjs.org/v2/learning/frontend/viewdecorations/) to draw [Markers](https://www.itwinjs.org/v2/learning/frontend/markers/) which are used to call the user's attention to a particular point in space.
 
 The `setupDecorator` method is called as the sample is initializing.  It creates and returns an instance of a MarkerPinDecorator, which can be used to create and decorate the viewport with `Markers`.
 

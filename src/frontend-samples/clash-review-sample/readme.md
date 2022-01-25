@@ -18,10 +18,10 @@ Clash Detection is a feature in iTwin Platform that analyzes and reports element
 
 The goal of this sample is to provide example functions for all of the available Clash Detection APIs.  In fact, two of the example functions are called to populate the clash results table and plot the clash markers. [Clash Detection result sample data](./ClashDetectionJsonData.ts) is also provided to show the format of the data returned from the API.
 
-The following [iTwin.js library](https://www.itwinjs.org/reference/) components are demonstrated:
+The following [iTwin.js library](https://www.itwinjs.org/v2/reference/) components are demonstrated:
 
-- [Decorator](https://www.itwinjs.org/reference/imodeljs-frontend/views/decorator/): show the clash marker pins in a viewport.
-- [MarkerSet](https://www.itwinjs.org/reference/imodeljs-frontend/views/markerset/): manage a collection of clash marker pins.
-- [Marker](https://www.itwinjs.org/reference/imodeljs-frontend/views/marker/): draw clash marker pins at the location of clashing elements.
-- [Cluster](https://www.itwinjs.org/reference/imodeljs-frontend/views/cluster/): draw cluster pins where a group of clashes are located.
-- [Table](https://www.itwinjs.org/reference/ui-components/table/): display a table of clash results.
+- [Decorator](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/decorator/): show the clash marker pins in a viewport.
+- [MarkerSet](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/markerset/): manage a collection of clash marker pins.
+- [Marker](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/marker/): draw clash marker pins at the location of clashing elements.
+- [Cluster](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/cluster/): draw cluster pins where a group of clashes are located.
+- [Table](https://www.itwinjs.org/v2/reference/ui-components/table/): display a table of clash results.
