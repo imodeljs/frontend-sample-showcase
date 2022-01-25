@@ -8,6 +8,7 @@ import { Frustum } from "@itwin/core-common";
 // import { Point3d } from "@itwin/core-geometry";
 import { ScreenViewport } from "@itwin/core-frontend";
 import { Point3d } from "@itwin/core-geometry";
+import { useEffectSkipFirst } from "@itwin/core-react";
 import { Select, SelectOption, ToggleSwitch } from "@itwin/itwinui-react";
 import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
@@ -44,7 +45,10 @@ const SwipingComparisonWidget: React.FunctionComponent<SwipingComparisonWidgetPr
   const [comparisonState, setComparisonState] = React.useState<ComparisonType>(ComparisonType.RealityData);
 
   // Clean up on dismount
-  useEffect(() => SwipingComparisonApi.teardown(), []);
+  useEffectSkipFirst(() => SwipingComparisonApi.teardown(), []);
+
+  // eslint-disable-next-line no-console
+  useEffect(() => viewport?.iModel.selectionSet.onChanged.addListener((ev) => console.debug(...ev.set.elements.entries())), [viewport]);
 
   useEffect(() => {
     if (!appContainer.current || appContainer.current.id !== props.appContainerId)
@@ -87,7 +91,7 @@ const SwipingComparisonWidget: React.FunctionComponent<SwipingComparisonWidgetPr
     setFrustum(SwipingComparisonApi.getFrustum(viewport));
     setDividerLeftState(dividerPos);
 
-    viewport.viewFlags = viewport.viewFlags.copy({ clipVolume: true });
+    viewport.viewFlags = viewport.viewFlags.copy({ clipVolume: false });
 
     // Attach reality data so it's visible in the viewport
     SwipingComparisonApi.attachRealityData(viewport)

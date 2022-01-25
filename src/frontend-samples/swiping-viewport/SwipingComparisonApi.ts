@@ -2,15 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
+import { RealityDataAccessClient } from "@bentley/reality-data-client";
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode } from "@itwin/core-common";
 import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
-import { RealityDataAccessClient } from "@bentley/reality-data-client";
+import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
 
 export enum ComparisonType {
   Wireframe,
   RealityData,
 }
+
+// const compareDebugClipStyle = ClipStyle.create(true, CutStyle.defaults, RgbColor.fromColorDef(ColorDef.blue), RgbColor.fromColorDef(ColorDef.green));
 
 export default class SwipingComparisonApi {
   private static _provider: SampleTiledGraphicsProvider | undefined;
@@ -73,7 +75,7 @@ export default class SwipingComparisonApi {
 
     if (undefined === SwipingComparisonApi._provider) {
       SwipingComparisonApi._provider = SwipingComparisonApi.createProvider(screenPoint, viewport, comparisonType);
-      viewport.addTiledGraphicsProvider(SwipingComparisonApi._provider);
+      // viewport.addTiledGraphicsProvider(SwipingComparisonApi._provider);
     }
 
     SwipingComparisonApi.updateProvider(screenPoint, viewport, SwipingComparisonApi._provider);
@@ -97,7 +99,9 @@ export default class SwipingComparisonApi {
     provider.setClipVector(clip);
 
     // Update in Viewport
-    viewport.view.setViewClip(SwipingComparisonApi.createClip(normal.clone(), worldPoint));
+    // viewport.view.setViewClip(SwipingComparisonApi.createClip(normal.clone(), worldPoint));
+    // viewport.setAlwaysDrawn(new Set("0x2000000acf7"), true);
+
     viewport.synchWithView();
   }
 
@@ -171,12 +175,16 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
 
     // Save view to be replaced after comparison is drawn
     const vp = output.viewport;
-    const clip = vp.view.getViewClip();
+    // const clip = vp.view.getViewClip();
 
     // Replace the clipping plane with a flipped one.
-    vp.view.setViewClip(this.clipVolume?.clipVector);
+    // vp.view.setViewClip(this.clipVolume?.clipVector);
+
+    // vp.clipStyle = compareDebugClipStyle;
 
     this.prepareNewBranch(vp);
+
+    vp.clearAlwaysDrawn();
 
     const context: SceneContext = new SceneContext(vp);
     vp.view.createScene(context);
@@ -194,11 +202,14 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
       // Overwrites the view flags for this view branch.
       branch.setViewFlagOverrides(this.viewFlagOverrides);
       // Draw the graphics to the screen.
-      output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
+      output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { /* clipVolume: this.clipVolume */ }));
     }
 
     // Return the old clip to the view.
-    vp.view.setViewClip(clip);
+    // vp.view.setViewClip(clip);
+
+    vp.setAlwaysDrawn(new Set("0x2000000acf7"), true);
+    // vp.clipStyle = ClipStyle.defaults;
 
     this.resetOldView(vp);
   }
