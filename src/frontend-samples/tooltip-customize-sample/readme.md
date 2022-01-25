@@ -9,7 +9,7 @@ This sample demonstrates how to customize the element tooltip.  The customized t
 The purpose of this sample is to demonstrate the following:
 
 * Specify the content of a tooltip by [implementing ToolAdmin.getToolTip](./TooltipCustomizeApi.tsx).
-* Display a tooltip by implementing [NotificationManager](https://www.imodeljs.org/reference/imodeljs-frontend/notifications/notificationmanager/).
+* Display a tooltip by implementing [NotificationManager](https://www.itwinjs.org/v2/reference/imodeljs-frontend/notifications/notificationmanager/).
 
 ## Description
 

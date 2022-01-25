@@ -1,6 +1,6 @@
 # Emphasize Elements
 
-This sample uses the [`EmphasizeElements`](https://www.itwinjs.org/reference/imodeljs-frontend/rendering/emphasizeelements/) class to apply various display effects to an individual or small group of elements.
+This sample uses the [`EmphasizeElements`](https://www.itwinjs.org/v2/reference/imodeljs-frontend/rendering/emphasizeelements/) class to apply various display effects to an individual or small group of elements.
 
 This sample shows how to apply four different effects:
 

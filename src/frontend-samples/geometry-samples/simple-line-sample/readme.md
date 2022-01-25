@@ -13,6 +13,6 @@ The purpose of this sample is to demonstrate the following:
 
 ## Description
 
-This sample demonstrates how to use [LineSegment3d.create](https://www.imodeljs.org/reference/geometry-core/curve/linesegment3d/createstatic/) and [LineSegment3d](https://www.imodeljs.org/reference/geometry-core/curve/linesegment3d/).fractionToPoint.
+This sample demonstrates how to use [LineSegment3d.create](https://www.itwinjs.org/v2/reference/geometry-core/curve/linesegment3d/createstatic/) and [LineSegment3d](https://www.itwinjs.org/v2/reference/geometry-core/curve/linesegment3d/).fractionToPoint.
 
-This geometry sample, like the others, uses a [BlankConnection](https://www.imodeljs.org/learning/frontend/blankconnection/) to create a viewport without connecting to an iModel.  It displays geometry in the viewport using [view decorations](https://www.imodeljs.org/learning/frontend/viewdecorations/).
+This geometry sample, like the others, uses a [BlankConnection](https://www.itwinjs.org/v2/learning/frontend/blankconnection/) to create a viewport without connecting to an iModel.  It displays geometry in the viewport using [view decorations](https://www.itwinjs.org/v2/learning/frontend/viewdecorations/).

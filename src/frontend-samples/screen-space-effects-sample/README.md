@@ -19,6 +19,6 @@ This sample provides three examples of screen-space effects that are used to alt
 * Lens Distortion: simulates the "fish-eye" effect produced by physical cameras with wide fields of view.
 * Vignette: reduces the brightness around the periphery of the image
 
-The effects are defined using a [ScreenSpaceEffectBuilder](https://www.itwinjs.org/reference/imodeljs-frontend/rendering/screenspaceeffectbuilder) and applied to the viewport using [Viewport.addScreenSpaceEffect](https://www.itwinjs.org/reference/imodeljs-frontend/views/viewport/addscreenspaceeffect).
+The effects are defined using a [ScreenSpaceEffectBuilder](https://www.itwinjs.org/v2/reference/imodeljs-frontend/rendering/screenspaceeffectbuilder) and applied to the viewport using [Viewport.addScreenSpaceEffect](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/viewport/addscreenspaceeffect).
 
-This sample incidentally also demonstrates how to adjust the lens angle of a viewport's camera using [Viewport.turnCameraOn](https://www.itwinjs.org/reference/imodeljs-frontend/views/viewport/turncameraon).
+This sample incidentally also demonstrates how to adjust the lens angle of a viewport's camera using [Viewport.turnCameraOn](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/viewport/turncameraon).
