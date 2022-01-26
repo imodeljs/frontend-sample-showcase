@@ -3,11 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default2DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ReadSettingsWidgetProvider } from "./ReadSettingsWidget";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ReadSettingsWidgetProvider()];
 
@@ -29,7 +28,7 @@ const ReadSettingsApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

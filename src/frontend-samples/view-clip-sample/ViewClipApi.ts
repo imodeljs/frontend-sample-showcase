@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { AccuDrawHintBuilder, ContextRotationId, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, Viewport, ViewState } from "@itwin/core-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlane, ClipPrimitive, ClipShape, ClipVector, ConvexClipPlaneSet, Plane3dByOriginAndUnitNormal, Point3d, Vector3d } from "@itwin/core-geometry";
-import { ViewSetup } from "@itwinjs-sandbox";
+import { ViewSetup } from "@itwin/sandbox";
 
 export default class ViewClipApi {
 

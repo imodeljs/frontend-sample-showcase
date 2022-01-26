@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { AuthorizationClient, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const ViewportFronstageApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the toolbar at the top-right to navigate the model.");
@@ -25,7 +24,7 @@ const ViewportFronstageApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           theme="dark"
         />
       }

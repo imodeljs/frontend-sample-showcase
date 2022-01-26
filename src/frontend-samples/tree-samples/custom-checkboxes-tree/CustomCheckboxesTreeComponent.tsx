@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { ControlledTree, SelectionMode, TreeNodeItem, TreeNodeRenderer, TreeNodeRendererProps, TreeRenderer, TreeRendererProps, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import { SampleDataProvider } from "@itwin/sandbox";
 import { ImageCheckBox, NodeCheckboxRenderProps } from "@itwin/core-react";
 
 /**

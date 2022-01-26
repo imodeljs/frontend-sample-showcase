@@ -4,12 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import { MessageRenderer } from "@itwin/core-react";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new GlobalDisplayWidgetProvider()];
 
@@ -41,7 +40,7 @@ const GlobalDisplayApp: FunctionComponent = () => {
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
           defaultUiConfig={default3DSandboxUi}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           uiProviders={uiProviders}
           theme="dark"
         />

@@ -2,14 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
 import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";
 import "./multi-view-sample.scss";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new MultiViewportWidgetProvider()];
 
@@ -41,7 +40,7 @@ const MultiViewportApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={vpOptions}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           frontstages={frontStages}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

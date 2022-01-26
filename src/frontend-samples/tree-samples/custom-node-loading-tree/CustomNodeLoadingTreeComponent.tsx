@@ -10,7 +10,7 @@ import { Ruleset } from "@itwin/presentation-common";
 import { useDisposable } from "@itwin/core-react";
 import { PropertyRecord } from "@itwin/appui-abstract";
 import { isIDisposable } from "@itwin/core-bentley";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import { SampleDataProvider } from "@itwin/sandbox";
 
 export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;

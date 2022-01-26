@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { SampleSpec } from "SampleSpec";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 
 export function getClassifierSpec(): SampleSpec {
   return ({
