@@ -15,4 +15,4 @@ The purpose of this sample is to demonstrate the following:
 
 ## Description
 
-The comparison works by effectively rendering 2 separate halves of a scene.  A [clipping plane](../view-clip-sample/readme.md) is attached to the viewport to divide the scene and a [TiledGraphicsProvider](https://www.imodeljs.org/reference/imodeljs-frontend/views/tiledgraphicsprovider/) is used to negate the normal of the clipping plane and inject the other half of the scene.
+The comparison works by effectively rendering 2 separate halves of a scene.  A [clipping plane](../view-clip-sample/readme.md) is attached to the viewport to divide the scene and a [TiledGraphicsProvider](https://www.itwinjs.org/reference/core-frontend/views/tiledgraphicsprovider/) is used to negate the normal of the clipping plane and inject the other half of the scene.
