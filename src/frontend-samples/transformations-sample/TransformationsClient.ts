@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox";
+import { AuthorizationClient } from "@itwin/sandbox";
 import { GuidString } from "@itwin/core-bentley";
 
 export interface Configuration {

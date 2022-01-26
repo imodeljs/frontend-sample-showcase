@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 import { SampleSpec } from "SampleSpec";
 
 export function getHyperModelingSpec(): SampleSpec {

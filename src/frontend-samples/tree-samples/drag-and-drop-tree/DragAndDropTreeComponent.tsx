@@ -7,7 +7,7 @@ import { DragObjectWithType, DropTargetMonitor, useDrag, useDrop } from "react-d
 import { ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource, TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { BasicTreeNode } from "./BasicTreeNode";
 import * as mergeRefsExports from "react-merge-refs";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import { SampleDataProvider } from "@itwin/sandbox";
 import { DragAndDropTreeApi } from "./DragAndDropTreeApi";
 const mergeRefs = mergeRefsExports.default;
 

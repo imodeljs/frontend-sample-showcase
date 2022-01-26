@@ -5,11 +5,10 @@
 import React, { useState } from "react";
 import { IModelConnection, ViewCreator2d, ViewState } from "@itwin/core-frontend";
 import { ColorDef } from "@itwin/core-common";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import CrossProbingApi from "./CrossProbingApi";
 import { CrossProbingFrontstage } from "./CrossProbingFrontstageProvider";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const CrossProbingApp: React.FunctionComponent = () => {
   const [frontStages, setFrontstages] = useState<ViewerFrontstage[]>([]);
@@ -45,7 +44,7 @@ const CrossProbingApp: React.FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           frontstages={frontStages}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           onIModelConnected={_oniModelReady}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

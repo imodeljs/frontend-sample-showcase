@@ -23,7 +23,7 @@ export const TabNavigation: FunctionComponent<TabNavigationProps> = ({ showReadm
   const setup = useCallback((blobUrl: string, globals: Record<string, string>) => {
     const reactDomGlobal = globals["react-dom"];
     const reactGlobal = globals.react;
-    const sandboxGlobal = globals["@itwinjs-sandbox"];
+    const sandboxGlobal = globals["@itwin/sandbox"];
 
     return [
       `const root = document.getElementById('sample-container');`,

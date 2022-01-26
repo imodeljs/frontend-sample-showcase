@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 import { getEmphasizeElementsSpec } from "frontend-samples/emphasize-elements-sample/sampleSpec";
 import { getMarkerPinSpec } from "frontend-samples/marker-pin-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";

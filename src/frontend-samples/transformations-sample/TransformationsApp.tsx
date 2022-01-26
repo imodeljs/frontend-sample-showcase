@@ -2,14 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, getIModelInfo, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, getIModelInfo, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { CheckpointConnection, IModelConnection, ViewCreator3d } from "@itwin/core-frontend";
 import { TransformationsWidgetProvider } from "./TransformationsWidget";
 import { TransformationsFrontstage } from "./TransformationsFrontstageProvider";
 import "./transformations-sample.scss";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new TransformationsWidgetProvider()];
 
@@ -54,7 +53,7 @@ const TransformationsApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={vpOptions}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           frontstages={frontStages}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

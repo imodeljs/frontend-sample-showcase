@@ -1,5 +1,5 @@
 import { Annotation } from "@bentley/monaco-editor";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 import React from "react";
 
 export interface SampleProps {

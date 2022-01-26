@@ -9,7 +9,7 @@ import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@i
 import { BentleyStatus, Id64Array } from "@itwin/core-bentley";
 import { PresentationLabelsProvider } from "@itwin/presentation-components";
 import { InstanceKey } from "@itwin/presentation-common";
-import { ViewSetup } from "@itwinjs-sandbox";
+import { ViewSetup } from "@itwin/sandbox";
 
 /* Going to color elements from three different sections of volume box */
 export enum SectionOfColoring {

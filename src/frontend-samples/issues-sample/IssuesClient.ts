@@ -8,7 +8,7 @@
 import { Point3d } from "@itwin/core-geometry";
 import { request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox";
+import { AuthorizationClient } from "@itwin/sandbox";
 
 export interface CommentsListPreferReturnMinimal {
   comments?: CommentGetPreferReturnMinimal[];
