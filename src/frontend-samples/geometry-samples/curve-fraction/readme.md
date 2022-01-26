@@ -9,8 +9,8 @@ This sample demonstrates the relationship between fractions and points on a curv
 The purpose of this sample is to demonstrate the following:
 
 * Create various curve primitives including line segment, arc, and line string.
-* Starting with a fraction value between 0 and 1, compute both a point and a derivative along each curve using [CurvePrimitive.fractionToPointAndDerivative](https://www.itwinjs.org/reference/geometry-core/curve/curveprimitive/fractiontopointandderivative/).
-* Starting with a mouse point, compute the fraction value of the closest point on the curve using [CurvePrimitive.closestPoint](https://www.itwinjs.org/reference/geometry-core/curve/curveprimitive/closestpoint/)
+* Starting with a fraction value between 0 and 1, compute both a point and a derivative along each curve using [CurvePrimitive.fractionToPointAndDerivative](https://www.itwinjs.org/reference/core-geometry/curve/curveprimitive/fractiontopointandderivative/).
+* Starting with a mouse point, compute the fraction value of the closest point on the curve using [CurvePrimitive.closestPoint](https://www.itwinjs.org/reference/core-geometry/curve/curveprimitive/closestpoint/)
 
 ## Description
 

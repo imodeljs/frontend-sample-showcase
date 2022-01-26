@@ -12,9 +12,9 @@ This sample demonstrates calling [Changed Elements APIs](https://developer.bentl
 
 ## Description
 
-The first step is to get the Named Versions and associated changeset ids for the iModel.  The changeset ids are needed as arguments to request the changed elements.  This can easily be done with the [iModelHubClient](https://www.itwinjs.org/reference/imodelhub-client/imodelhubclient/)'s [VersionHandler](https://www.itwinjs.org/reference/imodelhub-client/imodelhubclient/versionhandler/get/).
+The first step is to get the Named Versions and associated changeset ids for the iModel.  The changeset ids are needed as arguments to request the changed elements.
 
-The Changed Elements API returns an object of [ChangedElements](https://www.itwinjs.org/reference/imodeljs-common/entities/changedelements/) type, with elements ids and the type of operations that updated them.  This information is passed to a [FeatureOverrideProvider](https://www.itwinjs.org/reference/imodeljs-frontend/views/featureoverrideprovider/) that colorizes the elements based on the operations.
+The Changed Elements API returns an object of [ChangedElements](https://www.itwinjs.org/reference/core-common/entities/changedelements/) type, with elements ids and the type of operations that updated them.  This information is passed to a [FeatureOverrideProvider](https://www.itwinjs.org/reference/core-frontend/views/featureoverrideprovider/) that colorizes the elements based on the operations.
 
 While the API allows the comparison of any two Named Versions, this sample allows only comparisons against the latest version of the iModel.
 
