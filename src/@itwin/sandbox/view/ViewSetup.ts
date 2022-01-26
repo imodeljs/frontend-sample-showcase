@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import { Id64, Id64Array, Id64Set, Id64String } from "@itwin/core-bentley";
 import { Matrix3d } from "@itwin/core-geometry";
-import { ColorDef, PlanarClipMaskSettings, SkyBox, SkyGradient } from "@itwin/core-common";
+import { ColorDef, Environment, PlanarClipMaskMode, PlanarClipMaskSettings } from "@itwin/core-common";
 import { DrawingViewState, IModelApp, IModelConnection, SpatialViewState, ViewState } from "@itwin/core-frontend";
-import { metroStationImodelName } from "../SampleIModels";
 import AuthorizationClient from "../authentication/AuthorizationClient";
 
+const metroStationImodelName = "DRWR04-S3";
 export class ViewSetup {
   /** Queries for and loads the default view for an iModel. */
   public static getDefaultView = async (imodel: IModelConnection): Promise<ViewState> => {
@@ -60,12 +60,7 @@ export class ViewSetup {
       viewState.adjustAspectRatio(aspect);
     }
 
-    const viewFlags = viewState.viewFlags.copy({
-      shadows: false,
-      grid: false,
-      visibleEdges: false,
-    });
-    viewState.displayStyle.viewFlags = viewFlags;
+    viewState.viewFlags = viewState.viewFlags.copy({ shadows: false, grid: false, visibleEdges: false });
 
     if (viewState.is3d()) {
       const viewState3d = viewState;
@@ -77,27 +72,24 @@ export class ViewSetup {
         displayStyle.changeBackgroundMapProps({ groundBias });
       }
 
-      displayStyle.environment.clone({
-        sky: SkyBox.createGradient(
-          SkyGradient.create({
-            twoColor: true,
-            zenithColor: ColorDef.fromString("#DEF2FF"),
-            nadirColor: ColorDef.fromString("#F0ECE8"),
-          }),
-        ),
-      });
-
       // Enable the sky-box, but override to old sky box.
-      displayStyle.environment = displayStyle.environment.withDisplay({
-        sky: true,
+      displayStyle.environment = Environment.fromJSON({
+        sky: {
+          display: true,
+          twoColor: true,
+          zenithColor: ColorDef.computeTbgrFromString("#DEF2FF"),
+          nadirColor: ColorDef.computeTbgrFromString("#F0ECE8"),
+        },
       });
 
       // Enable model masking on the metrostation model.
       if (imodel.name === "Metrostation2" || imodel.name === metroStationImodelName) {
         const modelIds = await ViewSetup.getModelIds(imodel);
         const subCategoryIds = await this.getSubCategoryIds(imodel, "S-SLAB-CONC");
+        let planarClipMaskSettings = PlanarClipMaskSettings.create({ subCategoryIds, modelIds });
+        planarClipMaskSettings = planarClipMaskSettings.clone({ mode: PlanarClipMaskMode.IncludeSubCategories });
         displayStyle.changeBackgroundMapProps({
-          planarClipMask: PlanarClipMaskSettings.create({ subCategoryIds, modelIds }).toJSON(),
+          planarClipMask: planarClipMaskSettings.toJSON(),
         });
       }
     }
