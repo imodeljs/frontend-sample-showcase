@@ -3,8 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import "common/samples-common.scss";
 import { EmphasizeElements, IModelApp, OutputMessagePriority, ViewChangeOptions } from "@itwin/core-frontend";
 import { ColorDef, FeatureOverrideType } from "@itwin/core-common";
 import { ReactMessage, UnderlinedButton } from "@itwin/core-react";
