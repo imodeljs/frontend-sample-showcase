@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "common/samples-common.scss";
 import { Table } from "@itwin/components-react";
 import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";
 import { PresentationTableDataProvider } from "@itwin/presentation-components";
