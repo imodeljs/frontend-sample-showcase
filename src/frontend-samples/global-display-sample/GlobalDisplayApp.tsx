@@ -9,6 +9,7 @@ import { Viewer } from "@itwin/web-viewer-react";
 import { GlobalDisplayWidgetProvider } from "./GlobalDisplayWidget";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import { MessageRenderer } from "@itwin/core-react";
+import { bentleyCesiumKey } from "@itwin/sandbox/view/MapLayerOptions";
 
 const uiProviders = [new GlobalDisplayWidgetProvider()];
 
@@ -39,6 +40,7 @@ const GlobalDisplayApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          tileAdminOptions={{ cesiumIonKey: bentleyCesiumKey }}
           defaultUiConfig={default3DSandboxUi}
           mapLayerOptions={mapLayerOptions}
           uiProviders={uiProviders}
