@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { ViewState } from "@itwin/core-frontend";
-import { BasicNavigationWidget, ContentGroup, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
+import { IModelConnection, ViewState } from "@itwin/core-frontend";
+import { BasicNavigationWidget, ContentGroup, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, Widget, Zone } from "@itwin/appui-react";
 import React from "react";
 
-export class CrossProbingFrontstage extends FrontstageProvider {
+export class CrossProbingFrontstageProvider extends FrontstageProvider {
   // constants
   public id = "CrossProbingFrontstage";
   public static MAIN_CONTENT_ID = "CrossProbingFrontstage";
@@ -16,10 +16,8 @@ export class CrossProbingFrontstage extends FrontstageProvider {
   // Content group for all layouts
   private _contentGroup: ContentGroup;
 
-  constructor(viewState3d: ViewState, viewState2d: ViewState) {
+  constructor(connection: IModelConnection, viewState3d: ViewState, viewState2d: ViewState) {
     super();
-
-    const connection = UiFramework.getIModelConnection();
 
     // Create the content group.
     this._contentGroup = new ContentGroup({
@@ -53,14 +51,14 @@ export class CrossProbingFrontstage extends FrontstageProvider {
   public get frontstage(): React.ReactElement<FrontstageProps> {
     return (
       <Frontstage
-        id={CrossProbingFrontstage.MAIN_CONTENT_ID}
+        id={CrossProbingFrontstageProvider.MAIN_CONTENT_ID}
         defaultTool={CoreTools.selectElementCommand}
         contentGroup={this._contentGroup}
         contentManipulationTools={
           <Zone
             widgets={[
               <Widget
-                key={CrossProbingFrontstage.DEFAULT_MANIPULATION_WIDGET_KEY}
+                key={CrossProbingFrontstageProvider.DEFAULT_MANIPULATION_WIDGET_KEY}
                 isFreeform={true}
                 element={<div />}
               />,
@@ -71,7 +69,7 @@ export class CrossProbingFrontstage extends FrontstageProvider {
           <Zone
             widgets={[
               <Widget
-                key={CrossProbingFrontstage.DEFAULT_NAVIGATION_WIDGET_KEY}
+                key={CrossProbingFrontstageProvider.DEFAULT_NAVIGATION_WIDGET_KEY}
                 isFreeform={true}
                 element={<BasicNavigationWidget />}
               />,

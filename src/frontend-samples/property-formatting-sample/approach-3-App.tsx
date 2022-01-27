@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "common/samples-common.scss";
 import { Toggle } from "@itwin/core-react";
 import { SelectionMode, SimpleTableDataProvider, Table } from "@itwin/components-react";
 import { PropertyRecord } from "@itwin/appui-abstract";

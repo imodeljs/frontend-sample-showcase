@@ -2,11 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
-import "common/samples-common.scss";
 import React, { FunctionComponent } from "react";
 import { ChangedElementsApi } from "./ChangedElementsApi";
 import { ChangedElementsClient } from "./ChangedElementsClient";

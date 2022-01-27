@@ -5,7 +5,6 @@
 
 import { DisplayStyle3dSettingsProps } from "@itwin/core-common";
 import { Viewport } from "@itwin/core-frontend";
-import "common/samples-common.scss";
 
 export default class DisplayStylesApp {
   /** Overrides the current display styles using the viewport API. */

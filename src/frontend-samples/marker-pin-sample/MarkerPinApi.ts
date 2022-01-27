@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
 import { Point3d } from "@itwin/core-geometry";
 import { IModelApp } from "@itwin/core-frontend";
 import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";

@@ -5,7 +5,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Project, ProjectsAccessClient, ProjectsSearchableProperty } from "@itwin/projects-client";
-
 import { IModelHubClient, IModelQuery } from "@bentley/imodelhub-client";
 import AuthorizationClient from "../authentication/AuthorizationClient";
 import { defaultIModel, defaultIModelList } from "../constants";

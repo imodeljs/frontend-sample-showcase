@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "common/samples-common.scss";
 import { PropertyCategory, PropertyGrid } from "@itwin/components-react";
 import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider } from "@itwin/presentation-components";
 import { KeySet } from "@itwin/presentation-common";
