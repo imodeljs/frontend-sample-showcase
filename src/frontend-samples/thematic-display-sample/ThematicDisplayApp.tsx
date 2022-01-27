@@ -7,6 +7,7 @@ import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ThematicDisplayWidgetProvider } from "./ThematicDisplayWidget";
+import { bentleyCesiumKey } from "@itwin/sandbox/view/MapLayerOptions";
 
 const uiProviders = [new ThematicDisplayWidgetProvider()];
 
@@ -28,6 +29,7 @@ const ThematicDisplayApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          tileAdminOptions={{ cesiumIonKey: bentleyCesiumKey }}
           mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
