@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
 import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, ViewCreator2d, Viewport } from "@itwin/core-frontend";
 import { ColorDef } from "@itwin/core-common";
 
@@ -14,12 +13,18 @@ import { ColorDef } from "@itwin/core-common";
  * The target element is then zoomed into.
  */
 
+export interface CrossProbingElement {
+  physElementId: string;
+  drawElementId: string;
+  drawModelId: string;
+}
+
 export default class CrossProbingApi {
 
   // keep track of last element selected (to avoid double clicks).
   private static lastElementSelected: string | undefined;
   // array to keep track of all 3D/2D connections.
-  private static elementMap?: any[];
+  private static elementMap?: CrossProbingElement[];
 
   // add listener to capture element selection events.
   public static addElementSelectionListener(imodel: IModelConnection) {
@@ -43,7 +48,7 @@ export default class CrossProbingApi {
 
     // if source is 3D, look for any target 2D elements.
     if (sourceVp?.view.is3d()) {
-      targetLink = CrossProbingApi.elementMap!.filter((link: any) => link.physElementId === sourceElementId);
+      targetLink = CrossProbingApi.elementMap!.filter((link) => link.physElementId === sourceElementId);
       if (targetLink.length > 0) {
         const targetElement = targetLink[0].drawElementId;
         const targetModel = await ev.set.iModel.models.getProps(targetLink[0].drawModelId);
@@ -108,7 +113,13 @@ export default class CrossProbingApi {
         ON physToFunc.TargetECInstanceId = drawToFunc.TargetECInstanceId 
       JOIN Bis.DrawingGraphic drawing 
         ON drawToFunc.SourceECInstanceId = drawing.ECInstanceId`;
-    CrossProbingApi.elementMap = await this._executeQuery(imodel, elementMapQuery);
+
+    const queryResult: string[] = await this._executeQuery(imodel, elementMapQuery);
+    CrossProbingApi.elementMap = queryResult.map(([physElementId, drawElementId, drawModelId]) => ({
+      physElementId,
+      drawElementId,
+      drawModelId,
+    }));
   }
 
   private static _executeQuery = async (imodel: IModelConnection, query: string) => {

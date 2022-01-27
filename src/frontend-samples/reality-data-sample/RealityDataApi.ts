@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
 import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps, RealityDataFormat, RealityDataProvider } from "@itwin/core-common";
 import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
