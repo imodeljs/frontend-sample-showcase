@@ -3,17 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Range1dProps, Vector3d } from "@itwin/core-geometry";
-import { BackgroundMapSettings, GlobeMode, TerrainHeightOriginMode, TerrainSettings, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
+import { GlobeMode, TerrainHeightOriginMode, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
 import { Viewport, ViewState3d } from "@itwin/core-frontend";
-
-// cSpell:ignore imodels
+import { Range1dProps, Vector3d } from "@itwin/core-geometry";
 
 export default class ThematicDisplayApi {
-  public static originalProps?: ThematicDisplayProps;
-  public static originalFlag: boolean = false;
-  public static viewport?: Viewport;
-
   /** Render changes to viewport using Viewport API. */
   public static syncViewport(vp: Viewport): void {
     vp.synchWithView();
@@ -54,14 +48,15 @@ export default class ThematicDisplayApi {
   /** Modify the background view flag and terrain setting using the Viewport API. */
   public static setBackgroundMap(vp: Viewport, on: boolean) {
     // To best display the capabilities of the thematic display, terrain and plane global mode have been enabled.
-    vp.backgroundMapSettings = BackgroundMapSettings.fromJSON({
+    vp.changeBackgroundMapProps({
       applyTerrain: true,
       globeMode: GlobeMode.Plane, // If the user zooms out enough, the curve of the earth can effect the thematic display.
       useDepthBuffer: true,
-      transparency: 0.75,
-      terrainSettings: TerrainSettings.fromJSON({ heightOriginMode: TerrainHeightOriginMode.Geoid }),
+      transparency: 0,
+      terrainSettings: { heightOriginMode: TerrainHeightOriginMode.Geoid },
     });
-    vp.synchWithView();
+    // vp.backgroundMapSettings = BackgroundMapSettings.fromJSON();
+    // vp.synchWithView();
     vp.viewFlags = vp.viewFlags.with("backgroundMap", on);
   }
 

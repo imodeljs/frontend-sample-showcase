@@ -14,8 +14,9 @@ const uiProviders = [new ThematicDisplayWidgetProvider()];
 const ThematicDisplayApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding]);
 
-  const _initialViewstate = async (iModelConnection: IModelConnection) => {
-    return ViewSetup.getDefaultView(iModelConnection);
+  const _initialView = async (iModelConnection: IModelConnection) => {
+    const view = await ViewSetup.getDefaultView(iModelConnection);
+    return view;
   };
 
   /** The sample's render method */
@@ -28,7 +29,7 @@ const ThematicDisplayApp: FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
-          viewportOptions={{ viewState: _initialViewstate }}
+          viewportOptions={{ viewState: _initialView }}
           mapLayerOptions={getMapLayerKeys()}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

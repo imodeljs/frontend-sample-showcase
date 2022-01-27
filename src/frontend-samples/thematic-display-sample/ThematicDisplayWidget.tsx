@@ -4,14 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@itwin/appui-react";
+import { useActiveViewport } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Select, Slider, Toggle } from "@itwin/core-react";
-import { IModelApp, ScreenViewport } from "@itwin/core-frontend";
+import { Select } from "@itwin/core-react";
+import { Viewport } from "@itwin/core-frontend";
 import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
 import { Range1d, Range1dProps } from "@itwin/core-geometry";
 import ThematicDisplayApi from "./ThematicDisplayApi";
 import "./ThematicDisplay.scss";
+import { Slider, ToggleSwitch } from "@itwin/itwinui-react";
 
 // defining the Thematic Display Props values that are not what is need at default,
 const _defaultAzimuth = 315.0;
@@ -30,8 +31,8 @@ const _defaultProps: ThematicDisplayProps = {
 
 const ThematicDisplayWidget: React.FunctionComponent = () => {
 
-  const iModelConnection = useActiveIModelConnection();
-  const viewport = IModelApp.viewManager.selectedView;
+  // const iModelConnection = useActiveIModelConnection();
+  const viewport = useActiveViewport();
   const [onState, setOnState] = React.useState<boolean>(false);
   const [mapState, setMapState] = React.useState<boolean>(false);
   const [rangeState, setRangeState] = React.useState<Range1dProps>([0, 1]);
@@ -42,40 +43,12 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
   const [azimuthState, setAzimuthState] = React.useState<number>(_defaultAzimuth);
   const [elevationState, setElevationState] = React.useState<number>(_defaultElevation);
 
+  // Will prepare the view to show Thematic Display
   useEffect(() => {
-    if (viewport) {
-      initViewport(viewport);
-      updateState();
-    } else {
-      IModelApp.viewManager.onViewOpen.addOnce((vp: ScreenViewport) => {
-        initViewport(vp);
-        updateState();
-      });
-    }
-
-    return () => {
-      if (undefined === ThematicDisplayApi.viewport)
-        return;
-      ThematicDisplayApi.setThematicDisplayProps(ThematicDisplayApi.viewport, ThematicDisplayApi.originalProps);
-      ThematicDisplayApi.setThematicDisplayOnOff(ThematicDisplayApi.viewport, ThematicDisplayApi.originalFlag);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!viewport)
-      return;
-    ThematicDisplayApi.setThematicDisplaySunDirection(viewport, calculateSolarDirectionFromAngles({ azimuth: azimuthState, elevation: elevationState }));
-    ThematicDisplayApi.syncViewport(viewport);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [azimuthState, elevationState]);
-
-  /** This method should be called when the iModel is loaded to set default settings in the
-   * viewport settings to enable thematic display.
-   */
-  const initViewport = (vp: ScreenViewport) => {
+    if (!viewport) return;
+    const vp = viewport;
     // Test that view is compatible with thematic display.
-    if (undefined === vp || !ThematicDisplayApi.isThematicDisplaySupported(vp)) {
+    if (!ThematicDisplayApi.isThematicDisplaySupported(vp)) {
       alert("iModel is not compatible with thematic display, please use an iModel with a 3d view.");
       return;
     }
@@ -95,21 +68,38 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     // Turn on
     // Note: Since this function is modifying the view flags, the view does not need to be synced to see the changes.
     ThematicDisplayApi.setThematicDisplayOnOff(vp, true);
-  };
-
-  /** Update the state of the sample react component by querying the API. */
-  const updateState = () => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
-      return;
 
     const props = ThematicDisplayApi.getThematicDisplayProps(vp);
+    updateState(vp, props);
+    const unsubThematicUpdate = viewport.view.displayStyle.settings.onThematicChanged.addListener((newThematic) => {
+      const newProps = newThematic.toJSON();
+      updateState(vp, newProps);
+    });
+    const unsubViewFlagUpdate = viewport.view.displayStyle.settings.onViewFlagsChanged.addListener((_newFlags) => {
+      const newProps = ThematicDisplayApi.getThematicDisplayProps(vp);
+      updateState(vp, newProps);
+    });
+    return () => {
+      unsubThematicUpdate();
+      unsubViewFlagUpdate();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewport]);
+
+  useEffect(() => {
+    if (!viewport) return;
+    ThematicDisplayApi.setThematicDisplaySunDirection(viewport, calculateSolarDirectionFromAngles({ azimuth: azimuthState, elevation: elevationState }));
+    ThematicDisplayApi.syncViewport(viewport);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [azimuthState, elevationState]);
+
+  /** Update the state of the sample react component by querying the API. */
+  const updateState = (vp: Viewport, props: ThematicDisplayProps) => {
     let extents = ThematicDisplayApi.getProjectExtents(vp);
     let range = props.range;
 
     // The coff harbors sample
-    if ("CoffsHarborDemo" === iModelConnection?.name)
+    if ("CoffsHarborDemo" === vp.iModel?.name)
       extents = [-4.8088836669921875, 127.30888366699219];
 
     let colorScheme = props.gradientSettings?.colorScheme;
@@ -127,8 +117,9 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     if (ThematicDisplayMode.Slope === displayMode)
       extents = [0, 90]; // Slope range is angular
 
-    if (!Range1d.fromJSON(extents).isAlmostEqual(Range1d.fromJSON(extents)))
-      range = extents;
+    range = range ? capRange(range, extents) : extents;
+    // if (!Range1d.fromJSON(extents).isAlmostEqual(Range1d.fromJSON(extents)))
+    //   range = extents;
 
     setOnState(ThematicDisplayApi.isThematicDisplayOn(vp));
     setMapState(ThematicDisplayApi.isGeoLocated(vp) && ThematicDisplayApi.isBackgroundMapOn(vp));
@@ -139,84 +130,83 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     setGradientModeState(gradientMode);
   };
 
+  const capRange = (range: Range1dProps, capProps: Range1dProps): Range1dProps => {
+    const val = Range1d.fromJSON(range), cap = Range1d.fromJSON(capProps);
+    range = [Math.max(cap.low, val.low), Math.min(cap.high, val.high)];
+    return range;
+  };
+
   // Handle changes to the thematic display toggle.
-  const _onChangeThematicDisplayToggle = (checked: boolean) => {
+  const _onChangeThematicDisplayToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
     if (undefined === viewport)
       return;
 
     ThematicDisplayApi.setThematicDisplayOnOff(viewport, checked);
-    updateState();
+    // updateState();
   };
 
   // Handle changes to the thematic display toggle.
-  const _onChangeMapToggle = (checked: boolean) => {
-    const vp = IModelApp.viewManager.selectedView;
+  const _onChangeMapToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
 
-    if (undefined === vp)
+    if (undefined === viewport)
       return;
 
-    ThematicDisplayApi.setBackgroundMap(vp, checked);
-    updateState();
+    ThematicDisplayApi.setBackgroundMap(viewport, checked);
+    // updateState();
   };
 
   // Handle changes to the display mode.
   const _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === viewport)
       return;
 
     // Convert the value back to number represented by enum.
     const displayMode: ThematicDisplayMode = Number.parseInt(event.target.value, 10);
 
-    ThematicDisplayApi.setThematicDisplayMode(vp, displayMode);
-    ThematicDisplayApi.syncViewport(vp);
-    updateState();
+    ThematicDisplayApi.setThematicDisplayMode(viewport, displayMode);
+    ThematicDisplayApi.syncViewport(viewport);
+    // updateState();
   };
 
   // Handle changes to the display mode.
   const _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === viewport)
       return;
 
     // Convert the value back to number represented by enum.
     const colorScheme: ThematicGradientColorScheme = Number.parseInt(event.target.value, 10);
 
-    ThematicDisplayApi.setThematicDisplayGradientColorScheme(vp, colorScheme);
-    ThematicDisplayApi.syncViewport(vp);
-    updateState();
+    ThematicDisplayApi.setThematicDisplayGradientColorScheme(viewport, colorScheme);
+    ThematicDisplayApi.syncViewport(viewport);
+    // updateState();
   };
 
   // Handle changes to the gradient mode.
   const _onChangeGradientMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === viewport)
       return;
 
     // Convert the value back to number represented by enum.
     const gradientMode: ThematicGradientMode = Number.parseInt(event.target.value, 10);
 
-    ThematicDisplayApi.setThematicDisplayGradientMode(vp, gradientMode);
-    ThematicDisplayApi.syncViewport(vp);
-    updateState();
+    ThematicDisplayApi.setThematicDisplayGradientMode(viewport, gradientMode);
+    ThematicDisplayApi.syncViewport(viewport);
+    // updateState();
   };
 
   // Handles updates to the thematic range slider
   const _onUpdateRangeSlider = (values: readonly number[]) => {
-    const vp = IModelApp.viewManager.selectedView;
-
-    if (undefined === vp)
+    if (undefined === viewport)
       return;
 
     // This keeps the high and low from crossing
     const newRange = Range1d.createXX(values[0], values[1]);
 
-    ThematicDisplayApi.setThematicDisplayRange(vp, newRange);
-    ThematicDisplayApi.syncViewport(vp);
-    updateState();
+    ThematicDisplayApi.setThematicDisplayRange(viewport, newRange);
+    ThematicDisplayApi.syncViewport(viewport);
+    // updateState();
   };
 
   const _mapOptions = (o: {}): {} => {
@@ -250,10 +240,10 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     <div className="sample-options">
       <div className="sample-options-2col">
         <label>Thematic Display</label>
-        <Toggle isOn={onState} onChange={_onChangeThematicDisplayToggle} />
+        <ToggleSwitch checked={onState} onChange={_onChangeThematicDisplayToggle} />
 
         <label>Background Map</label>
-        <Toggle isOn={mapState} onChange={_onChangeMapToggle} disabled={!isGeoLocated} />
+        <ToggleSwitch checked={mapState} onChange={_onChangeMapToggle} disabled={!isGeoLocated} />
 
         <label>Display Mode</label>
         <Select style={{ width: "fit-content" }} onChange={_onChangeDisplayMode} value={displayModeState.toString()} options={displayModeOptions} />
@@ -266,11 +256,14 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
 
         <label>Change Range</label>
         {displayModeState !== ThematicDisplayMode.HillShade ?
-          <span style={{ display: "flex", flexDirection: "row" }}>
-            <label style={{ marginRight: 7 }}>{Math.round(min)}</label>
-            <Slider min={min} max={max} step={step} values={[sliderRange.low, sliderRange.high]} onUpdate={_onUpdateRangeSlider} />
-            <label style={{ marginLeft: 7 }}>{Math.round(max)}</label>
-          </span> : <span style={{ display: "flex", flexDirection: "column" }}>
+          <Slider
+            values={[sliderRange.low, sliderRange.high]}
+            min={min} minLabel={Math.round(min)}
+            max={max} maxLabel={Math.round(max)}
+            step={step}
+            onUpdate={_onUpdateRangeSlider}
+            onChange={_onUpdateRangeSlider}
+          /> : <span style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ display: "flex", flexDirection: "row" }}>
               <label style={{ marginRight: 7 }}>Azimuth</label>
               <Slider min={0} max={360} step={1} values={[azimuthState]} onUpdate={(values) => setAzimuthState(values[0])} />
