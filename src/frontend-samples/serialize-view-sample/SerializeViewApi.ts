@@ -5,7 +5,6 @@
 
 import { ViewStateProps } from "@itwin/core-common";
 import { EntityState, IModelConnection, Viewport, ViewState } from "@itwin/core-frontend";
-import "common/samples-common.scss";
 
 export default class SerializeViewApi {
 

@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
 import { Presentation, SelectionChangesListener } from "@itwin/presentation-frontend";
 import { Content, DisplayValue, Field, KeySet } from "@itwin/presentation-common";
 import { OverlySimplePropertyRecord } from "./approach-3-App";

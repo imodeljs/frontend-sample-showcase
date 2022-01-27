@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
 import { IModelApp, StandardViewId, ViewChangeOptions, ZoomToOptions } from "@itwin/core-frontend";
 
 export interface ZoomOptions {
