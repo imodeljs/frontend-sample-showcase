@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Id64String } from "@itwin/core-bentley";
 import { Point3d, Range1d, Range2d, Range3d, Vector3d, XYAndZ } from "@itwin/core-geometry";
-import { Placement3d, RenderTexture } from "@itwin/core-common";
+import { Placement3d, QueryRowFormat, RenderTexture } from "@itwin/core-common";
 import { Decorator, imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, Viewport } from "@itwin/core-frontend";
 import { EmitterHighlighter, FireEmitter, FireParams } from "./FireDecorator";
 import { PlacementTool } from "./PlacementTool";
@@ -119,10 +119,10 @@ export default class FireDecorationApi {
 
   /** Queries the backend for the elements that will act as targets for the demo on the Villa iModel. */
   public static async queryElements(iModel: IModelConnection, elementsIds: string[]): Promise<Array<{ origin: Point3d, bBox: Range3d }>> {
-    const query = `Select Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
+    const query = `Select Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceId IN (${elementsIds.join(",")})`;
     const data: Array<{ origin: Point3d, bBox: Range3d }> = [];
 
-    for await (const row of iModel.query(query)) {
+    for await (const row of iModel.query(query, undefined, { rowFormat: QueryRowFormat.UseJsPropertyNames })) {
       const element = (row as { origin: XYAndZ, pitch: number, roll: number, yaw: number, bBoxLow: XYAndZ, bBoxHigh: XYAndZ });
 
       const bBoxModelSpace = Range3d.create(Point3d.fromJSON(element.bBoxLow), Point3d.fromJSON(element.bBoxHigh));
