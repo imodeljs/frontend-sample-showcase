@@ -97,7 +97,7 @@ export class VolumeQueryApi {
     const elementsAsync = vp.iModel.query(esqlQuery);
     const elements: SpatialElement[] = [];
     for await (const element of elementsAsync) {
-      elements.push({ id: element.id, className: element.className, name: undefined });
+      elements.push({ id: element[0], className: element[1], name: undefined });
     }
 
     return elements;
