@@ -93,7 +93,7 @@ export class VolumeQueryApi {
 
   /* Getting elements that are inside or overlaping the given range*/
   public static async getSpatialElements(vp: ScreenViewport, range: Range3d): Promise<SpatialElement[]> {
-    const esqlQuery = `SELECT e.ECInstanceId, e.ECClassId FROM bis.SpatialElement e JOIN bis.SpatialIndex i ON e.ECInstanceId=i.ECInstanceId WHERE i.MinX<=${range.xHigh} AND i.MinY<=${range.yHigh} AND i.MinZ<=${range.zHigh} AND i.MaxX >= ${range.xLow} AND i.MaxY >= ${range.yLow} AND i.MaxZ >= ${range.zLow}`;
+    const esqlQuery = `SELECT e.ECInstanceId,  ec_classname(e.ECClassId, 's:c')  FROM bis.SpatialElement e JOIN bis.SpatialIndex i ON e.ECInstanceId=i.ECInstanceId WHERE i.MinX<=${range.xHigh} AND i.MinY<=${range.yHigh} AND i.MinZ<=${range.zHigh} AND i.MaxX >= ${range.xLow} AND i.MaxY >= ${range.yLow} AND i.MaxZ >= ${range.zLow}`;
     const elementsAsync = vp.iModel.query(esqlQuery);
     const elements: SpatialElement[] = [];
     for await (const element of elementsAsync) {
