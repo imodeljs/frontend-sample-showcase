@@ -3,30 +3,20 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { IModelApp } from "@itwin/core-frontend";
-import { Point3d, Range2d } from "@itwin/core-geometry";
 import HeatmapDecorator from "./HeatmapDecorator";
 
 export default class HeatmapDecoratorApi {
-  public static decorator?: HeatmapDecorator;
-  public static addedDecorator = false;
 
-  public static setupDecorator(points: Point3d[], range: Range2d, spreadFactor: number, height: number) {
-    if (undefined === HeatmapDecoratorApi.decorator)
-      HeatmapDecoratorApi.decorator = new HeatmapDecorator(points, range, spreadFactor, height);
+  public static setupDecorator() {
+    return new HeatmapDecorator();
   }
 
-  public static enableDecorations() {
-    if (!HeatmapDecoratorApi.addedDecorator && HeatmapDecoratorApi.decorator) {
-      IModelApp.viewManager.addDecorator(HeatmapDecoratorApi.decorator);
-      HeatmapDecoratorApi.addedDecorator = true;
-    }
+  public static enableDecorations(decorator: HeatmapDecorator) {
+    if (!IModelApp.viewManager.decorators.includes(decorator))
+      IModelApp.viewManager.addDecorator(decorator);
   }
 
-  public static disableDecorations() {
-    if (undefined === HeatmapDecoratorApi.decorator)
-      return;
-
-    IModelApp.viewManager.dropDecorator(HeatmapDecoratorApi.decorator);
-    HeatmapDecoratorApi.addedDecorator = false;
+  public static disableDecorations(decorator: HeatmapDecorator) {
+    IModelApp.viewManager.dropDecorator(decorator);
   }
 }
