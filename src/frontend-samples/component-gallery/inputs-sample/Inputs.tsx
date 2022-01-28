@@ -294,9 +294,6 @@ export default class InputsList extends React.Component<{}> {
             },
           ]}
           placeholder="Placeholder text"
-          popoverProps={{
-            visible: true,
-          }}
           value={2}
         />,
       ),
