@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Slider, Toggle } from "@itwin/core-react";
 import { Point3d, Range2d } from "@itwin/core-geometry";
 import { PointSelector } from "common/PointSelector/PointSelector";
@@ -59,9 +59,9 @@ export const HeatmapDecoratorWidget: React.FunctionComponent = () => {
       HeatmapDecoratorApi.disableDecorations();
   }, [showDecoratorState]);
 
-  const _onPointsChanged = (p: Point3d[]) => {
+  const _onPointsChanged = useCallback((p: Point3d[]) => {
     setPointsState(p);
-  };
+  }, []);
 
   const _onChangeSpreadFactor = (values: readonly number[]) => {
     setSpreadFactorState(values[0]);
