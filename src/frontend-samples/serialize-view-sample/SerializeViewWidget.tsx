@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { Button, Dialog, Select, SelectOption, SmallText } from "@itwin/core-react";
+import { Dialog } from "@itwin/core-react";
 import { ModalDialogManager } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ViewStateProps } from "@itwin/core-common";
@@ -13,13 +13,14 @@ import { IModelViews, sampleViewStates, ViewStateWithName } from "./SampleViewSt
 import { JsonViewerWidget } from "./JsonViewerWidget";
 import SerializeViewApi from "./SerializeViewApi";
 import "./SerializeView.scss";
+import { Button, Select, SelectOption, Small } from "@itwin/itwinui-react";
 
 export const SerializeViewWidget: React.FunctionComponent = () => {
   const viewport = IModelApp.viewManager.selectedView;
   const allSavedViews: IModelViews[] = [...sampleViewStates];
   const [currentViewIndexState, setCurrentViewIndexState] = React.useState<number>(0);
   const [viewsState, setViewsState] = React.useState<ViewStateWithName[]>([]);
-  const [optionsState, setOptionsState] = React.useState<SelectOption[]>([]);
+  const [optionsState, setOptionsState] = React.useState<SelectOption<number>[]>([]);
   const [jsonViewerTitleState, setJsonViewerTitleState] = React.useState<string>("");
   const [jsonMenuValueState, setJsonMenuValueState] = React.useState<string>("");
   const [loadStateError, setLoadStateError] = React.useState<string | undefined>("");
@@ -107,7 +108,7 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
   };
 
   /** Gets the options for the dropdown menu to select views */
-  const getOptions = (views: ViewStateWithName[]): SelectOption[] => {
+  const getOptions = (views: ViewStateWithName[]): SelectOption<number>[] => {
     return views.map((viewStateWithName: ViewStateWithName, index: number) => {
       return { label: viewStateWithName.name, value: index };
     });
@@ -121,9 +122,9 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
 
     return (
       <div style={{ overflowWrap: "break-word" }}>
-        <SmallText style={{ color: "var(--foreground-alert)" }}>
+        <Small style={{ color: "var(--foreground-alert)" }}>
           ${stateProp}
-        </SmallText>
+        </Small>
       </div>
     );
   };
@@ -183,14 +184,16 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         {"Choose a view from the list to \"Load\" it into the viewport. Or manipulate the view and select \"Save\" to serialize it."}
         <hr></hr>
-        <span>Select View: </span>
-        <Select options={optionsState} onChange={(event) => setCurrentViewIndexState(Number.parseInt(event.target.selectedOptions[0].value, 10))} style={{ width: "fit-content" }} disabled={viewsState.length === 0} value={currentViewIndexState} />
+        <div style={{ display: "flex" }}>
+          <p>Select View: </p>
+          <Select options={optionsState} onChange={(num) => setCurrentViewIndexState(num)} style={{ flex: "1", padding: "5px" }} disabled={viewsState.length === 0} value={currentViewIndexState} />
+        </div>
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <Button onClick={_onSaveStateClick} disabled={viewsState.length === 0}>Save State</Button>
           <Button onClick={_onLoadStateClick} disabled={viewsState.length === 0}>Load State</Button>
         </div>
         {showError(loadStateError)}
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", padding: "5px" }}>
           <Button onClick={_openDialog} disabled={viewsState.length === 0}>Edit Json</Button>
         </div>
       </div>
