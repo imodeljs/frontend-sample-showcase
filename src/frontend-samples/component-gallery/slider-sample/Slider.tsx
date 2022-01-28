@@ -85,7 +85,6 @@ export default class SliderList extends React.Component<{}> {
           style={{ width: "100%" }}
           max={60}
           min={0}
-          setFocus
           thumbMode="inhibit-crossing"
           tickLabels={
             [

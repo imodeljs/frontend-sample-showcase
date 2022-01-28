@@ -23,7 +23,7 @@ export default class TabsList extends React.Component<{}>  {
       createComponentExample("Green Horizontal Tabs", undefined, <HorizontalTabs color={"green"} focusActivationMode="auto" labels={["Tab 1", "Tab 2", "Tab 3"]} />),
       createComponentExample("Borderless Tabs", undefined, <HorizontalTabs type={"borderless"} focusActivationMode="auto" labels={["Tab 1", "Tab 2", "Tab 3"]} />),
       createComponentExample("Pill Tabs", undefined, <HorizontalTabs type={"pill"} focusActivationMode="auto" labels={[<Tab key="0" startIcon={<SvgStar />} />, <Tab key="1" startIcon={<SvgStar />} />, <Tab key="2" startIcon={<SvgStar />} />]} />),
-      createComponentExample("Sublabel and Icon Tabs", undefined, <HorizontalTabs type={"borderless"} focusActivationMode="auto" labels={[<Tab key="0" label="Item0" startIcon={<SvgStar />} sublabel="Sublabel0" />, <Tab key="1" label="Item1" startIcon={<SvgStar />} sublabel="Sublabel1" />, <Tab key="2" disabled label="Item2" startIcon={<SvgStar />} sublabel="Sublabel2" />]} />),
+      createComponentExample("Sublabel and Icon Tabs", undefined, <HorizontalTabs type={"borderless"} focusActivationMode="auto" labels={[<Tab key="0" label="Item0" startIcon={<SvgStar />} sublabel="Sublabel0" />, <Tab key="1" label="Item1" startIcon={<SvgStar />} sublabel="Sublabel1" />]} />),
       createComponentExample("Vertical Tabs", undefined, <VerticalTabs labels={["Tab 1", "Tab 2", "Tab 3"]} />),
     ];
   }
