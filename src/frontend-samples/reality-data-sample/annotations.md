@@ -55,7 +55,7 @@ Turning on a reality model. If `orbitGTBlob` is defined, this reality model is a
 
 # Turn off a Reality Model
 
-Turning off a reality model. Reality models are detached using [`DisplayStyleState.detachRealityModelByNameAndUrl`](https://www.itwinjs.org/reference/imodeljs-frontend/views/displaystylestate/detachrealitymodelbynameandurl/).
+Turning off a reality model. Reality models are detached using [`DisplayStyleState.detachRealityModelByNameAndUrl`](https://www.itwinjs.org/reference/core-frontend/views/displaystylestate/detachrealitymodelbynameandurl/).
 
 [_metadata_:annotation]:- "REALITY_MODEL_OFF"
 

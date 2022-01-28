@@ -3,22 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { IModelConnection, ViewState } from "@itwin/core-frontend";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent } from "react";
+import { FunctionComponent, default as React, useMemo } from "react";
 import "./SwipingComparison.scss";
 import { SwipingComparisonWidgetProvider } from "./SwipingComparisonWidget";
 
 const containerId = "swiping_comparison_app_container";
 const uiProviders = [new SwipingComparisonWidgetProvider(containerId)];
 
-const getDefaultView = async (iModelConnection: IModelConnection): Promise<ViewState> => {
-  const viewState = await ViewSetup.getDefaultView(iModelConnection);
-  return viewState;
-};
-const viewportOptions = { viewState: getDefaultView };
-
 const SwipingComparisonApp: FunctionComponent = () => {
+  const getDefaultView = React.useCallback(async (iModelConnection: IModelConnection): Promise<ViewState> => {
+    const viewState = await ViewSetup.getDefaultView(iModelConnection);
+    return viewState;
+  }, []);
+  const viewportOptions = useMemo(() => ({ viewState: getDefaultView }), [getDefaultView]);
   // const viewport = useActiveViewport();
   const sampleIModelInfo = useSampleWidget("Drag the divider to compare the two halves of the view. Try rotating the view with the 'Lock Plane' toggle on and off.", [SampleIModels.ExtonCampus]);
 
@@ -34,6 +33,7 @@ const SwipingComparisonApp: FunctionComponent = () => {
             authClient={AuthorizationClient.oidcClient}
             enablePerformanceMonitors={true}
             viewportOptions={viewportOptions}
+            mapLayerOptions={mapLayerOptions}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"
             uiProviders={uiProviders}

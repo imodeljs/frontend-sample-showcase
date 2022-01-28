@@ -5,7 +5,7 @@
 import React, { FunctionComponent, useState } from "react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { UnifiedSelectionWidgetProvider } from "./UnifiedSelectionTreeWidget";
 
@@ -30,6 +30,7 @@ const UnifiedSelectionApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={viewportOptions}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

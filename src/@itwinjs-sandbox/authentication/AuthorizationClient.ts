@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { BrowserAuthorizationClient } from "@itwin/browser-authorization";
 import { AccessToken, AuthStatus, BeEvent, BentleyError } from "@itwin/core-bentley";
 import { AuthorizationClient } from "@itwin/core-common";
+import { ViewerAuthorizationClient } from "@itwin/web-viewer-react";
 
 interface AccessTokenObject {
   startsAt: Date;
@@ -13,13 +13,13 @@ interface AccessTokenObject {
   tokenString: string;
 }
 
-export default class ShowcaseAuthorizationClient implements AuthorizationClient {
+export default class ShowcaseAuthorizationClient implements ViewerAuthorizationClient {
   private _accessToken?: AccessTokenObject;
   private static _userUrl = "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser";
   private static _oidcClient: AuthorizationClient;
 
-  public static get oidcClient(): BrowserAuthorizationClient {
-    return this._oidcClient as BrowserAuthorizationClient;
+  public static get oidcClient(): ViewerAuthorizationClient {
+    return this._oidcClient as ViewerAuthorizationClient;
   }
 
   public get isAuthorized(): boolean {

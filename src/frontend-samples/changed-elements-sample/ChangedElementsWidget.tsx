@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@itwin/core-bentley";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { Version } from "@bentley/imodelhub-client";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { Select, Spinner, SpinnerSize } from "@itwin/core-react";

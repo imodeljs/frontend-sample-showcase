@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
 import { ToolbarButtonProvider } from "./ToolbarButtonProvider";
-import { AuthorizationClient, default3DAppUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DAppUi, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
 
@@ -27,6 +27,7 @@ const ToolbarButtonApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DAppUi}
           theme="dark"
           uiProviders={uiProviders}

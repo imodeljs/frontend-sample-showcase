@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import { SampleDataProvider } from "@itwin/sandbox";
 
 export const BasicTreeComponent: FunctionComponent = () => {
   const [width, setWidth] = useState<number>(1000);

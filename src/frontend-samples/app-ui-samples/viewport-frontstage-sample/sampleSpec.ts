@@ -4,7 +4,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { SampleSpec } from "SampleSpec";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 
 export function getViewportFrontstageSample(): SampleSpec {
   return ({

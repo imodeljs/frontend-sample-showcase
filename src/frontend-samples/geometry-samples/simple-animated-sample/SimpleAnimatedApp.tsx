@@ -6,7 +6,7 @@ import React, { FunctionComponent } from "react";
 import { Range3d } from "@itwin/core-geometry";
 import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@itwin/core-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwin/sandbox";
 import { SimpleAnimatedWidgetProvider } from "./SimpleAnimatedWidget";
 import { Cartographic, ColorDef, RenderMode } from "@itwin/core-common";
 

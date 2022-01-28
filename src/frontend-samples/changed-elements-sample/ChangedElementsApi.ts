@@ -7,7 +7,7 @@ import { Version } from "@bentley/imodelhub-client";
 import { ChangedElements, ColorDef, FeatureAppearance } from "@itwin/core-common";
 import { EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@itwin/core-frontend";
 import { ChangedElementsClient } from "./ChangedElementsClient";
-import { AuthorizationClient } from "@itwinjs-sandbox";
+import { AuthorizationClient } from "@itwin/sandbox";
 
 /** This provider will change the color of the elements based on the last operation of the comparison. */
 class ComparisonProvider implements FeatureOverrideProvider {

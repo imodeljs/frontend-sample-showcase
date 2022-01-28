@@ -7,7 +7,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider, TreeEventHandler, TreeNodeItem, TreeSelectionModificationEventArgs, TreeSelectionReplacementEventArgs, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 
 import { CheckBoxState, useDisposable } from "@itwin/core-react";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import { SampleDataProvider } from "@itwin/sandbox";
 
 /**
  * This component demonstrates how to use `ControlledTree` with custom tree events handling.

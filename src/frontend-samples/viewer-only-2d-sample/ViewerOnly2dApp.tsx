@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget } from "@itwinjs-sandbox";
+import { AuthorizationClient, default2DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { ViewerOnly2dApi } from "./ViewerOnly2dApi";
@@ -29,6 +29,7 @@ const ViewportOnly2dApp: FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true} viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

@@ -5,9 +5,8 @@
 import React from "react";
 import { ShowcaseToolAdmin } from "./TooltipCustomizeApi";
 import { Viewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { IModelConnection } from "@itwin/core-frontend";
-import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
 import { TooltipCustomizeWidgetProvider } from "./TooltipCustomizeWidget";
 
 const uiProviders = [new TooltipCustomizeWidgetProvider()];
@@ -29,6 +28,7 @@ const TooltipCustomizeApp: React.FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
+          mapLayerOptions={mapLayerOptions}
           viewportOptions={{ viewState: _initialViewstate }}
 
           /** Pass the toolAdmin override directly into the viewer */

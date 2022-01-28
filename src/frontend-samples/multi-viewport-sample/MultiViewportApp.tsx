@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from "react";
 import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
@@ -20,12 +20,14 @@ const MultiViewportApp: FunctionComponent = () => {
     setFrontstages(() => [{ provider: new MultiViewportFrontstage(), default: true, requiresIModelConnection: true }]);
   }, [sampleIModelInfo]);
 
-  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+  const _initialViewstate = useCallback(async (iModelConnection: IModelConnection) => {
     const viewState = await ViewSetup.getDefaultView(iModelConnection);
 
     setFrontstages(() => [{ provider: new MultiViewportFrontstage(viewState), default: true }]);
     return viewState;
-  };
+  }, []);
+
+  const vpOptions = useMemo(() => ({ viewState: _initialViewstate }), [_initialViewstate]);
 
   /** The sample's render method */
   return (
@@ -37,7 +39,8 @@ const MultiViewportApp: FunctionComponent = () => {
           iModelId={sampleIModelInfo.iModelId}
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
-          viewportOptions={{ viewState: _initialViewstate }}
+          viewportOptions={vpOptions}
+          mapLayerOptions={mapLayerOptions}
           frontstages={frontStages}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"

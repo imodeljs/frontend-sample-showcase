@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useCallback } from "react";
-import { AuthorizationClient, default2DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default2DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, ScreenViewport } from "@itwin/core-frontend";
 import { HyperModelingWidgetProvider } from "./HyperModelingWidget";
@@ -39,6 +39,7 @@ const HyperModelingApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default2DSandboxUi}
           uiProviders={uiProviders}
           theme="dark"

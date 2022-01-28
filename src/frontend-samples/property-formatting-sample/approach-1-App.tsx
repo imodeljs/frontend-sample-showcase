@@ -4,7 +4,6 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "common/samples-common.scss";
 import { Toggle } from "@itwin/core-react";
 import { PropertyGrid } from "@itwin/components-react";
 import { PropertyFormattingApi, PropertyProps } from "./PropertyFormattingApi";

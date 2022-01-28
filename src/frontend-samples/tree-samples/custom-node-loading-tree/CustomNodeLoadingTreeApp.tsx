@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { CustomNodeLoadingTree } from "./CustomNodeLoadingTreeComponent";
-import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
+import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import "./CustomNodeLoadingTree.scss";
 

@@ -9,7 +9,7 @@ import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@i
 import { BentleyStatus, Id64Array } from "@itwin/core-bentley";
 import { PresentationLabelsProvider } from "@itwin/presentation-components";
 import { InstanceKey } from "@itwin/presentation-common";
-import { ViewSetup } from "@itwinjs-sandbox";
+import { ViewSetup } from "@itwin/sandbox";
 
 /* Going to color elements from three different sections of volume box */
 export enum SectionOfColoring {
@@ -97,7 +97,7 @@ export class VolumeQueryApi {
     const elementsAsync = vp.iModel.query(esqlQuery);
     const elements: SpatialElement[] = [];
     for await (const element of elementsAsync) {
-      elements.push({ id: element.id, className: element.className, name: undefined });
+      elements.push({ id: element[0], className: element[1], name: undefined });
     }
 
     return elements;

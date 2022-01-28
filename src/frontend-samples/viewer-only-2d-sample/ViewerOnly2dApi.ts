@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { ModelProps } from "@itwin/core-common";
 import { DrawingModelState, IModelApp, IModelConnection, SectionDrawingModelState, SheetModelState, ViewCreator2d } from "@itwin/core-frontend";
-import { ViewSetup } from "@itwinjs-sandbox";
+import { ViewSetup } from "@itwin/sandbox";
 
 export interface ModelLists {
   drawings: ModelProps[];

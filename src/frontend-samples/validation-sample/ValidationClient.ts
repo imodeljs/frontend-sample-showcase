@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { request, RequestOptions, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox";
+import { AuthorizationClient } from "@itwin/sandbox";
 
 export default class ValidationClient {
 
