@@ -34,7 +34,11 @@ const MarkerPinWidget: React.FunctionComponent = () => {
   const [markersDataState, setMarkersDataState] = React.useState<MarkerData[]>([]);
   const [rangeState, setRangeState] = React.useState<Range2d>(Range2d.createNull());
   const [heightState, setHeightState] = React.useState<number>(0);
-  const markerPinDecorator = React.useRef<MarkerPinDecorator>(MarkerPinApi.setupDecorator());
+  const markerPinDecorator = React.useRef<MarkerPinDecorator>();
+
+  useEffect(() => {
+    markerPinDecorator.current = MarkerPinApi.setupDecorator();
+  }, []);
 
   /** Load the images on widget startup */
   useEffect(() => {
@@ -65,15 +69,6 @@ const MarkerPinWidget: React.FunctionComponent = () => {
     };
   }, []);
 
-  /** Initialize Decorator */
-  useEffect(() => {
-    const decorator = markerPinDecorator.current;
-    MarkerPinApi.enableDecorations(decorator);
-    return () => {
-      MarkerPinApi.disableDecorations(decorator);
-    };
-  }, []);
-
   const viewInit = useCallback((vp: ScreenViewport) => {
 
     // Grab range of the contents of the view. We'll use this to position the random markers.
@@ -90,21 +85,24 @@ const MarkerPinWidget: React.FunctionComponent = () => {
 
   /** When the images are loaded, initalize the MarkerPin */
   useEffect(() => {
-    if (viewport)
+    if (viewport) {
       viewInit(viewport);
-    else
-      IModelApp.viewManager.onViewOpen.addOnce((vp) => viewInit(vp));
+    }
   }, [viewInit, viewport]);
 
   useEffect(() => {
-    if (showDecoratorState)
-      MarkerPinApi.enableDecorations(markerPinDecorator.current);
-    else
-      MarkerPinApi.disableDecorations(markerPinDecorator.current);
+    if (markerPinDecorator.current) {
+      if (showDecoratorState)
+        MarkerPinApi.enableDecorations(markerPinDecorator.current);
+      else
+        MarkerPinApi.disableDecorations(markerPinDecorator.current);
+    }
   }, [showDecoratorState]);
 
   useEffect(() => {
-    MarkerPinApi.setMarkersData(markerPinDecorator.current, markersDataState);
+    if (markerPinDecorator.current) {
+      MarkerPinApi.setMarkersData(markerPinDecorator.current, markersDataState);
+    }
   }, [markersDataState, showDecoratorState]);
 
   /** This callback will be executed when the user interacts with the PointSelector
@@ -127,7 +125,9 @@ const MarkerPinWidget: React.FunctionComponent = () => {
 
   /** This callback will be executed by the PlaceMarkerTool when it is time to create a new marker */
   const _manuallyAddMarker = useCallback((point: Point3d) => {
-    MarkerPinApi.addMarkerPoint(markerPinDecorator.current, point, MarkerPinApi._images.get(manualPinState.image)!);
+    if (markerPinDecorator.current) {
+      MarkerPinApi.addMarkerPoint(markerPinDecorator.current, point, MarkerPinApi._images.get(manualPinState.image)!);
+    }
   }, [manualPinState.image]);
 
   /** This callback will be executed when the user clicks the UI button.  It will start the tool which

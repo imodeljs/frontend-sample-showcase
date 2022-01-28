@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { HorizontalTabs, Tab, VerticalTabs } from "@itwin/itwinui-react";
+import { HorizontalTabs, Tab, ThemeProvider, VerticalTabs } from "@itwin/itwinui-react";
 import { SvgStar } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -33,6 +33,7 @@ export default class TabsList extends React.Component<{}>  {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of tabs that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={TabsList.getTabsData()}></UIComponentContainer>
       </>
