@@ -45,4 +45,12 @@
     }
   }
 
+
+  .iui-checkbox .iui-checkbox-checkmark::after, .iui-checkbox .iui-radio-dot::after {
+    display: none
+  }
+
+  .iui-tabs-wrapper {
+    width: 100%;
+  }
 }
