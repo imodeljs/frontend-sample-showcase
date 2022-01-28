@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { ToggleSwitch } from "@itwin/itwinui-react";
+import { ThemeProvider, ToggleSwitch } from "@itwin/itwinui-react";
 import { SvgCheckmark } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -33,6 +33,7 @@ export default class ToggleList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of toggles that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={ToggleList.getToggleData()}></UIComponentContainer>
       </>
