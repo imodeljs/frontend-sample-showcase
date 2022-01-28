@@ -134,7 +134,7 @@ export default class SwipingComparisonApi {
     const imodel = viewport.iModel;
     const style = viewport.displayStyle.clone();
     const RealityDataClient = new RealityDataAccessClient();
-    const available: RealityDataResponse = await RealityDataClient.getRealityDatas(await IModelApp.authorizationClient!.getAccessToken(), imodel.iTwinId!, undefined);
+    const available: RealityDataResponse = await RealityDataClient.getRealityDatas(await IModelApp.authorizationClient!.getAccessToken(), imodel.iTwinId, undefined);
 
     const availableModels: ContextRealityModelProps[] = [];
 
