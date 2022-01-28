@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { MenuItem, SplitButton } from "@itwin/itwinui-react";
+import { MenuItem, SplitButton, ThemeProvider } from "@itwin/itwinui-react";
 import { SvgPlaceholder } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -44,6 +44,7 @@ export default class SplitButtonList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of split buttons that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={SplitButtonList.getSplitButtonData()}></UIComponentContainer>
       </>

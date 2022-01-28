@@ -7,7 +7,7 @@ import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ExpandableList } from "@itwin/core-react";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { ExpandableBlock } from "@itwin/itwinui-react";
+import { ExpandableBlock, ThemeProvider } from "@itwin/itwinui-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -73,6 +73,7 @@ export default class ExpandableListList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of expandable lists that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={ExpandableListList.getExpandableListData()}></UIComponentContainer>
       </>
