@@ -2,17 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import "common/samples-common.scss";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import React, { FunctionComponent } from "react";
 import { ChangedElementsApi } from "./ChangedElementsApi";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 import { ChangedElementsWidgetProvider } from "./ChangedElementsWidget";
 import { MessageRenderer } from "@itwin/core-react";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ChangedElementsWidgetProvider()];
 
@@ -39,7 +36,7 @@ const ChangedElementsApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

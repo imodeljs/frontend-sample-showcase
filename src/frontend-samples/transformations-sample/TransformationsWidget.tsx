@@ -4,16 +4,15 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import TransformationsApi from "./TransformationsApi";
-import { Textarea, Toggle } from "@itwin/core-react";
 import { IModelApp, ViewManip, Viewport } from "@itwin/core-frontend";
 import { useActiveFrontstageId, useActiveViewport } from "@itwin/appui-react";
+import { Label, Textarea, ToggleSwitch } from "@itwin/itwinui-react";
+import TransformationsApi from "./TransformationsApi";
 import TransformationsClient from "./TransformationsClient";
 
 const TransformationsWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
   const [isSynched, setIsSynched] = React.useState<boolean>(true);
-  // const [initialized, setInitalized] = React.useState<boolean>(false);
   const [transformationResponse, setTransformationResponse] = React.useState<string>("Loading...");
   const frontstageId = useActiveFrontstageId();
 
@@ -63,14 +62,29 @@ const TransformationsWidget: React.FunctionComponent = () => {
 
   // Display drawing and sheet options in separate sections.
   return (
-    <div className="sample-options">
-      <div className="sample-options-2col">
-        <span>Sync Viewports</span>
-        <Toggle disabled={viewport === undefined} isOn={isSynched} onChange={(on) => setIsSynched(on)} />
-      </div>
-      <div style={{ marginTop: "8px" }}>
-        <span>Get Transformation Response:</span>
-        <Textarea spellCheck={"false"} className="uicore-full-width" style={{ overflow: "scroll", height: "12rem", resize: "none" }} value={transformationResponse} />
+    <div className="sample-container">
+      <div className="sample-options">
+        <div className="iui-alert iui-informational sample-options-block">
+          <div className="iui-alert-message">
+            Use the controls at the top-right to navigate the model. Toggle to sync the viewports in the controls below. Navigating will not change the selected viewport.
+          </div>
+        </div>
+        <ToggleSwitch
+          label="Sync Viewports"
+          labelPosition="right"
+          disabled={viewport === undefined}
+          checked={isSynched}
+          onChange={() => setIsSynched(!isSynched)}
+          className="sample-options-block"
+        />
+        <div className="sample-options-response" >
+          <Label htmlFor="transformation-response">Get Transformation Response:</Label>
+          <Textarea
+            id="transformation-response"
+            spellCheck={"false"}
+            className="sample-options-response-area"
+            defaultValue={transformationResponse} />
+        </div>
       </div>
     </div>
   );
@@ -86,7 +100,7 @@ export class TransformationsWidgetProvider implements UiItemsProvider {
         {
           id: "TransformationsWidget",
           label: "Transformations Selector",
-          defaultState: WidgetState.Floating,
+          defaultState: WidgetState.Open,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <TransformationsWidget />,
         },

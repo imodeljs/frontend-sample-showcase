@@ -4,14 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "common/samples-common.scss";
 import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs-sandbox";
-import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget } from "@itwin/sandbox";
 import { ShadowStudyWidgetProvider } from "./ShadowStudyWidget";
 import ShadowStudyApi from "./ShadowStudyApi";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new ShadowStudyWidgetProvider()];
 
@@ -33,7 +30,7 @@ const ShadowStudyApp: React.FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

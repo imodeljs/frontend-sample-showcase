@@ -2,121 +2,167 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useCallback, useEffect } from "react";
-import { Spinner, SpinnerSize } from "@itwin/core-react";
-import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@itwin/components-react";
-import { IModelApp } from "@itwin/core-frontend";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { useActiveIModelConnection } from "@itwin/appui-react";
+import { actions, ActionType, Column, MetaBase, TableInstance, TableState } from "react-table";
+import { Table } from "@itwin/itwinui-react";
 import ValidationApi from "./ValidationApi";
+import { PropertyValueValidationRule, ValidationResults } from "./ValidationClient";
+
+interface TableRow extends Record<string, string> {
+  elementId: string;
+  elementLabel: string;
+  ruleName: string;
+  legalValues: string;
+  badValue: string;
+}
 
 const ValidationTableWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
-  const [validationResults, setValidationResults] = React.useState<any>();
-  const [ruleData, setRuleData] = React.useState<any>();
+  const [validationResults, setValidationResults] = React.useState<ValidationResults>();
+  const [ruleData, setRuleData] = React.useState<Record<string, PropertyValueValidationRule | undefined>>();
+  const [selectedElement, setSelectedElement] = useState<string | undefined>();
 
   useEffect(() => {
-    const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
-      setValidationResults(data.validationData);
-      setRuleData(data.ruleData);
+    const removeDataListener = ValidationApi.onValidationDataChanged.addListener((dat) => {
+      setValidationResults(dat.validationData);
+      setRuleData(dat.ruleData);
+    });
+
+    const removeElementListener = ValidationApi.onMarkerClicked.addListener((elementId) => {
+      setSelectedElement(elementId);
     });
 
     if (iModelConnection) {
-      ValidationApi.setValidationData(iModelConnection.iTwinId!).catch((error) => {
+      ValidationApi.getValidationData(iModelConnection.iTwinId!).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
     }
     return () => {
-      removeListener();
+      removeDataListener();
+      removeElementListener();
     };
   }, [iModelConnection]);
 
-  const _getDataProvider = useCallback((): SimpleTableDataProvider => {
+  const columnDefinition = useMemo((): Column<TableRow>[] => [
+    {
+      Header: "Table",
+      columns: [
+        {
+          Header: "Element Id",
+          accessor: "elementId",
+        },
+        {
+          Header: "Element Label",
+          accessor: "elementLabel",
+        },
+        {
+          Header: "Rule Name",
+          accessor: "ruleName",
+        },
+        {
+          Header: "Legal Range",
+          accessor: "legalValues",
+        },
+        {
+          Header: "Invalid Value",
+          accessor: "badValue",
+        },
+      ],
+    },
+  ], []);
 
-    // Limit the number of violations in this demo
-    const maxViolations = 70;
+  const data = useMemo(() => {
+    const rows: TableRow[] = [];
 
-    // Adding columns
-    const columns: ColumnDescription[] = [];
+    if (validationResults !== undefined && validationResults.result !== undefined && validationResults.ruleList !== undefined && ruleData !== undefined) {
+      const getLegalValue = (item: any) => {
+        const currentRuleData = ruleData[validationResults.ruleList[item.ruleIndex].id];
+        if (!currentRuleData)
+          return "";
 
-    columns.push({ key: "elementId", label: "Element ID" });
-    columns.push({ key: "elementLabel", label: "Element Label" });
-    columns.push({ key: "ruleID", label: "Rule ID" });
-    columns.push({ key: "ruleName", label: "Rule Name" });
-    columns.push({ key: "legalValues", label: "Legal Range" });
-    columns.push({ key: "badValue", label: "Invalid Value" });
-
-    // START VIOLATION_TABLE
-
-    const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
-    if (validationResults !== undefined && validationResults.result !== undefined && validationResults.ruleList !== undefined && ruleData !== undefined && iModelConnection) {
-      // Adding rows => cells => property record => value and description.
-      let validationIndex: number = 0;
-      validationResults.result.some((rowData: any) => {
-        const rowKey = `${rowData.elementId}`;
-        const rowItem: RowItem = { key: rowKey, cells: [] };
-
-        columns.forEach((column: ColumnDescription, i: number) => {
-          let cellValue: string = "";
-          if (column.key === "ruleID") {
-            // Lookup the rule ID using the rule index
-            cellValue = validationResults.ruleList[rowData.ruleIndex].id.toString();
-          } else if (column.key === "ruleName") {
-            // Lookup the rule name using the rule index
-            cellValue = validationResults.ruleList[rowData.ruleIndex].displayName.toString();
-          } else if (column.key === "legalValues") {
-            // Need to handle legal values based on the type of validation rule
-            const currentRuleData = ruleData[validationResults.ruleList[rowData.ruleIndex].id.toString()];
-            if (currentRuleData.rule.functionParameters.lowerBound) {
-              if (currentRuleData.rule.functionParameters.upperBound) {
-                // Range of values
-                cellValue = `[${currentRuleData?.rule.functionParameters.lowerBound},${currentRuleData?.rule.functionParameters.upperBound}]`;
-              } else {
-                // Value has a lower bound
-                cellValue = `>${currentRuleData?.rule.functionParameters.lowerBound}`;
-              }
-            } else {
-              // Value needs to be defined
-              cellValue = `Must be Defined`;
-            }
+        if (currentRuleData.functionParameters.lowerBound) {
+          if (currentRuleData.functionParameters.upperBound) {
+            // Range of values
+            return `[${currentRuleData.functionParameters.lowerBound},${currentRuleData.functionParameters.upperBound}]`;
           } else {
-            cellValue = rowData[column.key].toString();
+            // Value has a lower bound
+            return `>${currentRuleData.functionParameters.lowerBound}`;
           }
-          const value: PropertyValue = { valueFormat: PropertyValueFormat.Primitive, value: cellValue };
-          const description: PropertyDescription = { displayLabel: columns[i].label, name: columns[i].key, typename: "string" };
-          rowItem.cells.push({ key: columns[i].key, record: new PropertyRecord(value, description) });
-        });
-        dataProvider.addRow(rowItem);
-        validationIndex++;
-        return maxViolations < validationIndex;
+        } else {
+          // Value needs to be defined
+          return "Must be Defined";
+        }
+      };
+
+      validationResults.result.forEach((rowData) => {
+        const row: TableRow = {
+          elementId: rowData.elementId,
+          elementLabel: rowData.elementLabel,
+          ruleName: validationResults.ruleList[rowData.ruleIndex].displayName,
+          legalValues: getLegalValue(rowData),
+          badValue: rowData.badValue,
+        };
+        rows.push(row);
       });
     }
-    // END VIOLATION_TABLE
 
-    return dataProvider;
-  }, [validationResults, ruleData, iModelConnection]);
+    return rows;
+  }, [validationResults, ruleData]);
 
-  // Zooming into and highlighting element when row is selected.
-  const _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
+  const controlledState = useCallback(
+    (state: TableState<TableRow>, meta: MetaBase<TableRow>) => {
+      state.selectedRowIds = {};
 
-    if (!IModelApp.viewManager.selectedView)
-      return true;
+      if (selectedElement) {
+        const row = meta.instance.rows.find((r: { original: { elementId: string } }) => r.original.elementId === selectedElement);
+        if (row) {
+          state.selectedRowIds[row.id] = true;
+        }
+      }
+      return { ...state };
+    },
+    [selectedElement],
+  );
 
-    const row = await rowIterator.next();
+  const tableStateReducer = (
+    newState: TableState<TableRow>,
+    action: ActionType,
+    _previousState: TableState<TableRow>,
+    instance?: TableInstance<TableRow> | undefined,
+  ): TableState<TableRow> => {
+    switch (action.type) {
+      case actions.toggleRowSelected: {
+        newState.selectedRowIds = {};
 
-    ValidationApi.visualizeViolation(row.value.key);
-    return true;
+        if (action.value)
+          newState.selectedRowIds[action.id] = true;
+
+        if (instance) {
+          const elementId = instance.rowsById[action.id].original.elementId;
+          ValidationApi.visualizeViolation(elementId);
+          setSelectedElement(elementId);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+    return newState;
   };
 
   return (
-    <>
-      {!validationResults ? <div style={{ height: "200px" }}><Spinner size={SpinnerSize.Small} /> Calling API...</div> :
-        <div style={{ height: "100%" }}>
-          <Table dataProvider={_getDataProvider()} onRowsSelected={_onRowsSelected} />
-        </div>
-      }
-    </>
+    <Table<TableRow>
+      useControlledState={controlledState}
+      stateReducer={tableStateReducer}
+      isSelectable={true}
+      data={data}
+      columns={columnDefinition}
+      isLoading={!validationResults}
+      emptyTableContent="No data"
+      density="extra-condensed" />
   );
 };
 

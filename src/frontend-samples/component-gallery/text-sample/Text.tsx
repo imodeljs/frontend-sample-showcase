@@ -3,11 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { Anchor, Blockquote, Body, Code, Headline, Kbd, Label, Leading, Small, Subheading, Text, Title } from "@itwin/itwinui-react";
+import { Anchor, Blockquote, Body, Code, Headline, Kbd, Label, Leading, Small, Subheading, Text, ThemeProvider, Title } from "@itwin/itwinui-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -76,6 +75,7 @@ export default class TextList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of text that can be used in iModel.js application."></ControlPane>
         <UIComponentContainer data={TextList.getTextData()}></UIComponentContainer>
       </>

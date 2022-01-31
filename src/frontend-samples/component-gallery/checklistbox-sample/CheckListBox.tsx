@@ -3,12 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { CheckListBox, CheckListBoxItem, CheckListBoxSeparator } from "@itwin/core-react";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { Checkbox, InputGroup } from "@itwin/itwinui-react";
+import { Checkbox, InputGroup, ThemeProvider } from "@itwin/itwinui-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -68,6 +67,7 @@ export default class CheckListBoxList extends React.Component<{}>  {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of checkboxes that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={CheckListBoxList.getCheckListBoxData()}></UIComponentContainer>
       </>

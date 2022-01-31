@@ -20,3 +20,13 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.marker-pin-button {
+  >.iui-radio-tile {
+    width: 5em !important;
+
+    object {
+      pointer-events: none;
+    }
+  }
+}

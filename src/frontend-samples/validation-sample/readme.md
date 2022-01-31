@@ -21,8 +21,8 @@ The goal of this sample is to provide example functions for all of the available
 
 The following [iTwin.js library](https://www.itwinjs.org/reference/) components are demonstrated:
 
-- [Decorator](https://www.itwinjs.org/reference/imodeljs-frontend/views/decorator/): show marker pins in a viewport.
-- [MarkerSet](https://www.itwinjs.org/reference/imodeljs-frontend/views/markerset/): manage a collection of marker pins.
-- [Marker](https://www.itwinjs.org/reference/imodeljs-frontend/views/marker/): draw marker pins at the location of violating elements.
-- [Cluster](https://www.itwinjs.org/reference/imodeljs-frontend/views/cluster/): draw cluster pins where a group of violations are located.
-- [Table](https://www.itwinjs.org/reference/ui-components/table/): display a table of validation results.
+- [Decorator](https://www.itwinjs.org/reference/core-frontend/views/decorator/): show marker pins in a viewport.
+- [MarkerSet](https://www.itwinjs.org/reference/core-frontend/views/markerset/): manage a collection of marker pins.
+- [Marker](https://www.itwinjs.org/reference/core-frontend/views/marker/): draw marker pins at the location of violating elements.
+- [Cluster](https://www.itwinjs.org/reference/core-frontend/views/cluster/): draw cluster pins where a group of violations are located.
+- [Table](https://www.itwinjs.org/reference/components-react/table/): display a table of validation results.

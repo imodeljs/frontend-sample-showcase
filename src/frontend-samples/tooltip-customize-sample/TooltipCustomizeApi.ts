@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
 import { HitDetail, imageElementFromUrl, ToolAdmin } from "@itwin/core-frontend";
 
 export enum ElemProperty {

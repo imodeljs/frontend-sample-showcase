@@ -3,11 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { Slider } from "@itwin/itwinui-react";
+import { Slider, ThemeProvider } from "@itwin/itwinui-react";
 import { SvgSmileyHappy, SvgSmileySad } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -86,7 +85,6 @@ export default class SliderList extends React.Component<{}> {
           style={{ width: "100%" }}
           max={60}
           min={0}
-          setFocus
           thumbMode="inhibit-crossing"
           tickLabels={
             [
@@ -122,6 +120,7 @@ export default class SliderList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of sliders that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={SliderList.getSliderData()}></UIComponentContainer>
       </>

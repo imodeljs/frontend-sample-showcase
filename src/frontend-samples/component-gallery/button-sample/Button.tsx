@@ -3,12 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { UnderlinedButton } from "@itwin/core-react";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { Button } from "@itwin/itwinui-react";
+import { Button, ThemeProvider } from "@itwin/itwinui-react";
 import { SvgAdd } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -35,6 +34,7 @@ export default class ButtonList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of buttons that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={ButtonList.getButtonData()}></UIComponentContainer>
       </>

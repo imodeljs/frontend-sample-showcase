@@ -3,11 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { Badge, MenuItem, Tag, TagContainer, Tile, UserIcon } from "@itwin/itwinui-react";
+import { Badge, MenuItem, Tag, TagContainer, ThemeProvider, Tile, UserIcon } from "@itwin/itwinui-react";
 import { SvgFolder, SvgImodelHollow, SvgTag } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -76,6 +75,7 @@ export default class TilesList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of tiles that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={TilesList.getTilesData()}></UIComponentContainer>
       </>

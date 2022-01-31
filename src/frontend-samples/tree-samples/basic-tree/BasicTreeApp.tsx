@@ -6,7 +6,7 @@ import React, { FunctionComponent } from "react";
 import { BlankConnectionProps } from "@itwin/core-frontend";
 import { Cartographic } from "@itwin/core-common";
 import { Range3d } from "@itwin/core-geometry";
-import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
+import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwin/sandbox";
 import { BasicTreeComponent } from "./BasicTreeComponent";
 import { BlankViewer } from "@itwin/web-viewer-react";
 import "./BasicTree.scss";

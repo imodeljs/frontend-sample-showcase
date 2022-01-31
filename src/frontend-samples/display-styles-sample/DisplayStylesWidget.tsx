@@ -2,7 +2,6 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "common/samples-common.scss";
 import React, { useEffect } from "react";
 import DisplayStylesApp from "./DisplayStylesApi";
 import { useActiveViewport } from "@itwin/appui-react";

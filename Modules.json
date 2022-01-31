@@ -3,12 +3,21 @@
     "react-dnd": "^11.1.3",
     "react-dnd-html5-backend": "^11.1.3",
     "react-merge-refs": "^1.1.0",
+    "react-table": "^7.7.0",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@fortawesome/fontawesome-free/css/all.css": "^5.13.1",
-    "./src/@itwinjs-sandbox/index.ts": "0.1.0"
+    "./src/@itwin/sandbox/index.ts": "0.1.0",
+    "./src/common/ControlPane/ControlPane.tsx": "0.1.0",
+    "./src/common/UIComponents/index.scss": "0.1.0",
+    "./src/common/UIComponents/UIComponentContainer.tsx": "0.1.0",
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "0.1.0"
   },
   "alias": {
-    "./src/@itwinjs-sandbox/index.ts": "@itwinjs-sandbox"
+    "./src/@itwin/sandbox/index.ts": "@itwin/sandbox",
+    "./src/common/ControlPane/ControlPane.tsx": "common/ControlPane/ControlPane",
+    "./src/common/UIComponents/index.scss": "common/UIComponents/index.scss",
+    "./src/common/UIComponents/UIComponentContainer.tsx": "common/UIComponents/UIComponentContainer",
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "frontend-samples/marker-pin-sample/MarkerPinDecorator"
   },
   "externalDependencies": [
     {
@@ -17,13 +26,6 @@
       "lib": "@itwin/core-bentley/3.x/index.js",
       "global": "itwinCoreBentley",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/types.json"
-    },
-    {
-      "dependency": "@bentley/itwin-client",
-      "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@bentley/itwin-client/3.x/index.js",
-      "global": "bentleyItwinClient",
-      "types": "#{REACT_APP_COMPILER_URL}/@bentley/itwin-client/3.x/types.json"
     },
     {
       "dependency": "@itwin/appui-abstract",
@@ -216,17 +218,17 @@
     },
     {
       "dependency": "@itwin/imodels-client-management",
-      "version": "0.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/0.x/index.js",
+      "version": "1.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/index.js",
       "global": "itwinImodelsClientManagement",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/0.x/types.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/types.json"
     },
     {
       "dependency": "@itwin/imodels-access-frontend",
-      "version": "0.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/0.x/index.js",
+      "version": "1.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/index.js",
       "global": "itwinImodelsAccessFrontend",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/0.x/types.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/types.json"
     },
     {
       "dependency": "@itwin/map-layers",

@@ -2,13 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-/* eslint-disable */
-/* tslint:disable */
-
 import { Point3d } from "@itwin/core-geometry";
-import { request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox";
 
 export interface CommentsListPreferReturnMinimal {
   comments?: CommentGetPreferReturnMinimal[];
@@ -199,7 +194,6 @@ export interface IssueDetailsGet {
   issue?: IssueGet;
 }
 
-
 /**
  * Represents an element in an iModel about which an issue was created.
  */
@@ -260,6 +254,7 @@ export interface IssueGet {
   | "Transmittal Issue";
 
   /** An human-readable identifier for the issue, consisting of an alphanumeric prefix (that can be configured by the project administrator) followed by an auto-incrementing number. Read-only. */
+  // eslint-disable-next-line id-blacklist
   number?: string;
 
   /** The date by which an action should be taken on this issue. Applications will use this to determine whether an issue is near due or overdue. */
@@ -451,122 +446,115 @@ export interface Link {
   href?: string;
 }
 
-export default class IssuesClient {
+async function fetchApi<T>(url: string, options?: RequestInit): Promise<T | undefined> {
+  return fetch(url, options)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json() as Promise<T>;
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      return undefined;
+    });
+}
 
+export default class IssuesClient {
   public static async getProjectIssues(projectId: string, type?: string, state?: string): Promise<IssuesList | undefined> {
-    var url = `https://api.bentley.com/issues/?projectId=${projectId}`;
+    let url = `https://api.bentley.com/issues/?projectId=${projectId}`;
     if (type)
-      url += `&type=${type}`
+      url += `&type=${type}`;
 
     if (state)
-      url += `&state=${state}`
+      url += `&state=${state}`;
 
+    const accessToken = await IssuesClient.getAccessToken();
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())
+        Authorization: accessToken,
       },
     };
-    return request(url, options)
-      .then((resp: Response): IssuesList | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
+    return fetchApi<IssuesList>(url, options);
   }
 
   public static async getIssueDetails(id: string): Promise<IssueDetailsGet | undefined> {
     const url = `https://api.bentley.com/issues/${id}`;
+    const accessToken = await IssuesClient.getAccessToken();
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken()),
+        Authorization: accessToken,
       },
     };
-    return request(url, options)
-      .then((resp: Response): IssueDetailsGet | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
+    return fetchApi<IssueDetailsGet>(url, options);
   }
 
   public static async getIssueAttachments(id: string): Promise<AttachmentMetadataList | undefined> {
     const url = `https://api.bentley.com/issues/${id}/attachments`;
+    const accessToken = await IssuesClient.getAccessToken();
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())
+        Authorization: accessToken,
       },
     };
-    return request(url, options)
-      .then((resp: Response): AttachmentMetadataList | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
+    return fetchApi<AttachmentMetadataList>(url, options);
   }
 
   public static async getAttachmentById(id: string, attachmentId: string): Promise<Blob | undefined> {
     const url = `https://api.bentley.com/issues/${id}/attachments/${attachmentId}`;
-    return fetch(url, {
+    const accessToken = await IssuesClient.getAccessToken();
+    const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken())!
+        Authorization: accessToken,
       },
-    }).then(async (response) => {
-      return await response.blob().then((data) => {
-        if (response.ok) {
-          return data
-        } else {
-          return undefined;
-        }
+    };
+
+    return fetch(url, options)
+      .then(async (response) => {
+        if (!response.ok)
+          throw new Error(response.statusText);
+        return response.blob();
       })
-    });
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        return undefined;
+      });
   }
 
   public static async getIssueComments(id: string): Promise<CommentsListPreferReturnMinimal | undefined> {
     const url = `https://api.bentley.com/issues/${id}/comments`;
+    const accessToken = await IssuesClient.getAccessToken();
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken()),
+        Authorization: accessToken,
       },
     };
-    return request(url, options)
-      .then((resp: Response): CommentsListPreferReturnMinimal | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
+    return fetchApi<CommentsListPreferReturnMinimal>(url, options);
   }
 
   public static async getIssueAuditTrail(id: string): Promise<AuditTrail | undefined> {
     const url = `https://api.bentley.com/issues/${id}/auditTrailEntries`;
+    const accessToken = await IssuesClient.getAccessToken();
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await IssuesClient.getAccessToken()),
+        Authorization: accessToken,
       },
     };
-    return request(url, options)
-      .then((resp: Response): AuditTrail | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
+    return fetchApi<AuditTrail>(url, options);
   }
 
   private static async getAccessToken() {
-    try {
-      return (IModelApp.authorizationClient as AuthorizationClient).getAccessToken();
-    } catch (e) {
-      return undefined;
-    }
+    if (!IModelApp.authorizationClient)
+      throw new Error("AuthorizationClient is not defined. Most likely IModelApp.startup was not called yet.");
+
+    return IModelApp.authorizationClient.getAccessToken();
   }
 }

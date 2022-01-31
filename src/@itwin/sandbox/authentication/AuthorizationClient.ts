@@ -3,9 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { BrowserAuthorizationClient } from "@itwin/browser-authorization";
 import { AccessToken, AuthStatus, BeEvent, BentleyError } from "@itwin/core-bentley";
-import { AuthorizationClient } from "@itwin/core-common";
+import { ViewerAuthorizationClient } from "@itwin/web-viewer-react";
 
 interface AccessTokenObject {
   startsAt: Date;
@@ -13,14 +12,16 @@ interface AccessTokenObject {
   tokenString: string;
 }
 
-export default class ShowcaseAuthorizationClient implements AuthorizationClient {
+export default class ShowcaseAuthorizationClient implements ViewerAuthorizationClient {
   private _accessToken?: AccessTokenObject;
   private static _userUrl = "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser";
-  private static _oidcClient: AuthorizationClient;
+  private static _oidcClient: ViewerAuthorizationClient;
 
-  public static get oidcClient(): BrowserAuthorizationClient {
-    return this._oidcClient as BrowserAuthorizationClient;
+  public static get oidcClient(): ViewerAuthorizationClient {
+    return this._oidcClient;
   }
+
+  public readonly onAccessTokenChanged = new BeEvent<(token: AccessToken | undefined) => void>();
 
   public get isAuthorized(): boolean {
     return !!this._accessToken;
@@ -76,23 +77,4 @@ export default class ShowcaseAuthorizationClient implements AuthorizationClient 
     }
     return "";
   };
-
-  /**
-   * required by BrowserAuthorizationClient
-   */
-  public signIn = async (): Promise<void> => {
-    return this.generateTokenString(ShowcaseAuthorizationClient._userUrl);
-  };
-
-  /**
-   * required by BrowserAuthorizationClient
-   */
-  public signOut = async (): Promise<void> => {
-    return Promise.resolve();
-  };
-
-  /**
-   * required by BrowserAuthorizationClient
-   */
-  public readonly onAccessTokenChanged = new BeEvent<(token: AccessToken | undefined) => void>();
 }

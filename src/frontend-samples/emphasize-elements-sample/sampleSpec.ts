@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 import { getViewportOnlySpec } from "frontend-samples/viewport-only-sample/sampleSpec";
 import { SampleSpec } from "SampleSpec";
 

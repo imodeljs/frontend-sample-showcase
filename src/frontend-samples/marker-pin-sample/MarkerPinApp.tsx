@@ -2,12 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent } from "react";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
+import React, { FunctionComponent, useCallback } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
 import { IModelConnection, StandardViewId, ViewState } from "@itwin/core-frontend";
 import { MarkerPinWidgetProvider } from "./MarkerPinWidget";
-import { getMapLayerKeys } from "common/MapLayerKeys/MapLayerKeys";
 
 const uiProviders = [new MarkerPinWidgetProvider()];
 
@@ -15,7 +14,7 @@ const MarkerPinApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.");
 
   /** Get a top-down view from the default viewstate of the model */
-  const getTopView = async (imodel: IModelConnection): Promise<ViewState> => {
+  const getTopView = useCallback(async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
 
     // The marker pins look better in a top view
@@ -27,15 +26,12 @@ const MarkerPinApp: FunctionComponent = () => {
     viewState.lookAtVolume(range, aspect);
 
     return viewState;
-  };
+  }, []);
 
-  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+  const _initialViewstate = useCallback(async (iModelConnection: IModelConnection) => {
     return getTopView(iModelConnection);
-  };
+  }, [getTopView]);
 
-  if (sampleIModelInfo)
-    // eslint-disable-next-line no-console
-    console.log(`About to pass iModelId: ${sampleIModelInfo.iModelId} into Viewer Component for Marker Pin Sample`);
   /** The sample's render method */
   return (
     <>
@@ -47,7 +43,7 @@ const MarkerPinApp: FunctionComponent = () => {
           authClient={AuthorizationClient.oidcClient}
           enablePerformanceMonitors={true}
           viewportOptions={{ viewState: _initialViewstate }}
-          mapLayerOptions={getMapLayerKeys()}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

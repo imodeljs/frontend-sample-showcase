@@ -2,9 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { request, Response } from "@bentley/itwin-client";
 import { IModelApp } from "@itwin/core-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox";
 import { GuidString } from "@itwin/core-bentley";
 
 export interface Configuration {
@@ -25,29 +23,38 @@ export interface Transformation {
   _links: Link;
 }
 
+async function fetchApi<T>(url: string, options?: RequestInit): Promise<T | undefined> {
+  return fetch(url, options)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json() as Promise<T>;
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      return undefined;
+    });
+}
+
 export default class TransformationsClient {
   public static async getTransformation(transformationId: string): Promise<Transformation | undefined> {
     const url = `https://api.bentley.com/transformations/${transformationId}`;
+    const accessToken = await TransformationsClient.getAccessToken();
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await TransformationsClient.getAccessToken()),
+        Authorization: accessToken,
       },
     };
-    return request(url, options)
-      .then((resp: Response): Transformation | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
+    return fetchApi<Transformation>(url, options);
   }
 
   private static async getAccessToken() {
-    try {
-      return await (IModelApp.authorizationClient as AuthorizationClient).getAccessToken();
-    } catch (e) {
-      return undefined;
-    }
+    if (!IModelApp.authorizationClient)
+      throw new Error("AuthorizationClient is not defined. Most likely IModelApp.startup was not called yet.");
+
+    return IModelApp.authorizationClient.getAccessToken();
   }
 }
