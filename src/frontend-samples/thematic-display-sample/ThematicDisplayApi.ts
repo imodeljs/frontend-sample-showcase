@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import { GlobeMode, TerrainHeightOriginMode, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
-import { Viewport, ViewState3d } from "@itwin/core-frontend";
+import { IModelConnection, Viewport, ViewState3d } from "@itwin/core-frontend";
 import { Range1dProps, Vector3d } from "@itwin/core-geometry";
 
 export default class ThematicDisplayApi {
@@ -29,8 +29,8 @@ export default class ThematicDisplayApi {
   }
 
   /** Query if the model has been geo-located using the iModel API. */
-  public static isGeoLocated(vp: Viewport): boolean {
-    return vp.iModel.isGeoLocated;
+  public static isGeoLocated(iModel: IModelConnection): boolean {
+    return iModel.isGeoLocated;
   }
 
   /** Query Thematic Display settings with the Viewport API. */
@@ -40,8 +40,8 @@ export default class ThematicDisplayApi {
   }
 
   /** Query project extents using the Viewport API. */
-  public static getProjectExtents(vp: Viewport): Range1dProps {
-    const extents = vp.iModel.projectExtents;
+  public static getProjectExtents(iModel: IModelConnection): Range1dProps {
+    const extents = iModel.projectExtents;
     return { low: extents.zLow, high: extents.zHigh };
   }
 

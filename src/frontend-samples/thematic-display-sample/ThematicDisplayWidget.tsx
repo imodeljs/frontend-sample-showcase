@@ -56,7 +56,9 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     ThematicDisplayApi.setThematicDisplayProps(vp, _defaultProps);
 
     // Will enable Thematic Display over the whole iModel.
-    const extents = ThematicDisplayApi.getProjectExtents(vp);
+    let extents = ThematicDisplayApi.getProjectExtents(vp.iModel);
+    if ("CoffsHarborDemo" === vp.iModel?.name)
+      extents = [-4.8088836669921875, 127.30888366699219];
     ThematicDisplayApi.setThematicDisplayRange(vp, extents);
 
     // Redraw viewport with new settings
@@ -70,14 +72,16 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     ThematicDisplayApi.setThematicDisplayOnOff(vp, true);
 
     const props = ThematicDisplayApi.getThematicDisplayProps(vp);
-    updateState(vp, props);
+    const viewFlags = vp.viewFlags;
+    updateState(vp, props, viewFlags.thematicDisplay, viewFlags.backgroundMap);
     const unsubThematicUpdate = viewport.view.displayStyle.settings.onThematicChanged.addListener((newThematic) => {
       const newProps = newThematic.toJSON();
-      updateState(vp, newProps);
+      const newFlags = vp.viewFlags;
+      updateState(vp, newProps, newFlags.thematicDisplay, newFlags.backgroundMap);
     });
-    const unsubViewFlagUpdate = viewport.view.displayStyle.settings.onViewFlagsChanged.addListener((_newFlags) => {
+    const unsubViewFlagUpdate = viewport.view.displayStyle.settings.onViewFlagsChanged.addListener((newFlags) => {
       const newProps = ThematicDisplayApi.getThematicDisplayProps(vp);
-      updateState(vp, newProps);
+      updateState(vp, newProps, newFlags.thematicDisplay, newFlags.backgroundMap);
     });
     return () => {
       unsubThematicUpdate();
@@ -94,8 +98,8 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
   }, [azimuthState, elevationState]);
 
   /** Update the state of the sample react component by querying the API. */
-  const updateState = (vp: Viewport, props: ThematicDisplayProps) => {
-    let extents = ThematicDisplayApi.getProjectExtents(vp);
+  const updateState = (vp: Viewport, props: ThematicDisplayProps, isThematicDisplayOn: boolean, isBackgroundMapOn: boolean) => {
+    let extents = ThematicDisplayApi.getProjectExtents(vp.iModel);
     let range = props.range;
 
     // The coff harbors sample
@@ -121,8 +125,8 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     // if (!Range1d.fromJSON(extents).isAlmostEqual(Range1d.fromJSON(extents)))
     //   range = extents;
 
-    setOnState(ThematicDisplayApi.isThematicDisplayOn(vp));
-    setMapState(ThematicDisplayApi.isGeoLocated(vp) && ThematicDisplayApi.isBackgroundMapOn(vp));
+    setOnState(isThematicDisplayOn);
+    setMapState(ThematicDisplayApi.isGeoLocated(vp.iModel) && isBackgroundMapOn);
     setExtentsState(undefined === extents ? [0, 1] : extents);
     setRangeState(undefined === range ? [0, 1] : range);
     setColorSchemeState(colorScheme);
@@ -217,7 +221,7 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
   };
 
   const colorSchemeOptions = _mapOptions(ThematicGradientColorScheme);
-  delete (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom]; // Custom colors are not supported for this sample.
+  (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom].disabled = true; // Custom colors are not supported for this sample.
 
   const gradientModeOptions = _mapOptions(ThematicGradientMode);
   if (displayModeState !== ThematicDisplayMode.Height) {
@@ -228,7 +232,7 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
   const displayModeOptions = _mapOptions(ThematicDisplayMode);
   delete (displayModeOptions as any)[ThematicDisplayMode.InverseDistanceWeightedSensors]; // Sensors are not supported for this sample.
   // A sensor specific sample will come soon.
-  const isGeoLocated = viewport ? ThematicDisplayApi.isGeoLocated(viewport) : false;
+  const isGeoLocated = viewport ? ThematicDisplayApi.isGeoLocated(viewport.iModel) : false;
 
   const ext = Range1d.fromJSON(extentsState);
   const min = ext.low, max = ext.high;
