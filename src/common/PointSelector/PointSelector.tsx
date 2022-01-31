@@ -2,93 +2,64 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import * as React from "react";
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Point3d, Range2d } from "@itwin/core-geometry";
 import { BasePointGenerator, CirclePointGenerator, CrossPointGenerator, RandomPointGenerator } from "./PointGenerators";
 import { Select, Slider } from "@itwin/itwinui-react";
 
 export enum PointMode {
-  Random = "1",
-  Circle = "2",
-  Cross = "3",
+  Random,
+  Circle,
+  Cross,
 }
 
 /** React state of the PointSelector component */
 export interface PointSelectorProps {
-  onPointsChanged(points: Point3d[]): void;
+  disabled?: boolean;
   range?: Range2d;
-}
-
-/** React state of the PointSelector */
-export interface PointSelectorState {
-  pointGenerator: BasePointGenerator;
-  pointCount: number;
+  onPointsChanged(points: Point3d[]): void;
 }
 
 /** A component that renders a point mode selector and a point count range input. */
-export class PointSelector extends React.Component<PointSelectorProps, PointSelectorState> {
+export const PointSelector: FunctionComponent<PointSelectorProps> = ({ onPointsChanged, range, disabled }) => {
+  const [pointMode, setPointMode] = useState<PointMode>(PointMode.Random);
+  const [pointCount, setPointCount] = useState<number>(10);
+  const pointGenerator = useRef<BasePointGenerator>(new RandomPointGenerator());
 
-  /** Creates a PointSelector instance */
-  constructor(props?: any) {
-    super(props);
-    this.state = {
-      pointGenerator: new RandomPointGenerator(),
-      pointCount: 10,
-    };
-  }
+  useEffect(() => {
+    const points = !!range ? pointGenerator.current.generatePoints(pointCount, range) : [];
+    onPointsChanged(points);
+  }, [pointMode, pointCount, range, onPointsChanged]);
 
-  public getPoints(): Point3d[] {
-    if (undefined === this.props.range)
-      return [];
+  const onChangePointCount = useCallback(([newPointCount]: readonly number[]) => {
+    setPointCount(newPointCount);
+  }, []);
 
-    return this.state.pointGenerator.generatePoints(this.state.pointCount, this.props.range);
-  }
+  const onChangePointMode = useCallback((mode: PointMode) => {
+    setPointMode((prev) => {
+      if (prev !== mode) {
+        switch (mode) {
+          case PointMode.Circle: { pointGenerator.current = new CirclePointGenerator(); break; }
+          case PointMode.Cross: { pointGenerator.current = new CrossPointGenerator(); break; }
+          default:
+          case PointMode.Random: { pointGenerator.current = new RandomPointGenerator(); break; }
+        }
+        return mode;
+      }
+      return prev;
+    });
+  }, []);
 
-  private notifyChange(): void {
-    if (undefined === this.props.range)
-      return;
+  const sliderValues = useMemo(() => [pointCount], [pointCount]);
+  const selectOptions = useMemo(() => [{ value: PointMode.Random, label: "Random" }, { value: PointMode.Circle, label: "Circle" }, { value: PointMode.Cross, label: "Cross" }], []);
 
-    this.props.onPointsChanged(this.getPoints());
-  }
-
-  private _onChangePointMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let pointGenerator: BasePointGenerator;
-
-    switch (event.target.value) {
-      case PointMode.Circle: { pointGenerator = new CirclePointGenerator(); break; }
-      case PointMode.Cross: { pointGenerator = new CrossPointGenerator(); break; }
-      default:
-      case PointMode.Random: { pointGenerator = new RandomPointGenerator(); break; }
-    }
-
-    this.setState({ pointGenerator });
-  };
-
-  private _onChangePointCount = (values: readonly number[]) => {
-    this.setState({ pointCount: values[0] });
-  };
-
-  public componentDidMount() {
-    this.notifyChange();
-  }
-
-  public componentDidUpdate(prevProps: PointSelectorProps, prevState: PointSelectorState) {
-    if (undefined !== this.props.range && (this.props.range !== prevProps.range ||
-      prevState.pointCount !== this.state.pointCount ||
-      prevState.pointGenerator !== this.state.pointGenerator)) {
-      this.notifyChange();
-    }
-  }
-
-  /** The component's render method */
-  public render() {
-    return (
-      <>
-        <span>Points</span>
-        <Select<any> onChange={this._onChangePointMode} options={[{ value: [PointMode.Random], label: "Random" }, { value: [PointMode.Circle], label: "Circle" }, { value: [PointMode.Cross], label: "Cross" }]} />
-        <span>Point Count</span>
-        <Slider min={0} max={500} values={[this.state.pointCount]} step={1} onUpdate={this._onChangePointCount} />
-      </>
-    );
-  }
-}
+  /** The component's render */
+  return (
+    <>
+      <span>Points</span>
+      <Select<PointMode> value={pointMode} onChange={onChangePointMode} options={selectOptions} disabled={disabled} />
+      <span>Point Count</span>
+      <Slider min={0} max={500} values={sliderValues} step={1} onChange={onChangePointCount} onUpdate={onChangePointCount} disabled={disabled} />
+    </>
+  );
+};

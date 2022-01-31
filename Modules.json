@@ -3,12 +3,21 @@
     "react-dnd": "^11.1.3",
     "react-dnd-html5-backend": "^11.1.3",
     "react-merge-refs": "^1.1.0",
+    "react-table": "^7.7.0",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@fortawesome/fontawesome-free/css/all.css": "^5.13.1",
-    "./src/@itwin/sandbox/index.ts": "0.1.0"
+    "./src/@itwin/sandbox/index.ts": "0.1.0",
+    "./src/common/ControlPane/ControlPane.tsx": "0.1.0",
+    "./src/common/UIComponents/index.scss": "0.1.0",
+    "./src/common/UIComponents/UIComponentContainer.tsx": "0.1.0",
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "0.1.0"
   },
   "alias": {
-    "./src/@itwin/sandbox/index.ts": "@itwin/sandbox"
+    "./src/@itwin/sandbox/index.ts": "@itwin/sandbox",
+    "./src/common/ControlPane/ControlPane.tsx": "common/ControlPane/ControlPane",
+    "./src/common/UIComponents/index.scss": "common/UIComponents/index.scss",
+    "./src/common/UIComponents/UIComponentContainer.tsx": "common/UIComponents/UIComponentContainer",
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "frontend-samples/marker-pin-sample/MarkerPinDecorator"
   },
   "externalDependencies": [
     {

@@ -5,16 +5,16 @@
 
 import React from "react";
 import { IModelConnection, ViewState } from "@itwin/core-frontend";
-import { BasicNavigationWidget, ContentGroup, ContentLayoutDef, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
+import { BasicNavigationWidget, ContentGroup, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, StagePanel, UiFramework, Widget, Zone } from "@itwin/appui-react";
+
+const DEFAULT_NAVIGATION_WIDGET_KEY = "DefaultNavigationWidget";
+const DEFAULT_MANIPULATION_WIDGET_KEY = "DefaultNavigationWidget";
 
 export class TransformationsFrontstage extends FrontstageProvider {
-  // constants
+
   public id = "TransformationsFrontstage";
-  public static MAIN_CONTENT_ID = "TransformationsFrontstage";
-  public static DEFAULT_NAVIGATION_WIDGET_KEY = "DefaultNavigationWidget";
-  public static DEFAULT_MANIPULATION_WIDGET_KEY = "DefaultNavigationWidget";
+
   // Content layout for content views
-  private _contentLayoutDef: ContentLayoutDef;
   // Content group for all layouts
   private _contentGroup: ContentGroup;
 
@@ -22,10 +22,6 @@ export class TransformationsFrontstage extends FrontstageProvider {
   constructor(viewState?: ViewState, viewState2?: ViewState, connection2?: IModelConnection) {
     super();
 
-    this._contentLayoutDef = new ContentLayoutDef({
-      id: "TwoHalvesHorizontal",
-      horizontalSplit: { id: "TwoHalvesHorizontal", percentage: 0.50, top: 0, bottom: 1 },
-    });
     const connection = UiFramework.getIModelConnection();
 
     // Create the content group.
@@ -37,7 +33,7 @@ export class TransformationsFrontstage extends FrontstageProvider {
       },
       contents: [
         {
-          id: "TransformationsContents1",
+          id: "c1",
           classId: IModelViewportControl,
           applicationData: {
             viewState,
@@ -45,7 +41,7 @@ export class TransformationsFrontstage extends FrontstageProvider {
           },
         },
         {
-          id: "TransformationsContents2",
+          id: "c2",
           classId: IModelViewportControl,
           applicationData: {
             viewState: viewState2,
@@ -61,7 +57,7 @@ export class TransformationsFrontstage extends FrontstageProvider {
   public get frontstage(): React.ReactElement<FrontstageProps> {
     return (
       <Frontstage
-        id={TransformationsFrontstage.MAIN_CONTENT_ID}
+        id={this.id}
         defaultTool={CoreTools.selectElementCommand}
         contentGroup={this._contentGroup}
         isInFooterMode={true}
@@ -69,7 +65,7 @@ export class TransformationsFrontstage extends FrontstageProvider {
           <Zone
             widgets={[
               <Widget
-                key={TransformationsFrontstage.DEFAULT_MANIPULATION_WIDGET_KEY}
+                key={DEFAULT_MANIPULATION_WIDGET_KEY}
                 isFreeform={true}
                 element={<div />}
               />,
@@ -80,7 +76,7 @@ export class TransformationsFrontstage extends FrontstageProvider {
           <Zone
             widgets={[
               <Widget
-                key={TransformationsFrontstage.DEFAULT_NAVIGATION_WIDGET_KEY}
+                key={DEFAULT_NAVIGATION_WIDGET_KEY}
                 isFreeform={true}
                 element={<BasicNavigationWidget />}
               />,

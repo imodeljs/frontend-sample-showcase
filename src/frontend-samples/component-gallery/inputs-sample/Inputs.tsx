@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { IconButton, Input, LabeledInput, LabeledSelect, LabeledTextarea, Radio, Select, Textarea } from "@itwin/itwinui-react";
+import { IconButton, Input, LabeledInput, LabeledSelect, LabeledTextarea, Radio, Select, Textarea, ThemeProvider } from "@itwin/itwinui-react";
 import { SvgCamera, SvgCloseSmall, SvgSmileyHappy, SvgSmileyNeutral, SvgSmileySad } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
@@ -294,9 +294,6 @@ export default class InputsList extends React.Component<{}> {
             },
           ]}
           placeholder="Placeholder text"
-          popoverProps={{
-            visible: true,
-          }}
           value={2}
         />,
       ),
@@ -311,6 +308,7 @@ export default class InputsList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of inputs that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={InputsList.getInputsData()}></UIComponentContainer>
       </>

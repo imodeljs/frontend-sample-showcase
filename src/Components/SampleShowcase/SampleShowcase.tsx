@@ -12,7 +12,7 @@ import { ErrorBoundary } from "Components/ErrorBoundary/ErrorBoundary";
 import "./SampleShowcase.scss";
 import "common/samples-common.scss";
 import { SampleShowcaseViewHandler } from "./SampleShowcaseViewHandler";
-import { ProgressRadial } from "@itwin/itwinui-react";
+import { ProgressRadial, ThemeProvider } from "@itwin/itwinui-react";
 import { SampleIframeVisualizer } from "Components/SampleVisualizer/SampleIframeVisualizer";
 
 const Editor = lazy(async () => import(/* webpackMode: "lazy" */ "../SampleEditor/SampleEditorContext"));
@@ -79,6 +79,9 @@ export const SampleShowcase: FunctionComponent = () => {
   ) : undefined), [activeSample.galleryVisible, activeSample.group, activeSample.name, galleryRef, onGalleryCardClicked]);
 
   return (
-    <SampleShowcaseViewHandler editor={editor} visualizer={visualizer} gallery={gallery} />
+    <>
+      <ThemeProvider theme="dark" />
+      <SampleShowcaseViewHandler editor={editor} visualizer={visualizer} gallery={gallery} />
+    </>
   );
 };

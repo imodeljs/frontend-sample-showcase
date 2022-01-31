@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { ViewerAuthorizationClient } from "@itwin/web-viewer-react";
 import { AccessToken, AuthStatus, BeEvent, BentleyError } from "@itwin/core-bentley";
+import { ViewerAuthorizationClient } from "@itwin/web-viewer-react";
 
 interface AccessTokenObject {
   startsAt: Date;
@@ -12,7 +12,7 @@ interface AccessTokenObject {
   tokenString: string;
 }
 
-export default class SandboxAuthorizationClient implements ViewerAuthorizationClient {
+export default class ShowcaseAuthorizationClient implements ViewerAuthorizationClient {
   private _accessToken?: AccessTokenObject;
   private static _userUrl = "https://prod-imodeldeveloperservices-eus.azurewebsites.net/api/v0/sampleShowcaseUser/devUser";
   private static _oidcClient: ViewerAuthorizationClient;
@@ -61,16 +61,16 @@ export default class SandboxAuthorizationClient implements ViewerAuthorizationCl
 
   /** initialize from existing user */
   public static initializeOidc = async () => {
-    const authClient = new SandboxAuthorizationClient();
-    await authClient.generateTokenString(SandboxAuthorizationClient._userUrl);
-    SandboxAuthorizationClient._oidcClient = authClient;
+    const authClient = new ShowcaseAuthorizationClient();
+    await authClient.generateTokenString(ShowcaseAuthorizationClient._userUrl);
+    ShowcaseAuthorizationClient._oidcClient = authClient;
   };
 
   /** Returns a promise that resolves to the AccessToken of the currently authorized user*/
   public getAccessToken = async (): Promise<string> => {
     // if not currently authorized, attempt a silent signin
     if (!this.isAuthorized || this.hasExpired) {
-      await this.generateTokenString(SandboxAuthorizationClient._userUrl);
+      await this.generateTokenString(ShowcaseAuthorizationClient._userUrl);
     }
     if (this._accessToken) {
       return `Bearer ${this._accessToken.tokenString}`;

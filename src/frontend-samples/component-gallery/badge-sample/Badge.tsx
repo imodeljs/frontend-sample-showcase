@@ -6,7 +6,7 @@ import * as React from "react";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
 import { ControlPane } from "common/ControlPane/ControlPane";
-import { Badge } from "@itwin/itwinui-react";
+import { Badge, ThemeProvider } from "@itwin/itwinui-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -30,6 +30,7 @@ export default class BadgeList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of badges that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={BadgeList.getBadgeData()}></UIComponentContainer>
       </>

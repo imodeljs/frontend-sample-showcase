@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@itwin/appui-react";
+import { Button, ToggleSwitch } from "@itwin/itwinui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import { imageElementFromUrl } from "@itwin/core-frontend";
-import { Button, ButtonSize, ButtonType, Toggle } from "@itwin/core-react";
+import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import ClashReviewApi from "./ClashReviewApi";
 import "./ClashReview.scss";
 
@@ -100,18 +100,14 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   return (
     <>
       <div className="sample-options">
-        <div className="sample-options-2col">
-          <span>Show Markers</span>
-          <Toggle isOn={showDecorator} onChange={(checked: boolean) => setShowDecorator(checked)} />
+        <div className="iui-alert iui-informational instructions">
+          <div className="iui-alert-message">
+            Use the toggles to show clash marker pins or zoom to a clash. Click a marker or table entry to review clashes.
+          </div>
         </div>
-        <div className="sample-options-2col">
-          <span>Apply Zoom</span>
-          <Toggle isOn={applyZoom} onChange={(checked: boolean) => setApplyZoom(checked)} />
-        </div>
-        <div className="sample-options-2col">
-          <span>Display</span>
-          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} onClick={ClashReviewApi.resetDisplay}>Reset</Button>
-        </div>
+        <ToggleSwitch checked={showDecorator} onChange={() => setShowDecorator(!showDecorator)} label="Show Markers" labelPosition="right" className="sample-options-toggle" />
+        <ToggleSwitch checked={applyZoom} onChange={() => setApplyZoom(!applyZoom)} label="Apply Zoom" labelPosition="right" className="sample-options-toggle" />
+        <Button size="small" styleType="high-visibility" onClick={ClashReviewApi.resetDisplay} className="sample-options-button">Reset Display</Button>
       </div>
     </>
   );

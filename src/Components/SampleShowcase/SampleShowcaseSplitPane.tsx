@@ -97,25 +97,10 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
     setShowEditor(!showEditor);
   }, [showEditor, showGallery, width]);
 
-  // if (!gallery)
-  //   return (
-  //     <ReflexContainer orientation="vertical">
-  //       <ReflexElement className={editorClassName.join(" ")} size={showEditor ? sizes.editorSize : 0.1} onResize={onEditorSizeChange}>
-  //         {editor}
-  //       </ReflexElement>
-  //       <ReflexSplitter propagate />
-  //       <ReflexElement className={"preview"} minSize={sizes.minPreviewSize}>
-  //         {((width < 576 && !showGallery) || width >= 576) && !showEditor && <Button size={"large"} styleType={"high-visibility"} className="show-panel show-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-right"></span></Button>}
-  //         {showEditor && <Button size={"large"} styleType={"high-visibility"} className="hide-panel hide-code-button" onClick={onEditorButtonClick}><span className="icon icon-chevron-left"></span></Button>}
-  //         {visualizer}
-  //       </ReflexElement>
-  //     </ReflexContainer >
-  //   );
-
   return (
     <ReflexContainer orientation="vertical">
       <ReflexElement className={editorClassName.join(" ")} flex={!showEditor ? 0.0001 : undefined} onResize={onEditorSizeChange} direction={1}>
-        {editor}
+        {showEditor && editor}
       </ReflexElement>
       <ReflexSplitter propagate />
       <ReflexElement className={"preview"} minSize={sizes.minPreviewSize}>
@@ -127,7 +112,7 @@ export const SampleShowcaseSplitPane: FunctionComponent<SampleShowcaseSplitPaneP
       </ReflexElement>
       {gallery && <ReflexSplitter />}
       {gallery && <ReflexElement className={galleryClassName.join(" ")} flex={!showGallery ? 0.0001 : undefined} maxSize={sizes.maxGallerySize} onResize={onSampleGallerySizeChange} direction={-1}>
-        {gallery}
+        {showGallery && gallery}
       </ReflexElement>}
     </ReflexContainer >
   );

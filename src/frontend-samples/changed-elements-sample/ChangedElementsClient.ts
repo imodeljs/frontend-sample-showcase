@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { assert } from "@itwin/core-bentley";
-import { IModelHubClient, Version, VersionQuery } from "@bentley/imodelhub-client";
+import { Authorization, AxiosRestClient, EntityListIterator, IModelsClient, NamedVersion, NamedVersionState } from "@itwin/imodels-client-management";
 import { ChangedElements } from "@itwin/core-common";
 import { IModelConnection } from "@itwin/core-frontend";
-import { request, Response } from "@bentley/itwin-client";
 import { ChangedElementsApi } from "./ChangedElementsApi";
 
 interface ProjectContext {
@@ -24,10 +23,15 @@ export class ChangedElementsClient {
     accessToken: "" as any,
   };
 
+  /** Function that returns valid authorization information. */
+  private static async getAuthorization(): Promise<Authorization> {
+    return { scheme: "", token: ChangedElementsClient._projectContext.accessToken };
+  }
+
   /** Creates a context with all API request will be made in. */
   public static async populateContext(iModel: IModelConnection) {
     // Check if already populated
-    if (ChangedElementsClient._projectContext.accessToken !== null) return;
+    if (ChangedElementsClient._projectContext.accessToken) return;
     const accessToken = await ChangedElementsApi.getRequestContext();
     const projectId = iModel.iTwinId;
     const iModelId = iModel.iModelId;
@@ -37,11 +41,20 @@ export class ChangedElementsClient {
   }
 
   /** Uses the IModelClient to the request the Named Version of the IModel. Only selects name and changeset id.  Limited to top 10 Named Versions. */
-  public static async getNamedVersions(): Promise<Version[]> {
-    const { accessToken, iModelId } = ChangedElementsClient._projectContext;
-    const query = new VersionQuery().notHidden().select("name, changeSetId").top(10);
-    const client = new IModelHubClient();
-    return client.versions.get(accessToken as any, iModelId, query);
+  public static async getNamedVersions(): Promise<NamedVersion[]> {
+    const iModelsClient: IModelsClient = new IModelsClient();
+    const namedVersionIterator: EntityListIterator<NamedVersion> = iModelsClient.namedVersions.getRepresentationList({
+      authorization: async () => ChangedElementsClient.getAuthorization(),
+      iModelId: ChangedElementsClient._projectContext.iModelId,
+    });
+
+    const namedVersions: NamedVersion[] = [];
+    for await (const namedVersion of namedVersionIterator) {
+      if (namedVersion.state === NamedVersionState.Visible)
+        namedVersions.push(namedVersion);
+    }
+
+    return namedVersions;
   }
 
   /** Gets the changes in version using REST API.  Will response with JSON describing changes made between the two changesets.  Pass the same changeset Id as the start and end to view the changes for that changeset.
@@ -73,21 +86,20 @@ export class ChangedElementsClient {
    * ```
    */
   public static async getChangedElements(startChangesetId: string, endChangesetId: string): Promise<ChangedElements | undefined> {
+    const restClient = new AxiosRestClient();
     const { accessToken, projectId, iModelId } = ChangedElementsClient._projectContext;
-
     if (accessToken === undefined)
       return undefined;
+
     const url = `https://api.bentley.com/changedelements/comparison?iModelId=${iModelId}&projectId=${projectId}&startChangesetId=${startChangesetId}&endChangesetId=${endChangesetId}`;
-    const options = {
-      method: "GET",
-      headers: {
-        Authorization: accessToken,
-        Accept: "application/vnd.bentley.itwin-platform.v1+json",
-      },
+    const headers = {
+      Authorization: accessToken,
+      Accept: "application/vnd.bentley.itwin-platform.v1+json",
     };
-    return request(url, options)
-      .then((resp: Response): ChangedElements | undefined => {
-        return resp.body?.changedElements;
+
+    return restClient.sendGetRequest({ url, headers })
+      .then((resp: any): ChangedElements | undefined => {
+        return resp.changedElements;
       }).catch((_reason: any) => {
         return undefined;
       });
