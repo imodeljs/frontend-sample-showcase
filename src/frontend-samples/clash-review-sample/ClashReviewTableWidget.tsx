@@ -2,21 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useCallback, useEffect } from "react";
-import { Spinner, SpinnerSize } from "@itwin/core-react";
-import { AbstractWidgetProps, PropertyDescription, PropertyRecord, PropertyValue, PropertyValueFormat, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { ColumnDescription, RowItem, SimpleTableDataProvider, Table } from "@itwin/components-react";
-import { IModelApp } from "@itwin/core-frontend";
-import { useActiveIModelConnection } from "@itwin/appui-react";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import ClashReviewApi from "./ClashReviewApi";
+import { Table } from "@itwin/itwinui-react";
+import { useActiveIModelConnection } from "@itwin/appui-react";
 
 const ClashReviewTableWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
   const [clashData, setClashData] = React.useState<any>();
 
   useEffect(() => {
-    const removeListener = ClashReviewApi.onClashDataChanged.addListener((data: any) => {
-      setClashData(data);
+    const removeListener = ClashReviewApi.onClashDataChanged.addListener((clashDat: any) => {
+      setClashData(clashDat);
     });
 
     if (iModelConnection) {
@@ -31,70 +29,84 @@ const ClashReviewTableWidget: React.FunctionComponent = () => {
     };
   }, [iModelConnection]);
 
-  const _getDataProvider = useCallback((): SimpleTableDataProvider => {
+  const columnDefinition = useMemo(() => [
+    {
+      Header: "Table",
+      columns: [
+        {
+          id: "elementALabel",
+          Header: "Element A Label",
+          accessor: "elementALabel",
+        },
+        {
+          id: "elementBLabel",
+          Header: "Element B Label",
+          accessor: "elementBLabel",
+        },
+        {
+          id: "elementACategoryIndex",
+          Header: "Element A Category",
+          accessor: "elementACategoryIndex",
+        },
+        {
+          id: "elementBCategoryIndex",
+          Header: "Element B Category",
+          accessor: "elementBCategoryIndex",
+        },
+        {
+          id: "clashType",
+          Header: "Clash Type",
+          accessor: "clashType",
+        },
+      ],
+    },
+  ], []);
 
-    // adding columns
-    const columns: ColumnDescription[] = [];
+  const data = useMemo(() => {
+    const rows: any[] = [];
 
-    columns.push({ key: "elementALabel", label: "Element A Label" });
-    columns.push({ key: "elementBLabel", label: "Element B Label" });
-    columns.push({ key: "elementAModelIndex", label: "Element A Model" });
-    columns.push({ key: "elementBModelIndex", label: "Element B Model" });
-    columns.push({ key: "elementACategoryIndex", label: "Element A Category" });
-    columns.push({ key: "elementBCategoryIndex", label: "Element B Category" });
-    columns.push({ key: "clashType", label: "Clash Type" });
+    if (!clashData || !clashData.result)
+      return rows;
 
-    const dataProvider: SimpleTableDataProvider = new SimpleTableDataProvider(columns);
+    for (const rowData of clashData.result) {
+      const row: Record<string, any> = {
+        elementAId: rowData.elementAId,
+        elementBId: rowData.elementBId,
+      };
 
-    if (clashData !== undefined && clashData.result !== undefined) {
-      // adding rows => cells => property record => value and description.
-      for (const rowData of clashData.result) {
-        // Concatenate the element ids to set the row key  ie. "elementAId-elementBId"
-        const rowItemKey = `${rowData.elementAId}-${rowData.elementBId}`;
-        const rowItem: RowItem = { key: rowItemKey, cells: [] };
-        columns.forEach((column: ColumnDescription, i: number) => {
-          let cellValue: string = "";
-          if (column.key === "elementACategoryIndex" || column.key === "elementBCategoryIndex") {
-            // Lookup the category name using the index
-            cellValue = clashData.categoryList[rowData[column.key]] ? clashData.categoryList[rowData[column.key]].displayName.toString() : "";
-          } else if (column.key === "elementAModelIndex" || column.key === "elementBModelIndex") {
-            // Lookup the model name using the index
-            cellValue = clashData.modelList[rowData[column.key]] ? clashData.modelList[rowData[column.key]].displayName.toString() : "";
-          } else {
-            cellValue = rowData[column.key].toString();
-          }
-          const value: PropertyValue = { valueFormat: PropertyValueFormat.Primitive, value: cellValue };
-          const description: PropertyDescription = { displayLabel: columns[i].label, name: columns[i].key, typename: "string" };
-          rowItem.cells.push({ key: columns[i].key, record: new PropertyRecord(value, description) });
-        });
-        dataProvider.addRow(rowItem);
-      }
+      columnDefinition[0].columns.forEach((column) => {
+        let cellValue: string = "";
+        if (column.id === "elementACategoryIndex" || column.id === "elementBCategoryIndex") {
+          // Lookup the category name using the index
+          cellValue = clashData.categoryList[rowData[column.id]] ? clashData.categoryList[rowData[column.id]].displayName.toString() : "";
+        } else if (column.id === "elementAModelIndex" || column.id === "elementBModelIndex") {
+          // Lookup the model name using the index
+          cellValue = clashData.modelList[rowData[column.id]] ? clashData.modelList[rowData[column.id]].displayName.toString() : "";
+        } else {
+          cellValue = rowData[column.id].toString();
+        }
+        row[column.id] = cellValue;
+      });
+
+      rows.push(row);
     }
-    return dataProvider;
-  }, [clashData]);
 
-  // bonus: zooming into and highlighting element when row is selected.
-  const _onRowsSelected = async (rowIterator: AsyncIterableIterator<RowItem>): Promise<boolean> => {
+    return rows;
+  }, [clashData, columnDefinition]);
 
-    if (!IModelApp.viewManager.selectedView)
-      return true;
-
-    const row = await rowIterator.next();
-
-    // Get the concatenated element ids from the row key  ie. "elementAId-elementBId"
-    const elementIds = row.value.key.split("-");
-    ClashReviewApi.visualizeClash(elementIds[0], elementIds[1]);
-    return true;
-  };
+  const onRowClick = useCallback((_, row) => {
+    ClashReviewApi.visualizeClash(row.original.elementAId, row.original.elementBId);
+  }, []);
 
   return (
-    <>
-      {!clashData ? <div style={{ height: "200px" }}><Spinner size={SpinnerSize.Small} /> Calling API...</div> :
-        <div style={{ height: "100%" }}>
-          <Table dataProvider={_getDataProvider()} onRowsSelected={_onRowsSelected} />
-        </div>
-      }
-    </>
+    <Table
+      data={data}
+      columns={columnDefinition}
+      onRowClick={onRowClick}
+      isLoading={!clashData}
+      emptyTableContent={"No data"}
+      density="extra-condensed"
+      style={{ height: "100%" }} />
   );
 };
 
@@ -103,7 +115,7 @@ export class ClashReviewTableWidgetProvider implements UiItemsProvider {
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (location === StagePanelLocation.Bottom) {
+    if (location === StagePanelLocation.Bottom && _section === StagePanelSection.Start) {
       widgets.push(
         {
           id: "ClashReviewTableWidget",
