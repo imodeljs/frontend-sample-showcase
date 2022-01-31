@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { DbOpcode, Id64Array, Id64String } from "@itwin/core-bentley";
-import { Version } from "@bentley/imodelhub-client";
 import { ChangedElements, ColorDef, FeatureAppearance } from "@itwin/core-common";
 import { EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@itwin/core-frontend";
-import { ChangedElementsClient } from "./ChangedElementsClient";
 import { AuthorizationClient } from "@itwin/sandbox";
+import { NamedVersion } from "@itwin/imodels-client-management";
+import { ChangedElementsClient } from "./ChangedElementsClient";
 
 /** This provider will change the color of the elements based on the last operation of the comparison. */
 class ComparisonProvider implements FeatureOverrideProvider {
@@ -45,8 +45,9 @@ class ComparisonProvider implements FeatureOverrideProvider {
     }
     const insertFeature = FeatureAppearance.fromRgb(ColorDef.green);
     const updateFeature = FeatureAppearance.fromRgb(ColorDef.blue);
-    this._insertOp.forEach((id) => overrides.overrideElement(id, insertFeature));
-    this._updateOp.forEach((id) => overrides.overrideElement(id, updateFeature));
+
+    this._insertOp.forEach((id) => overrides.override({ elementId: id, appearance: insertFeature }));
+    this._updateOp.forEach((id) => overrides.override({ elementId: id, appearance: updateFeature }));
     overrides.setDefaultOverrides(ComparisonProvider._defaultAppearance);
   }
 }
@@ -63,7 +64,7 @@ export class ChangedElementsApi {
   }
 
   /** A list of all the Named Versions and their Changeset Id for the open iModel. */
-  public static namedVersions: Version[] = [];
+  public static namedVersions: NamedVersion[] = [];
 
   /** Request all the named versions of an IModel and populates the "namedVersions" list. */
   public static async populateVersions() {
