@@ -14,3 +14,4 @@ export { BlankFrontstage } from "./frontstages/BlankFrontstage";
 export type { IModelConnectionComponent } from "./frontstages/BlankFrontstage";
 export { SampleDataProvider } from "./data-providers/SampleDataProvider";
 export { mapLayerOptions } from "./view/MapLayerOptions";
+export { tileAdminOptions } from "./view/TileAdminOptions";
