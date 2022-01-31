@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
 import { ContextRealityModelProps, FeatureAppearance, Frustum, RealityDataFormat, RealityDataProvider, RenderMode } from "@itwin/core-common";
-import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
+import { AccuDrawHintBuilder, FeatureOverrideProvider, FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
+import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
 import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
 
 export enum ComparisonType {
@@ -13,7 +13,17 @@ export enum ComparisonType {
 }
 
 // const compareDebugClipStyle = ClipStyle.create(true, CutStyle.defaults, RgbColor.fromColorDef(ColorDef.blue), RgbColor.fromColorDef(ColorDef.green));
+// const elements = new Set("0x2000000acf7");
 
+class HideItAll implements FeatureOverrideProvider {
+  public static hideIt = false;
+  public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _viewport: Viewport) {
+    if (HideItAll.hideIt)
+      overrides.setDefaultOverrides(FeatureAppearance.fromTransparency(1));
+    else
+      overrides.setDefaultOverrides(FeatureAppearance.defaults);
+  }
+}
 export default class SwipingComparisonApi {
   private static _provider: SampleTiledGraphicsProvider | undefined;
   private static _viewport?: Viewport;
@@ -75,7 +85,7 @@ export default class SwipingComparisonApi {
 
     if (undefined === SwipingComparisonApi._provider) {
       SwipingComparisonApi._provider = SwipingComparisonApi.createProvider(screenPoint, viewport, comparisonType);
-      // viewport.addTiledGraphicsProvider(SwipingComparisonApi._provider);
+      viewport.addTiledGraphicsProvider(SwipingComparisonApi._provider);
     }
 
     SwipingComparisonApi.updateProvider(screenPoint, viewport, SwipingComparisonApi._provider);
@@ -99,8 +109,10 @@ export default class SwipingComparisonApi {
     provider.setClipVector(clip);
 
     // Update in Viewport
-    // viewport.view.setViewClip(SwipingComparisonApi.createClip(normal.clone(), worldPoint));
-    // viewport.setAlwaysDrawn(new Set("0x2000000acf7"), true);
+    viewport.view.setViewClip(SwipingComparisonApi.createClip(normal.clone(), worldPoint));
+    // viewport.setAlwaysDrawn(new Set(), true);
+    HideItAll.hideIt = true;
+    viewport.addFeatureOverrideProvider(new HideItAll());
 
     viewport.synchWithView();
   }
@@ -202,11 +214,10 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     // Replace the clipping plane with a flipped one.
     // vp.view.setViewClip(this.clipVolume?.clipVector);
 
+    HideItAll.hideIt = false;
     // vp.clipStyle = compareDebugClipStyle;
 
     this.prepareNewBranch(vp);
-
-    vp.clearAlwaysDrawn();
 
     const context: SceneContext = new SceneContext(vp);
     vp.view.createScene(context);
@@ -224,13 +235,14 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
       // Overwrites the view flags for this view branch.
       branch.setViewFlagOverrides(this.viewFlagOverrides);
       // Draw the graphics to the screen.
-      output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { /* clipVolume: this.clipVolume */ }));
+      output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
     }
 
     // Return the old clip to the view.
     // vp.view.setViewClip(clip);
 
-    vp.setAlwaysDrawn(new Set("0x2000000acf7"), true);
+    HideItAll.hideIt = true;
+    // vp.setAlwaysDrawn(new Set(), true);
     // vp.clipStyle = ClipStyle.defaults;
 
     this.resetOldView(vp);
