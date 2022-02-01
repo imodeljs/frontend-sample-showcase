@@ -2,14 +2,15 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import { ColorDef } from "@itwin/core-common";
-import { Button, ButtonType, Toggle } from "@itwin/core-react";
 import { ColorPickerButton } from "@itwin/imodel-components-react";
 import { EmphasizeElementsApi } from "./EmphasizeElementsApi";
 import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { EmphasizeElements, IModelApp } from "@itwin/core-frontend";
+import { Button, ToggleSwitch } from "@itwin/itwinui-react";
+import "./EmphasizeElements.scss";
 
 enum ActionType {
   Emphasize = "Emphasize",
@@ -123,8 +124,8 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
   };
   // END ON_CLICK_CLEAR
 
-  const _onToggleEmphasis = (wantEmphasis: boolean) => {
-    setWantEmphasisState(wantEmphasis);
+  const _onToggleEmphasis = (event: ChangeEvent<HTMLInputElement>) => {
+    setWantEmphasisState(event.target.checked);
   };
 
   return (
@@ -133,21 +134,21 @@ export const EmphasizeElementsWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         <div className="sample-options-4col">
           <span>Emphasize</span>
-          <Toggle isOn={wantEmphasisState} showCheckmark={true} onChange={_onToggleEmphasis} disabled={selectionIsEmptyState} />
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleActionButton(ActionType.Emphasize)} disabled={selectionIsEmptyState}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleClearButton(ActionType.Emphasize)} disabled={!emphasizeIsActiveState}>Clear</Button>
+          <ToggleSwitch checked={wantEmphasisState} onChange={_onToggleEmphasis} disabled={selectionIsEmptyState} />
+          <Button styleType="high-visibility" size="small" onClick={() => _handleActionButton(ActionType.Emphasize)} disabled={selectionIsEmptyState}>Apply</Button>
+          <Button styleType="cta" size="small" onClick={() => _handleClearButton(ActionType.Emphasize)} disabled={!emphasizeIsActiveState}>Clear</Button>
           <span>Hide</span>
           <span />
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleActionButton(ActionType.Hide)} disabled={selectionIsEmptyState}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleClearButton(ActionType.Hide)} disabled={!hideIsActiveState}>Clear</Button>
+          <Button styleType="high-visibility" size="small" onClick={() => _handleActionButton(ActionType.Hide)} disabled={selectionIsEmptyState}>Apply</Button>
+          <Button styleType="cta" size="small" onClick={() => _handleClearButton(ActionType.Hide)} disabled={!hideIsActiveState}>Clear</Button>
           <span>Isolate</span>
           <span />
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleActionButton(ActionType.Isolate)} disabled={selectionIsEmptyState}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleClearButton(ActionType.Isolate)} disabled={!isolateIsActiveState}>Clear</Button>
+          <Button styleType="high-visibility" size="small" onClick={() => _handleActionButton(ActionType.Isolate)} disabled={selectionIsEmptyState}>Apply</Button>
+          <Button styleType="cta" size="small" onClick={() => _handleClearButton(ActionType.Isolate)} disabled={!isolateIsActiveState}>Clear</Button>
           <span>Override</span>
           <ColorPickerButton initialColor={colorValueState} onColorPick={_onColorPick} disabled={selectionIsEmptyState} />
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleActionButton(ActionType.Override)} disabled={selectionIsEmptyState}>Apply</Button>
-          <Button buttonType={ButtonType.Primary} onClick={() => _handleClearButton(ActionType.Override)} disabled={!overrideIsActiveState}>Clear</Button>
+          <Button styleType="high-visibility" size="small" onClick={() => _handleActionButton(ActionType.Override)} disabled={selectionIsEmptyState}>Apply</Button>
+          <Button styleType="cta" size="small" onClick={() => _handleClearButton(ActionType.Override)} disabled={!overrideIsActiveState}>Clear</Button>
         </div>
       </div>
     </>
