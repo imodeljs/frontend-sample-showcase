@@ -6,13 +6,12 @@
 import React, { useEffect } from "react";
 import { useActiveViewport } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Select } from "@itwin/core-react";
 import { Viewport } from "@itwin/core-frontend";
 import { calculateSolarDirectionFromAngles, ColorDef, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
 import { Range1d, Range1dProps } from "@itwin/core-geometry";
 import ThematicDisplayApi from "./ThematicDisplayApi";
 import "./ThematicDisplay.scss";
-import { Slider, ToggleSwitch } from "@itwin/itwinui-react";
+import { Alert, Label, Select, SelectOption, Slider, ToggleSwitch } from "@itwin/itwinui-react";
 
 // defining the Thematic Display Props values that are not what is need at default,
 const _defaultAzimuth = 315.0;
@@ -141,63 +140,55 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
   };
 
   // Handle changes to the thematic display toggle.
-  const _onChangeThematicDisplayToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked;
+  const _onChangeThematicDisplayToggle = (checked: boolean) => {
     if (undefined === viewport)
       return;
 
     ThematicDisplayApi.setThematicDisplayOnOff(viewport, checked);
-    // updateState();
   };
 
   // Handle changes to the thematic display toggle.
-  const _onChangeMapToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked;
-
+  const _onChangeMapToggle = (checked: boolean) => {
     if (undefined === viewport)
       return;
 
     ThematicDisplayApi.setBackgroundMap(viewport, checked);
-    // updateState();
   };
 
   // Handle changes to the display mode.
-  const _onChangeDisplayMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const _onChangeDisplayMode = (num: number) => {
     if (undefined === viewport)
       return;
 
     // Convert the value back to number represented by enum.
-    const displayMode: ThematicDisplayMode = Number.parseInt(event.target.value, 10);
+    const displayMode: ThematicDisplayMode = num;
 
     ThematicDisplayApi.setThematicDisplayMode(viewport, displayMode);
     ThematicDisplayApi.syncViewport(viewport);
-    // updateState();
   };
 
   // Handle changes to the display mode.
-  const _onChangeColorScheme = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const _onChangeColorScheme = (num: number) => {
     if (undefined === viewport)
       return;
 
     // Convert the value back to number represented by enum.
-    const colorScheme: ThematicGradientColorScheme = Number.parseInt(event.target.value, 10);
+    const colorScheme: ThematicGradientColorScheme = num;
 
     ThematicDisplayApi.setThematicDisplayGradientColorScheme(viewport, colorScheme);
     ThematicDisplayApi.syncViewport(viewport);
-    // updateState();
   };
 
   // Handle changes to the gradient mode.
-  const _onChangeGradientMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const _onChangeGradientMode = (num: number) => {
     if (undefined === viewport)
       return;
 
     // Convert the value back to number represented by enum.
-    const gradientMode: ThematicGradientMode = Number.parseInt(event.target.value, 10);
+    const gradientMode: ThematicGradientMode = num;
 
     ThematicDisplayApi.setThematicDisplayGradientMode(viewport, gradientMode);
     ThematicDisplayApi.syncViewport(viewport);
-    // updateState();
   };
 
   // Handles updates to the thematic range slider
@@ -210,10 +201,9 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
 
     ThematicDisplayApi.setThematicDisplayRange(viewport, newRange);
     ThematicDisplayApi.syncViewport(viewport);
-    // updateState();
   };
 
-  const _mapOptions = (o: {}): {} => {
+  const _mapOptions = (o: {}): SelectOption<number>[] => {
     const keys = Object.keys(o).filter((key: any) => isNaN(key));
     return keys.map((label, index) => {
       return { label, value: index, disabled: false };
@@ -242,45 +232,32 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
   // Display drawing and sheet options in separate sections.
   return (
     <div className="sample-options">
-      <div className="sample-options-2col">
-        <label>Thematic Display</label>
-        <ToggleSwitch checked={onState} onChange={_onChangeThematicDisplayToggle} />
-
-        <label>Background Map</label>
-        <ToggleSwitch checked={mapState} onChange={_onChangeMapToggle} disabled={!isGeoLocated} />
-
-        <label>Display Mode</label>
-        <Select style={{ width: "fit-content" }} onChange={_onChangeDisplayMode} value={displayModeState.toString()} options={displayModeOptions} />
-
-        <label>Color Scheme</label>
-        <Select style={{ width: "fit-content" }} onChange={_onChangeColorScheme} value={colorSchemeState.toString()} options={colorSchemeOptions} />
-
-        <label>Gradient Mode</label>
-        <Select style={{ width: "fit-content" }} onChange={_onChangeGradientMode} value={gradientModeState.toString()} options={gradientModeOptions} />
-
-        <label>Change Range</label>
-        {displayModeState !== ThematicDisplayMode.HillShade ?
-          <Slider
-            values={[sliderRange.low, sliderRange.high]}
-            min={min} minLabel={Math.round(min)}
-            max={max} maxLabel={Math.round(max)}
-            step={step}
-            onUpdate={_onUpdateRangeSlider}
-            onChange={_onUpdateRangeSlider}
-          /> : <span style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ display: "flex", flexDirection: "row" }}>
-              <label style={{ marginRight: 7 }}>Azimuth</label>
-              <div style={{ flexGrow: "1" }}>
-                <Slider min={0} max={360} step={1} values={[azimuthState]} onUpdate={(values) => setAzimuthState(values[0])} />
-              </div>
-            </span>
-            <span style={{ display: "flex", flexDirection: "row" }}>
-              <label style={{ marginRight: 7 }}>Elevation</label>
-              <div style={{ flexGrow: "1" }}>
-                <Slider min={0} max={90} step={1} values={[elevationState]} onUpdate={(values) => setElevationState(values[0])} />
-              </div>
-            </span>
-          </span>}
+      <div className="sample-grid">
+        <div className="sample-grid-toggles">
+          <ToggleSwitch label="Thematic Display" checked={onState} onChange={(e) => _onChangeThematicDisplayToggle(e.target.checked)} />
+          <ToggleSwitch label="Background Map" checked={mapState} onChange={(e) => _onChangeMapToggle(e.target.checked)} disabled={!isGeoLocated} />
+        </div>
+        <div className="sample-grid-selects">
+          <Label htmlFor="display-mode">Display Mode</Label>
+          <Select<number> id="display-mode" size="small" onChange={_onChangeDisplayMode} value={displayModeState} options={displayModeOptions} />
+          <Label htmlFor="color-scheme">Color Scheme</Label>
+          <Select<number> id="color-scheme" size="small" onChange={_onChangeColorScheme} value={colorSchemeState} options={colorSchemeOptions} />
+          <Label htmlFor="gradient-mode">Gradient Mode</Label>
+          <Select<number> id="gradient-mode" size="small" onChange={_onChangeGradientMode} value={gradientModeState} options={gradientModeOptions} />
+        </div>
+        <div className="sample-grid-sliders">
+          <Label>Change Range:</Label>
+          {displayModeState !== ThematicDisplayMode.HillShade
+            ? <Slider min={min} minLabel={Math.round(min)} max={max} maxLabel={Math.round(max)} step={step} values={[sliderRange.low, sliderRange.high]} onUpdate={_onUpdateRangeSlider} />
+            : <>
+              <Slider min={0} minLabel="Azimuth" max={360} step={1} values={[azimuthState]} onUpdate={(values) => setAzimuthState(values[0])} />
+              <Slider min={0} minLabel="Elevation" max={90} step={1} values={[elevationState]} onUpdate={(values) => setElevationState(values[0])} />
+            </>
+          }
+        </div>
+        <Alert type="informational" className="instructions">
+          Use the controls to change the view attributes
+        </Alert>
       </div>
     </div>
   );
