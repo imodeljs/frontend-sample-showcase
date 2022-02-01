@@ -2,57 +2,61 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect, useMemo } from "react";
 import DisplayStylesApp from "./DisplayStylesApi";
 import { useActiveViewport } from "@itwin/appui-react";
-import { displayStyles } from "./Styles";
-import { Select, Toggle } from "@itwin/core-react";
+import { DisplayStyleName, displayStyles } from "./Styles";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-
-const CUSTOM_STYLE_INDEX = 0;
-const DEFAULT_STYLE_INDEX = 4;
+import { Select, SelectOption, ToggleSwitch } from "@itwin/itwinui-react";
 
 export const DisplayStylesWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
-  const [activePresetIndex, setActivePresetIndex] = React.useState<number>(DEFAULT_STYLE_INDEX);
+  const [activePreset, setActivePreset] = React.useState<DisplayStyleName>("Sun-dappled");
   const [mergeState, setMergeState] = React.useState<boolean>(false);
 
   useEffect(() => {
     if (viewport) {
-      let style = displayStyles[activePresetIndex];
+      DisplayStylesApp.applyDisplayStyle(viewport, displayStyles.Default);
+
+      let style = displayStyles[activePreset];
       DisplayStylesApp.applyDisplayStyle(viewport, style);
 
       if (mergeState) {
-        style = displayStyles[CUSTOM_STYLE_INDEX];
+        style = displayStyles.Custom;
         DisplayStylesApp.applyDisplayStyle(viewport, style);
       }
     }
-  }, [activePresetIndex, mergeState, viewport]);
+  }, [activePreset, mergeState, viewport]);
 
   // Called by the control and will update the active display style.
-  const _onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const index = Number.parseInt(event.target.value, 10);
-    setActivePresetIndex(index);
+  const _onChange = (value: DisplayStyleName) => {
+    setActivePreset(value);
   };
 
   // Called by the control and updates wether to also apply the Custom display style.
-  const _onToggle = (isOn: boolean) => {
-    setMergeState(isOn);
+  const _onToggle = (event: ChangeEvent<HTMLInputElement>) => {
+    setMergeState(event.target.checked);
   };
 
   const toggleTooltip = "Toggling on will apply the \"Custom\" style in \"Styles.ts\" after the selected style is applied.";
-  const options = Object.assign({}, displayStyles.map((style) => style.name));
+  const options: SelectOption<DisplayStyleName>[] = useMemo(() =>
+    Object.keys(displayStyles)
+      .map((key) => ({
+        value: key as DisplayStyleName,
+        label: key,
+      })), []);
+
   return (
     <>
       <div className="sample-options">
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <span>Select Style:</span>
-          <Select value={activePresetIndex} onChange={_onChange} style={{ width: "fit-content" }} options={options} />
+          <Select<DisplayStyleName> value={activePreset} onChange={_onChange} style={{ width: "fit-content" }} options={options} />
           <span>
             <span style={{ marginRight: "1em" }} className="icon icon-help" title={toggleTooltip}></span>
             <span>Merge with Custom:</span>
           </span>
-          <Toggle isOn={mergeState} onChange={_onToggle} />
+          <ToggleSwitch checked={mergeState} onChange={_onToggle} />
         </div>
       </div>
     </>
