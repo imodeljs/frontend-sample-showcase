@@ -5,9 +5,10 @@
 import React, { useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import MultiViewportApi from "./MultiViewportApi";
-import { Toggle } from "@itwin/core-react";
 import { IModelApp, Viewport } from "@itwin/core-frontend";
 import { useActiveViewport } from "@itwin/appui-react";
+import { ToggleSwitch } from "@itwin/itwinui-react";
+import "./MultiViewport.scss";
 
 const MultiViewportWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
@@ -38,7 +39,7 @@ const MultiViewportWidget: React.FunctionComponent = () => {
     <div className="sample-options">
       <div className="sample-options-2col">
         <span>Sync Viewports</span>
-        <Toggle disabled={viewport === undefined} isOn={isSynched} onChange={(on) => setIsSynched(on)} />
+        <ToggleSwitch disabled={viewport === undefined} checked={isSynched} onChange={(e) => setIsSynched(e.target.checked)} />
       </div>
     </div>
   );

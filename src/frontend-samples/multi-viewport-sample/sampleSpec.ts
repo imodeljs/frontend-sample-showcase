@@ -16,7 +16,7 @@ export function getMultiViewportSpec(): SampleSpec {
       import("!editor-file-loader!./MultiViewportApp?entry=true"),
       import("!editor-file-loader!./MultiViewportWidget"),
       import("!editor-file-loader!./MultiViewportFrontstageProvider"),
-      import("!editor-file-loader!./multi-view-sample.scss"),
+      import("!editor-file-loader!./MultiViewport.scss"),
     ],
     type: "MultiViewportApp.tsx",
   });
