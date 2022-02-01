@@ -270,11 +270,15 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
           /> : <span style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ display: "flex", flexDirection: "row" }}>
               <label style={{ marginRight: 7 }}>Azimuth</label>
-              <Slider min={0} max={360} step={1} values={[azimuthState]} onUpdate={(values) => setAzimuthState(values[0])} />
+              <div style={{ flexGrow: "1" }}>
+                <Slider min={0} max={360} step={1} values={[azimuthState]} onUpdate={(values) => setAzimuthState(values[0])} />
+              </div>
             </span>
             <span style={{ display: "flex", flexDirection: "row" }}>
               <label style={{ marginRight: 7 }}>Elevation</label>
-              <Slider min={0} max={90} step={1} values={[elevationState]} onUpdate={(values) => setElevationState(values[0])} />
+              <div style={{ flexGrow: "1" }}>
+                <Slider min={0} max={90} step={1} values={[elevationState]} onUpdate={(values) => setElevationState(values[0])} />
+              </div>
             </span>
           </span>}
       </div>
