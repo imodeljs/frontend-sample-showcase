@@ -8,7 +8,6 @@ import { Viewer, ViewerFrontstage } from "@itwin/web-viewer-react";
 import { IModelConnection } from "@itwin/core-frontend";
 import { MultiViewportWidgetProvider } from "./MultiViewportWidget";
 import { MultiViewportFrontstage } from "./MultiViewportFrontstageProvider";
-import "./multi-view-sample.scss";
 
 const uiProviders = [new MultiViewportWidgetProvider()];
 
