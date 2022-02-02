@@ -29,8 +29,6 @@ const _defaultProps: ThematicDisplayProps = {
 };
 
 const ThematicDisplayWidget: React.FunctionComponent = () => {
-
-  // const iModelConnection = useActiveIModelConnection();
   const viewport = useActiveViewport();
   const [onState, setOnState] = React.useState<boolean>(false);
   const [mapState, setMapState] = React.useState<boolean>(false);
@@ -101,7 +99,7 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     let extents = ThematicDisplayApi.getProjectExtents(vp.iModel);
     let range = props.range;
 
-    // The coff harbors sample
+    // For the coff harbors model, the extents are massive.  This brings them into the size of the relevant road.
     if ("CoffsHarborDemo" === vp.iModel?.name)
       extents = [-4.8088836669921875, 127.30888366699219];
 
@@ -121,8 +119,6 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
       extents = [0, 90]; // Slope range is angular
 
     range = range ? capRange(range, extents) : extents;
-    // if (!Range1d.fromJSON(extents).isAlmostEqual(Range1d.fromJSON(extents)))
-    //   range = extents;
 
     setOnState(isThematicDisplayOn);
     setMapState(ThematicDisplayApi.isGeoLocated(vp.iModel) && isBackgroundMapOn);
@@ -210,17 +206,26 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
     });
   };
 
-  const colorSchemeOptions = _mapOptions(ThematicGradientColorScheme);
-  (colorSchemeOptions as any)[ThematicGradientColorScheme.Custom].disabled = true; // Custom colors are not supported for this sample.
+  const colorSchemeOptions = React.useMemo(() => {
+    const options = _mapOptions(ThematicGradientColorScheme);
+    options[ThematicGradientColorScheme.Custom].disabled = true; // Custom colors are not supported for this sample.
+    return options;
+  }, []);
 
-  const gradientModeOptions = _mapOptions(ThematicGradientMode);
-  if (displayModeState !== ThematicDisplayMode.Height) {
-    (gradientModeOptions as any)[ThematicGradientMode.IsoLines].disabled = true;
-    (gradientModeOptions as any)[ThematicGradientMode.SteppedWithDelimiter].disabled = true;
-  }
+  const gradientModeOptions = React.useMemo(() => {
+    const options = _mapOptions(ThematicGradientMode);
+    if (displayModeState !== ThematicDisplayMode.Height) {
+      options[ThematicGradientMode.IsoLines].disabled = true;
+      options[ThematicGradientMode.SteppedWithDelimiter].disabled = true;
+    }
+    return options;
+  }, [displayModeState]);
 
-  const displayModeOptions = _mapOptions(ThematicDisplayMode);
-  delete (displayModeOptions as any)[ThematicDisplayMode.InverseDistanceWeightedSensors]; // Sensors are not supported for this sample.
+  const displayModeOptions = React.useMemo(() => {
+    const options = _mapOptions(ThematicDisplayMode);
+    // Sensors are not supported for this sample.
+    return options.filter((o) => o.value !== ThematicDisplayMode.InverseDistanceWeightedSensors);
+  }, []);
   // A sensor specific sample will come soon.
   const isGeoLocated = viewport ? ThematicDisplayApi.isGeoLocated(viewport.iModel) : false;
 

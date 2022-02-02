@@ -52,7 +52,7 @@ export default class ThematicDisplayApi {
       applyTerrain: true,
       globeMode: GlobeMode.Plane, // If the user zooms out enough, the curve of the earth can effect the thematic display.
       useDepthBuffer: true,
-      transparency: 0,
+      transparency: 0.75,
       terrainSettings: { heightOriginMode: TerrainHeightOriginMode.Geoid },
     });
     // vp.backgroundMapSettings = BackgroundMapSettings.fromJSON();
