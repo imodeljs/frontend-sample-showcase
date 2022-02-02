@@ -101,6 +101,7 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
   const _applyColorOverrides = useCallback(async (cancellationToken: CancelToken) => {
     if (viewport && iModelConnection) {
       /* Clearing colors so they don't stack when pressing apply button multiple times */
+      VolumeQueryApi.clearColorOverrides(viewport);
       const range = VolumeQueryApi.computeClipRange(viewport);
 
       /* Getting elements that are going to be colored */
