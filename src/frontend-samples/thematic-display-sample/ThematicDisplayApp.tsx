@@ -14,8 +14,7 @@ const ThematicDisplayApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding]);
 
   const _initialView = async (iModelConnection: IModelConnection) => {
-    const view = await ViewSetup.getDefaultView(iModelConnection);
-    return view;
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */
