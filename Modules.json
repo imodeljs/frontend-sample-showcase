@@ -10,14 +10,16 @@
     "./src/common/ControlPane/ControlPane.tsx": "0.1.0",
     "./src/common/UIComponents/index.scss": "0.1.0",
     "./src/common/UIComponents/UIComponentContainer.tsx": "0.1.0",
-    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "0.1.0"
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "0.1.0",
+    "./src/common/PointSelector/PointSelector.tsx": "0.1.0"
   },
   "alias": {
     "./src/@itwin/sandbox/index.ts": "@itwin/sandbox",
     "./src/common/ControlPane/ControlPane.tsx": "common/ControlPane/ControlPane",
     "./src/common/UIComponents/index.scss": "common/UIComponents/index.scss",
     "./src/common/UIComponents/UIComponentContainer.tsx": "common/UIComponents/UIComponentContainer",
-    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "frontend-samples/marker-pin-sample/MarkerPinDecorator"
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "frontend-samples/marker-pin-sample/MarkerPinDecorator",
+    "./src/common/PointSelector/PointSelector.tsx": "common/PointSelector/PointSelector"
   },
   "externalDependencies": [
     {
