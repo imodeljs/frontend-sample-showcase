@@ -88,7 +88,7 @@ export const ViewClipWidget: React.FunctionComponent = () => {
           <ToggleSwitch checked={showClipBlockState} onChange={_onToggleRangeClip} />
           <span />
           <span>Clip Plane</span>
-          <Select<string> onChange={_onPlaneSelectChange} value={clipPlaneState} options={options} />
+          <Select<string> onChange={_onPlaneSelectChange} value={clipPlaneState} options={options} onShow={() => { }} onHide={() => { }} />
           <Button onClick={() => _handleFlipButton()} disabled={clipPlaneState === "None"} styleType='cta'>Flip</Button>
         </div>
       </div>
