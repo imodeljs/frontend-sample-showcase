@@ -186,7 +186,7 @@ export const SerializeViewWidget: React.FunctionComponent = () => {
         <hr></hr>
         <div style={{ display: "flex" }}>
           <p>Select View: </p>
-          <Select options={optionsState} onChange={(num) => setCurrentViewIndexState(num)} style={{ flex: "1", padding: "5px" }} disabled={viewsState.length === 0} value={currentViewIndexState} />
+          <Select options={optionsState} onChange={(num) => setCurrentViewIndexState(num)} style={{ flex: "1", padding: "5px" }} disabled={viewsState.length === 0} value={currentViewIndexState} onHide={() => { }} onShow={() => { }} />
         </div>
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <Button onClick={_onSaveStateClick} disabled={viewsState.length === 0}>Save State</Button>
