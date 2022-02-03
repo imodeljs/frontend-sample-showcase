@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Button, Select, Slider, Toggle } from "@itwin/core-react";
 import { useActiveViewport } from "@itwin/appui-react";
 import SnowDecorationApi from "./SnowDecorationApi";
 import { SnowParams } from "./SnowDecorator";
+import { Alert, Button, Label, LabeledSelect, Slider, ToggleSwitch } from "@itwin/itwinui-react";
 import "./SnowDecoration.scss";
 
 const windRange = 600;
@@ -20,39 +20,8 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
   const [particleDensity, setParticleDensity] = React.useState<number>(0);
   const [pauseEffect, setPauseEffect] = React.useState<boolean>(false);
 
-  useEffect(() => {
-    if (!viewport)
-      return;
-
-    const props = SnowDecorationApi.predefinedProps.get(propsName)!;
-    SnowDecorationApi.createSnowDecorator(viewport, props).then(() => {
-      setParticleDensity(props.params.particleDensity);
-      setWind(props.params.windVelocity);
-      setPauseEffect(false);
-    })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
-  }, [viewport, propsName]);
-
-  useEffect(() => {
-    configureEffect({ particleDensity });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [particleDensity]);
-
-  useEffect(() => {
-    configureEffect({ windVelocity: wind });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wind]);
-
-  useEffect(() => {
-    configureEffect({ pauseEffect });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pauseEffect]);
-
   /** Configures active snow decorators (should only ever be one in this sample). */
-  const configureEffect = (params: Partial<SnowParams> & { pauseEffect?: boolean }) => {
+  const configureEffect = useCallback((params: Partial<SnowParams> & { pauseEffect?: boolean }) => {
     SnowDecorationApi.getSnowDecorators().forEach((decorator) => {
       // if there is an update to the, a texture may need to be updated too.
       if (params.windVelocity !== undefined) {
@@ -79,23 +48,58 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
       // Configure the decorator
       decorator.configure(params);
     });
-  };
+  }, [propsName]);
+
+  useEffect(() => {
+    if (!viewport)
+      return;
+
+    const props = SnowDecorationApi.predefinedProps.get(propsName)!;
+    SnowDecorationApi.createSnowDecorator(viewport, props).then(() => {
+      setParticleDensity(props.params.particleDensity);
+      setWind(props.params.windVelocity);
+      setPauseEffect(false);
+    })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      });
+  }, [viewport, propsName]);
+
+  useEffect(() => {
+    configureEffect({ particleDensity });
+  }, [configureEffect, particleDensity]);
+
+  useEffect(() => {
+    configureEffect({ windVelocity: wind });
+  }, [configureEffect, wind]);
+
+  useEffect(() => {
+    configureEffect({ pauseEffect });
+  }, [configureEffect, pauseEffect]);
+
+  const options = [...SnowDecorationApi.predefinedProps.keys()].map((key) => ({ value: key, label: key }));
 
   // Display drawing and sheet options in separate sections.
   return (
     <div className="sample-options">
-      <div className={"sample-options-2col"}>
-        <label>Select Effect</label>
-        <Select options={[...SnowDecorationApi.predefinedProps.keys()]} value={propsName} onChange={(event) => setPropsName(event.target.value)} />
-        <label>Pause Effect</label>
-        <Toggle isOn={pauseEffect} onChange={(isChecked) => setPauseEffect(isChecked)} />
-        <label>Particle Density</label>
-        <Slider min={0} max={0.01135} step={0.0001} values={[particleDensity]} onUpdate={(values) => setParticleDensity(values[0])} />
-        <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <label>Wind</label>
-          <Button onClick={() => setWind(0)}>Zero</Button>
-        </span>
-        <Slider min={-windRange} max={windRange} values={[wind]} step={0.25} onUpdate={(values) => setWind(values[0])} />
+      <div className="sample-grid">
+        <LabeledSelect label="Select Effect" options={options} value={propsName} onChange={setPropsName} size="small" />
+        <ToggleSwitch label="Pause Effect" checked={pauseEffect} onChange={() => setPauseEffect(!pauseEffect)} />
+        <div>
+          <Label>Particle Density</Label>
+          <Slider min={0} max={0.01135} step={0.0001} values={[particleDensity]} onUpdate={(values) => setParticleDensity(values[0])} />
+        </div>
+        <div className="wind-grid">
+          <div>
+            <Label>Wind</Label>
+            <Slider min={-windRange} max={windRange} values={[wind]} step={0.25} onUpdate={(values) => setWind(values[0])} />
+          </div>
+          <Button size="small" onClick={() => setWind(0)}>Reset</Button>
+        </div>
+        <Alert type="informational" className="instructions">
+          Apply particle effects to the model
+        </Alert>
       </div>
     </div>
   );
@@ -111,7 +115,7 @@ export class SnowDecorationWidgetProvider implements UiItemsProvider {
         {
           id: "SnowDecorationWidget",
           label: "Snow Decoration Selector",
-          defaultState: WidgetState.Floating,
+          defaultState: WidgetState.Open,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SnowDecorationWidget />,
         },
