@@ -164,9 +164,9 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
   useEffect(() => {
     if (iModelConnection && viewport) {
       if (!iModelIdState || iModelIdState !== iModelConnection.iModelId) {
-        const cancelationToken = { canceled: false };
+        const cancellationToken = { canceled: false };
         setIsLoading(true);
-        _applyColorOverrides(cancelationToken).then(() => {
+        _applyColorOverrides(cancellationToken).then(() => {
           setIsLoading(false);
           setApplyingColorOverrides(undefined);
         })
@@ -174,7 +174,7 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
             // eslint-disable-next-line no-console
             console.error(error);
           });
-        setApplyingColorOverrides(cancelationToken);
+        setApplyingColorOverrides(cancellationToken);
         setIModelIdState(iModelConnection.iModelId);
       }
     }
@@ -186,13 +186,13 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
       applyingColorOverrides.canceled = true;
 
     // Apply the new call with the token
-    const cancelationToken = { canceled: false };
-    _applyColorOverrides(cancelationToken)
+    const cancellationToken = { canceled: false };
+    _applyColorOverrides(cancellationToken)
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-    setApplyingColorOverrides(cancelationToken);
+    setApplyingColorOverrides(cancellationToken);
   };
 
   const _onClickClearColorOverrides = () => {
