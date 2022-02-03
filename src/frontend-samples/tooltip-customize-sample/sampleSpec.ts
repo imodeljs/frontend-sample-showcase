@@ -17,6 +17,7 @@ export function getTooltipCustomizeSpec(): SampleSpec {
       import("!editor-file-loader!./TooltipCustomizeApp?entry=true"),
       import("!editor-file-loader!./TooltipCustomizeWidget"),
       import("!editor-file-loader!./TooltipCustomize.scss"),
+      import("!editor-file-loader!./public/itwinjs-logo.svg?public=true"),
     ],
     type: "TooltipCustomizeApp.tsx",
   });
