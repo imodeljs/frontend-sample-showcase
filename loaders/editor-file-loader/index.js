@@ -4,6 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 const getOptions = require('./GetOptions')
 const removeComments = require("./parsers/AnnotationLocationParser");
+const path = require("path");
 
 function processChunk(source) {
 
@@ -13,17 +14,18 @@ function processChunk(source) {
 
   const fileName = this.resourcePath.replace(this.context, "").replace(/^(\/\/?|\\\\?)/, "");
 
-  let entry = false;
+  let entry, public = false;
   if (typeof this.resourceQuery === "string" && this.resourceQuery.length) {
     const params = new URLSearchParams(this.resourceQuery.replace("?", ""));
     entry = Boolean(params.get("entry"));
+    public = Boolean(params.get("public"));
   }
 
   const sourceJson = JSON.stringify(newSource)
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
 
-  const sourceName = JSON.stringify(fileName)
+  const sourceName = JSON.stringify(public ? path.join("/public/", fileName) : fileName)
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
 
