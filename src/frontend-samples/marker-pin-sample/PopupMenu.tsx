@@ -3,7 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import { ContextMenuItem, GlobalContextMenu, UiEvent } from "@itwin/core-react";
+import { ContextMenuItem, GlobalContextMenu } from "@itwin/core-react";
+import { UiEvent } from "@itwin/appui-abstract";
 
 export interface PopupMenuProps {
   canvas: HTMLCanvasElement | undefined;

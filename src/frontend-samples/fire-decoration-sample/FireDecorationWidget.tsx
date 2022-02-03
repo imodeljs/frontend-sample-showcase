@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useActiveIModelConnection } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Button, Select, Slider, Toggle } from "@itwin/core-react";
+import { Button, Select, SelectOption, Slider, ToggleSwitch } from "@itwin/itwinui-react";
 import FireDecorationApi from "./FireDecorationApi";
 import { FireEmitter } from "./FireDecorator";
 import { Point3d, Range2d, Transform } from "@itwin/core-geometry";
@@ -143,6 +143,16 @@ const FireDecorationWidget: React.FunctionComponent = () => {
   };
 
   const noEmitterSelected = selectedEmitterState === undefined;
+  const options = useMemo(() => {
+    const opts: SelectOption<string>[] = [];
+    for (const key of FireDecorationApi.predefinedParams.keys()) {
+      opts.push({
+        value: key,
+        label: key,
+      });
+    }
+    return opts;
+  }, []);
 
   // Display drawing and sheet options in separate sections.
   return (
@@ -151,12 +161,13 @@ const FireDecorationWidget: React.FunctionComponent = () => {
         <div className="sample-heading">
           <span>Place New Emitter</span>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-          <Button disabled={isLoadingState} onClick={dropAllEmitters}>Delete all emitters</Button>
-        </div>
         <div className={"sample-options-2col"}>
-          <Button disabled={isLoadingState} onClick={startPlacementTool}>Place</Button>
-          <Select options={[...FireDecorationApi.predefinedParams.keys()]} value={paramsNameState} onChange={(event) => setParamsNameState(event.target.value)} />
+          <Button styleType="cta" disabled={isLoadingState} onClick={startPlacementTool}>Place</Button>
+          <Select<string> options={options} value={paramsNameState} onChange={setParamsNameState} />
+        </div>
+        <hr />
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          <Button styleType="high-visibility" disabled={isLoadingState} onClick={dropAllEmitters}>Delete all emitters</Button>
         </div>
       </div>
       <hr></hr>
@@ -172,12 +183,12 @@ const FireDecorationWidget: React.FunctionComponent = () => {
         {/* The UI of this sample assumes effectRange is a square. */}
         <Slider min={0} max={6} step={0.2} values={[fireState.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, effectRange: createSquareRange2d(values[0]) })} />
         <label>Smoke</label>
-        <Toggle isOn={fireState.enableSmoke} disabled={noEmitterSelected} onChange={(checked) => setFireState({ ...fireState, enableSmoke: checked })} />
+        <ToggleSwitch checked={fireState.enableSmoke} disabled={noEmitterSelected} onChange={(e) => setFireState({ ...fireState, enableSmoke: e.target.checked })} />
         <label>Overlay Graphics</label>
-        <Toggle isOn={fireState.isOverlay} disabled={noEmitterSelected} onChange={(checked) => setFireState({ ...fireState, isOverlay: checked })} />
+        <ToggleSwitch checked={fireState.isOverlay} disabled={noEmitterSelected} onChange={(e) => setFireState({ ...fireState, isOverlay: e.target.checked })} />
 
       </div>
-      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+      <div className={"sample-options-2col"}>
         <Button disabled={noEmitterSelected} onClick={dropSelected}>Drop</Button>
         <Button disabled={isLoadingState || noEmitterSelected} onClick={() => setSelectedEmitterState(undefined)}>Deselect</Button>
       </div>
