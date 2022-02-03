@@ -8,7 +8,7 @@ import { IModelApp } from "@itwin/core-frontend";
 import { Presentation } from "@itwin/presentation-frontend";
 import { AuthorizationClient } from "@itwin/sandbox";
 import { DisplayError } from "Components/ErrorBoundary/ErrorDisplay";
-import { UiFramework } from "@itwin/appui-react";
+import { FrontstageManager, UiFramework } from "@itwin/appui-react";
 import { Spinner, SpinnerSize, UiCore } from "@itwin/core-react";
 import { UiComponents } from "@itwin/components-react";
 import path from "path";
@@ -19,6 +19,11 @@ interface SampleVisualizerProps {
 }
 
 const iModelAppShutdown = async (): Promise<void> => {
+  try {
+    await FrontstageManager.setActiveFrontstageDef(undefined);
+  } catch (err) {
+    // Do nothing, its possible that we never started.
+  }
   try {
     Presentation.presentation.dispose();
   } catch (err) {
