@@ -122,6 +122,18 @@ export class ExplodeProvider implements TiledGraphicsProvider, FeatureOverridePr
     return provider;
   }
 
+  public explodeTileTreeRef: ExplodeTreeReference;
+
+  public constructor(public vp: Viewport) {
+    this.explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
+    const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name, _, elementIdsDidUpdate) => {
+      const currentTree = this.explodeTileTreeRef.id;
+      if (currentTree.name === name && elementIdsDidUpdate)
+        this.invalidate();
+    });
+    ExplodeApi.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
+  }
+
   /** Updates the TileTree with the elements and explode scaling. */
   public setData(name: string, elementIds: string[], explodeScaling: number) {
     this.explodeTileTreeRef.explodeScaling = explodeScaling;
@@ -144,16 +156,6 @@ export class ExplodeProvider implements TiledGraphicsProvider, FeatureOverridePr
   public invalidate() {
     this.vp.setFeatureOverrideProviderChanged();
   }
-
-  public constructor(public vp: Viewport) {
-    const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name, _, elementIdsDidUpdate) => {
-      const currentTree = this.explodeTileTreeRef.id;
-      if (currentTree.name === name && elementIdsDidUpdate)
-        this.invalidate();
-    });
-    ExplodeApi.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
-  }
-  public explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
 
   /** Required by the FeatureOverrideProvider. Insures the static elements are not drawn. */
   public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {

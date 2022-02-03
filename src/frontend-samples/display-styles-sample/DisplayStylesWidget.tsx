@@ -51,7 +51,7 @@ export const DisplayStylesWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <span>Select Style:</span>
-          <Select<DisplayStyleName> value={activePreset} onChange={_onChange} style={{ width: "fit-content" }} options={options} />
+          <Select<DisplayStyleName> value={activePreset} onChange={_onChange} style={{ width: "fit-content" }} options={options} onHide={() => { }} onShow={() => { }} />
           <span>
             <span style={{ marginRight: "1em" }} className="icon icon-help" title={toggleTooltip}></span>
             <span>Merge with Custom:</span>

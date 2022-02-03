@@ -172,7 +172,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
         <Slider min={min} max={max} values={[explodeFactor]} step={step} onChange={(values) => setExplodeFactor(values[0])} onUpdate={(values) => setExplodeFactor(values[0])} disabled={isAnimated} />
         <label>Object</label>
         <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Select<ExplodeObject> value={object} options={objectEntries} onChange={onObjectChanged} style={{ width: "fit-content" }} disabled={isAnimated || isPopulatingObjects} />
+          <Select<ExplodeObject> value={object} options={objectEntries} onChange={onObjectChanged} style={{ width: "fit-content" }} disabled={isAnimated || isPopulatingObjects} onHide={() => { }} onShow={() => { }} />
           <Button styleType="high-visibility" onClick={onZoomButton} disabled={isAnimated}>Zoom To</Button>
         </span>
         <label>Isolate</label>
