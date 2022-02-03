@@ -40,7 +40,13 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
           // eslint-disable-next-line no-console
           console.error(error);
         });
+
+      return () => {
+        setDefaultFiles([]);
+        setDefaultEntry(undefined);
+      };
     }
+    return;
   }, [getFiles]);
 
   useEffect(() => {
@@ -71,7 +77,9 @@ const SampleEditorContext: FunctionComponent<SampleEditorContextProps> = (props)
         defaultModules,
       };
     }
-    return undefined;
+    return {
+      defaultModules,
+    };
   }, [defaultEntry, defaultFiles]);
 
   return (
