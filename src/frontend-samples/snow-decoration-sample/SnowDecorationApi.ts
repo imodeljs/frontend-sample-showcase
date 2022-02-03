@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { Point2d, Range1d, Range2d } from "@itwin/core-geometry";
-import { DisplayStyle3dSettingsProps, RenderTexture, SkyBoxProps } from "@itwin/core-common";
+import { DisplayStyle3dSettingsProps, RenderTexture, SkyBoxProps, TextureTransparency } from "@itwin/core-common";
 import { imageElementFromUrl, IModelApp, Viewport } from "@itwin/core-frontend";
 import { SnowDecorator, SnowParams } from "./SnowDecorator";
 
@@ -22,10 +22,11 @@ export default class SnowDecorationApi {
   /** Allocates memory and creates a RenderTexture from a given URL. */
   public static async allocateTextureFromUrl(url: string): Promise<RenderTexture | undefined> {
     // Note: the caller takes ownership of the textures, and disposes of those resources when they are no longer needed.
-    const isOwned = true;
-    const params = new RenderTexture.Params(undefined, undefined, isOwned);
     const textureImage = await imageElementFromUrl(url);
-    return IModelApp.renderSystem.createTextureFromImage(textureImage, true, undefined, params);
+    return IModelApp.renderSystem.createTexture({
+      ownership: "external",
+      image: { source: textureImage, transparency: TextureTransparency.Mixed },
+    });
   }
 
   /** Returns a list of SnowDecorators decorators that have been added using the ViewManager API. */

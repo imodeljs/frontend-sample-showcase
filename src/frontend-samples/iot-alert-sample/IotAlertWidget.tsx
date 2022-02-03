@@ -163,9 +163,9 @@ const IotAlertWidget: React.FunctionComponent = () => {
       <hr></hr>
       <div className="sample-options-2col">
         <span>Pick class</span>
-        <Select<string> value={categoryState} options={_classList} onChange={_onClassChange} disabled={!iModelConnection} />
+        <Select<string> value={categoryState} options={_classList} onChange={_onClassChange} disabled={!iModelConnection} onShow={() => { }} onHide={() => { }} />
         <span>Pick element</span>
-        <Select<string> value={selectedElementState.value} options={elementsState} onChange={_onElementChange} disabled={!iModelConnection} />
+        <Select<string> value={selectedElementState.value} options={elementsState} onChange={_onElementChange} disabled={!iModelConnection} onShow={() => { }} onHide={() => { }} />
         <span>Alert</span>
         <div className="sample-options-2col-1">
           <Button onClick={() => _onCreateAlert()} disabled={!enableCreateAlertButton}>Create</Button>
