@@ -33,10 +33,10 @@ export const HeatmapDecoratorWidget: React.FunctionComponent = () => {
     const range = Range2d.createFrom(range3d);
 
     // We'll draw the heatmap as an overlay in the center of the view's Z extents.
-    // const height = range3d.high.interpolate(0.5, range3d.low).z;
+    const height = range3d.high.interpolate(0.5, range3d.low).z;
 
     setRangeState(range);
-    setHeightState(-5.099571943283081);
+    setHeightState(height);
 
   }, []);
 

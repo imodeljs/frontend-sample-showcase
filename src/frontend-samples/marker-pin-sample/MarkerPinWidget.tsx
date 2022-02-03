@@ -36,10 +36,6 @@ const MarkerPinWidget: React.FunctionComponent = () => {
   const [heightState, setHeightState] = React.useState<number>(0);
   const markerPinDecorator = React.useRef<MarkerPinDecorator>();
 
-  useEffect(() => {
-    markerPinDecorator.current = MarkerPinApi.setupDecorator();
-  }, []);
-
   /** Load the images on widget startup */
   useEffect(() => {
     MarkerPinApi._images = new Map();
@@ -87,7 +83,14 @@ const MarkerPinWidget: React.FunctionComponent = () => {
   useEffect(() => {
     if (viewport) {
       viewInit(viewport);
+      const decorator = MarkerPinApi.setupDecorator();
+      markerPinDecorator.current = decorator;
+
+      return () => {
+        MarkerPinApi.disableDecorations(decorator);
+      };
     }
+    return;
   }, [viewInit, viewport]);
 
   useEffect(() => {
