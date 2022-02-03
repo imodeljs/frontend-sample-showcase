@@ -21,6 +21,8 @@ export function getParticleFireSampleSpec(): SampleSpec {
       import("!editor-file-loader!./FireDecorator"),
       import("!editor-file-loader!./PlacementTool"),
       import("!editor-file-loader!./FireDecoration.scss"),
+      import("!editor-file-loader!./public/particle-gradient-flame.png?public=true"),
+      import("!editor-file-loader!./public/particle-gradient-smoke.png?public=true"),
     ],
     type: "FireDecorationApp.tsx",
   });

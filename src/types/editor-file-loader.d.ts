@@ -7,3 +7,8 @@ declare module "!editor-file-loader!*" {
   const contents: SampleSpecFile;
   export = contents;
 }
+declare module "!!editor-file-loader!*" {
+  import { SampleSpecFile } from "SampleSpec";
+  const contents: SampleSpecFile;
+  export = contents;
+}

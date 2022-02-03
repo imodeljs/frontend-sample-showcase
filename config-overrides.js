@@ -8,6 +8,7 @@ const {
   override,
   addWebpackPlugin,
 } = require("customize-cra");
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 /* config-overrides.js */
 
@@ -87,5 +88,19 @@ module.exports = function (config, env) {
         "wordPartOperations"]
     }
     )),
+    addWebpackPlugin(new CopyWebpackPlugin({
+      patterns:
+        [
+          {
+            from: `**/public/**/*`,
+            context: `src/frontend-samples`,
+            noErrorOnMissing: true,
+            to({ absoluteFilename }) {
+              const regex = new RegExp(`(public(?:\\\\|\/))(.*)`);
+              return regex.exec(absoluteFilename)[2];
+            },
+          },
+        ]
+    })),
   )(config, env))
 }

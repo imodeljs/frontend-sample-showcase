@@ -7,6 +7,7 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { Input, Select, Toggle } from "@itwin/core-react";
 import React, { useEffect } from "react";
 import { ElemProperty, ShowcaseToolAdmin, TooltipCustomizeSettings } from "./TooltipCustomizeApi";
+import "./TooltipCustomize.scss";
 
 export const TooltipCustomizeWidget: React.FunctionComponent = () => {
   const [settingsState, setSettingsState] = React.useState<TooltipCustomizeSettings>(ShowcaseToolAdmin.get().settings);

@@ -172,7 +172,7 @@ const MarkerPinWidget: React.FunctionComponent = () => {
               disabled={!showDecoratorState}
               className="marker-pin-button"
               key={pin.name}
-              icon={<object data={pin.image} type="image/svg+xml" />}
+              icon={<img src={pin.image} />}
               value={pin.name}
               onClick={_onManualPinChange}
               checked={pin.name === manualPinState.name}
