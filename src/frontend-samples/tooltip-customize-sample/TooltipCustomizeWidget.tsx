@@ -3,45 +3,62 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Input, Select, Toggle } from "@itwin/core-react";
 import React, { useEffect } from "react";
-import { ElemProperty, ShowcaseToolAdmin, TooltipCustomizeSettings } from "./TooltipCustomizeApi";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Input, Select, ToggleSwitch } from "@itwin/itwinui-react";
+import { ElemProperty, toolAdmin, TooltipCustomizeSettings } from "./TooltipCustomizeApi";
 import "./TooltipCustomize.scss";
 
 export const TooltipCustomizeWidget: React.FunctionComponent = () => {
-  const [settingsState, setSettingsState] = React.useState<TooltipCustomizeSettings>(ShowcaseToolAdmin.get().settings);
+  const [settingsState, setSettingsState] = React.useState<TooltipCustomizeSettings>(() => toolAdmin.settings);
 
   useEffect(() => {
-    const toolAdmin = ShowcaseToolAdmin.get();
     toolAdmin.settings = settingsState;
   }, [settingsState]);
 
-  const options = {
-    [ElemProperty.Origin]: "Origin",
-    [ElemProperty.LastModified]: "Last Modified",
-    [ElemProperty.CodeValue]: "Code value",
-  };
+  const options = [
+    { value: ElemProperty.Origin, label: "Origin" },
+    { value: ElemProperty.LastModified, label: "Last Modified" },
+    { value: ElemProperty.CodeValue, label: "Code value" },
+  ];
 
   return (
-    <>
-      <div className="sample-options">
-        <div className="sample-options-3col">
-          <Toggle isOn={settingsState.showImage} onChange={(checked) => setSettingsState({ ...settingsState, showImage: checked })} />
-          <span>Show Image</span>
-          <span></span>
-          <Toggle isOn={settingsState.showCustomText} onChange={(checked) => setSettingsState({ ...settingsState, showCustomText: checked })} />
-          <span>Show Custom Text</span>
-          <Input type="text" value={settingsState.customText} onChange={(event) => setSettingsState({ ...settingsState, customText: event.target.value })} disabled={!settingsState.showCustomText} />
-          <Toggle isOn={settingsState.showElementProperty} onChange={(checked) => setSettingsState({ ...settingsState, showElementProperty: checked })} />
-          <span>Show Element Property</span>
-          <Select onChange={(event) => setSettingsState({ ...settingsState, elemProperty: event.target.value as ElemProperty })} value={settingsState.elemProperty} disabled={!settingsState.showElementProperty} options={options} />
-          <Toggle isOn={settingsState.showDefaultToolTip} onChange={(checked) => setSettingsState({ ...settingsState, showDefaultToolTip: checked })} />
-          <span>Show Default ToolTip</span>
-          <span></span>
+    <div className="sample-options">
+      <div className="tooltip-selection">
+        <ToggleSwitch
+          label="Show Image"
+          checked={settingsState.showImage}
+          onChange={() => setSettingsState((state) => ({ ...state, showImage: !state.showImage }))} />
+        <div className="control">
+          <ToggleSwitch
+            label="Show Element Property"
+            checked={settingsState.showElementProperty}
+            onChange={() => setSettingsState((state) => ({ ...state, showElementProperty: !state.showElementProperty }))} />
+          <Select
+            className="sample-grid-control"
+            onChange={(value) => setSettingsState({ ...settingsState, elemProperty: value })}
+            value={settingsState.elemProperty}
+            disabled={!settingsState.showElementProperty}
+            options={options} />
         </div>
+        <div className="control">
+          <ToggleSwitch
+            label="Show Custom Text"
+            checked={settingsState.showCustomText}
+            onChange={() => setSettingsState((state) => ({ ...state, showCustomText: !state.showCustomText }))} />
+          <Input
+            className="sample-grid-control"
+            type="text"
+            value={settingsState.customText}
+            onChange={(event) => setSettingsState({ ...settingsState, customText: event.target.value })}
+            disabled={!settingsState.showCustomText} />
+        </div>
+        <ToggleSwitch
+          label="Show Default ToolTip"
+          checked={settingsState.showDefaultToolTip}
+          onChange={() => setSettingsState((state) => ({ ...state, showDefaultToolTip: !state.showDefaultToolTip }))} />
       </div>
-    </>
+    </div>
   );
 };
 

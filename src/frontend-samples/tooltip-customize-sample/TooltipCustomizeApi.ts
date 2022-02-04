@@ -2,7 +2,6 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
 import { HitDetail, imageElementFromUrl, ToolAdmin } from "@itwin/core-frontend";
 
 export enum ElemProperty {
@@ -21,36 +20,21 @@ export interface TooltipCustomizeSettings {
 }
 
 /** To create the tooltip, a class needs to override ToolAdmin and getToolTip() */
-export class ShowcaseToolAdmin extends ToolAdmin {
+class ShowcaseToolAdmin extends ToolAdmin {
   public settings: TooltipCustomizeSettings = {
     showImage: true,
     showCustomText: false,
     showElementProperty: true,
     showDefaultToolTip: true,
-    customText: "Sample custom string",
+    customText: "Additional custom text",
     elemProperty: ElemProperty.Origin,
   };
 
-  private static _singleton: ShowcaseToolAdmin;
-
-  public static initialize(): ShowcaseToolAdmin {
-    if (!ShowcaseToolAdmin._singleton)
-      ShowcaseToolAdmin._singleton = new ShowcaseToolAdmin();
-    return ShowcaseToolAdmin._singleton;
-  }
-
-  public static get(): ShowcaseToolAdmin {
-    return ShowcaseToolAdmin._singleton;
-  }
-
-  private constructor() {
+  public constructor() {
     super();
   }
 
   public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {
-    if (null === ShowcaseToolAdmin._singleton)
-      return "";
-
     if (!this.settings.showImage && !this.settings.showCustomText && !this.settings.showElementProperty && !this.settings.showDefaultToolTip)
       return "";
 
@@ -123,3 +107,5 @@ export class ShowcaseToolAdmin extends ToolAdmin {
     return tip;
   }
 }
+
+export const toolAdmin = new ShowcaseToolAdmin();
