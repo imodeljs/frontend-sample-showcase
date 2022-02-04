@@ -77,7 +77,7 @@ export class FloatingWidgets implements IDisposable {
         const containerId = frontstage.getFloatingWidgetContainerIdByWidgetId(id);
         const rect = frontstage.getFloatingWidgetContainerBounds(containerId);
         if (rect) {
-          const height = rect.bottom - rect.top + 25;
+          const height = rect.bottom - rect.top + 125;
           heightOffset += height + 16;
           return { id, point: { x: dimensions.width - 300 - 32, y: dimensions.height - heightOffset }, size: { height, width: 300 } };
         }

@@ -52,14 +52,17 @@ export class SampleWidgetProvider implements UiItemsProvider {
         isFloatingStateSupported: true,
         // eslint-disable-next-line react/display-name
         getWidgetContent: () => (
-          <div className="sample-widget-ui" style={this._iModels.length > 1 ? { height: `${100 + this._iModels.length * 45}px` } : undefined}>
+          <div className="sample-widget-ui">
             <div className="sample-widget-header">
               <div className="sample-instructions">
                 <span>{this._instructions}</span>
               </div>
             </div>
             {this._iModels.length > 1 && <hr></hr>}
-            {this._iModels.length > 1 && <SampleIModelSelectorWidget iModels={this._iModels} iModel={this._iModel} onSampleiModelInfoChange={this._onSampleiModelInfoChange} />}
+            {this._iModels.length > 1 && <div style={this._iModels.length > 1 ? { height: `${50 + this._iModels.length * 38}px` } : undefined}>
+              <SampleIModelSelectorWidget iModels={this._iModels} iModel={this._iModel} onSampleiModelInfoChange={this._onSampleiModelInfoChange} />
+            </div>
+            }
           </div>
         ),
       });
