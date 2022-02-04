@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { FunctionComponent } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, StageUsage, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { SampleIModels, SampleIModelWithAlternativeName } from "../../SampleIModels";
 import { IModelSelector } from "../imodel-selector/IModelSelector";
 import { defaultIModelList } from "../../constants";
@@ -41,13 +41,15 @@ export class SampleWidgetProvider implements UiItemsProvider {
     this._onSampleiModelInfoChange = onSampleiModelInfoChange;
   }
 
-  public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection | undefined): ReadonlyArray<AbstractWidgetProps> {
+  public provideWidgets(_stageId: string, _stageUsage: string, _location: StagePanelLocation, _section?: StagePanelSection | undefined): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (location === StagePanelLocation.Right) {
+    if (_stageUsage === StageUsage.General) {
       widgets.push({
         id: SampleWidgetProvider.sampleIModelSelectorWidgetId,
         label: "Sample Information",
+        icon: "icon-info",
         defaultState: WidgetState.Floating,
+        isFloatingStateSupported: true,
         // eslint-disable-next-line react/display-name
         getWidgetContent: () => (
           <div className="sample-widget-ui">
