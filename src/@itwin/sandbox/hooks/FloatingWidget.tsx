@@ -32,7 +32,7 @@ export class FloatingWidgets implements IDisposable {
       const widgets = provider.provideWidgets("DefaultFrontstage", StageUsage.General, StagePanelLocation.Right);
       widgets.filter((w) => !!w.id).forEach((w) => {
         if (!this._widgetIds.includes(w.id!) && w.defaultState === WidgetState.Floating) {
-          this._widgetIds.push(w.id!);
+          this._widgetIds.unshift(w.id!);
         }
       });
 
@@ -55,7 +55,6 @@ export class FloatingWidgets implements IDisposable {
   };
 
   private _onResize: ResizeObserverCallback = (entries: ResizeObserverEntry[]) => {
-    this.resetWidgets();
     window.requestAnimationFrame(() => {
       const entry = entries[0];
       if (entry) {
@@ -83,7 +82,7 @@ export class FloatingWidgets implements IDisposable {
         return 0;
       }));
 
-      const widgets = this._widgetIds.reverse().map((id) => {
+      const widgets = this._widgetIds.map((id) => {
         const containerId = frontstage.getFloatingWidgetContainerIdByWidgetId(id);
         const rect = frontstage.getFloatingWidgetContainerBounds(containerId);
         if (rect) {
