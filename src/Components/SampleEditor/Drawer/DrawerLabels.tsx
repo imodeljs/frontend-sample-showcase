@@ -4,17 +4,17 @@
 *--------------------------------------------------------------------------------------------*/
 import { ErrorIndicator } from "@bentley/monaco-editor";
 import React from "react";
-import { Label } from "./Drawer";
+import { DrawerLabel } from "./DrawerHandle";
 
-export const ProblemsLabel: Label = {
+export const ProblemsLabel: DrawerLabel = {
   value: "Problems",
-  component: <>
+  label: <>
     <span>Problems</span>
     <ErrorIndicator />
   </>,
 };
 
-export const WalkthroughLabel: Label = {
+export const WalkthroughLabel: DrawerLabel = {
   value: "Walkthrough",
-  component: <span>Walkthrough</span>,
+  label: <span>Walkthrough</span>,
 };

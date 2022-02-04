@@ -3,9 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, SpatialClassifier } from "@bentley/imodeljs-common";
-import { IModelConnection, queryRealityData, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@bentley/imodeljs-frontend";
-import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
+import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
+import { Id64String } from "@itwin/core-bentley";
+import { ContextRealityModel, ContextRealityModelProps, ModelProps, ModelQueryParams, RealityDataFormat, RealityDataProvider, SpatialClassifier } from "@itwin/core-common";
+import { IModelApp, IModelConnection, ScreenViewport, SpatialModelState, SpatialViewState, Viewport } from "@itwin/core-frontend";
+import { SelectOption } from "@itwin/itwinui-react";
+import { Presentation, SelectionChangesListener } from "@itwin/presentation-frontend";
 
 export default class ClassifierApi {
   private static _selectionListener: SelectionChangesListener;
@@ -23,11 +26,28 @@ export default class ClassifierApi {
     const style = viewPort.displayStyle.clone();
 
     // Get first available reality models and attach them to displayStyle
-    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
-    for (const crmProp of availableModels) {
-      crmProp.classifiers = [];
-      style.attachRealityModel(crmProp);
-      viewPort.displayStyle = style;
+    const RealityDataClient = new RealityDataAccessClient();
+    const availableModels: RealityDataResponse = await RealityDataClient.getRealityDatas(await IModelApp.authorizationClient!.getAccessToken(), imodel.iTwinId, undefined);
+
+    for (const rdEntry of availableModels.realityDatas) {
+      const name = undefined !== rdEntry.displayName ? rdEntry.displayName : rdEntry.id;
+      const rdSourceKey = {
+        provider: RealityDataProvider.ContextShare,
+        format: rdEntry.type === "OPC" ? RealityDataFormat.OPC : RealityDataFormat.ThreeDTile,
+        id: rdEntry.id,
+      };
+      const tilesetUrl = await IModelApp.realityDataAccess?.getRealityDataUrl(imodel.iTwinId, rdSourceKey.id);
+      if (tilesetUrl) {
+        const entry: ContextRealityModelProps = {
+          classifiers: [],
+          rdSourceKey,
+          tilesetUrl,
+          name,
+          realityDataId: rdSourceKey.id,
+        };
+        style.attachRealityModel(entry);
+        viewPort.displayStyle = style;
+      }
       break;
     }
   }
@@ -36,8 +56,8 @@ export default class ClassifierApi {
    * Query the iModel to get available spatial classifiers.
    * Also do a custom sort and filtering for the purposes of this sample.
    */
-  public static async getAvailableClassifierListForViewport(vp?: Viewport): Promise<{ [key: string]: string }> {
-    const models: { [key: string]: string } = {};
+  public static async getAvailableClassifierListForViewport(vp?: Viewport): Promise<SelectOption<Id64String>[]> {
+    const models: SelectOption<string>[] = [];
     if (!vp || !(vp.view instanceof SpatialViewState))
       return Promise.resolve(models);
 
@@ -63,7 +83,7 @@ export default class ClassifierApi {
       if (modelProps.id && modelProps.name !== "PhiladelphiaClassification" && modelProps.name !== "Philadelphia_Pictometry") {
         const modelId = modelProps.id;
         const name = modelProps.name ? modelProps.name : modelId;
-        models[modelId] = name.substring(0, name.indexOf(","));
+        models.push({ value: modelId, label: name.substring(0, name.indexOf(",")) });
       }
     }
 

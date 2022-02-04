@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useCallback } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button } from "@bentley/ui-core";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Button } from "@itwin/core-react";
 import { DragAndDropTreeApi } from "./DragAndDropTreeApi";
 
 export const DragAndDropTreeWidget: React.FunctionComponent = () => {
@@ -33,7 +33,7 @@ export class DragAndDropTreeWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <DragAndDropTreeWidget />,
-        }
+        },
       );
     }
     return widgets;

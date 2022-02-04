@@ -3,9 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { ViewStateProps } from "@bentley/imodeljs-common";
-import { EntityState, IModelConnection, Viewport, ViewState } from "@bentley/imodeljs-frontend";
-import "common/samples-common.scss";
+import { ViewStateProps } from "@itwin/core-common";
+import { EntityState, IModelConnection, Viewport, ViewState } from "@itwin/core-frontend";
 
 export default class SerializeViewApi {
 

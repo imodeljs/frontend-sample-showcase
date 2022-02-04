@@ -2,23 +2,21 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-.preview {
-  height: 100%;
-  width: 100%;
-  position: relative;
-}
 
 .mobile-visible {
-  position: absolute;
-  height: 100%;
-  z-index: 9000;
+  position: absolute !important;
+  height: 100% !important;
+  z-index: 9000 !important;
   width: 100% !important;
 }
 
 .gallery-pane,
 .editor-pane {
-  &.dragging {
-    transition: none;
+  height: 100%;
+  display: block;
+
+  &.hidden {
+    display: none;
   }
 }
 

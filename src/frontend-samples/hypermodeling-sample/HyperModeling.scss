@@ -3,14 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 .sample-options {
-  color: var(--buic-foreground-body);
+  color: white;
   padding: 8px;
 }
 
-.sample-options-3col-even {
+.sample-options-2col {
   display: grid;
   row-gap: 8px;
   column-gap: 8px;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
   align-items: center;
 }

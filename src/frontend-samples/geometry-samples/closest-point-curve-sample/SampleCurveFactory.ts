@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AngleSweep, Arc3d, CurveChainWithDistanceIndex, CurveFactory, LineString3d, Point3d } from "@bentley/geometry-core";
+import { AngleSweep, Arc3d, CurveChainWithDistanceIndex, CurveFactory, LineString3d, Point3d } from "@itwin/core-geometry";
 
 export class SampleCurveFactory {
 

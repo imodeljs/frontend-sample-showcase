@@ -1,9 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { Button, ToggleSwitch } from "@itwin/itwinui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { imageElementFromUrl } from "@itwin/core-frontend";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
-import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
 import ClashReviewApi from "./ClashReviewApi";
 import "./ClashReview.scss";
 
@@ -47,7 +51,7 @@ const ClashReviewWidget: React.FunctionComponent = () => {
 
     if (iModelConnection) {
       /** Will start the clashData retrieval and recieve the data through the listener */
-      ClashReviewApi.setClashData(iModelConnection.contextId!)
+      ClashReviewApi.setClashData(iModelConnection.iTwinId!)
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -100,18 +104,14 @@ const ClashReviewWidget: React.FunctionComponent = () => {
   return (
     <>
       <div className="sample-options">
-        <div className="sample-options-2col">
-          <span>Show Markers</span>
-          <Toggle isOn={showDecorator} onChange={(checked: boolean) => setShowDecorator(checked)} />
+        <div className="iui-alert iui-informational instructions">
+          <div className="iui-alert-message">
+            Use the toggles to show clash marker pins or zoom to a clash. Click a marker or table entry to review clashes.
+          </div>
         </div>
-        <div className="sample-options-2col">
-          <span>Apply Zoom</span>
-          <Toggle isOn={applyZoom} onChange={(checked: boolean) => setApplyZoom(checked)} />
-        </div>
-        <div className="sample-options-2col">
-          <span>Display</span>
-          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} onClick={ClashReviewApi.resetDisplay}>Reset</Button>
-        </div>
+        <ToggleSwitch checked={showDecorator} onChange={() => setShowDecorator(!showDecorator)} label="Show Markers" labelPosition="right" className="sample-options-toggle" />
+        <ToggleSwitch checked={applyZoom} onChange={() => setApplyZoom(!applyZoom)} label="Apply Zoom" labelPosition="right" className="sample-options-toggle" />
+        <Button size="small" styleType="high-visibility" onClick={ClashReviewApi.resetDisplay} className="sample-options-button">Reset Display</Button>
       </div>
     </>
   );
@@ -130,7 +130,7 @@ export class ClashReviewWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ClashReviewWidget />,
-        }
+        },
       );
     }
     return widgets;

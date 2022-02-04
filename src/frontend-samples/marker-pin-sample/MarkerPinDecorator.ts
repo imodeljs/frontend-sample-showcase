@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Point2d, Point3d, Range1dProps, XAndY, XYAndZ } from "@bentley/geometry-core";
-import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, Marker, MarkerSet } from "@bentley/imodeljs-frontend";
+import { Point2d, Point3d, Range1dProps, XAndY, XYAndZ } from "@itwin/core-geometry";
+import { BeButton, BeButtonEvent, Cluster, DecorateContext, Decorator, IModelApp, Marker, MarkerSet } from "@itwin/core-frontend";
 import { PopupMenu, PopupMenuEntry } from "./PopupMenu";
 
 /*
@@ -56,11 +56,6 @@ class SamplePinMarker extends Marker {
     this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
     // END MARKERPINIMAGE
 
-    // START MARKERPINIMAGE
-    // Add an offset so that the pin 'points' at the location, rather than floating in the middle of it
-    this.setImage(image);
-    this.imageOffset = new Point3d(0, Math.floor(this.size.y * .5));
-    // END MARKERPINIMAGE
     this._onMouseButtonCallback = onMouseButtonCallback;
 
     // Keep a pointer back to the marker set
@@ -333,12 +328,13 @@ export class MarkerPinDecorator implements Decorator {
   /* Implement this method to add Decorations into the supplied DecorateContext. */
   public decorate(context: DecorateContext): void {
     if (!this._autoMarkerSet.viewport) {
-      this._autoMarkerSet.changeViewport(context.screenViewport);
+      this._autoMarkerSet.changeViewport(context.viewport);
     }
 
     if (!this._manualMarkerSet.viewport) {
-      this._manualMarkerSet.changeViewport(context.screenViewport);
+      this._manualMarkerSet.changeViewport(context.viewport);
     }
+
     /* This method is called for every rendering frame.  We will reuse our marker sets since the locations and images
        for the markers don't typically change. */
     if (context.viewport.view.isSpatialView()) {

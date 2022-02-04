@@ -8,11 +8,11 @@
   min-height: 112px;
 }
 
-.sample-options-2col {
+.reality-data-sample-options-1col {
   display: grid;
   row-gap: 8px;
   column-gap: 8px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   align-items: center;
 }
 

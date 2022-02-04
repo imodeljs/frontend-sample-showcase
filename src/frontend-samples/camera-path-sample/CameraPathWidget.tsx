@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useActiveViewport } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { Select } from "@bentley/ui-core";
+import { useActiveViewport } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
+import { Select } from "@itwin/core-react";
 import CameraPathApi, { CameraPath } from "./CameraPathApi";
 import { CameraPathTool } from "./CameraPathTool";
 import "./CameraPath.scss";
@@ -45,11 +45,11 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
   /** Initialize the camera namespace on widget load */
   useEffect(() => {
-    const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
-    CameraPathTool.register(sampleNamespace);
+    void IModelApp.localization.registerNamespace("camera-i18n-namespace");
+    CameraPathTool.register("camera-i18n-namespace");
 
     return () => {
-      IModelApp.i18n.unregisterNamespace("camera-i18n-namespace");
+      IModelApp.localization.unregisterNamespace("camera-i18n-namespace");
       IModelApp.tools.unRegister(CameraPathTool.toolId);
     };
   }, []);
@@ -102,7 +102,7 @@ const CameraPathWidget: React.FunctionComponent = () => {
 
       // We will use this method to activate the CameraPathTool
       // The CameraPathTool will prevent the view tool and standard mouse events
-      setTimeout(() => { IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection); }, 10);
+      setTimeout(() => { void IModelApp.tools.run(CameraPathTool.toolId, handleScrollAnimation, handleUnlockDirection); }, 10);
     }
   }, [handleScrollAnimation, viewport]);
 
@@ -237,7 +237,7 @@ export class CameraPathWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <CameraPathWidget />,
-        }
+        },
       );
     }
     return widgets;

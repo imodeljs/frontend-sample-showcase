@@ -3,13 +3,14 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, Select, Slider, Toggle } from "@bentley/ui-core";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import ExplodeApi, { ExplodeObject, ExplodeProvider } from "./ExplodeApi";
-import { Animator, IModelApp, IModelConnection } from "@bentley/imodeljs-frontend";
+import { Animator, IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { Button, Select, Slider, ToggleSwitch } from "@itwin/itwinui-react";
 import "./Explode.scss";
 
+/** List of objects that can be exploded.  The 'elementIds' will be populate during start up. */
 const _objects: ExplodeObject[] = [
   {
     name: "Exterior",
@@ -40,10 +41,10 @@ const ExplodeWidget: React.FunctionComponent = () => {
     ExplodeApi.cleanUpCallbacks = [];
 
     return () => {
-      IModelApp.viewManager.forEachViewport((vp) => {
+      for (const vp of IModelApp.viewManager) {
         ExplodeApi.clearIsolate(vp);
         ExplodeProvider.getOrCreate(vp).drop();
-      });
+      }
       ExplodeApi.cleanUpCallbacks.forEach((func) => func());
     };
   }, []);
@@ -61,23 +62,28 @@ const ExplodeWidget: React.FunctionComponent = () => {
     }
   }, [iModelConnection]);
 
+  // useEffect(() => { console.debug("hook2"); }, [explodeFactor]);
+
   /** Causes the exploded view */
   useEffect(() => {
     if (viewport) {
+      // The API has a 'current' state because this animate function cannot be tied to a useState variable or it will become stale.
+      // The simplest solution was to introduce a static variable in the API but this could be kept in an object instead.
       ExplodeApi.explodeAttributes.current = explodeFactor;
       ExplodeApi.refSetData(viewport, object.name, object.elementIds, explodeFactor);
     }
-  }, [explodeFactor, object.elementIds, object.name, viewport]);
-
+  }, [explodeFactor, object, viewport]);
+  //
   useEffect(() => {
     if (viewport) {
-      ExplodeApi.clearIsolate(viewport);
       if (isolate) {
         ExplodeApi.isolateElements(viewport, object.elementIds);
         ExplodeApi.zoomToObject(viewport, object.name);
+      } else {
+        ExplodeApi.clearIsolate(viewport);
       }
     }
-  }, [object.name, isolate, viewport, object.elementIds]);
+  }, [object, isolate, viewport]);
 
   /** Populates the element ids of objects defined by category codes. */
   const populateObjects = async (iModel: IModelConnection): Promise<void> => {
@@ -112,9 +118,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
         if (explode ? newFactor > goal : newFactor < goal)
           newFactor = goal;
 
-        // The API has a 'current' state because this animate function cannot be tied to a useState variable or it will become stale.
-        // The simplest solution was to introduce a static variable in the API but this could be kept in an object instead.
-        ExplodeApi.explodeAttributes.current = newFactor;
+        // Update the Explode Factor
         setExplodeFactor(newFactor);
 
         return false;
@@ -128,10 +132,8 @@ const ExplodeWidget: React.FunctionComponent = () => {
   };
 
   /** Methods that support the UI control interactions. */
-  const onObjectChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const objectChanged = _objects.find((o) => o.name === event.target.value);
-    if (objectChanged)
-      setObject(objectChanged);
+  const onObjectChanged = (value: ExplodeObject) => {
+    setObject(value);
   };
 
   const onZoomButton = () => {
@@ -157,7 +159,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
   const min = ExplodeApi.explodeAttributes.min;
   const step = ExplodeApi.explodeAttributes.step;
 
-  const objectEntries = _objects.map((o) => o.name);
+  const objectEntries = _objects.map((o) => ({ value: o, label: o.name }));
   const animationText = isAnimated ? "Pause" : ((min + max) / 2 >= explodeFactor ? "Explode" : "Collapse");
 
   // Display drawing and sheet options in separate sections.
@@ -165,16 +167,16 @@ const ExplodeWidget: React.FunctionComponent = () => {
     <div className="sample-options">
       <div className={"sample-options-2col"}>
         <label>Animate</label>
-        <Button onClick={onAnimateButton}>{animationText}</Button>
+        <Button size="small" styleType="cta" onClick={onAnimateButton}>{animationText}</Button>
         <label>Explode Scaling</label>
-        <Slider min={min} max={max} values={[explodeFactor]} step={step} showMinMax={true} onUpdate={(values) => setExplodeFactor(values[0])} disabled={isAnimated} />
+        <Slider min={min} max={max} values={[explodeFactor]} step={step} onChange={(values) => setExplodeFactor(values[0])} onUpdate={(values) => setExplodeFactor(values[0])} disabled={isAnimated} />
         <label>Object</label>
         <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Select value={object.name} options={objectEntries} onChange={onObjectChanged} style={{ width: "fit-content" }} disabled={isAnimated || isPopulatingObjects} />
-          <Button onClick={onZoomButton} disabled={isAnimated}>Zoom To</Button>
+          <Select<ExplodeObject> value={object} options={objectEntries} onChange={onObjectChanged} style={{ width: "fit-content" }} disabled={isAnimated || isPopulatingObjects} onHide={() => { }} onShow={() => { }} />
+          <Button styleType="high-visibility" onClick={onZoomButton} disabled={isAnimated}>Zoom To</Button>
         </span>
         <label>Isolate</label>
-        <Toggle isOn={isolate} onChange={(checked) => setIsolate(checked)} disabled={isAnimated} />
+        <ToggleSwitch checked={isolate} onChange={(e) => setIsolate(e.target.checked)} disabled={isAnimated} />
       </div>
     </div>
   );
@@ -193,7 +195,7 @@ export class ExplodeWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ExplodeWidget />,
-        }
+        },
       );
     }
     return widgets;

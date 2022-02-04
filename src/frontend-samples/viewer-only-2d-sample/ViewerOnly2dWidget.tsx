@@ -4,9 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { ModelProps } from "@bentley/imodeljs-common";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { ModelProps } from "@itwin/core-common";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ViewerOnly2dApi } from "./ViewerOnly2dApi";
 import "./ViewerOnly2d.scss";
 
@@ -26,7 +26,7 @@ const ViewerOnly2dWidget: React.FunctionComponent = () => {
       sheetElements: [],
       sheets: [],
       drawings: [],
-    }
+    },
   );
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export class ViewerOnly2dWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ViewerOnly2dWidget />,
-        }
+        },
       );
     }
     return widgets;

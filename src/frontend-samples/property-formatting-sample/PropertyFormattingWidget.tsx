@@ -4,16 +4,16 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Select } from "@bentley/ui-core";
-import { ISelectionProvider, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
-import { KeySet } from "@bentley/presentation-common";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { ISelectionProvider, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
+import { KeySet } from "@itwin/presentation-common";
 import { PropertyFormattingApi } from "./PropertyFormattingApi";
 import { Approach1App } from "./approach-1-App";
 import { Approach2App } from "./approach-2-App";
 import { Approach3App } from "./approach-3-App";
 import "./PropertyFormatting.scss";
+import { Select } from "@itwin/itwinui-react";
 
 enum Approach {
   UsePropertyDataProvider_1 = "UsePropertyDataProvider",
@@ -54,12 +54,15 @@ const PropertyFormattingWidget: React.FunctionComponent = () => {
     <div className="sample-options">
       <div className="sample-options-2col">
         <span>Approach:</span>
-        <Select onChange={(event) => setApproachState(event.target.value as Approach)} value={approachState}
-          options={{
-            [Approach.UsePropertyDataProvider_1]: "1. Use Property Grid",
-            [Approach.UseTableDataProvider_2]: "2. Use Property Table",
-            [Approach.DoItYourself_3]: "3. Do it yourself",
-          }}>
+        <Select onChange={(approach) => setApproachState(approach)} value={approachState}
+          options={[
+            { value: Approach.UsePropertyDataProvider_1, label: "1. Use Property Grid" },
+            { value: Approach.UseTableDataProvider_2, label: "2. Use Property Table" },
+            { value: Approach.DoItYourself_3, label: "3. Do it yourself" },
+          ]}
+          onHide={() => { }}
+          onShow={() => { }}
+        >
         </Select>
       </div>
       {properties}
@@ -80,7 +83,7 @@ export class PropertyFormattingWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <PropertyFormattingWidget />,
-        }
+        },
       );
     }
     return widgets;

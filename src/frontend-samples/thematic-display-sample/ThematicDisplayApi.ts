@@ -3,27 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Range1dProps, Vector3d } from "@bentley/geometry-core";
-import {
-  BackgroundMapSettings,
-  GlobeMode,
-  TerrainHeightOriginMode,
-  TerrainSettings,
-  ThematicDisplay,
-  ThematicDisplayMode,
-  ThematicDisplayProps,
-  ThematicGradientColorScheme,
-  ThematicGradientMode,
-} from "@bentley/imodeljs-common";
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-
-// cSpell:ignore imodels
+import { GlobeMode, TerrainHeightOriginMode, ThematicDisplay, ThematicDisplayMode, ThematicDisplayProps, ThematicGradientColorScheme, ThematicGradientMode } from "@itwin/core-common";
+import { IModelConnection, Viewport, ViewState3d } from "@itwin/core-frontend";
+import { Range1dProps, Vector3d } from "@itwin/core-geometry";
 
 export default class ThematicDisplayApi {
-  public static originalProps?: ThematicDisplayProps;
-  public static originalFlag: boolean = false;
-  public static viewport?: Viewport;
-
   /** Render changes to viewport using Viewport API. */
   public static syncViewport(vp: Viewport): void {
     vp.synchWithView();
@@ -45,8 +29,8 @@ export default class ThematicDisplayApi {
   }
 
   /** Query if the model has been geo-located using the iModel API. */
-  public static isGeoLocated(vp: Viewport): boolean {
-    return vp.iModel.isGeoLocated;
+  public static isGeoLocated(iModel: IModelConnection): boolean {
+    return iModel.isGeoLocated;
   }
 
   /** Query Thematic Display settings with the Viewport API. */
@@ -56,32 +40,29 @@ export default class ThematicDisplayApi {
   }
 
   /** Query project extents using the Viewport API. */
-  public static getProjectExtents(vp: Viewport): Range1dProps {
-    const extents = vp.iModel.projectExtents;
+  public static getProjectExtents(iModel: IModelConnection): Range1dProps {
+    const extents = iModel.projectExtents;
     return { low: extents.zLow, high: extents.zHigh };
   }
 
   /** Modify the background view flag and terrain setting using the Viewport API. */
   public static setBackgroundMap(vp: Viewport, on: boolean) {
     // To best display the capabilities of the thematic display, terrain and plane global mode have been enabled.
-    vp.backgroundMapSettings = BackgroundMapSettings.fromJSON({
+    vp.changeBackgroundMapProps({
       applyTerrain: true,
       globeMode: GlobeMode.Plane, // If the user zooms out enough, the curve of the earth can effect the thematic display.
       useDepthBuffer: true,
       transparency: 0.75,
-      terrainSettings: TerrainSettings.fromJSON({ heightOriginMode: TerrainHeightOriginMode.Geoid }),
+      terrainSettings: { heightOriginMode: TerrainHeightOriginMode.Geoid },
     });
-    vp.synchWithView();
-    const vf = vp.viewFlags.clone();
-    vf.backgroundMap = on;
-    vp.viewFlags = vf;
+    // vp.backgroundMapSettings = BackgroundMapSettings.fromJSON();
+    // vp.synchWithView();
+    vp.viewFlags = vp.viewFlags.with("backgroundMap", on);
   }
 
   /** Modify the thematic display view flag using the Viewport API. */
   public static setThematicDisplayOnOff(vp: Viewport, on: boolean) {
-    const vf = vp.viewFlags.clone();
-    vf.thematicDisplay = on;
-    vp.viewFlags = vf;
+    vp.viewFlags = vp.viewFlags.with("thematicDisplay", on);
   }
 
   /** Overwrite the settings using the Viewport API.  Any props not set will be set to default value by iModel.js.

@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Viewport } from "@bentley/imodeljs-frontend";
+import { Viewport } from "@itwin/core-frontend";
 import { TwoWayViewportSync } from "./TwoWayViewportSync";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */

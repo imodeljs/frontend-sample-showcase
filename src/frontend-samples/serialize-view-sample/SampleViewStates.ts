@@ -3,13 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import {
-  CategorySelectorProps,
-  DisplayStyle3dProps,
-  ModelSelectorProps,
-  SpatialViewDefinitionProps,
-  ViewStateProps,
-} from "@bentley/imodeljs-common";
+import { CategorySelectorProps, DisplayStyle3dProps, ModelSelectorProps, SpatialViewDefinitionProps, ViewStateProps } from "@itwin/core-common";
 
 export interface ViewStateWithName {
   name: string;

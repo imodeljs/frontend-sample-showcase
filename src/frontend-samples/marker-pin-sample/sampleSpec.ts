@@ -27,8 +27,9 @@ export function getMarkerPinSpec(): SampleSpec {
       import("!editor-file-loader!./MarkerPin.scss"),
       import("!editor-file-loader!./PlaceMarkerTool"),
       import("!editor-file-loader!./PopupMenu"),
-      import("!editor-file-loader!./RadioCard"),
-      import("!editor-file-loader!./RadioCard.scss"),
+      import("!editor-file-loader!./public/Google_Maps_pin.svg?public=true"),
+      import("!editor-file-loader!./public/pin_poloblue.svg?public=true"),
+      import("!editor-file-loader!./public/pin_celery.svg?public=true"),
     ],
     type: "MarkerPinApp.tsx",
   });

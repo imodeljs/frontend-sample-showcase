@@ -3,10 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { assert, BeEvent, BeTimePoint, compareStrings, Id64, partitionArray } from "@bentley/bentleyjs-core";
-import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@bentley/geometry-core";
-import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, TileVersionInfo, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { GraphicBranch, IModelApp, IModelConnection, readElementGraphics, RenderGraphic, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@bentley/imodeljs-frontend";
+import { assert, BeEvent, BeTimePoint, compareStrings, Id64, partitionArray } from "@itwin/core-bentley";
+import { Point3d, Range3d, Transform, Vector3d, XYZProps } from "@itwin/core-geometry";
+import { BatchType, ElementGraphicsRequestProps, FeatureAppearance, FeatureAppearanceProvider, FeatureAppearanceSource, GeometryClass, IModelTileRpcInterface, Placement3d, QueryRowFormat, TileVersionInfo } from "@itwin/core-common";
+import { GraphicBranch, IModelApp, IModelConnection, readElementGraphics, RenderGraphic, RenderSystem, SceneContext, Tile, TileContent, TileDrawArgParams, TileDrawArgs, TileLoadPriority, TileRequest, TileRequestChannel, TileTree, TileTreeOwner, TileTreeReference, TileTreeSupplier, Viewport } from "@itwin/core-frontend";
 import ExplodeApp from "./ExplodeApi";
 
 /** Data describing an element for the exploded effect. */
@@ -113,7 +113,7 @@ class ExplodeTreeSupplier implements TileTreeSupplier {
     const query = `Select ECInstanceID,Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
     const data: ElementData[] = [];
 
-    for await (const row of iModel.query(query)) {
+    for await (const row of iModel.query(query, undefined, { rowFormat: QueryRowFormat.UseJsPropertyNames })) {
       const element = (row as ElementDataProps);
 
       const placement = Placement3d.fromJSON({ origin: element.origin, angles: { pitch: element.pitch, roll: element.roll, yaw: element.yaw } });
@@ -254,8 +254,8 @@ class ExplodeTileTree extends TileTree {
     return 3; // Expected hierarchy: RootTile -> Element Tile -> Graphics Tile
   }
   /** The overrides that should be applied to the view's [ViewFlags]($common) when this tile tree is drawn. Can be overridden by individual [[TileTreeReference]]s. */
-  public get viewFlagOverrides(): ViewFlagOverrides {
-    return new ViewFlagOverrides();
+  public get viewFlagOverrides(): {} {
+    return {};
   }
   /** True if this tile tree has no bounds - e.g., a tile tree representing a globe is unbounded. */
   public get isContentUnbounded(): boolean {
@@ -602,7 +602,7 @@ export class ExplodedGraphicsTile extends Tile {
     // Creates a new set of graphics transformed by the matrix create by the updated explode scaling.  The appearanceProvider ensures the elements are drawn;
     args.graphics.add(args.context.createGraphicBranch(branch, this._explodeTransform, { appearanceProvider: this.rootTile.appearanceProvider }));
 
-    // Line is required for the debugging tile ranges feature.  Very useful for debugging, but unused by the sample.
+    // Line is required for the debugging tile ranges feature.  Very useful for debugging, but unused by the sample.  See [Viewport.debugBoundingBoxes]
     const rangeGfx = this.getRangeGraphic(args.context);
     if (undefined !== rangeGfx)
       args.graphics.add(rangeGfx);

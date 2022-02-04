@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-@import "@bentley/ui-core/lib/ui-core/classes";
-@import "@bentley/ui-core/lib/ui-core/colorthemes";
+@import "~@itwin/core-react/lib/esm/core-react/classes";
+@import "~@itwin/core-react/lib/esm/core-react/colorthemes";
 
 body {
   overflow: hidden;

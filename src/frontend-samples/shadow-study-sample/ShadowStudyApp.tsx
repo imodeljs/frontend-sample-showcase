@@ -4,12 +4,9 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import "common/samples-common.scss";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { IModelConnection } from "@itwin/core-frontend";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
-import { AuthorizationClient, default3DSandboxUi, SampleIModels } from "@itwinjs-sandbox";
-import { useSampleWidget } from "@itwinjs-sandbox/hooks/useSampleWidget";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget } from "@itwin/sandbox";
 import { ShadowStudyWidgetProvider } from "./ShadowStudyWidget";
 import ShadowStudyApi from "./ShadowStudyApi";
 
@@ -17,11 +14,9 @@ const uiProviders = [new ShadowStudyWidgetProvider()];
 
 const ShadowStudyApp: React.FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Select iModel to change.", [SampleIModels.House, SampleIModels.MetroStation]);
-  const [viewportOptions, setViewportOptions] = React.useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ShadowStudyApi.getInitialView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return ShadowStudyApi.getInitialView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -30,11 +25,12 @@ const ShadowStudyApp: React.FunctionComponent = () => {
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
-          contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true}
+          viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

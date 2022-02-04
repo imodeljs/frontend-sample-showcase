@@ -1,9 +1,13 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
-import { imageElementFromUrl } from "@bentley/imodeljs-frontend";
-import { Button, ButtonSize, ButtonType, Toggle } from "@bentley/ui-core";
+import { imageElementFromUrl } from "@itwin/core-frontend";
+import { Button, ToggleSwitch } from "@itwin/itwinui-react";
 import ValidationApi from "./ValidationApi";
 import "./ValidationReview.scss";
 
@@ -40,7 +44,7 @@ const ValidationWidget: React.FunctionComponent = () => {
   }, [validationDecorator]);
 
   useEffect(() => {
-    /** Create a listener that responds to validation data retrival */
+    /** Create a listener that responds to validation data retrieval */
     const removeListener = ValidationApi.onValidationDataChanged.addListener((data: any) => {
       setValidationResults(data.validationData);
       setRuleData(data.ruleData);
@@ -48,7 +52,7 @@ const ValidationWidget: React.FunctionComponent = () => {
 
     if (iModelConnection) {
       /** Will start the validation data retrieval and recieve the data through the listener */
-      ValidationApi.setValidationData(iModelConnection.contextId!).catch((error) => {
+      ValidationApi.getValidationData(iModelConnection.iTwinId!).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
@@ -72,7 +76,7 @@ const ValidationWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (markersData && images) {
-      ValidationApi.setDecoratorPoints(markersData, validationDecorator, images);
+      ValidationApi.setDecoratorPoints(markersData, validationDecorator, images.get("clash_pin.svg")!);
       // Automatically visualize first clash
       if (markersData !== undefined && markersData.length !== 0 && markersData[0].data !== undefined) {
         ValidationApi.visualizeViolation(markersData[0].data.elementId);
@@ -97,22 +101,17 @@ const ValidationWidget: React.FunctionComponent = () => {
   }, [applyZoom]);
 
   return (
-    <>
-      <div className="sample-options">
-        <div className="sample-options-2col">
-          <span>Show Markers</span>
-          <Toggle isOn={showDecorator} onChange={(checked: boolean) => setShowDecorator(checked)} />
-        </div>
-        <div className="sample-options-2col">
-          <span>Apply Zoom</span>
-          <Toggle isOn={applyZoom} onChange={(checked: boolean) => setApplyZoom(checked)} />
-        </div>
-        <div className="sample-options-2col">
-          <span>Display</span>
-          <Button size={ButtonSize.Default} buttonType={ButtonType.Blue} onClick={ValidationApi.resetDisplay}>Reset</Button>
+    <div className="sample-options">
+      <div className="iui-alert iui-informational sample-options-block">
+        <div className="iui-alert-message">
+          Use the toggles to show marker pins or zoom to a validation rule violation.
+          Click a marker or table entry to review these rule violations.
         </div>
       </div>
-    </>
+      <ToggleSwitch label="Show Markers" checked={showDecorator} onChange={() => setShowDecorator(!showDecorator)} className="sample-options-block"></ToggleSwitch>
+      <ToggleSwitch label="Apply Zoom" checked={applyZoom} onChange={() => setApplyZoom(!applyZoom)} className="sample-options-block"></ToggleSwitch>
+      <Button size="small" styleType="high-visibility" onClick={ValidationApi.resetDisplay} className="sample-options-button">Reset Display</Button>
+    </div>
   );
 };
 
@@ -129,7 +128,7 @@ export class ValidationWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ValidationWidget />,
-        }
+        },
       );
     }
     return widgets;

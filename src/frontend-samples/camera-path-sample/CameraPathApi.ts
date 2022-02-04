@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@bentley/geometry-core";
+import { Viewport } from "@itwin/core-frontend";
+import { CurveChainWithDistanceIndex, CurveLocationDetail, LineString3d, Path, Point3d, Vector3d } from "@itwin/core-geometry";
 import { commuterViewCoordinates, flyoverCoordinates, trainPathCoordinates } from "./Coordinates";
 
 export interface CameraPathPoint {
@@ -15,10 +15,12 @@ export interface CameraPathPoint {
 export default class CameraPathApp {
 
   public static changeCameraPositionAndTarget(cameraPoint: CameraPathPoint, viewport: Viewport, changeCameraTargetOnly: boolean = false) {
-    if (changeCameraTargetOnly) {
-      (viewport.view as ViewState3d).setEyePoint(cameraPoint.eyePoint);
-    } else {
-      (viewport.view as ViewState3d).lookAtUsingLensAngle(cameraPoint.eyePoint, cameraPoint.targetPoint, new Vector3d(0, 0, 1), (viewport.view as ViewState3d).camera.lens, undefined, undefined, { animateFrustumChange: true });
+    if (viewport.view.is3d()) {
+      if (changeCameraTargetOnly) {
+        viewport.view.setEyePoint(cameraPoint.eyePoint);
+      } else {
+        viewport.view.lookAt({ eyePoint: cameraPoint.eyePoint, targetPoint: cameraPoint.targetPoint, upVector: new Vector3d(0, 0, 1), lensAngle: viewport.view.camera.lens });
+      }
     }
     viewport.synchWithView();
   }

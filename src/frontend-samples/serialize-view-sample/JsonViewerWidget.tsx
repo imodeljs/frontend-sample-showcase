@@ -2,9 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
+import { Button, Small, Textarea } from "@itwin/itwinui-react";
 import React from "react";
-import { Button, SmallText, Textarea } from "@bentley/ui-core";
 
 export interface JsonViewerWidgetProps {
   json: string;
@@ -24,7 +23,9 @@ export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = 
       setJsonErrorState("");
     } catch (error) {
       setJsonValueState(event.target.value);
-      setJsonErrorState(error.toString());
+      if (error instanceof Error) {
+        setJsonErrorState(error.toString());
+      }
     }
   };
 
@@ -36,9 +37,9 @@ export const JsonViewerWidget: React.FunctionComponent<JsonViewerWidgetProps> = 
 
     return (
       <div style={{ overflowWrap: "break-word" }}>
-        <SmallText style={{ color: "var(--foreground-alert)" }}>
+        <Small style={{ color: "var(--foreground-alert)" }}>
           ${stateProp}
-        </SmallText>
+        </Small>
       </div>
     );
   };

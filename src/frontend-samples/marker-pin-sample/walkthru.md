@@ -1,6 +1,6 @@
 # Setup
 
-This sample implements a [View Decorator](https://www.itwinjs.org/v2/learning/frontend/viewdecorations/) to draw [Markers](https://www.itwinjs.org/v2/learning/frontend/markers/) which are used to call the user's attention to a particular point in space.
+This sample implements a [View Decorator](https://www.itwinjs.org/learning/frontend/viewdecorations/) to draw [Markers](https://www.itwinjs.org/learning/frontend/markers/) which are used to call the user's attention to a particular point in space.
 
 The `setupDecorator` method is called as the sample is initializing.  It creates and returns an instance of a MarkerPinDecorator, which can be used to create and decorate the viewport with `Markers`.
 
@@ -51,10 +51,12 @@ Also, our custom `SampleMarkerSet` implements its own helper methods to manage i
 [_metadata_:annotation]:- "SAMPLEMARKERSET"
 
 # Add Markers
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "SETMARKERSDATA"
 
 # Remove Markers
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "REMOVEMARKER"
 
@@ -71,18 +73,22 @@ To do this the class overrides the following methods:
 [_metadata_:annotation]:- "SAMPLECLUSTERMARKER"
 
 # Constructor
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERCONSTRUCTOR"
 
 # Setup Tooltip
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERTOOLTIP"
 
 # OnMouseButton
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERMOUSEBUTTON"
 
 # DrawFunc
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERDRAWFUNC"
 
@@ -96,9 +102,11 @@ The class `SamplePinMarker` also extends the `Marker` base class.  It is similar
 [_metadata_:annotation]:- "SAMPLEPINMARKER"
 
 # Image
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "MARKERPINIMAGE"
 
 # Pick
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "MARKERPINPICK"

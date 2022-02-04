@@ -2,11 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelApp, IModelConnection, ScreenViewport } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
+import { IModelViewportControlOptions } from "@itwin/appui-react";
 import { SwipingComparisonWidgetProvider } from "./SwipingComparisonWidget";
 import { DividerComponent } from "./Divider";
 import SwipingComparisonApi from "./SwipingComparisonApi";
@@ -59,10 +59,12 @@ const SwipingComparisonApp: FunctionComponent = () => {
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <>
           <Viewer
-            contextId={sampleIModelInfo.contextId}
+            iTwinId={sampleIModelInfo.contextId}
             iModelId={sampleIModelInfo.iModelId}
-            authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+            authClient={AuthorizationClient.oidcClient}
+            enablePerformanceMonitors={true}
             viewportOptions={viewportOptions}
+            mapLayerOptions={mapLayerOptions}
             onIModelConnected={_oniModelReady}
             defaultUiConfig={default3DSandboxUi}
             theme="dark"

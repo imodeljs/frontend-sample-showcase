@@ -1,15 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
- * See LICENSE.md in the project root for license terms and full copyright notice.
- *--------------------------------------------------------------------------------------------*/
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 
-import { EmphasizeElements, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, ViewState } from "@bentley/imodeljs-frontend";
-import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@bentley/geometry-core";
-import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@bentley/imodeljs-common";
-import { BentleyStatus, Id64Array } from "@bentley/bentleyjs-core";
-import { PresentationLabelsProvider } from "@bentley/presentation-components";
-import { InstanceKey } from "@bentley/presentation-common";
-import { ViewSetup } from "@itwinjs-sandbox";
+import { EmphasizeElements, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, ViewState } from "@itwin/core-frontend";
+import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@itwin/core-geometry";
+import { ColorDef, FeatureAppearance, GeometryContainmentRequestProps } from "@itwin/core-common";
+import { BentleyStatus, Id64Array } from "@itwin/core-bentley";
+import { PresentationLabelsProvider } from "@itwin/presentation-components";
+import { InstanceKey } from "@itwin/presentation-common";
+import { ViewSetup } from "@itwin/sandbox";
 
 /* Going to color elements from three different sections of volume box */
 export enum SectionOfColoring {
@@ -35,8 +35,8 @@ export class VolumeQueryApi {
   /* Method for clearing all clips in the viewport */
   public static clearClips(vp: ScreenViewport) {
     // Run the ViewClipClearTool and hide the decorators
-    IModelApp.tools.run(ViewClipClearTool.toolId);
-    ViewClipDecorationProvider.create().toggleDecoration(vp);
+    void IModelApp.tools.run(ViewClipClearTool.toolId);
+    void ViewClipDecorationProvider.create().toggleDecoration(vp);
   }
 
   /* Method for adding a new box range around the model's extents */
@@ -56,7 +56,7 @@ export class VolumeQueryApi {
     // Call enableClipVolume to ensure all clip flags are properly set
     ViewClipTool.enableClipVolume(vp);
     // Turning off the clipping feature.
-    vp.view.viewFlags.clipVolume = isClippingOn === undefined ? false : isClippingOn;
+    vp.view.viewFlags = vp.view.viewFlags.with("clipVolume", isClippingOn === undefined ? false : isClippingOn);
     vp.view.setViewClip(clip);
     VolumeQueryApi.addDecorators(vp);
   };
@@ -69,7 +69,7 @@ export class VolumeQueryApi {
     vcdp.clearDecorationOnDeselect = false;
     vcdp.showDecoration(vp);
     // The decorators require the SelectTool being active.
-    IModelApp.toolAdmin.startDefaultTool();
+    void IModelApp.toolAdmin.startDefaultTool();
   }
 
   /* Clear color from colored elements */
@@ -92,19 +92,19 @@ export class VolumeQueryApi {
   }
 
   /* Getting elements that are inside or overlaping the given range*/
-  public static async getSpatialElements(vp: ScreenViewport, range: Range3d): Promise<SpatialElement[]> {
-    const esqlQuery = `SELECT e.ECInstanceId, e.ECClassId FROM bis.SpatialElement e JOIN bis.SpatialIndex i ON e.ECInstanceId=i.ECInstanceId WHERE i.MinX<=${range.xHigh} AND i.MinY<=${range.yHigh} AND i.MinZ<=${range.zHigh} AND i.MaxX >= ${range.xLow} AND i.MaxY >= ${range.yLow} AND i.MaxZ >= ${range.zLow}`;
-    const elementsAsync = vp.iModel.query(esqlQuery);
+  public static async getSpatialElements(conn: IModelConnection, range: Range3d): Promise<SpatialElement[]> {
+    const esqlQuery = `SELECT e.ECInstanceId,  ec_classname(e.ECClassId, 's:c')  FROM bis.SpatialElement e JOIN bis.SpatialIndex i ON e.ECInstanceId=i.ECInstanceId WHERE i.MinX<=${range.xHigh} AND i.MinY<=${range.yHigh} AND i.MinZ<=${range.zHigh} AND i.MaxX >= ${range.xLow} AND i.MaxY >= ${range.yLow} AND i.MaxZ >= ${range.zLow}`;
+    const elementsAsync = conn.query(esqlQuery);
     const elements: SpatialElement[] = [];
     for await (const element of elementsAsync) {
-      elements.push({ id: element.id, className: element.className, name: undefined });
+      elements.push({ id: element[0], className: element[1], name: undefined });
     }
 
     return elements;
   }
 
   /* Classify given elements - inside and overlaping. What is left are going to be outside the box*/
-  public static async getClassifiedElements(vp: ScreenViewport, candidates: SpatialElement[]): Promise<Record<ElementPosition, SpatialElement[]> | undefined> {
+  public static async getClassifiedElements(vp: ScreenViewport, conn: IModelConnection, candidates: SpatialElement[]): Promise<Record<ElementPosition, SpatialElement[]> | undefined> {
     const clip = vp.view.getViewClip();
     if (clip === undefined)
       return;
@@ -123,7 +123,7 @@ export class VolumeQueryApi {
       viewFlags: vp.viewFlags.toJSON(),
     };
 
-    const result = await vp.iModel.getGeometryContainment(requestProps);
+    const result = await conn.getGeometryContainment(requestProps);
     if (BentleyStatus.SUCCESS !== result.status || undefined === result.candidatesContainment)
       return;
 

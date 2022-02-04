@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { Button, NumberInput, Select } from "@bentley/ui-core";
-import { Loop, Point3d } from "@bentley/geometry-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorByName, ColorDef } from "@itwin/core-common";
+import { Button, NumberInput, Select } from "@itwin/core-react";
+import { Loop, Point3d } from "@itwin/core-geometry";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
 import Transformations2dApi from "./2dTransformationsApi";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import "./2dTransformations.scss";
@@ -159,7 +159,7 @@ export class Transformations2dWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <Transformations2dWidget />,
-        }
+        },
       );
     }
     return widgets;

@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { NumberInput, Slider } from "@bentley/ui-core";
-import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@bentley/geometry-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorDef, LinePixels } from "@itwin/core-common";
+import { NumberInput, Slider } from "@itwin/core-react";
+import { CurvePrimitive, LineSegment3d, LineString3d, Loop, Point3d, Vector3d } from "@itwin/core-geometry";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
 import CurveFractionApi from "./CurveFractionApi";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import { SampleCurveFactory } from "./SampleCurveFactory";
@@ -70,8 +70,8 @@ export const CurveFractionWidget: React.FunctionComponent = () => {
       IModelApp.viewManager.addDecorator(decorator);
       setDecoratorState(decorator);
 
-      const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
-      MovePointTool.register(sampleNamespace);
+      void IModelApp.localization.registerNamespace("camera-i18n-namespace");
+      MovePointTool.register("camera-i18n-namespace");
     }
 
     return (() => {
@@ -178,7 +178,7 @@ export class CurveFractionWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <CurveFractionWidget />,
-        }
+        },
       );
     }
     return widgets;

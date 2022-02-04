@@ -2,37 +2,37 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions, MessageRenderer } from "@bentley/ui-framework";
+import { IModelConnection } from "@itwin/core-frontend";
 import { IotAlertWidgetProvider } from "./IotAlertWidget";
 
 const uiProviders = [new IotAlertWidgetProvider()];
 
 const IotAlertApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls below to change the iModel.", [SampleIModels.BayTown]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */
   return (
     <>
-      <MessageRenderer />
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
-          contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
-          defaultUiConfig={default3DSandboxUi}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true}
+          viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={mapLayerOptions}
+          defaultUiConfig={{
+            hidePropertyGrid: true,
+            hideTreeView: true,
+          }}
           theme="dark"
           uiProviders={uiProviders}
         />

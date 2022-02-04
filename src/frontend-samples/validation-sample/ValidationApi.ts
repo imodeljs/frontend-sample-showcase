@@ -2,40 +2,32 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, IModelConnection, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef, GeometricElement3dProps, Placement3d } from "@bentley/imodeljs-common";
-import { Point3d } from "@bentley/geometry-core";
-import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
-import ValidationClient from "./ValidationClient";
-import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
-import { BeEvent } from "@bentley/bentleyjs-core";
-import { jsonResultData } from "./ValidationResultJson";
-import { jsonRuleData } from "./ValidationRuleJson";
+import { EmphasizeElements, IModelApp, IModelConnection, ViewChangeOptions } from "@itwin/core-frontend";
+import { ColorDef, FeatureOverrideType, GeometricElement3dProps, Placement3d } from "@itwin/core-common";
+import { Point3d } from "@itwin/core-geometry";
+import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
+import ValidationClient, { PropertyValueValidationRule, ValidationResults } from "./ValidationClient";
+import { BeEvent } from "@itwin/core-bentley";
+
+export interface ValidationData {
+  validationData: ValidationResults;
+  ruleData: Record<string, PropertyValueValidationRule | undefined>;
+}
 
 export default class ValidationApi {
 
-  public static onValidationDataChanged = new BeEvent<any>();
-
-  private static _requestContext: AuthorizedClientRequestContext;
-  private static _validationData: { [id: string]: any } = {};
-  private static _ruleData: { [id: string]: any } = {};
-
+  public static onValidationDataChanged = new BeEvent<(data: ValidationData) => void>();
+  public static onMarkerClicked = new BeEvent<(data: string | undefined) => void>();
+  private static _validationData: Record<string, ValidationResults> = {};
+  private static _ruleData: Record<string, PropertyValueValidationRule | undefined> = {};
   private static _applyZoom: boolean = true;
-
-  private static async getRequestContext() {
-    if (!ValidationApi._requestContext) {
-      ValidationApi._requestContext = await AuthorizedFrontendRequestContext.create();
-    }
-    return ValidationApi._requestContext;
-  }
 
   public static setupDecorator() {
     return new MarkerPinDecorator();
   }
 
-  public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, images: Map<string, HTMLImageElement>) {
-    decorator.setMarkersData(markersData, images.get("clash_pin.svg")!, ValidationApi.visualizeValidationCallback);
+  public static setDecoratorPoints(markersData: MarkerData[], decorator: MarkerPinDecorator, image: HTMLImageElement) {
+    decorator.setMarkersData(markersData, image, ValidationApi.visualizeValidationCallback);
   }
 
   public static enableDecorations(decorator: MarkerPinDecorator) {
@@ -55,84 +47,70 @@ export default class ValidationApi {
     ValidationApi._applyZoom = false;
   }
 
-  public static async setValidationData(projectId: string): Promise<void> {
-    const validationData = await ValidationApi.getValidationData(projectId);
-    ValidationApi.onValidationDataChanged.raiseEvent(validationData);
-  }
-
   // START VALIDATION_API
   public static async getValidationData(projectId: string): Promise<any> {
-    const context = await ValidationApi.getRequestContext();
+    // Limit the number of validations in this demo
+    const maxValidations = 70;
+
     if (ValidationApi._validationData[projectId] === undefined) {
-      const runsResponse = await ValidationClient.getValidationTestRuns(context, projectId);
+      const runsResponse = await ValidationClient.getValidationTestRuns(projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ValidationClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
-        if (resultResponse !== undefined && resultResponse.result !== undefined) {
+        const resultResponse = await ValidationClient.getValidationUrlResponse(runsResponse.runs[0]._links.result.href);
+        if (resultResponse && resultResponse.result) {
+          resultResponse.result = resultResponse.result.slice(0, maxValidations);
           ValidationApi._validationData[projectId] = resultResponse;
+
+          for (const rule of resultResponse.ruleList) {
+            const ruleData = await ValidationApi.getMatchingRule(rule.id.toString());
+            ValidationApi._ruleData[rule.id] = ruleData?.rule;
+          }
+
+          ValidationApi.onValidationDataChanged.raiseEvent({
+            validationData: ValidationApi._validationData[projectId],
+            ruleData: ValidationApi._ruleData,
+          });
         }
       }
-      if (ValidationApi._validationData[projectId] === undefined) {
-        ValidationApi._validationData[projectId] = jsonResultData;
-      }
     }
-
-    // To avoid unnecessary API calls after setup, we request all the rule information here
-
-    for (const rule of ValidationApi._validationData[projectId].ruleList) {
-      const ruleData = await ValidationApi.getMatchingRule(rule.id.toString());
-      ValidationApi._ruleData[rule.id] = ruleData;
-    }
-
-    return { validationData: ValidationApi._validationData[projectId], ruleData: ValidationApi._ruleData };
   }
 
   // END VALIDATION_API
 
   public static async getMatchingRule(ruleId: string) {
-    const context = await ValidationApi.getRequestContext();
-    const ruleData = await ValidationClient.getValidationRule(context, ruleId);
-    if (ruleData !== undefined)
-      return ruleData;
-
-    // Unable to fetch the rule data from the API, use the hardcoded data instead
-    if (ruleId === "UcJ9slMONkqaOBgvwwm-BxhaAWxdDAZHs6JvnySyITk") {
-      return jsonRuleData[0];
-    } else if (ruleId === "UcJ9slMONkqaOBgvwwm-BwHRtttv0KJLnVI9yt0PGsQ") {
-      return jsonRuleData[1];
-    } else {
-      return jsonRuleData[2];
-    }
+    return ValidationClient.getValidationRule(ruleId);
   }
 
-  public static async getValidationMarkersData(imodel: IModelConnection, validationData: any, ruleData: any): Promise<MarkerData[]> {
-    // Limit the number of validations in this demo
-    const maxValidations = 70;
+  public static async getValidationMarkersData(
+    imodel: IModelConnection,
+    validationData: ValidationResults,
+    ruleData: Record<string, PropertyValueValidationRule | undefined>): Promise<MarkerData[]> {
     const markersData: MarkerData[] = [];
+
     if (validationData && validationData.result && ruleData && validationData.result.length > 0) {
-      const limitedValidationData = validationData.result.slice(0, maxValidations);
-
-      const elements: string[] = limitedValidationData.map((validation: any) => validation.elementId);
-
+      const validationResults = validationData.result;
+      const elements: string[] = validationResults.map((validation) => validation.elementId);
       const points = await ValidationApi.calcValidationCenter(imodel, elements);
 
       for (let index = 0; index < points.length; index++) {
         const title = "Rule Violation(s) found:";
-        const currentRuleData = ruleData[validationData.ruleList[limitedValidationData[index].ruleIndex].id.toString()];
-        let description;
-        if (currentRuleData.rule.functionParameters.lowerBound) {
-          if (currentRuleData.rule.functionParameters.upperBound) {
-            // Range of values
-            description = `${currentRuleData?.rule.functionParameters.propertyName} must be within range ${currentRuleData?.rule.functionParameters.lowerBound} and ${currentRuleData?.rule.functionParameters.upperBound}. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+        const currentRuleData = ruleData[validationData.ruleList[validationResults[index].ruleIndex].id.toString()];
+        let description = "";
+        if (currentRuleData) {
+          if (currentRuleData.functionParameters.lowerBound) {
+            if (currentRuleData.functionParameters.upperBound) {
+              // Range of values
+              description = `${currentRuleData.functionParameters.propertyName} must be within range ${currentRuleData.functionParameters.lowerBound} and ${currentRuleData.functionParameters.upperBound}. Element ${validationResults[index].elementLabel} has a ${currentRuleData.functionParameters.propertyName} value of ${validationResults[index].badValue}.`;
+            } else {
+              // Value has a lower bound
+              description = `${currentRuleData.functionParameters.propertyName} must be within greater than ${currentRuleData.functionParameters.lowerBound}. Element ${validationResults[index].elementLabel} has a ${currentRuleData.functionParameters.propertyName} value of ${validationResults[index].badValue}.`;
+            }
           } else {
-            // Value has a lower bound
-            description = `${currentRuleData?.rule.functionParameters.propertyName} must be within greater than ${currentRuleData?.rule.functionParameters.lowerBound}. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
+            // Value needs to be defined
+            description = `${currentRuleData.functionParameters.propertyName} must be defined. Element ${validationResults[index].elementLabel} has a ${currentRuleData.functionParameters.propertyName} value of ${validationResults[index].badValue}.`;
           }
-        } else {
-          // Value needs to be defined
-          description = `${currentRuleData?.rule.functionParameters.propertyName} must be defined. Element ${limitedValidationData[index].elementLabel} has a ${currentRuleData?.rule.functionParameters.propertyName} value of ${limitedValidationData[index].badValue}.`;
         }
-        const validationMarkerData: MarkerData = { point: points[index], data: limitedValidationData[index], title, description };
+        const validationMarkerData: MarkerData = { point: points[index], data: validationResults[index], title, description };
         markersData.push(validationMarkerData);
       }
     }
@@ -177,13 +155,14 @@ export default class ValidationApi {
     if (ValidationApi._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
-      viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
       vp.zoomToElements([elementId], { ...viewChangeOpts })
         .catch((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
         });
     }
+
+    ValidationApi.onMarkerClicked.raiseEvent(elementId);
   }
 
   public static resetDisplay() {
@@ -194,5 +173,6 @@ export default class ValidationApi {
     const emph = EmphasizeElements.getOrCreate(vp);
     emph.clearEmphasizedElements(vp);
     emph.clearOverriddenElements(vp);
+    ValidationApi.onMarkerClicked.raiseEvent(undefined);
   }
 }

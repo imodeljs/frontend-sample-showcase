@@ -13,5 +13,5 @@ The purpose of this sample is to demonstrate the following:
 
 ## Description
 
-When views are synchronized any changes to the properties [ViewState](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/viewstate/) of either viewport will be immediately applied to the other.  This is done by calling `connect` on [TwoWayViewportSync](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/twowayviewportsync). One intended use of this feature is for comparing different changesets of the same IModel. Using it that way has the potential for showing the changes over time.
-Note: At the time this sample was written [TwoWayViewportSync](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/twowayviewportsync) was in beta.
+When views are synchronized any changes to the properties [ViewState](https://www.itwinjs.org/reference/core-frontend/views/viewstate/) of either viewport will be immediately applied to the other.  This is done by calling `connect` on [TwoWayViewportSync](https://www.itwinjs.org/reference/core-frontend/views/twowayviewportsync). One intended use of this feature is for comparing different changesets of the same IModel. Using it that way has the potential for showing the changes over time.
+Note: At the time this sample was written [TwoWayViewportSync](https://www.itwinjs.org/reference/core-frontend/views/twowayviewportsync) was in beta.

@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@bentley/geometry-core";
-import { DecorateContext, Decorator, GraphicBranch, GraphicBuilder, GraphicType, IModelApp, Marker, RenderGraphic } from "@bentley/imodeljs-frontend";
-import { ColorDef, LinePixels, TextString, ViewFlagOverrides } from "@bentley/imodeljs-common";
+import { Arc3d, CurveChainWithDistanceIndex, GeometryQuery, IndexedPolyface, IndexedPolyfaceVisitor, LineSegment3d, LineString3d, Loop, Path, Point3d, Transform } from "@itwin/core-geometry";
+import { DecorateContext, Decorator, GraphicBranch, GraphicBuilder, GraphicType, IModelApp, Marker, RenderGraphic } from "@itwin/core-frontend";
+import { ColorDef, LinePixels, TextString } from "@itwin/core-common";
 
 // Since all geometry is rendered concurrently, when adding geometry, we attach their desired attributes to them in an object
 interface CustomGeometryQuery {
@@ -141,8 +141,7 @@ export class GeometryDecorator implements Decorator {
   // Adding them to the graphic builder which then creates new graphics
   public createGraphics(context: DecorateContext): RenderGraphic | undefined {
     // Specifying an Id for the graphics tells the display system that all of the geometry belongs to the same entity, so that it knows to make sure the edges draw on top of the surfaces.
-    const builder = context.createGraphicBuilder(GraphicType.Scene, undefined, context.viewport.iModel.transientIds.next);
-    builder.wantNormals = true;
+    const builder = context.createGraphic({ wantNormals: true, type: GraphicType.WorldDecoration });
     this.points.forEach((styledPoint) => {
       builder.setSymbology(styledPoint.color, styledPoint.fill ? styledPoint.color : ColorDef.white, styledPoint.lineThickness);
       const point = styledPoint.point;
@@ -217,14 +216,14 @@ export class GeometryDecorator implements Decorator {
 
   // Generates new graphics if needed, and adds them to the scene
   public decorate(context: DecorateContext): void {
-    const overrides = new ViewFlagOverrides();
-    overrides.setShowVisibleEdges(true);
-    overrides.setApplyLighting(true);
+    const overrides = { ...context.viewFlags };
+    overrides.visibleEdges = true;
+    overrides.lighting = true;
     const branch = new GraphicBranch(false);
 
-    branch.viewFlagOverrides.copyFrom(overrides);
+    branch.viewFlagOverrides = overrides;
 
-    context.viewFlags.visibleEdges = true;
+    context.viewport.view.displayStyle.viewFlags = context.viewFlags.override(overrides);
     if (!this.graphics)
       this.graphics = this.createGraphics(context);
 

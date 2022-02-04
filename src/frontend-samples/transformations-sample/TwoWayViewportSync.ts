@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { Vector3d } from "@bentley/geometry-core";
-import { Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
+import { Vector3d } from "@itwin/core-geometry";
+import { Viewport, ViewState3d } from "@itwin/core-frontend";
 
 /**
  * iModeljs contains a TwoWayViewportSync that works well when the iModel id's of the elements align. Because
@@ -28,7 +28,7 @@ export class TwoWayViewportSync {
     const backDistance = viewState1.getBackDistance();
 
     // Set the Second viewports camera to this position
-    (view2.view as ViewState3d).lookAtUsingLensAngle(EyePoint, targetPoint, new Vector3d(0, 0, 1), viewState1.camera.lens, frontDistance, backDistance, { animateFrustumChange: true });
+    (view2.view as ViewState3d).lookAt({ eyePoint: EyePoint, targetPoint, upVector: new Vector3d(0, 0, 1), lensAngle: viewState1.camera.lens, frontDistance, backDistance });
 
     view2.invalidateRenderPlan();
     view2.synchWithView({ noSaveInUndo: true });

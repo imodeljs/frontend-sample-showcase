@@ -1,16 +1,15 @@
 /*---------------------------------------------------------------------------------------------
- * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
- * See LICENSE.md in the project root for license terms and full copyright notice.
- *--------------------------------------------------------------------------------------------*/
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { ColorPickerButton } from "@bentley/ui-components";
-import { Button, ButtonType, LoadingPrompt, Toggle } from "@bentley/ui-core";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { ColorDef } from "@itwin/core-common";
+import { ColorPickerButton } from "@itwin/imodel-components-react";
 import { ElementPosition, SectionOfColoring, SpatialElement, VolumeQueryApi } from "./VolumeQueryApi";
-import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
 import "./VolumeQuery.scss";
+import { Button, ProgressLinear, ToggleSwitch } from "@itwin/itwinui-react";
 
 interface CancelToken {
   canceled: boolean;
@@ -61,12 +60,15 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
 
   /* Turning Clip Volume feature on and off */
   useEffect(() => {
-    if (viewport && volumeBoxState) {
+    if (viewport) {
       const range = VolumeQueryApi.computeClipRange(viewport);
-      VolumeQueryApi.clearClips(viewport);
-      VolumeQueryApi.addBoxRange(viewport, range, clipVolumeState);
+      if (clipVolumeState) {
+        VolumeQueryApi.addBoxRange(viewport, range, true);
+      } else {
+        VolumeQueryApi.addBoxRange(viewport, range, false);
+      }
     }
-  }, [clipVolumeState, viewport, volumeBoxState]);
+  }, [clipVolumeState, viewport]);
 
   /** When the colorOverrides is being canceled */
   useEffect(() => {
@@ -97,14 +99,13 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
 
   /* Coloring elements that are inside, outside the box or overlapping */
   const _applyColorOverrides = useCallback(async (cancellationToken: CancelToken) => {
-    const vp = IModelApp.viewManager.selectedView;
-    if (vp) {
+    if (viewport && iModelConnection) {
       /* Clearing colors so they don't stack when pressing apply button multiple times */
-      VolumeQueryApi.clearColorOverrides(vp);
-      const range = VolumeQueryApi.computeClipRange(vp);
+      VolumeQueryApi.clearColorOverrides(viewport);
+      const range = VolumeQueryApi.computeClipRange(viewport);
 
       /* Getting elements that are going to be colored */
-      const spatialElements = await VolumeQueryApi.getSpatialElements(vp, range);
+      const spatialElements = await VolumeQueryApi.getSpatialElements(iModelConnection, range);
       let classifiedElements: Record<ElementPosition, SpatialElement[]> | undefined;
       const coloredEles: Record<ElementPosition, SpatialElement[]> = {
         [ElementPosition.InsideTheBox]: [],
@@ -126,9 +127,9 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
 
         /* Classifying elements */
         if (i !== packsOfIds) {
-          classifiedElements = await VolumeQueryApi.getClassifiedElements(vp, spatialElements.slice(i * 6000, (i + 1) * 6000));
+          classifiedElements = await VolumeQueryApi.getClassifiedElements(viewport, iModelConnection, spatialElements.slice(i * 6000, (i + 1) * 6000));
         } else {
-          classifiedElements = await VolumeQueryApi.getClassifiedElements(vp, spatialElements.slice(i * 6000, spatialElements.length + 1));
+          classifiedElements = await VolumeQueryApi.getClassifiedElements(viewport, iModelConnection, spatialElements.slice(i * 6000, spatialElements.length + 1));
         }
 
         /** Check canceled state */
@@ -139,7 +140,7 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
 
         /* Coloring classified elements */
         if (classifiedElements !== undefined) {
-          await VolumeQueryApi.colorClassifiedElements(vp, classifiedElements, classifiedElementsColors);
+          await VolumeQueryApi.colorClassifiedElements(viewport, classifiedElements, classifiedElementsColors);
           coloredElements.Inside = coloredElements.Inside.concat(classifiedElements.Inside);
           coloredElements.Overlap = coloredElements.Overlap.concat(classifiedElements.Overlap);
           setColoredElements(coloredElements);
@@ -157,15 +158,15 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
       }
     }
 
-  }, [_setElementsToShow, classifiedElementsColors, coloredElements]);
+  }, [_setElementsToShow, classifiedElementsColors, coloredElements, iModelConnection, viewport]);
 
   /** Start applying color overrides on load */
   useEffect(() => {
     if (iModelConnection && viewport) {
       if (!iModelIdState || iModelIdState !== iModelConnection.iModelId) {
-        const cancelationToken = { canceled: false };
+        const cancellationToken = { canceled: false };
         setIsLoading(true);
-        _applyColorOverrides(cancelationToken).then(() => {
+        _applyColorOverrides(cancellationToken).then(() => {
           setIsLoading(false);
           setApplyingColorOverrides(undefined);
         })
@@ -173,7 +174,7 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
             // eslint-disable-next-line no-console
             console.error(error);
           });
-        setApplyingColorOverrides(cancelationToken);
+        setApplyingColorOverrides(cancellationToken);
         setIModelIdState(iModelConnection.iModelId);
       }
     }
@@ -185,13 +186,13 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
       applyingColorOverrides.canceled = true;
 
     // Apply the new call with the token
-    const cancelationToken = { canceled: false };
-    _applyColorOverrides(cancelationToken)
+    const cancellationToken = { canceled: false };
+    _applyColorOverrides(cancellationToken)
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-    setApplyingColorOverrides(cancelationToken);
+    setApplyingColorOverrides(cancellationToken);
   };
 
   const _onClickClearColorOverrides = () => {
@@ -217,15 +218,15 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
       <div style={{ maxWidth: "340px" }} >
         <div className="sample-options-2col">
           <span>Volume Box</span>
-          <Toggle disabled={isLoading} isOn={volumeBoxState} onChange={(toggle: boolean) => setVolumeBoxState(toggle)} />
+          <ToggleSwitch disabled={isLoading} defaultChecked={volumeBoxState} onChange={() => setVolumeBoxState(!volumeBoxState)} />
           <span>Clip Volume</span>
-          <Toggle disabled={isLoading || !volumeBoxState} isOn={clipVolumeState} onChange={(toggle: boolean) => setClipVolumeState(toggle)} />
+          <ToggleSwitch disabled={isLoading || !volumeBoxState} defaultChecked={clipVolumeState} onChange={() => setClipVolumeState(!clipVolumeState)} />
         </div>
         <hr></hr>
         <div className="sample-options-3col">
           <span>Coloring:</span>
-          <Button buttonType={ButtonType.Blue} disabled={!volumeBoxState || isLoading} onClick={_onClickApplyColorOverrides}>Apply</Button>
-          <Button buttonType={ButtonType.Blue} disabled={isLoading} onClick={_onClickClearColorOverrides}>Clear</Button>
+          <Button styleType="high-visibility" disabled={!volumeBoxState || isLoading} onClick={_onClickApplyColorOverrides}>Apply</Button>
+          <Button styleType="high-visibility" disabled={isLoading} onClick={_onClickClearColorOverrides}>Clear</Button>
         </div>
         <div className="sample-options-3col">
           <div style={{ display: "flex", alignItems: "center", marginLeft: "20px", marginRight: "20px" }}>
@@ -267,8 +268,8 @@ const VolumeQueryWidget: React.FunctionComponent = () => {
           List contains {coloredElements[selectedPosition].length} elements
           {(coloredElements[selectedPosition].length <= 100) ? "." : ", showing first 100."}
         </span>
-        <LoadingPrompt isDeterminate={true} percent={loadingPercent} />
-        <div style={{ textAlign: "center" }}><Button disabled={!isLoading} onClick={() => setCanceledState(true)} buttonType={ButtonType.Hollow}>Cancel</Button></div>
+        <ProgressLinear value={loadingPercent} />
+        <div style={{ textAlign: "center" }}><Button disabled={!isLoading} onClick={() => setCanceledState(true)} styleType="default">Cancel</Button></div>
       </div>
     </div>
   );
@@ -287,7 +288,7 @@ export class VolumeQueryWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <VolumeQueryWidget />,
-        }
+        },
       );
     }
     return widgets;

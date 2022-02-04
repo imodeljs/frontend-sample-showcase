@@ -2,17 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import React, { ChangeEvent, useCallback, useEffect } from "react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { PopupMenu } from "./PopupMenu";
-import { Button, ButtonType, Toggle } from "@bentley/ui-core";
 import { PointSelector } from "common/PointSelector/PointSelector";
-import { RadioCard, RadioCardEntry } from "./RadioCard";
-import { imageElementFromUrl, IModelApp } from "@bentley/imodeljs-frontend";
-import { Point3d, Range2d } from "@bentley/geometry-core";
+import { imageElementFromUrl, IModelApp, ScreenViewport } from "@itwin/core-frontend";
+import { Point3d, Range2d } from "@itwin/core-geometry";
 import MarkerPinApi from "./MarkerPinApi";
 import { PlaceMarkerTool } from "./PlaceMarkerTool";
 import { MarkerData, MarkerPinDecorator } from "./MarkerPinDecorator";
+import { useActiveViewport } from "@itwin/appui-react";
+import { Button, RadioTile, RadioTileGroup, ToggleSwitch } from "@itwin/itwinui-react";
 import "./MarkerPin.scss";
 
 interface ManualPinSelection {
@@ -20,99 +20,55 @@ interface ManualPinSelection {
   image: string;
 }
 
+/** A static array of pin images. */
+const manualPinSelections: ManualPinSelection[] = [
+  { image: "Google_Maps_pin.svg", name: "Google Pin" },
+  { image: "pin_celery.svg", name: "Celery Pin" },
+  { image: "pin_poloblue.svg", name: "Polo blue Pin" },
+];
+
 const MarkerPinWidget: React.FunctionComponent = () => {
-
-  /** A static array of pin images. */
-  const getManualPinSelections = (): ManualPinSelection[] => {
-    return ([
-      { image: "Google_Maps_pin.svg", name: "Google Pin" },
-      { image: "pin_celery.svg", name: "Celery Pin" },
-      { image: "pin_poloblue.svg", name: "Polo blue Pin" }]);
-  };
-
-  const viewport = IModelApp.viewManager.selectedView;
-  const [imagesLoadedState, setImagesLoadedState] = React.useState<boolean>(false);
-  const [showDecoratorState, setShowDecoratorState] = React.useState<boolean>(true);
-  const [manualPinState, setManualPinState] = React.useState<ManualPinSelection>(getManualPinSelections()[0]);
+  const viewport = useActiveViewport();
+  const [showDecoratorState, setShowDecoratorState] = React.useState<boolean>(false);
+  const [manualPinState, setManualPinState] = React.useState<ManualPinSelection>(manualPinSelections[0]);
   const [markersDataState, setMarkersDataState] = React.useState<MarkerData[]>([]);
   const [rangeState, setRangeState] = React.useState<Range2d>(Range2d.createNull());
   const [heightState, setHeightState] = React.useState<number>(0);
-  const [markerPinDecorator] = React.useState<MarkerPinDecorator>(() => {
-    return MarkerPinApi.setupDecorator();
-  });
+  const markerPinDecorator = React.useRef<MarkerPinDecorator>();
+
   /** Load the images on widget startup */
   useEffect(() => {
     MarkerPinApi._images = new Map();
+
     const p1 = imageElementFromUrl(".\\Google_Maps_pin.svg").then((image) => {
       MarkerPinApi._images.set("Google_Maps_pin.svg", image);
     });
+
     const p2 = imageElementFromUrl(".\\pin_celery.svg").then((image) => {
       MarkerPinApi._images.set("pin_celery.svg", image);
     });
+
     const p3 = imageElementFromUrl(".\\pin_poloblue.svg").then((image) => {
       MarkerPinApi._images.set("pin_poloblue.svg", image);
     });
 
-    Promise.all([p1, p2, p3]).then(() => {
-      setImagesLoadedState(true);
-    })
-      .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const p4 = IModelApp.localization.registerNamespace("marker-pin-i18n-namespace");
 
-  /** Initialize Decorator */
-  useEffect(() => {
-    MarkerPinApi.enableDecorations(markerPinDecorator);
-    return () => {
-      MarkerPinApi.disableDecorations(markerPinDecorator);
-    };
-  }, [markerPinDecorator]);
-
-  /** When the images are loaded, initalize the MarkerPin */
-  useEffect(() => {
-    if (!imagesLoadedState)
-      return;
-
-    MarkerPinApi._sampleNamespace = IModelApp.i18n.registerNamespace("marker-pin-i18n-namespace");
-
-    PlaceMarkerTool.register(MarkerPinApi._sampleNamespace);
-
-    MarkerPinApi.setMarkersData(markerPinDecorator, markersDataState);
-
-    if (viewport)
-      viewInit();
-    else
-      IModelApp.viewManager.onViewOpen.addOnce(() => viewInit());
+    void Promise.all([p1, p2, p3, p4]).then(() => {
+      PlaceMarkerTool.register("marker-pin-i18n-namespace");
+      setShowDecoratorState(true);
+    });
 
     return () => {
-      IModelApp.i18n.unregisterNamespace("marker-pin-i18n-namespace");
+      IModelApp.localization.unregisterNamespace("marker-pin-i18n-namespace");
       IModelApp.tools.unRegister(PlaceMarkerTool.toolId);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imagesLoadedState]);
+  }, []);
 
-  useEffect(() => {
-    if (showDecoratorState)
-      MarkerPinApi.enableDecorations(markerPinDecorator);
-    else
-      MarkerPinApi.disableDecorations(markerPinDecorator);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDecoratorState]);
-
-  useEffect(() => {
-    MarkerPinApi.setMarkersData(markerPinDecorator, markersDataState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markersDataState]);
-
-  const viewInit = () => {
-    if (!viewport)
-      return;
+  const viewInit = useCallback((vp: ScreenViewport) => {
 
     // Grab range of the contents of the view. We'll use this to position the random markers.
-    const range3d = viewport.view.computeFitRange();
+    const range3d = vp.view.computeFitRange();
     const range = Range2d.createFrom(range3d);
 
     // Grab the max Z for the view contents.  We'll use this as the plane for the auto-generated markers. */
@@ -121,42 +77,72 @@ const MarkerPinWidget: React.FunctionComponent = () => {
     setRangeState(range);
     setHeightState(height);
 
-  };
+  }, []);
+
+  /** When the images are loaded, initalize the MarkerPin */
+  useEffect(() => {
+    if (viewport) {
+      viewInit(viewport);
+      const decorator = MarkerPinApi.setupDecorator();
+      markerPinDecorator.current = decorator;
+
+      return () => {
+        MarkerPinApi.disableDecorations(decorator);
+      };
+    }
+    return;
+  }, [viewInit, viewport]);
+
+  useEffect(() => {
+    if (markerPinDecorator.current) {
+      if (showDecoratorState)
+        MarkerPinApi.enableDecorations(markerPinDecorator.current);
+      else
+        MarkerPinApi.disableDecorations(markerPinDecorator.current);
+    }
+  }, [showDecoratorState]);
+
+  useEffect(() => {
+    if (markerPinDecorator.current) {
+      MarkerPinApi.setMarkersData(markerPinDecorator.current, markersDataState);
+    }
+  }, [markersDataState, showDecoratorState]);
 
   /** This callback will be executed when the user interacts with the PointSelector
    * UI component.  It is also called once when the component initializes.
    */
-  const _onPointsChanged = async (points: Point3d[]): Promise<void> => {
+  const _onPointsChanged = useCallback(async (points: Point3d[]): Promise<void> => {
     const markersData: MarkerData[] = [];
     for (const point of points) {
       point.z = heightState;
       markersData.push({ point });
     }
     setMarkersDataState(markersData);
-  };
-
-  /** Creates the array which populates the RadioCard UI component */
-  const getMarkerList = (): RadioCardEntry[] => {
-    return (getManualPinSelections().map((entry: ManualPinSelection) => ({ image: entry.image, value: entry.name })));
-  };
+  }, [heightState]);
 
   /** Called when the user clicks a new option in the RadioCard UI component */
-  const _onManualPinChange = (name: string) => {
-    const manualPin = getManualPinSelections().find((entry: ManualPinSelection) => entry.name === name)!;
+  const _onManualPinChange: React.MouseEventHandler<HTMLInputElement> = useCallback((event) => {
+    const manualPin = manualPinSelections.find((entry: ManualPinSelection) => entry.name === (event.target as any).value)!;
     setManualPinState(manualPin);
-  };
+  }, []);
 
   /** This callback will be executed by the PlaceMarkerTool when it is time to create a new marker */
-  const _manuallyAddMarker = (point: Point3d) => {
-    MarkerPinApi.addMarkerPoint(markerPinDecorator, point, MarkerPinApi._images.get(manualPinState.image)!);
-  };
+  const _manuallyAddMarker = useCallback((point: Point3d) => {
+    if (markerPinDecorator.current) {
+      MarkerPinApi.addMarkerPoint(markerPinDecorator.current, point, MarkerPinApi._images.get(manualPinState.image)!);
+    }
+  }, [manualPinState.image]);
 
   /** This callback will be executed when the user clicks the UI button.  It will start the tool which
    * handles further user input.
    */
-  const _onStartPlaceMarkerTool = () => {
-    IModelApp.tools.run(PlaceMarkerTool.toolId, _manuallyAddMarker);
-  };
+  const _onStartPlaceMarkerTool = useCallback(() => {
+    void IModelApp.tools.run(PlaceMarkerTool.toolId, _manuallyAddMarker);
+  }, [_manuallyAddMarker]);
+
+  const onShowMarkersChange = useCallback((ev: ChangeEvent<HTMLInputElement>) => {
+    setShowDecoratorState(ev.target.checked);
+  }, []);
 
   // Display drawing and sheet options in separate sections.
   return (
@@ -166,22 +152,35 @@ const MarkerPinWidget: React.FunctionComponent = () => {
       <PopupMenu canvas={viewport?.canvas} />
       <div className="sample-options-2col">
         <span>Show Markers</span>
-        <Toggle isOn={showDecoratorState} onChange={(checked: boolean) => setShowDecoratorState(checked)} />
+        <ToggleSwitch checked={showDecoratorState} onChange={onShowMarkersChange} />
       </div>
       <hr></hr>
       <div className="sample-heading">
         <span>Auto-generate locations</span>
       </div>
       <div className="sample-options-2col">
-        <PointSelector onPointsChanged={_onPointsChanged} range={rangeState} />
+        <PointSelector onPointsChanged={_onPointsChanged} range={rangeState} disabled={!showDecoratorState} />
       </div>
       <hr></hr>
       <div className="sample-heading">
         <span>Manual placement</span>
       </div>
       <div style={{ textAlign: "center" }}>
-        <RadioCard entries={getMarkerList()} selected={manualPinState.name} onChange={_onManualPinChange} />
-        <Button buttonType={ButtonType.Primary} onClick={_onStartPlaceMarkerTool} title="Click here and then click the view to place a new marker">Place Marker</Button>
+        <RadioTileGroup >
+          {manualPinSelections.map((pin) =>
+            <RadioTile
+              disabled={!showDecoratorState}
+              className="marker-pin-button"
+              key={pin.name}
+              icon={<img src={pin.image} />}
+              value={pin.name}
+              onClick={_onManualPinChange}
+              checked={pin.name === manualPinState.name}
+            />,
+          )}
+
+        </RadioTileGroup>
+        <Button disabled={!showDecoratorState} styleType="high-visibility" onClick={_onStartPlaceMarkerTool} title="Click here and then click the view to place a new marker">Place Marker</Button>
       </div>
     </div>
   );
@@ -201,7 +200,7 @@ export class MarkerPinWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <MarkerPinWidget />,
-        }
+        },
       );
     }
     return widgets;

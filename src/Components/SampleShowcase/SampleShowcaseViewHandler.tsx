@@ -2,8 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
-import { useResizeObserver } from "@bentley/ui-core/lib/ui-core/utils/hooks/useResizeObserver";
+import { useResizeObserver } from "@itwin/core-react";
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from "react";
 import { SampleShowcaseSplitPane } from "./SampleShowcaseSplitPane";
 import "./SampleShowcaseViewHandler.scss";

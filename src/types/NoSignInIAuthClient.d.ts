@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * Licensed under the MIT License. See LICENSE.md in the project root for license terms.
 *--------------------------------------------------------------------------------------------*/
-import { BeEvent, ClientRequestContext } from "@bentley/bentleyjs-core";
+import { BeEvent, ClientRequestContext } from "@itwin/core-bentley";
 import { AccessToken } from "@bentley/itwin-client";
-import { FrontendAuthorizationClient } from "@bentley/frontend-authorization-client";
+import { FrontendAuthorizationClient } from "@itwin/browser-authorization";
 export declare class NoSignInIAuthClient implements FrontendAuthorizationClient {
     readonly onUserStateChanged: BeEvent<(token: AccessToken | undefined) => void>;
     protected _accessToken?: AccessToken;

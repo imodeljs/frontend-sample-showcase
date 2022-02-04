@@ -3,11 +3,10 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
-import { BetaBadge, NewBadge } from "@bentley/ui-core";
 import { ControlPane } from "common/ControlPane/ControlPane";
+import { Badge, ThemeProvider } from "@itwin/itwinui-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -17,8 +16,12 @@ export default class BadgeList extends React.Component<{}> {
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getBadgeData(): UIComponentExampleProps[] {
     return [
-      createComponentExample("BetaBadge", undefined, <BetaBadge />),
-      createComponentExample("NewBadge", undefined, <NewBadge />),
+      createComponentExample("Basic Badge", undefined, <Badge>Basic Badge</Badge>),
+      createComponentExample("Long Label Badge", undefined, <Badge>Long label that gets truncated</Badge>),
+      createComponentExample("Success Badge", undefined, <Badge backgroundColor='positive'>Success</Badge>),
+      createComponentExample("Error Badge", undefined, <Badge backgroundColor='negative'>Error</Badge>),
+      createComponentExample("Informational Badge", undefined, <Badge backgroundColor='primary'>Informational</Badge>),
+      createComponentExample("Warning Badge", undefined, <Badge backgroundColor='warning'>Warning</Badge>),
     ];
   }
 
@@ -27,6 +30,7 @@ export default class BadgeList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of badges that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={BadgeList.getBadgeData()}></UIComponentContainer>
       </>

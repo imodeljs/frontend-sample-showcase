@@ -3,9 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
-import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, ViewCreator2d, Viewport } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
+import { IModelApp, IModelConnection, SelectionSetEvent, SelectionSetEventType, ViewCreator2d, Viewport } from "@itwin/core-frontend";
+import { ColorDef } from "@itwin/core-common";
 
 /** This sample showcases how to implement cross-probing between 3D and 2D elements.
  * At startup, it fetches all 2D/3D connections in the iModel and and maps them into an array.
@@ -14,12 +13,18 @@ import { ColorDef } from "@bentley/imodeljs-common";
  * The target element is then zoomed into.
  */
 
+export interface CrossProbingElement {
+  physElementId: string;
+  drawElementId: string;
+  drawModelId: string;
+}
+
 export default class CrossProbingApi {
 
   // keep track of last element selected (to avoid double clicks).
   private static lastElementSelected: string | undefined;
   // array to keep track of all 3D/2D connections.
-  private static elementMap?: any[];
+  private static elementMap?: CrossProbingElement[];
 
   // add listener to capture element selection events.
   public static addElementSelectionListener(imodel: IModelConnection) {
@@ -43,7 +48,7 @@ export default class CrossProbingApi {
 
     // if source is 3D, look for any target 2D elements.
     if (sourceVp?.view.is3d()) {
-      targetLink = CrossProbingApi.elementMap!.filter((link: any) => link.physElementId === sourceElementId);
+      targetLink = CrossProbingApi.elementMap!.filter((link) => link.physElementId === sourceElementId);
       if (targetLink.length > 0) {
         const targetElement = targetLink[0].drawElementId;
         const targetModel = await ev.set.iModel.models.getProps(targetLink[0].drawModelId);
@@ -81,7 +86,9 @@ export default class CrossProbingApi {
   // helper function to get 3D viewport.
   private static _get3DViewport(): Viewport {
     let vp3d;
-    IModelApp.viewManager.forEachViewport((vp) => (vp.view.is3d()) ? vp3d = vp : null);
+    for (const vp of IModelApp.viewManager) {
+      vp.view.is3d() ? vp3d = vp : null;
+    }
     if (!vp3d) throw new Error("No viewport with 3D model found!");
     return vp3d;
   }
@@ -89,7 +96,9 @@ export default class CrossProbingApi {
   // helper function to get 2D viewport.
   private static _get2DViewport(): Viewport {
     let vp2d;
-    IModelApp.viewManager.forEachViewport((vp) => (vp.view.is2d()) ? vp2d = vp : null);
+    for (const vp of IModelApp.viewManager) {
+      vp.view.is2d() ? vp2d = vp : null;
+    }
     if (!vp2d) throw new Error("No viewport with 2D model found!");
     return vp2d;
   }
@@ -104,7 +113,13 @@ export default class CrossProbingApi {
         ON physToFunc.TargetECInstanceId = drawToFunc.TargetECInstanceId 
       JOIN Bis.DrawingGraphic drawing 
         ON drawToFunc.SourceECInstanceId = drawing.ECInstanceId`;
-    CrossProbingApi.elementMap = await this._executeQuery(imodel, elementMapQuery);
+
+    const queryResult: string[] = await this._executeQuery(imodel, elementMapQuery);
+    CrossProbingApi.elementMap = queryResult.map(([physElementId, drawElementId, drawModelId]) => ({
+      physElementId,
+      drawElementId,
+      drawModelId,
+    }));
   }
 
   private static _executeQuery = async (imodel: IModelConnection, query: string) => {

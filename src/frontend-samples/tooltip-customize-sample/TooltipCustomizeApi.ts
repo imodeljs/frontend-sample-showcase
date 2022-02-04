@@ -2,9 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-
-import "common/samples-common.scss";
-import { HitDetail, imageElementFromUrl, ToolAdmin } from "@bentley/imodeljs-frontend";
+import { HitDetail, imageElementFromUrl, ToolAdmin } from "@itwin/core-frontend";
 
 export enum ElemProperty {
   Origin = "Origin",
@@ -22,36 +20,21 @@ export interface TooltipCustomizeSettings {
 }
 
 /** To create the tooltip, a class needs to override ToolAdmin and getToolTip() */
-export class ShowcaseToolAdmin extends ToolAdmin {
+class ShowcaseToolAdmin extends ToolAdmin {
   public settings: TooltipCustomizeSettings = {
     showImage: true,
     showCustomText: false,
     showElementProperty: true,
     showDefaultToolTip: true,
-    customText: "Sample custom string",
+    customText: "Additional custom text",
     elemProperty: ElemProperty.Origin,
   };
 
-  private static _singleton: ShowcaseToolAdmin;
-
-  public static initialize(): ShowcaseToolAdmin {
-    if(!ShowcaseToolAdmin._singleton)
-      ShowcaseToolAdmin._singleton = new ShowcaseToolAdmin();
-    return ShowcaseToolAdmin._singleton;
-  }
-
-  public static get(): ShowcaseToolAdmin {
-    return ShowcaseToolAdmin._singleton;
-  }
-
-  private constructor() {
+  public constructor() {
     super();
   }
 
   public async getToolTip(hit: HitDetail): Promise<HTMLElement | string> {
-    if (null === ShowcaseToolAdmin._singleton)
-      return "";
-
     if (!this.settings.showImage && !this.settings.showCustomText && !this.settings.showElementProperty && !this.settings.showDefaultToolTip)
       return "";
 
@@ -87,17 +70,17 @@ export class ShowcaseToolAdmin extends ToolAdmin {
         for await (const row of rows) {
           switch (this.settings.elemProperty) {
             default:
-              msg += row.val;
+              msg += row[0];
               break;
             case ElemProperty.LastModified:
-              const date = new Date(row.val);
+              const date = new Date(row[0]);
               msg += date.toLocaleString();
               break;
             case ElemProperty.Origin:
               msg += "<ul>";
-              msg += `<li><b>x:</b> ${row.val.x}</li>`;
-              msg += `<li><b>y:</b> ${row.val.y}</li>`;
-              msg += `<li><b>z:</b> ${row.val.z}</li>`;
+              msg += `<li><b>x:</b> ${row[0].X}</li>`;
+              msg += `<li><b>y:</b> ${row[0].Y}</li>`;
+              msg += `<li><b>z:</b> ${row[0].Z}</li>`;
               msg += "</ul>";
               break;
           }
@@ -121,7 +104,8 @@ export class ShowcaseToolAdmin extends ToolAdmin {
       }
       tip.appendChild(defaultTip);
     }
-
     return tip;
   }
 }
+
+export const toolAdmin = new ShowcaseToolAdmin();

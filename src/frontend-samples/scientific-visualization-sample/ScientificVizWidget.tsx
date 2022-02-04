@@ -3,18 +3,18 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect } from "react";
-import { Select, Slider } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { StandardViewId } from "@bentley/imodeljs-frontend";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { StandardViewId } from "@itwin/core-frontend";
+import { useActiveViewport } from "@itwin/appui-react";
+import { AuxChannelDataType, Polyface } from "@itwin/core-geometry";
+import { ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@itwin/core-common";
+import { Select, Slider } from "@itwin/itwinui-react";
 import { ScientificVizDecorator } from "./ScientificVizDecorator";
-import { useActiveViewport } from "@bentley/ui-framework";
 import ScientificVizApi from "./ScientificVizApi";
 import "./ScientificViz.scss";
-import { AuxChannelDataType, Polyface } from "@bentley/geometry-core";
-import { ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
 
 export type SampleMeshName = "Cantilever" | "Flat with waves";
-const sampleMeshNames = ["Cantilever", "Flat with waves"];
+const sampleMeshNames = [{ label: "Cantilever", value: "Cantilever" }, { label: "Flat with waves", value: "Flat with waves" }];
 
 export const ScientificVizWidget: React.FunctionComponent = () => {
   const [meshName, setMeshName] = React.useState<SampleMeshName>("Flat with waves");
@@ -76,9 +76,7 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport) {
-      const viewFlags = viewport.viewFlags.clone();
-      viewFlags.visibleEdges = true;
-      viewFlags.hiddenEdges = true;
+      const viewFlags = viewport.viewFlags.copy({ visibleEdges: true, hiddenEdges: true });
       viewport.viewFlags = viewFlags;
       viewport.setStandardRotation(StandardViewId.Iso);
       viewport.zoomToVolume(viewport.iModel.projectExtents);
@@ -181,11 +179,29 @@ export const ScientificVizWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         <div className="sample-options-2col">
           <span>Mesh:</span>
-          <Select options={sampleMeshNames} value={meshName} onChange={(event) => setMeshName(event.target.value as SampleMeshName)} />
+          <Select
+            options={sampleMeshNames}
+            value={meshName}
+            onChange={(mesh) => setMeshName(mesh as SampleMeshName)}
+            onShow={() => { }}
+            onHide={() => { }}
+          />
           <span>Thematic Channel:</span>
-          <Select options={thematicChannelData.channelNames} value={thematicChannelData.currentChannelName} onChange={(event) => handleThematicChannelChange(event.target.value)} />
+          <Select
+            options={thematicChannelData.channelNames.map((val) => { return { label: val, value: val }; })}
+            value={thematicChannelData.currentChannelName}
+            onChange={(thematicChannel) => handleThematicChannelChange(thematicChannel)}
+            onShow={() => { }}
+            onHide={() => { }}
+          />
           <span>Displacement Channel:</span>
-          <Select options={displacementChannelData.channelNames} value={displacementChannelData.currentChannelName} onChange={(event) => handleDisplacementChannelChange(event.target.value)} />
+          <Select
+            options={displacementChannelData.channelNames.map((val) => { return { label: val, value: val }; })}
+            value={displacementChannelData.currentChannelName}
+            onChange={(displaceChannel) => handleDisplacementChannelChange(displaceChannel)}
+            onShow={() => { }}
+            onHide={() => { }}
+          />
           {animationControls()}
         </div>
       </div>
@@ -207,7 +223,7 @@ export class ScientificVizWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ScientificVizWidget />,
-        }
+        },
       );
     }
     return widgets;

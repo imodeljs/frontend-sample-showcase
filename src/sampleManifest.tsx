@@ -10,14 +10,14 @@ import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sam
 import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
 import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
-import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
+// import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getPropertyFormattingSpec } from "./frontend-samples/property-formatting-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
-import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
+// import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
 import { getViewCameraSpec } from "./frontend-samples/camera-path-sample/sampleSpec";
@@ -25,7 +25,7 @@ import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sam
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
-import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
+// import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
@@ -47,7 +47,7 @@ import { getToggleSpec } from "./frontend-samples/component-gallery/toggle-sampl
 
 import { getBasicTreeSpec } from "./frontend-samples/tree-samples/basic-tree/sampleSpec";
 import { getCustomCheckboxesTreeSpec } from "./frontend-samples/tree-samples/custom-checkboxes-tree/sampleSpec";
-import { getCustomEventHandlerTreeSpec } from "./frontend-samples/tree-samples/custom-event-handler-tree/sampleSpec";
+// import { getCustomEventHandlerTreeSpec } from "./frontend-samples/tree-samples/custom-event-handler-tree/sampleSpec";
 import { getCustomTableNodeTreeSpec } from "./frontend-samples/tree-samples/custom-table-node-tree/sampleSpec";
 import { getCustomWebfontIconsTreeSpec } from "./frontend-samples/tree-samples/custom-webfont-icons-tree/sampleSpec";
 import { getDragAndDropTreeSpec } from "./frontend-samples/tree-samples/drag-and-drop-tree/sampleSpec";
@@ -99,7 +99,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
-    getHeatmapDecoratorSpec(),
+    // getHeatmapDecoratorSpec(), Temporarily disabled until sample is fixed
     getHyperModelingSpec(),
     getImageExportSpec(),
     getIotAlertSpec(),
@@ -112,7 +112,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getScreenSpaceEffectsSpec(),
     getSerializeViewSpec(),
     getShadowStudySpec(),
-    getSwipingComparisonSpec(),
+    // getSwipingComparisonSpec(), Temporarily disabled until sample is fixed
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
@@ -143,7 +143,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getPresentationTreeSpec(),
     getCustomNodeLoadingTreeSpec(),
     getCustomTableNodeTreeSpec(),
-    getCustomEventHandlerTreeSpec(),
+    // getCustomEventHandlerTreeSpec(), Temporarily disabled until bug fix: https://github.com/iTwin/iTwinUI-react/issues/533
     getCustomCheckboxesTreeSpec(),
     getUnifiedSelectionTreeSpec(),
     getDragAndDropTreeSpec(),
@@ -171,7 +171,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getChangedElementsSpec(),
     getClashReviewSpec(),
     getIssuesSpec(),
-    getReadSettingsSpec(),
+    // getReadSettingsSpec(), Temporarily disabled until sample is fixed
     getTransformationSpec(),
     getValidationSpec(),
   ],

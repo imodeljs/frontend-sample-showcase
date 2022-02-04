@@ -2,13 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic } from "@bentley/imodeljs-frontend";
-import { Geometry, Point3d, Range2d, Range3d, Transform } from "@bentley/geometry-core";
-import {
-  ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping,
-  ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings,
-} from "@bentley/imodeljs-common";
-import { dispose } from "@bentley/bentleyjs-core";
+import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic, TextureImage } from "@itwin/core-frontend";
+import { Geometry, Point3d, Range2d, Range3d, Transform } from "@itwin/core-geometry";
+import { ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping, ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings } from "@itwin/core-common";
+import { dispose } from "@itwin/core-bentley";
 
 /** This file contains the code that implements the heatmap decorator including
  * logic which generates the graphics of the heatmap.
@@ -130,11 +127,11 @@ export default class HeatmapDecorator implements Decorator {
   private _spreadFactor: number;      // 1 = narrow, 10 = default, 100 = wide
   private _graphics?: RenderGraphic;  // Cached graphics that can be reused from one frame to another.
 
-  constructor(points: Point3d[], range: Range2d, spreadFactor: number, height: number) {
-    this._height = height;
-    this._points = points;
-    this._range = HeatmapDecorator._computeSquareRange(range);
-    this._spreadFactor = spreadFactor;
+  constructor() {
+    this._height = 0;
+    this._points = [];
+    this._range = Range3d.createNull();
+    this._spreadFactor = 0;
   }
 
   /** When the inputs change we have to throw away the current graphics.  Also tell the
@@ -169,6 +166,14 @@ export default class HeatmapDecorator implements Decorator {
     squareRange.extend(point);
 
     return squareRange;
+  }
+
+  public setRange(range: Range2d) {
+    this._range = HeatmapDecorator._computeSquareRange(range);
+  }
+
+  public setHeight(height: number) {
+    this._height = height;
   }
 
   /* Change the heatmap points */
@@ -260,8 +265,8 @@ export default class HeatmapDecorator implements Decorator {
       return undefined;
 
     /* Step 3: Convert the image buffer to a texture */
-    const textureParams = new RenderTexture.Params(undefined, RenderTexture.Type.Normal, false);
-    const texture = IModelApp.renderSystem.createTextureFromImageBuffer(imageBuffer, context.viewport.iModel, textureParams);
+    const image: TextureImage = { source: imageBuffer };
+    const texture = IModelApp.renderSystem.createTexture({ type: RenderTexture.Type.Normal, image });
 
     if (undefined === texture)
       return undefined;

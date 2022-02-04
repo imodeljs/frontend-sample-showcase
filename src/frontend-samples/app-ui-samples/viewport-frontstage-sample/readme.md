@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates how to use the [Frontstages](https://www.itwinjs.org/v2/learning/ui/framework/frontstages/) API.  A Frontstage is a full-screen configuration designed to enable the user to accomplish a task.
+This sample demonstrates how to use the [Frontstages](https://www.itwinjs.org/learning/ui/appui-react/frontstages/) API.  A Frontstage is a full-screen configuration designed to enable the user to accomplish a task.
 
 ## Purpose
 

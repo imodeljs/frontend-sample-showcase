@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
-import { Icon, Slider } from "@bentley/ui-core";
 import { ControlPane } from "common/ControlPane/ControlPane";
+import { Slider, ThemeProvider } from "@itwin/itwinui-react";
+import { SvgSmileyHappy, SvgSmileySad } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -20,26 +20,98 @@ export default class SliderList extends React.Component<{}> {
   public static getSliderData(): UIComponentExampleProps[] {
     return [
       createComponentExample("Slider", "Basic Slider",
-        <Slider min={0} max={100} values={[50]} step={1} showTooltip />),
-      createComponentExample("Slider w/ tooltipBelow", "Slider with Tooltip Below",
-        <Slider min={0} max={100} values={[50]} step={1} showTooltip tooltipBelow />),
-      createComponentExample("Slider w/ min/max", "Slider with showMinMax prop",
-        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax />),
-      createComponentExample("Slider w/ min/max images", "Slider with minImage and maxImage props",
-        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax
-          minImage={<Icon iconSpec="icon-placeholder" />} maxImage={<Icon iconSpec="icon-placeholder" />} />),
-      createComponentExample("Slider w/ tick marks", "Slider with showTicks and getTickCount props",
-        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax
-          showTicks getTickCount={() => 10} />),
-      createComponentExample("Slider w/ multiple values", "Slider with array of values",
-        <Slider min={0} max={100} values={[30, 70]} step={5} mode={2} showTooltip showMinMax
-          showTicks getTickCount={() => 10} />),
-      createComponentExample("Slider multiple values tooltipBelow", "Slider with multiple values & tooltip below",
-        <Slider min={0} max={100} values={[20, 80]} step={5} mode={2} showTooltip tooltipBelow showMinMax
-          showTicks getTickCount={() => 10} />),
-      createComponentExample("Slider w/ tick labels", "Slider with showTickLabels prop",
-        <Slider min={0} max={100} values={[50]} step={1} showTooltip showMinMax showTickLabels
-          showTicks getTickCount={() => 10} />),
+        <Slider
+          style={{ width: "100%" }}
+          thumbMode="inhibit-crossing"
+          trackDisplayMode="auto"
+          values={[
+            50,
+          ]}
+        />),
+      createComponentExample("Range Slider", "Slider with supporting range selection",
+        <Slider
+          style={{ width: "100%" }}
+          max={100}
+          min={0}
+          thumbMode="inhibit-crossing"
+          trackDisplayMode="auto"
+          values={[
+            20,
+            80,
+          ]}
+        />),
+      createComponentExample("Multi-Thumb Slider", "Multi-Thumb Slider that allows Crossing",
+        <Slider
+          style={{ width: "100%" }}
+          thumbMode="allow-crossing"
+          trackDisplayMode="even-segments"
+          values={[
+            20,
+            40,
+            60,
+            80,
+          ]}
+        />),
+      createComponentExample("Slider w/ min/max images", "Slider with minLabel and maxLabel props",
+        <Slider
+          style={{ width: "100%" }}
+          maxLabel={<SvgSmileySad />}
+          minLabel={<SvgSmileyHappy />}
+          railContainerProps={{
+            style: {
+              margin: "0 8px",
+            },
+          }}
+          thumbMode="inhibit-crossing"
+          trackDisplayMode="auto"
+          values={[
+            50,
+          ]}
+        />),
+      createComponentExample("Disabled Slider", "Slider with disabled prop",
+        <Slider
+          style={{ width: "100%" }}
+          disabled
+          max={60}
+          min={0}
+          thumbMode="inhibit-crossing"
+          trackDisplayMode="auto"
+          values={[
+            30,
+          ]}
+        />),
+      createComponentExample("Custom Tooltip Slider", "Slider with a customized ToolTip",
+        < Slider
+          style={{ width: "100%" }}
+          max={60}
+          min={0}
+          thumbMode="inhibit-crossing"
+          tickLabels={
+            [
+              "0",
+              "20",
+              "40",
+              "60",
+            ]}
+          trackDisplayMode="auto"
+          tooltipProps={function noRefCheck(_index: number, value: number) { return { content: `$${value}.00` }; }}
+          values={
+            [
+              20,
+            ]}
+        />),
+      createComponentExample("Decimal Increment Slider", "Slider with Decimal Increment",
+        <Slider
+          style={{ width: "100%" }}
+          max={50}
+          min={0}
+          step={2.5}
+          thumbMode="inhibit-crossing"
+          trackDisplayMode="auto"
+          values={[
+            25,
+          ]}
+        />),
     ];
   }
 
@@ -48,6 +120,7 @@ export default class SliderList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of sliders that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={SliderList.getSliderData()}></UIComponentContainer>
       </>

@@ -3,24 +3,18 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import {
-  BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, ContentLayoutDef, ContentLayoutProps,
-  CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone,
-} from "@bentley/ui-framework";
-import { StageUsage } from "@bentley/ui-abstract";
+import { BasicNavigationWidget, BasicToolWidget, ContentGroup, ContentGroupProps, CoreTools, Frontstage, FrontstageProps, FrontstageProvider, IModelViewportControl, UiFramework, Widget, Zone } from "@itwin/appui-react";
+import { StageUsage } from "@itwin/appui-abstract";
 import { SmallStatusBarWidgetControl } from "Components/Widgets/SmallStatusBar";
 
 /* eslint-disable react/jsx-key */
 
-// A content layout sets the number and arrangement of content views in a frontstage
-const sampleContentLayout: ContentLayoutProps = {
-  id: "SampleContentLayout",
-};
-const sampleLayoutDef: ContentLayoutDef = new ContentLayoutDef(sampleContentLayout);
-
 // a ContentGroup defines the content views in a frontstage
 const sampleViewportGroupProps: ContentGroupProps = {
   id: "sampleViewportGroup",
+  layout: {
+    id: "SampleContentLayout",
+  },
   contents: [
     {
       classId: IModelViewportControl,
@@ -34,7 +28,7 @@ const sampleViewportGroup: ContentGroup = new ContentGroup(sampleViewportGroupPr
  * Viewport Frontstage for AppUi samples
  */
 export class ViewportFrontstage extends FrontstageProvider {
-
+  public id = "ViewportFrontstageProvider";
   /** Define the Frontstage properties */
   public get frontstage(): React.ReactElement<FrontstageProps> {
 
@@ -42,7 +36,6 @@ export class ViewportFrontstage extends FrontstageProvider {
       <Frontstage id="ViewportFrontstage"
         version={1.0}
         defaultTool={CoreTools.selectElementCommand}
-        defaultLayout={sampleLayoutDef}
         contentGroup={sampleViewportGroup}
         isInFooterMode={true}
         usage={StageUsage.General}

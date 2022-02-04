@@ -2,22 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, tileAdminOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection } from "@itwin/core-frontend";
 import { ThematicDisplayWidgetProvider } from "./ThematicDisplayWidget";
 
 const uiProviders = [new ThematicDisplayWidgetProvider()];
 
 const ThematicDisplayApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.CoffsHarborDemo, SampleIModels.RetailBuilding]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await ViewSetup.getDefaultView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialView = async (iModelConnection: IModelConnection) => {
+    return ViewSetup.getDefaultView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -26,11 +23,13 @@ const ThematicDisplayApp: FunctionComponent = () => {
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
-          contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true}
+          viewportOptions={{ viewState: _initialView }}
+          tileAdminOptions={tileAdminOptions}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}
