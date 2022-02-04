@@ -7,7 +7,6 @@
     "@bentley/icons-generic-webfont": "^1.0.15",
     "@bentley/imodelhub-client": "rc",
     "@bentley/monaco-editor": "^8.2.0",
-    "@itwin/reality-data-client": "^0.6.0",
     "@fortawesome/fontawesome-free": "^5.13.1",
     "@itwin/appui-abstract": "3.0.0",
     "@itwin/appui-layout-react": "3.0.0",
@@ -33,6 +32,7 @@
     "@itwin/presentation-components": "3.0.0",
     "@itwin/presentation-frontend": "3.0.0",
     "@itwin/projects-client": "^0.2.0",
+    "@itwin/reality-data-client": "^0.6.0",
     "@itwin/web-viewer-react": "2.0.2",
     "@itwin/webgl-compatibility": "3.0.0",
     "launchdarkly-js-client-sdk": "^2.17.5",
@@ -68,10 +68,12 @@
     "@types/react-redux": "^7.0.1",
     "@types/resize-observer-browser": "^0.1.6",
     "@typescript-eslint/eslint-plugin": "4.11.1",
+    "chai": "^4.3.6",
     "customize-cra": "^0.9.1",
     "eslint": "^7.11.0",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jest": "26.6.0",
+    "jest-transform-stub": "^2.0.0",
     "lodash.camelcase": "^4.3.0",
     "mocha": "^5.2.0",
     "null-loader": "^4.0.0",
@@ -141,5 +143,14 @@
     "last 4 edge version",
     "not dead",
     "not <0.2%"
-  ]
+  ],
+  "jest": {
+    "transform": {
+      "^.+\\.[jt]sx?$": "babel-jest",
+      "^.+\\.svg?sprite$": "jest-transform-stub"
+    },
+    "moduleNameMapper": {
+      "^.+.(svg|png|jpg)?sprite$": "jest-transform-stub"
+    }
+  }
 }
