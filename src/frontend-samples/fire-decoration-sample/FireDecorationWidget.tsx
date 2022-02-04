@@ -11,8 +11,8 @@ import { FireEmitter } from "./FireDecorator";
 import { Point3d, Range2d, Transform } from "@itwin/core-geometry";
 import { IModelApp, Viewport } from "@itwin/core-frontend";
 import { assert } from "@itwin/core-bentley";
-import "./FireDecoration.scss";
 import { Alert, Button, Label, Leading, Select, Slider, ToggleSwitch } from "@itwin/itwinui-react";
+import "./FireDecoration.scss";
 
 interface Fire {
   particleNumScale: number;
@@ -147,20 +147,20 @@ const FireDecorationWidget: React.FunctionComponent = () => {
 
   // Display drawing and sheet options in separate sections.
   return (
-    <div className="sample-options">
-      <div className="sample-grid">
-        <div className="new-emmiter">
-          <Leading className="new-emmiter-a">Place New Emitter</Leading>
+    <>
+      <div className="sample-options">
+        <Leading className="new-emmiter-a">Place New Emitter</Leading>
+        <div className="sample-options-2col">
           <Button className="new-emmiter-b" styleType="high-visibility" disabled={isLoadingState} onClick={startPlacementTool}>Place</Button>
           <Select className="new-emmiter-c" options={emitterOptions} value={paramsNameState} onChange={(value) => setParamsNameState(value)} onHide={() => { }} onShow={() => { }} />
           <Button className="new-emmiter-d" styleType="high-visibility" disabled={isLoadingState} onClick={dropAllEmitters}>Delete all emitters</Button>
-          <Alert type="informational" className="instructions">
-            Use the &quot;Place&quot; button to create a new fire particle emitter. After placing, use the controls to configure the new emitter.
-          </Alert>
         </div>
+        <Alert type="informational" className="instructions">
+          Use the &quot;Place&quot; button to create a new fire particle emitter. After placing, use the controls to configure the new emitter.
+        </Alert>
         <div className="active-emmiter">
           <Leading className="active-emmiter-a">Configure Active Emitter</Leading>
-          <div className="active-emmiter-sliders">
+          <div className="sample-options-2col">
             <Label>Particle Count</Label>
             <Slider min={0} max={1} step={0.02} values={[fireState.particleNumScale]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, particleNumScale: values[0] })} />
             <Label>Height</Label>
@@ -168,14 +168,14 @@ const FireDecorationWidget: React.FunctionComponent = () => {
             <Label>Width</Label>
             {/* The UI of this sample assumes effectRange is a square. */}
             <Slider min={0} max={6} step={0.2} values={[fireState.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, effectRange: createSquareRange2d(values[0]) })} />
+            <ToggleSwitch className="active-emmiter-b" label="Smoke" checked={fireState.enableSmoke} disabled={noEmitterSelected} onChange={(event) => setFireState({ ...fireState, enableSmoke: event.target.checked })} />
+            <ToggleSwitch className="active-emmiter-c" label="Overlay Graphics" checked={fireState.isOverlay} disabled={noEmitterSelected} onChange={(event) => setFireState({ ...fireState, isOverlay: event.target.checked })} />
+            <Button className="active-emmiter-d" disabled={noEmitterSelected} onClick={dropSelected}>Drop</Button>
+            <Button className="active-emmiter-f" disabled={isLoadingState || noEmitterSelected} onClick={() => setSelectedEmitterState(undefined)}>Deselect</Button>
           </div>
-          <ToggleSwitch className="active-emmiter-b" label="Smoke" checked={fireState.enableSmoke} disabled={noEmitterSelected} onChange={(event) => setFireState({ ...fireState, enableSmoke: event.target.checked })} />
-          <ToggleSwitch className="active-emmiter-c" label="Overlay Graphics" checked={fireState.isOverlay} disabled={noEmitterSelected} onChange={(event) => setFireState({ ...fireState, isOverlay: event.target.checked })} />
-          <Button className="active-emmiter-d" disabled={noEmitterSelected} onClick={dropSelected}>Drop</Button>
-          <Button className="active-emmiter-f" disabled={isLoadingState || noEmitterSelected} onClick={() => setSelectedEmitterState(undefined)}>Deselect</Button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -184,12 +184,12 @@ export class FireDecorationWidgetProvider implements UiItemsProvider {
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (location === StagePanelLocation.Bottom) {
+    if (location === StagePanelLocation.Right) {
       widgets.push(
         {
           id: "FireDecorationWidget",
           label: "Fire Decoration Selector",
-          defaultState: WidgetState.Open,
+          defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <FireDecorationWidget />,
         },
