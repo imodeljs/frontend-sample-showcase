@@ -10,7 +10,7 @@ import { SerializeViewWidgetProvider } from "./SerializeViewWidget";
 const uiProviders = [new SerializeViewWidgetProvider()];
 
 const SerializeViewApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.MetroStation, SampleIModels.RetailBuilding]);
+  const sampleIModelInfo = useSampleWidget("Use the controls below to change the view attributes.", [SampleIModels.MetroStation]);
 
   /** The sample's render method */
   return (
