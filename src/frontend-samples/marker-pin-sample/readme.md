@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates how to create a [Decorator](https://www.imodeljs.org/learning/frontend/viewdecorations/) that draws [Markers](https://www.imodeljs.org/learning/frontend/markers/). This technique is useful to visually indicate or call
+This sample demonstrates how to create a [Decorator](https://www.itwinjs.org/learning/frontend/viewdecorations/) that draws [Markers](https://www.itwinjs.org/learning/frontend/markers/). This technique is useful to visually indicate or call
 attention to a point of interest in world space.
 
 ## Purpose

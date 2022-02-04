@@ -14,18 +14,22 @@ For the sample, we first require that the elements be selected by the user and t
 [_metadata_:annotation]:- "API"
 
 # Emphasize
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "EMPHASIZE"
 
 # Hide
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "HIDE"
 
 # Isolate
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "ISOLATE"
 
 # Override
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "OVERRIDE"
 
