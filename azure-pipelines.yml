@@ -26,9 +26,9 @@ steps:
 
   - script: npm run test-build
     displayName: npm test-build
-  
+
   - script: npm run webpackTests
     displayName: npm webpackTests
-  
-  - script: npm run test-certa
-    displayName: npm test-certa
+
+  # - script: npm run test-certa
+  #   displayName: npm test-certa
