@@ -244,11 +244,11 @@ const ThematicDisplayWidget: React.FunctionComponent = () => {
         </div>
         <div className="sample-grid-selects">
           <Label htmlFor="display-mode">Display Mode</Label>
-          <Select<number> id="display-mode" size="small" onChange={_onChangeDisplayMode} value={displayModeState} options={displayModeOptions} />
+          <Select<number> id="display-mode" size="small" onChange={_onChangeDisplayMode} value={displayModeState} options={displayModeOptions} onHide={undefined} onShow={undefined} />
           <Label htmlFor="color-scheme">Color Scheme</Label>
-          <Select<number> id="color-scheme" size="small" onChange={_onChangeColorScheme} value={colorSchemeState} options={colorSchemeOptions} />
+          <Select<number> id="color-scheme" size="small" onChange={_onChangeColorScheme} value={colorSchemeState} options={colorSchemeOptions} onHide={undefined} onShow={undefined} />
           <Label htmlFor="gradient-mode">Gradient Mode</Label>
-          <Select<number> id="gradient-mode" size="small" onChange={_onChangeGradientMode} value={gradientModeState} options={gradientModeOptions} />
+          <Select<number> id="gradient-mode" size="small" onChange={_onChangeGradientMode} value={gradientModeState} options={gradientModeOptions} onHide={undefined} onShow={undefined} />
         </div>
         <div className="sample-grid-sliders">
           <Label>Change Range:</Label>
