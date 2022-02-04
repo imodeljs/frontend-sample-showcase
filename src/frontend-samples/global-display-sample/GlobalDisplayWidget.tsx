@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { IModelApp, NotifyMessageDetails, OutputMessagePriority } from "@itwin/core-frontend";
-import { Button, Input, Toggle } from "@itwin/core-react";
-import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import { AbstractWidgetProps, SpecialKey, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { useActiveViewport } from "@itwin/appui-react";
 import { BackgroundMapType } from "@itwin/core-common";
+import { Button, Input, ToggleSwitch } from "@itwin/itwinui-react";
+import { GlobalDisplayApi } from "./GlobalDisplayApi";
 import "./GlobalDisplay.scss";
 
 const GlobalDisplayWidget: FunctionComponent = () => {
@@ -56,7 +56,7 @@ const GlobalDisplayWidget: FunctionComponent = () => {
     }
   };
 
-  const _onKeyPress = (e: KeyboardEvent) => {
+  const _onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === SpecialKey.Enter || e.key === SpecialKey.Return) {
       _travelToDestination()
         .catch((error) => {
@@ -70,15 +70,15 @@ const GlobalDisplayWidget: FunctionComponent = () => {
     <div className={"sample-options"}>
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span title={"Display 3d terrain from Cesium World Terrain Service"}>Terrain</span>
-        <Toggle isOn={terrain} onChange={setTerrain} />
+        <ToggleSwitch defaultChecked={terrain} onChange={() => setTerrain(!terrain)} />
         <span title={"Include labels in the Bing map imagery"}>Map Labels</span>
-        <Toggle isOn={mapLabels} onChange={setMapLabels} />
+        <ToggleSwitch defaultChecked={mapLabels} onChange={() => setMapLabels(!mapLabels)} />
         <span title={"Display building meshes from Open Street Map"}>Buildings</span>
-        <Toggle isOn={buildings} onChange={setBuildings} />
+        <ToggleSwitch defaultChecked={buildings} onChange={() => setBuildings(!buildings)} />
         <span title={"Display the edges of the building meshes"}>Building Edges</span>
-        <Toggle isOn={buildingEdges} onChange={setBuildingEdges} disabled={!buildings} />
+        <ToggleSwitch defaultChecked={buildingEdges} onChange={() => setBuildingEdges} disabled={!buildings} />
         <span title={"Type a place name and press enter to travel there"}>Destination</span>
-        <Input onChange={(e) => setDestination(e.currentTarget.value)} nativeKeyHandler={_onKeyPress} />
+        <Input onChange={(e) => setDestination(e.currentTarget.value)} onKeyPress={_onKeyPress} />
         <span />
         <Button disabled={0 === destination.length} onClick={_travelToDestination} title={"Travel to the specified destination"}>Travel</Button>
       </div>
