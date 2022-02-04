@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Transform } from "@bentley/geometry-core";
+import { Angle, Arc3d, LineString3d, Loop, Point3d, Point3dArray, Transform } from "@itwin/core-geometry";
 
 export default class Transformations2dApi {
 

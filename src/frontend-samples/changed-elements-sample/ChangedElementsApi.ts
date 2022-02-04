@@ -2,10 +2,11 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DbOpcode, Id64Array, Id64String } from "@bentley/bentleyjs-core";
-import { Version } from "@bentley/imodelhub-client";
-import { ChangedElements, ColorDef, FeatureAppearance } from "@bentley/imodeljs-common";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@bentley/imodeljs-frontend";
+import { DbOpcode, Id64Array, Id64String } from "@itwin/core-bentley";
+import { ChangedElements, ColorDef, FeatureAppearance } from "@itwin/core-common";
+import { EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, NotifyMessageDetails, OutputMessagePriority, OutputMessageType, Viewport } from "@itwin/core-frontend";
+import { AuthorizationClient } from "@itwin/sandbox";
+import { NamedVersion } from "@itwin/imodels-client-management";
 import { ChangedElementsClient } from "./ChangedElementsClient";
 
 /** This provider will change the color of the elements based on the last operation of the comparison. */
@@ -44,24 +45,26 @@ class ComparisonProvider implements FeatureOverrideProvider {
     }
     const insertFeature = FeatureAppearance.fromRgb(ColorDef.green);
     const updateFeature = FeatureAppearance.fromRgb(ColorDef.blue);
-    this._insertOp.forEach((id) => overrides.overrideElement(id, insertFeature));
-    this._updateOp.forEach((id) => overrides.overrideElement(id, updateFeature));
+
+    this._insertOp.forEach((id) => overrides.override({ elementId: id, appearance: insertFeature }));
+    this._updateOp.forEach((id) => overrides.override({ elementId: id, appearance: updateFeature }));
     overrides.setDefaultOverrides(ComparisonProvider._defaultAppearance);
   }
 }
 
 export class ChangedElementsApi {
-  private static _requestContext: AuthorizedFrontendRequestContext;
+  private static _accessToken: string;
   /** Returns the request context which will be used for all the API calls made by the frontend. */
   public static async getRequestContext() {
-    if (!ChangedElementsApi._requestContext) {
-      ChangedElementsApi._requestContext = await AuthorizedFrontendRequestContext.create();
+    if (!ChangedElementsApi._accessToken) {
+      const authClient = new AuthorizationClient();
+      ChangedElementsApi._accessToken = await authClient.getAccessToken();
     }
-    return ChangedElementsApi._requestContext;
+    return ChangedElementsApi._accessToken;
   }
 
   /** A list of all the Named Versions and their Changeset Id for the open iModel. */
-  public static namedVersions: Version[] = [];
+  public static namedVersions: NamedVersion[] = [];
 
   /** Request all the named versions of an IModel and populates the "namedVersions" list. */
   public static async populateVersions() {

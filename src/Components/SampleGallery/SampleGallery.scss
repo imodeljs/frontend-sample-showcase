@@ -6,6 +6,10 @@
   height: 100%;
   width: 100%;
 
+  .iui-expandable-block .iui-expandable-content > div {
+    padding: 0;
+  }
+
   .gallery-card-radio {
     background-color: #333;
     overflow-y: scroll;

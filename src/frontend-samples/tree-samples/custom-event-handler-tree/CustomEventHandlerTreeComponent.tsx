@@ -2,12 +2,12 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 
-import { AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider, TreeEventHandler, TreeNodeItem, TreeSelectionModificationEventArgs, TreeSelectionReplacementEventArgs, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
+import { AbstractTreeNodeLoaderWithProvider, ControlledTree, SelectionMode, TreeCheckboxStateChangeEventArgs, TreeDataProvider, TreeEventHandler, TreeNodeItem, TreeSelectionModificationEventArgs, TreeSelectionReplacementEventArgs, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 
-import { CheckBoxState, useDisposable } from "@bentley/ui-core";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import { CheckBoxState, useDisposable } from "@itwin/core-react";
+import { SampleDataProvider } from "@itwin/sandbox";
 
 /**
  * This component demonstrates how to use `ControlledTree` with custom tree events handling.
@@ -20,6 +20,8 @@ import { SampleDataProvider } from "@itwinjs-sandbox";
  * synchronization with selection.
  */
 export const CustomEventHandlerTreeComponent: FunctionComponent = () => {
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render
   const dataProvider = React.useMemo(() => new NodesWithCheckboxProvider(), []);
@@ -42,15 +44,37 @@ export const CustomEventHandlerTreeComponent: FunctionComponent = () => {
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
+  const model = useTreeModel(modelSource);
+
+  useEffect(() => {
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer);
+      };
+    }
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.Extended}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={width}
+        height={height}
       />
     </div>
   </>;

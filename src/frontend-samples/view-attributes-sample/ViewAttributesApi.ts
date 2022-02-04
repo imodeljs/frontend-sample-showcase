@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Environment, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import { RenderMode } from "@bentley/imodeljs-common";
+import { Viewport, ViewState3d } from "@itwin/core-frontend";
+import { RenderMode } from "@itwin/core-common";
 
 // cSpell:ignore imodels
 
@@ -71,13 +71,13 @@ export class ViewAttributesApi {
       ViewAttributesApi.setSkyboxOnOff(vp, attrValues.skybox);
 
     // Update viewflags
-    vp.viewFlags.acsTriad = attrValues.acs;
-    vp.viewFlags.backgroundMap = attrValues.backgroundMap;
-    vp.viewFlags.grid = attrValues.grid;
-    vp.viewFlags.hiddenEdges = attrValues.hiddenEdges;
-    vp.viewFlags.monochrome = attrValues.monochrome;
-    vp.viewFlags.shadows = attrValues.shadows;
-    vp.viewFlags.visibleEdges = attrValues.visibleEdges;
+    vp.viewFlags = vp.viewFlags.with("acsTriad", attrValues.acs);
+    vp.viewFlags = vp.viewFlags.with("backgroundMap", attrValues.backgroundMap);
+    vp.viewFlags = vp.viewFlags.with("grid", attrValues.grid);
+    vp.viewFlags = vp.viewFlags.with("hiddenEdges", attrValues.hiddenEdges);
+    vp.viewFlags = vp.viewFlags.with("monochrome", attrValues.monochrome);
+    vp.viewFlags = vp.viewFlags.with("shadows", attrValues.shadows);
+    vp.viewFlags = vp.viewFlags.with("visibleEdges", attrValues.visibleEdges);
 
     vp.synchWithView();
   }
@@ -99,25 +99,25 @@ export class ViewAttributesApi {
   public static setViewFlag(vp: Viewport, flag: ViewFlag, on: boolean) {
     switch (flag) {
       case ViewFlag.ACS:
-        vp.viewFlags.acsTriad = on;
+        vp.viewFlags = vp.viewFlags.with("acsTriad", on);
         break;
       case ViewFlag.BackgroundMap:
-        vp.viewFlags.backgroundMap = on;
+        vp.viewFlags = vp.viewFlags.with("backgroundMap", on);
         break;
       case ViewFlag.Grid:
-        vp.viewFlags.grid = on;
+        vp.viewFlags = vp.viewFlags.with("grid", on);
         break;
       case ViewFlag.HiddenEdges:
-        vp.viewFlags.hiddenEdges = on;
+        vp.viewFlags = vp.viewFlags.with("hiddenEdges", on);
         break;
       case ViewFlag.Monochrome:
-        vp.viewFlags.monochrome = on;
+        vp.viewFlags = vp.viewFlags.with("monochrome", on);
         break;
       case ViewFlag.Shadows:
-        vp.viewFlags.shadows = on;
+        vp.viewFlags = vp.viewFlags.with("shadows", on);
         break;
       case ViewFlag.VisibleEdges:
-        vp.viewFlags.visibleEdges = on;
+        vp.viewFlags = vp.viewFlags.with("visibleEdges", on);
         break;
     }
     vp.synchWithView();
@@ -154,7 +154,7 @@ export class ViewAttributesApi {
   public static isSkyboxOn(vp: Viewport) {
     if (vp.view.is3d()) {
       const displayStyle = vp.view.getDisplayStyle3d();
-      return displayStyle.environment.sky.display;
+      return displayStyle.environment.displaySky;
     }
 
     return false;
@@ -164,7 +164,7 @@ export class ViewAttributesApi {
   public static setSkyboxOnOff(vp: Viewport, on: boolean) {
     if (vp.view.is3d()) {
       const style = vp.view.getDisplayStyle3d();
-      style.environment = new Environment({ sky: { display: on } });
+      style.environment = style.environment.withDisplay({ sky: on });
     }
   }
 
@@ -175,8 +175,7 @@ export class ViewAttributesApi {
 
   // Modify render mode setting using the Viewport API.
   public static setRenderMode(vp: Viewport, mode: RenderMode) {
-    const viewFlags = vp.viewFlags.clone();
-    viewFlags.renderMode = mode;
+    const viewFlags = vp.viewFlags.override({ renderMode: mode });
     vp.viewFlags = viewFlags;
   }
 

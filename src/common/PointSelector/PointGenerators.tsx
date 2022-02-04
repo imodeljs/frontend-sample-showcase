@@ -2,7 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Point3d, Range2d, Range3d } from "@bentley/geometry-core";
+import { Point3d, Range2d, Range3d } from "@itwin/core-geometry";
 
 /** For the purposes of the frontend samples, we provide three methods to generate
  * a collection of points.  Those are 'random', 'circle', and 'cross'.  This file contains

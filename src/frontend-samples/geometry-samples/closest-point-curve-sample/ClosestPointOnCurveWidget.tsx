@@ -4,11 +4,11 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorByName, ColorDef, LinePixels } from "@bentley/imodeljs-common";
-import { Input, NumberInput, Select } from "@bentley/ui-core";
-import { CurvePrimitive, LineSegment3d, Point3d } from "@bentley/geometry-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorByName, ColorDef, LinePixels } from "@itwin/core-common";
+import { Input, NumberInput, Select } from "@itwin/core-react";
+import { CurvePrimitive, LineSegment3d, Point3d } from "@itwin/core-geometry";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
 import { InteractivePointMarker, MovePointTool } from "./InteractivePointMarker";
 import ClosestPointOnCurveApi from "./ClosestPointOnCurveApi";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
@@ -29,8 +29,8 @@ export const ClosestPointOnCurveWidget: React.FunctionComponent = () => {
       IModelApp.viewManager.addDecorator(decorator);
       setDecoratorState(decorator);
 
-      const sampleNamespace = IModelApp.i18n.registerNamespace("camera-i18n-namespace");
-      MovePointTool.register(sampleNamespace);
+      void IModelApp.localization.registerNamespace("camera-i18n-namespace");
+      MovePointTool.register("camera-i18n-namespace");
     }
 
     calculateSpacePoint({ x: -10, y: 10 });
@@ -166,7 +166,7 @@ export class ClosestPointOnCurveWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ClosestPointOnCurveWidget />,
-        }
+        },
       );
     }
     return widgets;

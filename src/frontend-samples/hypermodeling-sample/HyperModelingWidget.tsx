@@ -2,14 +2,14 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useCallback, useEffect } from "react";
-import { SectionMarker } from "@bentley/hypermodeling-frontend";
-import { Button, Toggle } from "@bentley/ui-core";
-import { ViewState } from "@bentley/imodeljs-frontend";
+import React, { ChangeEvent, useCallback, useEffect } from "react";
+import { SectionMarker } from "@itwin/hypermodeling-frontend";
+import { ViewState } from "@itwin/core-frontend";
 import HyperModelingApi from "./HyperModelingApi";
-import { assert, Id64String } from "@bentley/bentleyjs-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { useActiveViewport } from "@bentley/ui-framework";
+import { assert, Id64String } from "@itwin/core-bentley";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { useActiveViewport } from "@itwin/appui-react";
+import { Button, ToggleSwitch } from "@itwin/itwinui-react";
 import "./HyperModeling.scss";
 
 interface Previous {
@@ -75,10 +75,11 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
       setPrevious({ view, markerId: marker.state.id });
   }, [viewport]);
 
-  const onToggle2dGraphics = useCallback((toggle: boolean) => {
+  const onToggle2dGraphics = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     if (viewport) {
-      HyperModelingApi.toggle2dGraphics(toggle);
-      setToggle2dGraphics(toggle);
+      const checked = event.target.checked;
+      HyperModelingApi.toggle2dGraphics(checked);
+      setToggle2dGraphics(checked);
     }
   }, [viewport]);
 
@@ -93,19 +94,21 @@ export const HyperModelingWidget: React.FunctionComponent = () => {
   return (
     <div className="sample-options">
       {(previous) && (
-        <div className="sample-options-3col-even">
-          <span />
-          <Button onClick={onClickReturnTo3D}>Return to 3d view</Button>
+        <div className="sample-options-2col">
+          <span>3D View:</span>
+          <Button size="small" styleType="cta" onClick={onClickReturnTo3D}>View</Button>
         </div>
       )}
       {(!previous) && (
-        <div className="sample-options-3col-even">
-          <span>Display 2d graphics</span>
-          <Toggle isOn={toggle2dGraphics} onChange={onToggle2dGraphics} disabled={!activeMarker} />
-          <span />
-          <Button onClick={switchToDrawingView} disabled={!activeMarker}>View section drawing</Button>
-          <Button onClick={switchToSheetView} disabled={!activeMarker?.state.viewAttachment}>View on sheet</Button>
-          <Button onClick={onClickSelectNewMarker} disabled={!activeMarker}>Select new marker</Button>
+        <div className="sample-options-2col">
+          <span>Display 2D graphics:</span>
+          <ToggleSwitch checked={toggle2dGraphics} onChange={onToggle2dGraphics} disabled={!activeMarker} />
+          <span>Section Drawing:</span>
+          <Button size="small" styleType="high-visibility" onClick={switchToDrawingView} disabled={!activeMarker}>View</Button>
+          <span>Sheet View:</span>
+          <Button size="small" styleType="high-visibility" onClick={switchToSheetView} disabled={!activeMarker?.state.viewAttachment}>View</Button>
+          <span>New Marker:</span>
+          <Button size="small" styleType="cta" onClick={onClickSelectNewMarker} disabled={!activeMarker}>Select</Button>
         </div>
       )}
     </div>
@@ -125,7 +128,7 @@ export class HyperModelingWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <HyperModelingWidget />,
-        }
+        },
       );
     }
     return widgets;

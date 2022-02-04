@@ -4,8 +4,8 @@
 *--------------------------------------------------------------------------------------------*/
 
 import * as React from "react";
-import { PropertyValueRendererManager, TreeActions, TreeModelNode } from "@bentley/ui-components";
-import { TreeNode } from "@bentley/ui-core";
+import { PropertyValueRendererManager, TreeActions, TreeModelNode } from "@itwin/components-react";
+import { TreeNode } from "@itwin/core-react";
 
 export interface BasicTreeNodeProps {
   style: React.CSSProperties;

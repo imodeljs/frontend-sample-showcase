@@ -2,26 +2,22 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Id64String } from "@bentley/bentleyjs-core";
-import { Point3d, Range1d, Range2d, Range3d, Vector3d, XYAndZ } from "@bentley/geometry-core";
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { Placement3d, RenderTexture } from "@bentley/imodeljs-common";
-import { Decorator, imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, Viewport } from "@bentley/imodeljs-frontend";
-import { I18NNamespace } from "@bentley/imodeljs-i18n";
-import "common/samples-common.scss";
+import { Id64String } from "@itwin/core-bentley";
+import { Point3d, Range1d, Range2d, Range3d, Vector3d, XYAndZ } from "@itwin/core-geometry";
+import { Placement3d, QueryRowFormat, RenderTexture, TextureTransparency } from "@itwin/core-common";
+import { Decorator, imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, Viewport } from "@itwin/core-frontend";
 import { EmitterHighlighter, FireEmitter, FireParams } from "./FireDecorator";
 import { PlacementTool } from "./PlacementTool";
 
 /** This class implements the interaction between the sample and the iModel.js API.  No user interface. */
 export default class FireDecorationApi {
-  private static _sampleNamespace: I18NNamespace;
   private static _highlighter?: EmitterHighlighter;
   private static _dropListeners: VoidFunction[] = [];
 
   /** Registers tools used by sample. */
   public static initTools() {
-    this._sampleNamespace = IModelApp.i18n.registerNamespace("fire-i18n-namespace");
-    PlacementTool.register(this._sampleNamespace);
+    void IModelApp.localization.registerNamespace("fire-i18n-namespace");
+    PlacementTool.register("fire-i18n-namespace");
   }
 
   /** Using a decorator, sets a box around the specified emitter.  Pass undefined as an argument to clear highlighting. */
@@ -56,7 +52,7 @@ export default class FireDecorationApi {
 
   /** Runs the Placement Tool which will run the callback function passing the point the user confirms. */
   public static startPlacementTool(confirmedPointCallBack: (point: Point3d, viewport: Viewport) => void) {
-    IModelApp.tools.run(PlacementTool.toolId, confirmedPointCallBack);
+    void IModelApp.tools.run(PlacementTool.toolId, confirmedPointCallBack);
   }
 
   /** Returns the next available transient id using the IModelConnection API. */
@@ -86,10 +82,11 @@ export default class FireDecorationApi {
   /** Allocates memory and creates a RenderTexture from a given URL. */
   public static async allocateTextureFromUrl(url: string): Promise<RenderTexture | undefined> {
     // Note: the caller takes ownership of the textures, and disposes of those resources when they are no longer needed.
-    const isOwned = true;
-    const params = new RenderTexture.Params(undefined, undefined, isOwned);
     const fireImage = await imageElementFromUrl(url);
-    return IModelApp.renderSystem.createTextureFromImage(fireImage, true, undefined, params);
+    return IModelApp.renderSystem.createTexture({
+      ownership: "external",
+      image: { source: fireImage, transparency: TextureTransparency.Mixed },
+    });
   }
 
   /** Attempts to create a new fire emitter. */
@@ -123,10 +120,10 @@ export default class FireDecorationApi {
 
   /** Queries the backend for the elements that will act as targets for the demo on the Villa iModel. */
   public static async queryElements(iModel: IModelConnection, elementsIds: string[]): Promise<Array<{ origin: Point3d, bBox: Range3d }>> {
-    const query = `Select Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceID IN (${elementsIds.join(",")})`;
+    const query = `Select Origin,Yaw,Pitch,Roll,BBoxLow,BBoxHigh FROM BisCore:GeometricElement3d WHERE ECInstanceId IN (${elementsIds.join(",")})`;
     const data: Array<{ origin: Point3d, bBox: Range3d }> = [];
 
-    for await (const row of iModel.query(query)) {
+    for await (const row of iModel.query(query, undefined, { rowFormat: QueryRowFormat.UseJsPropertyNames })) {
       const element = (row as { origin: XYAndZ, pitch: number, roll: number, yaw: number, bBoxLow: XYAndZ, bBoxHigh: XYAndZ });
 
       const bBoxModelSpace = Range3d.create(Point3d.fromJSON(element.bBoxLow), Point3d.fromJSON(element.bBoxHigh));

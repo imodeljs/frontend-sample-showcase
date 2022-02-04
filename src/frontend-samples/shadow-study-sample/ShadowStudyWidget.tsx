@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import "./ShadowStudy.scss";
 import ShadowStudyApi from "./ShadowStudyApi";
-import { Input } from "@bentley/ui-core";
+import { Input } from "@itwin/core-react";
 
 const ShadowStudyWidget: React.FunctionComponent = () => {
   const [dateState, setDateState] = React.useState<Date>(new Date());
@@ -124,7 +124,7 @@ export class ShadowStudyWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ShadowStudyWidget />,
-        }
+        },
       );
     }
     return widgets;

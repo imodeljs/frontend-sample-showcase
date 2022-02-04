@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates calling [Validation APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-run/) to retrieve validation rules and the elements that violate them and present it for review in a viewer app. 
+This sample demonstrates calling [Validation APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-run/) to retrieve validation rules and the elements that violate them and present it for review in a viewer app.
 
 ## Purpose
 
@@ -19,10 +19,10 @@ Validation rules are a feature in iTwin Platform that allows for the creation of
 
 The goal of this sample is to provide example functions for all of the available Validation APIs. [Validation rule data](./ValidationRuleJson.ts) and [violation data](./ValidationResultJson.xts) are also provided to show the format of the data returned from the API.
 
-The following [iTwin.js library](https://www.itwinjs.org/v2/reference/) components are demonstrated:
+The following [iTwin.js library](https://www.itwinjs.org/reference/) components are demonstrated:
 
-- [Decorator](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/decorator/): show marker pins in a viewport.
-- [MarkerSet](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/markerset/): manage a collection of marker pins.
-- [Marker](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/marker/): draw marker pins at the location of violating elements.
-- [Cluster](https://www.itwinjs.org/v2/reference/imodeljs-frontend/views/cluster/): draw cluster pins where a group of violations are located.
-- [Table](https://www.itwinjs.org/v2/reference/ui-components/table/): display a table of validation results.
+- [Decorator](https://www.itwinjs.org/reference/core-frontend/views/decorator/): show marker pins in a viewport.
+- [MarkerSet](https://www.itwinjs.org/reference/core-frontend/views/markerset/): manage a collection of marker pins.
+- [Marker](https://www.itwinjs.org/reference/core-frontend/views/marker/): draw marker pins at the location of violating elements.
+- [Cluster](https://www.itwinjs.org/reference/core-frontend/views/cluster/): draw cluster pins where a group of violations are located.
+- [Table](https://www.itwinjs.org/reference/components-react/table/): display a table of validation results.

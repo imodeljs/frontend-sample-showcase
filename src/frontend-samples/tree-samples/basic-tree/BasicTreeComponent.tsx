@@ -2,11 +2,13 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
-import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModelSource, useTreeNodeLoader, useVisibleTreeNodes } from "@bentley/ui-components";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { ControlledTree, SelectionMode, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
+import { SampleDataProvider } from "@itwin/sandbox";
 
 export const BasicTreeComponent: FunctionComponent = () => {
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
   // create data provider to get some nodes to show in tree
   // `React.useMemo' is used avoid creating new object on each render
   const dataProvider = React.useMemo(() => new SampleDataProvider(), []);
@@ -34,15 +36,38 @@ export const BasicTreeComponent: FunctionComponent = () => {
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const visibleNodes = useVisibleTreeNodes(modelSource);
+
+  const model = useTreeModel(modelSource);
+
+  useEffect(() => {
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer);
+      };
+    }
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.None}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={width}
+        height={height}
       />
     </div>
   </>;

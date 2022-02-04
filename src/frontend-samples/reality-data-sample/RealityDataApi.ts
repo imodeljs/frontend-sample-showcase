@@ -3,13 +3,37 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
-import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps } from "@bentley/imodeljs-common";
-import { IModelConnection, queryRealityData, ScreenViewport } from "@bentley/imodeljs-frontend";
+import { ContextRealityModelProps, FeatureAppearance, OrbitGtBlobProps, RealityDataFormat, RealityDataProvider } from "@itwin/core-common";
+import { IModelApp, IModelConnection, ScreenViewport } from "@itwin/core-frontend";
+import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
 
 export default class RealityDataApi {
   public static async getRealityModels(imodel: IModelConnection): Promise<ContextRealityModelProps[]> {
-    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
+    const RealityDataClient = new RealityDataAccessClient();
+    const available: RealityDataResponse = await RealityDataClient.getRealityDatas(await IModelApp.authorizationClient!.getAccessToken(), imodel.iTwinId, undefined);
+    const availableModels: ContextRealityModelProps[] = [];
+
+    for (const rdEntry of available.realityDatas) {
+      const name = undefined !== rdEntry.displayName ? rdEntry.displayName : rdEntry.id;
+      const rdSourceKey = {
+        provider: RealityDataProvider.ContextShare,
+        format: rdEntry.type === "OPC" ? RealityDataFormat.OPC : RealityDataFormat.ThreeDTile,
+        id: rdEntry.id,
+      };
+      const tilesetUrl = await IModelApp.realityDataAccess?.getRealityDataUrl(imodel.iTwinId, rdSourceKey.id);
+      if (tilesetUrl) {
+        const entry: ContextRealityModelProps = {
+          rdSourceKey,
+          tilesetUrl,
+          name,
+          description: rdEntry?.description,
+          realityDataId: rdSourceKey.id,
+        };
+
+        availableModels.push(entry);
+      }
+    }
+
     return availableModels;
   }
 
@@ -32,7 +56,7 @@ export default class RealityDataApi {
         crmProp.orbitGtBlob = orbitGtBlob;
       }
       viewPort.displayStyle.attachRealityModel(crmProp);
-    // END REALITY_MODEL_ON
+      // END REALITY_MODEL_ON
     } else if (!show) {
       viewPort.displayStyle.detachRealityModelByNameAndUrl(crmName, crmProp.tilesetUrl);
     }

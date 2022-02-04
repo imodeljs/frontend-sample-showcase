@@ -3,18 +3,18 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { Range3d } from "@bentley/geometry-core";
-import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@bentley/imodeljs-frontend";
+import { Range3d } from "@itwin/core-geometry";
+import { BlankConnectionProps, IModelApp, ScreenViewport, StandardViewId } from "@itwin/core-frontend";
 import { BlankConnectionViewState, BlankViewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
-import { Cartographic, ColorDef, RenderMode } from "@bentley/imodeljs-common";
+import { AuthorizationClient, default3DSandboxUi, useSampleWidget } from "@itwin/sandbox";
+import { Cartographic, ColorDef, RenderMode } from "@itwin/core-common";
 import { SimpleLineWidgetProvider } from "./SimpleLineWidget";
 
 const uiProviders = [new SimpleLineWidgetProvider()];
 
 const connection: BlankConnectionProps = {
   name: "GeometryConnection",
-  location: Cartographic.fromDegrees(0, 0, 0),
+  location: Cartographic.fromDegrees({ longitude: 0, latitude: 0, height: 0 }),
   extents: new Range3d(-35, -35, 0, 35, 35, 35),
 };
 const viewState: BlankConnectionViewState = {
@@ -38,8 +38,8 @@ const SimpleLineApp: FunctionComponent = () => {
     <>
       { /** Viewport to display the iModel */}
       <BlankViewer
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-        theme={"dark"}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true} theme={"dark"}
         defaultUiConfig={default3DSandboxUi}
         viewStateOptions={viewState}
         blankConnection={connection}

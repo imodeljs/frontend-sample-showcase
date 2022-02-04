@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import React, { useEffect, useState } from "react";
 import { sampleManifest } from "../../sampleManifest";
 
@@ -18,7 +22,7 @@ function SearchIndex() {
             description: sample.description ? sample.description : "",
             tags: sample.description ? sample.description.match(/#[a-z0-9]+/gi) : [],
             // readme: sample.readme ? (await sample.readme()).default : ""
-          }
+          },
         );
 
         setSampleIndex([].concat.apply([], index));

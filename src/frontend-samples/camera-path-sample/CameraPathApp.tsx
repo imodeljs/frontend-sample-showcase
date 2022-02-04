@@ -2,29 +2,26 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection, ViewState } from "@itwin/core-frontend";
 import { CameraPathWidgetProvider } from "./CameraPathWidget";
-import { RenderMode } from "@bentley/imodeljs-common";
+import { RenderMode } from "@itwin/core-common";
 
 const uiProviders = [new CameraPathWidgetProvider()];
 
 const CameraPathApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Use the mouse wheel to scroll the camera along the predefined path. Click in the view to look around.", [SampleIModels.MetroStation]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
 
   const getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState = await ViewSetup.getDefaultView(imodel);
-    viewState.viewFlags.renderMode = RenderMode.SmoothShade;
+    viewState.viewFlags = viewState.viewFlags.withRenderMode(RenderMode.SmoothShade);
     return viewState;
   };
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await getInitialView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return getInitialView(iModelConnection);
   };
 
   /** Remove unnecessary tools  */
@@ -42,11 +39,12 @@ const CameraPathApp: FunctionComponent = () => {
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
-          contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true}
+          viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={uiConfig}
           theme="dark"
           uiProviders={uiProviders}

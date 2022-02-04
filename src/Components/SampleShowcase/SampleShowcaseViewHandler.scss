@@ -2,11 +2,22 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
+
+@import "react-reflex/styles.css";
+
+.horizontal>.reflex-splitter {
+  border-color: black;
+  height: 0 !important;
+}
+
+.vertical>.reflex-splitter {
+  border-color: black;
+  width: 0 !important;
+}
+
 .showcase {
   height: 100vh;
-  width: 100%;
-  display: flex;
-  position: relative;
+  width: 100vw;
 }
 
 @media (max-width: 768px) {

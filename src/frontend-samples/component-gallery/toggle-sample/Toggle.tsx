@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
-import "common/samples-common.scss";
 import "common/UIComponents/index.scss";
 import { UIComponentContainer, UIComponentExampleProps } from "common/UIComponents/UIComponentContainer";
-import { LabeledToggle, Toggle, ToggleButtonType } from "@bentley/ui-core";
 import { ControlPane } from "common/ControlPane/ControlPane";
+import { ThemeProvider, ToggleSwitch } from "@itwin/itwinui-react";
+import { SvgCheckmark } from "@itwin/itwinui-icons-react";
 
 // Creates an instance of ComponentExampleProps that can be used in the ComponentContainer
 export const createComponentExample = (title: string, description: string | undefined, content: React.ReactNode): UIComponentExampleProps => {
@@ -19,12 +19,12 @@ export default class ToggleList extends React.Component<{}> {
   // Combines several instances of ComponentExampleProps to be passed into the ComponentContainer
   public static getToggleData(): UIComponentExampleProps[] {
     return [
-      createComponentExample("Basic Toggle", undefined, <Toggle isOn={true} />),
-      createComponentExample("Primary Toggle", "Toggle with buttonType={ToggleButtonType.Primary}", <Toggle isOn={true} buttonType={ToggleButtonType.Primary} />),
-      createComponentExample("Large Toggle", "Toggle with large={true}", <Toggle isOn={true} large={true} />),
-      createComponentExample("Square Toggle", "Toggle with rounded={false}", <Toggle isOn={true} rounded={false} />),
-      createComponentExample("Toggle with Checkmark", "Toggle with showCheckmark prop", <Toggle isOn={true} showCheckmark={true} />),
-      createComponentExample("LabeledToggle", undefined, <LabeledToggle isOn={true} label="Toggle label" />),
+      createComponentExample("Default ToggleSwitch", undefined, <ToggleSwitch defaultChecked />),
+      createComponentExample("Disabled Checked ToggleSwitch", undefined, <ToggleSwitch defaultChecked disabled />),
+      createComponentExample("Disabled Unchecked ToggleSwitch", undefined, <ToggleSwitch disabled />),
+      createComponentExample("Right Labeled ToggleSwitch", undefined, <ToggleSwitch defaultChecked label="This is a right label" labelPosition="right" />),
+      createComponentExample("Left Labeled ToggleSwitch", undefined, <ToggleSwitch label="This is a left label" labelPosition="left" />),
+      createComponentExample("ToggleSwitch with Icon", undefined, <ToggleSwitch defaultChecked icon={<SvgCheckmark />} />),
     ];
   }
 
@@ -33,6 +33,7 @@ export default class ToggleList extends React.Component<{}> {
   public render() {
     return (
       <>
+        <ThemeProvider theme={"dark"} />
         <ControlPane instructions="Different styles of toggles that can be used in iModel.js applications."></ControlPane>
         <UIComponentContainer data={ToggleList.getToggleData()}></UIComponentContainer>
       </>

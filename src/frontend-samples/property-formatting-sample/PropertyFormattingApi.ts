@@ -3,13 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
-import { Presentation, SelectionChangesListener } from "@bentley/presentation-frontend";
-import { Content, DisplayValue, Field, KeySet } from "@bentley/presentation-common";
+import { Presentation, SelectionChangesListener } from "@itwin/presentation-frontend";
+import { Content, DisplayValue, Field, KeySet } from "@itwin/presentation-common";
 import { OverlySimplePropertyRecord } from "./approach-3-App";
-import { PropertyRecord } from "@bentley/ui-abstract";
-import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider, PresentationTableDataProvider } from "@bentley/presentation-components";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
+import { PropertyRecord } from "@itwin/appui-abstract";
+import { DEFAULT_PROPERTY_GRID_RULESET, PresentationPropertyDataProvider, PresentationTableDataProvider } from "@itwin/presentation-components";
+import { IModelConnection } from "@itwin/core-frontend";
 
 export interface PropertyProps {
   keys: KeySet;

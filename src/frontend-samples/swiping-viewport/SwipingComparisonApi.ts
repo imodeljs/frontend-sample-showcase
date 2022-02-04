@@ -3,10 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { BeEvent } from "@bentley/bentleyjs-core";
-import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@bentley/geometry-core";
-import { ContextRealityModelProps, FeatureAppearance, Frustum, RenderMode, ViewFlagOverrides } from "@bentley/imodeljs-common";
-import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, queryRealityData, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@bentley/imodeljs-frontend";
+import { BeEvent } from "@itwin/core-bentley";
+import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
+import { ContextRealityModelProps, FeatureAppearance, Frustum, RealityDataFormat, RealityDataProvider, RenderMode } from "@itwin/core-common";
+import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, IModelConnection, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
+import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
 
 export enum ComparisonType {
   Wireframe,
@@ -143,10 +144,36 @@ export default class SwipingComparisonApi {
     viewport.dropTiledGraphicsProvider(provider);
   }
 
-  /** Get all available reality models and attach them to displayStyle. */
+  /** Get first available reality models and attach it to displayStyle. */
   public static async attachRealityData(viewport: Viewport, imodel: IModelConnection) {
     const style = viewport.displayStyle.clone();
-    const availableModels: ContextRealityModelProps[] = await queryRealityData({ contextId: imodel.contextId!, filterIModel: imodel });
+    const RealityDataClient = new RealityDataAccessClient();
+    const available: RealityDataResponse = await RealityDataClient.getRealityDatas(await IModelApp.authorizationClient!.getAccessToken(), imodel.iTwinId, undefined);
+
+    const availableModels: ContextRealityModelProps[] = [];
+
+    for (const rdEntry of available.realityDatas) {
+      const name = undefined !== rdEntry.displayName ? rdEntry.displayName : rdEntry.id;
+      const rdSourceKey = {
+        provider: RealityDataProvider.ContextShare,
+        format: rdEntry.type === "OPC" ? RealityDataFormat.OPC : RealityDataFormat.ThreeDTile,
+        id: rdEntry.id,
+      };
+      const tilesetUrl = await IModelApp.realityDataAccess?.getRealityDataUrl(imodel.iTwinId, rdSourceKey.id);
+      if (tilesetUrl) {
+        const entry: ContextRealityModelProps = {
+          rdSourceKey,
+          tilesetUrl,
+          name,
+          description: rdEntry?.description,
+          realityDataId: rdSourceKey.id,
+        };
+
+        availableModels.push(entry);
+        break;
+      }
+    }
+
     for (const crmProp of availableModels) {
       style.attachRealityModel(crmProp);
       viewport.displayStyle = style;
@@ -164,7 +191,7 @@ export default class SwipingComparisonApi {
 
 abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   public readonly abstract comparisonType: ComparisonType;
-  public viewFlagOverrides = new ViewFlagOverrides();
+  public viewFlagOverrides = { renderMode: RenderMode.Wireframe, showClipVolume: false };
   public clipVolume: RenderClipVolume | undefined;
   constructor(clipVector: ClipVector) {
     // Create the object that will be used later by the "addToScene" method.
@@ -176,7 +203,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     viewport.view.forEachTileTreeRef(func);
 
     // Do not apply the view's clip to this provider's graphics - it applies its own (opposite) clip to its graphics.
-    this.viewFlagOverrides.setShowClipVolume(false);
+    this.viewFlagOverrides.showClipVolume = false;
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
@@ -205,7 +232,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
         branch.entries.push(gf);
 
       // Overwrites the view flags for this view branch.
-      branch.viewFlagOverrides.copyFrom(this.viewFlagOverrides);
+      branch.setViewFlagOverrides(this.viewFlagOverrides);
       // Draw the graphics to the screen.
       output.outputGraphic(IModelApp.renderSystem.createGraphicBranch(branch, Transform.createIdentity(), { clipVolume: this.clipVolume }));
     }
@@ -233,7 +260,7 @@ class ComparisonWireframeProvider extends SampleTiledGraphicsProvider {
   constructor(clip: ClipVector) {
     super(clip);
     // Create the objects that will be used later by the "addToScene" method.
-    this.viewFlagOverrides.setRenderMode(RenderMode.Wireframe);
+    this.viewFlagOverrides.renderMode = RenderMode.Wireframe;
   }
 
   protected prepareNewBranch(_vp: Viewport): void { }

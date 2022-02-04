@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { CustomNodeLoadingTree } from "./CustomNodeLoadingTreeComponent";
-import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
+import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
 import "./CustomNodeLoadingTree.scss";
 
@@ -16,10 +16,10 @@ const CustomNodeLoadingTreeApp: React.FunctionComponent = () => {
   return (<>
     {sampleIModelInfo?.iModelName && sampleIModelInfo.contextId && sampleIModelInfo.iModelId &&
       <Viewer
-        contextId={sampleIModelInfo.contextId}
+        iTwinId={sampleIModelInfo.contextId}
         iModelId={sampleIModelInfo.iModelId}
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-        frontstages={frontstages}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true} frontstages={frontstages}
         defaultUiConfig={default3DSandboxUi}
         theme="dark"
       />}

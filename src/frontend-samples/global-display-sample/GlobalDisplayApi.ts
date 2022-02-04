@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { DisplayStyle3dProps, SpatialViewDefinitionProps } from "@bentley/imodeljs-common";
-import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, ScreenViewport, SpatialViewState } from "@bentley/imodeljs-frontend";
+import { DisplayStyle3dProps, SpatialViewDefinitionProps } from "@itwin/core-common";
+import { BingLocationProvider, IModelConnection, queryTerrainElevationOffset, ScreenViewport, SpatialViewState } from "@itwin/core-frontend";
 
 export class GlobalDisplayApi {
   private static _locationProvider?: BingLocationProvider;
@@ -36,9 +36,9 @@ export class GlobalDisplayApi {
   public static readonly getInitialView = async (imodel: IModelConnection) => {
 
     const viewDefinitionProps: SpatialViewDefinitionProps = {
-      angles: { pitch: 36.514347, roll: -152.059851, yaw: -7.099313 },
+      angles: { pitch: 50.8124, roll: -148.9326, yaw: -10.772199999999998 },
       camera: {
-        eye: [-244543.511666, -6035326.371241, -4314115.010887],
+        eye: [-267736.22852162836, -6028003.076610586, -4300825.034757155],
         focusDist: 3784.058586,
         lens: 45.95389,
       },
@@ -53,7 +53,7 @@ export class GlobalDisplayApi {
       isPrivate: false,
       model: "0x28",
       modelSelectorId: "0x823",
-      origin: [-247935.19536, -6032887.237023, -4312920.822367],
+      origin: [-270133.97909030726, -6026215.184655556, -4301536.141411391],
     };
 
     const displayStyleProps: DisplayStyle3dProps = {

@@ -2,21 +2,20 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { ChangeEvent, useCallback, useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@bentley/ui-core";
-import { SettingsResult, SettingsStatus } from "@bentley/product-settings-client";
+import React, { ChangeEvent, useCallback, useEffect, useMemo } from "react";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Button, DisabledText, Select, SmallText, Spinner, SpinnerSize, Textarea } from "@itwin/core-react";
 import ReadSettingsApi from "./ReadSettingsApi";
 import "./ReadSettings.scss";
 
 const ReadSettingsWidget: React.FunctionComponent = () => {
-  const settingsKeys = ["Json_Data", "Arbitrary_Text", "CSV_Data"];
+  const settingsKeys = useMemo(() => ["Json_Data", "Arbitrary_Text", "CSV_Data"], []);
 
   const iModelConnection = useActiveIModelConnection();
   const [settingKey, setSettingKey] = React.useState<string>(settingsKeys[0]);
   const [settingValue, setSettingValue] = React.useState<string>();
-  const [settingResult, setSettingResult] = React.useState<SettingsResult>();
+  const [settingResult, setSettingResult] = React.useState<any>();
   const [saveInProgress, setSaveInProgress] = React.useState<boolean>(false);
   const [readUpdate, setReadUpdate] = React.useState<boolean>(true);
   const [saveUpdate, setSaveUpdate] = React.useState<boolean>(false);
@@ -36,7 +35,7 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
   /** iModelConnection react state is very sensitive and updates constantly, so readUpdate flag is introduced to only call the API once */
   useEffect(() => {
     if (iModelConnection && settingKey && readUpdate) {
-      ReadSettingsApi.readSettings(iModelConnection.iModelId!, iModelConnection.contextId!, settingKey).then((response) => {
+      ReadSettingsApi.readSettings(iModelConnection.iModelId!, iModelConnection.iTwinId!, settingKey).then((response) => {
         setSettingResult(response);
         setSettingValue(_parseSettingsValue(settingKey, response.setting));
         setReadUpdate(false);
@@ -51,8 +50,7 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
   /** The showcase does not have permission to write data, it is expected to fail with 403 Forbidden. */
   useEffect(() => {
     if (iModelConnection && saveInProgress && settingValue && saveUpdate) {
-      ReadSettingsApi.saveSettings(iModelConnection.iModelId!, iModelConnection.contextId!, settingKey, settingValue).then((response) => {
-        setSettingResult(response);
+      ReadSettingsApi.saveSettings(iModelConnection.iModelId!, iModelConnection.iTwinId!, settingKey, settingValue).then(() => {
         setSaveInProgress(false);
         setSaveUpdate(false);
       })
@@ -80,7 +78,7 @@ const ReadSettingsWidget: React.FunctionComponent = () => {
 
   // Helper method to show status get/write operations with external setting in the dialog
   const _showStatus = useCallback(() => {
-    if (!settingResult || settingResult.status === SettingsStatus.Success) {
+    if (!settingResult) {
       return (<div></div>);
     }
 
@@ -132,7 +130,7 @@ export class ReadSettingsWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ReadSettingsWidget />,
-        }
+        },
       );
     }
     return widgets;

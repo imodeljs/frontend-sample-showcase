@@ -5,6 +5,9 @@
 .sample-options {
   color: white;
   padding: 8px;
+  >* {
+    margin-bottom: 1em;
+  }
 }
 
 .sample-options-2col {

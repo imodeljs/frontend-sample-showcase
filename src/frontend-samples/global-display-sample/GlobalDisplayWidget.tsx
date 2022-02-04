@@ -3,12 +3,12 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { IModelApp, NotifyMessageDetails, OutputMessagePriority } from "@bentley/imodeljs-frontend";
-import { Button, Input, Toggle } from "@bentley/ui-core";
+import { IModelApp, NotifyMessageDetails, OutputMessagePriority } from "@itwin/core-frontend";
+import { AbstractWidgetProps, SpecialKey, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { useActiveViewport } from "@itwin/appui-react";
+import { BackgroundMapType } from "@itwin/core-common";
+import { Button, Input, ToggleSwitch } from "@itwin/itwinui-react";
 import { GlobalDisplayApi } from "./GlobalDisplayApi";
-import { AbstractWidgetProps, SpecialKey, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { useActiveViewport } from "@bentley/ui-framework";
-import { BackgroundMapType } from "@bentley/imodeljs-common";
 import "./GlobalDisplay.scss";
 
 const GlobalDisplayWidget: FunctionComponent = () => {
@@ -28,10 +28,8 @@ const GlobalDisplayWidget: FunctionComponent = () => {
     if (viewport) {
       viewport.changeBackgroundMapProps({
         applyTerrain: terrain,
-        providerData: {
-          mapType: mapLabels ? BackgroundMapType.Hybrid : BackgroundMapType.Aerial,
-        },
       });
+      viewport.changeBackgroundMapProvider({ type: mapLabels ? BackgroundMapType.Hybrid : BackgroundMapType.Aerial });
     }
   }, [viewport, terrain, mapLabels]);
 
@@ -43,9 +41,7 @@ const GlobalDisplayWidget: FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport) {
-      const viewFlags = viewport.viewFlags.clone();
-      viewFlags.visibleEdges = buildingEdges;
-      viewport.viewFlags = viewFlags;
+      viewport.viewFlags = viewport.viewFlags.with("visibleEdges", buildingEdges);
     }
   }, [viewport, buildingEdges]);
 
@@ -60,7 +56,7 @@ const GlobalDisplayWidget: FunctionComponent = () => {
     }
   };
 
-  const _onKeyPress = (e: KeyboardEvent) => {
+  const _onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === SpecialKey.Enter || e.key === SpecialKey.Return) {
       _travelToDestination()
         .catch((error) => {
@@ -74,15 +70,15 @@ const GlobalDisplayWidget: FunctionComponent = () => {
     <div className={"sample-options"}>
       <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
         <span title={"Display 3d terrain from Cesium World Terrain Service"}>Terrain</span>
-        <Toggle isOn={terrain} onChange={setTerrain} />
+        <ToggleSwitch defaultChecked={terrain} onChange={() => setTerrain(!terrain)} />
         <span title={"Include labels in the Bing map imagery"}>Map Labels</span>
-        <Toggle isOn={mapLabels} onChange={setMapLabels} />
+        <ToggleSwitch defaultChecked={mapLabels} onChange={() => setMapLabels(!mapLabels)} />
         <span title={"Display building meshes from Open Street Map"}>Buildings</span>
-        <Toggle isOn={buildings} onChange={setBuildings} />
+        <ToggleSwitch defaultChecked={buildings} onChange={() => setBuildings(!buildings)} />
         <span title={"Display the edges of the building meshes"}>Building Edges</span>
-        <Toggle isOn={buildingEdges} onChange={setBuildingEdges} disabled={!buildings} />
+        <ToggleSwitch defaultChecked={buildingEdges} onChange={() => setBuildingEdges} disabled={!buildings} />
         <span title={"Type a place name and press enter to travel there"}>Destination</span>
-        <Input onChange={(e) => setDestination(e.currentTarget.value)} nativeKeyHandler={_onKeyPress} />
+        <Input onChange={(e) => setDestination(e.currentTarget.value)} onKeyPress={_onKeyPress} />
         <span />
         <Button disabled={0 === destination.length} onClick={_travelToDestination} title={"Travel to the specified destination"}>Travel</Button>
       </div>
@@ -104,7 +100,7 @@ export class GlobalDisplayWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <GlobalDisplayWidget />,
-        }
+        },
       );
     }
     return widgets;

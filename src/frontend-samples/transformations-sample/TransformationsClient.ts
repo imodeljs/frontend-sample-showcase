@@ -2,10 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizedClientRequestContext, IncludePrefix, request, Response } from "@bentley/itwin-client";
-import { AuthorizedFrontendRequestContext,IModelApp } from "@bentley/imodeljs-frontend";
-import { AuthorizationClient } from "@itwinjs-sandbox";
-import { GuidString } from "@bentley/bentleyjs-core";
+import { IModelApp } from "@itwin/core-frontend";
+import { GuidString } from "@itwin/core-bentley";
 
 export interface Configuration {
   href: string;
@@ -25,38 +23,38 @@ export interface Transformation {
   _links: Link;
 }
 
-export default class TransformationsClient {
-  private static _requestContext: AuthorizedClientRequestContext;
+async function fetchApi<T>(url: string, options?: RequestInit): Promise<T | undefined> {
+  return fetch(url, options)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+      return response.json() as Promise<T>;
+    })
+    .catch((error) => {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      return undefined;
+    });
+}
 
+export default class TransformationsClient {
   public static async getTransformation(transformationId: string): Promise<Transformation | undefined> {
     const url = `https://api.bentley.com/transformations/${transformationId}`;
+    const accessToken = await TransformationsClient.getAccessToken();
     const options = {
       method: "GET",
       headers: {
-        Authorization: (await TransformationsClient.getAccessToken())?.toTokenString(IncludePrefix.Yes),
+        Authorization: accessToken,
       },
     };
-    return request(await TransformationsClient.getRequestContext(), url, options)
-      .then((resp: Response): Transformation | undefined => {
-        if (resp.body === undefined) return undefined;
-        return resp.body;
-      }).catch((_reason: any) => {
-        return undefined;
-      });
+    return fetchApi<Transformation>(url, options);
   }
 
   private static async getAccessToken() {
-    try {
-      return await (IModelApp.authorizationClient as AuthorizationClient).getAccessToken();
-    } catch (e) {
-      return undefined;
-    }
-  }
+    if (!IModelApp.authorizationClient)
+      throw new Error("AuthorizationClient is not defined. Most likely IModelApp.startup was not called yet.");
 
-  private static async getRequestContext() {
-    if (!TransformationsClient._requestContext) {
-      TransformationsClient._requestContext = await AuthorizedFrontendRequestContext.create();
-    }
-    return TransformationsClient._requestContext;
+    return IModelApp.authorizationClient.getAccessToken();
   }
 }

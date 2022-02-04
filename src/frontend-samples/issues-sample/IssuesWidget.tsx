@@ -3,22 +3,21 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useActiveIModelConnection, useActiveViewport } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { HorizontalTabs, Select, Spinner, SpinnerSize } from "@bentley/ui-core";
-import { Angle, Point3d, Vector3d } from "@bentley/geometry-core";
-import { Body, IconButton, Leading, Subheading, Table, Tile } from "@itwin/itwinui-react";
+import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { Angle, Point3d, Vector3d } from "@itwin/core-geometry";
+import { Alert, Body, HorizontalTabs, IconButton, LabeledSelect, Leading, ProgressRadial, SelectOption, Subheading, Tab, Table, Tile } from "@itwin/itwinui-react";
 import IssuesClient, { AttachmentMetadataGet, AuditTrailEntryGet, CommentGetPreferReturnMinimal, IssueDetailsGet, IssueGet } from "./IssuesClient";
 import IssuesApi, { LabelWithId } from "./IssuesApi";
-import "./Issues.scss";
 import { MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
+import "./Issues.scss";
 
 const thumbnails: Map<string, Blob> = new Map<string, Blob>();
 
 const IssuesWidget: React.FunctionComponent = () => {
   const iModelConnection = useActiveIModelConnection();
-  const [contextId, setContextId] = useState<string>();
   const viewport = useActiveViewport();
+  const [contextId, setContextId] = useState<string>();
   /** All issues */
   const allIssues = useRef<IssueGet[]>([]);
   /** The issues currently being displayed */
@@ -39,9 +38,9 @@ const IssuesWidget: React.FunctionComponent = () => {
   /** The active tab when the issue is being shown, -1 for none */
   const [activeTab, setActiveTab] = useState<number>(0);
   /** The State filter. */
-  const [stateFilter, setStateFilter] = useState<string>("All");
+  const [issueState, setIssueState] = useState<string>("all");
   /** The type filter. */
-  const [typeFilter, setTypeFilter] = useState<string>("All");
+  const [issueFilter, setIssueType] = useState<string>("all");
   /** The decorator used for displaying issue markers */
   const [issueDecorator] = React.useState<MarkerPinDecorator>(() => {
     return IssuesApi.setupDecorator();
@@ -56,17 +55,16 @@ const IssuesWidget: React.FunctionComponent = () => {
   }, [issueDecorator]);
 
   useEffect(() => {
-    if (iModelConnection && contextId !== iModelConnection.contextId) {
-      setContextId(iModelConnection.contextId);
-    }
-  }, [contextId, iModelConnection]);
+    if (iModelConnection && iModelConnection.iTwinId)
+      setContextId(iModelConnection.iTwinId);
+  }, [iModelConnection, iModelConnection?.iTwinId]);
 
   /** When iModel is loaded, get issue details */
   useEffect(() => {
     (async () => {
       if (contextId) {
-        const type = typeFilter !== "All" ? typeFilter : undefined;
-        const state = stateFilter !== "All" ? stateFilter : undefined;
+        const type = issueFilter !== "all" ? issueFilter : undefined;
+        const state = issueState !== "all" ? issueState : undefined;
         const issuesResp = await IssuesClient.getProjectIssues(contextId, type, state);
 
         const oldIssues: IssueGet[] = [];
@@ -100,7 +98,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-  }, [contextId, stateFilter, typeFilter]);
+  }, [contextId, issueState, issueFilter]);
 
   /** Set the preview Images on issue load */
   useEffect(() => {
@@ -133,7 +131,7 @@ const IssuesWidget: React.FunctionComponent = () => {
         const directionVector = Point3d.fromJSON(cameraView.direction);
         const fov = Angle.degreesToRadians(cameraView.fieldOfView!);
         const targetPoint = eyePoint.plus(directionVector);
-        view3d.lookAtUsingLensAngle(eyePoint, targetPoint, upVector, Angle.createRadians(fov));
+        view3d.lookAt({ eyePoint, targetPoint, upVector, lensAngle: Angle.createRadians(fov) });
         viewport.synchWithView();
       }
     }
@@ -339,7 +337,7 @@ const IssuesWidget: React.FunctionComponent = () => {
       { prop: "Created By", val: currentIssue?.createdBy },
       { prop: "Assignees", val: currentIssue?.assignees?.reduce((currentString, nextAssignee) => `${currentString} ${nextAssignee.displayName},`, "").slice(0, -1) },
     ];
-    return (<Table className={"table"} columns={columns} data={data} emptyTableContent='No data.'></Table>);
+    return (<Table className={"table"} columns={columns} data={data} emptyTableContent="No data" density="extra-condensed"></Table>);
   };
 
   const issueLinkedElements = () => {
@@ -367,7 +365,7 @@ const IssuesWidget: React.FunctionComponent = () => {
     if (metaData.length === 0)
       return (<Body style={{ color: "#fff" }}>No attachments.</Body>);
     else if (attachments === undefined)
-      return (<div style={{ display: "flex", placeContent: "center" }}><Spinner /></div>);
+      return (<div style={{ display: "flex", placeContent: "center" }}><ProgressRadial indeterminate={true} size="small"></ProgressRadial></div>);
 
     /** Loop through the dates and put them together in chunks */
     return attachments.map((attachment, index) => {
@@ -435,7 +433,7 @@ const IssuesWidget: React.FunctionComponent = () => {
     const auditTrail = issueAuditTrails[currentIssue!.displayName!];
 
     if (comments === undefined || auditTrail === undefined)
-      return (<div style={{ display: "flex", placeContent: "center" }}><Spinner /></div>);
+      return (<div style={{ display: "flex", placeContent: "center" }}><ProgressRadial indeterminate={true} size="small"></ProgressRadial></div>);
     else if (comments.length === 0 && auditTrail.length === 0)
       return (<Body style={{ color: "fff" }}>No content.</Body>);
 
@@ -491,30 +489,68 @@ const IssuesWidget: React.FunctionComponent = () => {
     ));
   };
 
-  const filterTypes = ["All", "Clash", "Closeout", "Data Quality", "Field Data"];
+  const issueTypes: SelectOption<string>[] = [
+    { value: "all", label: "All" },
+    { value: "Clash", label: "Clash" },
+    { value: "Closeout", label: "Closeout" },
+    { value: "Fata Quality", label: "Data Quality" },
+    { value: "Field Data", label: "Field Data" },
+  ];
+
+  const issueStates: SelectOption<string>[] = [
+    { value: "all", label: "All" },
+    { value: "Closed", label: "Closed" },
+    { value: "Open", label: "Open" },
+    { value: "Draft", label: "Draft" },
+  ];
+
+  const getTabContent = () => {
+    switch (activeTab) {
+      case 0:
+        return (<div className={"issue-summary"}>
+          {issueSummaryContent()}
+          {issueLinkedElements()}
+        </div>);
+      case 1:
+        return (
+          <div className={"issue-attachments"}>
+            {issueAttachmentsContent()}
+          </div>);
+      case 2:
+        return (
+          <div className={"issue-audit-trail"}>
+            {issueAuditTrailContent()}
+          </div>);
+      default:
+        return (<></>);
+    }
+  };
 
   return (
     <>
-      <div className={"issues-widget"} style={{ height: "300px" }}>
+      <div className={"issues-widget"} >
+        <Alert type="informational" style={{ margin: "16px" }}>
+          Use the Issue Selectors below to view Issues information
+        </Alert >
         {/** Only display header when issue isn't selected */}
         {!currentIssue &&
           <div className="issue-list-header">
             <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`Issues (${currentIssues.length})`}</Subheading>
             <div className="issue-list-filters">
               <div className="filter">
-                <span>State</span>
-                <Select options={["All", "Closed", "Open", "Draft"]} value={stateFilter} onChange={(option) => setStateFilter(option.target.selectedOptions[0].value)} />
+                <LabeledSelect label="State:" size="small" displayStyle="inline" options={issueStates} value={issueState} onChange={(value) => setIssueState(value)} onHide={() => { }} onShow={() => { }}></LabeledSelect>
               </div>
               <div className="filter">
-                <span>Type</span>
-                <Select options={filterTypes} value={typeFilter} onChange={(option) => setTypeFilter(option.target.selectedOptions[0].value)} />
+                <LabeledSelect label="Type:" size="small" displayStyle="inline" options={issueTypes} value={issueFilter} onChange={(value) => setIssueType(value)} onHide={() => { }} onShow={() => { }}></LabeledSelect>
               </div>
             </div>
           </div>}
 
         {/** When the issues haven't loaded yet, display spinner */}
         {allIssues.current.length === 0 &&
-          <Spinner size={SpinnerSize.Medium} />
+          <div className="issues-widget-loading">
+            <ProgressRadial indeterminate={true} size="small"></ProgressRadial>
+          </div>
         }
 
         {/** When there are no issues retrieved from filter. */}
@@ -555,30 +591,21 @@ const IssuesWidget: React.FunctionComponent = () => {
         {/** When an issue is selected from the initial list, show the tab interface */}
         {currentIssue &&
           <div className={"issue-details"}>
-            <div className={"header"}>
-              <IconButton styleType='borderless' size='small' className="back-button" onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left" style={{ color: "white" }}></span></IconButton>
-              <Subheading style={{ margin: "0", padding: "8px 5px", color: "#fff" }}>{`${currentIssue.number} | ${currentIssue.subject}`}</Subheading>
-            </div>
+            <Leading className={"header"}>
+              <IconButton styleType="borderless" size="small" className="back-button" onClick={() => { setCurrentIssue(undefined); setLinkedElements(undefined); }}><span className="icon icon-chevron-left"></span></IconButton>
+              {`${currentIssue.number} | ${currentIssue.subject}`}
+            </Leading>
 
-            <HorizontalTabs type='default' labels={["Summary", "Attachments", "Audit Trail"]} activeIndex={activeTab} onActivateTab={(index) => setActiveTab(index)} />
-            <div className={"issue-tab-content"}>
-              {activeTab === 0 &&
-                <div className={"issue-summary"}>
-                  {issueSummaryContent()}
-                  {issueLinkedElements()}
-                </div>
-              }
-              {activeTab === 1 &&
-                <div className={"issue-attachments"}>
-                  {issueAttachmentsContent()}
-                </div>
-              }
-              {activeTab === 2 &&
-                <div className={"issue-audit-trail"}>
-                  {issueAuditTrailContent()}
-                </div>
-              }
-            </div>
+            <HorizontalTabs
+              onTabSelected={(index) => setActiveTab(index)}
+              labels={[
+                <Tab key={0} label="Summary" />,
+                <Tab key={1} label="Attachments" />,
+                <Tab key={2} label="Audit Trail" />,
+              ]}
+            >
+              {getTabContent()}
+            </HorizontalTabs>
           </div>
         }
       </div>
@@ -599,7 +626,7 @@ export class IssuesWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <IssuesWidget />,
-        }
+        },
       );
     }
     return widgets;

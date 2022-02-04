@@ -2,19 +2,17 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { AuthorizationClient, default3DSandboxUi, SampleIModels, useSampleWidget, ViewSetup } from "@itwinjs-sandbox";
-import React, { FunctionComponent, useState } from "react";
+import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
+import React, { FunctionComponent } from "react";
 import { Viewer } from "@itwin/web-viewer-react";
-import { IModelConnection, ViewState } from "@bentley/imodeljs-frontend";
-import { IModelViewportControlOptions } from "@bentley/ui-framework";
+import { IModelConnection, ViewState } from "@itwin/core-frontend";
 import { ClassifierWidgetProvider } from "./ClassifierWidget";
-import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@bentley/geometry-core";
+import { Angle, Point3d, Vector3d, YawPitchRollAngles } from "@itwin/core-geometry";
 
 const uiProviders = [new ClassifierWidgetProvider()];
 
 const ClassifierApp: FunctionComponent = () => {
-  const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [{ context: SampleIModels.MetroStation, imodel: "Philadelphia" }]);
-  const [viewportOptions, setViewportOptions] = useState<IModelViewportControlOptions>();
+  const sampleIModelInfo = useSampleWidget("Use controls below to create a classifier.", [SampleIModels.Philadelphia]);
 
   /** Initializes viewport to set up camera looking at Rittenhouse Square. */
   const getClassifierView = async (imodel: IModelConnection): Promise<ViewState> => {
@@ -33,9 +31,8 @@ const ClassifierApp: FunctionComponent = () => {
     return viewState;
   };
 
-  const _oniModelReady = async (iModelConnection: IModelConnection) => {
-    const viewState = await getClassifierView(iModelConnection);
-    setViewportOptions({ viewState });
+  const _initialViewstate = async (iModelConnection: IModelConnection) => {
+    return getClassifierView(iModelConnection);
   };
 
   /** The sample's render method */
@@ -44,11 +41,12 @@ const ClassifierApp: FunctionComponent = () => {
       { /** Viewport to display the iModel */}
       {sampleIModelInfo?.iModelName && sampleIModelInfo?.contextId && sampleIModelInfo?.iModelId &&
         <Viewer
-          contextId={sampleIModelInfo.contextId}
+          iTwinId={sampleIModelInfo.contextId}
           iModelId={sampleIModelInfo.iModelId}
-          authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
-          viewportOptions={viewportOptions}
-          onIModelConnected={_oniModelReady}
+          authClient={AuthorizationClient.oidcClient}
+          enablePerformanceMonitors={true}
+          viewportOptions={{ viewState: _initialViewstate }}
+          mapLayerOptions={mapLayerOptions}
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
           uiProviders={uiProviders}

@@ -3,10 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import "common/samples-common.scss";
-import { DisplayStyle3dState, IModelApp, IModelConnection, ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import { ViewFlags } from "@bentley/imodeljs-common";
-import { ViewSetup } from "@itwinjs-sandbox";
+import { DisplayStyle3dState, IModelApp, IModelConnection, ScreenViewport, ViewState } from "@itwin/core-frontend";
+import { ViewFlags } from "@itwin/core-common";
+import { ViewSetup } from "@itwin/sandbox";
 
 export default class ShadowStudyApp {
 
@@ -27,7 +26,7 @@ export default class ShadowStudyApp {
    */
   public static getInitialView = async (imodel: IModelConnection): Promise<ViewState> => {
     const viewState: ViewState = await ViewSetup.getDefaultView(imodel);
-    const vf: ViewFlags = viewState.viewFlags.clone();
+    const vf: ViewFlags = viewState.viewFlags.override({ shadows: true });
 
     if (viewState.is3d()) {
       const viewStyle: DisplayStyle3dState = viewState.getDisplayStyle3d();
@@ -35,8 +34,6 @@ export default class ShadowStudyApp {
       viewState.displayStyle = viewStyle;
     }
 
-    // we always want shadows
-    vf.shadows = true;
     viewState.displayStyle.viewFlags = vf;
 
     return viewState;

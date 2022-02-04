@@ -1,277 +1,271 @@
 {
-  "external": [
+  "dependencies": {
+    "react-dnd": "^11.1.3",
+    "react-dnd-html5-backend": "^11.1.3",
+    "react-merge-refs": "^1.1.0",
+    "react-table": "^7.7.0",
+    "@fortawesome/fontawesome-free": "^5.13.1",
+    "@fortawesome/fontawesome-free/css/all.css": "^5.13.1",
+    "./src/@itwin/sandbox/index.ts": "0.1.0",
+    "./src/common/ControlPane/ControlPane.tsx": "0.1.0",
+    "./src/common/UIComponents/index.scss": "0.1.0",
+    "./src/common/UIComponents/UIComponentContainer.tsx": "0.1.0",
+    "./src/common/PointSelector/PointSelector.tsx": "0.1.0",
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "0.1.0"
+  },
+  "alias": {
+    "./src/@itwin/sandbox/index.ts": "@itwin/sandbox",
+    "./src/common/ControlPane/ControlPane.tsx": "common/ControlPane/ControlPane",
+    "./src/common/UIComponents/index.scss": "common/UIComponents/index.scss",
+    "./src/common/UIComponents/UIComponentContainer.tsx": "common/UIComponents/UIComponentContainer",
+    "./src/common/PointSelector/PointSelector.tsx": "common/PointSelector/PointSelector",
+    "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts": "frontend-samples/marker-pin-sample/MarkerPinDecorator"
+  },
+  "externalDependencies": [
     {
-      "name": "react"
+      "dependency": "@itwin/core-bentley",
+      "version": "3.x",
+      "lib": "@itwin/core-bentley/3.x/index.js",
+      "global": "itwinCoreBentley",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/types.json"
     },
     {
-      "name": "react-dnd"
+      "dependency": "@itwin/appui-abstract",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-abstract/3.x/index.js",
+      "global": "itwinAppuiAbstract",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-abstract/3.x/types.json"
     },
     {
-      "name": "react-dnd-html5-backend"
+      "dependency": "react",
+      "version": "17.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/react/17.x/index.js",
+      "global": "react",
+      "types": "#{REACT_APP_COMPILER_URL}/react/17.x/types.json"
     },
     {
-      "name": "react-dom"
+      "dependency": "react-dom",
+      "version": "17.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/react-dom/17.x/index.js",
+      "global": "reactDom",
+      "types": "#{REACT_APP_COMPILER_URL}/react-dom/17.x/types.json"
     },
     {
-      "name": "react-merge-refs"
-    }
-  ],
-  "internal": [
-    {
-      "name": "react",
-      "import": "react"
+      "dependency": "@itwin/itwinui-icons-react",
+      "version": "1.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-icons-react/1.x/index.js",
+      "global": "itwinItwinuiIconsReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-icons-react/1.x/types.json"
     },
     {
-      "name": "react-dnd",
-      "import": "react-dnd"
+      "dependency": "@itwin/itwinui-react",
+      "version": "1.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-react/1.x/index.js",
+      "global": "itwinItwinuiReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-react/1.x/types.json"
     },
     {
-      "name": "react-dnd-html5-backend",
-      "import": "react-dnd-html5-backend"
+      "dependency": "@itwin/core-react",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-react/3.x/index.js",
+      "global": "itwinCoreReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-react/3.x/types.json"
     },
     {
-      "name": "react-dom",
-      "import": "react-dom"
+      "dependency": "@itwin/appui-layout-react",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-layout-react/3.x/index.js",
+      "global": "itwinAppuiLayoutReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-layout-react/3.x/types.json"
     },
     {
-      "name": "react-merge-refs",
-      "import": "react-merge-refs"
+      "dependency": "@itwin/components-react",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/components-react/3.x/index.js",
+      "global": "itwinComponentsReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/components-react/3.x/types.json"
     },
     {
-      "name": "@bentley/bentleyjs-core",
-      "import": "@bentley/bentleyjs-core"
+      "dependency": "@itwin/core-geometry",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-geometry/3.x/index.js",
+      "global": "itwinCoreGeometry",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-geometry/3.x/types.json"
     },
     {
-      "name": "@bentley/context-registry-client",
-      "import": "@bentley/context-registry-client"
+      "dependency": "@itwin/core-common",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-common/3.x/index.js",
+      "global": "itwinCoreCommon",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-common/3.x/types.json"
     },
     {
-      "name": "@bentley/frontend-authorization-client",
-      "import": "@bentley/frontend-authorization-client"
+      "dependency": "@itwin/core-orbitgt",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-orbitgt/3.x/index.js",
+      "global": "itwinCoreOrbitgt",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-orbitgt/3.x/types.json"
     },
     {
-      "name": "@bentley/frontend-devtools",
-      "import": "@bentley/frontend-devtools"
+      "dependency": "@itwin/core-quantity",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-quantity/3.x/index.js",
+      "global": "itwinCoreQuantity",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-quantity/3.x/types.json"
     },
     {
-      "name": "@bentley/geometry-core",
-      "import": "@bentley/geometry-core"
+      "dependency": "@itwin/webgl-compatibility",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/webgl-compatibility/3.x/index.js",
+      "global": "itwinWebglCompatibility",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/webgl-compatibility/3.x/types.json"
     },
     {
-      "name": "@bentley/hypermodeling-frontend",
-      "import": "@bentley/hypermodeling-frontend"
+      "dependency": "@itwin/core-i18n",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-i18n/3.x/index.js",
+      "global": "itwinCoreI18N",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-i18n/3.x/types.json"
     },
     {
-      "name": "@bentley/imodelhub-client",
-      "import": "@bentley/imodelhub-client"
+      "dependency": "@itwin/core-telemetry",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-telemetry/3.x/index.js",
+      "global": "itwinCoreTelemetry",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-telemetry/3.x/types.json"
     },
     {
-      "name": "@bentley/imodeljs-common",
-      "import": "@bentley/imodeljs-common"
+      "dependency": "@itwin/core-frontend",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-frontend/3.x/index.js",
+      "global": "itwinCoreFrontend",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-frontend/3.x/types.json"
     },
     {
-      "name": "@bentley/imodeljs-frontend",
-      "import": "@bentley/imodeljs-frontend"
+      "dependency": "@itwin/core-markup",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-markup/3.x/index.js",
+      "global": "itwinCoreMarkup",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-markup/3.x/types.json"
     },
     {
-      "name": "@bentley/imodeljs-i18n",
-      "import": "@bentley/imodeljs-i18n"
+      "dependency": "@itwin/imodel-components-react",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodel-components-react/3.x/index.js",
+      "global": "itwinImodelComponentsReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodel-components-react/3.x/types.json"
     },
     {
-      "name": "@bentley/imodeljs-quantity",
-      "import": "@bentley/imodeljs-quantity"
+      "dependency": "@itwin/presentation-common",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-common/3.x/index.js",
+      "global": "itwinPresentationCommon",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-common/3.x/types.json"
     },
     {
-      "name": "@bentley/itwin-client",
-      "import": "@bentley/itwin-client"
+      "dependency": "@itwin/presentation-frontend",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-frontend/3.x/index.js",
+      "global": "itwinPresentationFrontend",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-frontend/3.x/types.json"
     },
     {
-      "name": "@bentley/ui-abstract",
-      "import": "@bentley/ui-abstract"
+      "dependency": "redux",
+      "version": "4.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/redux/4.x/index.js",
+      "global": "redux",
+      "types": "#{REACT_APP_COMPILER_URL}/redux/4.x/types.json"
     },
     {
-      "name": "@bentley/ui-components",
-      "import": "@bentley/ui-components"
+      "dependency": "react-redux",
+      "version": "7.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/react-redux/7.x/index.js",
+      "global": "reactRedux",
+      "types": "#{REACT_APP_COMPILER_URL}/react-redux/7.x/types.json"
     },
     {
-      "name": "@bentley/ui-core",
-      "import": "@bentley/ui-core"
+      "dependency": "@itwin/presentation-components",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-components/3.x/index.js",
+      "global": "itwinPresentationComponents",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-components/3.x/types.json"
     },
     {
-      "name": "@bentley/ui-framework",
-      "import": "@bentley/ui-framework"
+      "dependency": "@itwin/browser-authorization",
+      "version": "0.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/browser-authorization/0.x/index.js",
+      "global": "itwinBrowserAuthorization",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/browser-authorization/0.x/types.json"
     },
     {
-      "name": "@bentley/presentation-frontend",
-      "import": "@bentley/presentation-frontend"
+      "dependency": "@itwin/appui-react",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-react/3.x/index.js",
+      "global": "itwinAppuiReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-react/3.x/types.json"
     },
     {
-      "name": "@bentley/presentation-common",
-      "import": "@bentley/presentation-common"
+      "dependency": "@itwin/frontend-devtools",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/frontend-devtools/3.x/index.js",
+      "global": "itwinFrontendDevtools",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/frontend-devtools/3.x/types.json"
     },
     {
-      "name": "@bentley/presentation-components",
-      "import": "@bentley/presentation-components"
+      "dependency": "@itwin/hypermodeling-frontend",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/hypermodeling-frontend/3.x/index.js",
+      "global": "itwinHypermodelingFrontend",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/hypermodeling-frontend/3.x/types.json"
     },
     {
-      "name": "@bentley/product-settings-client",
-      "import": "@bentley/product-settings-client"
+      "dependency": "@itwin/imodels-client-management",
+      "version": "1.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/index.js",
+      "global": "itwinImodelsClientManagement",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/types.json"
     },
     {
-      "name": "@bentley/orbitgt-core",
-      "import": "@bentley/orbitgt-core"
+      "dependency": "@itwin/imodels-access-frontend",
+      "version": "1.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/index.js",
+      "global": "itwinImodelsAccessFrontend",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/types.json"
     },
     {
-      "name": "@bentley/webgl-compatibility",
-      "import": "@bentley/webgl-compatibility"
+      "dependency": "@itwin/map-layers",
+      "version": "3.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/map-layers/3.x/index.js",
+      "global": "itwinMapLayers",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/map-layers/3.x/types.json"
     },
     {
-      "name": "@itwin/web-viewer-react",
-      "import": "@itwin/web-viewer-react"
+      "dependency": "@itwin/projects-client",
+      "version": "0.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/projects-client/0.x/index.js",
+      "global": "itwinProjectsClient",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/projects-client/0.x/types.json"
     },
     {
-      "name": "@itwin/viewer-react",
-      "import": "@itwin/viewer-react"
+      "dependency": "@itwin/reality-data-client",
+      "version": "0.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/reality-data-client/0.x/index.js",
+      "global": "itwinRealityDataClient",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/reality-data-client/0.x/types.json"
     },
     {
-      "name": "@bentley/frontend-application-insights-client",
-      "import": "@bentley/frontend-application-insights-client"
+      "dependency": "@itwin/viewer-react",
+      "version": "2.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/index.js",
+      "global": "itwinViewerReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/types.json"
     },
     {
-      "name": "@itwin/itwinui-react",
-      "import": "@itwin/itwinui-react"
-    },
-    {
-      "name": "common/UIComponents/UIComponentContainer",
-      "import": "./src/common/UIComponents/UIComponentContainer",
-      "typedef": true
-    },
-    {
-      "name": "common/Geometry/GeometryDecorator",
-      "import": "./src/common/Geometry/GeometryDecorator",
-      "typedef": "./src/common/Geometry/GeometryDecorator.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/data-providers/SampleDataProvider",
-      "import": "./src/@itwinjs-sandbox/data-providers/SampleDataProvider",
-      "typedef": "./src/@itwinjs-sandbox/data-providers/SampleDataProvider.ts"
-    },
-    {
-      "name": "common/PointSelector/PointGenerators",
-      "import": "./src/common/PointSelector/PointGenerators",
-      "typedef": true
-    },
-    {
-      "name": "common/PointSelector/PointSelector",
-      "import": "./src/common/PointSelector/PointSelector",
-      "typedef": true
-    },
-    {
-      "name": "common/SandboxViewport/ViewportAndNavigation",
-      "import": "./src/common/SandboxViewport/ViewportAndNavigation",
-      "typedef": true
-    },
-    {
-      "name": "common/SandboxViewport/SandboxViewport",
-      "import": "./src/common/SandboxViewport/SandboxViewport",
-      "typedef": true
-    },
-    {
-      "name": "common/SandboxIModelConnection/SandboxIModelConnection",
-      "import": "./src/common/SandboxIModelConnection/SandboxIModelConnection",
-      "typedef": true
-    },
-    {
-      "name": "Components/Widgets/SmallStatusBar",
-      "import": "./src/Components/Widgets/SmallStatusBar",
-      "typedef": true
-    },
-    {
-      "name": "common/ControlPane/ControlPane",
-      "import": "./src/common/ControlPane/ControlPane",
-      "typedef": true
-    },
-    {
-      "name": "frontend-samples/marker-pin-sample/RadioCard",
-      "import": "./src/frontend-samples/marker-pin-sample/RadioCard",
-      "typedef": "./src/frontend-samples/marker-pin-sample/RadioCard.tsx"
-    },
-    {
-      "name": "frontend-samples/marker-pin-sample/MarkerPinDecorator",
-      "import": "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator",
-      "typedef": "./src/frontend-samples/marker-pin-sample/MarkerPinDecorator.ts"
-    },
-    {
-      "name": "common/UIComponents/index.scss",
-      "import": "!!raw-loader!common/UIComponents/index.scss"
-    },
-    {
-      "name": "common/samples-common.scss",
-      "import": "!!raw-loader!common/samples-common.scss"
-    },
-    {
-      "name": "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css",
-      "import": "!!raw-loader!@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css"
-    },
-    {
-      "name": "@itwinjs-sandbox/authentication/AuthorizationClient",
-      "import": "./src/@itwinjs-sandbox/authentication/AuthorizationClient",
-      "typedef": true
-    },
-    {
-      "name": "@itwinjs-sandbox/view/DefaultViewerProps",
-      "import": "./src/@itwinjs-sandbox/view/DefaultViewerProps",
-      "typedef": "./src/@itwinjs-sandbox/view/DefaultViewerProps.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/components/imodel-selector/IModelSelector",
-      "import": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector",
-      "typedef": "./src/@itwinjs-sandbox/components/imodel-selector/IModelSelector.tsx"
-    },
-    {
-      "name": "@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
-      "import": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider",
-      "typedef": "./src/@itwinjs-sandbox/components/imodel-selector/SampleWidgetProvider.tsx"
-    },
-    {
-      "name": "@itwinjs-sandbox/hooks/useSampleIModelConnection",
-      "import": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection",
-      "typedef": "./src/@itwinjs-sandbox/hooks/useSampleIModelConnection.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/hooks/useSampleWidget",
-      "import": "./src/@itwinjs-sandbox/hooks/useSampleWidget",
-      "typedef": "./src/@itwinjs-sandbox/hooks/useSampleWidget.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/api/ShowcaseToolAdmin",
-      "import": "./src/@itwinjs-sandbox/api/ShowcaseToolAdmin",
-      "typedef": "./src/@itwinjs-sandbox/api/ShowcaseToolAdmin.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/view/ViewSetup",
-      "import": "./src/@itwinjs-sandbox/view/ViewSetup",
-      "typedef": "./src/@itwinjs-sandbox/view/ViewSetup.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/constants",
-      "import": "./src/@itwinjs-sandbox/constants",
-      "typedef": "./src/@itwinjs-sandbox/constants.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/SampleIModels",
-      "import": "./src/@itwinjs-sandbox/SampleIModels",
-      "typedef": "./src/@itwinjs-sandbox/SampleIModels.ts"
-    },
-    {
-      "name": "@itwinjs-sandbox/frontstages/BlankFrontstage",
-      "import": "./src/@itwinjs-sandbox/frontstages/BlankFrontstage",
-      "typedef": "./src/@itwinjs-sandbox/frontstages/BlankFrontstage.tsx"
-    },
-    {
-      "name": "@itwinjs-sandbox",
-      "import": "./src/@itwinjs-sandbox/index",
-      "typedef": "./src/@itwinjs-sandbox/index.ts"
+      "dependency": "@itwin/web-viewer-react",
+      "version": "2.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/web-viewer-react/2.x/index.js",
+      "global": "itwinWebViewerReact",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/web-viewer-react/2.x/types.json"
     }
   ]
 }

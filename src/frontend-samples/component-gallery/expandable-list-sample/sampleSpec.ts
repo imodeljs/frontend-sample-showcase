@@ -16,7 +16,6 @@ export function getExpandableListSpec(): SampleSpec {
     readme: async () => import("!!raw-loader!./readme.md"),
     files: () => [
       import("!editor-file-loader!./ExpandableList?entry=true"),
-      import("!editor-file-loader!./SampleExpandableBlock"),
     ],
     type: "ExpandableList.tsx",
   });

@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { BeEvent, Id64String } from "@bentley/bentleyjs-core";
-import { ScreenViewport, ViewState } from "@bentley/imodeljs-frontend";
-import { HyperModeling, HyperModelingDecorator, SectionMarker, SectionMarkerConfig, SectionMarkerHandler } from "@bentley/hypermodeling-frontend";
+import { BeEvent, Id64String } from "@itwin/core-bentley";
+import { ScreenViewport, ViewState } from "@itwin/core-frontend";
+import { HyperModeling, HyperModelingDecorator, SectionMarker, SectionMarkerConfig, SectionMarkerHandler } from "@itwin/hypermodeling-frontend";
 
 /** Dispatches an event when the selected section marker changes. */
 class MarkerHandler extends SectionMarkerHandler {
@@ -90,7 +90,7 @@ export default class HyperModelingApi {
       return false;
 
     const promise = "drawing" === which ? decorator.openSection(marker) : decorator.openSheet(marker);
-    if (!await promise)
+    if (!(await promise))
       return false;
 
     await HyperModeling.startOrStop(viewport, false);

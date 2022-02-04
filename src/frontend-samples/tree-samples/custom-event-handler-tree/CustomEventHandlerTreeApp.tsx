@@ -5,17 +5,17 @@
 import React, { FunctionComponent } from "react";
 import { CustomEventHandlerTreeComponent } from "./CustomEventHandlerTreeComponent";
 import { BlankViewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
-import { Cartographic } from "@bentley/imodeljs-common";
-import { Range3d } from "@bentley/geometry-core";
+import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwin/sandbox";
+import { BlankConnectionProps } from "@itwin/core-frontend";
+import { Cartographic } from "@itwin/core-common";
+import { Range3d } from "@itwin/core-geometry";
 import "./CustomEventHandlerTree.scss";
 
 const frontstages = [{ provider: new BlankFrontstage(CustomEventHandlerTreeComponent), default: true, requiresIModelConnection: true }];
 
 const connection: BlankConnectionProps = {
   name: "BlankConnection",
-  location: Cartographic.fromDegrees(0, 0, 0),
+  location: Cartographic.fromDegrees({ longitude: 0, latitude: 0, height: 0 }),
   extents: new Range3d(),
 };
 
@@ -25,7 +25,8 @@ const CustomEventHandlerTreeApp: FunctionComponent = () => {
   return (
     <>
       <BlankViewer
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true}
         defaultUiConfig={default3DSandboxUi}
         blankConnection={connection}
         frontstages={frontstages}

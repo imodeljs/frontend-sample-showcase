@@ -3,9 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { assert } from "@bentley/bentleyjs-core";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import "common/samples-common.scss";
+import { assert } from "@itwin/core-bentley";
+import { IModelApp } from "@itwin/core-frontend";
 import { effects } from "./Effects";
 
 export default class ScreenSpaceEffectsApi {

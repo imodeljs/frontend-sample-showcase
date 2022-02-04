@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { Angle, AuxChannel, AuxChannelData, AuxChannelDataType, IModelJson, Point3d, Polyface, PolyfaceAuxData, PolyfaceBuilder, StrokeOptions, Transform } from "@bentley/geometry-core";
-import { AnalysisStyle, AnalysisStyleProps, ThematicGradientSettingsProps } from "@bentley/imodeljs-common";
-import { Animator, Viewport } from "@bentley/imodeljs-frontend";
+import { Angle, AuxChannel, AuxChannelData, AuxChannelDataType, IModelJson, Point3d, Polyface, PolyfaceAuxData, PolyfaceBuilder, StrokeOptions, Transform } from "@itwin/core-geometry";
+import { AnalysisStyle, AnalysisStyleProps, ThematicGradientSettingsProps } from "@itwin/core-common";
+import { Animator, Viewport } from "@itwin/core-frontend";
 import { ScientificVizDecorator } from "./ScientificVizDecorator";
 import { jsonData } from "./Cantilever";
 
@@ -159,7 +159,7 @@ export default class ScientificVizApi {
       return false;
 
     // The analysis style specifies up to three channelNames.
-    const channelNames = [style.displacement?.channelName, style.scalar?.channelName, style.normalChannelName];
+    const channelNames = [style.displacement?.channelName, style.thematic?.channelName, style.normalChannelName];
 
     // The style can be animated if any of the three channels has more than one set of data.
     return channels.some((c) => c.data.length > 1 && channelNames.includes(c.name));

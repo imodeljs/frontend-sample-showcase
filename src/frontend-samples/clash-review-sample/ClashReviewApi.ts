@@ -2,29 +2,19 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "@bentley/icons-generic-webfont/dist/bentley-icons-generic-webfont.css";
-import { AuthorizedFrontendRequestContext, EmphasizeElements, FeatureOverrideType, IModelApp, MarginPercent, ViewChangeOptions } from "@bentley/imodeljs-frontend";
-import { ColorDef } from "@bentley/imodeljs-common";
-import { MarkerData, MarkerPinDecorator } from "../marker-pin-sample/MarkerPinDecorator";
+import { EmphasizeElements, IModelApp, ViewChangeOptions } from "@itwin/core-frontend";
+import { ColorDef, FeatureOverrideType } from "@itwin/core-common";
+import { MarkerData, MarkerPinDecorator } from "frontend-samples/marker-pin-sample/MarkerPinDecorator";
 import ClashDetectionClient from "./ClashDetectionClient";
-import { AuthorizedClientRequestContext } from "@bentley/itwin-client";
-import { BeEvent } from "@bentley/bentleyjs-core";
+import { BeEvent } from "@itwin/core-bentley";
 import { jsonData } from "./ClashDetectionJsonData";
 
 export default class ClashReviewApi {
 
   public static onClashDataChanged = new BeEvent<any>();
 
-  private static _requestContext: AuthorizedClientRequestContext;
   private static _clashData: { [id: string]: any } = {};
   private static _applyZoom: boolean = true;
-
-  private static async getRequestContext() {
-    if (!ClashReviewApi._requestContext) {
-      ClashReviewApi._requestContext = await AuthorizedFrontendRequestContext.create();
-    }
-    return ClashReviewApi._requestContext;
-  }
 
   public static setupDecorator() {
     return new MarkerPinDecorator();
@@ -57,12 +47,11 @@ export default class ClashReviewApi {
   }
 
   public static async getClashData(projectId: string): Promise<any> {
-    const context = await ClashReviewApi.getRequestContext();
     if (ClashReviewApi._clashData[projectId] === undefined) {
-      const runsResponse = await ClashDetectionClient.getClashTestRuns(context, projectId);
+      const runsResponse = await ClashDetectionClient.getClashTestRuns(projectId);
       if (runsResponse !== undefined && runsResponse.runs !== undefined && runsResponse.runs.length !== 0) {
         // Get validation result
-        const resultResponse = await ClashDetectionClient.getValidationUrlResponse(context, runsResponse.runs[0]._links.result.href);
+        const resultResponse = await ClashDetectionClient.getValidationUrlResponse(runsResponse.runs[0]._links.result.href);
         if (resultResponse !== undefined && resultResponse.result !== undefined)
           ClashReviewApi._clashData[projectId] = resultResponse;
       }
@@ -107,7 +96,6 @@ export default class ClashReviewApi {
     if (ClashReviewApi._applyZoom) {
       const viewChangeOpts: ViewChangeOptions = {};
       viewChangeOpts.animateFrustumChange = true;
-      viewChangeOpts.marginPercent = new MarginPercent(0.1, 0.1, 0.1, 0.1);
       vp.zoomToElements([elementAId, elementBId], { ...viewChangeOpts })
         .catch((error) => {
           // eslint-disable-next-line no-console

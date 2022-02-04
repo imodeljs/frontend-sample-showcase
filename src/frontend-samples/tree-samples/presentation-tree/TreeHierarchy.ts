@@ -1,12 +1,15 @@
-import { ChildNodeSpecificationTypes, RelationshipDirection, Ruleset, RuleTypes } from "@bentley/presentation-common";
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
+import { ChildNodeSpecificationTypes, RelationshipDirection, Ruleset, RuleTypes } from "@itwin/presentation-common";
 
 const ruleset: Ruleset = {
   id: "TreeHierarchy",
-  supportedSchemas: {
-    schemaNames: [
-      "BisCore",
+  requiredSchemas:
+    [
+      { name: "BisCore" },
     ],
-  },
   rules: [
     {
       ruleType: RuleTypes.RootNodes, // "RootNodes"

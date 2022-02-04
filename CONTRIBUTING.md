@@ -59,7 +59,7 @@ Using iModel.js in your UI component is relatively easy. To render the viewport 
 
 ```ts
 import { Viewer } from "@bentley/itwin-viewer-react";
-import { AuthorizationClient, default3DSandboxUi, } from "@itwinjs-sandbox";
+import { AuthorizationClient, default3DSandboxUi, } from "@itwin/sandbox";
 export const MySampleApp: FunctionComponent = () => {
   const sampleIModelInfo = useSampleWidget("Sample Instructions");
 
@@ -67,9 +67,10 @@ export const MySampleApp: FunctionComponent = () => {
   public render() {
     return (
       <Viewer
-        contextId={sampleIModelInfo.contextId}
+        iTwinId={sampleIModelInfo.contextId}
         iModelId={sampleIModelInfo.iModelId}
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true}
         defaultUiConfig={default3DSandboxUi}
         theme="dark"
       />

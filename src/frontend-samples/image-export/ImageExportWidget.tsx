@@ -2,10 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import "common/samples-common.scss";
 import React from "react";
-import { Button, ButtonType } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { Button, ButtonType } from "@itwin/core-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { ImageExportApi } from "./ImageExportApi";
 import "./ImageExport.scss";
 
@@ -33,7 +32,7 @@ export class ImageExportWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ImageExportWidget />,
-        }
+        },
       );
     }
     return widgets;

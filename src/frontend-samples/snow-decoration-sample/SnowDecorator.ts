@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { dispose } from "@bentley/bentleyjs-core";
-import { Point2d, Range1d, Range2d, Vector2d } from "@bentley/geometry-core";
-import { RenderTexture } from "@bentley/imodeljs-common";
-import { DecorateContext, Decorator, GraphicType, ParticleCollectionBuilder, ParticleProps } from "@bentley/imodeljs-frontend";
+import { dispose } from "@itwin/core-bentley";
+import { Point2d, Range1d, Range2d, Vector2d } from "@itwin/core-geometry";
+import { RenderTexture } from "@itwin/core-common";
+import { DecorateContext, Decorator, GraphicType, ParticleCollectionBuilder, ParticleProps } from "@itwin/core-frontend";
 
 /** Generate integer in [min, max]. */
 function randomInteger(min: number, max: number): number {
@@ -186,7 +186,7 @@ export class SnowDecorator implements Decorator {
       const particle = this._particles[i];
       acceleration.set(
         randomFloat(this._params.accelerationRange.low.x, this._params.accelerationRange.high.x),
-        randomFloat(this._params.accelerationRange.low.y, this._params.accelerationRange.high.y)
+        randomFloat(this._params.accelerationRange.low.y, this._params.accelerationRange.high.y),
       );
 
       acceleration.scale(elapsedSeconds, acceleration);

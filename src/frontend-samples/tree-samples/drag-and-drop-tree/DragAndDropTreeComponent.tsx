@@ -4,26 +4,24 @@
 *--------------------------------------------------------------------------------------------*/
 import * as React from "react";
 import { DragObjectWithType, DropTargetMonitor, useDrag, useDrop } from "react-dnd";
-import {
-  ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource,
-  TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModelSource,
-  useTreeNodeLoader, useVisibleTreeNodes,
-} from "@bentley/ui-components";
+import { ControlledTree, ITreeDataProvider, SelectionMode, TreeModel, TreeModelNode, TreeModelSource, TreeNodeLoader, TreeNodeRendererProps, TreeRenderer, useTreeEventsHandler, useTreeModel, useTreeModelSource, useTreeNodeLoader } from "@itwin/components-react";
 import { BasicTreeNode } from "./BasicTreeNode";
 import * as mergeRefsExports from "react-merge-refs";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import { SampleDataProvider } from "@itwin/sandbox";
 import { DragAndDropTreeApi } from "./DragAndDropTreeApi";
 const mergeRefs = mergeRefsExports.default;
 
 /** Our custom tree component */
 export const DragAndDropTreeComponent: React.FC = () => {
+  const [width, setWidth] = React.useState<number>(1000);
+  const [height, setHeight] = React.useState<number>(1000);
   // Standard tree rendering procedure. Check out Basic Tree sample for more details.
   const [treeDataProvider, setTreeDataProvider] = React.useState(new SampleDataProvider());
   const modelSource = useTreeModelSource(treeDataProvider);
   const nodeLoader = useTreeNodeLoader(treeDataProvider, modelSource);
   const eventHandlerParams = React.useMemo(() => ({ nodeLoader, modelSource }), [nodeLoader, modelSource]);
   const eventHandler = useTreeEventsHandler(eventHandlerParams);
-  const visibleNodes = useVisibleTreeNodes(modelSource);
+  const model = useTreeModel(modelSource);
 
   React.useEffect(() => {
     const subscriber = DragAndDropTreeApi.on(() => setTreeDataProvider(new SampleDataProvider()));
@@ -41,13 +39,35 @@ export const DragAndDropTreeComponent: React.FC = () => {
     [modelSource, nodeLoader, isDragging],
   );
 
+  React.useEffect(() => {
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer);
+      };
+    }
+    return () => { };
+  }, []);
+
   return <>
     <dragDropContext.Provider value={dragDropContextValue}>
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.None}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={width}
+        height={height}
         treeRenderer={(treeProps) => (
           <TreeRenderer {...treeProps} nodeRenderer={(nodeProps) => <DragAndDropNode {...nodeProps} />} />
         )}

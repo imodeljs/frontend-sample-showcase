@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { BeButtonEvent, BeWheelEvent, EventHandled, PrimitiveTool, Viewport, ViewState3d } from "@bentley/imodeljs-frontend";
-import { Angle, Matrix3d, Transform, Vector3d } from "@bentley/geometry-core";
+import { BeButtonEvent, BeWheelEvent, EventHandled, PrimitiveTool, Viewport, ViewState3d } from "@itwin/core-frontend";
+import { Angle, Matrix3d, Transform, Vector3d } from "@itwin/core-geometry";
 
 export class CameraPathTool extends PrimitiveTool {
   public static toolId = "Test.DefineCamera";
@@ -19,7 +19,7 @@ export class CameraPathTool extends PrimitiveTool {
 
   public isCompatibleViewport(vp: Viewport | undefined, isSelectedViewChange: boolean): boolean { return (super.isCompatibleViewport(vp, isSelectedViewChange) && undefined !== vp); }
   public requireWriteableTarget(): boolean { return false; } // Tool doesn't modify the imodel.
-  public onRestartTool(): void { this.exitTool(); }
+  public async onRestartTool(): Promise<void> { return this.exitTool(); }
 
   public async onMiddleButtonDown(_ev: BeButtonEvent): Promise<EventHandled> {
     return EventHandled.Yes;

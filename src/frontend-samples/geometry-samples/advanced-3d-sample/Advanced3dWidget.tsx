@@ -4,10 +4,10 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { ColorByName, ColorDef } from "@bentley/imodeljs-common";
-import { Select } from "@bentley/ui-core";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
-import { IModelApp } from "@bentley/imodeljs-frontend";
+import { ColorByName, ColorDef } from "@itwin/core-common";
+import { Select } from "@itwin/core-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
+import { IModelApp } from "@itwin/core-frontend";
 import { GeometryDecorator } from "common/Geometry/GeometryDecorator";
 import Advanced3dApi from "./Advanced3dApi";
 import "./Advanced3d.scss";
@@ -70,7 +70,7 @@ export class Advanced3dWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <Advanced3dWidget />,
-        }
+        },
       );
     }
     return widgets;

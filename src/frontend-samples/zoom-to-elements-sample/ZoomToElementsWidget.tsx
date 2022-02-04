@@ -4,12 +4,12 @@
 *--------------------------------------------------------------------------------------------*/
 
 import React, { useEffect } from "react";
-import { useActiveIModelConnection } from "@bentley/ui-framework";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { useActiveIModelConnection } from "@itwin/appui-react";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import ZoomToElementsApi, { ZoomOptions } from "./ZoomToElementsApi";
-import { StandardViewId } from "@bentley/imodeljs-frontend";
-import { Button, ButtonType, Input, Select, Toggle } from "@bentley/ui-core";
-import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@bentley/presentation-frontend";
+import { StandardViewId } from "@itwin/core-frontend";
+import { Button, ButtonType, Select, Toggle } from "@itwin/core-react";
+import { ISelectionProvider, Presentation, SelectionChangeEventArgs } from "@itwin/presentation-frontend";
 import "./ZoomToElements.scss";
 
 const ZoomToElementsWidget: React.FunctionComponent = () => {
@@ -21,8 +21,6 @@ const ZoomToElementsWidget: React.FunctionComponent = () => {
   const [zoomOptions, setZoomOptions] = React.useState<ZoomOptions>({
     animateEnable: false,
     animateVal: true,
-    marginEnable: false,
-    marginVal: 0.1,
     relativeViewEnable: false,
     relativeViewVal: StandardViewId.Top,
     standardViewEnable: false,
@@ -113,9 +111,6 @@ const ZoomToElementsWidget: React.FunctionComponent = () => {
           <Toggle isOn={zoomOptions.animateEnable} onChange={() => setZoomOptions({ ...zoomOptions, animateEnable: !zoomOptions.animateEnable })} />
           <span>Animate</span>
           <Toggle isOn={zoomOptions.animateVal} onChange={() => setZoomOptions({ ...zoomOptions, animateVal: !zoomOptions.animateVal })} disabled={!zoomOptions.animateEnable} />
-          <Toggle isOn={zoomOptions.marginEnable} onChange={() => setZoomOptions({ ...zoomOptions, marginEnable: !zoomOptions.marginEnable })} />
-          <span>Margin</span>
-          <Input type="range" min="0" max="0.25" step="0.01" value={zoomOptions.marginVal} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setZoomOptions({ ...zoomOptions, marginVal: Number(event.target.value) })} disabled={!zoomOptions.marginEnable} />
           <Toggle isOn={zoomOptions.standardViewEnable} onChange={() => setZoomOptions({ ...zoomOptions, standardViewEnable: !zoomOptions.standardViewEnable })} />
           <span>Standard View</span>
           <ViewPicker onViewPick={(viewId: StandardViewId) => { setZoomOptions({ ...zoomOptions, standardViewVal: viewId }); }} disabled={!zoomOptions.standardViewEnable} />
@@ -189,7 +184,7 @@ export class ZoomToElementsWidgetProvider implements UiItemsProvider {
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ZoomToElementsWidget />,
-        }
+        },
       );
     }
     return widgets;

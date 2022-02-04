@@ -2,10 +2,10 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { dispose } from "@bentley/bentleyjs-core";
-import { Point3d, Range1d, Range2d, Range3d, Transform, Vector3d, XAndY } from "@bentley/geometry-core";
-import { ColorDef, RenderTexture } from "@bentley/imodeljs-common";
-import { DecorateContext, Decorator, GraphicType, HitDetail, ParticleCollectionBuilder, ParticleProps, Viewport } from "@bentley/imodeljs-frontend";
+import { dispose } from "@itwin/core-bentley";
+import { Point3d, Range1d, Range2d, Range3d, Transform, Vector3d, XAndY } from "@itwin/core-geometry";
+import { ColorDef, RenderTexture } from "@itwin/core-common";
+import { DecorateContext, Decorator, GraphicType, HitDetail, ParticleCollectionBuilder, ParticleProps, Viewport } from "@itwin/core-frontend";
 import FireDecorationApi from "./FireDecorationApi";
 
 /** Generate integer in [min, max]. */
@@ -131,7 +131,7 @@ export class FireEmitter implements Decorator {
 
   /** Creates a new fire particle decorator at the given world position. */
   public static async create(viewport: Viewport, source: Point3d, params: FireParams): Promise<FireEmitter | undefined> {
-    if (!await FireEmitter.tryTextures())
+    if (!(await FireEmitter.tryTextures()))
       return undefined;
 
     // A transient id is needed for interacting with the mouse (tool tips).

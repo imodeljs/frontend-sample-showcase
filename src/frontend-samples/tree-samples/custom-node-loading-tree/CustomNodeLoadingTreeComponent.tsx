@@ -2,15 +2,15 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { FunctionComponent } from "react";
-import { IModelConnection } from "@bentley/imodeljs-frontend";
-import { ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions, SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode, TreeModelSource, TreeNodeItem, useTreeEventsHandler, useVisibleTreeNodes } from "@bentley/ui-components";
-import { IPresentationTreeDataProvider, PresentationTreeDataProvider } from "@bentley/presentation-components";
-import { Ruleset } from "@bentley/presentation-common";
-import { useDisposable } from "@bentley/ui-core";
-import { PropertyRecord } from "@bentley/ui-abstract";
-import { isIDisposable } from "@bentley/bentleyjs-core";
-import { SampleDataProvider } from "@itwinjs-sandbox";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { IModelConnection } from "@itwin/core-frontend";
+import { ControlledTree, DelayLoadedTreeNodeItem, isTreeModelNode, LoadedNodeHierarchy, PagedTreeNodeLoader, PageOptions, SelectionMode, TreeDataProvider, TreeModelNode, TreeModelRootNode, TreeModelSource, TreeNodeItem, useTreeEventsHandler, useTreeModel } from "@itwin/components-react";
+import { IPresentationTreeDataProvider, PresentationTreeDataProvider } from "@itwin/presentation-components";
+import { Ruleset } from "@itwin/presentation-common";
+import { useDisposable } from "@itwin/core-react";
+import { PropertyRecord } from "@itwin/appui-abstract";
+import { isIDisposable } from "@itwin/core-bentley";
+import { SampleDataProvider } from "@itwin/sandbox";
 
 export interface CustomNodeLoadingTreeProps {
   imodel: IModelConnection;
@@ -45,6 +45,9 @@ const RULESET_TREE_HIERARCHY: Ruleset = require("common/Trees/TreeHierarchy.json
  *     - Child node 1   [from inMemoryDataProvider]
  */
 export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps> = (props) => {
+  const [width, setWidth] = useState<number>(1000);
+  const [height, setHeight] = useState<number>(1000);
+
   // create data provider to load nodes from iModel using presentation rules
   // `React.useMemo' is used avoid creating new object on each render cycle
   const presentationDataProvider = React.useMemo(() => new PresentationProvider(props.imodel), [props.imodel]);
@@ -72,15 +75,37 @@ export const CustomNodeLoadingTree: FunctionComponent<CustomNodeLoadingTreeProps
   // get list of visible nodes to render in `ControlledTree`. This is a flat list of nodes in tree model.
   // `useVisibleTreeNodes` uses 'modelSource' to get flat list of nodes and listens for model changes to
   // re-render component with updated nodes list
-  const visibleNodes = useVisibleTreeNodes(nodeLoader.modelSource);
+  const model = useTreeModel(nodeLoader.modelSource);
+
+  useEffect(() => {
+    const viewerContainer = document.querySelector(".itwin-viewer-container");
+    if (viewerContainer) {
+      setWidth(viewerContainer.clientWidth);
+      setHeight(viewerContainer.clientHeight);
+      const resizeObserver = new ResizeObserver((entries: any) => {
+        for (const entry of entries) {
+          setWidth(entry.contentRect.width);
+          setHeight(entry.contentRect.height);
+        }
+      });
+
+      resizeObserver.observe(viewerContainer);
+      return () => {
+        resizeObserver.unobserve(viewerContainer);
+      };
+    }
+    return () => { };
+  }, []);
 
   return <>
     <div className="tree">
       <ControlledTree
         nodeLoader={nodeLoader}
         selectionMode={SelectionMode.None}
-        treeEvents={eventHandler}
-        visibleNodes={visibleNodes}
+        eventsHandler={eventHandler}
+        model={model}
+        width={width}
+        height={height}
       />
     </div>
   </>;

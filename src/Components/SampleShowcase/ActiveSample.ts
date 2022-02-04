@@ -3,9 +3,9 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import type { Annotation } from "@bentley/monaco-editor";
-import { defaultIModel, defaultIModelList } from "@itwinjs-sandbox/constants";
-import { SampleIModels } from "@itwinjs-sandbox/SampleIModels";
+import { Annotation } from "@bentley/monaco-editor";
+import { defaultIModel, defaultIModelList } from "@itwin/sandbox/constants";
+import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 import { sampleManifest } from "sampleManifest";
 import { SampleSpec, SampleSpecFile, Walkthrough } from "SampleSpec";
 

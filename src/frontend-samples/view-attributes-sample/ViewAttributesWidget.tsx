@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { Select, Toggle } from "@bentley/ui-core";
+import { Select, Toggle } from "@itwin/core-react";
 import { AttrValues, ViewAttributesApi, ViewFlag } from "./ViewAttributesApi";
-import { RenderMode } from "@bentley/imodeljs-common";
-import { IModelApp } from "@bentley/imodeljs-frontend";
-import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@bentley/ui-abstract";
+import { RenderMode } from "@itwin/core-common";
+import { IModelApp } from "@itwin/core-frontend";
+import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import "./ViewAttributes.scss";
 
 export const ViewAttributesWidget: React.FunctionComponent = () => {
@@ -178,9 +178,14 @@ export class ViewAttributesWidgetProvider implements UiItemsProvider {
           id: "ViewAttributesWidget",
           label: "View Attributes Controls",
           defaultState: WidgetState.Floating,
+          isFloatingStateSupported: true,
+          defaultFloatingPosition: {
+            x: 100,
+            y: 100,
+          },
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <ViewAttributesWidget />,
-        }
+        },
       );
     }
     return widgets;

@@ -2,9 +2,9 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ColorDef } from "@bentley/imodeljs-common";
-import { BeButton, BeButtonEvent, EventHandled, IModelApp, InputCollector, Marker } from "@bentley/imodeljs-frontend";
-import { Point3d, XAndY } from "@bentley/geometry-core";
+import { ColorDef } from "@itwin/core-common";
+import { BeButton, BeButtonEvent, EventHandled, IModelApp, InputCollector, Marker } from "@itwin/core-frontend";
+import { Point3d, XAndY } from "@itwin/core-geometry";
 
 export class InteractivePointMarker extends Marker {
   private _color: ColorDef;
@@ -36,7 +36,7 @@ export class InteractivePointMarker extends Marker {
   public onMouseButton(ev: BeButtonEvent) {
     if (BeButton.Data === ev.button && ev.isDown) {
       this._canPick = false;
-      IModelApp.tools.run(MovePointTool.toolId, this.worldLocation, this._setPointFunc, () => { this._canPick = true; });
+      void IModelApp.tools.run(MovePointTool.toolId, this.worldLocation, this._setPointFunc, () => { this._canPick = true; });
       return true;
     }
     return false;
@@ -82,7 +82,7 @@ export class MovePointTool extends InputCollector {
   public async onDataButtonDown(ev: BeButtonEvent) {
     this._setPointFunc(ev.point);
     this._toolCompleteFunc();
-    this.exitTool();
+    void this.exitTool();
     return EventHandled.Yes;
   }
 

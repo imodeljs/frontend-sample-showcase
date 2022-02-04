@@ -3,8 +3,8 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 
-import { IModelTileRpcInterface, TileVersionInfo } from "@bentley/imodeljs-common";
-import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@bentley/imodeljs-frontend";
+import { IModelTileRpcInterface, TileVersionInfo } from "@itwin/core-common";
+import { Animator, EmphasizeElements, FeatureOverrideProvider, FeatureSymbology, IModelApp, IModelConnection, ScreenViewport, TiledGraphicsProvider, TileTreeReference, ViewChangeOptions, Viewport } from "@itwin/core-frontend";
 import { ExplodeTreeReference, TreeDataListener } from "./ExplodeTile";
 
 export interface ExplodeObject {
@@ -28,7 +28,7 @@ export default class ExplodeApi {
 
     const elementIds: string[] = [];
     for await (const row of iModel.query(selectElementsInCategories))
-      elementIds.push(row.id);
+      elementIds.push(row[0]);
 
     return elementIds;
   }
@@ -47,7 +47,7 @@ export default class ExplodeApi {
   /** Uses the  EmphasizeElements API to isolate the elements related to the ids given. */
   public static isolateElements(vp: Viewport, elementIds: string[]) {
     const emph = EmphasizeElements.getOrCreate(vp);
-    emph.isolateElements(elementIds, vp);
+    emph.isolateElements(elementIds, vp, true);
   }
   /** Uses the  EmphasizeElements API to clear all isolated and emphasized. */
   public static clearIsolate(vp: Viewport) {
@@ -63,7 +63,7 @@ export default class ExplodeApi {
     };
 
     // Move the view into a good viewing angle.
-    IModelApp.tools.run("View.Standard", vp, 7 /* isoRight */);
+    void IModelApp.tools.run("View.Standard", vp, 7 /* isoRight */);
 
     // Gets the volume from the tile tree once it has been calculated.
     let volume = ExplodeTreeReference.getTreeRange(objectName);
@@ -122,6 +122,18 @@ export class ExplodeProvider implements TiledGraphicsProvider, FeatureOverridePr
     return provider;
   }
 
+  public explodeTileTreeRef: ExplodeTreeReference;
+
+  public constructor(public vp: Viewport) {
+    this.explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
+    const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name, _, elementIdsDidUpdate) => {
+      const currentTree = this.explodeTileTreeRef.id;
+      if (currentTree.name === name && elementIdsDidUpdate)
+        this.invalidate();
+    });
+    ExplodeApi.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
+  }
+
   /** Updates the TileTree with the elements and explode scaling. */
   public setData(name: string, elementIds: string[], explodeScaling: number) {
     this.explodeTileTreeRef.explodeScaling = explodeScaling;
@@ -144,16 +156,6 @@ export class ExplodeProvider implements TiledGraphicsProvider, FeatureOverridePr
   public invalidate() {
     this.vp.setFeatureOverrideProviderChanged();
   }
-
-  public constructor(public vp: Viewport) {
-    const removeListener = ExplodeTreeReference.onTreeDataUpdated.addListener((name, _, elementIdsDidUpdate) => {
-      const currentTree = this.explodeTileTreeRef.id;
-      if (currentTree.name === name && elementIdsDidUpdate)
-        this.invalidate();
-    });
-    ExplodeApi.cleanUpCallbacks.push(removeListener);  // This will insure the listener is removed before swapping samples.
-  }
-  public explodeTileTreeRef = new ExplodeTreeReference(this.vp.iModel);
 
   /** Required by the FeatureOverrideProvider. Insures the static elements are not drawn. */
   public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _vp: Viewport): void {

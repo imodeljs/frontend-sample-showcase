@@ -2,9 +2,7 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import {
-  ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams, UniformType, VaryingType,
-} from "@bentley/imodeljs-frontend";
+import { ScreenSpaceEffectBuilder, ScreenSpaceEffectBuilderParams, UniformType, VaryingType } from "@itwin/core-frontend";
 
 /** Settings that control how the saturation effect is applied. */
 export interface SaturationConfig {
@@ -260,7 +258,7 @@ export const effects: Effect[] = [{
       type: UniformType.Float,
       bind: (uniform, context) => {
         let height = 0;
-        if (context.viewport.view.isCameraEnabled()) {
+        if (context.viewport.view.is3d() && context.viewport.view.isCameraOn) {
           const fov = context.viewport.view.camera.lens.radians;
           height = Math.tan(fov / 2) / context.viewport.viewRect.aspect;
         }

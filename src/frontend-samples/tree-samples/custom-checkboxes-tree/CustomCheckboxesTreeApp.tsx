@@ -3,11 +3,11 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { FunctionComponent } from "react";
-import { Range3d } from "@bentley/geometry-core";
-import { Cartographic } from "@bentley/imodeljs-common";
-import { BlankConnectionProps } from "@bentley/imodeljs-frontend";
+import { Range3d } from "@itwin/core-geometry";
+import { Cartographic } from "@itwin/core-common";
+import { BlankConnectionProps } from "@itwin/core-frontend";
 import { BlankViewer } from "@itwin/web-viewer-react";
-import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwinjs-sandbox";
+import { AuthorizationClient, BlankFrontstage, default3DSandboxUi, useSampleWidget } from "@itwin/sandbox";
 import { CustomCheckboxesTreeComponent } from "./CustomCheckboxesTreeComponent";
 import "./CustomCheckboxesTree.scss";
 
@@ -15,7 +15,7 @@ const frontstages = [{ provider: new BlankFrontstage(CustomCheckboxesTreeCompone
 
 const connection: BlankConnectionProps = {
   name: "BlankConnection",
-  location: Cartographic.fromDegrees(0, 0, 0),
+  location: Cartographic.fromDegrees({ longitude: 0, latitude: 0, height: 0 }),
   extents: new Range3d(),
 };
 
@@ -25,7 +25,8 @@ const CustomCheckboxesTreeApp: FunctionComponent = () => {
   return (
     <>
       <BlankViewer
-        authConfig={{ oidcClient: AuthorizationClient.oidcClient }}
+        authClient={AuthorizationClient.oidcClient}
+        enablePerformanceMonitors={true}
         defaultUiConfig={default3DSandboxUi}
         blankConnection={connection}
         frontstages={frontstages}
