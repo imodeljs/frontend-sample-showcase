@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------------------
-|  $Copyright: (c) 2020 Bentley Systems, Incorporated. All rights reserved. $
- *--------------------------------------------------------------------------------------------*/
-
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import { InternalModule } from "@bentley/monaco-editor";
 
 export interface Module {

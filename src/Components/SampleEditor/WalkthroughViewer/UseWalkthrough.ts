@@ -1,6 +1,7 @@
 /*---------------------------------------------------------------------------------------------
-|  $Copyright: (c) 2020 Bentley Systems, Incorporated. All rights reserved. $
- *--------------------------------------------------------------------------------------------*/
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import { Annotation, AnnotationContribution, DoublyLinkedList, DoublyLinkedNode, IAnnotation, MarkdownProps, normalizeFilePath, useAnnotationService } from "@bentley/monaco-editor";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExternalLink } from "../MarkdownComponents/Link/ExternalLink";
