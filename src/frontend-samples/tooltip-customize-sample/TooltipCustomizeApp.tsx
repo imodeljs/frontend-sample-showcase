@@ -3,7 +3,7 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React from "react";
-import { ShowcaseToolAdmin } from "./TooltipCustomizeApi";
+import { toolAdmin } from "./TooltipCustomizeApi";
 import { Viewer } from "@itwin/web-viewer-react";
 import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { IModelConnection } from "@itwin/core-frontend";
@@ -32,7 +32,7 @@ const TooltipCustomizeApp: React.FunctionComponent = () => {
           viewportOptions={{ viewState: _initialViewstate }}
 
           /** Pass the toolAdmin override directly into the viewer */
-          toolAdmin={ShowcaseToolAdmin.initialize()}
+          toolAdmin={toolAdmin}
 
           defaultUiConfig={default3DSandboxUi}
           theme="dark"
