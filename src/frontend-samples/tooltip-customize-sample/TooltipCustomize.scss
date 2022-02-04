@@ -7,10 +7,8 @@
   padding: 8px;
 }
 
-.sample-options-3col {
-  display: grid;
-  row-gap: 8px;
-  column-gap: 8px;
-  grid-template-columns: 1fr 2fr 2fr;
-  align-items: center;
+.tooltip-selection {
+  .control {
+    padding: 5px 0px 5px 0px
+  }
 }
