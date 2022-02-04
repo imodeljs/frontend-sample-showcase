@@ -89,8 +89,8 @@
   },
   "scripts": {
     "generate": "node ./scripts/generate.js ./modules.json ./public/editor",
-    "start": "npm run generate && react-app-rewired start --scripts-version @bentley/react-scripts",
-    "build": "npm run generate && react-app-rewired build --scripts-version @bentley/react-scripts",
+    "start": "npm run generate && react-app-rewired --max-old-space-size=8192 start --scripts-version @bentley/react-scripts",
+    "build": "npm run generate && react-app-rewired --max-old-space-size=8192 build --scripts-version @bentley/react-scripts",
     "test": "react-app-rewired test --scripts-version @bentley/react-scripts",
     "eject": "react-app-rewired eject --scripts-version @bentley/react-scripts",
     "lint": "eslint ./src/**/*.{ts,tsx} 1>&2",
