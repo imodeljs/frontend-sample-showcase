@@ -77,9 +77,10 @@ export class FloatingWidgets implements IDisposable {
         const containerId = frontstage.getFloatingWidgetContainerIdByWidgetId(id);
         const rect = frontstage.getFloatingWidgetContainerBounds(containerId);
         if (rect) {
-          const height = rect.bottom - rect.top + 125;
+          const height = rect.bottom - rect.top + 25;
           heightOffset += height + 16;
-          return { id, point: { x: dimensions.width - 300 - 32, y: dimensions.height - heightOffset }, size: { height, width: 300 } };
+          const width = rect.right - rect.left;
+          return { id, point: { x: dimensions.width - width - 32, y: dimensions.height - heightOffset }, size: { height, width } };
         }
         return undefined;
       });
@@ -93,7 +94,7 @@ export class FloatingWidgets implements IDisposable {
           if (containerId) {
             frontstage.setFloatingWidgetContainerBounds(containerId, {
               left: widget.point.x,
-              right: widget.point.x + 300,
+              right: widget.point.x + widget.size.width,
               top: widget.point.y,
               bottom: widget.point.y + widget.size.height,
             });
