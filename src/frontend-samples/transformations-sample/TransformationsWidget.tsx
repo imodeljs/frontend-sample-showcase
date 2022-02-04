@@ -100,7 +100,7 @@ export class TransformationsWidgetProvider implements UiItemsProvider {
         {
           id: "TransformationsWidget",
           label: "Transformations Selector",
-          defaultState: WidgetState.Open,
+          defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <TransformationsWidget />,
         },
