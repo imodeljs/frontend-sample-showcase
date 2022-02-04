@@ -8,7 +8,7 @@ import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProv
 import { useActiveViewport } from "@itwin/appui-react";
 import SnowDecorationApi from "./SnowDecorationApi";
 import { SnowParams } from "./SnowDecorator";
-import { Alert, Button, Label, LabeledSelect, Slider, ToggleSwitch } from "@itwin/itwinui-react";
+import { Alert, Button, Label, Select, Slider, ToggleSwitch } from "@itwin/itwinui-react";
 import "./SnowDecoration.scss";
 
 const windRange = 600;
@@ -83,23 +83,19 @@ const SnowDecorationWidget: React.FunctionComponent = () => {
   // Display drawing and sheet options in separate sections.
   return (
     <div className="sample-options">
-      <div className="sample-grid">
-        <LabeledSelect label="Select Effect" options={options} value={propsName} onChange={setPropsName} size="small" />
-        <ToggleSwitch label="Pause Effect" checked={pauseEffect} onChange={() => setPauseEffect(!pauseEffect)} />
-        <div>
-          <Label>Particle Density</Label>
-          <Slider min={0} max={0.01135} step={0.0001} values={[particleDensity]} onUpdate={(values) => setParticleDensity(values[0])} />
-        </div>
-        <div className="wind-grid">
-          <div>
-            <Label>Wind</Label>
-            <Slider min={-windRange} max={windRange} values={[wind]} step={0.25} onUpdate={(values) => setWind(values[0])} />
-          </div>
-          <Button size="small" onClick={() => setWind(0)}>Reset</Button>
-        </div>
-        <Alert type="informational" className="instructions">
-          Apply particle effects to the model
-        </Alert>
+      <Alert type="informational" className="instructions">
+        Apply particle effects to the model
+      </Alert>
+      <div className="sample-options-2col">
+        <Label>Select Effect</Label>
+        <Select options={options} value={propsName} onChange={setPropsName} size="small" />
+        <Label>Pause Effect</Label>
+        <ToggleSwitch checked={pauseEffect} onChange={() => setPauseEffect(!pauseEffect)} />
+        <Label>Particle Density</Label>
+        <Slider min={0} max={0.01135} step={0.0001} values={[particleDensity]} onUpdate={(values) => setParticleDensity(values[0])} />
+        <Label>Wind</Label>
+        <Slider min={-windRange} max={windRange} values={[wind]} step={0.25} onUpdate={(values) => setWind(values[0])} />
+        <Button size="small" onClick={() => setWind(0)}>Reset</Button>
       </div>
     </div>
   );
@@ -115,7 +111,7 @@ export class SnowDecorationWidgetProvider implements UiItemsProvider {
         {
           id: "SnowDecorationWidget",
           label: "Snow Decoration Selector",
-          defaultState: WidgetState.Open,
+          defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <SnowDecorationWidget />,
         },
