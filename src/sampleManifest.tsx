@@ -10,14 +10,14 @@ import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sam
 import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
 import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
-import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
+// import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
 import { getPropertyFormattingSpec } from "./frontend-samples/property-formatting-sample/sampleSpec";
 import { getShadowStudySpec } from "./frontend-samples/shadow-study-sample/sampleSpec";
 import { getThematicDisplaySpec } from "./frontend-samples/thematic-display-sample/sampleSpec";
-import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
+// import { getSwipingComparisonSpec } from "./frontend-samples/swiping-viewport/sampleSpec";
 import { getTooltipCustomizeSpec } from "./frontend-samples/tooltip-customize-sample/sampleSpec";
 import { getViewerOnly2dSpec } from "./frontend-samples/viewer-only-2d-sample/sampleSpec";
 import { getViewCameraSpec } from "./frontend-samples/camera-path-sample/sampleSpec";
@@ -99,7 +99,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
-    getHeatmapDecoratorSpec(),
+    // getHeatmapDecoratorSpec(), Temporarily disabled until sample is fixed
     getHyperModelingSpec(),
     getImageExportSpec(),
     getIotAlertSpec(),
@@ -112,7 +112,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getScreenSpaceEffectsSpec(),
     getSerializeViewSpec(),
     getShadowStudySpec(),
-    getSwipingComparisonSpec(),
+    // getSwipingComparisonSpec(), Temporarily disabled until sample is fixed
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
