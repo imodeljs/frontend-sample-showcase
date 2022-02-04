@@ -15,19 +15,19 @@ function createViewDiv() {
   assert(null !== div);
   div.style.width = div.style.height = "1000px";
   document.body.appendChild(div);
-  Object.defineProperty(div, "clientWidth", {
-    writable: true,
-    configurable: true,
-    value: 1000,
-  });
+  // Object.defineProperty(div, "clientWidth", {
+  //   writable: true,
+  //   configurable: true,
+  //   value: 1000,
+  // });
 
-  Object.defineProperty(div, "clientHeight", {
-    writable: true,
-    configurable: true,
-    value: 1000,
-  });
+  // Object.defineProperty(div, "clientHeight", {
+  //   writable: true,
+  //   configurable: true,
+  //   value: 1000,
+  // });
 
-  div.dispatchEvent(new Event("resize"));
+  // div.dispatchEvent(new Event("resize"));
   return div;
 }
 

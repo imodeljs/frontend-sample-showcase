@@ -19,12 +19,12 @@ import ClassifierApi from "frontend-samples/classifier-sample/ClassifierApi";
 describe("View Clipping Sample", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
 
-  beforeAll(async () => {
+  before(async () => {
     await TestApp.startup();
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  afterAll(async () => {
+  after(async () => {
     await TestApp.shutdown();
   });
 
@@ -54,12 +54,12 @@ describe("View Clipping Sample", () => {
 describe("Thematic display", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
 
-  beforeAll(async () => {
+  before(async () => {
     await TestApp.startup();
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  afterAll(async () => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Turns thematic display on/off", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
@@ -74,12 +74,12 @@ describe("Thematic display", () => {
 describe("Shadow Study", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
 
-  beforeAll(async () => {
+  before(async () => {
     await TestApp.startup();
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  afterAll(async () => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Sets sun time", async () => {
     const time: number = 123;
@@ -111,12 +111,12 @@ describe("Shadow Study", () => {
 describe("Emphasize Elements", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
 
-  beforeAll(async () => {
+  before(async () => {
     await TestApp.startup();
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  afterAll(async () => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Emphasizes some elements", async () => {
     await IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
@@ -145,12 +145,12 @@ describe("Emphasize Elements", () => {
 describe("Reality Data", () => {
   const imodelMock: TypeMoq.IMock<IModelConnection> = TypeMoq.Mock.ofType<IModelConnection>();
 
-  beforeAll(async () => {
+  before(async () => {
     await TestApp.startup();
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  afterAll(async () => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Removes reality data models", async () => {
     await IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
@@ -183,11 +183,11 @@ describe("Reality Data", () => {
 });
 
 describe("Classifers", () => {
-  beforeAll(async () => {
+  before(async () => {
     await TestApp.startup();
   });
 
-  afterAll(async () => TestApp.shutdown());
+  after(async () => TestApp.shutdown());
 
   it("Updates classifiers", async () => {
     await IModelApp.viewManager.setSelectedView(TestUtilities.getScreenViewport());
