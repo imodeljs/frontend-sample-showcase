@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 const generateTypdefs = require("./generate-typedefs");
 const generateModules = require("./generate-modules");
 const camelCase = require('lodash.camelcase');

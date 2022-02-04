@@ -1,3 +1,7 @@
+/*---------------------------------------------------------------------------------------------
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 import { Annotation } from "@bentley/monaco-editor";
 import { SampleIModels } from "@itwin/sandbox/SampleIModels";
 import React from "react";
