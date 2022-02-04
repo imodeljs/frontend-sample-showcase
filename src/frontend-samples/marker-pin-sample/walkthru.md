@@ -51,10 +51,12 @@ Also, our custom `SampleMarkerSet` implements its own helper methods to manage i
 [_metadata_:annotation]:- "SAMPLEMARKERSET"
 
 # Add Markers
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "SETMARKERSDATA"
 
 # Remove Markers
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "REMOVEMARKER"
 
@@ -71,18 +73,22 @@ To do this the class overrides the following methods:
 [_metadata_:annotation]:- "SAMPLECLUSTERMARKER"
 
 # Constructor
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERCONSTRUCTOR"
 
 # Setup Tooltip
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERTOOLTIP"
 
 # OnMouseButton
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERMOUSEBUTTON"
 
 # DrawFunc
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "CLUSTERMARKERDRAWFUNC"
 
@@ -96,9 +102,11 @@ The class `SamplePinMarker` also extends the `Marker` base class.  It is similar
 [_metadata_:annotation]:- "SAMPLEPINMARKER"
 
 # Image
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "MARKERPINIMAGE"
 
 # Pick
+
 [_metadata_:minor]:- "true"
 [_metadata_:annotation]:- "MARKERPINPICK"

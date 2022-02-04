@@ -15,4 +15,4 @@ The purpose of this sample is to demonstrate the following:
 
 This sample uses the [CurveFactory](https://www.itwinjs.org/reference/core-geometry/curve/curvefactory/) class to create curve chains and then shows a simple method to calculate a point on the chain.
 
-This geometry sample, like the others, uses a [BlankConnection](https://www.imodeljs.org/learning/frontend/blankconnection/) to create a viewport without connecting to an iModel.  It displays geometry in the viewport using [view decorations](https://www.imodeljs.org/learning/frontend/viewdecorations/).
+This geometry sample, like the others, uses a [BlankConnection](https://www.itwinjs.org/learning/frontend/blankconnection/) to create a viewport without connecting to an iModel.  It displays geometry in the viewport using [view decorations](https://www.itwinjs.org/learning/frontend/viewdecorations/).
