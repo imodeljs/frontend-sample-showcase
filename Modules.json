@@ -25,7 +25,7 @@
     {
       "dependency": "@itwin/core-bentley",
       "version": "3.x",
-      "lib": "@itwin/core-bentley/3.x/index.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/index.js",
       "global": "itwinCoreBentley",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/types.json"
     },
