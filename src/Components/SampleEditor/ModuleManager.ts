@@ -32,11 +32,23 @@ export class ModuleManager {
     return ModuleManager.moduleRegistry;
   }
 
+  private static _isValidHttpUrl(val: string) {
+    let url;
+
+    try {
+      url = new URL(val);
+    } catch (_) {
+      return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+
   public static formatModule(name: string, version: string, options: { lib: string, global: string, types?: string }) {
     return new InternalModule(name, version, {
-      libUrl: ModuleManager.root && options.lib.startsWith("/") ? new URL(options.lib, ModuleManager.root).href : options.lib,
+      libUrl: ModuleManager.root && !ModuleManager._isValidHttpUrl(options.lib) ? new URL(options.lib, ModuleManager.root).href : options.lib,
       global: options.global,
-      typesUrl: options.types ? ModuleManager.root && options.types.startsWith("/") ? new URL(options.types, ModuleManager.root).href : options.types : undefined,
+      typesUrl: options.types ? ModuleManager.root && !ModuleManager._isValidHttpUrl(options.types) ? new URL(options.types, ModuleManager.root).href : options.types : undefined,
     });
   }
 }
