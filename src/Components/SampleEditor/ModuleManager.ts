@@ -3,7 +3,6 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import { InternalModule } from "@bentley/monaco-editor";
-import { isAbsolute } from "path";
 
 export interface Module {
   dependency: string;
@@ -33,11 +32,23 @@ export class ModuleManager {
     return ModuleManager.moduleRegistry;
   }
 
+  private static _isValidHttpUrl(val: string) {
+    let url;
+
+    try {
+      url = new URL(val);
+    } catch (_) {
+      return false;
+    }
+
+    return url.protocol === "http:" || url.protocol === "https:";
+  }
+
   public static formatModule(name: string, version: string, options: { lib: string, global: string, types?: string }) {
     return new InternalModule(name, version, {
-      libUrl: ModuleManager.root && !isAbsolute(options.lib) ? new URL(options.lib, ModuleManager.root).href : options.lib,
+      libUrl: ModuleManager.root && !ModuleManager._isValidHttpUrl(options.lib) ? new URL(options.lib, ModuleManager.root).href : options.lib,
       global: options.global,
-      typesUrl: options.types ? ModuleManager.root && !isAbsolute(options.types) ? new URL(options.types, ModuleManager.root).href : options.types : undefined,
+      typesUrl: options.types ? ModuleManager.root && !ModuleManager._isValidHttpUrl(options.types) ? new URL(options.types, ModuleManager.root).href : options.types : undefined,
     });
   }
 }
