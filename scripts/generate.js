@@ -51,9 +51,9 @@ async function handleExec(source, generatedFilesDest) {
         return {
           dependency: mod.dependency,
           version: mod.version,
-          lib: mod.fileName.replace(path.join(process.cwd(), "public"), "").replace(/\\/g, "/"),
+          lib: mod.fileName.replace(path.join(process.cwd(), "public", "/"), "").replace(/\\/g, "/"),
           global: camelCase(mod.dependency),
-          types: typedef ? typedef.fileName.replace(path.join(process.cwd(), "public"), "").replace(/\\/g, "/") : undefined,
+          types: typedef ? typedef.fileName.replace(path.join(process.cwd(), "public", "/"), "").replace(/\\/g, "/") : undefined,
         }
       })
     );
