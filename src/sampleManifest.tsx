@@ -10,7 +10,7 @@ import { getDisplayStylesSpec } from "frontend-samples/display-styles-sample/sam
 import { getScreenSpaceEffectsSpec } from "frontend-samples/screen-space-effects-sample/sampleSpec";
 import { getClassifierSpec } from "frontend-samples/classifier-sample/sampleSpec";
 import { getEmphasizeElementsSpec } from "./frontend-samples/emphasize-elements-sample/sampleSpec";
-// import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
+import { getHeatmapDecoratorSpec } from "./frontend-samples/heatmap-decorator-sample/sampleSpec";
 import { getImageExportSpec } from "./frontend-samples/image-export/sampleSpec";
 import { getMarkerPinSpec } from "./frontend-samples/marker-pin-sample/sampleSpec";
 import { getMultiViewportSpec } from "frontend-samples/multi-viewport-sample/sampleSpec";
@@ -25,7 +25,6 @@ import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sam
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
-// import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
@@ -99,7 +98,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getDisplayStylesSpec(),
     getEmphasizeElementsSpec(),
     getExplodeSpec(),
-    // getHeatmapDecoratorSpec(), Temporarily disabled until sample is fixed
+    getHeatmapDecoratorSpec(),
     getHyperModelingSpec(),
     getImageExportSpec(),
     getIotAlertSpec(),
@@ -112,7 +111,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getScreenSpaceEffectsSpec(),
     getSerializeViewSpec(),
     getShadowStudySpec(),
-    // getSwipingComparisonSpec(), Temporarily disabled until sample is fixed
+    // getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
@@ -171,11 +170,9 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getChangedElementsSpec(),
     getClashReviewSpec(),
     getIssuesSpec(),
-    // getReadSettingsSpec(), Temporarily disabled until sample is fixed
     getTransformationSpec(),
     getValidationSpec(),
   ],
-
 },
 ];
 
