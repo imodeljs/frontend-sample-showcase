@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { DecorateContext, Decorator, GraphicBranch, GraphicType, IModelApp, RenderGraphic, TextureImage } from "@itwin/core-frontend";
 import { Geometry, Point3d, Range2d, Range3d, Transform } from "@itwin/core-geometry";
-import { ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping, ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings } from "@itwin/core-common";
+import { ColorDef, ColorDefProps, Gradient, GraphicParams, ImageBuffer, ImageBufferFormat, RenderMaterial, RenderTexture, TextureMapping, TextureTransparency, ThematicGradientColorScheme, ThematicGradientMode, ThematicGradientSettings } from "@itwin/core-common";
 import { dispose } from "@itwin/core-bentley";
 
 /** This file contains the code that implements the heatmap decorator including
@@ -265,7 +265,7 @@ export default class HeatmapDecorator implements Decorator {
       return undefined;
 
     /* Step 3: Convert the image buffer to a texture */
-    const image: TextureImage = { source: imageBuffer };
+    const image: TextureImage = { source: imageBuffer, transparency: TextureTransparency.Translucent };
     const texture = IModelApp.renderSystem.createTexture({ type: RenderTexture.Type.Normal, image });
 
     if (undefined === texture)
