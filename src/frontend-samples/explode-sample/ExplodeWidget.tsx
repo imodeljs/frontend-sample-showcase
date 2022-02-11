@@ -5,9 +5,9 @@
 import React, { useEffect } from "react";
 import { useActiveIModelConnection, useActiveViewport } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Button, Select, Slider, Toggle } from "@itwin/core-react";
 import ExplodeApi, { ExplodeObject, ExplodeProvider } from "./ExplodeApi";
 import { Animator, IModelApp, IModelConnection } from "@itwin/core-frontend";
+import { Button, Select, Slider, ToggleSwitch } from "@itwin/itwinui-react";
 import "./Explode.scss";
 
 /** List of objects that can be exploded.  The 'elementIds' will be populate during start up. */
@@ -132,10 +132,8 @@ const ExplodeWidget: React.FunctionComponent = () => {
   };
 
   /** Methods that support the UI control interactions. */
-  const onObjectChanged = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const objectChanged = _objects.find((o) => o.name === event.target.value);
-    if (objectChanged)
-      setObject(objectChanged);
+  const onObjectChanged = (value: ExplodeObject) => {
+    setObject(value);
   };
 
   const onZoomButton = () => {
@@ -161,7 +159,7 @@ const ExplodeWidget: React.FunctionComponent = () => {
   const min = ExplodeApi.explodeAttributes.min;
   const step = ExplodeApi.explodeAttributes.step;
 
-  const objectEntries = _objects.map((o) => o.name);
+  const objectEntries = _objects.map((o) => ({ value: o, label: o.name }));
   const animationText = isAnimated ? "Pause" : ((min + max) / 2 >= explodeFactor ? "Explode" : "Collapse");
 
   // Display drawing and sheet options in separate sections.
@@ -169,16 +167,16 @@ const ExplodeWidget: React.FunctionComponent = () => {
     <div className="sample-options">
       <div className={"sample-options-2col"}>
         <label>Animate</label>
-        <Button onClick={onAnimateButton}>{animationText}</Button>
+        <Button size="small" styleType="cta" onClick={onAnimateButton}>{animationText}</Button>
         <label>Explode Scaling</label>
-        <Slider min={min} max={max} values={[explodeFactor]} step={step} showMinMax={true} onChange={(values) => setExplodeFactor(values[0])} onUpdate={(values) => setExplodeFactor(values[0])} disabled={isAnimated} />
+        <Slider min={min} max={max} values={[explodeFactor]} step={step} onChange={(values) => setExplodeFactor(values[0])} onUpdate={(values) => setExplodeFactor(values[0])} disabled={isAnimated} />
         <label>Object</label>
         <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Select value={object.name} options={objectEntries} onChange={onObjectChanged} style={{ width: "fit-content" }} disabled={isAnimated || isPopulatingObjects} />
-          <Button onClick={onZoomButton} disabled={isAnimated}>Zoom To</Button>
+          <Select<ExplodeObject> value={object} options={objectEntries} onChange={onObjectChanged} style={{ width: "fit-content" }} disabled={isAnimated || isPopulatingObjects} onHide={() => { }} onShow={() => { }} />
+          <Button styleType="high-visibility" onClick={onZoomButton} disabled={isAnimated}>Zoom To</Button>
         </span>
         <label>Isolate</label>
-        <Toggle isOn={isolate} onChange={(checked) => setIsolate(checked)} disabled={isAnimated} />
+        <ToggleSwitch checked={isolate} onChange={(e) => setIsolate(e.target.checked)} disabled={isAnimated} />
       </div>
     </div>
   );

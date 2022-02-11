@@ -618,7 +618,7 @@ export class IssuesWidgetProvider implements UiItemsProvider {
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
-    if (location === StagePanelLocation.Right && _section === StagePanelSection.Start) {
+    if (location === StagePanelLocation.Right) {
       widgets.push(
         {
           id: "IssuesWidget",

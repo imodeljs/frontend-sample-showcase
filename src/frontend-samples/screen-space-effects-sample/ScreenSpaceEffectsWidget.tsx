@@ -3,12 +3,13 @@
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
 import React, { useEffect } from "react";
-import { Slider, Toggle } from "@itwin/core-react";
 import { cloneEffectsConfig, EffectsConfig, getCurrentEffectsConfig, updateEffectsConfig } from "./Effects";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { Angle } from "@itwin/core-geometry";
-import ScreenSpaceEffectsApi from "./ScreenSpaceEffectsApi";
 import { useActiveViewport } from "@itwin/appui-react";
+import { Label, Slider, ToggleSwitch } from "@itwin/itwinui-react";
+import ScreenSpaceEffectsApi from "./ScreenSpaceEffectsApi";
+import "./ScreenSpaceEffects.scss";
 
 export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
   const viewport = useActiveViewport();
@@ -23,6 +24,10 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
       ScreenSpaceEffectsApi.registerEffects();
       ScreenSpaceEffectsApi._effectsRegistered = true;
     }
+
+    return () => {
+      ScreenSpaceEffectsApi._effectsRegistered = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -37,7 +42,6 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
       lensAngle = viewport.view.camera.getLensAngle().degrees;
 
     setLensAngleState(lensAngle);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewport]);
 
@@ -115,10 +119,10 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
     }
 
     return (
-      <>
-        <span>{label}</span>
+      <div>
+        <Label>{label}</Label>
         <Slider min={min} max={max} step={step} values={[value]} onUpdate={updateValue} disabled={!state}></Slider>
-      </>
+      </div>
     );
   };
 
@@ -128,26 +132,25 @@ export const ScreenSpaceEffectsWidget: React.FunctionComponent = () => {
   lensAngleValue = Math.min(lensAngleValue, lensAngleMax);
   lensAngleValue = Math.max(lensAngleValue, lensAngleMin);
   return (
-    <>
-      <div className="sample-options">
-        <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
-          <span>Saturation</span>
-          <Toggle isOn={saturationState} onChange={(sat) => setSaturationState(sat)} />
-          {createSlider("Multiplier", effectsConfigState.saturation.multiplier, 0, 4, 0.2, "saturation", (config, val) => config.saturation.multiplier = val)}
-          <span>Vignette</span>
-          <Toggle isOn={vignetteState} onChange={(enableVignette) => setVignetteState(enableVignette)} />
-          {createSlider("Size", effectsConfigState.vignette.size, 0, 1, 0.05, "vignette", (config, val) => config.vignette.size = val)}
-          {createSlider("Smoothness", effectsConfigState.vignette.smoothness, 0, 1, 0.05, "vignette", (config, val) => config.vignette.smoothness = val)}
-          {createSlider("Roundness", effectsConfigState.vignette.roundness, 0, 1, 0.05, "vignette", (config, val) => config.vignette.roundness = val)}
-          <span>Lens Distortion</span>
-          <Toggle isOn={lensDistortionState} onChange={(lensDist) => setLensDistortionState(lensDist)} />
-          <span>Lens Angle</span>
-          <Slider showMinMax={true} min={lensAngleMin} max={lensAngleMax} step={5} values={[lensAngleValue]} disabled={!lensDistortionState} onUpdate={_onUpdateLensAngle} />
-          {createSlider("Strength", effectsConfigState.lensDistortion.strength, 0, 1, 0.05, "lensDistortion", (config, val) => config.lensDistortion.strength = val)}
-          {createSlider("Cylindrical Ratio", effectsConfigState.lensDistortion.cylindricalRatio, 0, 1, 0.05, "lensDistortion", (config, val) => config.lensDistortion.cylindricalRatio = val)}
-        </div>
+    <div className="sample-options">
+      <div className="sample-control">
+        <ToggleSwitch label="Saturation" checked={saturationState} onChange={() => setSaturationState(!saturationState)} />
+        {createSlider("Multiplier", effectsConfigState.saturation.multiplier, 0, 4, 0.2, "saturation", (config, val) => config.saturation.multiplier = val)}
       </div>
-    </>
+      <div className="sample-control">
+        <ToggleSwitch label="Vignette" checked={vignetteState} onChange={() => setVignetteState(!vignetteState)} />
+        {createSlider("Size", effectsConfigState.vignette.size, 0, 1, 0.05, "vignette", (config, val) => config.vignette.size = val)}
+        {createSlider("Smoothness", effectsConfigState.vignette.smoothness, 0, 1, 0.05, "vignette", (config, val) => config.vignette.smoothness = val)}
+        {createSlider("Roundness", effectsConfigState.vignette.roundness, 0, 1, 0.05, "vignette", (config, val) => config.vignette.roundness = val)}
+      </div>
+      <div className="sample-control">
+        <ToggleSwitch label="Lens Distortion" checked={lensDistortionState} onChange={() => setLensDistortionState(!lensDistortionState)} />
+        <Label>Lens Angle</Label>
+        <Slider min={lensAngleMin} max={lensAngleMax} step={5} values={[lensAngleValue]} disabled={!lensDistortionState} onUpdate={_onUpdateLensAngle} />
+        {createSlider("Strength", effectsConfigState.lensDistortion.strength, 0, 1, 0.05, "lensDistortion", (config, val) => config.lensDistortion.strength = val)}
+        {createSlider("Cylindrical Ratio", effectsConfigState.lensDistortion.cylindricalRatio, 0, 1, 0.05, "lensDistortion", (config, val) => config.lensDistortion.cylindricalRatio = val)}
+      </div>
+    </div>
   );
 };
 

@@ -24,7 +24,9 @@ describe("View Clipping Sample", () => {
     imodelMock.setup((_) => _.displayedExtents).returns(() => new Range3d(1, 1, 1, 1, 1, 1));
   });
 
-  after(async () => TestApp.shutdown());
+  after(async () => {
+    await TestApp.shutdown();
+  });
 
   it("Adds a view clip plane to the viewport", () => {
     const vp: ScreenViewport = TestUtilities.getScreenViewport();
@@ -226,12 +228,14 @@ class TestApp extends MockRender.App {
 
   public static async startup(opts?: IModelAppOptions): Promise<void> {
     opts = opts ? opts : {};
+
+    await super.startup(opts);
     // opts.i18n = this.supplyI18NOptions();
-    await IModelApp.startup(
-      opts,
-    );
+    // await IModelApp.startup(
+    //   opts,
+    // );
     // this.testNamespace = IModelApp.i18n.registerNamespace("TestApp");
-    IModelApp.toolAdmin.onInitialized();
+    // IModelApp.toolAdmin.onInitialized();
   }
 
   protected static supplyI18NOptions() { return { urlTemplate: `${window.location.origin}/locales/{{lng}}/{{ns}}.json` }; }

@@ -327,8 +327,13 @@ export class MarkerPinDecorator implements Decorator {
   // START DECORATE
   /* Implement this method to add Decorations into the supplied DecorateContext. */
   public decorate(context: DecorateContext): void {
-    this._autoMarkerSet.changeViewport(context.viewport);
-    this._manualMarkerSet.changeViewport(context.viewport);
+    if (!this._autoMarkerSet.viewport) {
+      this._autoMarkerSet.changeViewport(context.viewport);
+    }
+
+    if (!this._manualMarkerSet.viewport) {
+      this._manualMarkerSet.changeViewport(context.viewport);
+    }
 
     /* This method is called for every rendering frame.  We will reuse our marker sets since the locations and images
        for the markers don't typically change. */

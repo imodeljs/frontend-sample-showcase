@@ -2,7 +2,7 @@
 
 Copyright © Bentley Systems, Incorporated. All rights reserved.
 
-This sample demonstrates calling [Clash Detection APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result) to retrieve clash data and present it for review in a viewer app. 
+This sample demonstrates calling [Clash Detection APIs](https://developer.bentley.com/api-groups/project-delivery/apis/validation/operations/get-validation-clashdetection-result) to retrieve clash data and present it for review in a viewer app.
 
 ## Purpose
 

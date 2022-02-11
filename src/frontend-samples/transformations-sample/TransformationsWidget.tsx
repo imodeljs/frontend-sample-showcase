@@ -66,7 +66,7 @@ const TransformationsWidget: React.FunctionComponent = () => {
       <div className="sample-options">
         <div className="iui-alert iui-informational sample-options-block">
           <div className="iui-alert-message">
-            Use the controls at the top-right to navigate the model. Toggle to sync the viewports in the controls below. Navigating will not change the selected viewport.
+            Use the controls at the top-right to navigate the model.
           </div>
         </div>
         <ToggleSwitch
@@ -100,7 +100,7 @@ export class TransformationsWidgetProvider implements UiItemsProvider {
         {
           id: "TransformationsWidget",
           label: "Transformations Selector",
-          defaultState: WidgetState.Open,
+          defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
           getWidgetContent: () => <TransformationsWidget />,
         },

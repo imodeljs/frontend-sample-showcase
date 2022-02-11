@@ -4,7 +4,7 @@
 *--------------------------------------------------------------------------------------------*/
 import { Id64String } from "@itwin/core-bentley";
 import { Point3d, Range1d, Range2d, Range3d, Vector3d, XYAndZ } from "@itwin/core-geometry";
-import { Placement3d, QueryRowFormat, RenderTexture } from "@itwin/core-common";
+import { Placement3d, QueryRowFormat, RenderTexture, TextureTransparency } from "@itwin/core-common";
 import { Decorator, imageElementFromUrl, IModelApp, IModelConnection, ScreenViewport, Viewport } from "@itwin/core-frontend";
 import { EmitterHighlighter, FireEmitter, FireParams } from "./FireDecorator";
 import { PlacementTool } from "./PlacementTool";
@@ -82,10 +82,11 @@ export default class FireDecorationApi {
   /** Allocates memory and creates a RenderTexture from a given URL. */
   public static async allocateTextureFromUrl(url: string): Promise<RenderTexture | undefined> {
     // Note: the caller takes ownership of the textures, and disposes of those resources when they are no longer needed.
-    const isOwned = true;
-    const params = new RenderTexture.Params(undefined, undefined, isOwned);
     const fireImage = await imageElementFromUrl(url);
-    return IModelApp.renderSystem.createTextureFromImage(fireImage, true, undefined, params);
+    return IModelApp.renderSystem.createTexture({
+      ownership: "external",
+      image: { source: fireImage, transparency: TextureTransparency.Mixed },
+    });
   }
 
   /** Attempts to create a new fire emitter. */

@@ -157,13 +157,13 @@ const ClassifierWidget: React.FunctionComponent = () => {
     <div className="sample-options">
       <div className="sample-options-2col" style={{ gridTemplateColumns: "1fr 2fr" }}>
         <span>Select classifier:</span>
-        <Select<string> className="classification-dialog-select" value={currentClassifier} options={classifiers} onChange={_onClassifierChange} />
+        <Select<string> className="classification-dialog-select" value={currentClassifier} options={classifiers} onChange={_onClassifierChange} onHide={() => { }} onShow={() => { }} />
         <span>Margin:</span>
         <Input type="number" min="0" max="100" value={expandDistState} onChange={_onMarginChange} />
         <span>Outside Display:</span>
-        <Select<number> options={_outsideDisplayEntries} value={outsideDisplayKeyState} onChange={_onOutsideDisplayChange} />
+        <Select<number> options={_outsideDisplayEntries} value={outsideDisplayKeyState} onChange={_onOutsideDisplayChange} onHide={() => { }} onShow={() => { }} />
         <span>Inside Display:</span>
-        <Select<number> options={_insideDisplayEntries} value={insideDisplayKeyState} onChange={_onInsideDisplayChange} />
+        <Select<number> options={_insideDisplayEntries} value={insideDisplayKeyState} onChange={_onInsideDisplayChange} onHide={() => { }} onShow={() => { }} />
         <span></span>
         <ClassifierProperties keys={keysState} imodel={iModelConnection} />
       </div>

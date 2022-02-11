@@ -1,7 +1,7 @@
 /*---------------------------------------------------------------------------------------------
- * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
- * See LICENSE.md in the project root for license terms and full copyright notice.
- *--------------------------------------------------------------------------------------------*/
+* Copyright (c) Bentley Systems, Incorporated. All rights reserved.
+* See LICENSE.md in the project root for license terms and full copyright notice.
+*--------------------------------------------------------------------------------------------*/
 
 import { EmphasizeElements, IModelApp, IModelConnection, ScreenViewport, StandardViewId, ViewClipClearTool, ViewClipDecorationProvider, ViewClipTool, ViewState } from "@itwin/core-frontend";
 import { ClipMaskXYZRangePlanes, ClipPlaneContainment, ClipShape, ClipUtilities, ClipVector, Range3d } from "@itwin/core-geometry";
@@ -92,9 +92,9 @@ export class VolumeQueryApi {
   }
 
   /* Getting elements that are inside or overlaping the given range*/
-  public static async getSpatialElements(vp: ScreenViewport, range: Range3d): Promise<SpatialElement[]> {
+  public static async getSpatialElements(conn: IModelConnection, range: Range3d): Promise<SpatialElement[]> {
     const esqlQuery = `SELECT e.ECInstanceId,  ec_classname(e.ECClassId, 's:c')  FROM bis.SpatialElement e JOIN bis.SpatialIndex i ON e.ECInstanceId=i.ECInstanceId WHERE i.MinX<=${range.xHigh} AND i.MinY<=${range.yHigh} AND i.MinZ<=${range.zHigh} AND i.MaxX >= ${range.xLow} AND i.MaxY >= ${range.yLow} AND i.MaxZ >= ${range.zLow}`;
-    const elementsAsync = vp.iModel.query(esqlQuery);
+    const elementsAsync = conn.query(esqlQuery);
     const elements: SpatialElement[] = [];
     for await (const element of elementsAsync) {
       elements.push({ id: element[0], className: element[1], name: undefined });
@@ -104,7 +104,7 @@ export class VolumeQueryApi {
   }
 
   /* Classify given elements - inside and overlaping. What is left are going to be outside the box*/
-  public static async getClassifiedElements(vp: ScreenViewport, candidates: SpatialElement[]): Promise<Record<ElementPosition, SpatialElement[]> | undefined> {
+  public static async getClassifiedElements(vp: ScreenViewport, conn: IModelConnection, candidates: SpatialElement[]): Promise<Record<ElementPosition, SpatialElement[]> | undefined> {
     const clip = vp.view.getViewClip();
     if (clip === undefined)
       return;
@@ -123,7 +123,7 @@ export class VolumeQueryApi {
       viewFlags: vp.viewFlags.toJSON(),
     };
 
-    const result = await vp.iModel.getGeometryContainment(requestProps);
+    const result = await conn.getGeometryContainment(requestProps);
     if (BentleyStatus.SUCCESS !== result.status || undefined === result.candidatesContainment)
       return;
 

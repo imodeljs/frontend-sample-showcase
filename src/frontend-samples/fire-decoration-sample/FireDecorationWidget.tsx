@@ -6,12 +6,12 @@
 import React, { useEffect } from "react";
 import { useActiveIModelConnection } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Button, Select, Slider, Toggle } from "@itwin/core-react";
 import FireDecorationApi from "./FireDecorationApi";
 import { FireEmitter } from "./FireDecorator";
 import { Point3d, Range2d, Transform } from "@itwin/core-geometry";
 import { IModelApp, Viewport } from "@itwin/core-frontend";
 import { assert } from "@itwin/core-bentley";
+import { Alert, Button, Label, Leading, Select, Slider, ToggleSwitch } from "@itwin/itwinui-react";
 import "./FireDecoration.scss";
 
 interface Fire {
@@ -143,45 +143,39 @@ const FireDecorationWidget: React.FunctionComponent = () => {
   };
 
   const noEmitterSelected = selectedEmitterState === undefined;
+  const emitterOptions = Array.from(FireDecorationApi.predefinedParams.keys()).map((key) => ({ value: key, label: key }));
 
   // Display drawing and sheet options in separate sections.
   return (
-    <div className="sample-options">
-      <div>
-        <div className="sample-heading">
-          <span>Place New Emitter</span>
+    <>
+      <div className="sample-options">
+        <Leading className="new-emmiter-a">Place New Emitter</Leading>
+        <div className="sample-options-2col">
+          <Button className="new-emmiter-b" styleType="high-visibility" disabled={isLoadingState} onClick={startPlacementTool}>Place</Button>
+          <Select className="new-emmiter-c" options={emitterOptions} value={paramsNameState} onChange={(value) => setParamsNameState(value)} onHide={() => { }} onShow={() => { }} />
+          <Button className="new-emmiter-d" styleType="high-visibility" disabled={isLoadingState} onClick={dropAllEmitters}>Delete all emitters</Button>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-          <Button disabled={isLoadingState} onClick={dropAllEmitters}>Delete all emitters</Button>
+        <Alert type="informational" className="instructions">
+          Use the &quot;Place&quot; button to create a new fire particle emitter. After placing, use the controls to configure the new emitter.
+        </Alert>
+        <div className="active-emmiter">
+          <Leading className="active-emmiter-a">Configure Active Emitter</Leading>
+          <div className="sample-options-2col">
+            <Label>Particle Count</Label>
+            <Slider min={0} max={1} step={0.02} values={[fireState.particleNumScale]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, particleNumScale: values[0] })} />
+            <Label>Height</Label>
+            <Slider min={0} max={5} step={0.02} values={[fireState.height]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, height: values[0] })} />
+            <Label>Width</Label>
+            {/* The UI of this sample assumes effectRange is a square. */}
+            <Slider min={0} max={6} step={0.2} values={[fireState.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, effectRange: createSquareRange2d(values[0]) })} />
+            <ToggleSwitch className="active-emmiter-b" label="Smoke" checked={fireState.enableSmoke} disabled={noEmitterSelected} onChange={(event) => setFireState({ ...fireState, enableSmoke: event.target.checked })} />
+            <ToggleSwitch className="active-emmiter-c" label="Overlay Graphics" checked={fireState.isOverlay} disabled={noEmitterSelected} onChange={(event) => setFireState({ ...fireState, isOverlay: event.target.checked })} />
+            <Button className="active-emmiter-d" disabled={noEmitterSelected} onClick={dropSelected}>Drop</Button>
+            <Button className="active-emmiter-f" disabled={isLoadingState || noEmitterSelected} onClick={() => setSelectedEmitterState(undefined)}>Deselect</Button>
+          </div>
         </div>
-        <div className={"sample-options-2col"}>
-          <Button disabled={isLoadingState} onClick={startPlacementTool}>Place</Button>
-          <Select options={[...FireDecorationApi.predefinedParams.keys()]} value={paramsNameState} onChange={(event) => setParamsNameState(event.target.value)} />
-        </div>
       </div>
-      <hr></hr>
-      <div className="sample-heading">
-        <span>Configure Selected Emitter</span>
-      </div>
-      <div className={"sample-options-2col"}>
-        <label>Particle Count</label>
-        <Slider min={0} max={1} step={0.02} values={[fireState.particleNumScale]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, particleNumScale: values[0] })} />
-        <label>Height</label>
-        <Slider min={0} max={5} step={0.02} values={[fireState.height]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, height: values[0] })} />
-        <label>Width</label>
-        {/* The UI of this sample assumes effectRange is a square. */}
-        <Slider min={0} max={6} step={0.2} values={[fireState.effectRange.xLength()]} disabled={noEmitterSelected} onUpdate={(values: readonly number[]) => setFireState({ ...fireState, effectRange: createSquareRange2d(values[0]) })} />
-        <label>Smoke</label>
-        <Toggle isOn={fireState.enableSmoke} disabled={noEmitterSelected} onChange={(checked) => setFireState({ ...fireState, enableSmoke: checked })} />
-        <label>Overlay Graphics</label>
-        <Toggle isOn={fireState.isOverlay} disabled={noEmitterSelected} onChange={(checked) => setFireState({ ...fireState, isOverlay: checked })} />
-
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-evenly" }}>
-        <Button disabled={noEmitterSelected} onClick={dropSelected}>Drop</Button>
-        <Button disabled={isLoadingState || noEmitterSelected} onClick={() => setSelectedEmitterState(undefined)}>Deselect</Button>
-      </div>
-    </div>
+    </>
   );
 };
 
