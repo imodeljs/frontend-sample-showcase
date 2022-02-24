@@ -2,8 +2,8 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import { ContextRealityModelProps, FeatureAppearance, Frustum, RealityDataFormat, RealityDataProvider, RenderMode } from "@itwin/core-common";
-import { AccuDrawHintBuilder, FeatureOverrideProvider, FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
+import { ContextRealityModelProps, FeatureAppearance, FeatureAppearanceProps, Frustum, RealityDataFormat, RealityDataProvider, RenderMode, ViewFlagOverrides } from "@itwin/core-common";
+import { AccuDrawHintBuilder, FeatureSymbology, GraphicBranch, IModelApp, RenderClipVolume, SceneContext, ScreenViewport, TiledGraphicsProvider, TileTreeReference, Viewport } from "@itwin/core-frontend";
 import { ClipPlane, ClipPrimitive, ClipVector, ConvexClipPlaneSet, Point3d, Transform, Vector3d } from "@itwin/core-geometry";
 import { RealityDataAccessClient, RealityDataResponse } from "@itwin/reality-data-client";
 
@@ -12,18 +12,6 @@ export enum ComparisonType {
   RealityData,
 }
 
-// const compareDebugClipStyle = ClipStyle.create(true, CutStyle.defaults, RgbColor.fromColorDef(ColorDef.blue), RgbColor.fromColorDef(ColorDef.green));
-// const elements = new Set("0x2000000acf7");
-
-class HideItAll implements FeatureOverrideProvider {
-  public static hideIt = false;
-  public addFeatureOverrides(overrides: FeatureSymbology.Overrides, _viewport: Viewport) {
-    if (HideItAll.hideIt)
-      overrides.setDefaultOverrides(FeatureAppearance.fromTransparency(1));
-    else
-      overrides.setDefaultOverrides(FeatureAppearance.defaults);
-  }
-}
 export default class SwipingComparisonApi {
   private static _provider: SampleTiledGraphicsProvider | undefined;
   private static _viewport?: Viewport;
@@ -70,7 +58,7 @@ export default class SwipingComparisonApi {
   }
 
   /** Will create an effect allowing for different views on either side of an arbitrary point in the view space.  This will allows us to compare the effect the views have on the iModel. */
-  public static compare(screenPoint: Point3d, viewport: Viewport, comparisonType: ComparisonType) {
+  public static compare(screenPoint: Point3d | undefined, viewport: Viewport, comparisonType: ComparisonType) {
     if (viewport.viewportId !== SwipingComparisonApi._viewport?.viewportId)
       SwipingComparisonApi.teardown();
     SwipingComparisonApi._viewport = viewport;
@@ -78,17 +66,29 @@ export default class SwipingComparisonApi {
     if (!viewport.view.isSpatialView())
       return;
 
+    let oldClipVector: ClipVector | undefined;
     if (undefined !== provider && provider.comparisonType !== comparisonType) {
+      // Save the old ClipVector if the screen point is not provided.
+      // We will use this if a new provider is needed.
+      if (screenPoint === undefined)
+        oldClipVector = this._provider?.clipVolume?.clipVector;
       SwipingComparisonApi.disposeProvider(viewport, SwipingComparisonApi._provider!);
       SwipingComparisonApi._provider = undefined;
     }
 
-    if (undefined === SwipingComparisonApi._provider) {
-      SwipingComparisonApi._provider = SwipingComparisonApi.createProvider(screenPoint, viewport, comparisonType);
-      viewport.addTiledGraphicsProvider(SwipingComparisonApi._provider);
+    if (undefined === SwipingComparisonApi._provider && (screenPoint || oldClipVector)) {
+      if (screenPoint)
+        // Use the screen point if provided.
+        SwipingComparisonApi._provider = SwipingComparisonApi.createProvider(screenPoint, viewport, comparisonType);
+      else if (oldClipVector)
+        // Use the old Clip Vector if it's available.
+        SwipingComparisonApi._provider = SwipingComparisonApi.createProvider(oldClipVector, viewport, comparisonType);
+      if (SwipingComparisonApi._provider)
+        // If the provider was created, add that to the viewport.
+        viewport.addTiledGraphicsProvider(SwipingComparisonApi._provider);
     }
-
-    SwipingComparisonApi.updateProvider(screenPoint, viewport, SwipingComparisonApi._provider);
+    if (screenPoint !== undefined && SwipingComparisonApi._provider)
+      SwipingComparisonApi.updateProvider(screenPoint, viewport, SwipingComparisonApi._provider);
   }
 
   /** Creates a [ClipVector] based on the arguments. */
@@ -110,20 +110,20 @@ export default class SwipingComparisonApi {
 
     // Update in Viewport
     viewport.view.setViewClip(SwipingComparisonApi.createClip(normal.clone(), worldPoint));
-    // viewport.setAlwaysDrawn(new Set(), true);
-    HideItAll.hideIt = true;
-    viewport.addFeatureOverrideProvider(new HideItAll());
 
     viewport.synchWithView();
   }
 
   /** Creates a [TiledGraphicsProvider] and adds it to the viewport.  This also sets the clipping plane used for the comparison. */
-  private static createProvider(screenPoint: Point3d, viewport: Viewport, type: ComparisonType): SampleTiledGraphicsProvider {
-    const normal = SwipingComparisonApi.getPerpendicularNormal(viewport, screenPoint);
-    let rtnProvider;
+  private static createProvider(arg: Point3d | ClipVector, viewport: Viewport, type: ComparisonType): SampleTiledGraphicsProvider {
+    let rtnProvider: SampleTiledGraphicsProvider;
+    const createClipVectorFromPoint = (point: Point3d) => {
+      const normal = SwipingComparisonApi.getPerpendicularNormal(viewport, point);
 
-    // Note the normal is negated, this is flip the clipping plane created from it.
-    const negatedClip = SwipingComparisonApi.createClip(normal.clone().negate(), SwipingComparisonApi.getWorldPoint(viewport, screenPoint));
+      // Note the normal is negated, this is flip the clipping plane created from it.
+      return SwipingComparisonApi.createClip(normal.clone().negate(), SwipingComparisonApi.getWorldPoint(viewport, point));
+    };
+    const negatedClip: ClipVector = arg instanceof ClipVector ? arg : createClipVectorFromPoint(arg);
     switch (type) {
       case ComparisonType.Wireframe:
       default:
@@ -180,7 +180,7 @@ export default class SwipingComparisonApi {
 
   /** Set the transparency of the reality models using the Feature Override API. */
   public static setRealityModelTransparent(vp: Viewport, transparent: boolean): void {
-    const override = { transparency: (transparent ?? false) ? 1.0 : 0.0 };
+    const override: FeatureAppearanceProps = { transparency: (transparent ?? false) ? 1 : 0 };
     vp.displayStyle.settings.contextRealityModels.models.forEach((model) => {
       model.appearanceOverrides = model.appearanceOverrides ? model.appearanceOverrides.clone(override) : FeatureAppearance.fromJSON(override);
     });
@@ -189,7 +189,7 @@ export default class SwipingComparisonApi {
 
 abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
   public readonly abstract comparisonType: ComparisonType;
-  public viewFlagOverrides = { renderMode: RenderMode.Wireframe, showClipVolume: false };
+  public viewFlagOverrides: ViewFlagOverrides = { clipVolume: false };
   public clipVolume: RenderClipVolume | undefined;
   constructor(clipVector: ClipVector) {
     // Create the object that will be used later by the "addToScene" method.
@@ -201,7 +201,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     viewport.view.forEachTileTreeRef(func);
 
     // Do not apply the view's clip to this provider's graphics - it applies its own (opposite) clip to its graphics.
-    this.viewFlagOverrides.showClipVolume = false;
+    this.viewFlagOverrides.clipVolume = false;
   }
 
   /** Overrides the logic for adding this provider's graphics into the scene. */
@@ -209,13 +209,10 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
 
     // Save view to be replaced after comparison is drawn
     const vp = output.viewport;
-    // const clip = vp.view.getViewClip();
+    const clip = vp.view.getViewClip();
 
     // Replace the clipping plane with a flipped one.
-    // vp.view.setViewClip(this.clipVolume?.clipVector);
-
-    HideItAll.hideIt = false;
-    // vp.clipStyle = compareDebugClipStyle;
+    vp.view.setViewClip(this.clipVolume?.clipVector);
 
     this.prepareNewBranch(vp);
 
@@ -239,11 +236,7 @@ abstract class SampleTiledGraphicsProvider implements TiledGraphicsProvider {
     }
 
     // Return the old clip to the view.
-    // vp.view.setViewClip(clip);
-
-    HideItAll.hideIt = true;
-    // vp.setAlwaysDrawn(new Set(), true);
-    // vp.clipStyle = ClipStyle.defaults;
+    vp.view.setViewClip(clip);
 
     this.resetOldView(vp);
   }

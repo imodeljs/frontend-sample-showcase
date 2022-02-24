@@ -17,7 +17,6 @@ const SwipingComparisonApp: FunctionComponent = () => {
     return viewState;
   }, []);
   const viewportOptions = useMemo(() => ({ viewState: getDefaultView }), [getDefaultView]);
-  // const viewport = useActiveViewport();
   const sampleIModelInfo = useSampleWidget("Drag the divider to compare the two halves of the view. Try rotating the view with the 'Lock Plane' toggle on and off.", [SampleIModels.ExtonCampus]);
 
   /** The sample's render method */

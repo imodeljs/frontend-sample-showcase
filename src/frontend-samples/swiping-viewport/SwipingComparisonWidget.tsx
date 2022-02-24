@@ -5,7 +5,6 @@
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
 import { useActiveViewport } from "@itwin/appui-react";
 import { Frustum } from "@itwin/core-common";
-// import { Point3d } from "@itwin/core-geometry";
 import { ScreenViewport } from "@itwin/core-frontend";
 import { Point3d } from "@itwin/core-geometry";
 import { useEffectSkipFirst } from "@itwin/core-react";
@@ -13,7 +12,6 @@ import { Select, SelectOption, ToggleSwitch } from "@itwin/itwinui-react";
 import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { DividerComponent } from "./Divider";
-// import { Frustum } from "@itwin/core-common";
 import "./SwipingComparison.scss";
 import SwipingComparisonApi, { ComparisonType } from "./SwipingComparisonApi";
 
@@ -67,9 +65,6 @@ const SwipingComparisonWidget: React.FunctionComponent<SwipingComparisonWidgetPr
     return unsubRender;
   }, [viewport, frustum]);
 
-  // useEffect(() => {
-  // }, [frustum]);
-
   useEffect(() => {
     if (!viewport) return;
     // Start listener for Viewport getting resized.
@@ -91,7 +86,7 @@ const SwipingComparisonWidget: React.FunctionComponent<SwipingComparisonWidgetPr
     setFrustum(SwipingComparisonApi.getFrustum(viewport));
     setDividerLeftState(dividerPos);
 
-    viewport.viewFlags = viewport.viewFlags.copy({ clipVolume: false });
+    viewport.viewFlags = viewport.viewFlags.copy({ clipVolume: true });
 
     // Attach reality data so it's visible in the viewport
     SwipingComparisonApi.attachRealityData(viewport)
@@ -115,14 +110,9 @@ const SwipingComparisonWidget: React.FunctionComponent<SwipingComparisonWidgetPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewRect]);
 
-  // const onViewUpdate = useCallback((vp: Viewport) => {
-  //   const newFrustum = SwipingComparisonApi.getFrustum(vp);
-  //   setFrustum(newFrustum);
-  // }, []);
-
   useEffect(() => {
     if (viewport) {
-      SwipingComparisonApi.setRealityModelTransparent(viewport, comparisonState === ComparisonType.RealityData);
+      SwipingComparisonApi.setRealityModelTransparent(viewport, comparisonState !== ComparisonType.RealityData);
     }
   }, [viewport, comparisonState]);
 
@@ -143,8 +133,7 @@ const SwipingComparisonWidget: React.FunctionComponent<SwipingComparisonWidgetPr
 
   useEffect(() => {
     if (viewport && screenPointState && frustum)
-      // SwipingComparisonApi.compare(isLockedState ? undefined : screenPointState, viewport, comparisonState);
-      SwipingComparisonApi.compare(screenPointState, viewport, comparisonState);
+      SwipingComparisonApi.compare(isLockedState ? undefined : screenPointState, viewport, comparisonState);
   }, [comparisonState, frustum, screenPointState, viewport, isLockedState]);
 
   const _onDividerMoved = (leftWidth: number, rightWidth: number) => {
