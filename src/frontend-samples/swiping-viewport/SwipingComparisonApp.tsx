@@ -5,8 +5,7 @@
 import { IModelConnection, ViewState } from "@itwin/core-frontend";
 import { AuthorizationClient, default3DSandboxUi, mapLayerOptions, SampleIModels, useSampleWidget, ViewSetup } from "@itwin/sandbox";
 import { Viewer } from "@itwin/web-viewer-react";
-import { FunctionComponent, default as React, useMemo } from "react";
-import "./SwipingComparison.scss";
+import React, { FunctionComponent, useMemo } from "react";
 import { SwipingComparisonWidgetProvider } from "./SwipingComparisonWidget";
 
 const containerId = "swiping_comparison_app_container";
