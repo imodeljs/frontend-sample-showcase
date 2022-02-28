@@ -2,82 +2,130 @@
 * Copyright (c) Bentley Systems, Incorporated. All rights reserved.
 * See LICENSE.md in the project root for license terms and full copyright notice.
 *--------------------------------------------------------------------------------------------*/
-import React, { useCallback, useEffect } from "react";
-import { useActiveIModelConnection } from "@itwin/appui-react";
 import { AbstractWidgetProps, StagePanelLocation, StagePanelSection, UiItemsProvider, WidgetState } from "@itwin/appui-abstract";
-import { Select, Toggle } from "@itwin/core-react";
-import SwipingComparisonApi, { ComparisonType } from "./SwipingComparisonApi";
-import { Point3d } from "@itwin/core-geometry";
-import { IModelApp, ScreenViewport, Viewport } from "@itwin/core-frontend";
+import { useActiveViewport } from "@itwin/appui-react";
 import { Frustum } from "@itwin/core-common";
+import { ScreenViewport } from "@itwin/core-frontend";
+import { Point3d } from "@itwin/core-geometry";
+import { useEffectSkipFirst } from "@itwin/core-react";
+import { Select, SelectOption, ToggleSwitch } from "@itwin/itwinui-react";
+import React, { useEffect, useRef } from "react";
+import ReactDOM from "react-dom";
+import { DividerComponent } from "./Divider";
 import "./SwipingComparison.scss";
+import SwipingComparisonApi, { ComparisonType } from "./SwipingComparisonApi";
 
-const SwipingComparisonWidget: React.FunctionComponent = () => {
-  const iModelConnection = useActiveIModelConnection();
-  const viewport = IModelApp.viewManager.selectedView;
-  const [screenPointState, setScreenPointState] = React.useState<Point3d>();
+interface SwipingComparisonWidgetProps { appContainerId: string }
+
+/** Custom hook to hold the previous value of a state. */
+function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
+  // On Every render, save the value.
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
+const INITIAL_LOCK_STATE = false;
+
+const SwipingComparisonWidget: React.FunctionComponent<SwipingComparisonWidgetProps> = (props: SwipingComparisonWidgetProps) => {
+  const viewport = useActiveViewport();
+
+  const [viewRect, setViewRect] = React.useState<DOMRect>();
+  const prevRect = usePrevious<DOMRect | undefined>(viewRect);
   const [dividerLeftState, setDividerLeftState] = React.useState<number>();
+  const [isLockedState, setIsLockedState] = React.useState<boolean>(INITIAL_LOCK_STATE);
+
+  const [screenPointState, setScreenPointState] = React.useState<Point3d>();
+  const appContainer = useRef<Element | null>(null);
   const [frustum, setFrustum] = React.useState<Frustum>();
-  const [isLockedState, setIsLockedState] = React.useState<boolean>(false);
-  const [isRealityDataState] = React.useState<boolean>(true);
   const [comparisonState, setComparisonState] = React.useState<ComparisonType>(ComparisonType.RealityData);
-  const [isInit, setIsInit] = React.useState<boolean>(false);
 
-  const initPositionDivider = (bounds: ClientRect): number => {
-    return bounds.left + (bounds.width / 2);
-  };
+  // Clean up on dismount
+  useEffectSkipFirst(() => SwipingComparisonApi.teardown(), []);
 
-  const onViewUpdate = useCallback((vp: Viewport) => {
-    const newFrustum = SwipingComparisonApi.getFrustum(vp);
-    setFrustum(newFrustum);
-  }, []);
+  // eslint-disable-next-line no-console
+  useEffect(() => viewport?.iModel.selectionSet.onChanged.addListener((ev) => console.debug(...ev.set.elements.entries())), [viewport]);
 
-  // Should be called when the Viewport is ready.
-  const _initViewport = useCallback((vp: ScreenViewport) => {
-    SwipingComparisonApi.attachRealityData(vp, iModelConnection!)
+  useEffect(() => {
+    if (!appContainer.current || appContainer.current.id !== props.appContainerId)
+      appContainer.current = document.getElementById(props.appContainerId);
+  }, [props]);
+
+  useEffect(() => {
+    if (!viewport) return;
+    // Start listener for view being navigated.
+    const unsubRender = viewport.onRender.addListener((vp) => {
+      const latestFrustum = SwipingComparisonApi.getFrustum(vp);
+      if (frustum === undefined || !frustum.isSame(latestFrustum))
+        setFrustum(latestFrustum);
+    });
+    // return callback to unsubscribe to event
+    return unsubRender;
+  }, [viewport, frustum]);
+
+  useEffect(() => {
+    if (!viewport) return;
+    // Start listener for Viewport getting resized.
+    const unsubOnResize = viewport.onResized.addListener((vp) => {
+      setViewRect(SwipingComparisonApi.getRect(vp as ScreenViewport));
+    });
+    // return callback to unsubscribe to event
+    return () => unsubOnResize();
+  }, [viewport]);
+
+  /** Initialize the view and all the viewport dependant states. */
+  useEffect(() => {
+    if (!viewport) return;
+    // Initialize the divider position and bounds.
+    const clientRect = SwipingComparisonApi.getRect(viewport);
+    setViewRect(clientRect);
+    // Initial position of the divider is centered on the viewport
+    const dividerPos = clientRect.left + (clientRect.width / 2);
+    setFrustum(SwipingComparisonApi.getFrustum(viewport));
+    setDividerLeftState(dividerPos);
+
+    viewport.viewFlags = viewport.viewFlags.copy({ clipVolume: true });
+
+    // Attach reality data so it's visible in the viewport
+    SwipingComparisonApi.attachRealityData(viewport)
       .catch((error) => {
         // eslint-disable-next-line no-console
         console.error(error);
       });
-    SwipingComparisonApi.setRealityModelTransparent(vp, ComparisonType.RealityData !== comparisonState);
-    SwipingComparisonApi.listerForViewportUpdate(vp, onViewUpdate);
-    const dividerPos = initPositionDivider(SwipingComparisonApi.getClientRect(vp));
-    setDividerLeftState(dividerPos);
-    setIsInit(true);
-    return () => {
-      SwipingComparisonApi.teardown();
-    };
-  }, [comparisonState, iModelConnection, onViewUpdate]);
+  }, [viewport]);
+
+  /** Reacting to the viewport resizing. */
+  useEffect(() => {
+    if (dividerLeftState === undefined
+      || prevRect === undefined
+      || viewRect === undefined
+    )
+      return;
+    const oldBounds = prevRect, newBounds = viewRect;
+    const dividerRatio = (dividerLeftState - oldBounds.left) / oldBounds.width;
+    const newLeft = (dividerRatio * newBounds.width) + newBounds.left;
+    setDividerLeftState(newLeft);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewRect]);
 
   useEffect(() => {
-    const unSubscribe = SwipingComparisonApi.onSwipeEvent.addListener((num) => setDividerLeftState(num));
-    return () => unSubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (viewport && !isInit) {
-      /** Initially the widget is docked to the right of the screen, which is then updated to be floating in the sample showcase.
-       * If we don't wait for the widget to be in a floating state, the dimensions of the viewport will be off, and thus the dividerState.
-       */
-      setTimeout(() => { _initViewport(viewport); }, 200);
-    } else if (!isInit)
-      IModelApp.viewManager.onViewOpen.addOnce((_vp: ScreenViewport) => _initViewport(_vp));
-  }, [_initViewport, isInit, viewport]);
-
-  useEffect(() => {
-    if (viewport && isRealityDataState) {
-      SwipingComparisonApi.setRealityModelTransparent(viewport, isRealityDataState);
+    if (viewport) {
+      SwipingComparisonApi.setRealityModelTransparent(viewport, comparisonState !== ComparisonType.RealityData);
     }
-  }, [viewport, isRealityDataState]);
+  }, [viewport, comparisonState]);
 
-  /** Send the locked event */
-  useEffect(() => {
-    SwipingComparisonApi.onLockEvent.raiseEvent(isLockedState);
-  }, [isLockedState]);
+  const calculateScreenPoint = (bounds: DOMRect, leftInWindowSpace: number): Point3d => {
+    const y = bounds.top + (bounds.height / 2);
+    // The point needs to be returned relative to the canvas.
+    const left = leftInWindowSpace - bounds.left;
+    return new Point3d(left, y, 0);
+  };
 
   useEffect(() => {
     if (viewport && dividerLeftState) {
-      const bounds = SwipingComparisonApi.getClientRect(viewport);
+      const bounds = SwipingComparisonApi.getRect(viewport);
       const newScreenPoint = calculateScreenPoint(bounds, dividerLeftState);
       setScreenPointState(newScreenPoint);
     }
@@ -85,28 +133,49 @@ const SwipingComparisonWidget: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (viewport && screenPointState && frustum)
-      SwipingComparisonApi.compare(screenPointState, viewport, comparisonState);
-  }, [comparisonState, frustum, screenPointState, viewport]);
+      SwipingComparisonApi.compare(isLockedState ? undefined : screenPointState, viewport, comparisonState);
+  }, [comparisonState, frustum, screenPointState, viewport, isLockedState]);
 
-  const calculateScreenPoint = (bounds: ClientRect, leftInWindowSpace: number): Point3d => {
-    const y = bounds.top + (bounds.height / 2);
-    // The point needs to be returned relative to the canvas.
-    const left = leftInWindowSpace - bounds.left;
-    return new Point3d(left, y, 0);
+  const _onDividerMoved = (leftWidth: number, rightWidth: number) => {
+    // leftWidth is relative to the canvas.  We need to track left based on the window
+    const sliderWidth = viewRect!.width - (leftWidth + rightWidth);
+    const left = leftWidth + (sliderWidth / 2);
+    const updatedLeft = left + viewRect!.left;
+
+    setDividerLeftState(updatedLeft);
   };
 
-  const keys = Object.keys(ComparisonType).filter((key: any) => isNaN(key));
-  const options = Object.assign({}, keys);
+  const options: SelectOption<ComparisonType>[] = Object.entries(ComparisonType)
+    .filter(([_, value]: any) => typeof value !== "string")
+    .map(([key, value]) => ({ value: (value as ComparisonType), label: key }));
 
   return (
     <>
+      {/** Using the createPortal to */}
+      {appContainer.current && ReactDOM.createPortal(
+        (<>
+          {/** The divider to move left and right. */}
+          {viewRect && dividerLeftState && !isLockedState &&
+            <DividerComponent sideL={dividerLeftState - viewRect.left} bounds={viewRect} onDragged={_onDividerMoved} />
+          }
+        </>), appContainer.current)
+      }
       <div className="sample-options">
         <div className={"sample-options-2col"} style={{ gridTemplateColumns: "1fr 1fr" }}>
           <label>Lock Plane</label>
-          <Toggle title={"Lock dividing plane"} isOn={isLockedState} onChange={(isOn: boolean) => setIsLockedState(isOn)}></Toggle>
-
+          <ToggleSwitch
+            label={"Lock dividing plane"}
+            defaultChecked={INITIAL_LOCK_STATE}
+            labelPosition={"left"}
+            onChange={async (e: React.ChangeEvent<HTMLInputElement>) => setIsLockedState(e.target.checked)}
+          />
           <label>Comparison Type</label>
-          <Select value={comparisonState} onChange={(event) => setComparisonState(Number.parseInt(event.target.value, 10))} disabled={undefined === viewport && undefined === iModelConnection} options={options} />
+          <Select<ComparisonType>
+            value={comparisonState}
+            onChange={(value) => setComparisonState(value)}
+            disabled={undefined === viewport}
+            options={options}
+          />
         </div>
       </div>
     </>
@@ -115,6 +184,9 @@ const SwipingComparisonWidget: React.FunctionComponent = () => {
 
 export class SwipingComparisonWidgetProvider implements UiItemsProvider {
   public readonly id: string = "SwipingComparisonWidgetProvider";
+
+  constructor(private readonly appContainerId: string) {
+  }
 
   public provideWidgets(_stageId: string, _stageUsage: string, location: StagePanelLocation, _section?: StagePanelSection): ReadonlyArray<AbstractWidgetProps> {
     const widgets: AbstractWidgetProps[] = [];
@@ -125,7 +197,7 @@ export class SwipingComparisonWidgetProvider implements UiItemsProvider {
           label: "Swiping Comparison Selector",
           defaultState: WidgetState.Floating,
           // eslint-disable-next-line react/display-name
-          getWidgetContent: () => <SwipingComparisonWidget />,
+          getWidgetContent: () => <SwipingComparisonWidget appContainerId={this.appContainerId} />,
         },
       );
     }

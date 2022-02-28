@@ -25,7 +25,6 @@ import { getCrossProbingSpec } from "./frontend-samples/cross-probing-sample/sam
 import { getViewAttributesSpec } from "./frontend-samples/view-attributes-sample/sampleSpec";
 import { getViewClipSpec } from "./frontend-samples/view-clip-sample/sampleSpec";
 import { getZoomToElementsSpec } from "./frontend-samples/zoom-to-elements-sample/sampleSpec";
-// import { getReadSettingsSpec } from "./frontend-samples/read-settings-sample/sampleSpec";
 import { getRealityDataSpec } from "./frontend-samples/reality-data-sample/sampleSpec";
 import { getVolumeQuerySpec } from "./frontend-samples/volume-query-sample/sampleSpec";
 import { getHyperModelingSpec } from "./frontend-samples/hypermodeling-sample/sampleSpec";
@@ -75,6 +74,7 @@ import { getIssuesSpec } from "frontend-samples/issues-sample/sampleSpec";
 import { getValidationSpec } from "frontend-samples/validation-sample/sampleSpec";
 import { getScientificVisualizationSpec } from "frontend-samples/scientific-visualization-sample/sampleSpec";
 import { getTransformationSpec } from "frontend-samples/transformations-sample/sampleSpec";
+import { getSwipingComparisonSpec } from "frontend-samples/swiping-viewport/sampleSpec";
 
 export interface SampleSpecGroup {
   groupName: string;
@@ -112,7 +112,7 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getScreenSpaceEffectsSpec(),
     getSerializeViewSpec(),
     getShadowStudySpec(),
-    // getSwipingComparisonSpec(), Temporarily disabled until sample is fixed
+    getSwipingComparisonSpec(),
     getThematicDisplaySpec(),
     getTooltipCustomizeSpec(),
     getViewClipSpec(),
@@ -171,11 +171,9 @@ export const sampleManifest: SampleSpecGroup[] = [{
     getChangedElementsSpec(),
     getClashReviewSpec(),
     getIssuesSpec(),
-    // getReadSettingsSpec(), Temporarily disabled until sample is fixed
     getTransformationSpec(),
     getValidationSpec(),
   ],
-
 },
 ];
 

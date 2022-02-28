@@ -37,7 +37,6 @@ export const HeatmapDecoratorWidget: React.FunctionComponent = () => {
 
     setRangeState(range);
     setHeightState(height);
-
   }, []);
 
   /** When the images are loaded, initalize the MarkerPin */
