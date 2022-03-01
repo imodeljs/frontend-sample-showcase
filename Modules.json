@@ -221,14 +221,14 @@
     {
       "dependency": "@itwin/imodels-client-management",
       "version": "1.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/index.1d3d9fd8.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/index.3b435588.js",
       "global": "itwinImodelsClientManagement",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/types.1dyccr6.json"
     },
     {
       "dependency": "@itwin/imodels-access-frontend",
       "version": "1.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/index.7236e3db.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/index.fd5aaf74.js",
       "global": "itwinImodelsAccessFrontend",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/types.ynxfmn.json"
     },
@@ -256,7 +256,7 @@
     {
       "dependency": "@itwin/viewer-react",
       "version": "2.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/index.d3c56a73.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/index.76631728.js",
       "global": "itwinViewerReact",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/types.1tc4m7.json"
     },
