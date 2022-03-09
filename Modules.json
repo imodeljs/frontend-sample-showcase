@@ -25,247 +25,247 @@
     {
       "dependency": "@itwin/core-bentley",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/index.86a6b2b2.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/index.6a99fc25.js",
       "global": "itwinCoreBentley",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/types.10b2sz6.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-bentley/3.x/types.1xviqy9.json"
     },
     {
       "dependency": "@itwin/appui-abstract",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-abstract/3.x/index.ac438882.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-abstract/3.x/index.a3f4b683.js",
       "global": "itwinAppuiAbstract",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-abstract/3.x/types.q8og1a.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-abstract/3.x/types.167paxd.json"
     },
     {
       "dependency": "react",
       "version": "17.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/react/17.x/index.f0f24702.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/react/17.x/index.91ef4dd9.js",
       "global": "react",
       "types": "#{REACT_APP_COMPILER_URL}/react/17.x/types.bps8qj.json"
     },
     {
       "dependency": "react-dom",
       "version": "17.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/react-dom/17.x/index.770f9f2f.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/react-dom/17.x/index.569510a0.js",
       "global": "reactDom",
-      "types": "#{REACT_APP_COMPILER_URL}/react-dom/17.x/types.ry7iw5.json"
+      "types": "#{REACT_APP_COMPILER_URL}/react-dom/17.x/types.1m3jqpf.json"
     },
     {
       "dependency": "@itwin/itwinui-icons-react",
       "version": "1.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-icons-react/1.x/index.697a2496.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-icons-react/1.x/index.7673a578.js",
       "global": "itwinItwinuiIconsReact",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-icons-react/1.x/types.1mflxed.json"
     },
     {
       "dependency": "@itwin/itwinui-react",
       "version": "1.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-react/1.x/index.8599b83d.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-react/1.x/index.ab9e22be.js",
       "global": "itwinItwinuiReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-react/1.x/types.q16v9u.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/itwinui-react/1.x/types.c84ljm.json"
     },
     {
       "dependency": "@itwin/core-react",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-react/3.x/index.73075d5d.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-react/3.x/index.e82054d2.js",
       "global": "itwinCoreReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-react/3.x/types.ir17e6.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-react/3.x/types.ws11a1.json"
     },
     {
       "dependency": "@itwin/appui-layout-react",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-layout-react/3.x/index.281ae5d3.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-layout-react/3.x/index.d3be128a.js",
       "global": "itwinAppuiLayoutReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-layout-react/3.x/types.1ipzz39.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-layout-react/3.x/types.yeh4me.json"
     },
     {
       "dependency": "@itwin/components-react",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/components-react/3.x/index.e1a5c28b.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/components-react/3.x/index.34e57f75.js",
       "global": "itwinComponentsReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/components-react/3.x/types.635e9q.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/components-react/3.x/types.l1ikl.json"
     },
     {
       "dependency": "@itwin/core-geometry",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-geometry/3.x/index.821e9233.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-geometry/3.x/index.f8ab4c1b.js",
       "global": "itwinCoreGeometry",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-geometry/3.x/types.1qrfqsp.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-geometry/3.x/types.1kkubft.json"
     },
     {
       "dependency": "@itwin/core-common",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-common/3.x/index.8214091a.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-common/3.x/index.47f6da46.js",
       "global": "itwinCoreCommon",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-common/3.x/types.6icl7w.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-common/3.x/types.frsb7x.json"
     },
     {
       "dependency": "@itwin/core-orbitgt",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-orbitgt/3.x/index.a55259ca.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-orbitgt/3.x/index.0e6abf97.js",
       "global": "itwinCoreOrbitgt",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-orbitgt/3.x/types.1p9pzts.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-orbitgt/3.x/types.1wxz81q.json"
     },
     {
       "dependency": "@itwin/core-quantity",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-quantity/3.x/index.6e87b736.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-quantity/3.x/index.99f7e0a6.js",
       "global": "itwinCoreQuantity",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-quantity/3.x/types.i52a5i.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-quantity/3.x/types.kspn45.json"
     },
     {
       "dependency": "@itwin/webgl-compatibility",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/webgl-compatibility/3.x/index.ecc16c41.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/webgl-compatibility/3.x/index.a41259c8.js",
       "global": "itwinWebglCompatibility",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/webgl-compatibility/3.x/types.xfihyw.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/webgl-compatibility/3.x/types.187p3h3.json"
     },
     {
       "dependency": "@itwin/core-i18n",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-i18n/3.x/index.7eaafa46.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-i18n/3.x/index.8a7e76cc.js",
       "global": "itwinCoreI18N",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-i18n/3.x/types.1eu2zxj.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-i18n/3.x/types.1mnk9kz.json"
     },
     {
       "dependency": "@itwin/core-telemetry",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-telemetry/3.x/index.54609eb5.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-telemetry/3.x/index.7839b409.js",
       "global": "itwinCoreTelemetry",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-telemetry/3.x/types.1l28g3g.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-telemetry/3.x/types.oyojjy.json"
     },
     {
       "dependency": "@itwin/core-frontend",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-frontend/3.x/index.39243171.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-frontend/3.x/index.51edcff1.js",
       "global": "itwinCoreFrontend",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-frontend/3.x/types.1whpm8j.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-frontend/3.x/types.1wql8ur.json"
     },
     {
       "dependency": "@itwin/core-markup",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-markup/3.x/index.250d8a4e.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/core-markup/3.x/index.2325a0ac.js",
       "global": "itwinCoreMarkup",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-markup/3.x/types.1xdgcb6.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/core-markup/3.x/types.e3n8wm.json"
     },
     {
       "dependency": "@itwin/imodel-components-react",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodel-components-react/3.x/index.d6d37b80.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodel-components-react/3.x/index.6f9d3ba6.js",
       "global": "itwinImodelComponentsReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodel-components-react/3.x/types.cxnja0.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodel-components-react/3.x/types.1uj6vat.json"
     },
     {
       "dependency": "@itwin/presentation-common",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-common/3.x/index.638402d3.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-common/3.x/index.fad8aba0.js",
       "global": "itwinPresentationCommon",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-common/3.x/types.1m0p60w.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-common/3.x/types.1l0b0e9.json"
     },
     {
       "dependency": "@itwin/presentation-frontend",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-frontend/3.x/index.bc907edc.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-frontend/3.x/index.d7187669.js",
       "global": "itwinPresentationFrontend",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-frontend/3.x/types.163tauv.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-frontend/3.x/types.14brxth.json"
     },
     {
       "dependency": "redux",
       "version": "4.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/redux/4.x/index.7ec825ef.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/redux/4.x/index.7f9cb071.js",
       "global": "redux",
       "types": "#{REACT_APP_COMPILER_URL}/redux/4.x/types.1ou18t.json"
     },
     {
       "dependency": "react-redux",
       "version": "7.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/react-redux/7.x/index.70792631.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/react-redux/7.x/index.22c80dd0.js",
       "global": "reactRedux",
-      "types": "#{REACT_APP_COMPILER_URL}/react-redux/7.x/types.oyeyt4.json"
+      "types": "#{REACT_APP_COMPILER_URL}/react-redux/7.x/types.1smvswz.json"
     },
     {
       "dependency": "@itwin/presentation-components",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-components/3.x/index.70c92fd5.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-components/3.x/index.2a466685.js",
       "global": "itwinPresentationComponents",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-components/3.x/types.1capnki.json"
-    },
-    {
-      "dependency": "@itwin/browser-authorization",
-      "version": "0.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/browser-authorization/0.x/index.131bc1d1.js",
-      "global": "itwinBrowserAuthorization",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/browser-authorization/0.x/types.1mi5sm3.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/presentation-components/3.x/types.1ifgmb6.json"
     },
     {
       "dependency": "@itwin/appui-react",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-react/3.x/index.a1ce9de0.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/appui-react/3.x/index.e90864bc.js",
       "global": "itwinAppuiReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-react/3.x/types.5znjww.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/appui-react/3.x/types.1xtvep.json"
+    },
+    {
+      "dependency": "@itwin/browser-authorization",
+      "version": "0.x",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/browser-authorization/0.x/index.07238c54.js",
+      "global": "itwinBrowserAuthorization",
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/browser-authorization/0.x/types.1mi5sm3.json"
     },
     {
       "dependency": "@itwin/frontend-devtools",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/frontend-devtools/3.x/index.b0992c1b.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/frontend-devtools/3.x/index.5ff0a8b6.js",
       "global": "itwinFrontendDevtools",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/frontend-devtools/3.x/types.jt1o0x.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/frontend-devtools/3.x/types.1csw21s.json"
     },
     {
       "dependency": "@itwin/hypermodeling-frontend",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/hypermodeling-frontend/3.x/index.04fb570a.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/hypermodeling-frontend/3.x/index.4dff0e74.js",
       "global": "itwinHypermodelingFrontend",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/hypermodeling-frontend/3.x/types.147ol0v.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/hypermodeling-frontend/3.x/types.3mdiwg.json"
     },
     {
       "dependency": "@itwin/imodels-client-management",
       "version": "1.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/index.3b435588.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/index.be3d3027.js",
       "global": "itwinImodelsClientManagement",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-client-management/1.x/types.1dyccr6.json"
     },
     {
       "dependency": "@itwin/imodels-access-frontend",
       "version": "1.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/index.fd5aaf74.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/index.29c2b65a.js",
       "global": "itwinImodelsAccessFrontend",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/imodels-access-frontend/1.x/types.ynxfmn.json"
     },
     {
       "dependency": "@itwin/map-layers",
       "version": "3.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/map-layers/3.x/index.e04237b4.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/map-layers/3.x/index.fc027df5.js",
       "global": "itwinMapLayers",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/map-layers/3.x/types.1arv955.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/map-layers/3.x/types.11x2m7d.json"
     },
     {
       "dependency": "@itwin/projects-client",
       "version": "0.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/projects-client/0.x/index.2e49727f.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/projects-client/0.x/index.32cc1aad.js",
       "global": "itwinProjectsClient",
       "types": "#{REACT_APP_COMPILER_URL}/@itwin/projects-client/0.x/types.ua96vm.json"
     },
     {
       "dependency": "@itwin/reality-data-client",
       "version": "0.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/reality-data-client/0.x/index.fb050c8b.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/reality-data-client/0.x/index.b4605068.js",
       "global": "itwinRealityDataClient",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/reality-data-client/0.x/types.13qht41.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/reality-data-client/0.x/types.acnoft.json"
     },
     {
       "dependency": "@itwin/viewer-react",
       "version": "2.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/index.76631728.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/index.ad77ace4.js",
       "global": "itwinViewerReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/types.1tc4m7.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/viewer-react/2.x/types.1rowzxf.json"
     },
     {
       "dependency": "@itwin/web-viewer-react",
       "version": "2.x",
-      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/web-viewer-react/2.x/index.ae549ca5.js",
+      "lib": "#{REACT_APP_COMPILER_URL}/@itwin/web-viewer-react/2.x/index.da1984c1.js",
       "global": "itwinWebViewerReact",
-      "types": "#{REACT_APP_COMPILER_URL}/@itwin/web-viewer-react/2.x/types.1aj3ysn.json"
+      "types": "#{REACT_APP_COMPILER_URL}/@itwin/web-viewer-react/2.x/types.nrbq6a.json"
     }
   ]
 }
